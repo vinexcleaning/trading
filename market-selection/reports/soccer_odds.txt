@@ -1,0 +1,49 @@
+﻿code  status    rows  pinn%      first       last  leagues
+MEX   OK        4673   94.9 21/07/2012 27/07/2026  1 ['Liga MX']
+USA   OK        6069   95.6 10/03/2012 26/07/2026  1 ['MLS']
+ARG   OK        6262   94.7 03/08/2012 31/07/2026  3 ['Copa De La Liga Profesional', 'Liga Profesional', 'Liga Profesional ']
+BRA   OK        5525   95.5 19/05/2012 31/07/2026  1 ['Serie A']
+COL   OK        4091   95.0 17/08/2012 27/07/2026  1 ['Ekstraklasa']
+PER   DEAD                  http=404
+ECU   DEAD                  http=404
+URY   DEAD                  http=404
+CHN   OK        2964   93.1 07/03/2014 26/07/2026  1 ['Super League']
+JPN   OK        4523   99.6 10/03/2012 06/12/2025  2 [' J1 League', 'J1 League']
+KOR   OK        3496   95.7 23/03/2012 27/07/2026  1 ['Eliteserien']
+DNK   OK        2958   95.8 13/07/2012 27/07/2026  2 ['Superliga', 'Superliga ']
+SWE   OK        3497   96.3 31/03/2012 27/07/2026  2 ['Allsvenskan', 'Allsvenskan ']
+NOR   DUPLICATE_OF_KOR               http=None
+FIN   OK        2646   95.6 15/04/2012 26/07/2026  2 ['Veikkausliiga', 'Veikkausliiga ']
+IRL   OK        2687   94.6 02/03/2012 25/07/2026  2 ['Premier Division', 'Premier Division ']
+POL   DUPLICATE_OF_COL               http=None
+ROU   OK        4198   94.1 20/07/2012 27/07/2026  1 ['Superliga']
+RUS   OK        3408   94.7 20/07/2012 26/07/2026  1 ['Premier League']
+SWZ   OK        2681   93.4 13/07/2012 26/07/2026  2 ['Challenge League', 'Super League']
+AUT   OK        2638   95.1 21/07/2012 17/05/2026  1 ['Bundesliga']
+CHL   DUPLICATE_OF_CHN               http=None
+CHI   DUPLICATE_OF_CHN               http=None
+VEN   DEAD                  http=404
+BOL   DUPLICATE_OF_COL               http=None
+PRY   DEAD                  http=404
+GUA   DEAD                  http=404
+CRC   DEAD                  http=404
+
+*** 5 codes returned a file ALREADY SERVED FOR ANOTHER COUNTRY (HTTP 200, wrong data): ***
+    NOR is byte-identical to KOR -> actually ['Eliteserien']
+    POL is byte-identical to COL -> actually ['Ekstraklasa']
+    CHL is byte-identical to CHN -> actually ['Super League']
+    CHI is byte-identical to CHN -> actually ['Super League']
+    BOL is byte-identical to COL -> actually ['Ekstraklasa']
+
+16 country files carry a Pinnacle closing line on >100 matches
+total matches with a free Pinnacle close: 59,399
+
+mapped to Kalshi series:
+  MEX   4,437 matches  -> KXLIGAMXGAME / KXLIGAMXTOTAL / KXLIGAMXSPREAD / KXLIGAMX1H
+  USA   5,800 matches  -> KXMLSGAME / KXMLSTOTAL / KXUSLGAME / KXNWSLGAME
+  ARG   5,928 matches  -> KXARGPREMDIVGAME / KXARGPREMDIVTOTAL / KXARGNACBGAME
+  BRA   5,275 matches  -> KXCOPADOBRASILGAME / KXCOPADOBRASILTOTAL
+  COL   3,887 matches  -> KXDIMAYORGAME / KXDIMAYORTOTAL
+  CHN   2,759 matches  -> (Chinese Super League)
+  JPN   4,503 matches  -> (J-League)
+  KOR   3,346 matches  -> (K-League)

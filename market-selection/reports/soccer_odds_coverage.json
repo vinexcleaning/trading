@@ -1,0 +1,437 @@
+[
+ {
+  "code": "MEX",
+  "status": "OK",
+  "sha256_16": "4d2b419dca03ccc9",
+  "duplicate_of": null,
+  "rows": 4673,
+  "columns": 25,
+  "leagues": [
+   "Liga MX"
+  ],
+  "n_leagues": 1,
+  "date_first": "21/07/2012",
+  "date_last": "27/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 4437,
+  "pct_with_pinnacle": 94.9,
+  "kalshi_series": "KXLIGAMXGAME / KXLIGAMXTOTAL / KXLIGAMXSPREAD / KXLIGAMX1H"
+ },
+ {
+  "code": "USA",
+  "status": "OK",
+  "sha256_16": "ee836eb1c9d6df26",
+  "duplicate_of": null,
+  "rows": 6069,
+  "columns": 25,
+  "leagues": [
+   "MLS"
+  ],
+  "n_leagues": 1,
+  "date_first": "10/03/2012",
+  "date_last": "26/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 5800,
+  "pct_with_pinnacle": 95.6,
+  "kalshi_series": "KXMLSGAME / KXMLSTOTAL / KXUSLGAME / KXNWSLGAME"
+ },
+ {
+  "code": "ARG",
+  "status": "OK",
+  "sha256_16": "c965c6386bc384f0",
+  "duplicate_of": null,
+  "rows": 6262,
+  "columns": 25,
+  "leagues": [
+   "Copa De La Liga Profesional",
+   "Liga Profesional",
+   "Liga Profesional "
+  ],
+  "n_leagues": 3,
+  "date_first": "03/08/2012",
+  "date_last": "31/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 5928,
+  "pct_with_pinnacle": 94.7,
+  "kalshi_series": "KXARGPREMDIVGAME / KXARGPREMDIVTOTAL / KXARGNACBGAME"
+ },
+ {
+  "code": "BRA",
+  "status": "OK",
+  "sha256_16": "be05c27d84633fbb",
+  "duplicate_of": null,
+  "rows": 5525,
+  "columns": 25,
+  "leagues": [
+   "Serie A"
+  ],
+  "n_leagues": 1,
+  "date_first": "19/05/2012",
+  "date_last": "31/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 5275,
+  "pct_with_pinnacle": 95.5,
+  "kalshi_series": "KXCOPADOBRASILGAME / KXCOPADOBRASILTOTAL"
+ },
+ {
+  "code": "COL",
+  "status": "OK",
+  "sha256_16": "413112121c43355e",
+  "duplicate_of": null,
+  "rows": 4091,
+  "columns": 25,
+  "leagues": [
+   "Ekstraklasa"
+  ],
+  "n_leagues": 1,
+  "date_first": "17/08/2012",
+  "date_last": "27/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 3887,
+  "pct_with_pinnacle": 95.0,
+  "kalshi_series": "KXDIMAYORGAME / KXDIMAYORTOTAL"
+ },
+ {
+  "code": "PER",
+  "status": "DEAD",
+  "http": 404,
+  "bytes": 1271,
+  "kalshi_series": "KXPERLIGA1GAME / KXPERLIGA1TOTAL"
+ },
+ {
+  "code": "ECU",
+  "status": "DEAD",
+  "http": 404,
+  "bytes": 1271,
+  "kalshi_series": "KXECULPGAME"
+ },
+ {
+  "code": "URY",
+  "status": "DEAD",
+  "http": 404,
+  "bytes": 1271,
+  "kalshi_series": "KXURYPDGAME"
+ },
+ {
+  "code": "CHN",
+  "status": "OK",
+  "sha256_16": "d171bd98c8ce64b7",
+  "duplicate_of": null,
+  "rows": 2964,
+  "columns": 25,
+  "leagues": [
+   "Super League"
+  ],
+  "n_leagues": 1,
+  "date_first": "07/03/2014",
+  "date_last": "26/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 2759,
+  "pct_with_pinnacle": 93.1,
+  "kalshi_series": "(Chinese Super League)"
+ },
+ {
+  "code": "JPN",
+  "status": "OK",
+  "sha256_16": "f333fb04b600778b",
+  "duplicate_of": null,
+  "rows": 4523,
+  "columns": 25,
+  "leagues": [
+   " J1 League",
+   "J1 League"
+  ],
+  "n_leagues": 2,
+  "date_first": "10/03/2012",
+  "date_last": "06/12/2025",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 4503,
+  "pct_with_pinnacle": 99.6,
+  "kalshi_series": "(J-League)"
+ },
+ {
+  "code": "KOR",
+  "status": "OK",
+  "sha256_16": "9459e47a88e678d2",
+  "duplicate_of": null,
+  "rows": 3496,
+  "columns": 25,
+  "leagues": [
+   "Eliteserien"
+  ],
+  "n_leagues": 1,
+  "date_first": "23/03/2012",
+  "date_last": "27/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 3346,
+  "pct_with_pinnacle": 95.7,
+  "kalshi_series": "(K-League)"
+ },
+ {
+  "code": "DNK",
+  "status": "OK",
+  "sha256_16": "620e69c10da017e3",
+  "duplicate_of": null,
+  "rows": 2958,
+  "columns": 25,
+  "leagues": [
+   "Superliga",
+   "Superliga "
+  ],
+  "n_leagues": 2,
+  "date_first": "13/07/2012",
+  "date_last": "27/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 2834,
+  "pct_with_pinnacle": 95.8,
+  "kalshi_series": ""
+ },
+ {
+  "code": "SWE",
+  "status": "OK",
+  "sha256_16": "d67f355f27b2baef",
+  "duplicate_of": null,
+  "rows": 3497,
+  "columns": 25,
+  "leagues": [
+   "Allsvenskan",
+   "Allsvenskan "
+  ],
+  "n_leagues": 2,
+  "date_first": "31/03/2012",
+  "date_last": "27/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 3366,
+  "pct_with_pinnacle": 96.3,
+  "kalshi_series": ""
+ },
+ {
+  "code": "NOR",
+  "status": "DUPLICATE_OF_KOR",
+  "sha256_16": "9459e47a88e678d2",
+  "duplicate_of": "KOR",
+  "rows": 3496,
+  "columns": 25,
+  "leagues": [
+   "Eliteserien"
+  ],
+  "n_leagues": 1,
+  "date_first": "23/03/2012",
+  "date_last": "27/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 3346,
+  "pct_with_pinnacle": 95.7,
+  "kalshi_series": ""
+ },
+ {
+  "code": "FIN",
+  "status": "OK",
+  "sha256_16": "f67281a2bb2e3178",
+  "duplicate_of": null,
+  "rows": 2646,
+  "columns": 25,
+  "leagues": [
+   "Veikkausliiga",
+   "Veikkausliiga "
+  ],
+  "n_leagues": 2,
+  "date_first": "15/04/2012",
+  "date_last": "26/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 2530,
+  "pct_with_pinnacle": 95.6,
+  "kalshi_series": ""
+ },
+ {
+  "code": "IRL",
+  "status": "OK",
+  "sha256_16": "01c7c82010e0ab5f",
+  "duplicate_of": null,
+  "rows": 2687,
+  "columns": 25,
+  "leagues": [
+   "Premier Division",
+   "Premier Division "
+  ],
+  "n_leagues": 2,
+  "date_first": "02/03/2012",
+  "date_last": "25/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 2543,
+  "pct_with_pinnacle": 94.6,
+  "kalshi_series": ""
+ },
+ {
+  "code": "POL",
+  "status": "DUPLICATE_OF_COL",
+  "sha256_16": "413112121c43355e",
+  "duplicate_of": "COL",
+  "rows": 4091,
+  "columns": 25,
+  "leagues": [
+   "Ekstraklasa"
+  ],
+  "n_leagues": 1,
+  "date_first": "17/08/2012",
+  "date_last": "27/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 3887,
+  "pct_with_pinnacle": 95.0,
+  "kalshi_series": ""
+ },
+ {
+  "code": "ROU",
+  "status": "OK",
+  "sha256_16": "b9a2e69298f53582",
+  "duplicate_of": null,
+  "rows": 4198,
+  "columns": 25,
+  "leagues": [
+   "Superliga"
+  ],
+  "n_leagues": 1,
+  "date_first": "20/07/2012",
+  "date_last": "27/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 3950,
+  "pct_with_pinnacle": 94.1,
+  "kalshi_series": ""
+ },
+ {
+  "code": "RUS",
+  "status": "OK",
+  "sha256_16": "ed73687f6b83f7df",
+  "duplicate_of": null,
+  "rows": 3408,
+  "columns": 19,
+  "leagues": [
+   "Premier League"
+  ],
+  "n_leagues": 1,
+  "date_first": "20/07/2012",
+  "date_last": "26/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 3229,
+  "pct_with_pinnacle": 94.7,
+  "kalshi_series": ""
+ },
+ {
+  "code": "SWZ",
+  "status": "OK",
+  "sha256_16": "6645982443ebedba",
+  "duplicate_of": null,
+  "rows": 2681,
+  "columns": 25,
+  "leagues": [
+   "Challenge League",
+   "Super League"
+  ],
+  "n_leagues": 2,
+  "date_first": "13/07/2012",
+  "date_last": "26/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 2504,
+  "pct_with_pinnacle": 93.4,
+  "kalshi_series": ""
+ },
+ {
+  "code": "AUT",
+  "status": "OK",
+  "sha256_16": "baebe6395d1eb48b",
+  "duplicate_of": null,
+  "rows": 2638,
+  "columns": 25,
+  "leagues": [
+   "Bundesliga"
+  ],
+  "n_leagues": 1,
+  "date_first": "21/07/2012",
+  "date_last": "17/05/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 2508,
+  "pct_with_pinnacle": 95.1,
+  "kalshi_series": ""
+ },
+ {
+  "code": "CHL",
+  "status": "DUPLICATE_OF_CHN",
+  "sha256_16": "d171bd98c8ce64b7",
+  "duplicate_of": "CHN",
+  "rows": 2964,
+  "columns": 25,
+  "leagues": [
+   "Super League"
+  ],
+  "n_leagues": 1,
+  "date_first": "07/03/2014",
+  "date_last": "26/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 2759,
+  "pct_with_pinnacle": 93.1,
+  "kalshi_series": ""
+ },
+ {
+  "code": "CHI",
+  "status": "DUPLICATE_OF_CHN",
+  "sha256_16": "d171bd98c8ce64b7",
+  "duplicate_of": "CHN",
+  "rows": 2964,
+  "columns": 25,
+  "leagues": [
+   "Super League"
+  ],
+  "n_leagues": 1,
+  "date_first": "07/03/2014",
+  "date_last": "26/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 2759,
+  "pct_with_pinnacle": 93.1,
+  "kalshi_series": ""
+ },
+ {
+  "code": "VEN",
+  "status": "DEAD",
+  "http": 404,
+  "bytes": 1271,
+  "kalshi_series": ""
+ },
+ {
+  "code": "BOL",
+  "status": "DUPLICATE_OF_COL",
+  "sha256_16": "413112121c43355e",
+  "duplicate_of": "COL",
+  "rows": 4091,
+  "columns": 25,
+  "leagues": [
+   "Ekstraklasa"
+  ],
+  "n_leagues": 1,
+  "date_first": "17/08/2012",
+  "date_last": "27/07/2026",
+  "has_pinnacle_close": true,
+  "rows_with_pinnacle": 3887,
+  "pct_with_pinnacle": 95.0,
+  "kalshi_series": ""
+ },
+ {
+  "code": "PRY",
+  "status": "DEAD",
+  "http": 404,
+  "bytes": 1271,
+  "kalshi_series": ""
+ },
+ {
+  "code": "GUA",
+  "status": "DEAD",
+  "http": 404,
+  "bytes": 1271,
+  "kalshi_series": ""
+ },
+ {
+  "code": "CRC",
+  "status": "DEAD",
+  "http": 404,
+  "bytes": 1271,
+  "kalshi_series": ""
+ }
+]

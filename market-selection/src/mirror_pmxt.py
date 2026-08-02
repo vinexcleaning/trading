@@ -79,8 +79,25 @@ def validate(path):
             continue
         lo = float(st.min) if lo is None else min(lo, float(st.min))
         hi = float(st.max) if hi is None else max(hi, float(st.max))
+
+    # ABSENT STATISTICS ARE NOT A FAILURE. The first version returned
+    # "price out of (0,1): None..None" and rejected two perfectly good files --
+    # 2026-05-21T08 and 2026-05-28T08, both low-activity hours written as a
+    # single row group with no column statistics. That is the UNTESTABLE/FAIL
+    # confusion from GUARDS #1 pointed the other way: not knowing is not the
+    # same as knowing it is bad. Fall back to reading the column.
+    if lo is None:
+        d["stats_absent"] = True
+        col = pf.read(columns=["price"]).column("price").drop_null()
+        if len(col) == 0:
+            d["price_min"] = d["price_max"] = None
+            d["price_all_null"] = True
+        else:
+            vals = [float(v) for v in col.to_pylist()]
+            lo, hi = min(vals), max(vals)
+
     d["price_min"], d["price_max"] = lo, hi
-    if lo is None or not (0.0 < lo and hi < 1.0):
+    if lo is not None and not (0.0 < lo and hi < 1.0):
         return False, {**d, "err": f"price out of (0,1): {lo}..{hi}"}
 
     # event types present in row group 0

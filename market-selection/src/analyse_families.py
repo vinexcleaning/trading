@@ -91,6 +91,35 @@ def load_tape(path):
     return ser, n
 
 
+def load_ticks():
+    """Real minimum tick per series, in cents, from `price_level_structure`.
+
+    NOT a hardcoded 1c. `tick_size` does not exist on the market object at all;
+    the structure field does, and it has three values:
+        linear_cent        1c everywhere
+        deci_cent          0.1c everywhere
+        tapered_deci_cent  0.1c below 10c and above 90c, 1c in between
+    A first version of this analysis tested `spread <= 1.0` for every family,
+    which silently reported the 0.1c-tick families as pinned to their tick when
+    they were quoting TEN ticks wide.
+    """
+    tick = {}
+    with open(os.path.join(DATA, "kalshi_markets_open.jsonl"), encoding="utf-8") as fh:
+        for line in fh:
+            m = json.loads(line)
+            s = K.series_of(m["ticker"])
+            if s in tick:
+                continue
+            pls = m.get("price_level_structure")
+            tick[s] = {"linear_cent": 1.0, "deci_cent": 0.1,
+                       # mid-range is the 1c band, which is where nearly all
+                       # quoting happens; treating it as 0.1c would understate
+                       # how pinned these books are.
+                       "tapered_deci_cent": 1.0}.get(pls, 1.0)
+            tick[s + "__struct"] = pls
+    return tick
+
+
 def load_depth():
     """Per-series quote/depth statistics from the live recorder."""
     ser = defaultdict(lambda: {"snap": 0, "nonempty": 0, "two_sided": 0,
@@ -120,7 +149,7 @@ def load_depth():
                     s["two_sided"] += 1
                     sp = ya - yb
                     s["spreads"].append(sp)
-                    if sp <= 1.0:
+                    if sp <= TICKS.get(d.get("series", "?"), 1.0) + 1e-9:
                         s["at_tick"] += 1
                     if d.get("bid_sz") is not None:
                         s["bid_sz"].append(d["bid_sz"])
@@ -133,7 +162,12 @@ def load_depth():
     return ser, rows, len(files)
 
 
+TICKS = {}
+
+
 def main():
+    global TICKS
+    TICKS = load_ticks()
     tape_path = os.path.join(DATA, "kalshi_trades_24h.jsonl")
     tape, n_trades = load_tape(tape_path)
     depth, n_depth, n_files = load_depth()
@@ -169,6 +203,8 @@ def main():
             "category": u.get("category", ""),
             "title": (u.get("title") or "")[:44],
             "fee_type": u.get("fee_type"),
+            "tick_c": TICKS.get(s, 1.0),
+            "price_level_structure": TICKS.get(s + "__struct"),
             "n_markets_open": u.get("n_markets"),
             "trades_day": round(t["n"] * scale),
             "markets_traded_day": round(len(t["mkts"]) * scale),
