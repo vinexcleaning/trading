@@ -1,0 +1,34 @@
+﻿=== loading bookmaker closes (cached) ===
+  MEX -> mex.1: 4673 rows with a usable 3-way close
+  ARG -> arg.1: 6262 rows with a usable 3-way close
+  BRA -> bra.1: 5525 rows with a usable 3-way close
+  USA -> usa.1: 6069 rows with a usable 3-way close
+  22529 indexed
+
+24172 completed matches with a score
+12218 matches joined to a bookmaker close (50.5%)
+  by league: {'mex.1': 2605, 'arg.1': 2281, 'usa.1': 4070, 'bra.1': 3262}
+
+train (<2024): 9343   test (2024+): 2875
+
+==================================================================
+THE GATE: model Brier minus book Brier (POSITIVE = MODEL WORSE)
+==================================================================
+  test matches         2875
+  model Brier          0.62829
+  book  Brier          0.60659
+  difference           +0.02170  [+0.01626, +0.02750]
+
+  VERDICT: model DOES NOT BEAT the book
+  (the model is significantly WORSE -- CI entirely above zero)
+
+=== CONTROLS ===
+  NULL  (shuffled labels): model Brier 0.65741 vs book 0.67215 -- both should be poor and similar
+  POSITIVE (model peeks at the outcome): Brier 0.00240 vs book 0.60659, difference -0.60419
+  -> the pipeline can detect a large improvement when one exists.
+
+=== calibration: how often does the favourite actually win? ===
+  book favourite priced 0.35-0.45: n= 1117, actually won 0.375
+  book favourite priced 0.45-0.55: n=  926, actually won 0.510
+  book favourite priced 0.55-0.65: n=  565, actually won 0.609
+  book favourite priced 0.65-0.80: n=  209, actually won 0.722
