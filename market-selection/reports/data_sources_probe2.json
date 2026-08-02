@@ -1,0 +1,201 @@
+[
+ {
+  "family": "tennis",
+  "name": "Sackmann tennis_atp (org root)",
+  "url": "https://api.github.com/users/JeffSackmann/repos?per_page=100",
+  "why_retried": "repo 404 - check whether the ACCOUNT still exists",
+  "bytes": 6710,
+  "http": 200,
+  "status": "OK",
+  "n_items": 1,
+  "sample": {
+   "id": "32031469",
+   "node_id": "MDEwOlJlcG9zaXRvcnkzMjAzMTQ2OQ==",
+   "name": "tennis_MatchChartingProject",
+   "full_name": "JeffSackmann/tennis_MatchChartingProject",
+   "private": "False",
+   "owner": "{'login': 'JeffSackmann', 'id': 516399, "
+  }
+ },
+ {
+  "family": "tennis",
+  "name": "tennis-data.co.uk 2026 ATP",
+  "url": "http://www.tennis-data.co.uk/2026/ausopen.zip",
+  "why_retried": "root 300 multiple choices",
+  "bytes": 474,
+  "http": 300,
+  "status": "DEAD",
+  "snippet": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n<html><head>\n<title>300 Multiple Choices</title>\n</head><bo"
+ },
+ {
+  "family": "tennis",
+  "name": "tennis-data.co.uk index",
+  "url": "http://www.tennis-data.co.uk/alldata.php",
+  "why_retried": "find the real file names",
+  "bytes": 68709,
+  "http": 200,
+  "status": "OK",
+  "snippet": "<HTML> <HEAD> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"> <TITLE>Tennis Betting | Tennis Results | Tennis Odds</TITLE> <META NAME=\"description\" CONTENT=\"Tennis betting, tennis free bets, bett"
+ },
+ {
+  "family": "tennis",
+  "name": "tennis_atp mirror (search)",
+  "url": "https://api.github.com/search/repositories?q=tennis_atp+sackmann&per_page=5",
+  "why_retried": "is there a surviving fork?",
+  "bytes": 32672,
+  "http": 200,
+  "status": "OK",
+  "json_keys": [
+   "incomplete_results",
+   "items",
+   "total_count"
+  ],
+  "n_items": 5,
+  "total_count": 5,
+  "repos": [
+   "harman28/atpruby",
+   "mare-imbrium/tennis-atp",
+   "vrawal03/tennis-match-predictor",
+   "farhadGithub/tennis-atp-data",
+   "Cam1703/VisualAnalyticsProject_Group1"
+  ]
+ },
+ {
+  "family": "tennis",
+  "name": "MatchCharting matches csv",
+  "url": "https://raw.githubusercontent.com/JeffSackmann/tennis_MatchChartingProject/master/charting-m-matches.csv",
+  "why_retried": "repo alive - what is in it",
+  "bytes": 1141817,
+  "http": 200,
+  "n_rows": 7566,
+  "n_columns": 15,
+  "columns": [
+   "match_id",
+   "Player 1",
+   "Player 2",
+   "Pl 1 hand",
+   "Pl 2 hand",
+   "Date",
+   "Tournament",
+   "Round",
+   "Time",
+   "Court",
+   "Surface",
+   "Umpire",
+   "Best of",
+   "Final TB?",
+   "Charted by"
+  ],
+  "status": "OK"
+ },
+ {
+  "family": "esports",
+  "name": "Oracle's Elixir 2026 (alt path)",
+  "url": "https://oracleselixir-downloadable-match-data.s3.us-west-2.amazonaws.com/2026_LoL_esports_match_data_from_OraclesElixir.csv",
+  "why_retried": "404 - region in hostname changed",
+  "bytes": 347,
+  "http": 404,
+  "status": "DEAD",
+  "snippet": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist</Message><BucketName>oracleselixir"
+ },
+ {
+  "family": "esports",
+  "name": "Oracle's Elixir 2025",
+  "url": "https://oracleselixir-downloadable-match-data.s3.us-west-2.amazonaws.com/2025_LoL_esports_match_data_from_OraclesElixir.csv",
+  "why_retried": "does any year work?",
+  "bytes": 347,
+  "http": 404,
+  "status": "DEAD",
+  "snippet": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist</Message><BucketName>oracleselixir"
+ },
+ {
+  "family": "basketball",
+  "name": "stats.nba.com scoreboard",
+  "url": "https://stats.nba.com/stats/scoreboardv2?GameDate=2026-08-01&LeagueID=00&DayOffset=0",
+  "why_retried": "timeout - needs referer/origin headers",
+  "status": "ERROR",
+  "err": "ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+ },
+ {
+  "family": "crypto",
+  "name": "Binance klines (data-api host)",
+  "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=5",
+  "why_retried": "451 geo-block on api.binance.com",
+  "bytes": 839,
+  "http": 200,
+  "status": "OK",
+  "n_items": 5
+ },
+ {
+  "family": "crypto",
+  "name": "Kraken OHLC BTCUSD",
+  "url": "https://api.kraken.com/0/public/OHLC?pair=XBTUSD&interval=1",
+  "why_retried": "alternative to Binance",
+  "bytes": 56896,
+  "http": 200,
+  "status": "OK",
+  "json_keys": [
+   "error",
+   "result"
+  ]
+ },
+ {
+  "family": "politics",
+  "name": "538 approval csv (raw check)",
+  "url": "https://projects.fivethirtyeight.com/polls/data/president_approval_polls.csv",
+  "why_retried": "parsed as 55 rows / 0 cols - suspicious",
+  "bytes": 310044,
+  "http": 200,
+  "n_rows": 55,
+  "n_columns": 0,
+  "columns": [],
+  "status": "SUSPECT"
+ },
+ {
+  "family": "esports",
+  "name": "HLTV results",
+  "url": "https://www.hltv.org/results",
+  "why_retried": "200 but 0 bytes - Cloudflare",
+  "bytes": 5680,
+  "http": 403,
+  "status": "DEAD",
+  "snippet": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-e"
+ },
+ {
+  "family": "soccer",
+  "name": "FBref (worldfootballR source)",
+  "url": "https://fbref.com/en/comps/9/Premier-League-Stats",
+  "why_retried": "not probed in round 1",
+  "bytes": 5795,
+  "http": 403,
+  "status": "DEAD",
+  "snippet": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-e"
+ },
+ {
+  "family": "soccer",
+  "name": "understat",
+  "url": "https://understat.com/league/EPL",
+  "why_retried": "not probed in round 1",
+  "bytes": 18654,
+  "http": 200,
+  "status": "OK",
+  "snippet": "<!DOCTYPE html> <html lang=\"en\"> <head> <base href=\"https://understat.com/\"> <title>EPL xG Table and Scorers for the 2025/2026 season | Understat.com</title> <meta charset=\"UTF-8\" /> <meta name=\"description\" content=\"xG "
+ },
+ {
+  "family": "baseball",
+  "name": "MLB StatsAPI live feed",
+  "url": "https://statsapi.mlb.com/api/v1.1/game/775296/feed/live",
+  "why_retried": "how deep is the free live feed",
+  "bytes": 885277,
+  "http": 200,
+  "status": "OK",
+  "json_keys": [
+   "copyright",
+   "gameData",
+   "gamePk",
+   "link",
+   "liveData",
+   "metaData"
+  ]
+ }
+]

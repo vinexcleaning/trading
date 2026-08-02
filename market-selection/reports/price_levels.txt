@@ -1,0 +1,78 @@
+﻿scanned 419,828 open markets
+
+=== distinct price_level_structure values ===
+   348,428 markets  "deci_cent"
+    63,207 markets  "linear_cent"
+     8,193 markets  "tapered_deci_cent"
+
+=== per series ===
+
+KXATPMATCH
+  market_type=binary  strike_type=structured
+  price_level_structure = "linear_cent"
+  price_ranges          = [{"end": "1.0000", "start": "0.0000", "step": "0.0100"}]
+
+KXBTC15M
+  market_type=binary  strike_type=greater_or_equal
+  price_level_structure = "tapered_deci_cent"
+  price_ranges          = [{"end": "0.1000", "start": "0.0000", "step": "0.0010"}, {"end": "0.9000", "start": "0.1000", "step": "0.0100"}, {"end": "1.0000", "start": "0.9000", "step": "0.0010"}]
+
+KXBTCD
+  market_type=binary  strike_type=greater
+  price_level_structure = "linear_cent"
+  price_ranges          = [{"end": "1.0000", "start": "0.0000", "step": "0.0100"}]
+
+KXBTCY
+  market_type=binary  strike_type=less
+  price_level_structure = "deci_cent"
+  price_ranges          = [{"end": "1.0000", "start": "0.0000", "step": "0.0010"}]
+
+KXITFMATCH
+  market_type=binary  strike_type=structured
+  price_level_structure = "linear_cent"
+  price_ranges          = [{"end": "1.0000", "start": "0.0000", "step": "0.0100"}]
+
+KXLPGATOUR
+  market_type=binary  strike_type=structured
+  price_level_structure = "tapered_deci_cent"
+  price_ranges          = [{"end": "0.1000", "start": "0.0000", "step": "0.0010"}, {"end": "0.9000", "start": "0.1000", "step": "0.0100"}, {"end": "1.0000", "start": "0.9000", "step": "0.0010"}]
+
+KXMLB
+  market_type=binary  strike_type=structured
+  price_level_structure = "deci_cent"
+  price_ranges          = [{"end": "1.0000", "start": "0.0000", "step": "0.0010"}]
+
+KXMLBGAME
+  market_type=binary  strike_type=structured
+  price_level_structure = "linear_cent"
+  price_ranges          = [{"end": "1.0000", "start": "0.0000", "step": "0.0100"}]
+
+KXMLBTOTAL
+  market_type=binary  strike_type=greater
+  price_level_structure = "linear_cent"
+  price_ranges          = [{"end": "1.0000", "start": "0.0000", "step": "0.0100"}]
+
+KXNBA
+  market_type=binary  strike_type=structured
+  price_level_structure = "linear_cent"
+  price_ranges          = [{"end": "1.0000", "start": "0.0000", "step": "0.0100"}]
+
+KXPGATOUR
+  market_type=binary  strike_type=structured
+  price_level_structure = "tapered_deci_cent"
+  price_ranges          = [{"end": "0.1000", "start": "0.0000", "step": "0.0010"}, {"end": "0.9000", "start": "0.1000", "step": "0.0100"}, {"end": "1.0000", "start": "0.9000", "step": "0.0010"}]
+
+KXPRESNOMD
+  market_type=binary  strike_type=custom
+  price_level_structure = "linear_cent"
+  price_ranges          = [{"end": "1.0000", "start": "0.0000", "step": "0.0100"}]
+
+KXSENATEMID
+  market_type=binary  strike_type=custom
+  price_level_structure = "tapered_deci_cent"
+  price_ranges          = [{"end": "0.1000", "start": "0.0000", "step": "0.0010"}, {"end": "0.9000", "start": "0.1000", "step": "0.0100"}, {"end": "1.0000", "start": "0.9000", "step": "0.0010"}]
+
+KXWTAMATCH
+  market_type=binary  strike_type=structured
+  price_level_structure = "linear_cent"
+  price_ranges          = [{"end": "1.0000", "start": "0.0000", "step": "0.0100"}]

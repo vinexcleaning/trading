@@ -1,0 +1,307 @@
+{
+ "zero_fee_multiplier": [
+  "KXBTCY",
+  "KXCITRINI",
+  "KXDOED",
+  "KXELECTIRAN",
+  "KXETHY",
+  "KXGAMBLINGREPEAL",
+  "KXGDPYEAR",
+  "KXGREENLAND",
+  "KXIRANDEMOCRACY",
+  "KXLAYOFFSYINFO",
+  "KXPAHLAVIHEAD"
+ ],
+ "tick_by_series": {
+  "KXMLBGAME": {
+   "levels": 1080,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXPGATOUR": {
+   "levels": 1060,
+   "places": {
+    "0": 0.61,
+    "1": 0.39
+   },
+   "implied_tick_c": 0.1
+  },
+  "KXBTCD": {
+   "levels": 995,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXWTAMATCH": {
+   "levels": 840,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXMLBTOTAL": {
+   "levels": 840,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXATPMATCH": {
+   "levels": 840,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXKBOGAME": {
+   "levels": 829,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXMLB": {
+   "levels": 816,
+   "places": {
+    "0": 0.179,
+    "1": 0.821
+   },
+   "implied_tick_c": 0.1
+  },
+  "KXLIGAMXGAME": {
+   "levels": 787,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXATPCHALLENGERMATCH": {
+   "levels": 787,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXPRESNOMD": {
+   "levels": 762,
+   "places": {
+    "0": 0.222,
+    "1": 0.778
+   },
+   "implied_tick_c": 0.1
+  },
+  "KXITFMATCH": {
+   "levels": 760,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXMLBRFI": {
+   "levels": 720,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXLOLGAME": {
+   "levels": 711,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXCLUBFGAME": {
+   "levels": 693,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXWNBAGAME": {
+   "levels": 687,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXNPBGAME": {
+   "levels": 680,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXBTCY": {
+   "levels": 654,
+   "places": {
+    "0": 0.153,
+    "1": 0.847
+   },
+   "implied_tick_c": 0.1
+  },
+  "KXHORMUZNORM": {
+   "levels": 630,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXUSAIRANAGREEMENT": {
+   "levels": 617,
+   "places": {
+    "0": 0.995,
+    "1": 0.005
+   },
+   "implied_tick_c": 0.1
+  },
+  "KXLPGATOUR": {
+   "levels": 613,
+   "places": {
+    "0": 0.724,
+    "1": 0.276
+   },
+   "implied_tick_c": 0.1
+  },
+  "KXPGATOP20": {
+   "levels": 597,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXPGATOP10": {
+   "levels": 595,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXKFTOUR": {
+   "levels": 587,
+   "places": {
+    "0": 0.702,
+    "1": 0.298
+   },
+   "implied_tick_c": 0.1
+  },
+  "KXRT": {
+   "levels": 584,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXPGATOP5": {
+   "levels": 563,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXSB": {
+   "levels": 560,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXNBA": {
+   "levels": 528,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXFEDDECISION": {
+   "levels": 510,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXGOVFLNOMR": {
+   "levels": 501,
+   "places": {
+    "0": 0.353,
+    "1": 0.647
+   },
+   "implied_tick_c": 0.1
+  },
+  "KXBTCMAXMON": {
+   "levels": 500,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXWTI": {
+   "levels": 497,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXHIGHLAX": {
+   "levels": 480,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXNCAAF": {
+   "levels": 480,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXAAAGASW": {
+   "levels": 473,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXSENATEMID": {
+   "levels": 455,
+   "places": {
+    "0": 0.36,
+    "1": 0.64
+   },
+   "implied_tick_c": 0.1
+  },
+  "KXNEXTTEAMNBA": {
+   "levels": 420,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXMI13D": {
+   "levels": 420,
+   "places": {
+    "0": 0.664,
+    "1": 0.336
+   },
+   "implied_tick_c": 0.1
+  },
+  "KXTRUMPSAY": {
+   "levels": 410,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  },
+  "KXNPBTOTAL": {
+   "levels": 361,
+   "places": {
+    "0": 1.0
+   },
+   "implied_tick_c": 1.0
+  }
+ }
+}

@@ -1,0 +1,16 @@
+# DECISIONS.md — market-selection session, 2026-08-02
+
+Ambiguities resolved without asking, per the operating mode. Conservative
+reading taken every time. Newest last.
+
+| # | Ambiguity | Conservative reading taken | Why |
+|---|---|---|---|
+| D1 | Where to put new work — repo root or a subdir? | `trading/market-selection/`, new subdir, code tracked and `data/` gitignored | Matches the existing five-project layout. Nothing outside this directory was modified except `HANDOFF.md`. |
+| D2 | STATUS.md says PIDs 17892 and 24756 must not be touched | Left both alone; verified alive (17892 up since 08-01 02:58, 24756 since 08-01 13:42) and did not read, move or restart them | They accrue the only non-re-pullable asset. Confirmed running, not assumed. |
+| D3 | "Paced, single-threaded API calls" vs. three crawls at once | One request in flight **per host**. Kalshi, gamma-api.polymarket.com and r2kalshi.pmxt.dev are different hosts, so they run concurrently; nothing runs two streams at one host | The instruction is API courtesy. Serialising across unrelated hosts would waste the night for no politeness gain. The mirror uses 3 workers against an R2 CDN bucket, which is a static-file host, not an API. |
+| D4 | Trade-tape window: how far back? | **24 h**, cut from an initial 48 h | The tape is far denser than expected — 100,000 trades covered only 25 minutes of market time, so 48 h ≈ 11.5 M trades, ~2 h of pulling and ~5 GB, competing with the mirror for bandwidth. 24 h is a full daily cycle, so it carries no time-of-day bias, at half the cost. |
+| D5 | pmxt described as "rolling 30-day retention, deletes itself continuously" — mirror first or verify first? | **Verified first** (≈15 min of HEAD probes), then mirrored | Verification disproved the premise: the archive is frozen, not rolling. Had it been true, the probes would have cost 15 min of a 30-day window. Had I mirrored blind, I would have reported a false urgency as fact. |
+| D6 | Which price fields to read from Kalshi | `*_dollars` / `*_fp` only, never the legacy integer-cent names | Measured: of 200 open markets, `yes_bid`, `yes_ask`, `no_bid`, `no_ask`, `last_price`, `volume`, `open_interest`, `liquidity` were non-null on **0**. GUARDS #12 predicted this; it is now confirmed live. |
+| D7 | Polymarket family key — market-level or event-level crawl? | Event-level (`/events`) | Tags are the only family-like key Polymarket exposes, and they are returned on `/events` but not on the event stub inside `/markets`. A market-first crawl has no family key at all. |
+| D8 | Kill-switch threshold — what counts as "a counterparty exists"? | Pre-registered **before** looking at the per-series tape: a family passes only if it clears **all** of (i) ≥100 trades/day, (ii) ≥20 distinct markets traded/day, (iii) ≥50% two-sided quote uptime. Anything below any one of them is killed. | Fixing the gate before seeing the numbers is GUARDS #10. Recorded here at the time the tape was still downloading, so it could not have been fitted to the result. |
+| D9 | The 419,828-market count looked implausibly large | Checked for duplicate tickers before using it: **419,828 rows, 419,828 distinct tickers, 0 duplicates** | The pagination could have cycled. It did not. But 83% of the universe is two exotic parlay series, which is the real explanation and matters for Task 1. |

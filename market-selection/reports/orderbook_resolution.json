@@ -1,0 +1,602 @@
+[
+ {
+  "kind": "busiest",
+  "series": "KXPGATOUR",
+  "ticker": "KXPGATOUR-ROC26-CAME",
+  "vol24": 1601633.76,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXPGATOUR",
+  "ticker": "KXPGATOUR-ROC26-EGRI",
+  "vol24": 309957.85,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXRT",
+  "ticker": "KXRT-SPI-90",
+  "vol24": 475946.87,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXRT",
+  "ticker": "KXRT-DUNE-80",
+  "vol24": 0.0,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXMLBGAME",
+  "ticker": "KXMLBGAME-26AUG021515MILLAA-MIL",
+  "vol24": 258662.83,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXMLBGAME",
+  "ticker": "KXMLBGAME-26AUG021920BOSLAD-LAD",
+  "vol24": 104769.64,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXMLB",
+  "ticker": "KXMLB-26-LAD",
+  "vol24": 245083.91,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXMLB",
+  "ticker": "KXMLB-26-ATL",
+  "vol24": 59385.51,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXBTCD",
+  "ticker": "KXBTCD-26AUG0217-T63249.99",
+  "vol24": 105314.6,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXBTCD",
+  "ticker": "KXBTCD-26AUG0217-T69749.99",
+  "vol24": 0.0,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXNPBGAME",
+  "ticker": "KXNPBGAME-26AUG020100YOKYOM-YOM",
+  "vol24": 273340.74,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXNPBGAME",
+  "ticker": "KXNPBGAME-26AUG050500YAKCHU-YAK",
+  "vol24": 0.0,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXPRESNOMD",
+  "ticker": "KXPRESNOMD-28-JSTE",
+  "vol24": 154313.67,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXPRESNOMD",
+  "ticker": "KXPRESNOMD-28-JAM",
+  "vol24": 0.0,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXHIGHLAX",
+  "ticker": "KXHIGHLAX-26AUG01-T85",
+  "vol24": 209773.68,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXHIGHLAX",
+  "ticker": "KXHIGHLAX-26AUG02-B80.5",
+  "vol24": 11129.88,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXSB",
+  "ticker": "KXSB-27-HOU",
+  "vol24": 73225.71,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXSB",
+  "ticker": "KXSB-27-DET",
+  "vol24": 9543.88,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXWTAMATCH",
+  "ticker": "KXWTAMATCH-26AUG02PEGEAL-EAL",
+  "vol24": 237575.73,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXWTAMATCH",
+  "ticker": "KXWTAMATCH-26AUG02ZHALIN-LIN",
+  "vol24": 1614.28,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXLPGATOUR",
+  "ticker": "KXLPGATOUR-AIGWO26-YEANOH",
+  "vol24": 117313.78,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXLPGATOUR",
+  "ticker": "KXLPGATOUR-AIGWO26-NOOKOM",
+  "vol24": 458.0,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXHORMUZNORM",
+  "ticker": "KXHORMUZNORM-26MAR17-B260815",
+  "vol24": 188863.27,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXHORMUZNORM",
+  "ticker": "KXHORMUZNORM-26MAR17-B261201",
+  "vol24": 22474.72,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXTRUMPSAY",
+  "ticker": "KXTRUMPSAY-26AUG03-STUP",
+  "vol24": 112005.25,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXTRUMPSAY",
+  "ticker": "KXTRUMPSAY-26AUG03-TDS",
+  "vol24": 19622.5,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXGOVFLNOMR",
+  "ticker": "KXGOVFLNOMR-26-JFIS",
+  "vol24": 286580.32,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXGOVFLNOMR",
+  "ticker": "KXGOVFLNOMR-26-WS",
+  "vol24": 0.0,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXNEXTTEAMNBA",
+  "ticker": "KXNEXTTEAMNBA-26SCUR-BOS",
+  "vol24": 115145.64,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXNEXTTEAMNBA",
+  "ticker": "KXNEXTTEAMNBA-26DSABONIS11-DET",
+  "vol24": 10.0,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXSENATEMID",
+  "ticker": "KXSENATEMID-26-HSTE",
+  "vol24": 191554.61,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXSENATEMID",
+  "ticker": "KXSENATEMID-26-SANT",
+  "vol24": 0.0,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXPGATOP20",
+  "ticker": "KXPGATOP20-ROC26-DRIL",
+  "vol24": 27552.29,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXPGATOP20",
+  "ticker": "KXPGATOP20-ROC26-NTAY",
+  "vol24": 186.0,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXMLBTOTAL",
+  "ticker": "KXMLBTOTAL-26AUG021610MINSEA-8",
+  "vol24": 30746.46,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXMLBTOTAL",
+  "ticker": "KXMLBTOTAL-26AUG021335WSHATL-4",
+  "vol24": 43.98,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXITFMATCH",
+  "ticker": "KXITFMATCH-26AUG02BARSHE-SHE",
+  "vol24": 190317.45,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXITFMATCH",
+  "ticker": "KXITFMATCH-26AUG02ANDPAP-AND",
+  "vol24": 9918.44,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXNBA",
+  "ticker": "KXNBA-27-OKC",
+  "vol24": 68063.54,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXNBA",
+  "ticker": "KXNBA-27-DAL",
+  "vol24": 15939.84,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXMLBNEXTTEAM",
+  "ticker": "KXMLBNEXTTEAM-26TSKUBAL-LAD",
+  "vol24": 115629.4,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXMLBNEXTTEAM",
+  "ticker": "KXMLBNEXTTEAM-26HGOODMAN-PHI",
+  "vol24": 0.0,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXNCAAF",
+  "ticker": "KXNCAAF-27-USC",
+  "vol24": 67996.75,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXNCAAF",
+  "ticker": "KXNCAAF-27-TXAM",
+  "vol24": 858.83,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXFOXNEWSMENTION",
+  "ticker": "KXFOXNEWSMENTION-26AUG01-ISRA",
+  "vol24": 33874.51,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXFOXNEWSMENTION",
+  "ticker": "KXFOXNEWSMENTION-26AUG01-JD",
+  "vol24": 10242.76,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXKBOGAME",
+  "ticker": "KXKBOGAME-26AUG020100SSGKIW-KIW",
+  "vol24": 62751.96,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXKBOGAME",
+  "ticker": "KXKBOGAME-26AUG010500KIANCD-NCD",
+  "vol24": 8655.84,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXLIGAMXGAME",
+  "ticker": "KXLIGAMXGAME-26AUG02AMESLA-SLA",
+  "vol24": 109823.8,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXLIGAMXGAME",
+  "ticker": "KXLIGAMXGAME-26AUG02AMESLA-TIE",
+  "vol24": 18201.32,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXATPCHALLENGERMATCH",
+  "ticker": "KXATPCHALLENGERMATCH-26AUG02KUMBUE-BUE",
+  "vol24": 77114.56,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXATPCHALLENGERMATCH",
+  "ticker": "KXATPCHALLENGERMATCH-26AUG02DODOPI-OPI",
+  "vol24": 311.77,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXWNBAGAME",
+  "ticker": "KXWNBAGAME-26AUG02INDMIN-IND",
+  "vol24": 114151.32,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXWNBAGAME",
+  "ticker": "KXWNBAGAME-26AUG02CONNDAL-DAL",
+  "vol24": 10540.11,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXNEXTTEAMMLB",
+  "ticker": "KXNEXTTEAMMLB-27TSKUBAL-LAD",
+  "vol24": 116712.96,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXNEXTTEAMMLB",
+  "ticker": "KXNEXTTEAMMLB-27RDEVERS-NYM",
+  "vol24": 0.0,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXFEDDECISION",
+  "ticker": "KXFEDDECISION-26SEP-C26",
+  "vol24": 53609.54,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXFEDDECISION",
+  "ticker": "KXFEDDECISION-26SEP-H25",
+  "vol24": 31421.48,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "busiest",
+  "series": "KXNPBTOTAL",
+  "ticker": "KXNPBTOTAL-26AUG020000CHIHOK-8",
+  "vol24": 70268.88,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ },
+ {
+  "kind": "random",
+  "series": "KXNPBTOTAL",
+  "ticker": "KXNPBTOTAL-26AUG040445HANYOK-12",
+  "vol24": 0.0,
+  "http": 200,
+  "yes_levels": 0,
+  "no_levels": 0,
+  "ob_keys": []
+ }
+]
