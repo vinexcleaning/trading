@@ -1,0 +1,81 @@
+{
+ "mlb": {
+  "odds_http": 200,
+  "n_providers": 1,
+  "sample": [
+   {
+    "provider": "DraftKings",
+    "details": "TOR -179",
+    "overUnder": 8.0,
+    "awayML": 147,
+    "homeML": -179
+   }
+  ]
+ },
+ "nba": {
+  "odds_http": 200,
+  "n_providers": 0,
+  "sample": []
+ },
+ "usa.1": {
+  "odds_http": 200,
+  "n_providers": 1,
+  "sample": [
+   {
+    "provider": "DraftKings",
+    "details": "MTL +110",
+    "overUnder": 2.5,
+    "awayML": 215,
+    "homeML": 110
+   }
+  ]
+ },
+ "mex.1": {
+  "odds_http": 200,
+  "n_providers": 1,
+  "sample": [
+   {
+    "provider": "DraftKings",
+    "details": "AME -235",
+    "overUnder": 2.5,
+    "awayML": 600,
+    "homeML": -235
+   }
+  ]
+ },
+ "football-data.co.uk MEX (Liga MX)": {
+  "http": 200,
+  "bytes": 563722,
+  "detail": "cols=25 odds_cols=15 ['PSCH', 'PSCD', 'PSCA', 'MaxCH', 'MaxCD', 'MaxCA', 'AvgCH', 'AvgCD'] rows=4673"
+ },
+ "football-data.co.uk USA (MLS)": {
+  "http": 200,
+  "bytes": 719977,
+  "detail": "cols=25 odds_cols=15 ['PSCH', 'PSCD', 'PSCA', 'MaxCH', 'MaxCD', 'MaxCA', 'AvgCH', 'AvgCD'] rows=6069"
+ },
+ "football-data.co.uk JPN (J-League)": {
+  "http": 200,
+  "bytes": 563319,
+  "detail": "cols=25 odds_cols=14 ['PSCH', 'PSCD', 'PSCA', 'MaxCH', 'MaxCD', 'MaxCA', 'AvgCH', 'AvgCD'] rows=4523"
+ },
+ "football-data.co.uk KOR": {
+  "http": 200,
+  "bytes": 407102,
+  "detail": "cols=25 odds_cols=15 ['PSCH', 'PSCD', 'PSCA', 'MaxCH', 'MaxCD', 'MaxCA', 'AvgCH', 'AvgCD'] rows=3496"
+ },
+ "football-data.co.uk ARG": {
+  "http": 200,
+  "bytes": 857929,
+  "detail": "cols=25 odds_cols=15 ['PSCH', 'PSCD', 'PSCA', 'MaxCH', 'MaxCD', 'MaxCA', 'AvgCH', 'AvgCD'] rows=6262"
+ },
+ "football-data.co.uk BRA": {
+  "http": 200,
+  "bytes": 634467,
+  "detail": "cols=25 odds_cols=15 ['PSCH', 'PSCD', 'PSCA', 'MaxCH', 'MaxCD', 'MaxCA', 'AvgCH', 'AvgCD'] rows=5525"
+ },
+ "tennis-data.co.uk index": {
+  "http": 200,
+  "bytes": 68709,
+  "detail": ""
+ }
+}

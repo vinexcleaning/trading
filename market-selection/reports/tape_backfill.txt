@@ -1,0 +1,31 @@
+﻿now = 2026-08-02 07:16 UTC
+
+ days ago  http  trades  span of returned trades
+        0   200    1000  ('2026-08-02T07:15:47.931389Z', '2026-08-02T07:15:59.996216Z')
+        1   200    1000  ('2026-08-01T07:15:42.297077Z', '2026-08-01T07:15:59.959273Z')
+        3   200    1000  ('2026-07-30T06:59:27.945487Z', '2026-07-30T07:00:00.762685Z')
+        7   200    1000  ('2026-07-26T07:15:47.264089Z', '2026-07-26T07:15:59.953759Z')
+       14   200    1000  ('2026-07-19T07:15:43.571491Z', '2026-07-19T07:15:59.99626Z')
+       30   200    1000  ('2026-07-03T07:15:43.077866Z', '2026-07-03T07:15:59.985661Z')
+       45   200    1000  ('2026-06-18T06:59:24.321094Z', '2026-06-18T07:00:00.416284Z')
+       60   200    1000  ('2026-06-03T07:15:15.540181Z', '2026-06-03T07:15:59.886862Z')
+       68   200    1000  ('2026-05-26T07:15:19.050872Z', '2026-05-26T07:15:59.974273Z')
+       75   200       0  None
+       90   200       0  None
+      120   200       0  None
+      365   200       0  None
+
+spot-checking 8 tickers that traded 68 days ago:
+  KXUCL-26-PSG                                         -> finalized
+  KXBRENTD-26MAY2617-T92.50                            -> finalized
+  KXWTAMATCH-26MAY24JOVEAL-EAL                         -> finalized
+  KXATPCHALLENGERMATCH-26MAY26ALBJAN-ALB               -> finalized
+  KXLOLMAP-26MAY260300HLEDK-1-HLE                      -> finalized
+  KXBTCD-26MAY2604-T76599.99                           -> finalized
+  KXITFMATCH-26MAY26KUCGAD-GAD                         -> finalized
+  KXITFWMATCH-26MAY25KALANX-ANX                        -> finalized
+
+0/8 of those markets no longer resolve, yet their trades were returned by the tape.
+
+Oldest window that returned trades: 68 days ago
+VERDICT: tape is HISTORICALLY QUERYABLE -- no live trade recorder needed inside that horizon
