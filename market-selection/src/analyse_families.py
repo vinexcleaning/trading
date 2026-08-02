@@ -51,7 +51,8 @@ def pct(sorted_list, q):
 
 def load_tape(path):
     """Per-series trade statistics from the public tape."""
-    ser = defaultdict(lambda: {"n": 0, "mkts": set(), "contracts": 0.0,
+    ser = defaultdict(lambda: {"n": 0, "mkts": set(), "events": set(),
+                               "contracts": 0.0,
                                "notional": 0.0, "prices": [], "block": 0,
                                "taker_yes": 0, "hours": set()})
     n = 0
@@ -72,6 +73,11 @@ def load_tape(path):
             p = K.f(t.get("yes_price_dollars"))
             s["n"] += 1
             s["mkts"].add(tk)
+            # Dimension E. The EVENT is the settlement, not the market: a
+            # 60-strike crypto ladder settles once, on one underlying, and
+            # counting its 60 markets would inflate it 60x against one tennis
+            # match (GUARDS #8). Kalshi tickers are SERIES-EVENT-STRIKE.
+            s["events"].add(tk.rsplit("-", 1)[0] if tk.count("-") > 1 else tk)
             s["contracts"] += c
             if p is not None:
                 s["prices"].append(p * 100.0)
@@ -166,6 +172,8 @@ def main():
             "n_markets_open": u.get("n_markets"),
             "trades_day": round(t["n"] * scale),
             "markets_traded_day": round(len(t["mkts"]) * scale),
+            "events_traded_day": round(len(t["events"]) * scale),
+            "settlements_per_week_est": round(len(t["events"]) * scale * 7),
             "contracts_day": round(t["contracts"] * scale),
             "notional_day": round(t["notional"] * scale),
             "pct_block": round(100.0 * t["block"] / t["n"], 1),

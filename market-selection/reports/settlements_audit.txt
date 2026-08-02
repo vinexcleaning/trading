@@ -1,0 +1,83 @@
+﻿settlements in the 7 days from 2026-08-02 07:09 UTC
+series                         freq          mkts  events   ev/7d
+KXMVESPORTSMULTIGAMEEXTENDED   one_off     267739  167830   88039
+KXMVECROSSCATEGORY             custom       80097   52261   28045
+KXCS2MAP                       daily          258     129     129
+KXLOLMAP                       custom         220     110     110
+KXLOLGAME                      custom         152      76      76
+KXCS2GAME                      custom         132      66      66
+KXVALORANTMAP                  custom          88      44      44
+KXMLBRFI                       custom          38      38      38
+KXMLBEXTRAS                    custom          38      38      38
+KXMLBGAME                      custom          76      38      38
+KXLMBGAME                      custom          64      32      32
+KXT20MATCH                     custom          48      24      24
+KXUCLWTOTAL                    custom         132      22      22
+KXUCLWSPREAD                   custom          88      22      22
+KXUCLWGAME                     custom          66      22      22
+KXVALORANTGAME                 custom          44      22      22
+KXCLUBFTOTAL                   custom         126      21      21
+KXCLUBFSPREAD                  custom          84      21      21
+KXCLUBFGAME                    custom          63      21      21
+KXNPBRFI                       custom          19      19      19
+KXNPBTOTAL                     custom          76      19      19
+KXNPBSPREAD                    custom          76      19      19
+KXNPBGAME                      custom          38      19      19
+KXKBORFI                       custom          17      17      17
+KXKBOTOTAL                     custom          68      17      17
+KXKBOSPREAD                    custom          68      17      17
+KXKBOGAME                      custom          34      17      17
+KXLEAGUESCUPTEAMTOTAL          custom         144      24      16
+KXLEAGUESCUP1HBTTS             custom          24      24      16
+KXLEAGUESCUP1HTOTAL            custom          72      24      16
+KXLEAGUESCUP1HSPREAD           custom          48      24      16
+KXLEAGUESCUP1H                 custom          72      24      16
+KXLEAGUESCUPTOTAL              custom         144      24      16
+KXLEAGUESCUPSPREAD             custom          96      24      16
+KXLEAGUESCUPFTTS               custom          72      24      16
+KXLEAGUESCUPSCORE              custom         720      24      16
+KXLEAGUESCUPGAME               custom          72      24      16
+KXARGNACBTOTAL                 custom          90      15      15
+KXARGNACBSPREAD                custom          60      15      15
+KXDOTA2MAP                     custom          30      15      15
+
+=== RECORDER CONTENT AUDIT (not a row count) ===
+  files                2
+  rows                 2,427
+  torn/unparseable     0
+  non-empty            2,250  (92.7%)
+  two-sided            1,956  (80.6%)
+  price out of (0,100) 0
+  negative size        0
+  crossed book (ask<bid) 0
+  missing ts/ticker    0
+  distinct series      113
+
+  VERDICT: PASS
+
+  series                           rows  nonempty%  2sided%
+  KXMLBGAME                          48      100.0    100.0
+  KXBTCD                             48       91.7     89.6
+  KXNPBGAME                          48       50.0     50.0
+  KXPGATOUR                          45      100.0    100.0
+  KXPRESNOMD                         45      100.0    100.0
+  KXRT                               42      100.0     57.1
+  KXMLB                              42      100.0    100.0
+  KXHIGHLAX                          42      100.0      0.0
+  KXMLBTOTAL                         42      100.0    100.0
+  KXITFMATCH                         42      100.0    100.0
+  KXLIGAMXGAME                       42      100.0    100.0
+  KXATPMATCH                         42      100.0    100.0
+  KXWTAMATCH                         40      100.0    100.0
+  KXTRUMPSAY                         39      100.0     15.4
+  KXKBOGAME                          39      100.0    100.0
+  KXATPCHALLENGERMATCH               39      100.0    100.0
+  KXNPBTOTAL                         39       41.0     41.0
+  KXCLUBFGAME                        39      100.0    100.0
+  KXMLBNEXTTEAM                      36      100.0      0.0
+  KXWNBAGAME                         36      100.0    100.0
+  KXNEXTTEAMMLB                      36      100.0      0.0
+  KXLOLGAME                          36      100.0    100.0
+  KXWTI                              36      100.0    100.0
+  KXMLBRFI                           36      100.0    100.0
+  KXSB                               24      100.0     83.3

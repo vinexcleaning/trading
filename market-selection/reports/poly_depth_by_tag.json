@@ -1,0 +1,262 @@
+[
+ {
+  "tag": "Geopolitics",
+  "n_sampled": 8,
+  "pct_two_sided": 87.5,
+  "spread_med_c": 0.4,
+  "spread_p90_c": 1.0,
+  "bid_sz_med": 4600.2,
+  "depth_5c_med": 975169.9,
+  "levels_med": 95
+ },
+ {
+  "tag": "Politics",
+  "n_sampled": 8,
+  "pct_two_sided": 62.5,
+  "spread_med_c": 0.2,
+  "spread_p90_c": 1.0,
+  "bid_sz_med": 426.7,
+  "depth_5c_med": 1468393.9,
+  "levels_med": 86
+ },
+ {
+  "tag": "Iran",
+  "n_sampled": 8,
+  "pct_two_sided": 100.0,
+  "spread_med_c": 0.4,
+  "spread_p90_c": 1.0,
+  "bid_sz_med": 4600.2,
+  "depth_5c_med": 1011818.2,
+  "levels_med": 95
+ },
+ {
+  "tag": "Israel",
+  "n_sampled": 8,
+  "pct_two_sided": 87.5,
+  "spread_med_c": 0.4,
+  "spread_p90_c": 2.0,
+  "bid_sz_med": 1959.7,
+  "depth_5c_med": 270444.3,
+  "levels_med": 95
+ },
+ {
+  "tag": "Trump",
+  "n_sampled": 8,
+  "pct_two_sided": 62.5,
+  "spread_med_c": 1.0,
+  "spread_p90_c": 3.0,
+  "bid_sz_med": 209.2,
+  "depth_5c_med": 51907.0,
+  "levels_med": 76
+ },
+ {
+  "tag": "Israel x Iran",
+  "n_sampled": 8,
+  "pct_two_sided": 87.5,
+  "spread_med_c": 0.4,
+  "spread_p90_c": 2.0,
+  "bid_sz_med": 997.8,
+  "depth_5c_med": 220352.5,
+  "levels_med": 80
+ },
+ {
+  "tag": "Hide From New",
+  "n_sampled": 8,
+  "pct_two_sided": 75.0,
+  "spread_med_c": 1.0,
+  "spread_p90_c": 1.3,
+  "bid_sz_med": 1480.0,
+  "depth_5c_med": 133026.2,
+  "levels_med": 44
+ },
+ {
+  "tag": "Recurring",
+  "n_sampled": 8,
+  "pct_two_sided": 62.5,
+  "spread_med_c": 1.0,
+  "spread_p90_c": 1.3,
+  "bid_sz_med": 337.0,
+  "depth_5c_med": 30446.0,
+  "levels_med": 38
+ },
+ {
+  "tag": "Israel Election",
+  "n_sampled": 8,
+  "pct_two_sided": 87.5,
+  "spread_med_c": 0.4,
+  "spread_p90_c": 1.0,
+  "bid_sz_med": 792.5,
+  "depth_5c_med": 220352.5,
+  "levels_med": 80
+ },
+ {
+  "tag": "World",
+  "n_sampled": 8,
+  "pct_two_sided": 100.0,
+  "spread_med_c": 1.0,
+  "spread_p90_c": 1.0,
+  "bid_sz_med": 8979.0,
+  "depth_5c_med": 1581059.5,
+  "levels_med": 95
+ },
+ {
+  "tag": "Culture",
+  "n_sampled": 8,
+  "pct_two_sided": 75.0,
+  "spread_med_c": 1.1,
+  "spread_p90_c": 3.0,
+  "bid_sz_med": 426.7,
+  "depth_5c_med": 38321.1,
+  "levels_med": 81
+ },
+ {
+  "tag": "Middle East",
+  "n_sampled": 8,
+  "pct_two_sided": 100.0,
+  "spread_med_c": 0.2,
+  "spread_p90_c": 2.0,
+  "bid_sz_med": 433.3,
+  "depth_5c_med": 1468393.9,
+  "levels_med": 95
+ },
+ {
+  "tag": "Elections",
+  "n_sampled": 8,
+  "pct_two_sided": 100.0,
+  "spread_med_c": 0.1,
+  "spread_p90_c": 1.0,
+  "bid_sz_med": 1101683.8,
+  "depth_5c_med": 2091435.6,
+  "levels_med": 84
+ },
+ {
+  "tag": "Iran Ceasefire",
+  "n_sampled": 8,
+  "pct_two_sided": 87.5,
+  "spread_med_c": 1.0,
+  "spread_p90_c": 2.0,
+  "bid_sz_med": 1005.6,
+  "depth_5c_med": 63254.9,
+  "levels_med": 87
+ },
+ {
+  "tag": "Crypto",
+  "n_sampled": 8,
+  "pct_two_sided": 75.0,
+  "spread_med_c": 1.0,
+  "spread_p90_c": 1.3,
+  "bid_sz_med": 337.0,
+  "depth_5c_med": 38367.2,
+  "levels_med": 44
+ },
+ {
+  "tag": "Hit Price",
+  "n_sampled": 8,
+  "pct_two_sided": 75.0,
+  "spread_med_c": 1.0,
+  "spread_p90_c": 1.3,
+  "bid_sz_med": 1771.7,
+  "depth_5c_med": 133026.2,
+  "levels_med": 41
+ },
+ {
+  "tag": "Global Elections",
+  "n_sampled": 8,
+  "pct_two_sided": 100.0,
+  "spread_med_c": 0.1,
+  "spread_p90_c": 1.0,
+  "bid_sz_med": 12821.9,
+  "depth_5c_med": 296614.7,
+  "levels_med": 86
+ },
+ {
+  "tag": "U.S. x Iran",
+  "n_sampled": 8,
+  "pct_two_sided": 100.0,
+  "spread_med_c": 2.0,
+  "spread_p90_c": 3.0,
+  "bid_sz_med": 469.7,
+  "depth_5c_med": 43963.8,
+  "levels_med": 87
+ },
+ {
+  "tag": "Oil",
+  "n_sampled": 8,
+  "pct_two_sided": 75.0,
+  "spread_med_c": 0.2,
+  "spread_p90_c": 1.0,
+  "bid_sz_med": 1249.8,
+  "depth_5c_med": 787635.7,
+  "levels_med": 73
+ },
+ {
+  "tag": "Crypto Prices",
+  "n_sampled": 8,
+  "pct_two_sided": 75.0,
+  "spread_med_c": 1.0,
+  "spread_p90_c": 1.3,
+  "bid_sz_med": 1480.0,
+  "depth_5c_med": 38010.7,
+  "levels_med": 39
+ },
+ {
+  "tag": "World Elections",
+  "n_sampled": 8,
+  "pct_two_sided": 100.0,
+  "spread_med_c": 0.1,
+  "spread_p90_c": 1.0,
+  "bid_sz_med": 1101683.8,
+  "depth_5c_med": 2091435.6,
+  "levels_med": 84
+ },
+ {
+  "tag": "US Election",
+  "n_sampled": 8,
+  "pct_two_sided": 100.0,
+  "spread_med_c": 0.1,
+  "spread_p90_c": 1.0,
+  "bid_sz_med": 1101683.8,
+  "depth_5c_med": 2091435.6,
+  "levels_med": 86
+ },
+ {
+  "tag": "Weather",
+  "n_sampled": 8,
+  "pct_two_sided": 25.0,
+  "spread_med_c": 2.0,
+  "spread_p90_c": 2.0,
+  "bid_sz_med": 128037.6,
+  "depth_5c_med": 17375010.9,
+  "levels_med": 233
+ },
+ {
+  "tag": "Sports",
+  "n_sampled": 6,
+  "pct_two_sided": 50.0,
+  "spread_med_c": 1.0,
+  "spread_p90_c": 1.0,
+  "bid_sz_med": 44534.9,
+  "depth_5c_med": 566058.9,
+  "levels_med": 83
+ },
+ {
+  "tag": "Games",
+  "n_sampled": 4,
+  "pct_two_sided": 100.0,
+  "spread_med_c": 1.0,
+  "spread_p90_c": 1.0,
+  "bid_sz_med": 74090.3,
+  "depth_5c_med": 566058.9,
+  "levels_med": 86
+ },
+ {
+  "tag": "Soccer",
+  "n_sampled": 4,
+  "pct_two_sided": 50.0,
+  "spread_med_c": 0.1,
+  "spread_p90_c": 0.1,
+  "bid_sz_med": 509167.0,
+  "depth_5c_med": 540965.3,
+  "levels_med": 74
+ }
+]
