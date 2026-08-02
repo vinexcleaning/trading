@@ -1,0 +1,7 @@
+﻿pulling two-sided DraftKings totals ...
+  0 de-viggable two-sided prop lines
+
+No two-sided prop entries carried both overOdds and underOdds.
+The free feed's player props are ONE-SIDED, so they cannot be
+de-vigged, and the earlier -3.52c gap cannot be separated from
+the book's margin. Reported as inconclusive, not as a finding.
