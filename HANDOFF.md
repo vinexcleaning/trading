@@ -149,6 +149,15 @@ unmeasured**, and writing them up as kills would be dishonest.
 A content heartbeat runs every 30 minutes (`src/recorder_heartbeat.py`) and
 checks content, not row counts.
 
+**Added after this file was first printed — two-sided uptime is diurnal.**
+Across seven heartbeats from 08:28 to 11:31 UTC the exchange-wide reading moved
+between **99.6% and 86.5% non-empty** and between **97.4% and 80.0%
+two-sided**, troughing near 11:00 UTC once the US sports book has settled
+overnight. Every per-family uptime figure in §1 was measured in the favourable
+**06:38–08:30 UTC** window and is a snapshot, **not a 24-hour average**. No
+ranking changes — nothing approaches the 50% kill threshold — but a full-day
+uptime profile is the cleaner measurement and has not been run.
+
 ---
 
 ## 4. RESULTS TABLE

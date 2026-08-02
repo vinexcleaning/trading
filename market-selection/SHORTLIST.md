@@ -9,6 +9,16 @@ free-data probes verified by fetching.
 **93 of 153 depth-covered families survive the pre-registered kill switch.**
 Four are ranked below.
 
+> **⚠ Caveat on every two-sided-uptime figure in this file.** They were measured
+> in a **06:38–08:30 UTC** window. A 30-minute content heartbeat run afterwards
+> shows uptime is **diurnal**: across seven checks from 08:28 to 11:31 UTC the
+> exchange-wide reading moved between **99.6% and 86.5% non-empty**, and between
+> **97.4% and 80.0% two-sided**, with the trough around 11:00 UTC once the US
+> sports book has settled overnight. The per-family figures below are therefore
+> a snapshot of a favourable window, **not a 24-hour average**. Nothing here
+> comes close to the 50% kill threshold, so no ranking changes — but a full-day
+> uptime profile is the cleaner measurement and has not been run.
+
 > **Read this against the prior.** LEDGER.md records ~41 corrections across five
 > studies and **every one shrank the edge**. This session added **six more with
 > the same sign**, including one that deleted the entire stated mechanism of
