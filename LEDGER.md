@@ -20,11 +20,11 @@ asserts a number and no artifact backs it, the row says `NONE` and the status is
 | Status | Count |
 |---|---|
 | **RETRACTED** | **41** |
-| SETTLED | 109 |
+| SETTLED | 112 |
 | SUGGESTIVE | 30 |
-| UNVERIFIED | 26 |
+| UNVERIFIED | 27 |
 | BROKEN | 6 |
-| **Total** | **212** |
+| **Total** | **216** |
 
 ## The directional prior, and it is the single most informative number here
 
@@ -133,6 +133,9 @@ edges surviving correction: 0.**
 | C022 | Market-making on the ladders is viable. | crypto | `src/mm_*.py` → `reports/mm_latency_fixed.json`, `mm_synthetic_control.json`, `MM_RESULTS.md` | — | — | see `MM_RESULTS.md`; synthetic control present | no | — | **SETTLED** (null) |
 | C023 | Hold-to-settlement on the ladders is profitable. | crypto | `src/hold_settle.py` → `reports/hold_to_settlement.json`, `hold_settle.txt` | — | — | negative | no | — | **SETTLED** (null) |
 | C024 | A silent orderbook parse bug wrote **real row counts with empty content** for 1h45m. | crypto | recorder output inspection; `reports/data_audit.txt` | 1h45m of recording | 07-30 | caught **by accident** | n/a | n/a | **SETTLED** (bug) / fix status **UNVERIFIED** |
+| C025 | "MM scan: **0 of 4 series profitable**." | crypto | `reports/mm_latency_fixed.json` — **only KXBTCD was ever P&L-tested** | claimed 4 series; actual **58 markets, 1 series** | 08-01 | no artifact for 3 of the 4 series | n/a | n/a | **UNVERIFIED** — flagged `UNSUPPORTED` by `docs/EFFECTIVE_N_AUDIT.md`; the claim circulates in the handoffs with nothing behind it |
+| C026 | The four crypto assets are **not four independent series** — there are ~1.81. | crypto | `src/effective_n_audit.py` → `reports/effective_n_audit.json`, `docs/EFFECTIVE_N_AUDIT.md` | 4 assets, settlement signs | 68-day window | **1.81 effective independent series of 4**; settlement-sign phi **0.59–0.70** | n/a | n/a | **SETTLED** — every pooled cross-asset claim re-verdicted against it |
+| C027 | Lead-lag ETH→XRP (+0.1544) is tradeable. | crypto | `reports/leadlag.json`, `leadlag_tradeable.json` | 1-second returns | 07-30 | **0.38¢ of edge against a 1.00¢ minimum tick**; needs corr 0.575–1.113 vs 0.1544 observed | n/a | n/a | **SETTLED** (null) — killed economically, so the understated SE (1/√n on autocorrelated data) does not matter |
 
 ---
 
