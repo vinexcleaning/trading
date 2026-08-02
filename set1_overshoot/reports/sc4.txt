@@ -1,0 +1,2 @@
+﻿real per-minute mid sd  3.679 cents -> sigma 0.1962
+8,000 synthetic matches, delta=0.05, win rate 0.7288 -> C:\Users\gianf\kalshi\set1_overshoot\data\synth_boost

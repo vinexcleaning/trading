@@ -1,0 +1,22 @@
+====================================================================================================
+STAGE 4 (Kalshi) -- RE-SCORED BY QUOTE QUALITY
+====================================================================================================
+subset                         n     model    market      diff  95% CI                verdict
+all joined                   502   0.21703   0.20989  +0.00714  [-0.0090,+0.0234]  indistinguishable
+spread <= 10c                302   0.22054   0.18343  +0.03711  [+0.0165,+0.0569]  market beats model
+spread <= 5c                 287   0.21926   0.18088  +0.03838  [+0.0182,+0.0592]  market beats model
+spread <= 2c                 186   0.21383   0.17528  +0.03855  [+0.0119,+0.0633]  market beats model
+
+By tier, restricted to a tradeable quote (spread <= 10c):
+  ATP chall                  180   0.22594   0.18472  +0.04121  [+0.0113,+0.0717]  market beats model
+  ATP main                    50   0.20192   0.18504  +0.01688  [-0.0119,+0.0454]  indistinguishable
+  WTA chall                   32   (too few)
+  WTA main                    40   0.20644   0.20136  +0.00509  [-0.0162,+0.0256]  indistinguishable
+
+----------------------------------------------------------------------------------------------------
+WHY THIS MATTERS
+----------------------------------------------------------------------------------------------------
+On the illiquid 40%, 'the market' is a 50c placeholder, so any model that
+is better than a coin flip appears to beat it. Restricting to markets
+with a real two-sided price is the only fair comparison -- and it is also
+the only subset you could have traded.

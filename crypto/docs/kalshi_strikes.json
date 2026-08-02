@@ -1,0 +1,766 @@
+{
+  "KXBTC15M": {
+    "n_markets": 1,
+    "n_events": 1,
+    "strike_types": [
+      "greater_or_equal"
+    ],
+    "sample": {
+      "can_close_early": true,
+      "close_time": "2026-07-31T23:45:00Z",
+      "created_time": "2026-07-31T00:01:04.249014Z",
+      "custom_strike": {
+        "round_digits": "2"
+      },
+      "event_ticker": "KXBTC15M-26JUL311945",
+      "exchange_index": 0,
+      "expected_expiration_time": "2026-07-31T23:50:00Z",
+      "expiration_time": "2026-08-07T23:45:00Z",
+      "expiration_value": "",
+      "floor_strike": 62926.4,
+      "last_price_dollars": "0.1000",
+      "latest_expiration_time": "2026-08-07T23:45:00Z",
+      "liquidity_dollars": "0.0000",
+      "market_type": "binary",
+      "no_ask_dollars": "0.9000",
+      "no_bid_dollars": "0.8900",
+      "no_sub_title": "Target price: TBD",
+      "notional_value_dollars": "1.0000",
+      "occurrence_datetime": "2026-07-31T23:50:00Z",
+      "open_interest_fp": "312823.94",
+      "open_time": "2026-07-31T23:30:00Z",
+      "previous_price_dollars": "0.0000",
+      "previous_yes_ask_dollars": "0.0000",
+      "previous_yes_bid_dollars": "0.0000",
+      "price_level_structure": "tapered_deci_cent",
+      "price_ranges": [
+        {
+          "end": "0.1000",
+          "start": "0.0000",
+          "step": "0.0010"
+        },
+        {
+          "end": "0.9000",
+          "start": "0.1000",
+          "step": "0.0100"
+        },
+        {
+          "end": "1.0000",
+          "start": "0.9000",
+          "step": "0.0010"
+        }
+      ],
+      "result": "",
+      "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' BRTI before 7:45 PM EDT on Jul 31, 2026 is at least the simple average of the sixty seconds of CF Benchmarks' BRTI before 7:30 PM EDT on July 31, 2026, then the market resolves to Yes.",
+      "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices, rounded to the nearest 2 decimal places.",
+      "settlement_timer_seconds": 1,
+      "status": "active",
+      "strike_type": "greater_or_equal",
+      "ticker": "KXBTC15M-26JUL311945-45",
+      "title": "BTC price up in next 15 mins?",
+      "updated_time": "2026-07-31T23:30:01.05026Z",
+      "volume_24h_fp": "44118.95",
+      "volume_fp": "1270188.80",
+      "yes_ask_dollars": "0.1100",
+      "yes_ask_size_fp": "172.74",
+      "yes_bid_dollars": "0.1000",
+      "yes_bid_size_fp": "2443.78",
+      "yes_sub_title": "Target Price: $62,926.40"
+    }
+  },
+  "KXETH15M": {
+    "n_markets": 1,
+    "n_events": 1,
+    "strike_types": [
+      "greater_or_equal"
+    ],
+    "sample": {
+      "can_close_early": true,
+      "close_time": "2026-07-31T23:45:00Z",
+      "created_time": "2026-07-31T00:01:31.023629Z",
+      "custom_strike": {
+        "round_digits": "2"
+      },
+      "event_ticker": "KXETH15M-26JUL311945",
+      "exchange_index": 0,
+      "expected_expiration_time": "2026-08-01T05:30:00Z",
+      "expiration_time": "2026-08-07T23:45:00Z",
+      "expiration_value": "",
+      "floor_strike": 1861.99,
+      "last_price_dollars": "0.1400",
+      "latest_expiration_time": "2026-08-07T23:45:00Z",
+      "liquidity_dollars": "0.0000",
+      "market_type": "binary",
+      "no_ask_dollars": "0.8500",
+      "no_bid_dollars": "0.8400",
+      "no_sub_title": "Target price: TBD",
+      "notional_value_dollars": "1.0000",
+      "occurrence_datetime": "2026-07-31T23:50:00Z",
+      "open_interest_fp": "16005.47",
+      "open_time": "2026-07-31T23:30:00Z",
+      "previous_price_dollars": "0.0000",
+      "previous_yes_ask_dollars": "0.0000",
+      "previous_yes_bid_dollars": "0.0000",
+      "price_level_structure": "tapered_deci_cent",
+      "price_ranges": [
+        {
+          "end": "0.1000",
+          "start": "0.0000",
+          "step": "0.0010"
+        },
+        {
+          "end": "0.9000",
+          "start": "0.1000",
+          "step": "0.0100"
+        },
+        {
+          "end": "1.0000",
+          "start": "0.9000",
+          "step": "0.0010"
+        }
+      ],
+      "result": "",
+      "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' ETHUSDRTI before 7:45 PM EDT on Jul 31, 2026 is at least the simple average of the sixty seconds of CF Benchmarks' ETHUSDRTI before 7:30 PM EDT on July 31, 2026, then the market resolves to Yes.",
+      "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices, rounded to the nearest 2 decimal places.",
+      "settlement_timer_seconds": 1,
+      "status": "active",
+      "strike_type": "greater_or_equal",
+      "ticker": "KXETH15M-26JUL311945-45",
+      "title": "ETH price up in next 15 mins?",
+      "updated_time": "2026-07-31T23:30:01.365765Z",
+      "volume_24h_fp": "2411.03",
+      "volume_fp": "77205.64",
+      "yes_ask_dollars": "0.1600",
+      "yes_ask_size_fp": "25.00",
+      "yes_bid_dollars": "0.1500",
+      "yes_bid_size_fp": "390.01",
+      "yes_sub_title": "Target Price: $1,861.99"
+    }
+  },
+  "KXSOL15M": {
+    "n_markets": 1,
+    "n_events": 1,
+    "strike_types": [
+      "greater_or_equal"
+    ],
+    "sample": {
+      "can_close_early": true,
+      "close_time": "2026-07-31T23:45:00Z",
+      "created_time": "2026-07-31T00:01:57.72897Z",
+      "custom_strike": {
+        "round_digits": "4"
+      },
+      "event_ticker": "KXSOL15M-26JUL311945",
+      "exchange_index": 0,
+      "expected_expiration_time": "2026-08-01T05:30:00Z",
+      "expiration_time": "2026-08-07T23:45:00Z",
+      "expiration_value": "",
+      "floor_strike": 72.8472,
+      "last_price_dollars": "0.0820",
+      "latest_expiration_time": "2026-08-07T23:45:00Z",
+      "liquidity_dollars": "0.0000",
+      "market_type": "binary",
+      "no_ask_dollars": "0.9300",
+      "no_bid_dollars": "0.9210",
+      "no_sub_title": "Target price: TBD",
+      "notional_value_dollars": "1.0000",
+      "occurrence_datetime": "2026-07-31T23:50:00Z",
+      "open_interest_fp": "5741.28",
+      "open_time": "2026-07-31T23:30:00Z",
+      "previous_price_dollars": "0.0000",
+      "previous_yes_ask_dollars": "0.0000",
+      "previous_yes_bid_dollars": "0.0000",
+      "price_level_structure": "tapered_deci_cent",
+      "price_ranges": [
+        {
+          "end": "0.1000",
+          "start": "0.0000",
+          "step": "0.0010"
+        },
+        {
+          "end": "0.9000",
+          "start": "0.1000",
+          "step": "0.0100"
+        },
+        {
+          "end": "1.0000",
+          "start": "0.9000",
+          "step": "0.0010"
+        }
+      ],
+      "result": "",
+      "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' SOLUSDRTI before 7:45 PM EDT on Jul 31, 2026 is at least the simple average of the sixty seconds of CF Benchmarks' SOLUSDRTI before 7:30 PM EDT on July 31, 2026, then the market resolves to Yes.",
+      "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices, rounded to the nearest 4 decimal places.",
+      "settlement_timer_seconds": 1,
+      "status": "active",
+      "strike_type": "greater_or_equal",
+      "ticker": "KXSOL15M-26JUL311945-45",
+      "title": "SOL price up in next 15 mins?",
+      "updated_time": "2026-07-31T23:30:01.968494Z",
+      "volume_24h_fp": "421.63",
+      "volume_fp": "16216.37",
+      "yes_ask_dollars": "0.0790",
+      "yes_ask_size_fp": "39.01",
+      "yes_bid_dollars": "0.0700",
+      "yes_bid_size_fp": "1.00",
+      "yes_sub_title": "Target Price: $72.8472"
+    }
+  },
+  "KXXRP15M": {
+    "n_markets": 1,
+    "n_events": 1,
+    "strike_types": [
+      "greater_or_equal"
+    ],
+    "sample": {
+      "can_close_early": true,
+      "close_time": "2026-07-31T23:45:00Z",
+      "created_time": "2026-07-31T00:02:24.570609Z",
+      "custom_strike": {
+        "round_digits": "4"
+      },
+      "event_ticker": "KXXRP15M-26JUL311945",
+      "exchange_index": 0,
+      "expected_expiration_time": "2026-08-01T05:30:00Z",
+      "expiration_time": "2026-08-07T23:45:00Z",
+      "expiration_value": "",
+      "floor_strike": 1.062,
+      "last_price_dollars": "0.8700",
+      "latest_expiration_time": "2026-08-07T23:45:00Z",
+      "liquidity_dollars": "0.0000",
+      "market_type": "binary",
+      "no_ask_dollars": "0.1400",
+      "no_bid_dollars": "0.1300",
+      "no_sub_title": "Target price: TBD",
+      "notional_value_dollars": "1.0000",
+      "occurrence_datetime": "2026-07-31T23:50:00Z",
+      "open_interest_fp": "6452.75",
+      "open_time": "2026-07-31T23:30:00Z",
+      "previous_price_dollars": "0.0000",
+      "previous_yes_ask_dollars": "0.0000",
+      "previous_yes_bid_dollars": "0.0000",
+      "price_level_structure": "tapered_deci_cent",
+      "price_ranges": [
+        {
+          "end": "0.1000",
+          "start": "0.0000",
+          "step": "0.0010"
+        },
+        {
+          "end": "0.9000",
+          "start": "0.1000",
+          "step": "0.0100"
+        },
+        {
+          "end": "1.0000",
+          "start": "0.9000",
+          "step": "0.0010"
+        }
+      ],
+      "result": "",
+      "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' XRPUSDRTI before 7:45 PM EDT on Jul 31, 2026 is at least the simple average of the sixty seconds of CF Benchmarks' XRPUSDRTI before 7:30 PM EDT on July 31, 2026, then the market resolves to Yes.",
+      "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices, rounded to the nearest 4 decimal places.",
+      "settlement_timer_seconds": 1,
+      "status": "active",
+      "strike_type": "greater_or_equal",
+      "ticker": "KXXRP15M-26JUL311945-45",
+      "title": "XRP price up in next 15 mins?",
+      "updated_time": "2026-07-31T23:30:02.49297Z",
+      "volume_24h_fp": "165.49",
+      "volume_fp": "25999.74",
+      "yes_ask_dollars": "0.8700",
+      "yes_ask_size_fp": "9.76",
+      "yes_bid_dollars": "0.8600",
+      "yes_bid_size_fp": "495.02",
+      "yes_sub_title": "Target Price: $1.0620"
+    }
+  },
+  "KXDOGE15M": {
+    "n_markets": 1,
+    "n_events": 1,
+    "strike_types": [
+      "greater_or_equal"
+    ],
+    "sample": {
+      "can_close_early": true,
+      "close_time": "2026-07-31T23:45:00Z",
+      "created_time": "2026-07-31T00:03:15.884001Z",
+      "custom_strike": {
+        "floor_strike": "0.0695920",
+        "round_digits": "7",
+        "strike_type": "greater_or_equal"
+      },
+      "event_ticker": "KXDOGE15M-26JUL311945",
+      "exchange_index": 0,
+      "expected_expiration_time": "2026-08-01T05:30:00Z",
+      "expiration_time": "2026-08-07T23:45:00Z",
+      "expiration_value": "",
+      "floor_strike": 0.069592,
+      "last_price_dollars": "0.7000",
+      "latest_expiration_time": "2026-08-07T23:45:00Z",
+      "liquidity_dollars": "0.0000",
+      "market_type": "binary",
+      "no_ask_dollars": "0.3100",
+      "no_bid_dollars": "0.3000",
+      "no_sub_title": "Target price: TBD",
+      "notional_value_dollars": "1.0000",
+      "occurrence_datetime": "2026-07-31T23:50:00Z",
+      "open_interest_fp": "7927.12",
+      "open_time": "2026-07-31T23:30:00Z",
+      "previous_price_dollars": "0.0000",
+      "previous_yes_ask_dollars": "0.0000",
+      "previous_yes_bid_dollars": "0.0000",
+      "price_level_structure": "tapered_deci_cent",
+      "price_ranges": [
+        {
+          "end": "0.1000",
+          "start": "0.0000",
+          "step": "0.0010"
+        },
+        {
+          "end": "0.9000",
+          "start": "0.1000",
+          "step": "0.0100"
+        },
+        {
+          "end": "1.0000",
+          "start": "0.9000",
+          "step": "0.0010"
+        }
+      ],
+      "result": "",
+      "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' DOGEUSDRTI before 7:45 PM EDT on Jul 31, 2026 is at least the simple average of the sixty seconds of CF Benchmarks' DOGEUSDRTI before 7:30 PM EDT on July 31, 2026, then the market resolves to Yes.",
+      "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices, rounded to the nearest 7 decimal places.",
+      "settlement_timer_seconds": 1,
+      "status": "active",
+      "strike_type": "greater_or_equal",
+      "ticker": "KXDOGE15M-26JUL311945-45",
+      "title": "DOGE price up in next 15 mins?",
+      "updated_time": "2026-07-31T23:30:03.731622Z",
+      "volume_24h_fp": "333.39",
+      "volume_fp": "23162.00",
+      "yes_ask_dollars": "0.7000",
+      "yes_ask_size_fp": "37.94",
+      "yes_bid_dollars": "0.6900",
+      "yes_bid_size_fp": "66.01",
+      "yes_sub_title": "Target Price: $0.0695920"
+    }
+  },
+  "KXBTC": {
+    "n_markets": 318,
+    "n_events": 3,
+    "strike_types": [
+      "between",
+      "greater",
+      "less"
+    ],
+    "sample": {
+      "can_close_early": true,
+      "close_time": "2026-08-01T21:00:00Z",
+      "created_time": "2026-07-31T09:00:39.028289Z",
+      "event_ticker": "KXBTC-26AUG0117",
+      "exchange_index": 0,
+      "expected_expiration_time": "2026-08-01T21:05:00Z",
+      "expiration_time": "2026-08-08T21:00:00Z",
+      "expiration_value": "",
+      "floor_strike": 73249.99,
+      "last_price_dollars": "0.0000",
+      "latest_expiration_time": "2026-08-08T21:00:00Z",
+      "liquidity_dollars": "0.0000",
+      "market_type": "binary",
+      "no_ask_dollars": "1.0000",
+      "no_bid_dollars": "0.9900",
+      "no_sub_title": "$73,250 or above",
+      "notional_value_dollars": "1.0000",
+      "occurrence_datetime": "2026-08-01T21:05:00Z",
+      "open_interest_fp": "0.00",
+      "open_time": "2026-07-31T20:00:00Z",
+      "previous_price_dollars": "0.0000",
+      "previous_yes_ask_dollars": "0.0000",
+      "previous_yes_bid_dollars": "0.0000",
+      "price_level_structure": "linear_cent",
+      "price_ranges": [
+        {
+          "end": "1.0000",
+          "start": "0.0000",
+          "step": "0.0100"
+        }
+      ],
+      "result": "",
+      "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' Bitcoin Real-Time Index (BRTI) before 5 PM EDT is above 73249.99 at 5 PM EDT on Aug 1, 2026, then the market resolves to Yes.",
+      "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+      "settlement_timer_seconds": 60,
+      "status": "active",
+      "strike_type": "greater",
+      "subtitle": "$73,250 or above",
+      "ticker": "KXBTC-26AUG0117-T73249.99",
+      "title": "Bitcoin price range on Aug 1, 2026?",
+      "updated_time": "2026-07-31T20:00:00.924501Z",
+      "volume_24h_fp": "0.00",
+      "volume_fp": "0.00",
+      "yes_ask_dollars": "0.0100",
+      "yes_ask_size_fp": "9000.00",
+      "yes_bid_dollars": "0.0000",
+      "yes_bid_size_fp": "0.00",
+      "yes_sub_title": "$73,250 or above"
+    }
+  },
+  "KXBTCD": {
+    "n_markets": 318,
+    "n_events": 3,
+    "strike_types": [
+      "greater"
+    ],
+    "sample": {
+      "can_close_early": true,
+      "close_time": "2026-08-01T21:00:00Z",
+      "created_time": "2026-07-31T09:00:33.360247Z",
+      "event_ticker": "KXBTCD-26AUG0117",
+      "exchange_index": 0,
+      "expected_expiration_time": "2026-08-01T21:05:00Z",
+      "expiration_time": "2026-08-08T21:00:00Z",
+      "expiration_value": "",
+      "floor_strike": 73249.99,
+      "last_price_dollars": "0.0000",
+      "latest_expiration_time": "2026-08-08T21:00:00Z",
+      "liquidity_dollars": "0.0000",
+      "market_type": "binary",
+      "no_ask_dollars": "1.0000",
+      "no_bid_dollars": "0.9900",
+      "no_sub_title": "$73,250 or above",
+      "notional_value_dollars": "1.0000",
+      "occurrence_datetime": "2026-08-01T21:05:00Z",
+      "open_interest_fp": "0.00",
+      "open_time": "2026-07-31T20:00:00Z",
+      "previous_price_dollars": "0.0000",
+      "previous_yes_ask_dollars": "0.0000",
+      "previous_yes_bid_dollars": "0.0000",
+      "price_level_structure": "linear_cent",
+      "price_ranges": [
+        {
+          "end": "1.0000",
+          "start": "0.0000",
+          "step": "0.0100"
+        }
+      ],
+      "result": "",
+      "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' Bitcoin Real-Time Index (BRTI) before 5 PM EDT is above 73249.99 at 5 PM EDT on Aug 1, 2026, then the market resolves to Yes.",
+      "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+      "settlement_timer_seconds": 60,
+      "status": "active",
+      "strike_type": "greater",
+      "subtitle": "$73,250 or above",
+      "ticker": "KXBTCD-26AUG0117-T73249.99",
+      "title": "Bitcoin price on Aug 1, 2026?",
+      "updated_time": "2026-07-31T20:00:01.056836Z",
+      "volume_24h_fp": "0.00",
+      "volume_fp": "0.00",
+      "yes_ask_dollars": "0.0100",
+      "yes_ask_size_fp": "12944.00",
+      "yes_bid_dollars": "0.0000",
+      "yes_bid_size_fp": "0.00",
+      "yes_sub_title": "$73,250 or above"
+    }
+  },
+  "KXETH": {
+    "n_markets": 390,
+    "n_events": 3,
+    "strike_types": [
+      "between",
+      "greater",
+      "less"
+    ],
+    "sample": {
+      "can_close_early": true,
+      "close_time": "2026-08-01T21:00:00Z",
+      "created_time": "2026-07-31T09:00:39.724273Z",
+      "event_ticker": "KXETH-26AUG0117",
+      "exchange_index": 0,
+      "expected_expiration_time": "2026-08-01T21:05:00Z",
+      "expiration_time": "2026-08-08T21:00:00Z",
+      "expiration_value": "",
+      "floor_strike": 2609.99,
+      "last_price_dollars": "0.0000",
+      "latest_expiration_time": "2026-08-08T21:00:00Z",
+      "liquidity_dollars": "0.0000",
+      "market_type": "binary",
+      "no_ask_dollars": "1.0000",
+      "no_bid_dollars": "0.9900",
+      "no_sub_title": "$2,610 or above",
+      "notional_value_dollars": "1.0000",
+      "occurrence_datetime": "2026-08-01T21:05:00Z",
+      "open_interest_fp": "0.00",
+      "open_time": "2026-07-31T20:00:00Z",
+      "previous_price_dollars": "0.0000",
+      "previous_yes_ask_dollars": "0.0000",
+      "previous_yes_bid_dollars": "0.0000",
+      "price_level_structure": "linear_cent",
+      "price_ranges": [
+        {
+          "end": "1.0000",
+          "start": "0.0000",
+          "step": "0.0100"
+        }
+      ],
+      "result": "",
+      "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' Ethereum Real-Time Index (ERTI) before 5 PM EDT is above 2609.99 at 5 PM EDT on Aug 1, 2026, then the market resolves to Yes.",
+      "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+      "settlement_timer_seconds": 60,
+      "status": "active",
+      "strike_type": "greater",
+      "subtitle": "$2,610 or above",
+      "ticker": "KXETH-26AUG0117-T2609.99",
+      "title": "Ethereum price at Aug 1, 2026 at 5pm EDT?",
+      "updated_time": "2026-07-31T20:00:01.497085Z",
+      "volume_24h_fp": "0.00",
+      "volume_fp": "0.00",
+      "yes_ask_dollars": "0.0100",
+      "yes_ask_size_fp": "9000.00",
+      "yes_bid_dollars": "0.0000",
+      "yes_bid_size_fp": "0.00",
+      "yes_sub_title": "$2,610 or above"
+    }
+  },
+  "KXETHD": {
+    "n_markets": 390,
+    "n_events": 3,
+    "strike_types": [
+      "greater"
+    ],
+    "sample": {
+      "can_close_early": true,
+      "close_time": "2026-08-01T21:00:00Z",
+      "created_time": "2026-07-31T09:00:34.156046Z",
+      "event_ticker": "KXETHD-26AUG0117",
+      "exchange_index": 0,
+      "expected_expiration_time": "2026-08-01T21:05:00Z",
+      "expiration_time": "2026-08-08T21:00:00Z",
+      "expiration_value": "",
+      "floor_strike": 2609.99,
+      "last_price_dollars": "0.0000",
+      "latest_expiration_time": "2026-08-08T21:00:00Z",
+      "liquidity_dollars": "0.0000",
+      "market_type": "binary",
+      "no_ask_dollars": "1.0000",
+      "no_bid_dollars": "0.9900",
+      "no_sub_title": "$2,610 or above",
+      "notional_value_dollars": "1.0000",
+      "occurrence_datetime": "2026-08-01T21:05:00Z",
+      "open_interest_fp": "0.00",
+      "open_time": "2026-07-31T20:00:00Z",
+      "previous_price_dollars": "0.0000",
+      "previous_yes_ask_dollars": "0.0000",
+      "previous_yes_bid_dollars": "0.0000",
+      "price_level_structure": "linear_cent",
+      "price_ranges": [
+        {
+          "end": "1.0000",
+          "start": "0.0000",
+          "step": "0.0100"
+        }
+      ],
+      "result": "",
+      "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' Ethereum Real-Time Index (ERTI) before 5 PM EDT is above 2609.99 at 5 PM EDT on Aug 1, 2026, then the market resolves to Yes.",
+      "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+      "settlement_timer_seconds": 60,
+      "status": "active",
+      "strike_type": "greater",
+      "subtitle": "$2,610 or above",
+      "ticker": "KXETHD-26AUG0117-T2609.99",
+      "title": "Ethereum price at Aug 1, 2026 at 5pm EDT?",
+      "updated_time": "2026-07-31T20:00:01.58145Z",
+      "volume_24h_fp": "0.00",
+      "volume_fp": "0.00",
+      "yes_ask_dollars": "0.0100",
+      "yes_ask_size_fp": "7500.00",
+      "yes_bid_dollars": "0.0000",
+      "yes_bid_size_fp": "0.00",
+      "yes_sub_title": "$2,610 or above"
+    }
+  },
+  "KXSOL": {
+    "n_open": 0
+  },
+  "KXSOLD": {
+    "n_markets": 425,
+    "n_events": 3,
+    "strike_types": [
+      "greater"
+    ],
+    "sample": {
+      "can_close_early": true,
+      "close_time": "2026-08-01T21:00:00Z",
+      "created_time": "2026-07-31T09:00:34.960522Z",
+      "event_ticker": "KXSOLD-26AUG0117",
+      "exchange_index": 0,
+      "expected_expiration_time": "2026-08-01T21:05:00Z",
+      "expiration_time": "2026-08-08T21:00:00Z",
+      "expiration_value": "",
+      "floor_strike": 99.9999,
+      "last_price_dollars": "0.0000",
+      "latest_expiration_time": "2026-08-08T21:00:00Z",
+      "liquidity_dollars": "0.0000",
+      "market_type": "binary",
+      "no_ask_dollars": "1.0000",
+      "no_bid_dollars": "0.9900",
+      "no_sub_title": "$100 or above",
+      "notional_value_dollars": "1.0000",
+      "occurrence_datetime": "2026-08-01T21:05:00Z",
+      "open_interest_fp": "0.00",
+      "open_time": "2026-07-31T20:00:00Z",
+      "previous_price_dollars": "0.0000",
+      "previous_yes_ask_dollars": "0.0000",
+      "previous_yes_bid_dollars": "0.0000",
+      "price_level_structure": "linear_cent",
+      "price_ranges": [
+        {
+          "end": "1.0000",
+          "start": "0.0000",
+          "step": "0.0100"
+        }
+      ],
+      "result": "",
+      "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' SOLUSD_RTI before 5 PM EDT is above $99.9999 at 5 PM EDT on Aug 1, 2026, then the market resolves to Yes.",
+      "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+      "settlement_timer_seconds": 60,
+      "status": "active",
+      "strike_type": "greater",
+      "ticker": "KXSOLD-26AUG0117-T99.9999",
+      "title": "SOL price on Aug 1, 2026?",
+      "updated_time": "2026-07-31T20:00:04.345078Z",
+      "volume_24h_fp": "0.00",
+      "volume_fp": "0.00",
+      "yes_ask_dollars": "0.0100",
+      "yes_ask_size_fp": "6025.00",
+      "yes_bid_dollars": "0.0000",
+      "yes_bid_size_fp": "0.00",
+      "yes_sub_title": "$100 or above"
+    }
+  },
+  "KXXRP": {
+    "n_markets": 165,
+    "n_events": 3,
+    "strike_types": [
+      "between",
+      "greater",
+      "less"
+    ],
+    "sample": {
+      "can_close_early": true,
+      "close_time": "2026-08-01T21:00:00Z",
+      "created_time": "2026-07-31T09:00:41.215595Z",
+      "event_ticker": "KXXRP-26AUG0117",
+      "exchange_index": 0,
+      "expected_expiration_time": "2026-08-01T21:05:00Z",
+      "expiration_time": "2026-08-08T21:00:00Z",
+      "expiration_value": "",
+      "floor_strike": 1.3799,
+      "last_price_dollars": "0.0000",
+      "latest_expiration_time": "2026-08-08T21:00:00Z",
+      "liquidity_dollars": "0.0000",
+      "market_type": "binary",
+      "no_ask_dollars": "1.0000",
+      "no_bid_dollars": "0.9900",
+      "no_sub_title": "$1.37991 or above",
+      "notional_value_dollars": "1.0000",
+      "occurrence_datetime": "2026-08-01T21:05:00Z",
+      "open_interest_fp": "0.00",
+      "open_time": "2026-07-31T20:00:00Z",
+      "previous_price_dollars": "0.0000",
+      "previous_yes_ask_dollars": "0.0000",
+      "previous_yes_bid_dollars": "0.0000",
+      "price_level_structure": "linear_cent",
+      "price_ranges": [
+        {
+          "end": "1.0000",
+          "start": "0.0000",
+          "step": "0.0100"
+        }
+      ],
+      "result": "",
+      "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' Ripple-Dollar Real Time Index (XRPUSD_RTI) before 5 PM EDT is above 1.3799 at 5 PM EDT on Aug 1, 2026, then the market resolves to Yes.",
+      "rules_secondary": "The market resolves based on a simple average of the CF Benchmarks index for the 60 seconds prior to the specified time. The price must meet the criterion at exactly the specified time on the target date. If no data is available or incomplete at the expiration time, affected strikes resolve to No. For cryptocurrencies with multiple versions, the Exchange will specify which version or ticker is being tracked. The CF Benchmarks Real-Time Index provides continuous pricing data for major cryptocurrencies.",
+      "settlement_timer_seconds": 1800,
+      "status": "active",
+      "strike_type": "greater",
+      "ticker": "KXXRP-26AUG0117-T1.3799",
+      "title": "Ripple price at Aug 1, 2026 at 5pm EDT?",
+      "updated_time": "2026-07-31T20:00:04.523868Z",
+      "volume_24h_fp": "0.00",
+      "volume_fp": "0.00",
+      "yes_ask_dollars": "0.0100",
+      "yes_ask_size_fp": "9000.00",
+      "yes_bid_dollars": "0.0000",
+      "yes_bid_size_fp": "0.00",
+      "yes_sub_title": "$1.37991 or above"
+    }
+  },
+  "KXXRPD": {
+    "n_markets": 165,
+    "n_events": 3,
+    "strike_types": [
+      "greater"
+    ],
+    "sample": {
+      "can_close_early": true,
+      "close_time": "2026-08-01T21:00:00Z",
+      "created_time": "2026-07-31T09:00:35.652917Z",
+      "event_ticker": "KXXRPD-26AUG0117",
+      "exchange_index": 0,
+      "expected_expiration_time": "2026-08-01T21:05:00Z",
+      "expiration_time": "2026-08-08T21:00:00Z",
+      "expiration_value": "",
+      "floor_strike": 1.3799,
+      "last_price_dollars": "0.0000",
+      "latest_expiration_time": "2026-08-08T21:00:00Z",
+      "liquidity_dollars": "0.0000",
+      "market_type": "binary",
+      "no_ask_dollars": "1.0000",
+      "no_bid_dollars": "0.9900",
+      "no_sub_title": "$1.37991 or above",
+      "notional_value_dollars": "1.0000",
+      "occurrence_datetime": "2026-08-01T21:05:00Z",
+      "open_interest_fp": "0.00",
+      "open_time": "2026-07-31T20:00:00Z",
+      "previous_price_dollars": "0.0000",
+      "previous_yes_ask_dollars": "0.0000",
+      "previous_yes_bid_dollars": "0.0000",
+      "price_level_structure": "linear_cent",
+      "price_ranges": [
+        {
+          "end": "1.0000",
+          "start": "0.0000",
+          "step": "0.0100"
+        }
+      ],
+      "result": "",
+      "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' Ripple-Dollar Real Time Index (XRPUSD_RTI) before 5 PM EDT is above 1.3799 at 5 PM EDT on Aug 1, 2026, then the market resolves to Yes.",
+      "rules_secondary": "The market resolves based on a simple average of the CF Benchmarks index for the 60 seconds prior to the specified time. The price must meet the criterion at exactly the specified time on the target date. If no data is available or incomplete at the expiration time, affected strikes resolve to No. For cryptocurrencies with multiple versions, the Exchange will specify which version or ticker is being tracked. The CF Benchmarks Real-Time Index provides continuous pricing data for major cryptocurrencies.",
+      "settlement_timer_seconds": 1800,
+      "status": "active",
+      "strike_type": "greater",
+      "ticker": "KXXRPD-26AUG0117-T1.3799",
+      "title": "Ripple price at Aug 1, 2026 at 5pm EDT?",
+      "updated_time": "2026-07-31T20:00:04.594823Z",
+      "volume_24h_fp": "0.00",
+      "volume_fp": "0.00",
+      "yes_ask_dollars": "0.0100",
+      "yes_ask_size_fp": "6500.00",
+      "yes_bid_dollars": "0.0000",
+      "yes_bid_size_fp": "0.00",
+      "yes_sub_title": "$1.37991 or above"
+    }
+  },
+  "BTC": {
+    "n_open": 0
+  },
+  "BTCD": {
+    "n_open": 0
+  },
+  "ETHD": {
+    "n_open": 0
+  },
+  "KXBTCMAXD": {
+    "n_open": 0
+  }
+}

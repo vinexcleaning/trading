@@ -1,0 +1,69 @@
+====================================================================================
+STAGE 4 -- MODEL vs MARKET
+====================================================================================
+rows: 1,530,252   features: 50
+train 1,306,939 (<2023) | val 142,656 (2023-24) | test 80,657 (2025+)
+base rate (p1 wins): train 0.4991  test 0.5057
+
+------------------------------------------------------------------------------------
+MODEL SELECTION (validation)
+------------------------------------------------------------------------------------
+  C=0.003   val Brier 0.18691  logloss 0.55028
+  C=0.01    val Brier 0.18690  logloss 0.55025
+  C=0.03    val Brier 0.18690  logloss 0.55024
+  C=0.1     val Brier 0.18690  logloss 0.55025
+  C=0.3     val Brier 0.18690  logloss 0.55024
+  C=1.0     val Brier 0.18690  logloss 0.55024
+  -> chose C=0.03. Variants tested: 6 (reported for multiple-comparisons honesty)
+
+------------------------------------------------------------------------------------
+HELD-OUT PERFORMANCE (test split, all tiers, model alone)
+------------------------------------------------------------------------------------
+  Brier    0.19884
+  LogLoss  0.58007
+  AUC      0.75984
+  Accuracy 0.68707
+
+  calibration by bucket:
+    0.0-0.1    n=  3,117  pred 0.064  actual 0.062  gap -0.002
+    0.1-0.2    n=  6,337  pred 0.153  actual 0.165  gap +0.012
+    0.2-0.3    n=  8,532  pred 0.252  actual 0.267  gap +0.015
+    0.3-0.4    n= 10,314  pred 0.351  actual 0.372  gap +0.021
+    0.4-0.5    n= 11,360  pred 0.450  actual 0.455  gap +0.004
+    0.5-0.6    n= 11,571  pred 0.550  actual 0.545  gap -0.005
+    0.6-0.7    n= 10,566  pred 0.649  actual 0.634  gap -0.015
+    0.7-0.8    n=  8,847  pred 0.748  actual 0.745  gap -0.004
+    0.8-0.9    n=  6,814  pred 0.847  actual 0.841  gap -0.006
+    0.9-1.0    n=  3,199  pred 0.935  actual 0.922  gap -0.013
+
+====================================================================================
+BENCHMARK 1 -- vs BOOKMAKER CLOSING ODDS (ATP/WTA main tour)
+====================================================================================
+  joined 2,646 test matches to bookmaker lines
+
+  average closing: 2,645 matches
+    model  Brier 0.22490   logloss 0.63952
+    market Brier 0.20568   logloss 0.59646
+    model - market = +0.01922  95% CI [+0.01438, +0.02417]
+    VERDICT: market beats model
+
+  Pinnacle closing: 1,774 matches
+    model  Brier 0.22796   logloss 0.64534
+    market Brier 0.20980   logloss 0.60440
+    model - market = +0.01816  95% CI [+0.01216, +0.02425]
+    VERDICT: market beats model
+
+====================================================================================
+BENCHMARK 2 -- vs KALSHI PRE-MATCH MID (the thing we'd bet into)
+====================================================================================
+  joined 502 test matches to Kalshi pre-match prices
+    ATP chall: 325
+    ATP main: 61
+    WTA chall: 53
+    WTA main: 63
+
+  Kalshi pre-match mid: 502 matches
+    model  Brier 0.21703   logloss 0.62290
+    market Brier 0.20989   logloss 0.60491
+    model - market = +0.00714  95% CI [-0.00889, +0.02211]
+    VERDICT: indistinguishable

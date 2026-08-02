@@ -1,0 +1,91 @@
+﻿========================================================================================================
+BTC  (KXBTC15M)  — SAMPLE COMPOSITION
+========================================================================================================
+  selection: every settled window with a parseable result, deduped to one row per event_ticker, ordered by close_time
+  n = 6429 windows   2026-05-25T00:00 -> 2026-08-01T00:30
+  tick structure: {'tapered_deci_cent': 6429}
+  unconditional UP rate = 49.23% [48.01,50.45]  p vs 50% = 0.2216
+  autocorr lag1 = -0.0273 [-0.0518,-0.0029]   lag2 = -0.0287   lags |ac|>1.96SE: 2/20
+  34 streak conditions tested
+  strongest FADE cell (highest DOWN rate): 14/20 ups -> 55.49% on n=164, p=0.1842
+    [2 consec ups ] DOWN  54.13% [51.61,56.63] n=1513 p=0.0014
+    [2/3 ups      ] DOWN  53.36% [51.38,55.33] n=2455 p=0.0009
+    [10/20 ups    ] DOWN  54.39% [51.62,57.13] n=1252 p=0.0021
+  two periods: first UP 48.16% (n=3214), second UP 50.30% (n=3215)
+
+========================================================================================================
+ETH  (KXETH15M)  — SAMPLE COMPOSITION
+========================================================================================================
+  selection: every settled window with a parseable result, deduped to one row per event_ticker, ordered by close_time
+  n = 6429 windows   2026-05-25T00:00 -> 2026-08-01T00:30
+  tick structure: {'tapered_deci_cent': 6429}
+  unconditional UP rate = 49.56% [48.34,50.78]  p vs 50% = 0.4849
+  autocorr lag1 = -0.0328 [-0.0572,-0.0083]   lag2 = -0.0142   lags |ac|>1.96SE: 2/20
+  34 streak conditions tested
+  strongest FADE cell (highest DOWN rate): 8/10 ups -> 56.32% on n=190, p=0.0949
+    [2 consec ups ] DOWN  52.59% [50.08,55.09] n=1525 p=0.0457
+    [2/3 ups      ] DOWN  52.55% [50.56,54.52] n=2436 p=0.0127
+    [10/20 ups    ] DOWN  50.89% [48.11,53.66] n=1242 p=0.5513
+  two periods: first UP 48.16% (n=3214), second UP 50.95% (n=3215)
+
+========================================================================================================
+SOL  (KXSOL15M)  — SAMPLE COMPOSITION
+========================================================================================================
+  selection: every settled window with a parseable result, deduped to one row per event_ticker, ordered by close_time
+  n = 6429 windows   2026-05-25T00:00 -> 2026-08-01T00:30
+  tick structure: {'tapered_deci_cent': 6429}
+  unconditional UP rate = 49.40% [48.18,50.62]  p vs 50% = 0.3432
+  autocorr lag1 = -0.0291 [-0.0535,-0.0046]   lag2 = +0.0025   lags |ac|>1.96SE: 4/20
+  34 streak conditions tested
+  strongest FADE cell (highest DOWN rate): 7/10 ups -> 56.14% on n=627, p=0.0024
+    [2 consec ups ] DOWN  51.35% [48.84,53.85] n=1521 p=0.3051
+    [2/3 ups      ] DOWN  51.63% [49.63,53.63] n=2394 p=0.1155
+    [10/20 ups    ] DOWN  49.36% [46.67,52.05] n=1323 p=0.6600
+  two periods: first UP 49.25% (n=3214), second UP 49.55% (n=3215)
+
+========================================================================================================
+XRP  (KXXRP15M)  — SAMPLE COMPOSITION
+========================================================================================================
+  selection: every settled window with a parseable result, deduped to one row per event_ticker, ordered by close_time
+  n = 6429 windows   2026-05-25T00:00 -> 2026-08-01T00:30
+  tick structure: {'tapered_deci_cent': 6429}
+  unconditional UP rate = 49.37% [48.15,50.59]  p vs 50% = 0.3184
+  autocorr lag1 = +0.0033 [-0.0212,+0.0277]   lag2 = -0.0137   lags |ac|>1.96SE: 2/20
+  34 streak conditions tested
+  strongest FADE cell (highest DOWN rate): 5/5 ups -> 54.80% on n=177, p=0.2290
+    [2 consec ups ] DOWN  51.56% [49.09,54.02] n=1571 p=0.2259
+    [2/3 ups      ] DOWN  51.06% [49.06,53.06] n=2403 p=0.3077
+    [10/20 ups    ] DOWN  50.70% [47.89,53.51] n=1213 p=0.6460
+  two periods: first UP 48.38% (n=3214), second UP 50.36% (n=3215)
+
+========================================================================================================
+FOUR-ASSET COMPARISON — the deliverable
+========================================================================================================
+  asset       n     UP%       p   lag1 ac   lag2 ac  sig lags best fade cell      rate      n        p
+  BTC      6429  49.23%   0.222   -0.0273   -0.0287         2 14/20 ups         55.49%    164   0.1842
+  ETH      6429  49.56%   0.485   -0.0328   -0.0142         2 8/10 ups          56.32%    190   0.0949
+  SOL      6429  49.40%   0.343   -0.0291   +0.0025         4 7/10 ups          56.14%    627   0.0024
+  XRP      6429  49.37%   0.318   +0.0033   -0.0137         2 5/5 ups           54.80%    177   0.2290
+
+  REPLICATION CHECK — mean reversion (negative lag-1):
+    negative lag-1 in 3/4 assets: ['BTC', 'ETH', 'SOL']
+    SIGNIFICANTLY negative in 3/4: ['BTC', 'ETH', 'SOL']
+
+  two-period stability of the unconditional rate:
+    BTC   first 48.16%  second 50.30%  gap -2.13pp
+    ETH   first 48.16%  second 50.95%  gap -2.78pp
+    SOL   first 49.25%  second 49.55%  gap -0.30pp
+    XRP   first 48.38%  second 50.36%  gap -1.98pp
+
+  BH-FDR across all 136 streak tests this session:
+     1. BTC  2/3 ups          p=0.00093 thr=0.00037 
+     2. SOL  6/10 ups         p=0.00137 thr=0.00074 
+     3. BTC  2 consec ups     p=0.00143 thr=0.00110 
+     4. BTC  10/20 ups        p=0.00205 thr=0.00147 
+     5. SOL  7/10 ups         p=0.00238 thr=0.00184 
+     6. SOL  4/5 ups          p=0.00998 thr=0.00221 
+     7. ETH  2/3 ups          p=0.01268 thr=0.00257 
+     8. ETH  4/5 ups          p=0.01277 thr=0.00294 
+     9. SOL  12/20 ups        p=0.01603 thr=0.00331 
+    10. ETH  0/3 ups          p=0.01802 thr=0.00368 
+    -> 0 of 136 survive

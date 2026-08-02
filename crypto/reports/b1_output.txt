@@ -1,0 +1,105 @@
+﻿========================================================================================================
+TASK 1 — PANEL COMPOSITION  (KXBTCD)   [printed before any score]
+========================================================================================================
+  rows (market-minutes) : 89819
+  events                : 250   <-- THE UNIT OF OBSERVATION
+  distinct markets      : 1968
+  date range            : 2026-05-25 00:01:00 -> 2026-07-30 15:58:00
+  rows per event        : min=45 med=366 max=462
+  markets per event     : min=5 med=8 max=8
+  time-to-expiry (min)  : p5=8 p25=22 med=36 p75=48 p95=57
+  mid                   : p5=0.015 med=0.505 p95=0.985
+  spread                : med=0.0100 p90=0.0100 max=0.1000
+  outcome base rate     : 0.5125
+  calendar coverage     : 10 distinct ISO weeks
+    {'2026-W22': 9399, '2026-W23': 10572, '2026-W24': 9587, '2026-W25': 9388, '2026-W26': 9583, '2026-W27': 10369, '2026-W28': 9241, '2026-W29': 8957, '2026-W30': 8073, '2026-W31': 4650}
+  spot series loaded    : 99402 minutes
+  content validation    : 0 malformed rows (PASS)
+
+  BRTI basis (fitted on n=758 boundaries BEFORE 2026-06-26 09:05:00): mean=+1.48bp sd=3.02bp
+  -> spot multiplied by 1.00014788; residual sd 3.02bp (~$19) carried as irreducible noise
+
+  spot attach: 89819 ok, 0 missing, 13 back-filled (<= 180s stale)
+  after spot + vol attach: 89806 rows, 250 events
+  M3 reference distribution: 49700 1-minute returns from the FIRST HALF of the spot series only
+
+========================================================================================================
+TASK 3 — THE HEADLINE TEST: does any model beat the Kalshi mid?
+========================================================================================================
+  unit of observation : EVENT (250 events)
+  rows                : 89806 market-minutes
+  CI method           : bootstrap resampling EVENTS, 2000 reps
+  benchmark           : Kalshi's own mid at the decision timestamp
+
+  model                           Brier  mid Brier        diff     95% CI (event-clustered)        p    verdict
+  M1 driftless GBM             0.120431   0.119733   +0.000261       [-0.001570, +0.002194]   0.7810        tie
+  M2 settlement-aware          0.120091   0.119733   -0.000081       [-0.001875, +0.001816]   0.9420        tie
+  M3 empirical fat-tail        0.123043   0.119733   +0.003703       [+0.001496, +0.006004]   0.0010        MID
+  M3t Student-t nu=2.03        0.143255   0.119733   +0.022455       [+0.018653, +0.026366]   0.0000        MID
+
+  (diff = Brier_model - Brier_mid; NEGATIVE = model beats mid)
+
+  log loss: mid=0.376648  M1=0.382707  M2=0.381730  M3=0.395235  M3t=0.575610
+
+  model-ladder ordering (each must beat its predecessor):
+    M2 vs M1: diff=-0.000342 CI [-0.000436, -0.000242] -> BETTER
+    M3 vs M2: diff=+0.003784 CI [+0.001821, +0.005821] -> WORSE
+
+  RELIABILITY — Kalshi mid (5% buckets, with counts)
+          bucket       n    mean p  empirical      gap
+    0.00-0.05   13984    0.0258     0.0295  +0.0038
+    0.05-0.10    6942    0.0726     0.0931  +0.0205
+    0.10-0.15    4651    0.1231     0.1398  +0.0167
+    0.15-0.20    3479    0.1734     0.2058  +0.0324
+    0.20-0.25    3097    0.2238     0.2431  +0.0193
+    0.25-0.30    2832    0.2747     0.2878  +0.0131
+    0.30-0.35    2562    0.3249     0.3646  +0.0397
+    0.35-0.40    2344    0.3749     0.4164  +0.0415
+    0.40-0.45    2395    0.4249     0.4459  +0.0210
+    0.45-0.50    2309    0.4744     0.4768  +0.0025
+    0.50-0.55    2231    0.5243     0.5365  +0.0122
+    0.55-0.60    2327    0.5757     0.5943  +0.0186
+    0.60-0.65    2471    0.6252     0.6443  +0.0191
+    0.65-0.70    2635    0.6754     0.6649  -0.0105
+    0.70-0.75    2715    0.7258     0.7134  -0.0124
+    0.75-0.80    3014    0.7753     0.7691  -0.0063
+    0.80-0.85    3774    0.8263     0.8174  -0.0089
+    0.85-0.90    4775    0.8763     0.8693  -0.0069
+    0.90-0.95    7067    0.9276     0.9336  +0.0061
+    0.95-1.00   14202    0.9741     0.9820  +0.0079
+
+  TWO DISJOINT PERIODS (GO_NO_GO criterion 4)
+    M1: first half diff=-0.001044 CI[-0.00397,+0.00198] n_ev=122   second half diff=+0.001224 CI[-0.00143,+0.00375] n_ev=129   
+    M2: first half diff=-0.001384 CI[-0.00426,+0.00151] n_ev=122   second half diff=+0.000884 CI[-0.00172,+0.00337] n_ev=129   
+    M3: first half diff=+0.000470 CI[-0.00272,+0.00391] n_ev=122   second half diff=+0.006679 CI[+0.00345,+0.00997] n_ev=129   
+
+  LOCALISATION — Brier diff (best model - mid) by bucket
+  (reported for completeness; per PREREGISTRATION a diffuse advantage is treated as a leak, not an edge)
+  best model by Brier: m2
+    -- time-to-expiry (min)
+            0-10     n=  5743 ev= 243 diff=-0.005179 CI[-0.00978,-0.00085]  MODEL  fee=0.64c halfspread=0.58c
+           10-20     n= 12244 ev= 249 diff=-0.000458 CI[-0.00326,+0.00232]    tie  fee=0.68c halfspread=0.55c
+           20-30     n= 15929 ev= 249 diff=+0.002534 CI[+0.00015,+0.00507]    MID  fee=0.73c halfspread=0.54c
+           30-45     n= 27114 ev= 249 diff=+0.000014 CI[-0.00244,+0.00271]    tie  fee=0.81c halfspread=0.54c
+           45-61     n= 28776 ev= 250 diff=+0.000657 CI[-0.00142,+0.00286]    tie  fee=0.95c halfspread=0.55c
+    -- |ln(S/K)|/(sig sqrt(tau))
+            0-0.25   n= 11969 ev= 249 diff=-0.005522 CI[-0.00914,-0.00190]  MODEL  fee=1.64c halfspread=0.57c
+         0.25-0.5    n= 11624 ev= 249 diff=-0.004114 CI[-0.00808,-0.00010]  MODEL  fee=1.42c halfspread=0.57c
+          0.5-1      n= 21564 ev= 250 diff=+0.001457 CI[-0.00173,+0.00464]    tie  fee=0.97c halfspread=0.55c
+            1-2      n= 29804 ev= 250 diff=+0.001088 CI[-0.00041,+0.00268]    tie  fee=0.44c halfspread=0.53c
+            2-99     n= 14845 ev= 238 diff=-0.000715 CI[-0.00189,+0.00006]    tie  fee=0.18c halfspread=0.52c
+    -- mid price
+            0-0.05   n= 13984 ev= 234 diff=+0.000578 CI[-0.00207,+0.00280]    tie  fee=0.17c halfspread=0.51c
+         0.05-0.15   n= 11593 ev= 243 diff=+0.000899 CI[-0.00481,+0.00592]    tie  fee=0.58c halfspread=0.54c
+         0.15-0.35   n= 11911 ev= 249 diff=-0.002007 CI[-0.00826,+0.00439]    tie  fee=1.26c halfspread=0.56c
+         0.35-0.65   n= 14136 ev= 250 diff=-0.006065 CI[-0.00836,-0.00389]  MODEL  fee=1.70c halfspread=0.57c
+         0.65-0.85   n= 12064 ev= 250 diff=-0.003512 CI[-0.00931,+0.00235]    tie  fee=1.26c halfspread=0.56c
+         0.85-0.95   n= 11780 ev= 249 diff=-0.000751 CI[-0.00655,+0.00477]    tie  fee=0.59c halfspread=0.55c
+         0.95-1      n= 14338 ev= 237 diff=-0.001704 CI[-0.00574,+0.00180]    tie  fee=0.18c halfspread=0.52c
+    -- spread
+            0-0.011  n= 82425 ev= 250 diff=+0.000224 CI[-0.00152,+0.00203]    tie  fee=0.79c halfspread=0.50c
+        0.011-0.021  n=  6730 ev= 248 diff=-0.003723 CI[-0.00826,+0.00091]    tie  fee=1.05c halfspread=1.00c
+        0.021-0.031  n=   548 ev=  96 diff=-0.005286 CI[-0.01994,+0.00952]    tie  fee=1.18c halfspread=1.50c
+        0.031-1      n=   103 ev=  36 diff=-0.046082 CI[-0.09827,-0.00140]  MODEL  fee=1.26c halfspread=2.34c
+
+wrote reports/b1_KXBTCD.json

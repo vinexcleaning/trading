@@ -1,0 +1,11 @@
+{
+  "quote_rows": 5687,
+  "span_s": 632.065819,
+  "mono_scans": 3187,
+  "mono_violations": 0,
+  "mono_profitable": 0,
+  "bucket_scans_complete": 1135,
+  "bucket_snapshots_skipped_incomplete": 4552,
+  "bucket_violations": 1,
+  "bucket_profitable": 0
+}

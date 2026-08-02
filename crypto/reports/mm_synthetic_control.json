@@ -1,0 +1,59 @@
+{
+  "arms": [
+    {
+      "arm": "BENIGN drift=0.3x",
+      "drift_mult": 0.3,
+      "opportunities": 7200,
+      "filled_opps": 6631,
+      "fill_rate": 0.9209722222222222,
+      "decomp": {
+        "spread_per_contract": 0.49999999999999956,
+        "adverse_per_contract": -0.13855885106768553,
+        "fee_per_contract": 0.0,
+        "inventory_per_contract": 0.3463081385428608,
+        "net_per_contract": 0.3463081385428608,
+        "contracts": 66218.0
+      },
+      "n_markets": 120
+    },
+    {
+      "arm": "NULL   drift=1.0x",
+      "drift_mult": 1.0,
+      "opportunities": 7200,
+      "filled_opps": 6636,
+      "fill_rate": 0.9216666666666666,
+      "decomp": {
+        "spread_per_contract": 0.49999999999999967,
+        "adverse_per_contract": -0.47390640401558926,
+        "fee_per_contract": 0.0,
+        "inventory_per_contract": 0.0036967473049062108,
+        "net_per_contract": 0.0036967473049062108,
+        "contracts": 65943.0
+      },
+      "n_markets": 120
+    },
+    {
+      "arm": "TOXIC  drift=2.0x",
+      "drift_mult": 2.0,
+      "opportunities": 7200,
+      "filled_opps": 6636,
+      "fill_rate": 0.9216666666666666,
+      "decomp": {
+        "spread_per_contract": 0.49999999999999967,
+        "adverse_per_contract": -0.9541699778579877,
+        "fee_per_contract": 0.0,
+        "inventory_per_contract": -0.4866892035457403,
+        "net_per_contract": -0.4866892035457403,
+        "contracts": 65938.0
+      },
+      "n_markets": 120
+    }
+  ],
+  "gate": {
+    "null": true,
+    "benign": true,
+    "toxic": true,
+    "ordering": true,
+    "overall": true
+  }
+}

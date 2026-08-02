@@ -1,0 +1,36 @@
+﻿A3 -- SELECTION POINTS UNDER THE STRENGTHENED GUARD
+==============================================================================
+universe: CONTAMINATED universe (volume dedupe) - baseline for comparison
+
+Guard now returns three values. UNTESTABLE is not a pass: it means the
+rule either fails to discriminate (a mostly-null field chooses nothing,
+so the tie-break does the work) or the test lacks the power to see a
+2 pp bias. Either way the rule is rejected.
+
+## 1. Mirrored-side rules.  Null: P(kept wins) = 0.5000, 19,782 events
+
+side-choice rules
+=================
+  **FAIL**   [higher last_price_dollars] decides 99.9% of pairs (n_eff=19,757/19,782); P(kept wins | decided) = 0.9995, z = +140.43, MDE = 1.00 pp  <-- READS THE OUTCOME. The rule must not depend on volume, open interest, last price, liquidity, or anything else recorded after settlement.
+  **FAIL**   [higher open_interest_fp] decides 99.9% of pairs (n_eff=19,759/19,782); P(kept wins | decided) = 0.5559, z = +15.71, MDE = 1.00 pp  <-- READS THE OUTCOME. The rule must not depend on volume, open interest, last price, liquidity, or anything else recorded after settlement.
+  **FAIL**   [higher volume_fp   (THE PHASE 0 BUG)] decides 99.9% of pairs (n_eff=19,759/19,782); P(kept wins | decided) = 0.5357, z = +10.02, MDE = 1.00 pp  <-- READS THE OUTCOME. The rule must not depend on volume, open interest, last price, liquidity, or anything else recorded after settlement.
+  UNTESTABLE [higher volume_24h_fp] decides 3.9% of pairs (n_eff=776/19,782); P(kept wins | decided) = 0.5026, z = +0.14, MDE = 5.03 pp  <-- UNTESTABLE: the field is degenerate, it separates the two sides in under 10% of pairs. It passes only because it almost never chooses. Innocence by emptiness is not innocence.
+  UNTESTABLE [higher liquidity_dollars] decides 0.0% of pairs (n_eff=0/19,782); P(kept wins | decided) = nan, z = +nan, MDE = inf pp  <-- UNTESTABLE: the field is degenerate, it separates the two sides in under 10% of pairs. It passes only because it almost never chooses. Innocence by emptiness is not innocence.
+  pass       [first ticker alphabetically   (THE FIX)] decides 100.0% of pairs (n_eff=19,782/19,782); P(kept wins | decided) = 0.4969, z = -0.88, MDE = 1.00 pp
+
+6 rules: 1 pass, 3 fail, 2 untestable
+
+## 2. Row filters in the Phase 1-4 pipeline
+
+pipeline filters
+================
+  UNTESTABLE [duration filter, 25-330 min (p1_state MIN_PLAY/MAX_PLAY)] calibration residual: kept +0.0029 (n=16,258) vs dropped +0.0294 (n=682); diff -0.0265, z = -2.59, MDE = 2.87 pp  <-- UNTESTABLE: the smaller arm (682 rows) cannot resolve a 2.0 pp shift.
+  pass       [t0 detectors agree within 5 min (activity-density floor)] calibration residual: kept +0.0033 (n=7,298) vs dropped +0.0044 (n=9,642); diff -0.0011, z = -0.16, MDE = 1.84 pp
+  pass       [pre-match anchor stood >=10 min (t0 detected cleanly)] calibration residual: kept -0.0025 (n=7,781) vs dropped +0.0094 (n=9,159); diff -0.0119, z = -1.83, MDE = 1.83 pp
+  **FAIL**   [below-median exposure to the spread>15c mask] calibration residual: kept -0.0164 (n=8,471) vs dropped +0.0243 (n=8,469); diff -0.0407, z = -6.28, MDE = 1.82 pp  <-- THE FILTER SHIFTS CALIBRATION. It is selecting on something correlated with the outcome.
+
+4 rules: 2 pass, 1 fail, 1 untestable
+
+  note: play-window cut drops 2,841/19,781 (14.4%); those rows have no pre-match quote, so the residual is undefined -- structurally justified, not statistically cleared
+
+-> C:\Users\gianf\kalshi\set1_overshoot\reports\audit_a3_contaminated.txt

@@ -1,0 +1,1292 @@
+﻿
+==============================================================================
+1. SERIES AND CATEGORIES
+==============================================================================
+series returned    12,369  (1 pages)
+   Sports                              3065 series
+   Entertainment                       2490 series
+   Politics                            2127 series
+   Elections                           1525 series
+   Financials                           715 series
+   Economics                            614 series
+   Mentions                             398 series
+   Climate and Weather                  291 series
+   Science and Technology               283 series
+   Crypto                               271 series
+   Companies                            173 series
+   World                                143 series
+   Health                                96 series
+   Commodities                           77 series
+   Social                                52 series
+   Transportation                        38 series
+   Exotics                               10 series
+   Education                              1 series
+
+==============================================================================
+2. UNIVERSE SIZE AND DATE FLOOR (paginating /markets to exhaustion)
+==============================================================================
+   ...25,000 markets, 25 pages, 6s
+   ...50,000 markets, 50 pages, 13s
+   ...75,000 markets, 75 pages, 21s
+   ...100,000 markets, 100 pages, 29s
+   ...125,000 markets, 125 pages, 37s
+   ...150,000 markets, 150 pages, 44s
+   ...175,000 markets, 175 pages, 51s
+   ...200,000 markets, 200 pages, 60s
+   ...225,000 markets, 225 pages, 67s
+   ...250,000 markets, 250 pages, 74s
+   ...275,000 markets, 275 pages, 81s
+   ...300,000 markets, 300 pages, 88s
+   ...325,000 markets, 325 pages, 95s
+   ...350,000 markets, 350 pages, 103s
+   ...375,000 markets, 375 pages, 110s
+   ...400,000 markets, 400 pages, 118s
+   ...425,000 markets, 425 pages, 126s
+   ...450,000 markets, 450 pages, 134s
+   ...475,000 markets, 475 pages, 142s
+   ...500,000 markets, 500 pages, 149s
+   ...525,000 markets, 525 pages, 157s
+   ...550,000 markets, 550 pages, 165s
+   ...575,000 markets, 575 pages, 172s
+   ...600,000 markets, 600 pages, 180s
+   ...625,000 markets, 625 pages, 188s
+   ...650,000 markets, 650 pages, 195s
+   ...675,000 markets, 675 pages, 202s
+   ...700,000 markets, 700 pages, 210s
+   ...725,000 markets, 725 pages, 217s
+   ...750,000 markets, 750 pages, 224s
+   ...775,000 markets, 775 pages, 231s
+   ...800,000 markets, 800 pages, 239s
+   ...825,000 markets, 825 pages, 247s
+   ...850,000 markets, 850 pages, 254s
+   ...875,000 markets, 875 pages, 261s
+   ...900,000 markets, 900 pages, 270s
+   ...925,000 markets, 925 pages, 277s
+   ...950,000 markets, 950 pages, 285s
+   ...975,000 markets, 975 pages, 292s
+   ...1,000,000 markets, 1000 pages, 300s
+   ...1,025,000 markets, 1025 pages, 307s
+   ...1,050,000 markets, 1050 pages, 314s
+   ...1,075,000 markets, 1075 pages, 321s
+   ...1,100,000 markets, 1100 pages, 328s
+   ...1,125,000 markets, 1125 pages, 336s
+   ...1,150,000 markets, 1150 pages, 343s
+   ...1,175,000 markets, 1175 pages, 350s
+   ...1,200,000 markets, 1200 pages, 358s
+   ...1,225,000 markets, 1225 pages, 365s
+   ...1,250,000 markets, 1250 pages, 372s
+   ...1,275,000 markets, 1275 pages, 380s
+   ...1,300,000 markets, 1300 pages, 387s
+   ...1,325,000 markets, 1325 pages, 396s
+   ...1,350,000 markets, 1350 pages, 403s
+   ...1,375,000 markets, 1375 pages, 411s
+   ...1,400,000 markets, 1400 pages, 419s
+   ...1,425,000 markets, 1425 pages, 427s
+   ...1,450,000 markets, 1450 pages, 434s
+   ...1,475,000 markets, 1475 pages, 441s
+   ...1,500,000 markets, 1500 pages, 449s
+   ...1,525,000 markets, 1525 pages, 456s
+   ...1,550,000 markets, 1550 pages, 462s
+   ...1,575,000 markets, 1575 pages, 469s
+   ...1,600,000 markets, 1600 pages, 476s
+   ...1,625,000 markets, 1625 pages, 484s
+   ...1,650,000 markets, 1650 pages, 492s
+   ...1,675,000 markets, 1675 pages, 499s
+   ...1,700,000 markets, 1700 pages, 506s
+   ...1,725,000 markets, 1725 pages, 514s
+   ...1,750,000 markets, 1750 pages, 521s
+   ...1,775,000 markets, 1775 pages, 528s
+   ...1,800,000 markets, 1800 pages, 535s
+   ...1,825,000 markets, 1825 pages, 543s
+   ...1,850,000 markets, 1850 pages, 550s
+   ...1,875,000 markets, 1875 pages, 557s
+   ...1,900,000 markets, 1900 pages, 564s
+   ...1,925,000 markets, 1925 pages, 571s
+   ...1,950,000 markets, 1950 pages, 578s
+   ...1,975,000 markets, 1975 pages, 585s
+   ...2,000,000 markets, 2000 pages, 592s
+   ...2,025,000 markets, 2025 pages, 599s
+   ...2,050,000 markets, 2050 pages, 607s
+   ...2,075,000 markets, 2075 pages, 614s
+   ...2,100,000 markets, 2100 pages, 621s
+   ...2,125,000 markets, 2125 pages, 627s
+   ...2,150,000 markets, 2150 pages, 634s
+   ...2,175,000 markets, 2175 pages, 643s
+   ...2,200,000 markets, 2200 pages, 650s
+   ...2,225,000 markets, 2225 pages, 656s
+   ...2,250,000 markets, 2250 pages, 663s
+   ...2,275,000 markets, 2275 pages, 670s
+   ...2,300,000 markets, 2300 pages, 677s
+   ...2,325,000 markets, 2325 pages, 684s
+   ...2,350,000 markets, 2350 pages, 691s
+   ...2,375,000 markets, 2375 pages, 699s
+   ...2,400,000 markets, 2400 pages, 706s
+   ...2,425,000 markets, 2425 pages, 714s
+   ...2,450,000 markets, 2450 pages, 721s
+   ...2,475,000 markets, 2475 pages, 728s
+   ...2,500,000 markets, 2500 pages, 736s
+   ...2,525,000 markets, 2525 pages, 743s
+   ...2,550,000 markets, 2550 pages, 750s
+   ...2,575,000 markets, 2575 pages, 757s
+   ...2,600,000 markets, 2600 pages, 764s
+   ...2,625,000 markets, 2625 pages, 772s
+   ...2,650,000 markets, 2650 pages, 779s
+   ...2,675,000 markets, 2675 pages, 786s
+   ...2,700,000 markets, 2700 pages, 792s
+   ...2,725,000 markets, 2725 pages, 800s
+   ...2,750,000 markets, 2750 pages, 807s
+   ...2,775,000 markets, 2775 pages, 814s
+   ...2,800,000 markets, 2800 pages, 822s
+   ...2,825,000 markets, 2825 pages, 829s
+   ...2,850,000 markets, 2850 pages, 836s
+   ...2,875,000 markets, 2875 pages, 843s
+   ...2,900,000 markets, 2900 pages, 851s
+   ...2,925,000 markets, 2925 pages, 858s
+   ...2,950,000 markets, 2950 pages, 865s
+   ...2,975,000 markets, 2975 pages, 872s
+   ...3,000,000 markets, 3000 pages, 878s
+   ...3,025,000 markets, 3025 pages, 885s
+   ...3,050,000 markets, 3050 pages, 892s
+   ...3,075,000 markets, 3075 pages, 899s
+   ...3,100,000 markets, 3100 pages, 906s
+   ...3,125,000 markets, 3125 pages, 914s
+   ...3,150,000 markets, 3150 pages, 921s
+   ...3,175,000 markets, 3175 pages, 928s
+   ...3,200,000 markets, 3200 pages, 934s
+   ...3,225,000 markets, 3225 pages, 941s
+   ...3,250,000 markets, 3250 pages, 948s
+   ...3,275,000 markets, 3275 pages, 957s
+   ...3,300,000 markets, 3300 pages, 963s
+   ...3,325,000 markets, 3325 pages, 970s
+   ...3,350,000 markets, 3350 pages, 978s
+   ...3,375,000 markets, 3375 pages, 985s
+   ...3,400,000 markets, 3400 pages, 992s
+   ...3,425,000 markets, 3425 pages, 999s
+   ...3,450,000 markets, 3450 pages, 1005s
+   ...3,475,000 markets, 3475 pages, 1012s
+   ...3,500,000 markets, 3500 pages, 1019s
+   ...3,525,000 markets, 3525 pages, 1026s
+   ...3,550,000 markets, 3550 pages, 1033s
+   ...3,575,000 markets, 3575 pages, 1040s
+   ...3,600,000 markets, 3600 pages, 1047s
+   ...3,625,000 markets, 3625 pages, 1054s
+   ...3,650,000 markets, 3650 pages, 1061s
+   ...3,675,000 markets, 3675 pages, 1068s
+   ...3,700,000 markets, 3700 pages, 1075s
+   ...3,725,000 markets, 3725 pages, 1082s
+   ...3,750,000 markets, 3750 pages, 1089s
+   ...3,775,000 markets, 3775 pages, 1096s
+   ...3,800,000 markets, 3800 pages, 1103s
+   ...3,825,000 markets, 3825 pages, 1110s
+   ...3,850,000 markets, 3850 pages, 1118s
+   ...3,875,000 markets, 3875 pages, 1125s
+   ...3,900,000 markets, 3900 pages, 1133s
+   ...3,925,000 markets, 3925 pages, 1141s
+   ...3,950,000 markets, 3950 pages, 1148s
+   ...3,975,000 markets, 3975 pages, 1155s
+   ...4,000,000 markets, 4000 pages, 1162s
+   ...4,025,000 markets, 4025 pages, 1171s
+   ...4,050,000 markets, 4050 pages, 1178s
+   ...4,075,000 markets, 4075 pages, 1185s
+   ...4,100,000 markets, 4100 pages, 1191s
+   ...4,125,000 markets, 4125 pages, 1199s
+   ...4,150,000 markets, 4150 pages, 1206s
+   ...4,175,000 markets, 4175 pages, 1213s
+   ...4,200,000 markets, 4200 pages, 1221s
+   ...4,225,000 markets, 4225 pages, 1228s
+   ...4,250,000 markets, 4250 pages, 1236s
+   ...4,275,000 markets, 4275 pages, 1242s
+   ...4,300,000 markets, 4300 pages, 1249s
+   ...4,325,000 markets, 4325 pages, 1256s
+   ...4,350,000 markets, 4350 pages, 1263s
+   ...4,375,000 markets, 4375 pages, 1270s
+   ...4,400,000 markets, 4400 pages, 1278s
+   ...4,425,000 markets, 4425 pages, 1284s
+   ...4,450,000 markets, 4450 pages, 1291s
+   ...4,475,000 markets, 4475 pages, 1300s
+   ...4,500,000 markets, 4500 pages, 1307s
+   ...4,525,000 markets, 4525 pages, 1313s
+   ...4,550,000 markets, 4550 pages, 1320s
+   ...4,575,000 markets, 4575 pages, 1327s
+   ...4,600,000 markets, 4600 pages, 1333s
+   ...4,625,000 markets, 4625 pages, 1340s
+   ...4,650,000 markets, 4650 pages, 1348s
+   ...4,675,000 markets, 4675 pages, 1355s
+   ...4,700,000 markets, 4700 pages, 1362s
+   ...4,725,000 markets, 4725 pages, 1370s
+   ...4,750,000 markets, 4750 pages, 1377s
+   ...4,775,000 markets, 4775 pages, 1384s
+   ...4,800,000 markets, 4800 pages, 1390s
+   ...4,825,000 markets, 4825 pages, 1397s
+   ...4,850,000 markets, 4850 pages, 1404s
+   ...4,875,000 markets, 4875 pages, 1410s
+   ...4,900,000 markets, 4900 pages, 1419s
+   ...4,925,000 markets, 4925 pages, 1426s
+   ...4,950,000 markets, 4950 pages, 1433s
+   ...4,975,000 markets, 4975 pages, 1439s
+   ...5,000,000 markets, 5000 pages, 1446s
+   ...5,025,000 markets, 5025 pages, 1454s
+   ...5,050,000 markets, 5050 pages, 1462s
+   ...5,075,000 markets, 5075 pages, 1469s
+   ...5,100,000 markets, 5100 pages, 1476s
+   ...5,125,000 markets, 5125 pages, 1482s
+   ...5,150,000 markets, 5150 pages, 1489s
+   ...5,175,000 markets, 5175 pages, 1496s
+   ...5,200,000 markets, 5200 pages, 1502s
+   ...5,225,000 markets, 5225 pages, 1510s
+   ...5,250,000 markets, 5250 pages, 1518s
+   ...5,275,000 markets, 5275 pages, 1525s
+   ...5,300,000 markets, 5300 pages, 1531s
+   ...5,325,000 markets, 5325 pages, 1538s
+   ...5,350,000 markets, 5350 pages, 1546s
+   ...5,375,000 markets, 5375 pages, 1553s
+   ...5,400,000 markets, 5400 pages, 1561s
+   ...5,425,000 markets, 5425 pages, 1568s
+   ...5,450,000 markets, 5450 pages, 1575s
+   ...5,475,000 markets, 5475 pages, 1582s
+   ...5,500,000 markets, 5500 pages, 1589s
+   ...5,525,000 markets, 5525 pages, 1598s
+   ...5,550,000 markets, 5550 pages, 1604s
+   ...5,575,000 markets, 5575 pages, 1611s
+   ...5,600,000 markets, 5600 pages, 1618s
+   ...5,625,000 markets, 5625 pages, 1625s
+   ...5,650,000 markets, 5650 pages, 1632s
+   ...5,675,000 markets, 5675 pages, 1640s
+   ...5,700,000 markets, 5700 pages, 1646s
+   ...5,725,000 markets, 5725 pages, 1653s
+   ...5,750,000 markets, 5750 pages, 1660s
+   ...5,775,000 markets, 5775 pages, 1667s
+   ...5,800,000 markets, 5800 pages, 1674s
+   ...5,825,000 markets, 5825 pages, 1681s
+   ...5,850,000 markets, 5850 pages, 1688s
+   ...5,875,000 markets, 5875 pages, 1695s
+   ...5,900,000 markets, 5900 pages, 1704s
+   ...5,925,000 markets, 5925 pages, 1711s
+   ...5,950,000 markets, 5950 pages, 1718s
+   ...5,975,000 markets, 5975 pages, 1725s
+   ...6,000,000 markets, 6000 pages, 1732s
+   ...6,025,000 markets, 6025 pages, 1739s
+   ...6,050,000 markets, 6050 pages, 1747s
+   ...6,075,000 markets, 6075 pages, 1754s
+   ...6,100,000 markets, 6100 pages, 1761s
+   ...6,125,000 markets, 6125 pages, 1768s
+   ...6,150,000 markets, 6150 pages, 1775s
+   ...6,175,000 markets, 6175 pages, 1782s
+   ...6,200,000 markets, 6200 pages, 1790s
+   ...6,225,000 markets, 6225 pages, 1797s
+   ...6,250,000 markets, 6250 pages, 1804s
+   ...6,275,000 markets, 6275 pages, 1811s
+   ...6,300,000 markets, 6300 pages, 1819s
+   ...6,325,000 markets, 6325 pages, 1826s
+   ...6,350,000 markets, 6350 pages, 1832s
+   ...6,375,000 markets, 6375 pages, 1840s
+   ...6,400,000 markets, 6400 pages, 1847s
+   ...6,425,000 markets, 6425 pages, 1854s
+   ...6,450,000 markets, 6450 pages, 1862s
+   ...6,475,000 markets, 6475 pages, 1868s
+   ...6,500,000 markets, 6500 pages, 1875s
+   ...6,525,000 markets, 6525 pages, 1882s
+   ...6,550,000 markets, 6550 pages, 1889s
+   ...6,575,000 markets, 6575 pages, 1896s
+   ...6,600,000 markets, 6600 pages, 1902s
+   ...6,625,000 markets, 6625 pages, 1909s
+   ...6,650,000 markets, 6650 pages, 1916s
+   ...6,675,000 markets, 6675 pages, 1923s
+   ...6,700,000 markets, 6700 pages, 1931s
+   ...6,725,000 markets, 6725 pages, 1938s
+   ...6,750,000 markets, 6750 pages, 1945s
+   ...6,775,000 markets, 6775 pages, 1951s
+   ...6,800,000 markets, 6800 pages, 1958s
+   ...6,825,000 markets, 6825 pages, 1966s
+   ...6,850,000 markets, 6850 pages, 1973s
+   ...6,875,000 markets, 6875 pages, 1979s
+   ...6,900,000 markets, 6900 pages, 1986s
+   ...6,925,000 markets, 6925 pages, 1994s
+   ...6,950,000 markets, 6950 pages, 2002s
+   ...6,975,000 markets, 6975 pages, 2009s
+   ...7,000,000 markets, 7000 pages, 2016s
+   ...7,025,000 markets, 7025 pages, 2022s
+   ...7,050,000 markets, 7050 pages, 2030s
+   ...7,075,000 markets, 7075 pages, 2038s
+   ...7,100,000 markets, 7100 pages, 2044s
+   ...7,125,000 markets, 7125 pages, 2051s
+   ...7,150,000 markets, 7150 pages, 2059s
+   ...7,175,000 markets, 7175 pages, 2067s
+   ...7,200,000 markets, 7200 pages, 2074s
+   ...7,225,000 markets, 7225 pages, 2081s
+   ...7,250,000 markets, 7250 pages, 2088s
+   ...7,275,000 markets, 7275 pages, 2096s
+   ...7,300,000 markets, 7300 pages, 2103s
+   ...7,325,000 markets, 7325 pages, 2110s
+   ...7,350,000 markets, 7350 pages, 2117s
+   ...7,375,000 markets, 7375 pages, 2124s
+   ...7,400,000 markets, 7400 pages, 2131s
+   ...7,425,000 markets, 7425 pages, 2138s
+   ...7,450,000 markets, 7450 pages, 2145s
+   ...7,475,000 markets, 7475 pages, 2152s
+   ...7,500,000 markets, 7500 pages, 2159s
+   ...7,525,000 markets, 7525 pages, 2165s
+   ...7,550,000 markets, 7550 pages, 2173s
+   ...7,575,000 markets, 7575 pages, 2179s
+   ...7,600,000 markets, 7600 pages, 2187s
+   ...7,625,000 markets, 7625 pages, 2194s
+   ...7,650,000 markets, 7650 pages, 2201s
+   ...7,675,000 markets, 7675 pages, 2208s
+   ...7,700,000 markets, 7700 pages, 2214s
+   ...7,725,000 markets, 7725 pages, 2222s
+   ...7,750,000 markets, 7750 pages, 2229s
+   ...7,775,000 markets, 7775 pages, 2236s
+   ...7,800,000 markets, 7800 pages, 2244s
+   ...7,825,000 markets, 7825 pages, 2251s
+   ...7,850,000 markets, 7850 pages, 2258s
+   ...7,875,000 markets, 7875 pages, 2264s
+   ...7,900,000 markets, 7900 pages, 2270s
+   ...7,925,000 markets, 7925 pages, 2278s
+   ...7,950,000 markets, 7950 pages, 2286s
+   ...7,975,000 markets, 7975 pages, 2294s
+   ...8,000,000 markets, 8000 pages, 2300s
+   ...8,025,000 markets, 8025 pages, 2307s
+   ...8,050,000 markets, 8050 pages, 2315s
+   ...8,075,000 markets, 8075 pages, 2322s
+   ...8,100,000 markets, 8100 pages, 2328s
+   ...8,125,000 markets, 8125 pages, 2335s
+   ...8,150,000 markets, 8150 pages, 2341s
+   ...8,175,000 markets, 8175 pages, 2350s
+   ...8,200,000 markets, 8200 pages, 2357s
+   ...8,225,000 markets, 8225 pages, 2364s
+   ...8,250,000 markets, 8250 pages, 2370s
+   ...8,275,000 markets, 8275 pages, 2377s
+   ...8,300,000 markets, 8300 pages, 2385s
+   ...8,325,000 markets, 8325 pages, 2392s
+   ...8,350,000 markets, 8350 pages, 2399s
+   ...8,375,000 markets, 8375 pages, 2405s
+   ...8,400,000 markets, 8400 pages, 2412s
+   ...8,425,000 markets, 8425 pages, 2420s
+   ...8,450,000 markets, 8450 pages, 2426s
+   ...8,475,000 markets, 8475 pages, 2433s
+   ...8,500,000 markets, 8500 pages, 2440s
+   ...8,525,000 markets, 8525 pages, 2447s
+   ...8,550,000 markets, 8550 pages, 2454s
+   ...8,575,000 markets, 8575 pages, 2460s
+   ...8,600,000 markets, 8600 pages, 2467s
+   ...8,625,000 markets, 8625 pages, 2474s
+   ...8,650,000 markets, 8650 pages, 2482s
+   ...8,675,000 markets, 8675 pages, 2489s
+   ...8,700,000 markets, 8700 pages, 2495s
+   ...8,725,000 markets, 8725 pages, 2503s
+   ...8,750,000 markets, 8750 pages, 2509s
+   ...8,775,000 markets, 8775 pages, 2517s
+   ...8,800,000 markets, 8800 pages, 2526s
+   ...8,825,000 markets, 8825 pages, 2533s
+   ...8,850,000 markets, 8850 pages, 2540s
+   ...8,875,000 markets, 8875 pages, 2547s
+   ...8,900,000 markets, 8900 pages, 2554s
+   ...8,925,000 markets, 8925 pages, 2561s
+   ...8,950,000 markets, 8950 pages, 2568s
+   ...8,975,000 markets, 8975 pages, 2575s
+   ...9,000,000 markets, 9000 pages, 2582s
+   ...9,025,000 markets, 9025 pages, 2589s
+   ...9,050,000 markets, 9050 pages, 2597s
+   ...9,075,000 markets, 9075 pages, 2604s
+   ...9,100,000 markets, 9100 pages, 2610s
+   ...9,125,000 markets, 9125 pages, 2618s
+   ...9,150,000 markets, 9150 pages, 2625s
+   ...9,175,000 markets, 9175 pages, 2632s
+   ...9,200,000 markets, 9200 pages, 2638s
+   ...9,225,000 markets, 9225 pages, 2645s
+   ...9,250,000 markets, 9250 pages, 2651s
+   ...9,275,000 markets, 9275 pages, 2659s
+   ...9,300,000 markets, 9300 pages, 2666s
+   ...9,325,000 markets, 9325 pages, 2673s
+   ...9,350,000 markets, 9350 pages, 2681s
+   ...9,375,000 markets, 9375 pages, 2688s
+   ...9,400,000 markets, 9400 pages, 2694s
+   ...9,425,000 markets, 9425 pages, 2701s
+   ...9,450,000 markets, 9450 pages, 2708s
+   ...9,475,000 markets, 9475 pages, 2715s
+   ...9,500,000 markets, 9500 pages, 2722s
+   ...9,525,000 markets, 9525 pages, 2729s
+   ...9,550,000 markets, 9550 pages, 2736s
+   ...9,575,000 markets, 9575 pages, 2743s
+   ...9,600,000 markets, 9600 pages, 2750s
+   ...9,625,000 markets, 9625 pages, 2757s
+   ...9,650,000 markets, 9650 pages, 2765s
+   ...9,675,000 markets, 9675 pages, 2772s
+   ...9,700,000 markets, 9700 pages, 2778s
+   ...9,725,000 markets, 9725 pages, 2785s
+   ...9,750,000 markets, 9750 pages, 2793s
+   ...9,775,000 markets, 9775 pages, 2799s
+   ...9,800,000 markets, 9800 pages, 2807s
+   ...9,825,000 markets, 9825 pages, 2814s
+   ...9,850,000 markets, 9850 pages, 2820s
+   ...9,875,000 markets, 9875 pages, 2827s
+   ...9,900,000 markets, 9900 pages, 2834s
+   ...9,925,000 markets, 9925 pages, 2841s
+   ...9,950,000 markets, 9950 pages, 2848s
+   ...9,975,000 markets, 9975 pages, 2854s
+   ...10,000,000 markets, 10000 pages, 2863s
+   ...10,025,000 markets, 10025 pages, 2869s
+   ...10,050,000 markets, 10050 pages, 2875s
+   ...10,075,000 markets, 10075 pages, 2884s
+   ...10,100,000 markets, 10100 pages, 2890s
+   ...10,125,000 markets, 10125 pages, 2896s
+   ...10,150,000 markets, 10150 pages, 2904s
+   ...10,175,000 markets, 10175 pages, 2911s
+   ...10,200,000 markets, 10200 pages, 2920s
+   ...10,225,000 markets, 10225 pages, 2926s
+   ...10,250,000 markets, 10250 pages, 2933s
+   ...10,275,000 markets, 10275 pages, 2939s
+   ...10,300,000 markets, 10300 pages, 2946s
+   ...10,325,000 markets, 10325 pages, 2953s
+   ...10,350,000 markets, 10350 pages, 2961s
+   ...10,375,000 markets, 10375 pages, 2967s
+   ...10,400,000 markets, 10400 pages, 2974s
+   ...10,425,000 markets, 10425 pages, 2982s
+   ...10,450,000 markets, 10450 pages, 2988s
+   ...10,475,000 markets, 10475 pages, 2996s
+   ...10,500,000 markets, 10500 pages, 3004s
+   ...10,525,000 markets, 10525 pages, 3010s
+   ...10,550,000 markets, 10550 pages, 3017s
+   ...10,575,000 markets, 10575 pages, 3024s
+   ...10,600,000 markets, 10600 pages, 3032s
+   ...10,625,000 markets, 10625 pages, 3039s
+   ...10,650,000 markets, 10650 pages, 3045s
+   ...10,675,000 markets, 10675 pages, 3052s
+   ...10,700,000 markets, 10700 pages, 3060s
+   ...10,725,000 markets, 10725 pages, 3066s
+   ...10,750,000 markets, 10750 pages, 3082s
+   ...10,775,000 markets, 10775 pages, 3089s
+   ...10,800,000 markets, 10800 pages, 3096s
+   ...10,825,000 markets, 10825 pages, 3104s
+   ...10,850,000 markets, 10850 pages, 3111s
+   ...10,875,000 markets, 10875 pages, 3117s
+   ...10,900,000 markets, 10900 pages, 3124s
+   ...10,925,000 markets, 10925 pages, 3131s
+   ...10,950,000 markets, 10950 pages, 3138s
+   ...10,975,000 markets, 10975 pages, 3145s
+   ...11,000,000 markets, 11000 pages, 3152s
+   ...11,025,000 markets, 11025 pages, 3159s
+   ...11,050,000 markets, 11050 pages, 3166s
+   ...11,075,000 markets, 11075 pages, 3173s
+   ...11,100,000 markets, 11100 pages, 3180s
+   ...11,125,000 markets, 11125 pages, 3187s
+   ...11,150,000 markets, 11150 pages, 3195s
+   ...11,175,000 markets, 11175 pages, 3201s
+   ...11,200,000 markets, 11200 pages, 3208s
+   ...11,225,000 markets, 11225 pages, 3215s
+   ...11,250,000 markets, 11250 pages, 3222s
+   ...11,275,000 markets, 11275 pages, 3230s
+   ...11,300,000 markets, 11300 pages, 3236s
+   ...11,325,000 markets, 11325 pages, 3243s
+   ...11,350,000 markets, 11350 pages, 3250s
+   ...11,375,000 markets, 11375 pages, 3259s
+   ...11,400,000 markets, 11400 pages, 3265s
+   ...11,425,000 markets, 11425 pages, 3272s
+   ...11,450,000 markets, 11450 pages, 3278s
+   ...11,475,000 markets, 11475 pages, 3285s
+   ...11,500,000 markets, 11500 pages, 3293s
+   ...11,525,000 markets, 11525 pages, 3299s
+   ...11,550,000 markets, 11550 pages, 3306s
+   ...11,575,000 markets, 11575 pages, 3314s
+   ...11,600,000 markets, 11600 pages, 3320s
+   ...11,625,000 markets, 11625 pages, 3328s
+   ...11,650,000 markets, 11650 pages, 3334s
+   ...11,675,000 markets, 11675 pages, 3342s
+   ...11,700,000 markets, 11700 pages, 3348s
+   ...11,725,000 markets, 11725 pages, 3355s
+   ...11,750,000 markets, 11750 pages, 3363s
+   ...11,775,000 markets, 11775 pages, 3369s
+   ...11,800,000 markets, 11800 pages, 3377s
+   ...11,825,000 markets, 11825 pages, 3383s
+   ...11,850,000 markets, 11850 pages, 3391s
+   ...11,875,000 markets, 11875 pages, 3397s
+   ...11,900,000 markets, 11900 pages, 3406s
+   ...11,925,000 markets, 11925 pages, 3413s
+   ...11,950,000 markets, 11950 pages, 3420s
+   ...11,975,000 markets, 11975 pages, 3428s
+   ...12,000,000 markets, 12000 pages, 3435s
+   ...12,025,000 markets, 12025 pages, 3441s
+   ...12,050,000 markets, 12050 pages, 3449s
+   ...12,075,000 markets, 12075 pages, 3455s
+   ...12,100,000 markets, 12100 pages, 3462s
+   ...12,125,000 markets, 12125 pages, 3470s
+   ...12,150,000 markets, 12150 pages, 3476s
+   ...12,175,000 markets, 12175 pages, 3484s
+   ...12,200,000 markets, 12200 pages, 3490s
+   ...12,225,000 markets, 12225 pages, 3497s
+   ...12,250,000 markets, 12250 pages, 3505s
+   ...12,275,000 markets, 12275 pages, 3511s
+   ...12,300,000 markets, 12300 pages, 3517s
+   ...12,325,000 markets, 12325 pages, 3525s
+   ...12,350,000 markets, 12350 pages, 3533s
+   ...12,375,000 markets, 12375 pages, 3539s
+   ...12,400,000 markets, 12400 pages, 3547s
+   ...12,425,000 markets, 12425 pages, 3554s
+   ...12,450,000 markets, 12450 pages, 3562s
+   ...12,475,000 markets, 12475 pages, 3569s
+   ...12,500,000 markets, 12500 pages, 3576s
+   ...12,525,000 markets, 12525 pages, 3583s
+   ...12,550,000 markets, 12550 pages, 3589s
+   ...12,575,000 markets, 12575 pages, 3596s
+   ...12,600,000 markets, 12600 pages, 3602s
+   ...12,625,000 markets, 12625 pages, 3610s
+   ...12,650,000 markets, 12650 pages, 3616s
+   ...12,675,000 markets, 12675 pages, 3624s
+   ...12,700,000 markets, 12700 pages, 3631s
+   ...12,725,000 markets, 12725 pages, 3637s
+   ...12,750,000 markets, 12750 pages, 3644s
+   ...12,775,000 markets, 12775 pages, 3652s
+   ...12,800,000 markets, 12800 pages, 3659s
+   ...12,825,000 markets, 12825 pages, 3674s
+   ...12,850,000 markets, 12850 pages, 3681s
+   ...12,875,000 markets, 12875 pages, 3688s
+   ...12,900,000 markets, 12900 pages, 3695s
+   ...12,925,000 markets, 12925 pages, 3706s
+   ...12,950,000 markets, 12950 pages, 3712s
+   ...12,975,000 markets, 12975 pages, 3720s
+   ...13,000,000 markets, 13000 pages, 3728s
+   ...13,025,000 markets, 13025 pages, 3734s
+   ...13,050,000 markets, 13050 pages, 3742s
+   ...13,075,000 markets, 13075 pages, 3750s
+   ...13,100,000 markets, 13100 pages, 3757s
+   ...13,125,000 markets, 13125 pages, 3769s
+   ...13,150,000 markets, 13150 pages, 3776s
+   ...13,175,000 markets, 13175 pages, 3783s
+   ...13,200,000 markets, 13200 pages, 3791s
+   ...13,225,000 markets, 13225 pages, 3798s
+   ...13,250,000 markets, 13250 pages, 3806s
+   ...13,275,000 markets, 13275 pages, 3813s
+   ...13,300,000 markets, 13300 pages, 3820s
+   ...13,325,000 markets, 13325 pages, 3828s
+   ...13,350,000 markets, 13350 pages, 3835s
+   ...13,375,000 markets, 13375 pages, 3843s
+   ...13,400,000 markets, 13400 pages, 3850s
+   ...13,425,000 markets, 13425 pages, 3857s
+   ...13,450,000 markets, 13450 pages, 3866s
+   ...13,475,000 markets, 13475 pages, 3873s
+   ...13,500,000 markets, 13500 pages, 3880s
+   ...13,525,000 markets, 13525 pages, 3886s
+   ...13,550,000 markets, 13550 pages, 3893s
+   ...13,575,000 markets, 13575 pages, 3901s
+   ...13,600,000 markets, 13600 pages, 3908s
+   ...13,625,000 markets, 13625 pages, 3914s
+   ...13,650,000 markets, 13650 pages, 3922s
+   ...13,675,000 markets, 13675 pages, 3930s
+   ...13,700,000 markets, 13700 pages, 3937s
+   ...13,725,000 markets, 13725 pages, 3944s
+   ...13,750,000 markets, 13750 pages, 3951s
+   ...13,775,000 markets, 13775 pages, 3958s
+   ...13,800,000 markets, 13800 pages, 3965s
+   ...13,825,000 markets, 13825 pages, 3973s
+   ...13,850,000 markets, 13850 pages, 3979s
+   ...13,875,000 markets, 13875 pages, 3986s
+   ...13,900,000 markets, 13900 pages, 3995s
+   ...13,925,000 markets, 13925 pages, 4002s
+   ...13,950,000 markets, 13950 pages, 4009s
+   ...13,975,000 markets, 13975 pages, 4016s
+   ...14,000,000 markets, 14000 pages, 4023s
+   ...14,025,000 markets, 14025 pages, 4030s
+   ...14,050,000 markets, 14050 pages, 4037s
+   ...14,075,000 markets, 14075 pages, 4044s
+   ...14,100,000 markets, 14100 pages, 4052s
+   ...14,125,000 markets, 14125 pages, 4059s
+   ...14,150,000 markets, 14150 pages, 4067s
+   ...14,175,000 markets, 14175 pages, 4075s
+   ...14,200,000 markets, 14200 pages, 4082s
+   ...14,225,000 markets, 14225 pages, 4089s
+   ...14,250,000 markets, 14250 pages, 4097s
+   ...14,275,000 markets, 14275 pages, 4104s
+   ...14,300,000 markets, 14300 pages, 4111s
+   ...14,325,000 markets, 14325 pages, 4119s
+   ...14,350,000 markets, 14350 pages, 4126s
+   ...14,375,000 markets, 14375 pages, 4133s
+   ...14,400,000 markets, 14400 pages, 4140s
+   ...14,425,000 markets, 14425 pages, 4147s
+   ...14,450,000 markets, 14450 pages, 4153s
+   ...14,475,000 markets, 14475 pages, 4162s
+   ...14,500,000 markets, 14500 pages, 4169s
+   ...14,525,000 markets, 14525 pages, 4176s
+   ...14,550,000 markets, 14550 pages, 4182s
+   ...14,575,000 markets, 14575 pages, 4191s
+   ...14,600,000 markets, 14600 pages, 4198s
+   ...14,625,000 markets, 14625 pages, 4204s
+   ...14,650,000 markets, 14650 pages, 4211s
+   ...14,675,000 markets, 14675 pages, 4217s
+   ...14,700,000 markets, 14700 pages, 4224s
+   ...14,725,000 markets, 14725 pages, 4231s
+   ...14,750,000 markets, 14750 pages, 4240s
+   ...14,775,000 markets, 14775 pages, 4247s
+   ...14,800,000 markets, 14800 pages, 4253s
+   ...14,825,000 markets, 14825 pages, 4261s
+   ...14,850,000 markets, 14850 pages, 4268s
+   ...14,875,000 markets, 14875 pages, 4276s
+   ...14,900,000 markets, 14900 pages, 4283s
+   ...14,925,000 markets, 14925 pages, 4290s
+   ...14,950,000 markets, 14950 pages, 4296s
+   ...14,975,000 markets, 14975 pages, 4305s
+   ...15,000,000 markets, 15000 pages, 4311s
+   ...15,025,000 markets, 15025 pages, 4318s
+   ...15,050,000 markets, 15050 pages, 4324s
+   ...15,075,000 markets, 15075 pages, 4332s
+   ...15,100,000 markets, 15100 pages, 4339s
+   ...15,125,000 markets, 15125 pages, 4347s
+   ...15,150,000 markets, 15150 pages, 4354s
+   ...15,175,000 markets, 15175 pages, 4360s
+   ...15,200,000 markets, 15200 pages, 4367s
+   ...15,225,000 markets, 15225 pages, 4375s
+   ...15,250,000 markets, 15250 pages, 4382s
+   ...15,275,000 markets, 15275 pages, 4389s
+   ...15,300,000 markets, 15300 pages, 4395s
+   ...15,325,000 markets, 15325 pages, 4406s
+   ...15,350,000 markets, 15350 pages, 4412s
+   ...15,375,000 markets, 15375 pages, 4419s
+   ...15,400,000 markets, 15400 pages, 4425s
+   ...15,425,000 markets, 15425 pages, 4433s
+   ...15,450,000 markets, 15450 pages, 4441s
+   ...15,475,000 markets, 15475 pages, 4447s
+   ...15,500,000 markets, 15500 pages, 4453s
+   ...15,525,000 markets, 15525 pages, 4461s
+   ...15,550,000 markets, 15550 pages, 4468s
+   ...15,575,000 markets, 15575 pages, 4475s
+   ...15,600,000 markets, 15600 pages, 4481s
+   ...15,625,000 markets, 15625 pages, 4488s
+   ...15,650,000 markets, 15650 pages, 4496s
+   ...15,675,000 markets, 15675 pages, 4503s
+   ...15,700,000 markets, 15700 pages, 4509s
+   ...15,725,000 markets, 15725 pages, 4516s
+   ...15,750,000 markets, 15750 pages, 4523s
+   ...15,775,000 markets, 15775 pages, 4531s
+   ...15,800,000 markets, 15800 pages, 4538s
+   ...15,825,000 markets, 15825 pages, 4545s
+   ...15,850,000 markets, 15850 pages, 4552s
+   ...15,875,000 markets, 15875 pages, 4558s
+   ...15,900,000 markets, 15900 pages, 4566s
+   ...15,925,000 markets, 15925 pages, 4573s
+   ...15,950,000 markets, 15950 pages, 4581s
+   ...15,975,000 markets, 15975 pages, 4588s
+   ...16,000,000 markets, 16000 pages, 4595s
+   ...16,025,000 markets, 16025 pages, 4602s
+   ...16,050,000 markets, 16050 pages, 4609s
+   ...16,075,000 markets, 16075 pages, 4615s
+   ...16,100,000 markets, 16100 pages, 4622s
+   ...16,125,000 markets, 16125 pages, 4629s
+   ...16,150,000 markets, 16150 pages, 4636s
+   ...16,175,000 markets, 16175 pages, 4643s
+   ...16,200,000 markets, 16200 pages, 4650s
+   ...16,225,000 markets, 16225 pages, 4657s
+   ...16,250,000 markets, 16250 pages, 4665s
+   ...16,275,000 markets, 16275 pages, 4672s
+   ...16,300,000 markets, 16300 pages, 4679s
+   ...16,325,000 markets, 16325 pages, 4687s
+   ...16,350,000 markets, 16350 pages, 4696s
+   ...16,375,000 markets, 16375 pages, 4701s
+   ...16,400,000 markets, 16400 pages, 4709s
+   ...16,425,000 markets, 16425 pages, 4717s
+   ...16,450,000 markets, 16450 pages, 4723s
+   ...16,475,000 markets, 16475 pages, 4730s
+   ...16,500,000 markets, 16500 pages, 4738s
+   ...16,525,000 markets, 16525 pages, 4746s
+   ...16,550,000 markets, 16550 pages, 4753s
+   ...16,575,000 markets, 16575 pages, 4761s
+   ...16,600,000 markets, 16600 pages, 4768s
+   ...16,625,000 markets, 16625 pages, 4774s
+   ...16,650,000 markets, 16650 pages, 4781s
+   ...16,675,000 markets, 16675 pages, 4788s
+   ...16,700,000 markets, 16700 pages, 4795s
+   ...16,725,000 markets, 16725 pages, 4801s
+   ...16,750,000 markets, 16750 pages, 4808s
+   ...16,775,000 markets, 16775 pages, 4815s
+   ...16,800,000 markets, 16800 pages, 4822s
+   ...16,825,000 markets, 16825 pages, 4829s
+   ...16,850,000 markets, 16850 pages, 4836s
+   ...16,875,000 markets, 16875 pages, 4843s
+   ...16,900,000 markets, 16900 pages, 4850s
+   ...16,925,000 markets, 16925 pages, 4857s
+   ...16,950,000 markets, 16950 pages, 4864s
+   ...16,975,000 markets, 16975 pages, 4871s
+   ...17,000,000 markets, 17000 pages, 4878s
+   ...17,025,000 markets, 17025 pages, 4885s
+   ...17,050,000 markets, 17050 pages, 4891s
+   ...17,075,000 markets, 17075 pages, 4898s
+   ...17,100,000 markets, 17100 pages, 4905s
+   ...17,125,000 markets, 17125 pages, 4913s
+   ...17,150,000 markets, 17150 pages, 4920s
+   ...17,175,000 markets, 17175 pages, 4927s
+   ...17,200,000 markets, 17200 pages, 4935s
+   ...17,225,000 markets, 17225 pages, 4942s
+   ...17,250,000 markets, 17250 pages, 4948s
+   ...17,275,000 markets, 17275 pages, 4956s
+   ...17,300,000 markets, 17300 pages, 4963s
+   ...17,325,000 markets, 17325 pages, 4971s
+   ...17,350,000 markets, 17350 pages, 4978s
+   ...17,375,000 markets, 17375 pages, 4985s
+   ...17,400,000 markets, 17400 pages, 4991s
+   ...17,425,000 markets, 17425 pages, 5000s
+   ...17,450,000 markets, 17450 pages, 5007s
+   ...17,475,000 markets, 17475 pages, 5014s
+   ...17,500,000 markets, 17500 pages, 5021s
+   ...17,525,000 markets, 17525 pages, 5028s
+   ...17,550,000 markets, 17550 pages, 5035s
+   ...17,575,000 markets, 17575 pages, 5042s
+   ...17,600,000 markets, 17600 pages, 5049s
+   ...17,625,000 markets, 17625 pages, 5056s
+   ...17,650,000 markets, 17650 pages, 5063s
+   ...17,675,000 markets, 17675 pages, 5073s
+   ...17,700,000 markets, 17700 pages, 5080s
+   ...17,725,000 markets, 17725 pages, 5087s
+   ...17,750,000 markets, 17750 pages, 5094s
+   ...17,775,000 markets, 17775 pages, 5103s
+   ...17,800,000 markets, 17800 pages, 5110s
+   ...17,825,000 markets, 17825 pages, 5117s
+   ...17,850,000 markets, 17850 pages, 5123s
+   ...17,875,000 markets, 17875 pages, 5130s
+   ...17,900,000 markets, 17900 pages, 5138s
+   ...17,925,000 markets, 17925 pages, 5145s
+   ...17,950,000 markets, 17950 pages, 5151s
+   ...17,975,000 markets, 17975 pages, 5158s
+   ...18,000,000 markets, 18000 pages, 5167s
+   ...18,025,000 markets, 18025 pages, 5174s
+   ...18,050,000 markets, 18050 pages, 5181s
+   ...18,075,000 markets, 18075 pages, 5188s
+   ...18,100,000 markets, 18100 pages, 5195s
+   ...18,125,000 markets, 18125 pages, 5201s
+   ...18,150,000 markets, 18150 pages, 5208s
+   ...18,175,000 markets, 18175 pages, 5216s
+   ...18,200,000 markets, 18200 pages, 5223s
+   ...18,225,000 markets, 18225 pages, 5230s
+   ...18,250,000 markets, 18250 pages, 5238s
+   ...18,275,000 markets, 18275 pages, 5245s
+   ...18,300,000 markets, 18300 pages, 5252s
+   ...18,325,000 markets, 18325 pages, 5259s
+   ...18,350,000 markets, 18350 pages, 5266s
+   ...18,375,000 markets, 18375 pages, 5272s
+   ...18,400,000 markets, 18400 pages, 5281s
+   ...18,425,000 markets, 18425 pages, 5288s
+   ...18,450,000 markets, 18450 pages, 5294s
+   ...18,475,000 markets, 18475 pages, 5301s
+   ...18,500,000 markets, 18500 pages, 5308s
+   ...18,525,000 markets, 18525 pages, 5315s
+   ...18,550,000 markets, 18550 pages, 5322s
+   ...18,575,000 markets, 18575 pages, 5329s
+   ...18,600,000 markets, 18600 pages, 5336s
+   ...18,625,000 markets, 18625 pages, 5343s
+   ...18,650,000 markets, 18650 pages, 5350s
+   ...18,675,000 markets, 18675 pages, 5357s
+   ...18,700,000 markets, 18700 pages, 5364s
+   ...18,725,000 markets, 18725 pages, 5373s
+   ...18,750,000 markets, 18750 pages, 5380s
+   ...18,775,000 markets, 18775 pages, 5386s
+   ...18,800,000 markets, 18800 pages, 5394s
+   ...18,825,000 markets, 18825 pages, 5401s
+   ...18,850,000 markets, 18850 pages, 5408s
+   ...18,875,000 markets, 18875 pages, 5415s
+   ...18,900,000 markets, 18900 pages, 5422s
+   ...18,925,000 markets, 18925 pages, 5429s
+   ...18,950,000 markets, 18950 pages, 5437s
+   ...18,975,000 markets, 18975 pages, 5445s
+   ...19,000,000 markets, 19000 pages, 5452s
+   ...19,025,000 markets, 19025 pages, 5460s
+   ...19,050,000 markets, 19050 pages, 5467s
+   ...19,075,000 markets, 19075 pages, 5473s
+   ...19,100,000 markets, 19100 pages, 5481s
+   ...19,125,000 markets, 19125 pages, 5489s
+   ...19,150,000 markets, 19150 pages, 5496s
+   ...19,175,000 markets, 19175 pages, 5503s
+   ...19,200,000 markets, 19200 pages, 5511s
+   ...19,225,000 markets, 19225 pages, 5518s
+   ...19,250,000 markets, 19250 pages, 5525s
+   ...19,275,000 markets, 19275 pages, 5533s
+   ...19,300,000 markets, 19300 pages, 5540s
+   ...19,325,000 markets, 19325 pages, 5548s
+   ...19,350,000 markets, 19350 pages, 5555s
+   ...19,375,000 markets, 19375 pages, 5562s
+   ...19,400,000 markets, 19400 pages, 5570s
+   ...19,425,000 markets, 19425 pages, 5577s
+   ...19,450,000 markets, 19450 pages, 5585s
+   ...19,475,000 markets, 19475 pages, 5593s
+   ...19,500,000 markets, 19500 pages, 5601s
+   ...19,525,000 markets, 19525 pages, 5606s
+   ...19,550,000 markets, 19550 pages, 5615s
+   ...19,575,000 markets, 19575 pages, 5623s
+   ...19,600,000 markets, 19600 pages, 5630s
+   ...19,625,000 markets, 19625 pages, 5637s
+   ...19,650,000 markets, 19650 pages, 5645s
+   ...19,675,000 markets, 19675 pages, 5652s
+   ...19,700,000 markets, 19700 pages, 5660s
+   ...19,725,000 markets, 19725 pages, 5668s
+   ...19,750,000 markets, 19750 pages, 5675s
+   ...19,775,000 markets, 19775 pages, 5683s
+   ...19,800,000 markets, 19800 pages, 5691s
+   ...19,825,000 markets, 19825 pages, 5698s
+   ...19,850,000 markets, 19850 pages, 5707s
+   ...19,875,000 markets, 19875 pages, 5714s
+   ...19,900,000 markets, 19900 pages, 5722s
+   ...19,925,000 markets, 19925 pages, 5730s
+   ...19,950,000 markets, 19950 pages, 5737s
+   ...19,975,000 markets, 19975 pages, 5746s
+   ...20,000,000 markets, 20000 pages, 5752s
+   ...20,025,000 markets, 20025 pages, 5760s
+   ...20,050,000 markets, 20050 pages, 5767s
+   ...20,075,000 markets, 20075 pages, 5776s
+   ...20,100,000 markets, 20100 pages, 5783s
+   ...20,125,000 markets, 20125 pages, 5790s
+   ...20,150,000 markets, 20150 pages, 5798s
+   ...20,175,000 markets, 20175 pages, 5804s
+   ...20,200,000 markets, 20200 pages, 5811s
+   ...20,225,000 markets, 20225 pages, 5820s
+   ...20,250,000 markets, 20250 pages, 5827s
+   ...20,275,000 markets, 20275 pages, 5834s
+   ...20,300,000 markets, 20300 pages, 5841s
+   ...20,325,000 markets, 20325 pages, 5849s
+   ...20,350,000 markets, 20350 pages, 5858s
+   ...20,375,000 markets, 20375 pages, 5866s
+   ...20,400,000 markets, 20400 pages, 5874s
+   ...20,425,000 markets, 20425 pages, 5881s
+   ...20,450,000 markets, 20450 pages, 5888s
+   ...20,475,000 markets, 20475 pages, 5895s
+   ...20,500,000 markets, 20500 pages, 5901s
+   ...20,525,000 markets, 20525 pages, 5909s
+   ...20,550,000 markets, 20550 pages, 5916s
+   ...20,575,000 markets, 20575 pages, 5923s
+   ...20,600,000 markets, 20600 pages, 5930s
+   ...20,625,000 markets, 20625 pages, 5938s
+   ...20,650,000 markets, 20650 pages, 5945s
+   ...20,675,000 markets, 20675 pages, 5952s
+   ...20,700,000 markets, 20700 pages, 5960s
+   ...20,725,000 markets, 20725 pages, 5967s
+   ...20,750,000 markets, 20750 pages, 5973s
+   ...20,775,000 markets, 20775 pages, 5981s
+   ...20,800,000 markets, 20800 pages, 5988s
+   ...20,825,000 markets, 20825 pages, 5996s
+   ...20,850,000 markets, 20850 pages, 6003s
+   ...20,875,000 markets, 20875 pages, 6010s
+   ...20,900,000 markets, 20900 pages, 6017s
+   ...20,925,000 markets, 20925 pages, 6025s
+   ...20,950,000 markets, 20950 pages, 6033s
+   ...20,975,000 markets, 20975 pages, 6041s
+   ...21,000,000 markets, 21000 pages, 6048s
+   ...21,025,000 markets, 21025 pages, 6055s
+   ...21,050,000 markets, 21050 pages, 6062s
+   ...21,075,000 markets, 21075 pages, 6069s
+   ...21,100,000 markets, 21100 pages, 6075s
+   ...21,125,000 markets, 21125 pages, 6082s
+   ...21,150,000 markets, 21150 pages, 6089s
+   ...21,175,000 markets, 21175 pages, 6096s
+   ...21,200,000 markets, 21200 pages, 6103s
+   ...21,225,000 markets, 21225 pages, 6110s
+   ...21,250,000 markets, 21250 pages, 6117s
+   ...21,275,000 markets, 21275 pages, 6124s
+   ...21,300,000 markets, 21300 pages, 6132s
+   ...21,325,000 markets, 21325 pages, 6139s
+   ...21,350,000 markets, 21350 pages, 6146s
+   ...21,375,000 markets, 21375 pages, 6154s
+   ...21,400,000 markets, 21400 pages, 6160s
+   ...21,425,000 markets, 21425 pages, 6167s
+   ...21,450,000 markets, 21450 pages, 6174s
+   ...21,475,000 markets, 21475 pages, 6182s
+   ...21,500,000 markets, 21500 pages, 6189s
+   ...21,525,000 markets, 21525 pages, 6196s
+   ...21,550,000 markets, 21550 pages, 6203s
+   ...21,575,000 markets, 21575 pages, 6211s
+   ...21,600,000 markets, 21600 pages, 6218s
+   ...21,625,000 markets, 21625 pages, 6225s
+   ...21,650,000 markets, 21650 pages, 6232s
+   ...21,675,000 markets, 21675 pages, 6239s
+   ...21,700,000 markets, 21700 pages, 6247s
+   ...21,725,000 markets, 21725 pages, 6254s
+   ...21,750,000 markets, 21750 pages, 6262s
+   ...21,775,000 markets, 21775 pages, 6269s
+   ...21,800,000 markets, 21800 pages, 6276s
+   ...21,825,000 markets, 21825 pages, 6284s
+   ...21,850,000 markets, 21850 pages, 6291s
+   ...21,875,000 markets, 21875 pages, 6298s
+   ...21,900,000 markets, 21900 pages, 6305s
+   ...21,925,000 markets, 21925 pages, 6313s
+   ...21,950,000 markets, 21950 pages, 6320s
+   ...21,975,000 markets, 21975 pages, 6327s
+   ...22,000,000 markets, 22000 pages, 6334s
+   ...22,025,000 markets, 22025 pages, 6342s
+   ...22,050,000 markets, 22050 pages, 6349s
+   ...22,075,000 markets, 22075 pages, 6354s
+   ...22,100,000 markets, 22100 pages, 6362s
+   ...22,125,000 markets, 22125 pages, 6369s
+   ...22,150,000 markets, 22150 pages, 6376s
+   ...22,175,000 markets, 22175 pages, 6383s
+   ...22,200,000 markets, 22200 pages, 6390s
+   ...22,225,000 markets, 22225 pages, 6397s
+   ...22,250,000 markets, 22250 pages, 6404s
+   ...22,275,000 markets, 22275 pages, 6411s
+   ...22,300,000 markets, 22300 pages, 6418s
+   ...22,325,000 markets, 22325 pages, 6425s
+   ...22,350,000 markets, 22350 pages, 6433s
+   ...22,375,000 markets, 22375 pages, 6440s
+   ...22,400,000 markets, 22400 pages, 6447s
+   ...22,425,000 markets, 22425 pages, 6453s
+   ...22,450,000 markets, 22450 pages, 6460s
+   ...22,475,000 markets, 22475 pages, 6468s
+   ...22,500,000 markets, 22500 pages, 6475s
+   ...22,525,000 markets, 22525 pages, 6482s
+   ...22,550,000 markets, 22550 pages, 6488s
+   ...22,575,000 markets, 22575 pages, 6495s
+   ...22,600,000 markets, 22600 pages, 6503s
+   ...22,625,000 markets, 22625 pages, 6510s
+   ...22,650,000 markets, 22650 pages, 6516s
+   ...22,675,000 markets, 22675 pages, 6524s
+   ...22,700,000 markets, 22700 pages, 6531s
+   ...22,725,000 markets, 22725 pages, 6539s
+   ...22,750,000 markets, 22750 pages, 6545s
+   ...22,775,000 markets, 22775 pages, 6554s
+   ...22,800,000 markets, 22800 pages, 6560s
+   ...22,825,000 markets, 22825 pages, 6568s
+   ...22,850,000 markets, 22850 pages, 6575s
+   ...22,875,000 markets, 22875 pages, 6581s
+   ...22,900,000 markets, 22900 pages, 6589s
+   ...22,925,000 markets, 22925 pages, 6596s
+   ...22,950,000 markets, 22950 pages, 6602s
+   ...22,975,000 markets, 22975 pages, 6610s
+   ...23,000,000 markets, 23000 pages, 6617s
+   ...23,025,000 markets, 23025 pages, 6625s
+   ...23,050,000 markets, 23050 pages, 6631s
+   ...23,075,000 markets, 23075 pages, 6638s
+   ...23,100,000 markets, 23100 pages, 6645s
+   ...23,125,000 markets, 23125 pages, 6652s
+   ...23,150,000 markets, 23150 pages, 6659s
+   ...23,175,000 markets, 23175 pages, 6665s
+   ...23,200,000 markets, 23200 pages, 6673s
+   ...23,225,000 markets, 23225 pages, 6680s
+   ...23,250,000 markets, 23250 pages, 6687s
+   ...23,275,000 markets, 23275 pages, 6693s
+   ...23,300,000 markets, 23300 pages, 6700s
+   ...23,325,000 markets, 23325 pages, 6709s
+   ...23,350,000 markets, 23350 pages, 6715s
+   ...23,375,000 markets, 23375 pages, 6722s
+   ...23,400,000 markets, 23400 pages, 6729s
+   ...23,425,000 markets, 23425 pages, 6736s
+   ...23,450,000 markets, 23450 pages, 6744s
+   ...23,475,000 markets, 23475 pages, 6750s
+   ...23,500,000 markets, 23500 pages, 6756s
+   ...23,525,000 markets, 23525 pages, 6763s
+   ...23,550,000 markets, 23550 pages, 6770s
+   ...23,575,000 markets, 23575 pages, 6778s
+   ...23,600,000 markets, 23600 pages, 6785s
+   ...23,625,000 markets, 23625 pages, 6792s
+   ...23,650,000 markets, 23650 pages, 6799s
+   ...23,675,000 markets, 23675 pages, 6806s
+   ...23,700,000 markets, 23700 pages, 6814s
+   ...23,725,000 markets, 23725 pages, 6821s
+   ...23,750,000 markets, 23750 pages, 6827s
+   ...23,775,000 markets, 23775 pages, 6835s
+   ...23,800,000 markets, 23800 pages, 6842s
+   ...23,825,000 markets, 23825 pages, 6850s
+   ...23,850,000 markets, 23850 pages, 6856s
+   ...23,875,000 markets, 23875 pages, 6863s
+   ...23,900,000 markets, 23900 pages, 6870s
+   ...23,925,000 markets, 23925 pages, 6877s
+   ...23,950,000 markets, 23950 pages, 6884s
+   ...23,975,000 markets, 23975 pages, 6891s
+   ...24,000,000 markets, 24000 pages, 6898s
+   ...24,025,000 markets, 24025 pages, 6906s
+   ...24,050,000 markets, 24050 pages, 6913s
+   ...24,075,000 markets, 24075 pages, 6920s
+   ...24,100,000 markets, 24100 pages, 6928s
+   ...24,125,000 markets, 24125 pages, 6935s
+   ...24,150,000 markets, 24150 pages, 6943s
+   ...24,175,000 markets, 24175 pages, 6950s
+   ...24,200,000 markets, 24200 pages, 6957s
+   ...24,225,000 markets, 24225 pages, 6965s
+   ...24,250,000 markets, 24250 pages, 6972s
+   ...24,275,000 markets, 24275 pages, 6979s
+   ...24,300,000 markets, 24300 pages, 6986s
+   ...24,325,000 markets, 24325 pages, 6992s
+   ...24,350,000 markets, 24350 pages, 6999s
+   ...24,375,000 markets, 24375 pages, 7006s
+   ...24,400,000 markets, 24400 pages, 7014s
+   ...24,425,000 markets, 24425 pages, 7021s
+   ...24,450,000 markets, 24450 pages, 7028s
+   ...24,475,000 markets, 24475 pages, 7035s
+   ...24,500,000 markets, 24500 pages, 7042s
+   ...24,525,000 markets, 24525 pages, 7049s
+   ...24,550,000 markets, 24550 pages, 7056s
+   ...24,575,000 markets, 24575 pages, 7063s
+   ...24,600,000 markets, 24600 pages, 7071s
+   ...24,625,000 markets, 24625 pages, 7079s
+   ...24,650,000 markets, 24650 pages, 7085s
+   ...24,675,000 markets, 24675 pages, 7092s
+   ...24,700,000 markets, 24700 pages, 7101s
+   ...24,725,000 markets, 24725 pages, 7107s
+   ...24,750,000 markets, 24750 pages, 7114s
+   ...24,775,000 markets, 24775 pages, 7121s
+   ...24,800,000 markets, 24800 pages, 7128s
+   ...24,825,000 markets, 24825 pages, 7136s
+   ...24,850,000 markets, 24850 pages, 7143s
+   ...24,875,000 markets, 24875 pages, 7149s
+   ...24,900,000 markets, 24900 pages, 7156s
+   ...24,925,000 markets, 24925 pages, 7163s
+   ...24,950,000 markets, 24950 pages, 7172s
+   ...24,975,000 markets, 24975 pages, 7179s
+   ...25,000,000 markets, 25000 pages, 7186s
+   ...25,025,000 markets, 25025 pages, 7194s
+   ...25,050,000 markets, 25050 pages, 7201s
+   ...25,075,000 markets, 25075 pages, 7209s
+   ...25,100,000 markets, 25100 pages, 7216s
+   ...25,125,000 markets, 25125 pages, 7222s
+   ...25,150,000 markets, 25150 pages, 7229s
+   ...25,175,000 markets, 25175 pages, 7237s
+   ...25,200,000 markets, 25200 pages, 7244s
+   ...25,225,000 markets, 25225 pages, 7251s
+   ...25,250,000 markets, 25250 pages, 7258s
+   ...25,275,000 markets, 25275 pages, 7265s
+   ...25,300,000 markets, 25300 pages, 7272s
+   ...25,325,000 markets, 25325 pages, 7279s
+   ...25,350,000 markets, 25350 pages, 7285s
+   ...25,375,000 markets, 25375 pages, 7293s
+   ...25,400,000 markets, 25400 pages, 7300s
+   ...25,425,000 markets, 25425 pages, 7307s
+   ...25,450,000 markets, 25450 pages, 7316s
+   ...25,475,000 markets, 25475 pages, 7323s
+   ...25,500,000 markets, 25500 pages, 7331s
+   ...25,525,000 markets, 25525 pages, 7338s
+   ...25,550,000 markets, 25550 pages, 7346s
+   ...25,575,000 markets, 25575 pages, 7353s
+   ...25,600,000 markets, 25600 pages, 7359s
+   ...25,625,000 markets, 25625 pages, 7366s
+   ...25,650,000 markets, 25650 pages, 7374s
+   ...25,675,000 markets, 25675 pages, 7382s
+   ...25,700,000 markets, 25700 pages, 7389s
+   ...25,725,000 markets, 25725 pages, 7396s
+   ...25,750,000 markets, 25750 pages, 7404s
+   ...25,775,000 markets, 25775 pages, 7411s
+   ...25,800,000 markets, 25800 pages, 7417s
+   ...25,825,000 markets, 25825 pages, 7425s
+   ...25,850,000 markets, 25850 pages, 7433s
+   ...25,875,000 markets, 25875 pages, 7440s
+   ...25,900,000 markets, 25900 pages, 7447s
+   ...25,925,000 markets, 25925 pages, 7454s
+   ...25,950,000 markets, 25950 pages, 7461s
+   ...25,975,000 markets, 25975 pages, 7469s
+   ...26,000,000 markets, 26000 pages, 7476s
+   ...26,025,000 markets, 26025 pages, 7482s
+   ...26,050,000 markets, 26050 pages, 7489s
+   ...26,075,000 markets, 26075 pages, 7497s
+   ...26,100,000 markets, 26100 pages, 7504s
+   ...26,125,000 markets, 26125 pages, 7511s
+   ...26,150,000 markets, 26150 pages, 7518s
+   ...26,175,000 markets, 26175 pages, 7526s
+   ...26,200,000 markets, 26200 pages, 7533s
+   ...26,225,000 markets, 26225 pages, 7540s
+   ...26,250,000 markets, 26250 pages, 7548s
+   ...26,275,000 markets, 26275 pages, 7556s
+   ...26,300,000 markets, 26300 pages, 7563s
+   ...26,325,000 markets, 26325 pages, 7570s
+   ...26,350,000 markets, 26350 pages, 7578s
+   ...26,375,000 markets, 26375 pages, 7584s
+   ...26,400,000 markets, 26400 pages, 7592s
+   ...26,425,000 markets, 26425 pages, 7599s
+   ...26,450,000 markets, 26450 pages, 7606s
+   ...26,475,000 markets, 26475 pages, 7612s
+   ...26,500,000 markets, 26500 pages, 7620s
+   ...26,525,000 markets, 26525 pages, 7628s
+   ...26,550,000 markets, 26550 pages, 7638s
+   ...26,575,000 markets, 26575 pages, 7645s
+   ...26,600,000 markets, 26600 pages, 7652s
+   ...26,625,000 markets, 26625 pages, 7661s
+   ...26,650,000 markets, 26650 pages, 7669s
+   ...26,675,000 markets, 26675 pages, 7676s
+   ...26,700,000 markets, 26700 pages, 7682s
+   ...26,725,000 markets, 26725 pages, 7689s
+   ...26,750,000 markets, 26750 pages, 7696s
+   ...26,775,000 markets, 26775 pages, 7703s
+   ...26,800,000 markets, 26800 pages, 7709s
+   ...26,825,000 markets, 26825 pages, 7717s
+   ...26,850,000 markets, 26850 pages, 7723s
+   ...26,875,000 markets, 26875 pages, 7731s
+   ...26,900,000 markets, 26900 pages, 7737s
+   ...26,925,000 markets, 26925 pages, 7745s
+   ...26,950,000 markets, 26950 pages, 7752s
+   ...26,975,000 markets, 26975 pages, 7758s
+   ...27,000,000 markets, 27000 pages, 7766s
+   ...27,025,000 markets, 27025 pages, 7772s
+   ...27,050,000 markets, 27050 pages, 7779s
+   ...27,075,000 markets, 27075 pages, 7789s
+   ...27,100,000 markets, 27100 pages, 7795s
+   ...27,125,000 markets, 27125 pages, 7802s
+   ...27,150,000 markets, 27150 pages, 7808s
+   ...27,175,000 markets, 27175 pages, 7815s
+   ...27,200,000 markets, 27200 pages, 7823s
+   ...27,225,000 markets, 27225 pages, 7830s
+   ...27,250,000 markets, 27250 pages, 7837s
+   ...27,275,000 markets, 27275 pages, 7844s
+   ...27,300,000 markets, 27300 pages, 7851s
+   ...27,325,000 markets, 27325 pages, 7859s
+   ...27,350,000 markets, 27350 pages, 7866s
+   ...27,375,000 markets, 27375 pages, 7873s
+   ...27,400,000 markets, 27400 pages, 7880s
+   ...27,425,000 markets, 27425 pages, 7887s
+   ...27,450,000 markets, 27450 pages, 7894s
+   ...27,475,000 markets, 27475 pages, 7901s
+   ...27,500,000 markets, 27500 pages, 7907s
+   ...27,525,000 markets, 27525 pages, 7915s
+   ...27,550,000 markets, 27550 pages, 7923s
+   ...27,575,000 markets, 27575 pages, 7930s
+   ...27,600,000 markets, 27600 pages, 7936s
+   ...27,625,000 markets, 27625 pages, 7943s
+   ...27,650,000 markets, 27650 pages, 7951s
+   ...27,675,000 markets, 27675 pages, 7958s
+   ...27,700,000 markets, 27700 pages, 7965s
+   ...27,725,000 markets, 27725 pages, 7973s
+   ...27,750,000 markets, 27750 pages, 7980s
+   ...27,775,000 markets, 27775 pages, 7987s
+   ...27,800,000 markets, 27800 pages, 7994s
+   ...27,825,000 markets, 27825 pages, 8002s
+   ...27,850,000 markets, 27850 pages, 8008s
+   ...27,875,000 markets, 27875 pages, 8016s
+   ...27,900,000 markets, 27900 pages, 8022s
+   ...27,925,000 markets, 27925 pages, 8029s
+   ...27,950,000 markets, 27950 pages, 8037s
+   ...27,975,000 markets, 27975 pages, 8044s
+   ...28,000,000 markets, 28000 pages, 8050s
+   ...28,025,000 markets, 28025 pages, 8058s
+   ...28,050,000 markets, 28050 pages, 8065s
+   ...28,075,000 markets, 28075 pages, 8072s
+   ...28,100,000 markets, 28100 pages, 8079s
+   ...28,125,000 markets, 28125 pages, 8086s
+   ...28,150,000 markets, 28150 pages, 8093s
+   ...28,175,000 markets, 28175 pages, 8100s
+   ...28,200,000 markets, 28200 pages, 8107s
+   ...28,225,000 markets, 28225 pages, 8115s
+   ...28,250,000 markets, 28250 pages, 8122s
+   ...28,275,000 markets, 28275 pages, 8129s
+   ...28,300,000 markets, 28300 pages, 8136s
+   ...28,325,000 markets, 28325 pages, 8143s
+   ...28,350,000 markets, 28350 pages, 8149s
+   ...28,375,000 markets, 28375 pages, 8157s
+   ...28,400,000 markets, 28400 pages, 8165s
+   ...28,425,000 markets, 28425 pages, 8172s
+   ...28,450,000 markets, 28450 pages, 8178s
+   ...28,475,000 markets, 28475 pages, 8187s
+   ...28,500,000 markets, 28500 pages, 8194s
+   ...28,525,000 markets, 28525 pages, 8200s
+   ...28,550,000 markets, 28550 pages, 8207s
+   ...28,575,000 markets, 28575 pages, 8214s
+   ...28,600,000 markets, 28600 pages, 8221s
+
+TOTAL markets      28,621,377   (28622 pages, 8228s)
+close_time range   2023-06-22T03:59:00Z -> 2099-08-01T04:59:00Z
+by status          active=1,251,965, closed=11,085, determined=334, finalized=27,296,134, inactive=1,841, initialized=60,018
+by close year      2023=59, 2024=561, 2025=6,149, 2026=28,580,313, 2027=29,673, 2028=2,389, 2029=966, 2030=394, 2031=318, 2032=64, 2033=66, 2034=65, 2035=113, 2036=57, 2037=48, 2039=1, 2040=13, 2043=3, 2045=105, 2050=4, 2070=7, 2099=9
+distinct series roots  4,528
+   KXMVESPORTSMULTIGAMEEXTENDED     20,363,716
+   KXMVECROSSCATEGORY               4,924,738
+   KXBTCD                           301,770
+   KXBTC                            301,450
+   KXSOLD                           204,175
+   KXETH                            202,075
+   KXETHD                           202,075
+   KXSOLE                           169,675
+   KXHYPED                          121,085
+   KXBNB                            121,075
+   KXHYPE                           121,075
+   KXXRP                            121,075
+   KXBNBD                           121,075
+   KXXRPD                           121,075
+   KXNASDAQ100U                     113,080
+   KXDOGE                            85,632
+   KXDOGED                           85,629
+   KXINXU                            75,016
+   KXMLBHRR                          74,425
+   KXMLBTB                           61,463
+   KXMLBHIT                          50,231
+   KXMLBHR                           29,528
+   KXTEMPNYCH                        27,377
+   KXITFMATCH                        17,074
+   KXMLBRBI                          15,618
+
+==============================================================================
+3. TRADE HISTORY -- public? how far back?
+==============================================================================
+/markets/trades unauth -> 200
+sample trade fields: count_fp, created_time, is_block_trade, no_price_dollars, taker_book_side, taker_outcome_side, taker_side, ticker, trade_id, yes_price_dollars
+{
+  "count_fp": "13.27",
+  "created_time": "2026-08-02T00:44:52.861087Z",
+  "is_block_trade": false,
+  "no_price_dollars": "0.4900",
+  "taker_book_side": "bid",
+  "taker_outcome_side": "yes",
+  "taker_side": "yes",
+  "ticker": "KXMLBHIT-26AUG012110BOSLAD-LADDRUSHING68-1",
+  "trade_id": "ba7437f5-f76c-6cdc-2d17-5055ed4b70cc",
+  "yes_price_dollars": "0.5100"
+}
+  trades with ts < 2022-01-01: n=   0 oldest=-
+  trades with ts < 2023-01-01: n=   0 oldest=-
+  trades with ts < 2024-01-01: n=   0 oldest=-
+  trades with ts < 2025-01-01: n=   0 oldest=-
+  trades with ts < 2026-01-01: n=   0 oldest=-
+
+==============================================================================
+5. ARE PRICE / VOLUME FIELDS STILL POPULATED?
+==============================================================================
+n=200 settled markets; 45 distinct fields
+
+field                              non-null%  sample
+  can_close_early                     100.0%  True
+  close_time                          100.0%  '2026-08-02T00:43:14Z'
+  created_time                        100.0%  '2026-08-02T00:40:35.751256Z'
+  custom_strike                       100.0%  {'Associated Events': 'KXMLBF5-26AUG01
+  event_ticker                        100.0%  'KXMVESPORTSMULTIGAMEEXTENDED-S20264A8
+  exchange_index                      100.0%  0
+  expected_expiration_time            100.0%  '2026-08-02T06:10:00Z'
+  expiration_time                     100.0%  '2026-08-05T00:10:00Z'
+  expiration_value                      0.0%  -
+  is_provisional                       87.5%  True
+  last_price_dollars                  100.0%  '0.0000'
+  latest_expiration_time              100.0%  '2026-08-05T00:10:00Z'
+  liquidity_dollars                   100.0%  '0.0000'
+  market_type                         100.0%  'binary'
+  mve_collection_ticker               100.0%  'KXMVESPORTSMULTIGAMEEXTENDED-R'
+  mve_selected_legs                   100.0%  [{'event_ticker': 'KXMLBF5-26AUG011915
+  no_ask_dollars                      100.0%  '1.0000'
+  no_bid_dollars                      100.0%  '1.0000'
+  no_sub_title                        100.0%  'yes New York Y wins first 5 innings,y
+  notional_value_dollars              100.0%  '1.0000'
+  open_interest_fp                    100.0%  '0.00'
+  open_time                           100.0%  '2026-08-02T00:40:35Z'
+  previous_price_dollars              100.0%  '0.0000'
+  previous_yes_ask_dollars            100.0%  '0.0000'
+  previous_yes_bid_dollars            100.0%  '0.0000'
+  price_level_structure               100.0%  'deci_cent'
+  price_ranges                        100.0%  [{'end': '1.0000', 'start': '0.0000', 
+  result                              100.0%  'no'
+  rules_primary                         0.0%  -
+  rules_secondary                     100.0%  'Kalshi is not affiliated, associated,
+  settlement_timer_seconds            100.0%  5
+  settlement_ts                       100.0%  '2026-08-02T00:43:14.997621Z'
+  settlement_value_dollars            100.0%  '0.0000'
+  status                              100.0%  'finalized'
+  strike_type                         100.0%  'custom'
+  ticker                              100.0%  'KXMVESPORTSMULTIGAMEEXTENDED-S20264A8
+  title                               100.0%  'yes New York Y wins first 5 innings,y
+  updated_time                        100.0%  '2026-08-02T00:43:15.036287Z'
+  volume_24h_fp                       100.0%  '0.00'
+  volume_fp                           100.0%  '0.00'
+  yes_ask_dollars                     100.0%  '0.0000'
+  yes_ask_size_fp                     100.0%  '0.00'
+  yes_bid_dollars                     100.0%  '0.0000'
+  yes_bid_size_fp                     100.0%  '0.00'
+  yes_sub_title                       100.0%  'yes New York Y wins first 5 innings,y
+
+==============================================================================
+4. CANDLESTICKS -- public? intervals? how far back?
+==============================================================================
+  KXMVESPORTSMULTIGAMEEXTENDED-S20264A88ECC22C int=    1 -> 400 {"error":{"code":"bad_request","message":"bad request","details":"requested time range wit
+  KXMVESPORTSMULTIGAMEEXTENDED-S20264A88ECC22C int=   60 -> 400 {"error":{"code":"bad_request","message":"bad request","details":"requested time range wit
+  KXMVESPORTSMULTIGAMEEXTENDED-S20264A88ECC22C int= 1440 n=0
+  KXMVECROSSCATEGORY-S202624BB49EADC2-10AF3112 int=    1 -> 400 {"error":{"code":"bad_request","message":"bad request","details":"requested time range wit
+  KXMVECROSSCATEGORY-S202624BB49EADC2-10AF3112 int=   60 -> 400 {"error":{"code":"bad_request","message":"bad request","details":"requested time range wit
+  KXMVECROSSCATEGORY-S202624BB49EADC2-10AF3112 int= 1440 n=0
+  KXMVESPORTSMULTIGAMEEXTENDED-S202658129DEC57 int=    1 -> 400 {"error":{"code":"bad_request","message":"bad request","details":"requested time range wit
+  KXMVESPORTSMULTIGAMEEXTENDED-S202658129DEC57 int=   60 -> 400 {"error":{"code":"bad_request","message":"bad request","details":"requested time range wit
+  KXMVESPORTSMULTIGAMEEXTENDED-S202658129DEC57 int= 1440 n=0
+
+DONE

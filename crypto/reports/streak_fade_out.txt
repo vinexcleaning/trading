@@ -1,0 +1,124 @@
+﻿============================================================================================================
+THE FADE — buy the DOWN side. Tested against the REAL bar (51.75%), not a coinflip.
+============================================================================================================
+  n = 6429 settled KXBTC15M windows, 2026-05-25T00:00 -> 2026-08-01T00:30
+  unconditional DOWN rate = 50.77%
+  BAR = 51.75% (50c entry, hold-to-settlement, one 1.75c fee)
+
+  NOTE: the bar assumes entry at exactly 50c. The real entry is the NO ASK,
+  which is not in settled records and is now being recorded live.
+
+  condition                 n   DOWN%           95% CI  edge vs bar       z   p(>bar)    verdict
+  0/3 ups                 780  47.69% [44.21,51.20]       -4.06pp   -2.27    0.9894      below
+  1/3 ups                2497  48.90% [46.94,50.86]       -2.85pp   -2.85    0.9980      below
+  2/3 ups                2455  53.36% [51.38,55.33]       +1.61pp   +1.60    0.0574      above
+  3/3 ups                 694  51.87% [48.16,55.57]       +0.12pp   +0.06    0.4894      above
+  0/5 ups                 167  43.71% [36.41,51.29]       -8.04pp   -2.08    0.9845      below
+  1/5 ups                 992  49.09% [45.99,52.20]       -2.66pp   -1.67    0.9560      below
+  2/5 ups                2182  49.22% [47.13,51.32]       -2.53pp   -2.36    0.9915      below
+  3/5 ups                2032  52.21% [50.04,54.38]       +0.46pp   +0.42    0.3458      above
+  4/5 ups                 897  53.96% [50.69,57.20]       +2.21pp   +1.32    0.0985      above
+  5/5 ups                 154  53.90% [46.02,61.58]       +2.15pp   +0.53    0.3259      above
+  2/10 ups                247  47.77% [41.63,53.99]       -3.98pp   -1.25    0.9056      below
+  3/10 ups                771  47.08% [43.58,50.61]       -4.67pp   -2.59    0.9957      below
+  4/10 ups               1439  50.38% [47.80,52.96]       -1.37pp   -1.04    0.8565      below
+  5/10 ups               1692  51.06% [48.68,53.44]       -0.69pp   -0.56    0.7222      below
+  6/10 ups               1306  51.30% [48.59,54.00]       -0.45pp   -0.32    0.6376      below
+  7/10 ups                688  54.36% [50.62,58.05]       +2.61pp   +1.37    0.0913      above
+  8/10 ups                190  53.68% [46.59,60.63]       +1.93pp   +0.53    0.3227      above
+  6/20 ups                181  50.28% [43.06,57.48]       -1.47pp   -0.40    0.6814      below
+  7/20 ups                432  46.53% [41.88,51.24]       -5.22pp   -2.17    0.9868      below
+  8/20 ups                885  47.01% [43.74,50.30]       -4.74pp   -2.82    0.9979      below
+  9/20 ups               1242  50.00% [47.22,52.78]       -1.75pp   -1.23    0.8966      below
+  10/20 ups              1252  54.39% [51.62,57.13]       +2.64pp   +1.87    0.0326      above
+  11/20 ups              1020  51.57% [48.50,54.62]       -0.18pp   -0.12    0.5587      below
+  12/20 ups               677  51.70% [47.94,55.44]       -0.05pp   -0.03    0.5262      below
+  13/20 ups               397  49.62% [44.73,54.52]       -2.13pp   -0.85    0.8156      below
+  14/20 ups               164  55.49% [47.84,62.88]       +3.74pp   +0.96    0.1896      above
+  2 consec ups           1513  54.13% [51.61,56.63]       +2.38pp   +1.85    0.0337      above
+  2 consec downs         1613  48.36% [45.93,50.80]       -3.39pp   -2.73    0.9970      below
+  3 consec ups            694  51.87% [48.16,55.57]       +0.12pp   +0.06    0.4894      above
+  3 consec downs          780  47.69% [44.21,51.20]       -4.06pp   -2.27    0.9894      below
+  4 consec ups            334  53.89% [48.53,59.16]       +2.14pp   +0.78    0.2332      above
+  4 consec downs          372  44.89% [39.92,49.97]       -6.86pp   -2.65    0.9965      below
+  5 consec ups            154  53.90% [46.02,61.58]       +2.15pp   +0.53    0.3259      above
+  5 consec downs          167  43.71% [36.41,51.29]       -8.04pp   -2.08    0.9845      below
+
+  Benjamini-Hochberg across all 34 fade tests (alpha=0.05):
+     1. 10/20 ups            p=0.0326 thr=0.0015 
+     2. 2 consec ups         p=0.0337 thr=0.0029 
+     3. 2/3 ups              p=0.0574 thr=0.0044 
+     4. 7/10 ups             p=0.0913 thr=0.0059 
+     5. 4/5 ups              p=0.0985 thr=0.0074 
+     6. 14/20 ups            p=0.1896 thr=0.0088 
+     7. 4 consec ups         p=0.2332 thr=0.0103 
+     8. 8/10 ups             p=0.3227 thr=0.0118 
+    -> 0 of 34 survive
+
+  TWO DISJOINT PERIODS (first 3214 vs last 3215 windows)
+  condition               n1   DOWN%1    n2   DOWN%2   gap pp  both>bar?
+  0/3 ups                416   48.08%   364   47.25%   +0.82         no
+  1/3 ups               1271   50.59%  1226   47.15%   +3.44         no
+  2/3 ups               1204   53.24%  1251   53.48%   -0.24        YES
+  3/3 ups                320   56.56%   374   47.86%   +8.70         no
+  0/5 ups                 90   44.44%    77   42.86%   +1.59         no
+  1/5 ups                526   48.10%   466   50.21%   -2.12         no
+  2/5 ups               1122   49.91%  1060   48.49%   +1.42         no
+  3/5 ups                986   55.48%  1046   49.14%   +6.34         no
+  4/5 ups                427   54.33%   470   53.62%   +0.72        YES
+  5/5 ups                 58   55.17%    96   53.12%   +2.05        YES
+  2/10 ups               138   49.28%   109   45.87%   +3.40         no
+  3/10 ups               408   47.30%   363   46.83%   +0.47         no
+  4/10 ups               760   50.00%   679   50.81%   -0.81         no
+  5/10 ups               891   53.09%   801   48.81%   +4.27         no
+  6/10 ups               605   54.71%   701   48.36%   +6.35         no
+  7/10 ups               268   55.22%   420   53.81%   +1.41        YES
+  8/10 ups                93   51.61%    97   55.67%   -4.06         no
+  6/20 ups                97   53.61%    84   46.43%   +7.18         no
+  7/20 ups               221   45.25%   211   47.87%   -2.62         no
+  8/20 ups               518   47.10%   367   46.87%   +0.24         no
+  9/20 ups               684   52.49%   558   46.95%   +5.53         no
+  10/20 ups              616   55.36%   636   53.46%   +1.90        YES
+  11/20 ups              461   53.80%   559   49.73%   +4.06         no
+  12/20 ups              295   54.24%   382   49.74%   +4.50         no
+  13/20 ups              155   47.74%   242   50.83%   -3.08         no
+  14/20 ups               64   57.81%   100   54.00%   +3.81        YES
+  2 consec ups           729   56.10%   784   52.30%   +3.81        YES
+  2 consec downs         847   49.11%   766   47.52%   +1.59         no
+  3 consec ups           320   56.56%   374   47.86%   +8.70         no
+  3 consec downs         416   48.08%   364   47.25%   +0.82         no
+  4 consec ups           139   58.27%   195   50.77%   +7.50         no
+  4 consec downs         200   45.00%   172   44.77%   +0.23         no
+  5 consec ups            58   55.17%    96   53.12%   +2.05        YES
+  5 consec downs          90   44.44%    77   42.86%   +1.59         no
+
+  HOUR-OF-DAY (UTC) for the strongest conditions
+    2 consec ups:
+      00-06h n=  371 DOWN= 55.80% edge= +4.05pp >bar
+      06-12h n=  387 DOWN= 51.16% edge= -0.59pp 
+      12-18h n=  388 DOWN= 53.87% edge= +2.12pp >bar
+      18-24h n=  367 DOWN= 55.86% edge= +4.11pp >bar
+    2/3 ups:
+      00-06h n=  635 DOWN= 52.60% edge= +0.85pp >bar
+      06-12h n=  576 DOWN= 51.22% edge= -0.53pp 
+      12-18h n=  626 DOWN= 53.19% edge= +1.44pp >bar
+      18-24h n=  618 DOWN= 56.31% edge= +4.56pp >bar
+    10/20 ups:
+      00-06h n=  361 DOWN= 51.25% edge= -0.50pp 
+      06-12h n=  276 DOWN= 52.54% edge= +0.79pp >bar
+      12-18h n=  291 DOWN= 59.45% edge= +7.70pp >bar
+      18-24h n=  324 DOWN= 54.94% edge= +3.19pp >bar
+
+  VOLATILITY REGIME (|prev 15m log return| terciles: <0.060% / 0.147%+)
+    2 consec ups:
+      low  n=  542 DOWN= 53.14% edge= +1.39pp >bar
+      mid  n=  501 DOWN= 57.88% edge= +6.13pp >bar
+      high n=  470 DOWN= 51.28% edge= -0.47pp 
+    2/3 ups:
+      low  n=  836 DOWN= 55.62% edge= +3.87pp >bar
+      mid  n=  841 DOWN= 51.84% edge= +0.09pp >bar
+      high n=  777 DOWN= 52.51% edge= +0.76pp >bar
+    10/20 ups:
+      low  n=  415 DOWN= 55.18% edge= +3.43pp >bar
+      mid  n=  441 DOWN= 53.06% edge= +1.31pp >bar
+      high n=  395 DOWN= 54.94% edge= +3.19pp >bar

@@ -1,0 +1,61 @@
+﻿A4 -- NAMED HIGH-RISK CANDIDATES
+==============================================================================
+
+## 1. Stage 0-5 player model -- CLEAN on all three checks
+
+  p1 assignment  (stage4_model.py:43-47):
+      swap = w > l          # p1 is alphabetically first
+      y = (~swap).astype(int)
+    Player 1 is chosen by NAME, not by who won. The module docstring
+    says so explicitly. Outcome-independent, and the target is ~50/50.
+
+  train/val/test  (stage4_model.py:36,150-151): split on calendar date
+    (TRAIN_END, VAL_END = 2025-01-01). Temporal, not random, no leak.
+
+  match selection (stage4_model.py:313):
+      ev[ev['pre_mid'].notna() & ev['result_a'].isin(['yes','no'])]
+    Filtering on `result` being decided is required to have a label at
+    all and does not select WHICH outcome. `pre_mid` notna is a
+    data-availability filter -- but see section 2, because in
+    stage4_model that pre_mid came from the leaking anchor.
+
+  stage0_audit.py:88-89 reads `volume_pre` / `oi_pre` from the last
+  CANDLE at or before the anchor, not from the settled market record.
+  That is the correct pattern and the exact near-miss that caught me:
+  same field name, safe when timestamped, unsafe when read off a
+  settled row.
+
+## 2. The Stage 4/5 liquidity filter -- SELECTION ON A POST-SETTLEMENT QUOTE
+
+`stage4_kalshi_liquid.py` computes `spread = pre_ask - pre_bid` from
+`kalshi_prematch_prices.parquet` and then reports results for
+`spread <= 10c / 5c / 2c`. That file is the one already renamed
+`.INVALID_LOOKAHEAD_LEAK`: its anchor sits at or after settlement for
+84.5% of markets. So the filter is not selecting liquid markets -- it is
+partly selecting **settled** ones, where the book has collapsed to a
+tight quote around 0 or 100.
+
+  joined rows with a leaking-anchor spread: 502
+
+  Test: does the spread filter shift the market's calibration
+  residual? A genuine liquidity filter should not.
+
+  pass  [leaking-anchor spread <= 0.10] calibration residual: kept -0.0351 (n=302) vs dropped -0.0398 (n=200), diff +0.0047, z = +0.11
+  pass  [leaking-anchor spread <= 0.05] calibration residual: kept -0.0370 (n=287) vs dropped -0.0370 (n=215), diff +0.0000, z = +0.00
+  pass  [leaking-anchor spread <= 0.02] calibration residual: kept -0.0335 (n=186) vs dropped -0.0391 (n=316), diff +0.0056, z = +0.14
+
+  extreme quotes (<=2c or >=98c) in this file: 1.20%; of those the market was right 1.0000 of the time
+  P(extreme quote | spread <= 2c) = 0.0215 vs 0.0063 otherwise
+
+  Same test on the CORRECTED -6h anchor, for contrast:
+  pass  [h6 anchor spread <= 0.10] too few rows on one side to test (95 in, 28 out)
+  pass  [h6 anchor spread <= 0.05] too few rows on one side to test (95 in, 28 out)
+  pass  [h6 anchor spread <= 0.02] calibration residual: kept -0.0003 (n=73) vs dropped -0.0766 (n=50), diff +0.0763, z = +0.90
+
+## 3. v3 structural-event backtest and copy-trading -- NOT ON THIS MACHINE
+
+  Neither exists under C:\Users\gianf. They live on the desktop under
+  C:\Users\vinig\kalshi and siblings. Listed with the exact checks to
+  run in BLOCKED_ON_DESKTOP.md.
+
+-> C:\Users\gianf\kalshi\set1_overshoot\reports\audit_a4.txt

@@ -1,0 +1,12 @@
+RETIREMENT / WALKOVER SENSITIVITY
+============================================================
+scalar-settled matches in the whole book : 365
+of those, ones this strategy would enter : 6
+share of all positions taken             : 0.11%
+median settlement value                  : 0.50
+mean entry mid on those                  : 49.2c
+
+net expectancy, completed matches only   : -5.082 c
+net expectancy, scalar matches only      : -8.345 c
+net expectancy, blended (the real one)   : -5.086 c
+cost of the exclusion                    : -0.004 c/contract

@@ -1,0 +1,86 @@
+
+==============================================================================
+PHASE 2 BASE TEST -- entry rule 'deep:12': the first minute at which the
+favourite's price is 12c+ below its pre-match level AND has stopped making new
+lows for 8 minutes, entered 3 min later. A stopping time: no price after the
+firing minute is consulted. Twenty-seven other entry definitions are in the grid below.
+==============================================================================
+candidate matches (fav >= 60c, valid entry): 1,786
+events (drop >= 5c):                        1,632
+median drop 17.5c   median entry mid 55.5c   median pre-match 72.5c
+spread at entry: median 1c  p75 1c  p90 2c  p99 2c
+  (the 1c slippage assumption is optimistic wherever the spread is wide; 0.0% of entries quote 4c or more)
+
+    entry      n  impl p     obs  mis pp      p1      p2   fill   fee  BE win   net c
+     5-10      1   0.065   0.000   -6.50   1.000   1.000    8.0  0.52   0.085   -8.52
+    10-15      8   0.130   0.000  -13.00   1.000   0.654   14.8  0.88   0.156  -15.63
+    15-20     12   0.180   0.167   -1.38   0.666   1.000   19.6  1.10   0.207   -4.02
+    20-25     19   0.225   0.158   -6.74   0.837   0.701   24.1  1.28   0.254   -9.59
+    25-30     34   0.272   0.294   +2.25   0.453   0.905   28.8  1.43   0.302   -0.82
+    30-35     66   0.327   0.318   -0.89   0.608   0.989   34.3  1.58   0.359   -4.09
+    35-40     84   0.378   0.369   -0.87   0.604   0.967   39.3  1.67   0.410   -4.11
+    40-45    158   0.426   0.443   +1.67   0.365   0.731   44.3  1.73   0.460   -1.68
+    45-50    197   0.475   0.523   +4.76   0.103   0.205   49.1  1.75   0.509   +1.39
+    50-55    218   0.524   0.518   -0.60   0.594   0.917   54.1  1.74   0.558   -4.00
+    55-60    225   0.573   0.644   +7.10   0.017   0.035   58.9  1.69   0.606   +3.81
+    60-65    191   0.623   0.665   +4.19   0.132   0.264   63.9  1.61   0.655   +0.98
+    65-70    166   0.672   0.741   +6.91   0.033   0.066   68.8  1.50   0.703   +3.76
+    70-75    116   0.722   0.819   +9.66   0.012   0.023   73.8  1.35   0.752   +6.70
+    75-80     73   0.773   0.918  +14.52   0.001   0.002   78.8  1.17   0.800  +11.77
+    80-85     55   0.820   0.818   -0.19   0.597   1.000   83.6  0.96   0.846   -2.77
+    85-90      8   0.859   1.000  +14.12   0.298   0.597   87.5  0.77   0.883  +11.73
+    90-95      1   0.905   1.000   +9.50   0.903   1.000   92.0  0.52   0.925   +7.48
+
+POOLED  n=1,632
+  implied  0.5503     observed 0.5907
+  miscalibration  +4.04 pp   95% CI [+1.80, +6.25]
+  Poisson-binomial  p(one-sided, overshoot) = 0.0002   p(two-sided) = 0.0003
+  net expectancy, hold to settlement, ask+1c fill, exact fees:
+     +0.847 c/contract   95% CI [-1.414, +3.054]
+  breakeven miscalibration needed: +3.20 pp
+
+==============================================================================
+PHASE 2b BEST-TARGETED RULE -- 'deep:30 after minute 38'.
+Phase 1 measured this as the entry rule whose fired events are most often a
+real set-1 loss (precision 0.788 vs 0.559 for the pre-committed rule above).
+Chosen on labelled state, not on outcomes.
+==============================================================================
+candidate matches (fav >= 60c, valid entry): 873
+events (drop >= 5c):                        873
+median drop 37.0c   median entry mid 34.5c   median pre-match 71.5c
+spread at entry: median 1c  p75 1c  p90 2c  p99 2c
+  (the 1c slippage assumption is optimistic wherever the spread is wide; 0.0% of entries quote 4c or more)
+
+    entry      n  impl p     obs  mis pp      p1      p2   fill   fee  BE win   net c
+      0-5      7   0.029   0.000   -2.86   1.000   1.000    4.6  0.30   0.049   -4.88
+     5-10     20   0.075   0.100   +2.48   0.451   0.902    9.2  0.58   0.097   +0.27
+    10-15     35   0.126   0.114   -1.21   0.659   1.000   14.3  0.86   0.152   -3.77
+    15-20     60   0.179   0.233   +5.47   0.173   0.345   19.5  1.10   0.206   +2.74
+    20-25    101   0.224   0.267   +4.36   0.177   0.354   24.0  1.27   0.253   +1.48
+    25-30    116   0.273   0.259   -1.48   0.676   0.809   29.0  1.44   0.304   -4.54
+    30-35    113   0.326   0.354   +2.79   0.294   0.589   34.2  1.57   0.358   -0.37
+    35-40    107   0.373   0.393   +1.99   0.370   0.741   38.9  1.66   0.405   -1.29
+    40-45     85   0.422   0.482   +6.08   0.154   0.308   43.8  1.72   0.455   +2.71
+    45-50     88   0.475   0.489   +1.41   0.439   0.877   49.1  1.75   0.508   -1.98
+    50-55     67   0.524   0.627  +10.25   0.060   0.119   54.0  1.74   0.558   +6.92
+    55-60     42   0.573   0.762  +18.87   0.009   0.018   58.9  1.69   0.606  +15.59
+    60-65     17   0.616   0.353  -26.32   0.993   0.049   63.3  1.63   0.649  -29.63
+    65-70     10   0.677   0.700   +2.35   0.589   1.000   69.3  1.49   0.708   -0.79
+    70-75      3   0.712   1.000  +28.83   0.361   0.723   72.7  1.39   0.741  +25.94
+    75-80      2   0.765   1.000  +23.50   0.585   1.000   78.0  1.20   0.792  +20.80
+
+POOLED  n=873
+  implied  0.3500     observed 0.3837
+  miscalibration  +3.37 pp   95% CI [+0.31, +6.42]
+  Poisson-binomial  p(one-sided, overshoot) = 0.0151   p(two-sided) = 0.0302
+  net expectancy, hold to settlement, ask+1c fill, exact fees:
+     +0.263 c/contract   95% CI [-2.831, +3.346]
+  breakeven miscalibration needed: +3.11 pp
+
+==============================================================================
+PHASE 2c LABEL-VERIFIED SUBSAMPLE -- only matches where an external
+scoreline confirms the favourite actually lost set 1. Small, but it is the
+literal question the brief asks, with no inference in the state variable.
+==============================================================================
+candidate matches (fav >= 60c, valid entry): 0
+events (drop >= 5c):                        0

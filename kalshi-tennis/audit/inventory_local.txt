@@ -1,0 +1,134 @@
+﻿
+==============================================================================
+A. RAW MARKET PULLS
+==============================================================================
+
+--- set1_overshoot/markets_raw.json  (107 MB) ---
+markets            40,526
+by series pulled   KXITFMATCH=17036, KXITFWMATCH=14754, KXATPCHALLENGERMATCH=5030, KXATPMATCH=1856, KXWTAMATCH=1850
+status             finalized=40294, active=222, closed=10
+result             yes=19782, no=19782, scalar=730, =232
+market_type        binary=40526
+open_time          2026-01-03 10:06:00 -> 2026-08-01 01:42:00   (0 unparseable)
+close_time         2026-01-18 04:00:00 -> 2026-08-15 22:30:00   (0 unparseable)
+price/vol fields   (non-null %)
+   last_price_dollars           100.0%   distinct=100
+   liquidity_dollars            100.0%   distinct=1
+   no_ask_dollars               100.0%   distinct=73
+   no_bid_dollars               100.0%   distinct=70
+   open_interest_fp             100.0%   distinct=36653
+   previous_price_dollars       100.0%   distinct=100
+   previous_yes_ask_dollars     100.0%   distinct=101
+   previous_yes_bid_dollars     100.0%   distinct=100
+   price_level_structure        100.0%   distinct=1
+   price_ranges                 100.0%   distinct=1
+   volume_24h_fp                100.0%   distinct=1599
+   volume_fp                    100.0%   distinct=36731
+   yes_ask_dollars              100.0%   distinct=70
+   yes_ask_size_fp              100.0%   distinct=122
+   yes_bid_dollars              100.0%   distinct=73
+   yes_bid_size_fp              100.0%   distinct=102
+total columns      46
+
+--- kalshi/tennis_markets.json (older pull)  (111 MB) ---
+markets            41,844
+by series pulled   KXITFMATCH=17200, KXITFWMATCH=14694, KXATPCHALLENGERMATCH=5050, KXWTAMATCH=1836, KXATPMATCH=1808, KXWTACHALLENGERMATCH=1256
+status             finalized=41596, active=234, closed=10, initialized=2, inactive=2
+result             no=20402, yes=20402, scalar=792, =248
+market_type        binary=41844
+open_time          2026-01-03 10:06:00 -> 2026-07-29 19:02:00   (0 unparseable)
+close_time         2026-01-18 04:00:00 -> 2026-08-13 15:00:00   (0 unparseable)
+price/vol fields   (non-null %)
+   last_price_dollars           100.0%   distinct=100
+   liquidity_dollars            100.0%   distinct=1
+   no_ask_dollars               100.0%   distinct=87
+   no_bid_dollars               100.0%   distinct=92
+   open_interest_fp             100.0%   distinct=37436
+   previous_price_dollars       100.0%   distinct=100
+   previous_yes_ask_dollars     100.0%   distinct=101
+   previous_yes_bid_dollars     100.0%   distinct=100
+   price_level_structure        100.0%   distinct=1
+   price_ranges                 100.0%   distinct=1
+   volume_24h_fp                100.0%   distinct=2236
+   volume_fp                    100.0%   distinct=37524
+   yes_ask_dollars              100.0%   distinct=92
+   yes_ask_size_fp              100.0%   distinct=194
+   yes_bid_dollars              100.0%   distinct=87
+   yes_bid_size_fp              100.0%   distinct=180
+total columns      46
+
+==============================================================================
+B. DERIVED PARQUET
+==============================================================================
+dev_events.parquet                        508 rows   19 cols      0.0 MB
+dev_state.parquet                       1,500 rows   21 cols      0.1 MB
+mirror_state.parquet                      398 rows   21 cols      0.0 MB
+mirror_universe.parquet                   398 rows    8 cols      0.0 MB
+paths_events.parquet                    5,390 rows   19 cols      0.3 MB
+paths_state.parquet                    19,781 rows   23 cols      1.1 MB
+players.parquet                        19,782 rows    6 cols      0.7 MB
+retry2_universe.parquet                   164 rows   21 cols      0.0 MB
+retry_universe.parquet                    167 rows   21 cols      0.0 MB
+scalar_state.parquet                      363 rows   21 cols      0.0 MB
+scalar_universe.parquet                   365 rows   10 cols      0.0 MB
+sides.parquet                          39,564 rows    7 cols      1.2 MB
+smoke_state.parquet                     3,000 rows   23 cols      0.2 MB
+synth_boost_universe.parquet            8,000 rows   10 cols      0.2 MB
+synth_null_universe.parquet             8,000 rows   10 cols      0.2 MB
+synthboost_events.parquet               1,632 rows   19 cols      0.1 MB
+synthboost_state.parquet                8,000 rows   23 cols      0.4 MB
+synthnull_events.parquet                1,609 rows   19 cols      0.1 MB
+synthnull_state.parquet                 8,000 rows   23 cols      0.4 MB
+truth_set1.parquet                      2,887 rows   13 cols      0.1 MB
+universe.parquet                       19,782 rows   21 cols      2.0 MB
+universe_text.parquet                  19,782 rows    4 cols      1.7 MB
+
+cache/kalshi_events.parquet            20,922 rows   24 cols      1.7 MB
+cache/matches.parquet               1,749,872 rows   53 cols     45.7 MB
+cache/pinnacle_vs_kalshi.parquet          844 rows   17 cols      0.0 MB
+cache/stage0_player_market.parquet     41,844 rows   16 cols      0.7 MB
+cache/stage1_features.parquet       1,749,872 rows  106 cols    301.6 MB
+cache/stage2_features.parquet       1,749,872 rows  113 cols    437.3 MB
+cache/stage3_records.parquet        3,446,840 rows    9 cols      9.3 MB
+cache/stage4_bookmaker_join.parquet      2,646 rows    8 cols      0.1 MB
+cache/stage4_kalshi_join.parquet          502 rows   14 cols      0.0 MB
+cache/stage4_predictions.parquet    1,530,252 rows   61 cols    255.9 MB
+
+==============================================================================
+CANDLE / DEPTH DIRECTORIES
+==============================================================================
+candles                    15 files      48.7 MB  {'.parquet': 15}
+                       written 2026-08-01 02:12:17 -> 2026-08-01 03:40:34
+candles_dev                 1 files       4.8 MB  {'.parquet': 1}
+                       written 2026-08-01 02:12:17 -> 2026-08-01 02:12:17
+candles_ohlc               15 files      55.3 MB  {'.parquet': 15}
+                       written 2026-08-01 05:31:52 -> 2026-08-01 06:52:12
+candles_retry               1 files       0.6 MB  {'.parquet': 1}
+                       written 2026-08-01 03:40:34 -> 2026-08-01 03:40:34
+candles_retry2              1 files       0.6 MB  {'.parquet': 1}
+                       written 2026-08-01 06:52:12 -> 2026-08-01 06:52:12
+candles_scalar              1 files       0.8 MB  {'.parquet': 1}
+                       written 2026-08-01 03:50:09 -> 2026-08-01 03:50:09
+depth                      17 files      85.3 MB  {'.jsonl': 17}
+                       written 2026-08-01 07:00:34 -> 2026-08-01 22:26:43
+synth_boost                 1 files      22.8 MB  {'.parquet': 1}
+                       written 2026-08-01 07:02:36 -> 2026-08-01 07:02:36
+synth_null                  1 files      22.8 MB  {'.parquet': 1}
+                       written 2026-08-01 07:02:11 -> 2026-08-01 07:02:11
+candles_failed.txt        169 FAILED tickers listed
+candles_ohlc_failed.txt    164 FAILED tickers listed
+candles_scalar_failed.txt      2 FAILED tickers listed
+candles_test_failed.txt     22 FAILED tickers listed
+
+==============================================================================
+CANDLE CONTENT (the file that backtests actually read)
+==============================================================================
+candles_ohlc      6,308,170 rows  15 parts  19,781 tickers
+                 window 2026-05-21 13:37:00 -> 2026-08-01 01:22:00
+                 cols ['ticker', 'ts', 'bid_o', 'bid_h', 'bid_l', 'bid', 'ask_o', 'ask_h', 'ask_l', 'ask', 'last', 'vol', 'oi']
+candles           6,530,054 rows  15 parts  20,179 tickers
+                 window 2026-05-21 13:37:00 -> 2026-08-01 01:22:00
+                 cols ['ticker', 'ts', 'bid_o', 'bid_h', 'bid_l', 'bid', 'ask', 'last', 'vol', 'oi']
+candles_scalar       97,110 rows  1 parts  363 tickers
+                 window 2026-05-22 09:09:00 -> 2026-07-30 12:33:00
+                 cols ['ticker', 'ts', 'bid_o', 'bid_h', 'bid_l', 'bid', 'ask', 'last', 'vol', 'oi']

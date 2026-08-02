@@ -1,0 +1,265 @@
+{
+  "meta": {
+    "cut_iso": "2025-07-01",
+    "selection": "period-1 only, >= 50 markets, non-MM, ranked on excess over entry-price bucket",
+    "evaluation": "period-2 signals only; selection never saw them",
+    "n_eligible_wallets": 479,
+    "n_top_decile": 47,
+    "spread_haircut_pp": 1.0,
+    "limits": [
+      "p_d is a TRADE price, not an ask -- a real copier pays more, so every copy return here is an upper bound before the haircut",
+      "Polygon block time ~2s: the +1s row is 'next block or later'",
+      "missing next-fill counted missing, never carried forward"
+    ]
+  },
+  "curves": {
+    "top_decile": {
+      "0": {
+        "n_obs": 1944,
+        "n_markets": 140,
+        "copy_return_net_pp": -5.903,
+        "ci95_pp": [
+          -12.0574,
+          -1.1323
+        ],
+        "after_spread_haircut_pp": -6.903
+      },
+      "1": {
+        "n_obs": 1919,
+        "n_markets": 137,
+        "copy_return_net_pp": -6.2303,
+        "ci95_pp": [
+          -12.7346,
+          -1.5333
+        ],
+        "after_spread_haircut_pp": -7.2303
+      },
+      "10": {
+        "n_obs": 1919,
+        "n_markets": 137,
+        "copy_return_net_pp": -6.3273,
+        "ci95_pp": [
+          -12.8261,
+          -1.6042
+        ],
+        "after_spread_haircut_pp": -7.3273
+      },
+      "60": {
+        "n_obs": 1914,
+        "n_markets": 135,
+        "copy_return_net_pp": -6.2055,
+        "ci95_pp": [
+          -12.8124,
+          -1.2132
+        ],
+        "after_spread_haircut_pp": -7.2055
+      },
+      "300": {
+        "n_obs": 1830,
+        "n_markets": 115,
+        "copy_return_net_pp": -6.1681,
+        "ci95_pp": [
+          -13.0557,
+          -0.9516
+        ],
+        "after_spread_haircut_pp": -7.1681
+      },
+      "1800": {
+        "n_obs": 1744,
+        "n_markets": 100,
+        "copy_return_net_pp": -6.2317,
+        "ci95_pp": [
+          -12.8589,
+          -1.1472
+        ],
+        "after_spread_haircut_pp": -7.2317
+      }
+    },
+    "bottom_decile": {
+      "0": {
+        "n_obs": 251,
+        "n_markets": 19,
+        "copy_return_net_pp": -9.6013,
+        "ci95_pp": [
+          -33.9129,
+          26.2968
+        ],
+        "after_spread_haircut_pp": -10.6013
+      },
+      "1": {
+        "n_obs": 250,
+        "n_markets": 19,
+        "copy_return_net_pp": -9.4726,
+        "ci95_pp": [
+          -33.6907,
+          26.313
+        ],
+        "after_spread_haircut_pp": -10.4726
+      },
+      "10": {
+        "n_obs": 250,
+        "n_markets": 19,
+        "copy_return_net_pp": -9.5738,
+        "ci95_pp": [
+          -33.9245,
+          26.381
+        ],
+        "after_spread_haircut_pp": -10.5738
+      },
+      "60": {
+        "n_obs": 250,
+        "n_markets": 19,
+        "copy_return_net_pp": -9.6935,
+        "ci95_pp": [
+          -33.9972,
+          26.3633
+        ],
+        "after_spread_haircut_pp": -10.6935
+      },
+      "300": {
+        "n_obs": 250,
+        "n_markets": 19,
+        "copy_return_net_pp": -11.9495,
+        "ci95_pp": [
+          -36.815,
+          24.6639
+        ],
+        "after_spread_haircut_pp": -12.9495
+      },
+      "1800": {
+        "n_obs": 244,
+        "n_markets": 17,
+        "copy_return_net_pp": -13.3534,
+        "ci95_pp": [
+          -39.4961,
+          24.1521
+        ],
+        "after_spread_haircut_pp": -14.3534
+      }
+    },
+    "all_eligible": {
+      "0": {
+        "n_obs": 8179,
+        "n_markets": 447,
+        "copy_return_net_pp": -1.6545,
+        "ci95_pp": [
+          -4.8654,
+          1.6652
+        ],
+        "after_spread_haircut_pp": -2.6545
+      },
+      "1": {
+        "n_obs": 7995,
+        "n_markets": 431,
+        "copy_return_net_pp": -2.0913,
+        "ci95_pp": [
+          -5.404,
+          1.2629
+        ],
+        "after_spread_haircut_pp": -3.0913
+      },
+      "10": {
+        "n_obs": 7931,
+        "n_markets": 431,
+        "copy_return_net_pp": -2.1678,
+        "ci95_pp": [
+          -5.5191,
+          1.1879
+        ],
+        "after_spread_haircut_pp": -3.1678
+      },
+      "60": {
+        "n_obs": 7811,
+        "n_markets": 424,
+        "copy_return_net_pp": -2.118,
+        "ci95_pp": [
+          -5.5049,
+          1.3552
+        ],
+        "after_spread_haircut_pp": -3.118
+      },
+      "300": {
+        "n_obs": 7530,
+        "n_markets": 385,
+        "copy_return_net_pp": -1.8452,
+        "ci95_pp": [
+          -5.3863,
+          1.832
+        ],
+        "after_spread_haircut_pp": -2.8452
+      },
+      "1800": {
+        "n_obs": 6874,
+        "n_markets": 315,
+        "copy_return_net_pp": -1.4002,
+        "ci95_pp": [
+          -4.8782,
+          2.1823
+        ],
+        "after_spread_haircut_pp": -2.4002
+      }
+    },
+    "everyone": {
+      "0": {
+        "n_obs": 1845757,
+        "n_markets": 1754,
+        "copy_return_net_pp": -2.5582,
+        "ci95_pp": [
+          -2.7814,
+          -2.3366
+        ],
+        "after_spread_haircut_pp": -3.5582
+      },
+      "1": {
+        "n_obs": 1831345,
+        "n_markets": 1623,
+        "copy_return_net_pp": -1.5493,
+        "ci95_pp": [
+          -1.8119,
+          -1.2706
+        ],
+        "after_spread_haircut_pp": -2.5493
+      },
+      "10": {
+        "n_obs": 1825841,
+        "n_markets": 1614,
+        "copy_return_net_pp": -1.6174,
+        "ci95_pp": [
+          -1.8737,
+          -1.3356
+        ],
+        "after_spread_haircut_pp": -2.6174
+      },
+      "60": {
+        "n_obs": 1791841,
+        "n_markets": 1597,
+        "copy_return_net_pp": -1.5092,
+        "ci95_pp": [
+          -1.7856,
+          -1.2207
+        ],
+        "after_spread_haircut_pp": -2.5092
+      },
+      "300": {
+        "n_obs": 1379635,
+        "n_markets": 1554,
+        "copy_return_net_pp": -1.3655,
+        "ci95_pp": [
+          -1.6435,
+          -1.1055
+        ],
+        "after_spread_haircut_pp": -2.3655
+      },
+      "1800": {
+        "n_obs": 611310,
+        "n_markets": 1341,
+        "copy_return_net_pp": -1.719,
+        "ci95_pp": [
+          -2.1242,
+          -1.3362
+        ],
+        "after_spread_haircut_pp": -2.719
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+﻿candles      6,308,170 rows   19,781 tickers
+universe     19,782 markets
+
+markets with NO candle rows at all : 1 (0.01%)
+   by series : {'KXITFMATCH': 1}
+   by result : {'no': 1}
+   MAR check -- win rate of missing vs present:
+     missing yes-rate 0.0000  present yes-rate 0.4969   gap -49.69 pp
+
+PER-MARKET COMPLETENESS (candles present / minutes spanned)
+   p   1  fill= 0.027   cover_of_listed_life= 1.000
+   p   5  fill= 0.044   cover_of_listed_life= 1.001
+   p  25  fill= 0.206   cover_of_listed_life= 1.001
+   p  50  fill= 0.284   cover_of_listed_life= 1.002
+   p  75  fill= 0.387   cover_of_listed_life= 1.002
+   p  95  fill= 0.604   cover_of_listed_life= 1.002
+   markets with fill < 0.50 : 17,510
+   markets with < 10 candles: 33
+
+QUOTE AVAILABILITY  (-1 = field absent in the API response)
+   bid    absent   0.00%   range [0, 99]
+   ask    absent   0.00%   range [1, 100]
+   bid_h  absent   0.00%   range [0, 99]
+   ask_l  absent   0.00%   range [1, 100]
+   last   absent  24.05%   range [1, 99]
+
+   crossed (bid>ask)   0.0000%  of 6,308,170 two-sided rows
+   spread cents        median 2  mean 11.95  p90 46
+   spread == 99c (1/100 quote)  0.63%
+   two-sided rows      100.00% of all rows
+
+   ZERO-LIQUIDITY MINUTES (the mid-price trap)
+   rows quoting 0-1 / 99-100 : 39,416 (0.62%)
+   markets >50% of life at 0/100 quote: 29 / 19,781 (0.1%)
+
+VOLUME
+   markets with zero traded volume ever: 47 (0.2%)
+   p  10 final volume 408
+   p  50 final volume 6,291
+   p  90 final volume 44,535
+   p  99 final volume 139,242

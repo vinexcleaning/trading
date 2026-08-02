@@ -1,0 +1,103 @@
+﻿
+====================================================================================================
+A. BINANCE 1-SECOND DATA (never audited; all lead-lag rests on it)
+====================================================================================================
+
+  BTCUSDT
+    rows=  1814400  days=21  days with EXACTLY 86400 bars: 21/21
+  PASS  BTCUSDT parse errors (0)
+  PASS  BTCUSDT duplicate timestamps (0)
+  PASS  BTCUSDT monotone time (0 backwards)
+  PASS  BTCUSDT complete days (0 short)
+  PASS  BTCUSDT positive prices (min 61824.97)
+  ** FAIL ** BTCUSDT no >1s gaps (1814399)
+    price 61825 - 66956   |1s ret| max 0.407%   zero-vol bars 10.50%
+  PASS  BTCUSDT no absurd 1s jumps (max 0.407%)
+
+  DOGEUSDT
+    rows=  1814400  days=21  days with EXACTLY 86400 bars: 21/21
+  PASS  DOGEUSDT parse errors (0)
+  PASS  DOGEUSDT duplicate timestamps (0)
+  PASS  DOGEUSDT monotone time (0 backwards)
+  PASS  DOGEUSDT complete days (0 short)
+  PASS  DOGEUSDT positive prices (min 0.06827)
+  ** FAIL ** DOGEUSDT no >1s gaps (1814399)
+    price 0.06827 - 0.07559   |1s ret| max 0.853%   zero-vol bars 68.89%
+  PASS  DOGEUSDT no absurd 1s jumps (max 0.853%)
+
+  ETHUSDT
+    rows=  1814400  days=21  days with EXACTLY 86400 bars: 21/21
+  PASS  ETHUSDT parse errors (0)
+  PASS  ETHUSDT duplicate timestamps (0)
+  PASS  ETHUSDT monotone time (0 backwards)
+  PASS  ETHUSDT complete days (0 short)
+  PASS  ETHUSDT positive prices (min 1737.69)
+  ** FAIL ** ETHUSDT no >1s gaps (1814399)
+    price 1737.69 - 1980.97   |1s ret| max 0.565%   zero-vol bars 27.45%
+  PASS  ETHUSDT no absurd 1s jumps (max 0.565%)
+
+  SOLUSDT
+    rows=  1814400  days=21  days with EXACTLY 86400 bars: 21/21
+  PASS  SOLUSDT parse errors (0)
+  PASS  SOLUSDT duplicate timestamps (0)
+  PASS  SOLUSDT monotone time (0 backwards)
+  PASS  SOLUSDT complete days (0 short)
+  PASS  SOLUSDT positive prices (min 72.33)
+  ** FAIL ** SOLUSDT no >1s gaps (1814399)
+    price 72.33 - 79.67   |1s ret| max 0.495%   zero-vol bars 49.63%
+  PASS  SOLUSDT no absurd 1s jumps (max 0.495%)
+
+  XRPUSDT
+    rows=  1814400  days=21  days with EXACTLY 86400 bars: 21/21
+  PASS  XRPUSDT parse errors (0)
+  PASS  XRPUSDT duplicate timestamps (0)
+  PASS  XRPUSDT monotone time (0 backwards)
+  PASS  XRPUSDT complete days (0 short)
+  PASS  XRPUSDT positive prices (min 1.0456)
+  ** FAIL ** XRPUSDT no >1s gaps (1814399)
+    price 1.0456 - 1.1646   |1s ret| max 0.436%   zero-vol bars 57.65%
+  PASS  XRPUSDT no absurd 1s jumps (max 0.436%)
+
+====================================================================================================
+B. CROSS-SOURCE VALIDATION — three independent BTC feeds
+====================================================================================================
+  Coinbase 1m bars: 99402
+  Binance minute closes: 1814400
+  overlapping minutes: 0
+
+  Kalshi BRTI settlements (deduped by boundary): 1593
+    BRTI - Coinbase: n=1593 mean +1.25bp sd 2.76bp  p99|.| 10.0bp
+  PASS  BRTI vs Coinbase mean basis < 50bp (+1.25bp)
+
+====================================================================================================
+C. DERIVED REPORTS — do the saved numbers match what was reported?
+====================================================================================================
+  PASS  B1 has >=4 model rows 
+  PASS  B1 synthetic gate PASSED 
+  PASS  MM synthetic gate PASSED 
+  PASS  lead-lag used >1M bars 
+  PASS  fade table has >=30 conditions 
+  PASS  touch matrix has >=50 cells 
+
+  B1 headline re-read from disk: M2 diff=-0.000081 CI [-0.001875,+0.001816] p=0.9420
+  PASS  M2 CI straddles zero (the reported tie) 
+
+====================================================================================================
+D. LIVE RECORDER — 15-minute opens
+====================================================================================================
+  rows=1067 parse_err=0 distinct_windows=37
+  PASS  opens parse errors (0)
+  PASS  capture ages within the 0-60s window (1.3-59.9s)
+  no_ask: n=1067 min=0.1800 med=0.4700 max=0.8900
+  PASS  no_ask in (0,1] 
+  --> median no_ask so far = 47.00c (the fade bar depends on this)
+
+====================================================================================================
+FINAL AUDIT SUMMARY
+====================================================================================================
+  5 FAILED CHECK(S):
+    - BTCUSDT no >1s gaps
+    - DOGEUSDT no >1s gaps
+    - ETHUSDT no >1s gaps
+    - SOLUSDT no >1s gaps
+    - XRPUSDT no >1s gaps

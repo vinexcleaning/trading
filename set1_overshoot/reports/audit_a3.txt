@@ -1,0 +1,41 @@
+A3 -- EMPIRICAL TESTS OF EVERY SELECTION POINT
+==============================================================================
+
+## 1. Mirrored-side choice.  Null: P(kept side wins) = 0.5000
+
+  FAIL  [higher volume  (ORIGINAL BUG)] P(kept side wins) = 0.5356 on n=19,782, z = +10.01 against a null of 0.5000  <-- THE SELECTION RULE IS READING THE OUTCOME. It must not depend on volume, open interest, last price, liquidity, or anything else recorded after settlement.
+  FAIL  [higher open interest] P(kept side wins) = 0.5558 on n=19,782, z = +15.70 against a null of 0.5000  <-- THE SELECTION RULE IS READING THE OUTCOME. It must not depend on volume, open interest, last price, liquidity, or anything else recorded after settlement.
+  FAIL  [higher last price] P(kept side wins) = 0.9989 on n=19,782, z = +140.34 against a null of 0.5000  <-- THE SELECTION RULE IS READING THE OUTCOME. It must not depend on volume, open interest, last price, liquidity, or anything else recorded after settlement.
+  pass  [higher liquidity] P(kept side wins) = 0.5031 on n=19,782, z = +0.88 against a null of 0.5000
+  pass  [first ticker alphabetically (FIX)] P(kept side wins) = 0.4969 on n=19,782, z = -0.88 against a null of 0.5000
+
+## 2. Row filters in p1_state / p2_calib
+
+Null for each: the filter may change WHO is in the sample, but must not
+change the calibration residual (outcome minus pre-match implied).
+
+  pass  [plausible duration filter (25-330 min)] calibration residual: kept +0.0029 (n=16,258) vs dropped +0.0294 (n=682), diff -0.0265, z = -2.59
+  note    play-window filter drops 2,841 of 19,781 markets (14.4%); those rows carry no pre-match quote at all, so their calibration residual is undefined and the test above cannot be run on them. Impact bounded in section 3.
+
+## 3. `result in (yes, no)` -- excludes scalar settlements
+
+  730 scalar market-rows of 40,304 decided (1.81%). These are retirements and walkovers; they have
+  no binary outcome so they cannot enter a calibration test. This is a
+  selection on a post-settlement field and it is unavoidable, so it is
+  measured rather than assumed: the add-back in reports/p2_scalar.txt
+  costs -0.004c per contract, because retirements overwhelmingly occur
+  before the entry point.
+
+## 4. Not leaks -- stated so they are not re-raised
+
+  `is_event` (price dropped >= threshold), the entry index, and the
+  requirement that entry precede match end are all decidable at the
+  moment of the decision. Conditioning on them is the strategy, not a
+  leak. `result` as the label and `close_time` as a time coordinate for
+  the temporal split are also fine.
+
+  One caveat on close_time: it is the match END, so a long match sorts
+  later than a short one that started at the same moment. For a
+  quantile split this mixes a little duration into the boundary. The
+  effect is bounded by the match-length spread (median 103 min) against
+  a 10-week window, so it is negligible, but it is not exactly zero.

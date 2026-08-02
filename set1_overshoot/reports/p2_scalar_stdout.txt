@@ -1,0 +1,56 @@
+﻿fetching 365 markets with 8 workers ...
+
+done in 1.6 min, 2 failures
+97,110 candle rows in 1 parts
+loading candles ...
+  97,110 rows, 363 markets
+
+candle rows seen                97,110
+1-minute grid slots             414,593
+  masked, no quote on either side   322,469  (77.8%)
+  masked, crossed book              0  (0.0%)
+  masked, spread > 15c              21,493  (5.2%)
+  masked, price out of range        0  (0.0%)
+
+markets processed               363
+why
+no_activity    171
+               123
+no_quotes       69
+
+with a play window              123
+  duration plausible (25-330m)  47
+  duration  p10 5  med 20  p90 77  max 442
+  pre-match mid  p10 52  med 64  p90 86
+  favourite won  0.5366  (should be well above 0.5)
+
+causal vs backward-walk t0:  identical 0.203   within 5 min 0.285   median -144 min
+pre-match anchor had been unchanged for: median 5 min, 36.6% for 10+ min
+pre-match mid agrees with the mid 60 min earlier (<=2c): 0.826  (n=92)
+
+-> C:\Users\gianf\kalshi\set1_overshoot\data\scalar_state.parquet
+-> C:\Users\gianf\kalshi\set1_overshoot\data\scalar_paths.npz
+scalar events: 365
+tour
+ATP       37
+CHALL     51
+ITF-M    136
+ITF-W    110
+WTA       31
+settlement value: median 0.50  mean 0.508  at exactly 0.50: 66.6%
+
+scalar matches that would have been entered: 6
+they are 0.11% of all entered positions
+
+RETIREMENT / WALKOVER SENSITIVITY
+============================================================
+scalar-settled matches in the whole book : 365
+of those, ones this strategy would enter : 6
+share of all positions taken             : 0.11%
+median settlement value                  : 0.50
+mean entry mid on those                  : 49.2c
+
+net expectancy, completed matches only   : -5.082 c
+net expectancy, scalar matches only      : -8.345 c
+net expectancy, blended (the real one)   : -5.086 c
+cost of the exclusion                    : -0.004 c/contract

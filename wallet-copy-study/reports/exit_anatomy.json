@@ -1,0 +1,404 @@
+{
+  "meta": {
+    "cut_iso": "2025-07-01",
+    "n_positions_with_sells": 332761,
+    "identity": "exit_component = frac_sold * (exit_price - outcome)",
+    "clustering": "market-level bootstrap, never pooled"
+  },
+  "by_outcome": {
+    "top_decile": {
+      "winners": {
+        "contribution_pp": {
+          "mean_pp": -23.9883,
+          "ci95": [
+            -24.7266,
+            -23.2027
+          ],
+          "p": 0.0005,
+          "n_obs": 4125,
+          "n_markets": 3943
+        },
+        "n_positions": 4125,
+        "share_of_positions": 0.4797,
+        "mean_exit_price": 0.7277
+      },
+      "losers": {
+        "contribution_pp": {
+          "mean_pp": 21.1964,
+          "ci95": [
+            20.5639,
+            21.8643
+          ],
+          "p": 0.0005,
+          "n_obs": 4475,
+          "n_markets": 4216
+        },
+        "n_positions": 4475,
+        "share_of_positions": 0.5203,
+        "mean_exit_price": 0.2489
+      },
+      "all": {
+        "contribution_pp": {
+          "mean_pp": -0.4765,
+          "ci95": [
+            -1.0216,
+            0.038
+          ],
+          "p": 0.066,
+          "n_obs": 8600,
+          "n_markets": 6830
+        },
+        "n_positions": 8600,
+        "share_of_positions": 1.0,
+        "mean_exit_price": 0.4786
+      }
+    },
+    "all_eligible": {
+      "winners": {
+        "contribution_pp": {
+          "mean_pp": -17.7881,
+          "ci95": [
+            -18.1479,
+            -17.4587
+          ],
+          "p": 0.0005,
+          "n_obs": 22464,
+          "n_markets": 17256
+        },
+        "n_positions": 22464,
+        "share_of_positions": 0.5402,
+        "mean_exit_price": 0.7925
+      },
+      "losers": {
+        "contribution_pp": {
+          "mean_pp": 19.6295,
+          "ci95": [
+            19.2439,
+            19.9904
+          ],
+          "p": 0.0005,
+          "n_obs": 19119,
+          "n_markets": 14671
+        },
+        "n_positions": 19119,
+        "share_of_positions": 0.4598,
+        "mean_exit_price": 0.2421
+      },
+      "all": {
+        "contribution_pp": {
+          "mean_pp": -0.5484,
+          "ci95": [
+            -0.8343,
+            -0.2538
+          ],
+          "p": 0.0005,
+          "n_obs": 32275,
+          "n_markets": 20000
+        },
+        "n_positions": 41583,
+        "share_of_positions": 1.0,
+        "mean_exit_price": 0.5395
+      }
+    },
+    "everyone": {
+      "winners": {
+        "contribution_pp": {
+          "mean_pp": -18.4644,
+          "ci95": [
+            -18.7838,
+            -18.1468
+          ],
+          "p": 0.0005,
+          "n_obs": 31297,
+          "n_markets": 20000
+        },
+        "n_positions": 192134,
+        "share_of_positions": 0.5774,
+        "mean_exit_price": 0.7823
+      },
+      "losers": {
+        "contribution_pp": {
+          "mean_pp": 24.5166,
+          "ci95": [
+            24.1982,
+            24.8288
+          ],
+          "p": 0.0005,
+          "n_obs": 29106,
+          "n_markets": 20000
+        },
+        "n_positions": 140627,
+        "share_of_positions": 0.4226,
+        "mean_exit_price": 0.295
+      },
+      "all": {
+        "contribution_pp": {
+          "mean_pp": -0.4263,
+          "ci95": [
+            -0.707,
+            -0.1493
+          ],
+          "p": 0.003,
+          "n_obs": 39944,
+          "n_markets": 20000
+        },
+        "n_positions": 332761,
+        "share_of_positions": 1.0,
+        "mean_exit_price": 0.5763
+      }
+    }
+  },
+  "by_entry_price": {
+    "0.0-0.2": {
+      "contribution_pp": {
+        "mean_pp": 1.6273,
+        "ci95": [
+          0.819,
+          2.3989
+        ],
+        "p": 0.0005,
+        "n_obs": 2142,
+        "n_markets": 2045
+      },
+      "n": 2142
+    },
+    "0.2-0.4": {
+      "contribution_pp": {
+        "mean_pp": 0.3808,
+        "ci95": [
+          -1.3887,
+          2.2062
+        ],
+        "p": 0.675,
+        "n_obs": 1626,
+        "n_markets": 1541
+      },
+      "n": 1626
+    },
+    "0.4-0.6": {
+      "contribution_pp": {
+        "mean_pp": -2.8478,
+        "ci95": [
+          -3.9,
+          -1.7616
+        ],
+        "p": 0.0005,
+        "n_obs": 2935,
+        "n_markets": 2418
+      },
+      "n": 2935
+    },
+    "0.6-0.8": {
+      "contribution_pp": {
+        "mean_pp": 0.9682,
+        "ci95": [
+          -1.1707,
+          3.2556
+        ],
+        "p": 0.369,
+        "n_obs": 936,
+        "n_markets": 889
+      },
+      "n": 936
+    },
+    "0.8-1.0": {
+      "contribution_pp": {
+        "mean_pp": -0.7812,
+        "ci95": [
+          -1.6313,
+          0.194
+        ],
+        "p": 0.107,
+        "n_obs": 961,
+        "n_markets": 935
+      },
+      "n": 961
+    }
+  },
+  "by_hold_period": {
+    "0-60": {
+      "contribution_pp": {
+        "mean_pp": 3.0215,
+        "ci95": [
+          -6.3903,
+          12.9036
+        ],
+        "p": 0.51,
+        "n_obs": 67,
+        "n_markets": 66
+      },
+      "n": 67
+    },
+    "60-600": {
+      "contribution_pp": {
+        "mean_pp": -0.4673,
+        "ci95": [
+          -3.565,
+          2.41
+        ],
+        "p": 0.714,
+        "n_obs": 371,
+        "n_markets": 329
+      },
+      "n": 371
+    },
+    "600-3600": {
+      "contribution_pp": {
+        "mean_pp": 0.5743,
+        "ci95": [
+          -1.3394,
+          2.3741
+        ],
+        "p": 0.573,
+        "n_obs": 690,
+        "n_markets": 638
+      },
+      "n": 690
+    },
+    "3600-86400": {
+      "contribution_pp": {
+        "mean_pp": -0.1666,
+        "ci95": [
+          -1.1534,
+          0.7364
+        ],
+        "p": 0.74,
+        "n_obs": 3291,
+        "n_markets": 2822
+      },
+      "n": 3291
+    },
+    "86400-604800": {
+      "contribution_pp": {
+        "mean_pp": -1.0596,
+        "ci95": [
+          -2.0714,
+          -0.0594
+        ],
+        "p": 0.033,
+        "n_obs": 2720,
+        "n_markets": 2450
+      },
+      "n": 2720
+    },
+    "604800-inf": {
+      "contribution_pp": {
+        "mean_pp": -0.7479,
+        "ci95": [
+          -2.1782,
+          0.7077
+        ],
+        "p": 0.303,
+        "n_obs": 1461,
+        "n_markets": 1218
+      },
+      "n": 1461
+    }
+  },
+  "bh_fdr": {
+    "n_tests": 20,
+    "n_significant": 10,
+    "detail": {
+      "exit_contrib[all_eligible][all]": {
+        "p": 0.0005,
+        "bh_threshold": 0.0025,
+        "significant_at_fdr_5pct": true
+      },
+      "exit_contrib[all_eligible][losers]": {
+        "p": 0.0005,
+        "bh_threshold": 0.005,
+        "significant_at_fdr_5pct": true
+      },
+      "exit_contrib[all_eligible][winners]": {
+        "p": 0.0005,
+        "bh_threshold": 0.0075,
+        "significant_at_fdr_5pct": true
+      },
+      "exit_contrib[everyone][losers]": {
+        "p": 0.0005,
+        "bh_threshold": 0.01,
+        "significant_at_fdr_5pct": true
+      },
+      "exit_contrib[everyone][winners]": {
+        "p": 0.0005,
+        "bh_threshold": 0.0125,
+        "significant_at_fdr_5pct": true
+      },
+      "exit_contrib[top_decile][losers]": {
+        "p": 0.0005,
+        "bh_threshold": 0.015,
+        "significant_at_fdr_5pct": true
+      },
+      "exit_contrib[top_decile][winners]": {
+        "p": 0.0005,
+        "bh_threshold": 0.0175,
+        "significant_at_fdr_5pct": true
+      },
+      "exit_contrib_px[0.0-0.2]": {
+        "p": 0.0005,
+        "bh_threshold": 0.02,
+        "significant_at_fdr_5pct": true
+      },
+      "exit_contrib_px[0.4-0.6]": {
+        "p": 0.0005,
+        "bh_threshold": 0.0225,
+        "significant_at_fdr_5pct": true
+      },
+      "exit_contrib[everyone][all]": {
+        "p": 0.003,
+        "bh_threshold": 0.025,
+        "significant_at_fdr_5pct": true
+      },
+      "exit_contrib_hold[86400-604800]": {
+        "p": 0.033,
+        "bh_threshold": 0.0275,
+        "significant_at_fdr_5pct": false
+      },
+      "exit_contrib[top_decile][all]": {
+        "p": 0.066,
+        "bh_threshold": 0.03,
+        "significant_at_fdr_5pct": false
+      },
+      "exit_contrib_px[0.8-1.0]": {
+        "p": 0.107,
+        "bh_threshold": 0.0325,
+        "significant_at_fdr_5pct": false
+      },
+      "exit_contrib_hold[604800-inf]": {
+        "p": 0.303,
+        "bh_threshold": 0.035,
+        "significant_at_fdr_5pct": false
+      },
+      "exit_contrib_px[0.6-0.8]": {
+        "p": 0.369,
+        "bh_threshold": 0.0375,
+        "significant_at_fdr_5pct": false
+      },
+      "exit_contrib_hold[0-60]": {
+        "p": 0.51,
+        "bh_threshold": 0.04,
+        "significant_at_fdr_5pct": false
+      },
+      "exit_contrib_hold[600-3600]": {
+        "p": 0.573,
+        "bh_threshold": 0.0425,
+        "significant_at_fdr_5pct": false
+      },
+      "exit_contrib_px[0.2-0.4]": {
+        "p": 0.675,
+        "bh_threshold": 0.045,
+        "significant_at_fdr_5pct": false
+      },
+      "exit_contrib_hold[60-600]": {
+        "p": 0.714,
+        "bh_threshold": 0.0475,
+        "significant_at_fdr_5pct": false
+      },
+      "exit_contrib_hold[3600-86400]": {
+        "p": 0.74,
+        "bh_threshold": 0.05,
+        "significant_at_fdr_5pct": false
+      }
+    }
+  }
+}

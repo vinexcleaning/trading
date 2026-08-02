@@ -1,0 +1,60 @@
+======================================================================================
+STAGE 3 -- SPLIT-HALF RELIABILITY OF PLAYER TENDENCIES
+======================================================================================
+records: 3,446,840 player-match rows | min qualifying n per player: 20
+r is the raw split-half correlation; SB is Spearman-Brown corrected;
+null is the same statistic when all players are secretly identical.
+
+--------------------------------------------------------------------------------------
+ALL TIERS
+--------------------------------------------------------------------------------------
+trait                                players       r            95% CI     SB  null r
+comeback (win | lost set 1)           15,812  +0.439  [+0.426, +0.451] +0.610  -0.006
+slow starter (lose set 1)             18,778  +0.606  [+0.597, +0.615] +0.755  -0.008
+tiebreak win rate                      8,929  +0.091  [+0.070, +0.112] +0.167  -0.013
+decider win rate                      10,441  +0.198  [+0.179, +0.216] +0.331  -0.006
+POSITIVE CONTROL: match win rate      18,778  +0.633  [+0.624, +0.641] +0.775  -0.001
+
+--------------------------------------------------------------------------------------
+tier=main
+--------------------------------------------------------------------------------------
+trait                                players       r            95% CI     SB  null r
+comeback (win | lost set 1)            2,942  +0.455  [+0.425, +0.483] +0.625  -0.023
+slow starter (lose set 1)              3,716  +0.495  [+0.471, +0.519] +0.662  +0.025
+tiebreak win rate                      1,978  +0.112  [+0.068, +0.155] +0.201  -0.022
+decider win rate                       2,168  +0.284  [+0.245, +0.323] +0.443  +0.009
+POSITIVE CONTROL: match win rate       3,716  +0.571  [+0.549, +0.592] +0.727  +0.009
+
+--------------------------------------------------------------------------------------
+tier=chall
+--------------------------------------------------------------------------------------
+trait                                players       r            95% CI     SB  null r
+comeback (win | lost set 1)            2,589  +0.352  [+0.317, +0.385] +0.520  +0.023
+slow starter (lose set 1)              3,227  +0.503  [+0.477, +0.528] +0.669  +0.025
+tiebreak win rate                      1,923  +0.088  [+0.044, +0.132] +0.162  +0.060
+decider win rate                       1,978  +0.199  [+0.156, +0.241] +0.331  -0.024
+POSITIVE CONTROL: match win rate       3,227  +0.583  [+0.560, +0.605] +0.736  -0.024
+
+======================================================================================
+CONTROLLING FOR OVERALL STRENGTH
+======================================================================================
+Same test, but the trait is residualised against the player's own win
+rate in that half. This asks whether the tendency carries information
+Elo does not already have. A trait that is real but collapses here is
+not worth a feature -- it is strength, relabelled.
+
+trait                                players   raw r  resid r            95% CI     SB
+comeback (win | lost set 1)           15,812  +0.439   +0.125  [+0.109, +0.140] +0.222
+slow starter (lose set 1)             18,778  +0.606   +0.096  [+0.082, +0.111] +0.176
+tiebreak win rate                      8,929  +0.091   +0.049  [+0.028, +0.069] +0.093
+decider win rate                      10,441  +0.198   +0.116  [+0.097, +0.134] +0.207
+POSITIVE CONTROL: match win rate      18,778  +0.633     +nan      [+nan, +nan]   +nan
+
+======================================================================================
+READING THIS
+======================================================================================
+The positive control must show a clearly non-zero r -- match win rate
+is a real, stable skill. If a trait's r is not meaningfully above its
+null, there are no stable individual differences to model: the
+variation between players is what binomial noise produces on its own,
+and the feature should be dropped rather than shrunk.

@@ -1,0 +1,93 @@
+﻿# Phase 4 -- validation
+
+## Temporal split
+
+Split at **2026-07-06 12:15 UTC** (oldest 60% / newest 40%).
+
+- train: 3,238 events, 2026-05-25 to 2026-07-06
+- holdout: 2,158 events, 2026-07-06 to 2026-08-01
+
+**Confound to note explicitly:** the split falls inside the clay-to-grass-to-hard
+run of the calendar. A temporal holdout in tennis is therefore also a surface and
+tournament-mix change, and a configuration failing on holdout may be failing on
+surface rather than on time. The composition of both halves is printed below so
+that is visible rather than buried.
+
+| tour | train | holdout |
+|---|---|---|
+| ATP | 191 | 109 |
+| CHALL | 491 | 325 |
+| ITF-M | 1,230 | 841 |
+| ITF-W | 1,123 | 769 |
+| WTA | 203 | 114 |
+
+## Headline, train vs holdout
+
+| sample | n | implied | observed | mis pp | 95% CI | p(1s) | net c | net 95% CI |
+|---|---|---|---|---|---|---|---|---|
+| all | 5,396 | 0.5403 | 0.5291 | -1.13 | [-2.38, +0.14] | 0.9590 | -5.082 | [-6.346, -3.809] |
+| train (oldest 60%) | 3,238 | 0.5391 | 0.5272 | -1.20 | [-2.84, +0.44] | 0.9259 | -5.250 | [-6.912, -3.585] |
+| holdout (newest 40%) | 2,158 | 0.5422 | 0.5320 | -1.02 | [-3.01, +1.06] | 0.8432 | -4.829 | [-6.833, -2.783] |
+
+## Top configurations on the holdout, run once
+
+Selected on **train only**, by train miscalibration, then evaluated once here.
+
+| config | train mis pp | train n | holdout n | holdout mis pp | 95% CI | p(1s) | holdout net c |
+|---|---|---|---|---|---|---|---|
+| f_strength=90+ | +7.93 | 241 | 151 | +0.04 | [-6.54, +6.42] | 0.5406 | -3.261 |
+| f_drop=30c+ | +0.91 | 473 | 290 | +1.62 | [-3.74, +7.13] | 0.2926 | -1.962 |
+| f_drop=10-20c | -0.32 | 1,313 | 882 | -0.49 | [-3.60, +2.68] | 0.6288 | -4.374 |
+
+## Purged walk-forward
+
+Five sequential folds, each evaluated on data strictly after its training
+window, with a **48-hour embargo** between them. Tennis matches settle within
+hours, so 48h is comfortably longer than any single observation's life and no
+information can straddle the boundary.
+
+| fold | train n | test n | test window | test mis pp | 95% CI | test net c |
+|---|---|---|---|---|---|---|
+| 1 | 900 | 770 | 06-09 to 06-17 | -2.59 | [-5.85, +0.60] | -6.502 |
+| 2 | 1,799 | 744 | 06-19 to 06-29 | -1.39 | [-4.81, +1.93] | -5.343 |
+| 3 | 2,698 | 634 | 07-01 to 07-10 | -1.02 | [-4.73, +2.77] | -4.967 |
+| 4 | 3,597 | 820 | 07-12 to 07-21 | +2.13 | [-1.11, +5.25] | -1.777 |
+| 5 | 4,496 | 695 | 07-23 to 08-01 | -4.09 | [-7.63, -0.59] | -7.765 |
+
+Fold-to-fold miscalibration: mean -1.39 pp, sd 2.06 pp, 1/5 positive.
+
+## The undershoot on the holdout, and the fade it implies
+
+Phase 2 found the market undershoots, so the direction with any edge in it is
+buying the **underdog** at `100 - favourite_bid`. Phase 2 also showed that trade
+losing money in every configuration. The question left for the holdout is narrow:
+is the undershoot itself stable over time, or was it a property of the first half
+of the sample?
+
+| sample | n | fav implied | fav observed | mis pp | 95% CI | p(1s undershoot) | fade net c | fade net 95% CI |
+|---|---|---|---|---|---|---|---|---|
+| all | 3,427 | 0.3643 | 0.3391 | -2.53 | [-4.04, -1.02] | 0.0007 | -1.101 | [-2.614, +0.422] |
+| train (oldest 60%) | 2,056 | 0.3632 | 0.3414 | -2.17 | [-4.09, -0.26] | 0.0152 | -1.542 | [-3.484, +0.388] |
+| holdout (newest 40%) | 1,371 | 0.3661 | 0.3355 | -3.05 | [-5.42, -0.63] | 0.0065 | -0.438 | [-2.831, +1.959] |
+
+## Day-clustered bootstrap
+
+Each row is already one match, so the ordinary bootstrap is match-clustered by
+construction. But matches on the same day at the same tournament share weather,
+court, balls and draw quality, so the effective sample is smaller than the match
+count. Resampling whole days instead of individual matches prices that in.
+
+- distinct days: **69**, median 74 events per day
+- miscalibration, day-clustered 95% CI: **[-2.46, +0.20] pp** (match-clustered was [-2.38, +0.14])
+- net expectancy, day-clustered 95% CI: **[-6.426, -3.757] c** (match-clustered was [-6.346, -3.809])
+
+## Deflated Sharpe
+
+- variants evaluated (ledger rows): **90**
+- per-trade Sharpe of the base configuration: **-0.1070** (skew -0.10, kurtosis 1.34)
+- expected maximum Sharpe from 90 pure-noise variants: **+2.4933**
+- **deflated Sharpe probability: 0.0000** (probability the true Sharpe exceeds zero once selection is accounted for)
+
+The observed Sharpe does not exceed what this many variants would produce from noise alone.
+
+-> C:\Users\gianf\kalshi\set1_overshoot\reports\p4_validation.md

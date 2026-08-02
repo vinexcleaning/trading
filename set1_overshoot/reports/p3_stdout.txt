@@ -1,0 +1,127 @@
+﻿# Phase 3 -- segmentation (TRAIN (oldest 60%))
+
+> **The Phase 2 gate FAILED. Everything in this file is exploratory and none of it
+> is a candidate for trading.** The pre-registered rule was to stop here, because
+> slicing a null into subgroups until one looks positive is how this project has
+> produced false positives four times. It is run anyway, and labelled, for two
+> reasons: the user asked specific questions about favourite strength and about
+> men's versus women's tennis that deserve a direct answer, and the output is a
+> concrete demonstration of what subgroup hunting yields on a null. Every level
+> below is carried into the Benjamini-Hochberg correction over the whole ledger.
+
+> Read the holdout column in `p4_validation.md` alongside this. The best subgroup
+> found on train (`pre-match 90+`, +7.93 pp) collapses to **+0.04 pp** on the
+> holdout. That single line is the most useful thing in this file.
+
+Split at **2026-07-06 12:15 UTC**. train n=3,238, holdout n=2,158. Working set: **n=3,238**.
+
+Every level below is written to `HYPOTHESIS_LEDGER.md` and carried into the Benjamini-Hochberg correction, including the levels skipped for small n.
+
+### 3a favourite strength (pre-match mid)
+
+| level | n | implied | observed | mis pp | 95% CI | p(1s) | net c/contract |
+|---|---|---|---|---|---|---|---|
+| 60-70 | 1,314 | 0.435 | 0.412 | -2.29 | [-4.86, +0.33] | 0.9577 | -6.379 |
+| 70-80 | 992 | 0.547 | 0.526 | -2.03 | [-5.08, +1.03] | 0.9110 | -6.145 |
+| 80-90 | 691 | 0.655 | 0.644 | -1.10 | [-4.62, +2.32] | 0.7481 | -5.115 |
+| 90+ | 241 | 0.746 | 0.826 | +7.93 | [+3.31, +12.46] | 0.0015 | +4.194 |
+
+### 3b drop size
+
+| level | n | implied | observed | mis pp | 95% CI | p(1s) | net c/contract |
+|---|---|---|---|---|---|---|---|
+| 5-10c | 450 | 0.681 | 0.673 | -0.75 | [-5.03, +3.56] | 0.6596 | -4.663 |
+| 10-20c | 1,313 | 0.604 | 0.601 | -0.32 | [-2.90, +2.31] | 0.6057 | -4.425 |
+| 20-30c | 1,002 | 0.476 | 0.440 | -3.54 | [-6.50, -0.54] | 0.9893 | -7.678 |
+| 30c+ | 473 | 0.359 | 0.368 | +0.91 | [-3.27, +5.20] | 0.3534 | -2.959 |
+
+### 3c first-set closeness (drop vs cohort median)
+
+| level | n | implied | observed | mis pp | 95% CI | p(1s) | net c/contract |
+|---|---|---|---|---|---|---|---|
+| close set (small drop) | 1,596 | 0.616 | 0.613 | -0.27 | [-2.54, +2.03] | 0.6017 | -4.330 |
+| decisive set (large drop) | 1,642 | 0.464 | 0.443 | -2.10 | [-4.53, +0.23] | 0.9632 | -6.145 |
+
+### 3f series and gender
+
+| level | n | implied | observed | mis pp | 95% CI | p(1s) | net c/contract |
+|---|---|---|---|---|---|---|---|
+| ATP | 191 | 0.523 | 0.476 | -4.61 | [-10.88, +1.77] | 0.9224 | -8.009 |
+| CHALL | 491 | 0.505 | 0.497 | -0.80 | [-4.85, +3.66] | 0.6566 | -4.598 |
+| ITF-M | 1,230 | 0.542 | 0.536 | -0.61 | [-3.18, +1.97] | 0.6862 | -4.885 |
+| ITF-W | 1,123 | 0.560 | 0.546 | -1.37 | [-4.11, +1.51] | 0.8417 | -5.511 |
+| WTA | 203 | 0.508 | 0.493 | -1.55 | [-8.07, +4.90] | 0.7066 | -5.009 |
+
+### 3-extra entry price band
+
+| level | n | implied | observed | mis pp | 95% CI | p(1s) | net c/contract |
+|---|---|---|---|---|---|---|---|
+| <30c | 130 | 0.215 | 0.238 | +2.35 | [-4.61, +9.85] | 0.2838 | -1.351 |
+| 30-40c | 439 | 0.358 | 0.326 | -3.27 | [-7.53, +1.22] | 0.9311 | -7.083 |
+| 40-50c | 752 | 0.455 | 0.416 | -3.89 | [-7.40, -0.42] | 0.9844 | -8.156 |
+| 50-60c | 833 | 0.551 | 0.537 | -1.40 | [-4.78, +1.93] | 0.8036 | -5.623 |
+| 60c+ | 1,084 | 0.701 | 0.713 | +1.25 | [-1.43, +3.92] | 0.1880 | -2.674 |
+
+### 3e exit rules
+
+Entry fill is the ask plus 1c of slippage in every cell. Exits sell at the **bid**.
+Hold-to-settlement pays **one** fee; every early exit pays **two**.
+
+| target | stop | net c/contract | 95% CI | sd | % exited early |
+|---|---|---|---|---|---|
+| - | - | -5.250 | [-6.878, -3.582] | 47.4 | 0.0% |
+| - | 15 | -5.989 | [-6.928, -5.080] | 27.0 | 73.2% |
+| - | 20 | -6.063 | [-7.058, -4.980] | 31.2 | 66.3% |
+| - | 25 | -6.130 | [-7.307, -5.007] | 34.6 | 60.7% |
+| - | 30 | -6.022 | [-7.372, -4.734] | 37.8 | 54.1% |
+| 10 | - | -7.491 | [-8.515, -6.477] | 29.5 | 71.6% |
+| 10 | 15 | -6.941 | [-7.483, -6.400] | 15.7 | 98.7% |
+| 10 | 20 | -7.205 | [-7.795, -6.570] | 18.2 | 98.2% |
+| 10 | 25 | -7.249 | [-7.920, -6.534] | 20.4 | 97.5% |
+| 10 | 30 | -7.115 | [-7.878, -6.316] | 22.2 | 96.6% |
+| 15 | - | -7.192 | [-8.326, -6.014] | 33.2 | 64.5% |
+| 15 | 15 | -6.842 | [-7.446, -6.234] | 17.7 | 97.5% |
+| 15 | 20 | -7.008 | [-7.743, -6.305] | 20.6 | 96.7% |
+| 15 | 25 | -7.091 | [-7.861, -6.286] | 23.0 | 95.9% |
+| 15 | 30 | -6.973 | [-7.837, -6.101] | 25.2 | 94.5% |
+| 20 | - | -6.870 | [-8.091, -5.577] | 36.4 | 56.4% |
+| 20 | 15 | -6.773 | [-7.458, -6.075] | 19.5 | 95.3% |
+| 20 | 20 | -6.929 | [-7.725, -6.153] | 22.7 | 93.9% |
+| 20 | 25 | -7.031 | [-7.890, -6.179] | 25.4 | 92.9% |
+| 20 | 30 | -6.892 | [-7.878, -5.965] | 27.8 | 91.0% |
+| 25 | - | -6.702 | [-8.000, -5.330] | 39.2 | 47.9% |
+| 25 | 15 | -6.627 | [-7.341, -5.936] | 21.1 | 93.0% |
+| 25 | 20 | -6.842 | [-7.693, -5.999] | 24.6 | 91.3% |
+| 25 | 25 | -7.024 | [-7.976, -6.088] | 27.4 | 89.8% |
+| 25 | 30 | -6.900 | [-7.936, -5.854] | 30.1 | 87.3% |
+
+Best cell: target=- stop=- at -5.250 c. 1 of 25 cells sit within 0.5c of it, so this is **an isolated peak -- treat as overfitting**.
+
+### 3d serve order in set 2, and waiting for the first game
+
+Serve order itself is **not recoverable from price**, and no source in reach
+publishes it. Saying otherwise would be inventing a variable. What *is* testable
+is the tradeable form of the same question: does waiting through the first game
+or two of set 2 -- and in particular waiting to see whether the favourite holds or
+is broken again -- change the risk-adjusted result? Each rule below is causal: it
+only ever looks at prices at or before its own entry minute.
+
+| rule | n | implied | observed | mis pp | 95% CI | net c | sd of net |
+|---|---|---|---|---|---|---|---|
+| enter immediately | 3,238 | 0.539 | 0.527 | -1.20 | [-2.74, +0.45] | -5.250 | 47.4 |
+| wait 7 min (about one game) | 3,204 | 0.545 | 0.530 | -1.49 | [-3.06, +0.11] | -5.372 | 45.7 |
+| wait 14 min (about two games) | 3,151 | 0.546 | 0.533 | -1.32 | [-2.84, +0.24] | -5.025 | 44.3 |
+| wait for a further 5c fall | 2,629 | 0.455 | 0.427 | -2.82 | [-4.61, -1.01] | -6.779 | 47.0 |
+| wait for a 5c recovery | 2,743 | 0.625 | 0.619 | -0.59 | [-2.31, +1.14] | -4.475 | 46.1 |
+
+### 3g player-level comeback tendency
+
+- distinct favourites in the sample: **1,862**
+- median matches per favourite: **1**, p90 3, max 9
+- favourites with 10+ qualifying matches: **0**
+
+To separate a genuine 60% comeback player from a 50% one at 80% power needs about **392 qualifying matches per player**. The sample offers a median of 1.
+
+**Dropped as underpowered.** Fewer than 30 favourites reach even 10 qualifying matches, so any per-player comeback rate here is noise with a decimal point on it.
+
+-> C:\Users\gianf\kalshi\set1_overshoot\reports\p3_segments.md

@@ -1,0 +1,105 @@
+﻿# Task 1b — maker versus taker
+
+Entry rule `deep:30@38`, n = **685** opportunities. Fade = sell the favourite.
+
+**Taker baseline**: fills 100% by assumption, mean fill 67.67¢, fee 1.40¢, net **-0.016¢** [-3.454, +3.173].
+
+## Fill rates
+
+Fill requires the favourite's bid to trade **strictly above** the resting level in
+some later minute — last in queue, no credit for merely being touched.
+
+| resting style | mean level ¢ | 5 min | 10 min | 20 min | 30 min | to end of match |
+|---|---|---|---|---|---|---|
+| improve | 34.32 | 72.6% | 81.5% | 85.1% | 87.2% | 88.3% |
+| join_ask | 35.25 | 66.6% | 77.8% | 83.1% | 85.3% | 86.7% |
+| passive | 36.25 | 59.1% | 71.2% | 79.1% | 81.6% | 83.9% |
+
+## Net expectancy, maker vs taker
+
+`per fill` is the mean over filled trades only. **`per opportunity` is the number
+that matters** — unfilled chances earn nothing, and a strategy is judged on the
+signals it acts on, not the subset it happened to catch.
+
+| resting style | window | fill % | fill px ¢ | per fill, verified schedule ¢ | per fill, pessimistic (1/4 taker everywhere) ¢ | per opportunity (verified fee) ¢ |
+|---|---|---|---|---|---|---|
+| improve | 5 | 72.6% | 65.17 | -0.633 | -0.948 | **-0.459** |
+| improve | 10 | 81.5% | 65.31 | +0.234 | -0.080 | **+0.191** |
+| improve | 20 | 85.1% | 64.98 | +0.491 | +0.174 | **+0.418** |
+| improve | 30 | 87.2% | 65.01 | +0.607 | +0.290 | **+0.529** |
+| improve | end | 88.3% | 64.92 | -0.011 | -0.329 | **-0.010** |
+| join_ask | 5 | 66.6% | 64.59 | +0.053 | -0.262 | **+0.035** |
+| join_ask | 10 | 77.8% | 64.51 | +0.726 | +0.410 | **+0.565** |
+| join_ask | 20 | 83.1% | 64.09 | +0.886 | +0.566 | **+0.736** |
+| join_ask | 30 | 85.3% | 64.09 | +0.928 | +0.607 | **+0.791** |
+| join_ask | end | 86.7% | 63.99 | +0.272 | -0.049 | **+0.236** |
+| passive | 5 | 59.1% | 63.42 | +1.217 | +0.897 | **+0.720** |
+| passive | 10 | 71.2% | 63.42 | +1.286 | +0.965 | **+0.916** |
+| passive | 20 | 79.1% | 63.03 | +0.942 | +0.615 | **+0.746** |
+| passive | 30 | 81.6% | 62.97 | +0.848 | +0.520 | **+0.692** |
+| passive | end | 83.9% | 62.80 | +0.279 | -0.050 | **+0.234** |
+
+## Adverse selection — the pre-specified kill test
+
+A resting sell of the favourite fills only when the favourite ticks **up**. If the
+fills are systematically the matches about to go wrong, the fee and spread saving
+is illusory.
+
+| resting style | window | fill % | dog win, filled | dog win, all | shift pp | fav mid at signal | fav mid at fill | drift ¢ |
+|---|---|---|---|---|---|---|---|---|
+| improve | 10 | 81.5% | 0.6559 | 0.6905 | -3.46 | 34.67 | 37.50 | +2.83 |
+| improve | 30 | 87.2% | 0.6566 | 0.6905 | -3.39 | 34.98 | 37.80 | +2.82 |
+| improve | end | 88.3% | 0.6496 | 0.6905 | -4.09 | 35.06 | 37.89 | +2.82 |
+| join_ask | 10 | 77.8% | 0.6529 | 0.6905 | -3.76 | 34.59 | 38.23 | +3.64 |
+| join_ask | 30 | 85.3% | 0.6507 | 0.6905 | -3.98 | 34.97 | 38.62 | +3.65 |
+| join_ask | end | 86.7% | 0.6431 | 0.6905 | -4.74 | 35.07 | 38.74 | +3.67 |
+| passive | 10 | 71.2% | 0.6475 | 0.6905 | -4.30 | 34.67 | 39.33 | +4.66 |
+| passive | 30 | 81.6% | 0.6386 | 0.6905 | -5.19 | 35.10 | 39.85 | +4.75 |
+| passive | end | 83.9% | 0.6313 | 0.6905 | -5.92 | 35.27 | 40.07 | +4.81 |
+
+### Decomposition on the best cell (`passive`, 10 min)
+
+Same matches, both ways — this isolates the price improvement from the
+selection effect.
+
+| quantity | value |
+|---|---|
+| opportunities | 685 |
+| filled | 488 (71.2%) |
+| price improvement vs taker, same matches | +3.814 ¢ |
+| fee saving vs taker, same matches | +1.359 ¢ |
+| **gross saving from being a maker** | **+5.172 ¢** |
+| underdog win rate, all opportunities | 0.6905 |
+| underdog win rate, filled only | 0.6475 |
+| **cost of adverse selection** | **-4.297 ¢** (1 pp of win rate = 1 ¢) |
+
+
+### Four-way decomposition, per opportunity
+
+Reported in the same units as the sibling crypto market-making run so the two
+are comparable, but **this is not two-sided market making** and the terms are
+not the same objects. A passive directional entry quotes one side, so there is
+no bid-ask capture; the analogue is price improvement against fair value. And
+because the position is held to settlement, **the residual is marked at the
+actual 0/100 outcome, never defaulted to 0.5** — the inventory-carry defect that
+fabricated +2.96¢ in the crypto session cannot arise here.
+
+| term | ¢/opportunity |
+|---|---|
+| edge at fair value (71.2% × 69.05% vs 65.33¢) | +2.654 |
+| **adverse selection** (-4.30 pp on filled) | **-3.061** |
+| price improvement vs fair value | +1.361 |
+| maker fees (verified schedule) | -0.037 |
+| **net per opportunity** | **+0.916** |
+| identity check vs direct calculation | +0.916 (diff +0.0000) |
+
+| bottom line | ¢/contract |
+|---|---|
+| taker, all 685 opportunities | -0.016 |
+| taker, the 488 that would have filled | -3.886 |
+| maker, those same fills | +1.286 |
+| **maker, per opportunity** | **+0.916** |
+| 95% CI, match-clustered | [-1.985, +3.811] |
+| 95% CI, day-clustered | [-2.067, +3.720] |
+
+-> C:\Users\gianf\kalshi\set1_overshoot\reports\p5_task1b.md

@@ -1,0 +1,56 @@
+﻿# The other side — fading the favourite after the dip
+
+Phase 2 found a **significant undershoot**: the favourite wins less often than the
+dipped price implies. That makes the favourite the wrong side to buy and raises the
+obvious question of whether the underdog is the right one. This file answers it.
+
+Fill is `100 - favourite_bid` plus 1c slippage — the executable NO side of the same
+market, verified in `reports/p0_mirror.txt` to cost the same as the sibling market's
+YES side to within 0.00c at the median.
+
+| entry rule | n | implied | observed | mis pp | 95% CI | p(1s) | fill | fee | breakeven | net c | net 95% CI |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| deep:12 | 5,396 | 0.4597 | 0.4709 | +1.13 | [-0.13, +2.40] | 0.0436 | 48.4 | 1.60 | 0.4995 | -2.861 | [-4.135, -1.594] |
+| deep:30@38 | 3,427 | 0.6357 | 0.6609 | +2.53 | [+1.03, +4.06] | 0.0006 | 65.8 | 1.44 | 0.6719 | -1.101 | [-2.606, +0.459] |
+| deep:20@38 | 4,190 | 0.5601 | 0.5807 | +2.06 | [+0.63, +3.47] | 0.0023 | 58.3 | 1.54 | 0.5981 | -1.739 | [-3.170, -0.311] |
+| deep:25 | 4,045 | 0.5756 | 0.5998 | +2.41 | [+0.98, +3.86] | 0.0008 | 59.8 | 1.56 | 0.6138 | -1.405 | [-2.851, +0.064] |
+| cp | 3,518 | 0.5569 | 0.5586 | +0.17 | [-1.24, +1.61] | 0.4240 | 57.9 | 1.41 | 0.5929 | -3.434 | [-4.840, -2.004] |
+| fixed | 3,341 | 0.4834 | 0.5058 | +2.24 | [+0.70, +3.81] | 0.0031 | 50.7 | 1.53 | 0.5222 | -1.641 | [-3.181, -0.083] |
+
+## Verdict on the fade
+
+Best cell: **deep:30@38**, net **-1.101 c/contract**, 95% CI [-2.606, +0.459].
+
+**0 of 6 configurations have a positive mean net expectancy. 0 of 6 have a
+confidence interval entirely above zero.**
+
+So the miscalibration is real and it does point at the underdog, but it is
+smaller than the cost of taking the position in every single configuration. The
+reason is arithmetic rather than bad luck. After the dip the underdog is the
+*expensive* side — around 66c on the best-targeted rule — so the fee sits near
+its maximum and the fill eats most of the payout. A 2.5pp edge cannot pay for a
+65.8c fill plus 1c of slippage plus 1.4c of fee, which together demand a 67.2%
+win rate against the 66.1% actually observed.
+
+The best cell's interval does reach slightly above zero ([-2.606, +0.459]), which
+means the data cannot rule out a very small positive expectancy there. It also
+cannot rule out a loss three times that size, the point estimate is negative, and
+this is the best of six cells chosen after the fact. That is not an edge; it is
+the shape a null takes when you look at it from the profitable direction.
+
+## How big would the miscalibration have to be?
+
+| entry rule | observed underdog win rate | breakeven win rate | shortfall (pp) |
+|---|---|---|---|
+| deep:12 | 0.4709 | 0.4995 | -2.86 |
+| deep:30@38 | 0.6609 | 0.6719 | -1.10 |
+| deep:20@38 | 0.5807 | 0.5981 | -1.74 |
+| deep:25 | 0.5998 | 0.6138 | -1.41 |
+| cp | 0.5586 | 0.5929 | -3.43 |
+| fixed | 0.5058 | 0.5222 | -1.64 |
+
+The shortfall column is the whole study in one number: it is how many percentage
+points of additional mispricing the market would have to be offering before this
+trade broke even, before any profit at all.
+
+-> C:\Users\gianf\kalshi\set1_overshoot\reports\p2_fade.md

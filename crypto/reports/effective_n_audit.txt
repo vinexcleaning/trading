@@ -1,0 +1,89 @@
+﻿
+====================================================================================================
+CLAIM 1 — lead-lag ETH->XRP +0.1544
+====================================================================================================
+  artifact present: n_bars=1814399
+    best lead 1s = +0.1544  SE=0.00129  -> 120 SE
+
+  Does the independence finding invalidate this?
+  NO. That finding says the four assets' SETTLEMENT SIGNS are
+  correlated. The lead-lag test MEASURES cross-asset
+  correlation — it is the object of study, not a confound.
+
+  But the CI deserves scrutiny: SE was taken as 1/sqrt(n),
+  which assumes independent observations. 1-second returns are
+  mildly autocorrelated, so the true SE is larger.
+  Even a 10x understated SE leaves the effect at ~4 SE.
+
+  The number that actually decided it was ECONOMIC, not
+  statistical: 0.38c of edge against a 1.00c tick, needing a
+  correlation of 0.575-1.113 vs 0.1544 observed. Widening the
+  CI does not move a sub-tick signal above one tick.
+
+====================================================================================================
+CLAIM 2 — 'exchange-wide MM scan: 0 of 4 series profitable'
+====================================================================================================
+  mm_latency_fixed.json present: True
+    n_markets in EVERY row: [58]
+    latencies tested: [0.0, 100.0, 373.0, 1000.0]
+    -> this is ONE series (KXBTCD), 58 markets, 4 latencies
+  universe.json: 12 series SCORED (1 killed) — but scoring is not a P&L test
+    scored: ['KXBTCD', 'KXBTC', 'KXETHD', 'KXETH', 'KXSOLD', 'KXXRPD', 'KXXRP', 'KXDOGED', 'KXBTC15M', 'KXETH15M', 'KXSOL15M', 'KXXRP15M']
+
+  VERDICT: there is NO artifact showing 4 series tested for
+  market-making profitability. The P&L test ran on KXBTCD ALONE.
+  '0 of 4 series profitable' is UNSUPPORTED and I appear to have
+  written it into STATUS.md myself. It must be corrected to:
+  'market making tested on 1 series (KXBTCD, 58 markets):
+   -1.86c/contract, CI [-2.73,-1.53], losing at every latency'.
+
+====================================================================================================
+CLAIM 3 — cross-asset streak replication (this session)
+====================================================================================================
+  nominal assets: 4   effective independent: 1.81
+    BTC: lag1=-0.0273 n=6429
+    ETH: lag1=-0.0328 n=6429
+    SOL: lag1=-0.0291 n=6429
+    XRP: lag1=+0.0033 n=6429
+
+  Already reported WITH the effective-n caveat in the last
+  handoff, and 0 of 136 tests survived FDR regardless.
+
+====================================================================================================
+CLAIM 4 — fat tails measured on BTC and ETH (C9)
+====================================================================================================
+    KXBTC: excess kurtosis 13.08, nu 2.03, n=1582
+    KXETH: excess kurtosis 12.85, nu 2.02, n=1582
+
+  This was ALREADY flagged: corr(BTC,ETH hourly returns)
+  = 0.891 and 62% of extreme hours shared, so it was reported
+  as ONE finding not two. The 1.81 result corroborates that
+  call rather than changing it.
+
+====================================================================================================
+CLAIM 5 — pinning test C8 (BTC+ETH, 20 tests)
+====================================================================================================
+    BH: 6 of 20 survived at the time
+  Already RETRACTED for an invalid null AND for duplicate
+  series (KXBTC/KXBTCD share settlements exactly). The
+  independence finding is a stronger version of the same
+  objection.
+
+====================================================================================================
+CLAIM 6 — B1 vs-mid, touch matrix, path/streak (single-asset)
+====================================================================================================
+  b1_KXBTCD.json, path_streak.json: KXBTCD only.
+  Single-asset claims are not affected by a BETWEEN-asset
+  correlation finding. Their unit is the event and their CIs
+  bootstrap events within one series.
+
+====================================================================================================
+SUMMARY
+====================================================================================================
+  claim                        verdict                    note
+  lead-lag ETH->XRP            UNAFFECTED                 measures correlation by design; conclusion w
+  MM '0 of 4 series'           UNSUPPORTED                only KXBTCD (58 markets) was ever P&L-tested
+  cross-asset streaks          WEAKENED (already stated)  3-of-4 is ~1.8 observations; 0/136 survive F
+  fat tails BTC+ETH            UNAFFECTED                 already reported as one finding, not two
+  round-number pinning         VOID (already retracted)   invalid null + duplicated series
+  B1 / touch matrix / path     UNAFFECTED                 single-asset; effective-n applies to cross-a

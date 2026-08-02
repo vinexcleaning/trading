@@ -1,0 +1,65 @@
+==========================================================================================
+STAGE 5 -- SELECTIVE BETTING (fee-inclusive, both legs)
+==========================================================================================
+held-out Kalshi matches with a pre-match price: 502
+fee model: ceil(0.07 * P * (1-P)) per contract, charged on entry
+mean |edge| vs market: 0.1672
+mean fee at 50c: $0.0200  -- an edge below this cannot pay
+
+------------------------------------------------------------------------------------------
+LIQUIDITY -- can these prices actually be traded?
+------------------------------------------------------------------------------------------
+liquidity
+tight <=2c    186
+3-5c          101
+6-10c          15
+wide >10c     200
+  median spread 0.030   share wider than 10c: 39.8%
+  A 1c/99c quote has a 50c 'mid' that no one will trade at.
+
+------------------------------------------------------------------------------------------
+BET EVERYTHING -- fantasy fill (at the mid) vs real fill (ask/bid)
+------------------------------------------------------------------------------------------
+min edge  fill         bets   mean P&L                  95% CI      ROI
+0.02      mid           465    +0.0598      [+0.0190, +0.1009]   +14.4%
+0.02      ask/bid       284    -0.1174      [-0.1799, -0.0548]   -24.3%
+0.05      mid           389    +0.0757      [+0.0321, +0.1202]   +18.7%
+0.05      ask/bid       229    -0.1345      [-0.2037, -0.0664]   -28.3%
+0.10      mid           294    +0.0985      [+0.0464, +0.1485]   +24.6%
+0.10      ask/bid       157    -0.1490      [-0.2322, -0.0634]   -30.9%
+
+Only the ask/bid rows are real. Everything below uses executable fills.
+
+------------------------------------------------------------------------------------------
+SEGMENTED SEARCH
+------------------------------------------------------------------------------------------
+segments tested: 43  (Benjamini-Hochberg at alpha=0.05 applied across all of them)
+
+edge  axis            segment                      bets   mean P&L        p   BH
+0.10  surface         Hard                           42    +0.0412    0.615   no
+0.10  tier x surface  ATP chall / Hard               42    +0.0412    0.615   no
+0.05  surface         Hard                           58    +0.0219    0.744   no
+0.05  tier x surface  ATP chall / Hard               58    +0.0219    0.744   no
+0.02  surface         Hard                           69    -0.0036    0.955   no
+0.02  tier x surface  ATP chall / Hard               69    -0.0036    0.955   no
+0.02  price_band      65-80c                         51    -0.0233    0.743   no
+0.02  price_band      50-65c                         56    -0.0273    0.704   no
+0.02  gap_band        200+                           88    -0.0274    0.651   no
+0.05  gap_band        200+                           69    -0.0472    0.473   no
+0.05  price_band      50-65c                         42    -0.0829    0.320   no
+0.02  tier x surface  ATP main / Clay                43    -0.0870    0.287   no
+0.02  k_tier          ATP main                       43    -0.0870    0.287   no
+0.10  gap_band        200+                           42    -0.0902    0.305   no
+0.02  liquidity       3-5c                           93    -0.0937    0.102   no
+0.10  gap_band        100-200                        48    -0.0956    0.190   no
+0.02  gap_band        100-200                        83    -0.1017    0.076   no
+0.05  gap_band        100-200                        67    -0.1034    0.103   no
+0.02  k_tier          ATP chall                     172    -0.1149    0.006  YES
+0.02  density         thin                          284    -0.1174    0.000  YES
+0.02  price_band      20-35c                         47    -0.1194    0.134   no
+0.10  k_tier          ATP chall                     107    -0.1196    0.026   no
+0.05  k_tier          ATP chall                     141    -0.1260    0.005  YES
+0.05  liquidity       3-5c                           72    -0.1293    0.038   no
+0.05  density         thin                          229    -0.1345    0.000  YES
+
+segments surviving correction: 19 of 43

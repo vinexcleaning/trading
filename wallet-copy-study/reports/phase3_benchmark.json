@@ -1,0 +1,762 @@
+{
+  "meta": {
+    "n_fills_read": 2778373,
+    "n_buys_scored": 2234479,
+    "n_markets": 2271,
+    "skipped": {},
+    "fee_rate": 0.1,
+    "fee_formula": "0.10 * min(p, 1-p) per share, verified probe_02",
+    "n_bootstrap": 2000,
+    "clustering": "market-level bootstrap; a market is one draw regardless of how many trades it contains"
+  },
+  "by_bucket_overall": {
+    "0.00-0.05": {
+      "n_trades": 209035,
+      "n_markets": 2144,
+      "mean_gross_pp": 0.3067,
+      "mean_net_pp": 0.1531,
+      "dollar_wtd_gross_pp": 0.0246,
+      "dollar_wtd_net_pp": -0.2185,
+      "notional_usd": 601441.71
+    },
+    "0.95-1.00": {
+      "n_trades": 217578,
+      "n_markets": 2171,
+      "mean_gross_pp": -0.0193,
+      "mean_net_pp": -0.2008,
+      "dollar_wtd_gross_pp": -0.2245,
+      "dollar_wtd_net_pp": -0.3474,
+      "notional_usd": 43702861.97
+    },
+    "0.40-0.50": {
+      "n_trades": 315419,
+      "n_markets": 1262,
+      "mean_gross_pp": -0.6964,
+      "mean_net_pp": -5.2113,
+      "dollar_wtd_gross_pp": 10.292,
+      "dollar_wtd_net_pp": 5.711,
+      "notional_usd": 16646445.33
+    },
+    "0.50-0.60": {
+      "n_trades": 324775,
+      "n_markets": 1278,
+      "mean_gross_pp": 0.6451,
+      "mean_net_pp": -3.9787,
+      "dollar_wtd_gross_pp": -10.1147,
+      "dollar_wtd_net_pp": -14.774,
+      "notional_usd": 22765992.36
+    },
+    "0.05-0.10": {
+      "n_trades": 85278,
+      "n_markets": 1368,
+      "mean_gross_pp": -1.4347,
+      "mean_net_pp": -2.1264,
+      "dollar_wtd_gross_pp": -2.9222,
+      "dollar_wtd_net_pp": -3.6585,
+      "notional_usd": 923930.2
+    },
+    "0.90-0.95": {
+      "n_trades": 85580,
+      "n_markets": 1308,
+      "mean_gross_pp": 2.1128,
+      "mean_net_pp": 1.3307,
+      "dollar_wtd_gross_pp": 2.2993,
+      "dollar_wtd_net_pp": 1.5303,
+      "notional_usd": 9541984.06
+    },
+    "0.70-0.80": {
+      "n_trades": 159704,
+      "n_markets": 1219,
+      "mean_gross_pp": -0.1048,
+      "mean_net_pp": -2.6648,
+      "dollar_wtd_gross_pp": 7.4167,
+      "dollar_wtd_net_pp": 4.9329,
+      "notional_usd": 10391467.19
+    },
+    "0.20-0.30": {
+      "n_trades": 162492,
+      "n_markets": 1241,
+      "mean_gross_pp": 0.843,
+      "mean_net_pp": -1.6225,
+      "dollar_wtd_gross_pp": -7.1539,
+      "dollar_wtd_net_pp": -9.5831,
+      "notional_usd": 3580509.44
+    },
+    "0.30-0.40": {
+      "n_trades": 192844,
+      "n_markets": 1220,
+      "mean_gross_pp": -2.4433,
+      "mean_net_pp": -5.9211,
+      "dollar_wtd_gross_pp": -14.1683,
+      "dollar_wtd_net_pp": -17.7628,
+      "notional_usd": 7473617.29
+    },
+    "0.60-0.70": {
+      "n_trades": 194319,
+      "n_markets": 1222,
+      "mean_gross_pp": 2.3591,
+      "mean_net_pp": -1.2094,
+      "dollar_wtd_gross_pp": 17.8483,
+      "dollar_wtd_net_pp": 14.2087,
+      "notional_usd": 13697899.06
+    },
+    "0.80-0.90": {
+      "n_trades": 143463,
+      "n_markets": 1311,
+      "mean_gross_pp": 4.1626,
+      "mean_net_pp": 2.624,
+      "dollar_wtd_gross_pp": 8.7463,
+      "dollar_wtd_net_pp": 7.2177,
+      "notional_usd": 13220301.37
+    },
+    "0.10-0.20": {
+      "n_trades": 143992,
+      "n_markets": 1332,
+      "mean_gross_pp": -3.3319,
+      "mean_net_pp": -4.7646,
+      "dollar_wtd_gross_pp": -8.3741,
+      "dollar_wtd_net_pp": -9.869,
+      "notional_usd": 2416595.42
+    }
+  },
+  "by_bucket_ci95": {
+    "0.80-0.90": {
+      "gross_ci95_pp": [
+        1.033,
+        7.046
+      ],
+      "net_ci95_pp": [
+        -0.5135,
+        5.5071
+      ],
+      "gross_se_pp": 1.5449
+    },
+    "0.20-0.30": {
+      "gross_ci95_pp": [
+        -4.3058,
+        5.6558
+      ],
+      "net_ci95_pp": [
+        -6.7612,
+        3.1835
+      ],
+      "gross_se_pp": 2.5844
+    },
+    "0.70-0.80": {
+      "gross_ci95_pp": [
+        -4.9855,
+        5.003
+      ],
+      "net_ci95_pp": [
+        -7.5529,
+        2.4484
+      ],
+      "gross_se_pp": 2.6057
+    },
+    "0.90-0.95": {
+      "gross_ci95_pp": [
+        -0.689,
+        4.4231
+      ],
+      "net_ci95_pp": [
+        -1.4662,
+        3.6439
+      ],
+      "gross_se_pp": 1.3428
+    },
+    "0.05-0.10": {
+      "gross_ci95_pp": [
+        -3.5945,
+        1.3216
+      ],
+      "net_ci95_pp": [
+        -4.29,
+        0.6281
+      ],
+      "gross_se_pp": 1.2643
+    },
+    "0.10-0.20": {
+      "gross_ci95_pp": [
+        -6.3463,
+        0.0826
+      ],
+      "net_ci95_pp": [
+        -7.7821,
+        -1.3434
+      ],
+      "gross_se_pp": 1.6444
+    },
+    "0.50-0.60": {
+      "gross_ci95_pp": [
+        -3.8493,
+        4.284
+      ],
+      "net_ci95_pp": [
+        -8.486,
+        -0.3207
+      ],
+      "gross_se_pp": 2.0746
+    },
+    "0.40-0.50": {
+      "gross_ci95_pp": [
+        -4.5427,
+        3.8254
+      ],
+      "net_ci95_pp": [
+        -9.0545,
+        -0.7226
+      ],
+      "gross_se_pp": 2.1219
+    },
+    "0.60-0.70": {
+      "gross_ci95_pp": [
+        -2.0446,
+        7.0418
+      ],
+      "net_ci95_pp": [
+        -5.6068,
+        3.4716
+      ],
+      "gross_se_pp": 2.3702
+    },
+    "0.30-0.40": {
+      "gross_ci95_pp": [
+        -6.8716,
+        2.0197
+      ],
+      "net_ci95_pp": [
+        -10.3623,
+        -1.447
+      ],
+      "gross_se_pp": 2.3117
+    },
+    "0.95-1.00": {
+      "gross_ci95_pp": [
+        -1.5448,
+        1.0539
+      ],
+      "net_ci95_pp": [
+        -1.7282,
+        0.8659
+      ],
+      "gross_se_pp": 0.6713
+    },
+    "0.00-0.05": {
+      "gross_ci95_pp": [
+        -0.729,
+        1.7941
+      ],
+      "net_ci95_pp": [
+        -0.886,
+        1.6488
+      ],
+      "gross_se_pp": 0.6478
+    }
+  },
+  "by_bucket_pre_fee_regime": {
+    "0.00-0.05": {
+      "n_trades": 111237,
+      "n_markets": 1221,
+      "mean_gross_pp": 0.2332,
+      "mean_net_pp": 0.1024,
+      "dollar_wtd_gross_pp": -0.2506,
+      "dollar_wtd_net_pp": -0.4946,
+      "notional_usd": 491047.58
+    },
+    "0.95-1.00": {
+      "n_trades": 112074,
+      "n_markets": 1245,
+      "mean_gross_pp": 0.0457,
+      "mean_net_pp": -0.1102,
+      "dollar_wtd_gross_pp": 0.1663,
+      "dollar_wtd_net_pp": 0.0409,
+      "notional_usd": 32786856.26
+    },
+    "0.20-0.30": {
+      "n_trades": 73120,
+      "n_markets": 779,
+      "mean_gross_pp": -0.8942,
+      "mean_net_pp": -3.3501,
+      "dollar_wtd_gross_pp": -9.2264,
+      "dollar_wtd_net_pp": -11.6393,
+      "notional_usd": 2901189.59
+    },
+    "0.70-0.80": {
+      "n_trades": 73795,
+      "n_markets": 749,
+      "mean_gross_pp": 1.3828,
+      "mean_net_pp": -1.1681,
+      "dollar_wtd_gross_pp": 9.5237,
+      "dollar_wtd_net_pp": 7.0559,
+      "notional_usd": 8405665.75
+    },
+    "0.80-0.90": {
+      "n_trades": 66431,
+      "n_markets": 820,
+      "mean_gross_pp": 3.7826,
+      "mean_net_pp": 2.2394,
+      "dollar_wtd_gross_pp": 9.0419,
+      "dollar_wtd_net_pp": 7.5061,
+      "notional_usd": 11021302.03
+    },
+    "0.10-0.20": {
+      "n_trades": 66323,
+      "n_markets": 821,
+      "mean_gross_pp": -3.1466,
+      "mean_net_pp": -4.5855,
+      "dollar_wtd_gross_pp": -8.7591,
+      "dollar_wtd_net_pp": -10.2611,
+      "notional_usd": 2041230.1
+    },
+    "0.05-0.10": {
+      "n_trades": 40016,
+      "n_markets": 809,
+      "mean_gross_pp": -1.3324,
+      "mean_net_pp": -2.0259,
+      "dollar_wtd_gross_pp": -3.3121,
+      "dollar_wtd_net_pp": -4.0496,
+      "notional_usd": 812020.85
+    },
+    "0.90-0.95": {
+      "n_trades": 40015,
+      "n_markets": 798,
+      "mean_gross_pp": 2.0087,
+      "mean_net_pp": 1.2338,
+      "dollar_wtd_gross_pp": 2.5742,
+      "dollar_wtd_net_pp": 1.8063,
+      "notional_usd": 8246761.5
+    },
+    "0.40-0.50": {
+      "n_trades": 130651,
+      "n_markets": 757,
+      "mean_gross_pp": 1.6654,
+      "mean_net_pp": -2.8495,
+      "dollar_wtd_gross_pp": 18.3731,
+      "dollar_wtd_net_pp": 13.7402,
+      "notional_usd": 10693501.1
+    },
+    "0.60-0.70": {
+      "n_trades": 90310,
+      "n_markets": 748,
+      "mean_gross_pp": 2.5892,
+      "mean_net_pp": -0.9778,
+      "dollar_wtd_gross_pp": 11.8137,
+      "dollar_wtd_net_pp": 8.2563,
+      "notional_usd": 8449854.5
+    },
+    "0.30-0.40": {
+      "n_trades": 85461,
+      "n_markets": 747,
+      "mean_gross_pp": -2.4321,
+      "mean_net_pp": -5.9106,
+      "dollar_wtd_gross_pp": -7.8056,
+      "dollar_wtd_net_pp": -11.3337,
+      "notional_usd": 4881902.28
+    },
+    "0.50-0.60": {
+      "n_trades": 138648,
+      "n_markets": 774,
+      "mean_gross_pp": -1.0458,
+      "mean_net_pp": -5.6695,
+      "dollar_wtd_gross_pp": -16.1284,
+      "dollar_wtd_net_pp": -20.8263,
+      "notional_usd": 15367799.41
+    }
+  },
+  "by_bucket_pre_ci95": {
+    "0.50-0.60": {
+      "gross_ci95_pp": [
+        -9.9258,
+        6.0357
+      ],
+      "net_ci95_pp": [
+        -14.5854,
+        1.4347
+      ],
+      "gross_se_pp": 4.1913
+    },
+    "0.40-0.50": {
+      "gross_ci95_pp": [
+        -5.5755,
+        10.5663
+      ],
+      "net_ci95_pp": [
+        -10.071,
+        6.0191
+      ],
+      "gross_se_pp": 4.2503
+    },
+    "0.30-0.40": {
+      "gross_ci95_pp": [
+        -8.9444,
+        4.285
+      ],
+      "net_ci95_pp": [
+        -12.4359,
+        0.8172
+      ],
+      "gross_se_pp": 3.5107
+    },
+    "0.60-0.70": {
+      "gross_ci95_pp": [
+        -4.5,
+        9.6276
+      ],
+      "net_ci95_pp": [
+        -8.0469,
+        6.046
+      ],
+      "gross_se_pp": 3.6794
+    },
+    "0.10-0.20": {
+      "gross_ci95_pp": [
+        -6.5561,
+        0.8309
+      ],
+      "net_ci95_pp": [
+        -7.9893,
+        -0.6018
+      ],
+      "gross_se_pp": 1.9003
+    },
+    "0.80-0.90": {
+      "gross_ci95_pp": [
+        -0.6058,
+        7.5062
+      ],
+      "net_ci95_pp": [
+        -2.1512,
+        5.9416
+      ],
+      "gross_se_pp": 2.0682
+    },
+    "0.20-0.30": {
+      "gross_ci95_pp": [
+        -7.4394,
+        5.6511
+      ],
+      "net_ci95_pp": [
+        -9.8916,
+        3.212
+      ],
+      "gross_se_pp": 3.3186
+    },
+    "0.70-0.80": {
+      "gross_ci95_pp": [
+        -5.403,
+        8.4889
+      ],
+      "net_ci95_pp": [
+        -7.961,
+        5.9573
+      ],
+      "gross_se_pp": 3.511
+    },
+    "0.00-0.05": {
+      "gross_ci95_pp": [
+        -0.5712,
+        1.394
+      ],
+      "net_ci95_pp": [
+        -0.7193,
+        1.2641
+      ],
+      "gross_se_pp": 0.5179
+    },
+    "0.05-0.10": {
+      "gross_ci95_pp": [
+        -3.6838,
+        1.7051
+      ],
+      "net_ci95_pp": [
+        -4.3721,
+        1.0059
+      ],
+      "gross_se_pp": 1.4051
+    },
+    "0.95-1.00": {
+      "gross_ci95_pp": [
+        -1.0176,
+        0.8491
+      ],
+      "net_ci95_pp": [
+        -1.1769,
+        0.6938
+      ],
+      "gross_se_pp": 0.4781
+    },
+    "0.90-0.95": {
+      "gross_ci95_pp": [
+        -0.8416,
+        4.3564
+      ],
+      "net_ci95_pp": [
+        -1.6185,
+        3.5816
+      ],
+      "gross_se_pp": 1.4241
+    }
+  },
+  "by_bucket_post_fee_regime": {
+    "0.40-0.50": {
+      "n_trades": 184768,
+      "n_markets": 506,
+      "mean_gross_pp": -2.3665,
+      "mean_net_pp": -6.8814,
+      "dollar_wtd_gross_pp": -4.2243,
+      "dollar_wtd_net_pp": -8.712,
+      "notional_usd": 5952944.23
+    },
+    "0.50-0.60": {
+      "n_trades": 186127,
+      "n_markets": 506,
+      "mean_gross_pp": 1.9047,
+      "mean_net_pp": -2.7191,
+      "dollar_wtd_gross_pp": 2.3772,
+      "dollar_wtd_net_pp": -2.202,
+      "notional_usd": 7398192.95
+    },
+    "0.05-0.10": {
+      "n_trades": 45262,
+      "n_markets": 562,
+      "mean_gross_pp": -1.5251,
+      "mean_net_pp": -2.2152,
+      "dollar_wtd_gross_pp": -0.0928,
+      "dollar_wtd_net_pp": -0.8203,
+      "notional_usd": 111909.35
+    },
+    "0.90-0.95": {
+      "n_trades": 45565,
+      "n_markets": 513,
+      "mean_gross_pp": 2.2042,
+      "mean_net_pp": 1.4158,
+      "dollar_wtd_gross_pp": 0.5493,
+      "dollar_wtd_net_pp": -0.2269,
+      "notional_usd": 1295222.56
+    },
+    "0.00-0.05": {
+      "n_trades": 97798,
+      "n_markets": 935,
+      "mean_gross_pp": 0.3903,
+      "mean_net_pp": 0.2107,
+      "dollar_wtd_gross_pp": 1.2489,
+      "dollar_wtd_net_pp": 1.0094,
+      "notional_usd": 110394.13
+    },
+    "0.95-1.00": {
+      "n_trades": 105504,
+      "n_markets": 940,
+      "mean_gross_pp": -0.0883,
+      "mean_net_pp": -0.2971,
+      "dollar_wtd_gross_pp": -1.3984,
+      "dollar_wtd_net_pp": -1.5135,
+      "notional_usd": 10916005.72
+    },
+    "0.70-0.80": {
+      "n_trades": 85909,
+      "n_markets": 472,
+      "mean_gross_pp": -1.3826,
+      "mean_net_pp": -3.9504,
+      "dollar_wtd_gross_pp": -1.5023,
+      "dollar_wtd_net_pp": -4.0538,
+      "notional_usd": 1985801.44
+    },
+    "0.20-0.30": {
+      "n_trades": 89372,
+      "n_markets": 464,
+      "mean_gross_pp": 2.2644,
+      "mean_net_pp": -0.2091,
+      "dollar_wtd_gross_pp": 1.6973,
+      "dollar_wtd_net_pp": -0.8018,
+      "notional_usd": 679319.85
+    },
+    "0.30-0.40": {
+      "n_trades": 107383,
+      "n_markets": 476,
+      "mean_gross_pp": -2.4521,
+      "mean_net_pp": -5.9294,
+      "dollar_wtd_gross_pp": -26.1534,
+      "dollar_wtd_net_pp": -29.8731,
+      "notional_usd": 2591715.01
+    },
+    "0.60-0.70": {
+      "n_trades": 104009,
+      "n_markets": 477,
+      "mean_gross_pp": 2.1593,
+      "mean_net_pp": -1.4105,
+      "dollar_wtd_gross_pp": 27.5646,
+      "dollar_wtd_net_pp": 23.7927,
+      "notional_usd": 5248044.55
+    },
+    "0.80-0.90": {
+      "n_trades": 77032,
+      "n_markets": 494,
+      "mean_gross_pp": 4.4904,
+      "mean_net_pp": 2.9557,
+      "dollar_wtd_gross_pp": 7.265,
+      "dollar_wtd_net_pp": 5.7722,
+      "notional_usd": 2198999.34
+    },
+    "0.10-0.20": {
+      "n_trades": 77669,
+      "n_markets": 513,
+      "mean_gross_pp": -3.4902,
+      "mean_net_pp": -4.9176,
+      "dollar_wtd_gross_pp": -6.2803,
+      "dollar_wtd_net_pp": -7.7368,
+      "notional_usd": 375365.32
+    }
+  },
+  "by_bucket_post_ci95": {
+    "0.50-0.60": {
+      "gross_ci95_pp": [
+        -1.6276,
+        5.1809
+      ],
+      "net_ci95_pp": [
+        -6.2588,
+        0.5587
+      ],
+      "gross_se_pp": 1.7605
+    },
+    "0.40-0.50": {
+      "gross_ci95_pp": [
+        -6.0526,
+        1.506
+      ],
+      "net_ci95_pp": [
+        -10.561,
+        -3.0078
+      ],
+      "gross_se_pp": 1.9219
+    },
+    "0.60-0.70": {
+      "gross_ci95_pp": [
+        -4.2877,
+        8.0115
+      ],
+      "net_ci95_pp": [
+        -7.8592,
+        4.4368
+      ],
+      "gross_se_pp": 3.0719
+    },
+    "0.30-0.40": {
+      "gross_ci95_pp": [
+        -8.3162,
+        4.1899
+      ],
+      "net_ci95_pp": [
+        -11.8059,
+        0.6991
+      ],
+      "gross_se_pp": 3.0773
+    },
+    "0.70-0.80": {
+      "gross_ci95_pp": [
+        -9.3705,
+        6.1857
+      ],
+      "net_ci95_pp": [
+        -11.9279,
+        3.6323
+      ],
+      "gross_se_pp": 3.8971
+    },
+    "0.20-0.30": {
+      "gross_ci95_pp": [
+        -5.3147,
+        10.2318
+      ],
+      "net_ci95_pp": [
+        -7.7678,
+        7.7385
+      ],
+      "gross_se_pp": 3.9647
+    },
+    "0.80-0.90": {
+      "gross_ci95_pp": [
+        -0.0382,
+        8.4377
+      ],
+      "net_ci95_pp": [
+        -1.58,
+        6.9186
+      ],
+      "gross_se_pp": 2.2335
+    },
+    "0.10-0.20": {
+      "gross_ci95_pp": [
+        -7.9031,
+        1.9744
+      ],
+      "net_ci95_pp": [
+        -9.3422,
+        0.5573
+      ],
+      "gross_se_pp": 2.505
+    },
+    "0.90-0.95": {
+      "gross_ci95_pp": [
+        -2.3894,
+        5.8109
+      ],
+      "net_ci95_pp": [
+        -3.1834,
+        5.02
+      ],
+      "gross_se_pp": 2.1152
+    },
+    "0.05-0.10": {
+      "gross_ci95_pp": [
+        -4.7875,
+        2.742
+      ],
+      "net_ci95_pp": [
+        -5.4801,
+        2.0451
+      ],
+      "gross_se_pp": 1.9611
+    },
+    "0.95-1.00": {
+      "gross_ci95_pp": [
+        -3.087,
+        1.8484
+      ],
+      "net_ci95_pp": [
+        -3.2924,
+        1.6384
+      ],
+      "gross_se_pp": 1.2928
+    },
+    "0.00-0.05": {
+      "gross_ci95_pp": [
+        -1.4564,
+        3.2231
+      ],
+      "net_ci95_pp": [
+        -1.6366,
+        3.0448
+      ],
+      "gross_se_pp": 1.2448
+    }
+  },
+  "favourite_band_0.60_0.95": {
+    "definition": "all buys priced 0.60 <= p < 0.95, held to settlement",
+    "n_trades": 583066,
+    "n_markets": 1648,
+    "mean_gross_pp": 2.0919,
+    "mean_net_pp": -0.292,
+    "ci95": {
+      "gross_ci95_pp": [
+        -1.3723,
+        5.3466
+      ],
+      "net_ci95_pp": [
+        -3.7931,
+        2.9977
+      ],
+      "gross_se_pp": 1.6948
+    }
+  }
+}

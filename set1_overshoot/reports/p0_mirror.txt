@@ -1,0 +1,17 @@
+MIRROR VERIFICATION
+============================================================
+pairs used            349
+aligned minutes       90,742
+
+mid(A) + mid(B) - 100, in cents:
+  median +0.000   mean -0.124   sd 0.984
+  |diff| <= 0.5c: 0.6503   <= 1c: 0.8725   <= 2c: 0.9714
+
+cost of the favourite: (100 - bid_A)  minus  ask_B, in cents
+  positive means the NO side of the kept market is the dearer route
+  median +0.000   mean +0.113   sd 1.120
+  |diff| <= 1c: 0.8786   <= 2c: 0.9697
+
+VERDICT: the two sides are inverses to within half a cent at the median.
+Keeping one side per match loses no information and keeping both would
+double-count every match. Dedupe is correct.

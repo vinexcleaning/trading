@@ -1,0 +1,638 @@
+commit c3e0a7bf8fbd2c3371e930d6283416cb482e6788
+Author: gianf <redacted@local>
+Date:   2026-08-01 14:17:12 -0400
+
+    WHAT_IS_LEFT.md and final HANDOFF: Task 1 blocked, Task 2 null, two self-retractions on depth
+
+    
+ HANDOFF.md                    | 305 +++++++++++++++++++++---------------------
+ HYPOTHESIS_LEDGER.md          |  25 +++-
+ docs/WHAT_IS_LEFT.md          |  49 +++++++
+ reports/depth_recorder.log    |  20 +++
+ reports/hypothesis_ledger.csv |  28 ++--
+ 5 files changed, 255 insertions(+), 172 deletions(-)
+
+commit 832c8e619f4b55090195e925d602287ab4bc274d
+Author: gianf <redacted@local>
+Date:   2026-08-01 14:15:25 -0400
+
+    Task 1 blocked (Apify cap + dayOffsets range); Task 2 null at 0/10; Task 5 done - stale bar was narrative only; queue+ATP analysis retracts the thin-ATP claim
+
+    
+ AUDIT_FINAL.md                |  24 ++--
+ DECISIONS.md                  |   2 +
+ SELECTION_AUDIT.md            |   2 +-
+ STATUS.md                     |   2 +-
+ reports/audit_rerun.txt       |  96 +++++++++++++++
+ reports/depth_recorder.log    |   1 +
+ reports/hypothesis_ledger.csv |  13 +++
+ reports/p6_queue_atp.md       |  61 ++++++++++
+ reports/p6_task2_margin.md    |  74 ++++++++++++
+ reports/qa_stdout.txt         |  63 ++++++++++
+ reports/t2_stdout.txt         |  76 ++++++++++++
+ src/audit_final.py            |  13 ++-
+ src/p6_queue_and_atp.py       | 161 +++++++++++++++++++++++++
+ src/p6_task2_margin.py        | 265 ++++++++++++++++++++++++++++++++++++++++++
+ 14 files changed, 836 insertions(+), 17 deletions(-)
+
+commit 5b98dab4a802aaf9c0e046e94e0ea743487fa9ff
+Author: gianf <redacted@local>
+Date:   2026-08-01 13:59:28 -0400
+
+    HANDOFF: audit verdict 13/15 confirmed, cost bar corrected to 3.61pp, truth set coverage restored, expansion plan with kill arithmetic
+
+    
+ HANDOFF.md                 | 329 +++++++++++++++++++--------------------------
+ reports/depth_recorder.log |  33 +++++
+ 2 files changed, 170 insertions(+), 192 deletions(-)
+
+commit 07b3c0abb7f4567b8d6c94596c68af7c84bd577f
+Author: gianf <redacted@local>
+Date:   2026-08-01 13:58:11 -0400
+
+    Part A audit: 13/15 headlines confirmed, cost bar corrected 3.70 to 3.61pp, truth set restored 1434 to 2887. Parts B and C written.
+
+    
+ AUDIT_FINAL.md                 |  94 +++++++
+ docs/DATA_INVENTORY.md         | 102 ++++++++
+ docs/EXPANSION_PLAN.md         | 161 ++++++++++++
+ reports/audit_final_stdout.txt |  96 +++++++
+ reports/depth_recorder.log     | 572 +++++++++++++++++++++++++++++++++++++++++
+ reports/scores_rebuild.txt     |  38 +++
+ src/audit_final.py             | 357 +++++++++++++++++++++++++
+ 7 files changed, 1420 insertions(+)
+
+commit 05e09edbdffe9f3868086da107b04c766dc2e79d
+Author: gianf <redacted@local>
+Date:   2026-08-01 13:31:45 -0400
+
+    Time-of-day and tier segmentation with per-bucket cost bars: 0 of 25 buckets clear; variation is effect-side not cost-side; user's overnight pattern is directionally present but 1/8 the size needed
+
+    
+ HANDOFF.md                    |  22 ++++
+ HYPOTHESIS_LEDGER.md          |  48 +++++++--
+ PREREGISTRATION_PARTB.md      |  76 +++++++++++++
+ reports/depth_recorder.log    |  58 ++++++++++
+ reports/hypothesis_ledger.csv |  42 ++++++--
+ reports/p5_segment_time.md    |  89 +++++++++++++++
+ reports/seg_stdout.txt        |  92 ++++++++++++++++
+ src/p5_segment_time.py        | 244 ++++++++++++++++++++++++++++++++++++++++++
+ 8 files changed, 654 insertions(+), 17 deletions(-)
+
+commit c9dd5f1b4ab867eb55769108ad22bb88d4c99626
+Author: gianf <redacted@local>
+Date:   2026-08-01 04:07:28 -0400
+
+    HANDOFF: plausible filter resolved, depth analysis, 51 tests, two self-caught imprecisions
+
+    
+ HANDOFF.md | 54 +++++++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 45 insertions(+), 9 deletions(-)
+
+commit afdab35bd4e03abbca45e348b06c4e9f8910053b
+Author: gianf <redacted@local>
+Date:   2026-08-01 04:06:12 -0400
+
+    Tests for fill model and entry detector: 51 total. Two caught real imprecision - deep rule fires 1 min after the fall not 8, and the two maker-fee arms cross at the tails
+
+    
+ reports/ad_stdout.txt     |  51 +++++++++++++
+ reports/depth_analysis.md |  49 ++++++++++++
+ src/analyse_depth.py      | 152 +++++++++++++++++++++++++++++++++++++
+ src/p2_calib.py           |   8 ++
+ src/p5_task1b.py          |   9 ++-
+ tests/test_fillmodel.py   | 188 ++++++++++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 456 insertions(+), 1 deletion(-)
+
+commit 80e895df63c94f8d3ec4c2b9e4a34c077365de10
+Author: gianf <redacted@local>
+Date:   2026-08-01 04:03:05 -0400
+
+    Resolve the plausible filter: immaterial to theta (+0.02pp); residual guard flags all duration filters because duration is genuinely outcome-correlated
+
+    
+ DECISIONS.md               |   2 +
+ reports/ap_stdout.txt      |  57 +++++++++++++++++
+ reports/audit_plausible.md |  55 ++++++++++++++++
+ src/audit_plausible.py     | 154 +++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 268 insertions(+)
+
+commit febdd1182645edc021d9057eddeea76e7ed5a52d
+Author: gianf <redacted@local>
+Date:   2026-08-01 03:05:05 -0400
+
+    Overnight: synthetic controls re-run and passed, 36 tests, maker two-period split, depth recorder live, HANDOFF updated
+
+    
+ HANDOFF.md                       | 206 +++++++++++++++++++--------------------
+ reports/hypothesis_ledger.csv    |   4 +
+ reports/p2_synth_boost_clean.txt |  86 ++++++++++++++++
+ reports/p2_synth_null_clean.txt  |  86 ++++++++++++++++
+ reports/sc1.txt                  |   2 +
+ reports/sc2.txt                  |  27 +++++
+ reports/sc3.txt                  |  88 +++++++++++++++++
+ reports/sc4.txt                  |   2 +
+ reports/sc5.txt                  |  27 +++++
+ reports/sc6.txt                  |  88 +++++++++++++++++
+ src/synth.py                     |  10 +-
+ tests/test_pnl.py                | 135 +++++++++++++++++++++++++
+ 12 files changed, 656 insertions(+), 105 deletions(-)
+
+commit 34d2794198cd84ef0169b96a3d28e5f64d3f8360
+Author: gianf <redacted@local>
+Date:   2026-08-01 03:01:22 -0400
+
+    STATUS.md: Part B update with cross-session note for crypto
+
+    
+ STATUS.md                  | 36 ++++++++++++++++++++++++++++++++++++
+ reports/depth_recorder.log |  4 ++++
+ 2 files changed, 40 insertions(+)
+
+commit 71ab4956b6a5201f996094b31f6a2c752107c0cd
+Author: gianf <redacted@local>
+Date:   2026-08-01 03:00:46 -0400
+
+    Part B complete: theta=-2.42pp real and replicating, uncollectable; maker fails on adverse selection; partial un-retraction of Phase 2
+
+    
+ DECISIONS.md                  |  16 +
+ HANDOFF.md                    | 283 ++++++++---------
+ HYPOTHESIS_LEDGER.md          | 152 ++++-----
+ PHASE1_DETECTOR_ACCURACY.md   | 120 +++----
+ reports/audit_a3_clean.txt    |  35 +++
+ reports/depth_recorder.log    |   0
+ reports/hypothesis_ledger.csv | 161 ++++------
+ reports/p2_base_clean.txt     | 153 +++++++++
+ reports/p2_entry_grid.csv     |  60 ++--
+ reports/p2_fade.md            |  28 +-
+ reports/p4_validation.md      |  58 ++--
+ reports/p5_gate3e.md          |  58 ++++
+ reports/p5_ohlc_pull.txt      |  21 ++
+ reports/p5_task1b.md          | 102 +++---
+ reports/partb_stdout.txt      | 713 ++++++++++++++++++++++++++++++++++++++++++
+ src/record_depth.py           | 140 +++++++++
+ 16 files changed, 1570 insertions(+), 530 deletions(-)
+
+commit e8c9019dc09341cac934279017023a15ca951ab7
+Author: gianf <redacted@local>
+Date:   2026-08-01 02:37:34 -0400
+
+    Task 1b verified on smoke data: decomposition identity exact, adverse selection already exceeds price improvement
+
+    
+ reports/hypothesis_ledger.csv |  15 ++++++
+ reports/p5_task1b.md          | 103 +++++++++++++++++++++++++++++++++++++++++
+ reports/smoke_1b_stdout.txt   | 105 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 223 insertions(+)
+
+commit cbc5f17699ea806dfa5977c3d3009f25038d5060
+Author: gianf <redacted@local>
+Date:   2026-08-01 02:37:00 -0400
+
+    Gate: add G2b orientation-difference test and uniform-residual diagnostics; smoke run on partial data
+
+    
+ reports/p5_gate3e_SMOKE.md    | 61 ++++++++++++++++++++++++++++
+ reports/smoke_gate_stdout.txt | 61 ++++++++++++++++++++++++++++
+ src/p5_gate3e.py              | 93 +++++++++++++++++++++++++++++++++++++++++--
+ src/p5_partb.py               | 12 ++++--
+ 4 files changed, 219 insertions(+), 8 deletions(-)
+
+commit 2220f4b152410f5438d6b1204ce12b72295567c1
+Author: gianf <redacted@local>
+Date:   2026-08-01 02:33:32 -0400
+
+    Four-way per-opportunity decomposition matching the crypto session's units, with the mapping stated honestly
+
+    
+ src/p5_task1b.py | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+
+commit 0c96a40ebcfc8e2f8246bca3607fc76e2efbb4d4
+Author: gianf <redacted@local>
+Date:   2026-08-01 02:32:07 -0400
+
+    Maker fee resolved empirically from series fee_type: zero on Challenger/ITF (91pct of book), applies on ATP/WTA only
+
+    
+ src/p5_task1b.py | 42 ++++++++++++++++++++++++++++++++----------
+ 1 file changed, 32 insertions(+), 10 deletions(-)
+
+commit 48ba04a5864844c1aa46377609b7b4ba965b53ec
+Author: gianf <redacted@local>
+Date:   2026-08-01 02:21:00 -0400
+
+    HANDOFF.md and STATUS.md: retraction, audit results, blocked work, next actions
+
+    
+ HANDOFF.md | 176 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ STATUS.md  |  77 +++++++++++++++++++++++++++
+ 2 files changed, 253 insertions(+)
+
+commit aaffe71ec5e2e3a98179560c535d14d101ad4570
+Author: gianf <redacted@local>
+Date:   2026-08-01 02:14:40 -0400
+
+    Part B orchestrator with the 3e gate enforced in code: exits before any calibration number if orientations disagree
+
+    
+ src/p5_gate3e.py | 144 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/p5_partb.py  |  69 ++++++++++++++++++++++++++
+ 2 files changed, 213 insertions(+)
+
+commit 920aa60a107fa9647ff5258ec2f249de34cf8137
+Author: gianf <redacted@local>
+Date:   2026-08-01 02:13:43 -0400
+
+    Make the play-window cut testable: record an orientation-free early mid for every market with any quote, including dropped ones
+
+    
+ src/audit_a3.py | 26 +++++++++++++++++++++-----
+ src/p1_state.py | 18 ++++++++++++++++--
+ 2 files changed, 37 insertions(+), 7 deletions(-)
+
+commit 9b7bb3d49cf97b431720f0a8cf61fe8553c3137b
+Author: gianf <redacted@local>
+Date:   2026-08-01 02:12:42 -0400
+
+    Pre-register Part B before seeing any clean number: point prediction +1.3pp overshoot from the bias decomposition, interval [-1,+3], gates fixed, and monotone-strengthening reclassified as a warning sign
+
+    
+ PREREGISTRATION_PARTB.md | 132 +++++++++++++++++++++++++++++++++++++++++++++++
+ reports/p5_ohlc_pull.txt |   1 +
+ 2 files changed, 133 insertions(+)
+
+commit 2ed0d5b4eb7104aa8b11f3d05e236e8bd05d4b01
+Author: gianf <redacted@local>
+Date:   2026-08-01 02:11:47 -0400
+
+    Strengthen canary: three-valued verdict, discrimination and power checks. liquidity_dollars and volume_24h_fp flip pass -> UNTESTABLE
+
+    
+ reports/a3c_stdout.txt            |  36 +++++++
+ reports/audit_a3_contaminated.txt |  34 ++++++
+ reports/p5_ohlc_pull.txt          |   7 ++
+ src/audit_a3.py                   | 217 ++++++++++++++++++++++----------------
+ src/leakguard.py                  | 207 +++++++++++++++++++++++++-----------
+ src/p0_universe.py                |  14 ++-
+ tests/test_leakguard.py           | 144 +++++++++++++++----------
+ 7 files changed, 446 insertions(+), 213 deletions(-)
+
+commit 510e8e8f3764d604f97c547c01970332f95bc428
+Author: gianf <redacted@local>
+Date:   2026-08-01 02:04:24 -0400
+
+    PART A: selection-leak audit across 4 codebases, permanent guards, 9 passing tests
+
+    315 post-settlement field occurrences classified. Side-choice rules tested against a null of 0.50 on 19782 events: last_price 0.9989 z=+140, open_interest 0.5558 z=+15.7, volume 0.5356 z=+10.0, liquidity 0.5031 z=+0.88 (clean only because the field is empty), alphabetical ticker 0.4969 z=-0.88. Stage 0-5 player model is CLEAN: p1 is assigned alphabetically and the split is temporal. Old project side selection by API listing order is clean at z=+1.44. Stage 4/5 liquidity filter is a selection leak on top of the known feature leak but the test is underpowered at n=502 and moot. Crypto laptop copy is clean: every volume/oi/last_price read is as-of a candle timestamp or a live recording. The plausible duration filter is borderline at z=-2.59 and must be retested on the clean universe. v3 backtest and copy-trading are not on this machine.
+
+ BLOCKED_ON_DESKTOP.md          | 105 +++++++++++
+ SELECTION_AUDIT.md             | 179 ++++++++++++++++++
+ docs/POST_SETTLEMENT_FIELDS.md |  77 ++++++++
+ reports/audit_a3.txt           |  41 +++++
+ reports/audit_a3_stdout.txt    |  43 +++++
+ reports/audit_a4.txt           |  59 ++++++
+ reports/audit_a4_stdout.txt    |  61 +++++++
+ reports/audit_occurrences.txt  | 400 ++++++++++++++++++++++++++++++++++++++++
+ reports/audit_stdout.txt       | 402 +++++++++++++++++++++++++++++++++++++++++
+ reports/p5_ohlc_pull.txt       |  13 ++
+ src/audit_a3.py                | 133 ++++++++++++++
+ src/audit_a4_oldproject.py     | 142 +++++++++++++++
+ src/audit_selection.py         |  99 ++++++++++
+ src/leakguard.py               |  99 ++++++++++
+ tests/test_leakguard.py        | 127 +++++++++++++
+ 15 files changed, 1980 insertions(+)
+
+commit 1f16abfc86a5da6645d59adf848b541c1b1f4c01
+Author: gianf <redacted@local>
+Date:   2026-08-01 01:30:53 -0400
+
+    PROGRESS: Phase 5 log and retraction record
+
+    
+ PROGRESS.md | 46 +++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 45 insertions(+), 1 deletion(-)
+
+commit 802f1aa38c7493f3fd02619f7f6625f007a963f7
+Author: gianf <redacted@local>
+Date:   2026-08-01 01:30:16 -0400
+
+    Task 1b maker model: strict trade-through fills, per-opportunity accounting, adverse-selection decomposition
+
+    
+ src/p1_state.py  |  78 +++++++++++-----
+ src/p2_calib.py  |  17 ++++
+ src/p5_task1b.py | 275 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 348 insertions(+), 22 deletions(-)
+
+commit 691b6e343a5b97b1ef89ac562d28aa6cbf1bdbf5
+Author: gianf <redacted@local>
+Date:   2026-08-01 01:27:12 -0400
+
+    Selection canary asserted at universe build; RETRACTED banner on RESULTS.md; PHASE5_RESULTS.md opens with the retraction
+
+    
+ PHASE5_RESULTS.md        | 174 +++++++++++++++++++++++++++++++++++++++++++++++
+ RESULTS.md               |  24 +++++++
+ reports/p5_ohlc_pull.txt |   1 +
+ src/p0_universe.py       |  16 +++++
+ 4 files changed, 215 insertions(+)
+
+commit bf8199a96db5b59573bb32e32b36d73be1b9fd8c
+Author: gianf <redacted@local>
+Date:   2026-08-01 01:25:30 -0400
+
+    RETRACTION: Phase 0 dedupe selected on the outcome; Phase 2 headline is void pending re-run
+
+    The Phase 5 3e validity check failed: the undershoot measured +14.05pp where the favourite is the market YES side and -11.43pp where it is the NO side, a 25.5pp disagreement between two halves that must agree. Tracing it upstream, the PRE-MATCH price was miscalibrated +8.70pp / -3.67pp by orientation, which is impossible for a calibrated market and pointed at selection rather than pricing. Cause: Phase 0 kept the higher-volume side of each mirrored pair. Volume is read after settlement and the winning side attracts more trading, so the rule conditions on the answer. The higher-volume side wins 53.56 percent of the time, z=+10.0; open interest is worse at 55.58 percent, z=+15.8. Because the analysis orients to the favourite, the bias entered the two halves with opposite sign, and the pooled -2.53pp undershoot is the residual of two large opposite artifacts with unequal sample sizes. Fix: lexicographic ticker order, 49.69 percent, z=-0.88, measured across all four candidate rules. Universe rebuilt, candles refetching with full ask OHLC, entire pipeline to be re-run.
+
+ reports/p0_universe_v2.txt   |  47 +++++++++++++
+ reports/p5_3e_stdout.txt     |  38 +++++++++++
+ reports/p5_dedupe_bias.txt   |  32 +++++++++
+ reports/p5_dedupe_stdout.txt |  34 ++++++++++
+ reports/p5_mirror_build.txt  |  28 ++++++++
+ reports/p5_task3e.md         |  35 ++++++++++
+ src/p0_universe.py           |  16 ++++-
+ src/p2_scalar.py             |   5 +-
+ src/p5_dedupe_bias.py        | 101 ++++++++++++++++++++++++++++
+ src/p5_mirror_build.py       |  42 ++++++++++++
+ src/p5_task3e.py             | 156 +++++++++++++++++++++++++++++++++++++++++++
+ 11 files changed, 528 insertions(+), 6 deletions(-)
+
+commit e511d908fab5497b1645602bd3bfed574dfdd3bc
+Author: gianf <redacted@local>
+Date:   2026-08-01 01:19:43 -0400
+
+    Pre-register Phase 5 before running: 1a premise falsified, 1c/1d shown to overlap 1b rather than stack, adverse-selection kill test fixed in advance
+
+    
+ PREREGISTRATION.md       | 111 +++++++++++++++++++++++++++++++++++++++++++++++
+ reports/p5_ohlc_pull.txt |   0
+ src/p0_candles.py        |  20 ++++++---
+ 3 files changed, 125 insertions(+), 6 deletions(-)
+
+commit 25dd71e765bf3e903f80ee97a97f8bd8bfe5616e
+Author: gianf <redacted@local>
+Date:   2026-08-01 01:17:14 -0400
+
+    Task 1a: premise disproven - Phase 2 fade was already hold-to-settlement; cost anatomy shows fee is only 40pct of the bar
+
+    
+ reports/p5_1a_stdout.txt |  87 ++++++++++++++++++
+ reports/p5_task1a.md     |  85 ++++++++++++++++++
+ src/p5_task1a.py         | 225 +++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 397 insertions(+)
+
+commit 6134a1b9da2f3503827a52074190ecbb813a730c
+Author: gianf <redacted@local>
+Date:   2026-07-31 23:59:03 -0400
+
+    Phase 1-4 complete: no overshoot, a significant undershoot, not tradeable
+
+    Headline. Conditional on the post-dip entry price, the pre-match favourite wins
+LESS often than the price implies, not more. -1.13 pp on the pre-committed rule
+(n=5,396), -2.53 pp on the best-targeted one (p=0.0007, n=3,427), -5.49 pp on
+the label-verified subsample (n=476). The effect strengthens monotonically as
+the measurement of "the favourite actually lost set 1" gets cleaner, which is
+the opposite of what detector noise does.
+
+It replicates: train -2.17 pp, holdout -3.05 pp on data never touched. Purged
+walk-forward with a 48h embargo puts 4 of 5 folds negative and net negative in
+all five.
+
+Not tradeable in either direction. Buying the favourite nets -5.08 c/contract.
+Fading it nets -1.10 c at best, and zero of six configurations have positive
+mean expectancy. The mispricing is ~2.5 pp against a ~3.6 pp round trip, and
+the geometry is hostile: the side holding the edge is the expensive side near
+66c, where the fee is close to maximum.
+
+Of 90 hypotheses in the ledger, 28 clear BH at q=0.10 on two-sided p-values.
+Twenty-six of them are the undershoot. The two positive survivors are the
+deliberate leak canary and one 241-match cell (90c+ favourites) that went
++7.93 pp on train to +0.04 pp on holdout and whose day-clustered net CI is
+[-3.27, +2.92].
+
+Pre-registered directional hypotheses, both unsupported. Favourite strength:
+70-80c gives -1.85 pp against 60-70c at -1.89 pp, statistically identical.
+Men's vs women's: ATP -4.61, ITF-M -0.61, WTA -1.55, ITF-W -1.37, no consistent
+direction.
+
+Two more defects found in my own code and fixed:
+- Walk-forward embargo 1000x too large. Parquet returns datetime64[us], so an
+  int64 cast is microseconds while np.timedelta64(48,"h") is nanoseconds. The
+  48-hour embargo became 5.5 years and silently emptied every fold; the first
+  Phase 4 run printed an empty table.
+- The fade verdict tested whether the CI upper bound was below zero rather than
+  whether mean expectancy was positive, and printed an over-optimistic
+  conclusion on its first run.
+
+Integrity: mirror difference median 0.00c on both the probability and the
+executable-cost test. Retirement/walkover add-back costs 0.004 c, because
+retirements happen before meaningful play. 169 fetch failures all recovered.
+The leak canary reports +6.75 pp on real data against -0.1 to -2.6 pp for all
+28 honest rules.
+
+Phase 3 ran after the gate failed, labelled exploratory throughout, because the
+user asked direct questions about strength bands and gender that deserved
+answers and because the 90c+ collapse is a useful demonstration.
+
+ HYPOTHESIS_LEDGER.md          | 103 +++++++++++
+ PHASE1_DETECTOR_ACCURACY.md   | 144 ++++++++++++++++
+ PROGRESS.md                   | 110 ++++++------
+ RESULTS.md                    | 389 ++++++++++++++++++++++++++++++++++++++++++
+ reports/hypothesis_ledger.csv |  94 +++++++++-
+ reports/p0_candles_log.txt    |  35 ++++
+ reports/p0_mirror.txt         |  17 ++
+ reports/p1_state.txt          |  28 +++
+ reports/p1_t0_tuning.csv      |  40 ++---
+ reports/p2_base.txt           | 153 +++++++++++++++++
+ reports/p2_entry_grid.csv     |  56 +++---
+ reports/p2_fade.md            |  54 ++++++
+ reports/p2_fade_stdout.txt    |  56 ++++++
+ reports/p2_scalar.txt         |  12 ++
+ reports/p2_scalar_stdout.txt  |  56 ++++++
+ reports/p2_stdout.txt         | 152 +++++++++++++++++
+ reports/p3_exit_surface.csv   |  50 +++---
+ reports/p3_segments.md        | 125 ++++++++++++++
+ reports/p3_stdout.txt         | 127 ++++++++++++++
+ reports/p4_stdout.txt         |  93 ++++++++++
+ reports/p4_validation.md      |  56 ++++--
+ src/ledger.py                 |  21 ++-
+ src/p1_validate.py            |  63 +++++++
+ src/p2_calib.py               |  68 ++++++--
+ src/p2_fade.py                | 167 ++++++++++++++++++
+ src/p3_segment.py             |  23 +++
+ src/p4_validate.py            |  54 +++++-
+ 27 files changed, 2184 insertions(+), 162 deletions(-)
+
+commit 469a0df321d16599585d65cb9524049b2d1a20d9
+Author: gianf <redacted@local>
+Date:   2026-07-31 22:34:08 -0400
+
+    End-to-end runner with the Phase 2 gate enforced in code, not by hand
+
+    
+ src/run_all.py | 74 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 74 insertions(+)
+
+commit 0a41e36abd6c12dd4fb1b3f26f40eb0db05fb24a
+Author: gianf <redacted@local>
+Date:   2026-07-31 22:33:23 -0400
+
+    Record pre-registration amendments A1 (entry rule) and A2 (3d weakened) with provenance
+
+    
+ PREREGISTRATION.md | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+
+commit 29c87365e63a91fcfb617aaa806ced75cf80ba3b
+Author: gianf <redacted@local>
+Date:   2026-07-31 22:32:58 -0400
+
+    Primary entry rule: first completed, stabilised dip (deep:12) - closer to the pre-registered concept than first-significant-move
+
+    
+ reports/p2_dev_SMOKETEST.txt | 87 +++++++++++++++++---------------------------
+ reports/p2_entry_grid.csv    | 45 +++++++++++++----------
+ src/p2_calib.py              | 63 +++++++++++++++++++++++++++++---
+ 3 files changed, 116 insertions(+), 79 deletions(-)
+
+commit 28a0fbd7f3186046c17e60eabc6a274440f0f00b
+Author: gianf <redacted@local>
+Date:   2026-07-31 22:30:52 -0400
+
+    Day-clustered bootstrap and entry-liquidity reporting
+
+    
+ reports/hypothesis_ledger.csv | 95 +------------------------------------------
+ reports/p4_validation.md      | 65 +++++++++++++++++++++++++++++
+ src/p2_calib.py               |  8 ++++
+ src/p4_validate.py            | 38 +++++++++++++++++
+ 4 files changed, 113 insertions(+), 93 deletions(-)
+
+commit d2edb365a616fe907f5c8be41897d66453d9910f
+Author: gianf <redacted@local>
+Date:   2026-07-31 22:29:48 -0400
+
+    Add 3d entry-timing-within-set-2 and 3g player tendency with a power check
+
+    
+ PROGRESS.md                   |  72 ++++++++++++++++++-----
+ reports/hypothesis_ledger.csv |  94 ++++++++++++++++++++++++++++++
+ reports/p3_dev_SMOKETEST.md   | 108 ++++++++++++++++++++++++++++++++++
+ reports/p3_exit_surface.csv   |  26 +++++++++
+ src/p0_candles.py             |   3 +-
+ src/p0_scores.py              |   2 +
+ src/p2_scalar.py              | 131 ++++++++++++++++++++++++++++++++++++++++++
+ src/p3_segment.py             | 126 ++++++++++++++++++++++++++++++++++++++++
+ 8 files changed, 546 insertions(+), 16 deletions(-)
+
+commit 1c1c2087f56b56c8ead8ad38e18b91fc63fc2814
+Author: gianf <redacted@local>
+Date:   2026-07-31 22:26:56 -0400
+
+    Causal stopping-time entry rule as the primary; argmax kept as secondary
+
+    
+ reports/p2_dev_SMOKETEST.txt | 91 ++++++++++++++++++++++++--------------------
+ reports/p2_entry_grid.csv    | 34 +++++++++--------
+ src/p1_validate.py           |  2 +-
+ src/p2_calib.py              | 52 +++++++++++++++++++++++--
+ src/p3_segment.py            |  7 ++--
+ src/p4_validate.py           |  4 +-
+ 6 files changed, 122 insertions(+), 68 deletions(-)
+
+commit cb307b64f82f54c2afc9697b58b10a535b575b28
+Author: gianf <redacted@local>
+Date:   2026-07-31 22:25:22 -0400
+
+    Synthetic controls pass; Phase 3/4 machinery and hypothesis ledger
+
+    Run before the real Phase 2, as the brief requires:
+- NULL world (bounded martingale, outcome drawn from the terminal price):
+  miscalibration +0.06 pp, CI [-3.03, +3.07], p=0.50, net -2.96 c/contract,
+  which is exactly spread + slippage + fees. The pipeline invents nothing.
+- POSITIVE control (5 pp planted): recovered +4.54 pp, CI [+1.51, +7.58],
+  p=0.0029. The pipeline is not blind either.
+
+Together these bound the failure modes in both directions, so a null on the
+real data will mean no effect rather than broken code or no power.
+
+Adds p3_segment (one factor at a time, exit surface with the one-fee/two-fee
+asymmetry applied exactly), p4_validate (temporal holdout, purged walk-forward
+with a 48h embargo, deflated Sharpe), ledger with Benjamini-Hochberg, and the
+mirror verification.
+
+ reports/p0_candles_log.txt |   5 +
+ reports/p2_synth_boost.txt |  35 +++++++
+ reports/p2_synth_null.txt  |  36 +++++++
+ src/ledger.py              |  89 +++++++++++++++++
+ src/p0_mirror.py           | 109 ++++++++++++++++++++
+ src/p3_segment.py          | 201 +++++++++++++++++++++++++++++++++++++
+ src/p4_validate.py         | 242 +++++++++++++++++++++++++++++++++++++++++++++
+ src/synth.py               |  15 ++-
+ 8 files changed, 727 insertions(+), 5 deletions(-)
+
+commit f670c9e4726e1785f4afb2b2045f4017f55095f7
+Author: gianf <redacted@local>
+Date:   2026-07-31 22:21:01 -0400
+
+    Phase 1 machinery: t0 tuned against real durations, own look-ahead leak fixed
+
+    Two defects found and fixed in my own design before any result was read:
+
+1. LOOK-AHEAD IN THE CHANGEPOINT. The step statistic at candidate c reads
+   mid[c+1:c+1+HALF], so the changepoint is not knowable until c+HALF. Entering
+   at c+3 used 8 minutes of future information. Entry is now c+HALF+1+3, with
+   an assertion enforcing it. The leaky variant is retained as a labelled
+   diagnostic and manufactures +10.9pp of fake edge, which confirms the test
+   is sensitive to exactly this failure.
+
+2. MATCH START TOO EARLY. A pure gap rule let sparse pre-match repricing bleed
+   into the play window: median inferred duration overshot Sackmann playing
+   minutes by 28 min (MAD 24). An activity-density floor cuts that to +6 min
+   (MAD 5), validated on 197 matches with true durations.
+
+Also added: forward-only causal t0 as a robustness arm, pre-match anchor
+staleness flags, and a filter-reason breakdown.
+
+ reports/p0_candles_log.txt   |   5 +
+ reports/p1_t0_tuning.csv     |  21 +++
+ reports/p2_dev_SMOKETEST.txt |  55 ++++++++
+ reports/p2_entry_grid.csv    |  16 +++
+ src/p0_scores.py             |  12 +-
+ src/p1_state.py              | 148 +++++++++++++++++---
+ src/p1_tune_t0.py            |  86 ++++++++++++
+ src/p1_validate.py           | 210 ++++++++++++++++++++++++++++
+ src/p2_calib.py              | 324 +++++++++++++++++++++++++++++++++++++++++++
+ src/synth.py                 | 139 +++++++++++++++++++
+ 10 files changed, 989 insertions(+), 27 deletions(-)
+
+commit 57df92d9a26d352e5965093330548b4c098cd223
+Author: gianf <redacted@local>
+Date:   2026-07-31 22:12:19 -0400
+
+    Phase 0: data pull, universe dedupe, truth table, fees, pre-registration
+
+    - 40,526 markets across 5 tennis series; 19,782 matches after mirror dedupe
+- every event has exactly 2 mirrored markets and exactly one YES: no ambiguity
+- scoreline truth table for detector validation: 2,886 matches from Sackmann
+  (all tiers, first 2 weeks) + tennis-data (main tour, full window); 99.55%
+  match-winner agreement with Kalshi settlement confirms the name join
+- exact Decimal fee arithmetic, verified at 50/90/10 cents
+- PREREGISTRATION.md written before any Phase 2 number existed
+
+ .gitignore                 |   3 +
+ PREREGISTRATION.md         | 117 +++++++++++++++++++++++
+ PROGRESS.md                |  24 +++++
+ reports/p0_candles_log.txt |   0
+ reports/p0_scores.txt      |  38 ++++++++
+ src/fees.py                |  74 +++++++++++++++
+ src/p0_candles.py          | 202 ++++++++++++++++++++++++++++++++++++++++
+ src/p0_markets.py          |  71 ++++++++++++++
+ src/p0_scores.py           | 226 +++++++++++++++++++++++++++++++++++++++++++++
+ src/p0_universe.py         | 136 +++++++++++++++++++++++++++
+ src/p1_state.py            | 214 ++++++++++++++++++++++++++++++++++++++++++
+ src/probe_api.py           |  35 +++++++
+ 12 files changed, 1140 insertions(+)

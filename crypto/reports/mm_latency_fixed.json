@@ -1,0 +1,58 @@
+[
+  {
+    "latency_ms": 0.0,
+    "n_markets": 58,
+    "contracts": 31701.34,
+    "fill_rate": 0.7962544397804326,
+    "ci_lo": -2.7266508302073045,
+    "ci_hi": -1.5308176324177731,
+    "inv_max": 50.0,
+    "inv_mean_abs": 34.468620689655175,
+    "spread_per_contract": 0.5567154259094406,
+    "adverse_per_contract": -2.163657908466961,
+    "inventory_per_contract": -1.8574053967434816,
+    "net_per_contract": -1.8574053967434816
+  },
+  {
+    "latency_ms": 100.0,
+    "n_markets": 58,
+    "contracts": 31707.2,
+    "fill_rate": 0.7962544397804326,
+    "ci_lo": -2.7232383007779295,
+    "ci_hi": -1.5255081385247766,
+    "inv_max": 50.0,
+    "inv_mean_abs": 34.569655172413796,
+    "spread_per_contract": 0.556704943987485,
+    "adverse_per_contract": -2.163442845788969,
+    "inventory_per_contract": -1.8515176363728112,
+    "net_per_contract": -1.8515176363728112
+  },
+  {
+    "latency_ms": 373.0,
+    "n_markets": 58,
+    "contracts": 31774.780000000002,
+    "fill_rate": 0.7972231191475622,
+    "ci_lo": -2.725225857285547,
+    "ci_hi": -1.5438537270592172,
+    "inv_max": 50.0,
+    "inv_mean_abs": 34.29586206896552,
+    "spread_per_contract": 0.5565843414179416,
+    "adverse_per_contract": -2.1782893540096895,
+    "inventory_per_contract": -1.8636321006785883,
+    "net_per_contract": -1.8636321006785883
+  },
+  {
+    "latency_ms": 1000.0,
+    "n_markets": 58,
+    "contracts": 31890.01,
+    "fill_rate": 0.7985146916370681,
+    "ci_lo": -2.6891163255303714,
+    "ci_hi": -1.508651069269457,
+    "inv_max": 50.0,
+    "inv_mean_abs": 34.35775862068966,
+    "spread_per_contract": 0.5564425975407342,
+    "adverse_per_contract": -2.205303949418642,
+    "inventory_per_contract": -1.8475017724986602,
+    "net_per_contract": -1.8475017724986602
+  }
+]

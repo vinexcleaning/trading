@@ -1,0 +1,27 @@
+﻿loading candles ...
+  2,814,721 rows, 8,000 markets
+
+candle rows seen                2,814,721
+1-minute grid slots             2,814,721
+  masked, no quote on either side   0  (0.0%)
+  masked, crossed book              0  (0.0%)
+  masked, spread > 15c              0  (0.0%)
+  masked, price out of range        0  (0.0%)
+
+markets processed               8,000
+why
+               7994
+no_activity       6
+
+with a play window              7,994
+  duration plausible (25-330m)  7,405
+  duration  p10 66  med 157  p90 299  max 504
+  pre-match mid  p10 54  med 72  p90 92
+  favourite won  0.7366  (should be well above 0.5)
+
+causal vs backward-walk t0:  identical 0.046   within 5 min 0.069   median -176 min
+pre-match anchor had been unchanged for: median 11 min, 60.9% for 10+ min
+pre-match mid agrees with the mid 60 min earlier (<=2c): 0.968  (n=6,888)
+
+-> C:\Users\gianf\kalshi\set1_overshoot\data\synthboost_state.parquet
+-> C:\Users\gianf\kalshi\set1_overshoot\data\synthboost_paths.npz

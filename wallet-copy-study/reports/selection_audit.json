@@ -1,0 +1,83 @@
+{
+  "F1_clean_settlement": {
+    "classification": "TOUCHES SETTLEMENT",
+    "counts_all": {
+      "verdict_clean": 1926009,
+      "verdict_closed_no_winner": 35640,
+      "verdict_open": 147129,
+      "verdict_closed_multi_winner": 15,
+      "verdict_open_but_winner": 3
+    },
+    "counts_in_window": {
+      "inwindow_verdict_clean": 874943,
+      "inwindow_verdict_closed_no_winner": 14521,
+      "inwindow_verdict_open": 4983,
+      "inwindow_verdict_closed_multi_winner": 15,
+      "inwindow_verdict_open_but_winner": 2
+    },
+    "n_in_window": 894464,
+    "n_dropped_in_window": 19521,
+    "frac_dropped_in_window": 0.02182,
+    "leak_assessment": "NOT a directional leak. The filter requires that a winner EXISTS; it does not condition on WHICH outcome won, so YES-winning and NO-winning markets are retained at their natural rates. It does introduce a resolution-survivorship effect: void and unresolved markets are absent. Those return capital, so their true edge is near zero, and excluding them slightly widens the dispersion of measured edge without shifting its sign.",
+    "bound_note": "Worst-case bound: if every dropped in-window market had been a total loss for buyers, measured edge would fall by at most 2.182% of observations' weight. Reported rather than corrected."
+  },
+  "F2_in_subgraph_window": {
+    "classification": "time only -- no settlement information",
+    "leak_assessment": "NOT a leak. Depends solely on end_ts versus the subgraph's coverage bounds, which are properties of the data source, not of any outcome."
+  },
+  "F3_position_flags": {
+    "classification": "behaviour only -- flags describe share flow, not outcome",
+    "n_positions": 1746750,
+    "groups": {
+      "clean": {
+        "n": 1702214,
+        "share": 0.9745,
+        "win_rate": 0.4869,
+        "mean_entry_px": 0.4824,
+        "mean_edge_pp": 0.3376
+      },
+      "unsettled": {
+        "n": 12195,
+        "share": 0.007,
+        "win_rate": 0.0,
+        "mean_entry_px": 0.5743,
+        "mean_edge_pp": null
+      },
+      "negative_balance": {
+        "n": 32341,
+        "share": 0.0185,
+        "win_rate": 0.3959,
+        "mean_entry_px": 0.4944,
+        "mean_edge_pp": 187.0832
+      }
+    },
+    "leak_assessment": "Flags are computed from share flow (running balance going negative, or no buys at all), never from the outcome. Excluding them is required because their entry cost is genuinely unobservable -- the tokens came from a split, which is a ConditionalTokens event absent from the orderbook subgraph. The win rates above show whether the excluded set is directionally different from the kept set; a large gap would mean the exclusion is doing more than it should."
+  },
+  "F4_phase2_exclusions": {
+    "classification": "behaviour only",
+    "leak_assessment": "The market-maker fingerprint uses two-sided flow, median hold time and settlement-carry rate; the size filter uses median market notional. None consults profitability. 'Settlement-carry rate' is the wallet's own ACTION (did it hold the position to the end), not the RESULT of that action, so it is behaviour rather than outcome."
+  },
+  "F5_persistence_both_periods": {
+    "classification": "SURVIVORSHIP",
+    "leak_assessment": "Requiring activity in both periods excludes wallets that stopped trading. If quitters were the losers, persistence is biased upward. Measured directly inside analyse_41_persistence.py, which reports attrition rate and compares the period-1 performance of survivors against quitters at every cut."
+  },
+  "F6_wallet_panel_draw": {
+    "classification": "activity-weighted, no performance criterion",
+    "leak_assessment": "Wallets are every distinct maker in 260 randomly placed 15-minute windows. More active wallets are likelier to be drawn, which is intended -- a wallet too inactive to appear is too inactive to copy. Nothing about returns enters the draw."
+  },
+  "F7_price_bucket_benchmark": {
+    "classification": "symmetric by construction",
+    "leak_assessment": "The benchmark is the pooled mean edge at the same entry-price bucket, computed over the same population being evaluated. A wallet is compared against what everyone else got at the price it paid. It cannot manufacture an edge because subtracting a pooled mean forces the population's average excess to zero by construction -- which is what the canary below verifies."
+  },
+  "CANARY_null_strategy": {
+    "n_observations": 1702214,
+    "pooled_mean_excess_pp": -0.0,
+    "random_subset_excess_pp": {
+      "mean": -0.0442,
+      "p05": -0.7839,
+      "p95": 0.6626
+    },
+    "expectation": "pooled mean excess must be ~0 by construction; random subsets must straddle 0",
+    "PASS": true
+  }
+}

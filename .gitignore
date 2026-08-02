@@ -1,0 +1,128 @@
+# ---------------------------------------------------------------
+# This repo is PUBLIC. Code, docs and small result artifacts only.
+# Every recorded dataset stays local. Nothing credential-shaped
+# is ever tracked.
+# ---------------------------------------------------------------
+
+# --- recorded data directories (all projects) ---
+data/
+Data/
+raw/
+candles/
+candles_*/
+depth/
+panel/
+panels/
+spot/
+deribit/
+binance_1s/
+poly_books/
+poly_trades/
+kalshi_quotes/
+kalshi_settled/
+btc15m_opens/
+synth_null/
+synth_boost/
+mm/
+
+# --- recorded data formats, anywhere ---
+*.parquet
+*.parquet.*
+*.jsonl
+*.ndjson
+*.db
+*.sqlite
+*.sqlite3
+*.npz
+*.h5
+*.hdf5
+*.feather
+*.arrow
+*.pkl
+*.pickle
+
+# --- secrets: never track any of these ---
+.env
+.env.*
+*.env
+!.env.example
+*.pem
+*.key
+*.p8
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.crt
+*.cer
+*.der
+id_rsa*
+id_ed25519*
+id_ecdsa*
+*_rsa
+*_dsa
+.netrc
+_netrc
+.npmrc
+.pypirc
+credentials
+credentials.*
+*credentials*.json
+*secret*.json
+*secrets*.yaml
+*secrets*.yml
+.aws/
+.ssh/
+kalshi_key*
+kalshi-key*
+*private_key*
+*privatekey*
+
+# --- python ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+ENV/
+.Python
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.coverage
+htmlcov/
+
+# --- os / editor ---
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+.idea/
+.vscode/
+
+# --- local agent state (may contain machine-specific paths) ---
+**/.claude/settings.local.json
+
+# --- exported chat transcripts: personal data, not project work ---
+kalshi-chat-audit/max_convos/
+kalshi-chat-audit/pro_convos/
+
+# --- byte-identical local backup, kept on disk, not in the repo ---
+_archive/
+
+# --- large raw API dumps (regenerable, not results) ---
+kalshi-tennis/audit/series_raw.json
+kalshi-tennis/data/kalshi/tennis_markets.json
+crypto/docs/*_raw.txt
+crypto/docs/strikes_raw.txt
+
+# --- logs ---
+*.log
+*.err

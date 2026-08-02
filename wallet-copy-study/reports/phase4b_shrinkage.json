@@ -1,0 +1,329 @@
+{
+  "meta": {
+    "n_position_rows": 1746750,
+    "n_wallet_market_obs": 1450999,
+    "n_wallets": 1778,
+    "n_excluded_phase2": 721,
+    "metric": "excess edge over the pooled mean at the same entry-price bucket; unit of observation is a MARKET",
+    "target_edge_pp": 5.0,
+    "power": "two-sided alpha 0.05, power 0.80"
+  },
+  "price_bucket_benchmark": {
+    "0.60-0.70": {
+      "n": 93796,
+      "mean_edge_pp": 1.9279
+    },
+    "0.50-0.60": {
+      "n": 212811,
+      "mean_edge_pp": 1.3398
+    },
+    "0.40-0.50": {
+      "n": 228304,
+      "mean_edge_pp": 0.3536
+    },
+    "0.95-1.00": {
+      "n": 197756,
+      "mean_edge_pp": 0.23
+    },
+    "0.80-0.90": {
+      "n": 85804,
+      "mean_edge_pp": 1.7531
+    },
+    "0.00-0.05": {
+      "n": 276482,
+      "mean_edge_pp": -0.325
+    },
+    "0.70-0.80": {
+      "n": 79558,
+      "mean_edge_pp": 2.237
+    },
+    "0.10-0.20": {
+      "n": 53514,
+      "mean_edge_pp": -0.9265
+    },
+    "0.90-0.95": {
+      "n": 63192,
+      "mean_edge_pp": 1.0138
+    },
+    "0.30-0.40": {
+      "n": 69419,
+      "mean_edge_pp": -0.5661
+    },
+    "0.05-0.10": {
+      "n": 35017,
+      "mean_edge_pp": -0.5453
+    },
+    "0.20-0.30": {
+      "n": 55346,
+      "mean_edge_pp": -1.1217
+    }
+  },
+  "gross_excess": [
+    {
+      "min_markets": 10,
+      "n_wallets": 1630,
+      "median_markets_per_wallet": 73,
+      "sigma_per_market": 0.2955,
+      "sigma2": 0.087312,
+      "raw_mean_spread_pp": {
+        "p01": -14.9304,
+        "p50": -0.3353,
+        "p99": 9.4237,
+        "max": 18.9764
+      },
+      "mu_pp": -0.63,
+      "var_between_observed_pp2": 17.6243,
+      "expected_noise_var_pp2": 18.0594,
+      "tau2_pp2": -0.4351,
+      "tau_pp": 0.0,
+      "skill_dispersion_detected": false,
+      "shrunk_spread_pp": {
+        "p01": -0.63,
+        "p10": -0.63,
+        "p50": -0.63,
+        "p90": -0.63,
+        "p99": -0.63,
+        "max": -0.63
+      },
+      "n_shrunk_above_0": 0,
+      "n_shrunk_above_1pp": 0,
+      "n_shrunk_above_5pp": 0,
+      "markets_needed_to_detect_5pp": 274,
+      "n_wallets_clearing_that_bar": 485,
+      "frac_wallets_clearing_bar": 0.29755
+    },
+    {
+      "min_markets": 20,
+      "n_wallets": 1448,
+      "median_markets_per_wallet": 94,
+      "sigma_per_market": 0.2956,
+      "sigma2": 0.087369,
+      "raw_mean_spread_pp": {
+        "p01": -12.9918,
+        "p50": -0.3175,
+        "p99": 8.8508,
+        "max": 14.4819
+      },
+      "mu_pp": -0.5087,
+      "var_between_observed_pp2": 12.9492,
+      "expected_noise_var_pp2": 12.5288,
+      "tau2_pp2": 0.4204,
+      "tau_pp": 0.6483,
+      "skill_dispersion_detected": true,
+      "shrunk_spread_pp": {
+        "p01": -1.7943,
+        "p10": -0.7934,
+        "p50": -0.5027,
+        "p90": 0.0009,
+        "p99": 1.857,
+        "max": 5.7359
+      },
+      "n_shrunk_above_0": 145,
+      "n_shrunk_above_1pp": 45,
+      "n_shrunk_above_5pp": 2,
+      "markets_needed_to_detect_5pp": 274,
+      "n_wallets_clearing_that_bar": 485,
+      "frac_wallets_clearing_bar": 0.33494
+    },
+    {
+      "min_markets": 50,
+      "n_wallets": 1028,
+      "median_markets_per_wallet": 231,
+      "sigma_per_market": 0.296,
+      "sigma2": 0.087638,
+      "raw_mean_spread_pp": {
+        "p01": -10.2345,
+        "p50": -0.4109,
+        "p99": 8.4363,
+        "max": 13.4255
+      },
+      "mu_pp": -0.4891,
+      "var_between_observed_pp2": 10.4927,
+      "expected_noise_var_pp2": 5.8288,
+      "tau2_pp2": 4.6638,
+      "tau_pp": 2.1596,
+      "skill_dispersion_detected": true,
+      "shrunk_spread_pp": {
+        "p01": -3.9112,
+        "p10": -2.1785,
+        "p50": -0.4503,
+        "p90": 1.5918,
+        "p99": 5.6612,
+        "max": 9.3202
+      },
+      "n_shrunk_above_0": 326,
+      "n_shrunk_above_1pp": 151,
+      "n_shrunk_above_5pp": 12,
+      "markets_needed_to_detect_5pp": 275,
+      "n_wallets_clearing_that_bar": 485,
+      "frac_wallets_clearing_bar": 0.47179
+    },
+    {
+      "min_markets": 100,
+      "n_wallets": 706,
+      "median_markets_per_wallet": 579,
+      "sigma_per_market": 0.2961,
+      "sigma2": 0.087681,
+      "raw_mean_spread_pp": {
+        "p01": -6.2917,
+        "p50": -0.3828,
+        "p99": 8.4363,
+        "max": 13.4255
+      },
+      "mu_pp": -0.1749,
+      "var_between_observed_pp2": 7.2799,
+      "expected_noise_var_pp2": 2.5124,
+      "tau2_pp2": 4.7676,
+      "tau_pp": 2.1835,
+      "skill_dispersion_detected": true,
+      "shrunk_spread_pp": {
+        "p01": -3.8453,
+        "p10": -2.1388,
+        "p50": -0.3001,
+        "p90": 2.1795,
+        "p99": 6.1747,
+        "max": 9.4735
+      },
+      "n_shrunk_above_0": 288,
+      "n_shrunk_above_1pp": 144,
+      "n_shrunk_above_5pp": 13,
+      "markets_needed_to_detect_5pp": 275,
+      "n_wallets_clearing_that_bar": 485,
+      "frac_wallets_clearing_bar": 0.68697
+    }
+  ],
+  "net_excess": [
+    {
+      "min_markets": 10,
+      "n_wallets": 1630,
+      "median_markets_per_wallet": 73,
+      "sigma_per_market": 0.2956,
+      "sigma2": 0.087408,
+      "raw_mean_spread_pp": {
+        "p01": -13.3497,
+        "p50": 0.0804,
+        "p99": 11.26,
+        "max": 20.927
+      },
+      "mu_pp": -0.0115,
+      "var_between_observed_pp2": 17.6674,
+      "expected_noise_var_pp2": 18.0792,
+      "tau2_pp2": -0.4118,
+      "tau_pp": 0.0,
+      "skill_dispersion_detected": false,
+      "shrunk_spread_pp": {
+        "p01": -0.0115,
+        "p10": -0.0115,
+        "p50": -0.0115,
+        "p90": -0.0115,
+        "p99": -0.0115,
+        "max": -0.0115
+      },
+      "n_shrunk_above_0": 0,
+      "n_shrunk_above_1pp": 0,
+      "n_shrunk_above_5pp": 0,
+      "markets_needed_to_detect_5pp": 274,
+      "n_wallets_clearing_that_bar": 485,
+      "frac_wallets_clearing_bar": 0.29755
+    },
+    {
+      "min_markets": 20,
+      "n_wallets": 1448,
+      "median_markets_per_wallet": 94,
+      "sigma_per_market": 0.2957,
+      "sigma2": 0.087465,
+      "raw_mean_spread_pp": {
+        "p01": -11.0661,
+        "p50": 0.1187,
+        "p99": 10.2279,
+        "max": 16.132
+      },
+      "mu_pp": 0.0912,
+      "var_between_observed_pp2": 13.1142,
+      "expected_noise_var_pp2": 12.5425,
+      "tau2_pp2": 0.5716,
+      "tau_pp": 0.7561,
+      "skill_dispersion_detected": true,
+      "shrunk_spread_pp": {
+        "p01": -2.5134,
+        "p10": -0.3867,
+        "p50": 0.0917,
+        "p90": 0.6874,
+        "p99": 2.7998,
+        "max": 7.8588
+      },
+      "n_shrunk_above_0": 1040,
+      "n_shrunk_above_1pp": 107,
+      "n_shrunk_above_5pp": 2,
+      "markets_needed_to_detect_5pp": 274,
+      "n_wallets_clearing_that_bar": 485,
+      "frac_wallets_clearing_bar": 0.33494
+    },
+    {
+      "min_markets": 50,
+      "n_wallets": 1028,
+      "median_markets_per_wallet": 231,
+      "sigma_per_market": 0.2962,
+      "sigma2": 0.087734,
+      "raw_mean_spread_pp": {
+        "p01": -9.2389,
+        "p50": 0.0913,
+        "p99": 9.688,
+        "max": 14.8258
+      },
+      "mu_pp": 0.0762,
+      "var_between_observed_pp2": 11.0125,
+      "expected_noise_var_pp2": 5.8352,
+      "tau2_pp2": 5.1773,
+      "tau_pp": 2.2754,
+      "skill_dispersion_detected": true,
+      "shrunk_spread_pp": {
+        "p01": -4.3634,
+        "p10": -2.0668,
+        "p50": 0.0886,
+        "p90": 2.4121,
+        "p99": 6.6657,
+        "max": 10.7843
+      },
+      "n_shrunk_above_0": 553,
+      "n_shrunk_above_1pp": 248,
+      "n_shrunk_above_5pp": 24,
+      "markets_needed_to_detect_5pp": 275,
+      "n_wallets_clearing_that_bar": 485,
+      "frac_wallets_clearing_bar": 0.47179
+    },
+    {
+      "min_markets": 100,
+      "n_wallets": 706,
+      "median_markets_per_wallet": 579,
+      "sigma_per_market": 0.2963,
+      "sigma2": 0.087778,
+      "raw_mean_spread_pp": {
+        "p01": -6.2042,
+        "p50": 0.1775,
+        "p99": 9.6158,
+        "max": 14.8258
+      },
+      "mu_pp": 0.2722,
+      "var_between_observed_pp2": 8.6512,
+      "expected_noise_var_pp2": 2.5151,
+      "tau2_pp2": 6.1361,
+      "tau_pp": 2.4771,
+      "skill_dispersion_detected": true,
+      "shrunk_spread_pp": {
+        "p01": -4.6034,
+        "p10": -2.4535,
+        "p50": 0.1904,
+        "p90": 3.0102,
+        "p99": 7.2446,
+        "max": 11.3093
+      },
+      "n_shrunk_above_0": 391,
+      "n_shrunk_above_1pp": 213,
+      "n_shrunk_above_5pp": 25,
+      "markets_needed_to_detect_5pp": 275,
+      "n_wallets_clearing_that_bar": 485,
+      "frac_wallets_clearing_bar": 0.68697
+    }
+  ]
+}

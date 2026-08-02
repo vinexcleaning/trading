@@ -1,0 +1,46 @@
+﻿====================================================================================================
+1. SIGNAL DECAY — how fast does the lead die?
+====================================================================================================
+  pair                   1s       2s       3s       4s       5s       6s       7s       8s
+  ETH->XRP          +0.1544  +0.0479  +0.0260  +0.0132  +0.0092  +0.0026  +0.0028  +0.0020
+  ETH->DOG          +0.1484  +0.0432  +0.0187  +0.0086  +0.0045  +0.0002  +0.0017  +0.0004
+  ETH->SOL          +0.1277  +0.0439  +0.0258  +0.0160  +0.0106  +0.0035  +0.0033  +0.0012
+  BTC->XRP          +0.1259  +0.0394  +0.0230  +0.0108  +0.0067  +0.0028  +0.0011  +0.0027
+
+  our latency is 373 ms, so we can only act on the portion of the
+  signal remaining AFTER the first second has already elapsed.
+
+====================================================================================================
+2. SIZE — predictable fraction of the next second's move
+====================================================================================================
+  asset        1s return sd          in $ / in %
+  BTCUSDT          0.00450%               $2.918
+  ETHUSDT          0.00776%               $0.149
+  SOLUSDT          0.01216%               $0.009
+  XRPUSDT          0.01017%               $0.000
+  DOGEUSDT         0.01477%               $0.000
+
+====================================================================================================
+3+4. CONVERSION AND COST — the decisive table
+====================================================================================================
+  Signal: observe the leader's 1s move, predict the follower's next
+  1s move as corr * sd. Convert to contract cents via dP/dS.
+
+  contract           signal pair       corr  pred move $   dP/dS c/$   edge c  tick c   fee c          verdict
+  KXBTC15M @7.5m     ETH->XRP        0.1544        0.987     0.38611   0.3813    1.00    1.75           < tick
+  KXBTC15M @7.5m     BTC->XRP        0.1259        0.806     0.38611   0.3111    1.00    1.75           < tick
+
+  KXBTC15M @2m       ETH->XRP        0.1544        0.987     0.74771   0.7383    1.00    1.75           < tick
+  KXBTC15M @2m       BTC->XRP        0.1259        0.806     0.74771   0.6024    1.00    1.75           < tick
+
+  KXETH15M @7.5m     ETH->XRP        0.1544        0.029    10.00830   0.2930    1.00    1.75           < tick
+  KXETH15M @7.5m     BTC->XRP        0.1259        0.024    10.00830   0.2391    1.00    1.75           < tick
+
+  KXBTCD  @30m       ETH->XRP        0.1544        0.987     0.19306   0.1906    1.00    1.75           < tick
+  KXBTCD  @30m       BTC->XRP        0.1259        0.806     0.19306   0.1555    1.00    1.75           < tick
+
+====================================================================================================
+5. HOW BIG WOULD THE CORRELATION HAVE TO BE?
+====================================================================================================
+  KXBTC15M @7.5m     needs corr >=    1.113 to clear tick+fee (2.75c); observed best = 0.1544  -> short by 7x
+  KXBTC15M @2m       needs corr >=    0.575 to clear tick+fee (2.75c); observed best = 0.1544  -> short by 4x

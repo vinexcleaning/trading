@@ -1,0 +1,67 @@
+{
+  "manifest": {
+    "rows": 89819,
+    "events": 250,
+    "markets": 1968,
+    "weeks": 10,
+    "malformed": 0
+  },
+  "results": [
+    {
+      "diff": 0.00026094789446668803,
+      "ci_lo": -0.001570313506128961,
+      "ci_hi": 0.0021941406119143545,
+      "p": 0.781,
+      "n_events": 250,
+      "n_rows": 89806,
+      "model": "M1 driftless GBM",
+      "brier_model": 0.12043080228321239,
+      "brier_mid": 0.11973343150791706,
+      "logloss_model": 0.38270702534655465,
+      "logloss_mid": 0.3766483590543147,
+      "verdict": "tie"
+    },
+    {
+      "diff": -8.097481684009203e-05,
+      "ci_lo": -0.001874608372522024,
+      "ci_hi": 0.0018158882694224352,
+      "p": 0.942,
+      "n_events": 250,
+      "n_rows": 89806,
+      "model": "M2 settlement-aware",
+      "brier_model": 0.12009148888824339,
+      "brier_mid": 0.11973343150791706,
+      "logloss_model": 0.38173022147762375,
+      "logloss_mid": 0.3766483590543147,
+      "verdict": "tie"
+    },
+    {
+      "diff": 0.003702596096896095,
+      "ci_lo": 0.0014964880460913233,
+      "ci_hi": 0.006003698979668633,
+      "p": 0.001,
+      "n_events": 250,
+      "n_rows": 89806,
+      "model": "M3 empirical fat-tail",
+      "brier_model": 0.1230431130173097,
+      "brier_mid": 0.11973343150791706,
+      "logloss_model": 0.3952348398970417,
+      "logloss_mid": 0.3766483590543147,
+      "verdict": "MID"
+    },
+    {
+      "diff": 0.022454696778640468,
+      "ci_lo": 0.01865308476481386,
+      "ci_hi": 0.02636563525993398,
+      "p": 0.0,
+      "n_events": 250,
+      "n_rows": 89806,
+      "model": "M3t Student-t nu=2.03",
+      "brier_model": 0.14325459382670683,
+      "brier_mid": 0.11973343150791706,
+      "logloss_model": 0.5756101914223719,
+      "logloss_mid": 0.3766483590543147,
+      "verdict": "MID"
+    }
+  ]
+}

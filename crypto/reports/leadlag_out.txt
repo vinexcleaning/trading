@@ -1,0 +1,66 @@
+﻿========================================================================================================
+C1 — STALENESS CENSUS (the bias that manufactures fake lead-lag)
+========================================================================================================
+  BTCUSDT    bars=  1814400  zero-volume= 10.50%  zero-return= 48.24%
+  ETHUSDT    bars=  1814400  zero-volume= 27.45%  zero-return= 53.12%
+  SOLUSDT    bars=  1814400  zero-volume= 49.63%  zero-return= 73.79%
+  XRPUSDT    bars=  1814400  zero-volume= 57.65%  zero-return= 76.36%
+  DOGEUSDT   bars=  1814400  zero-volume= 68.89%  zero-return= 82.42%
+
+  aligned on 1814400 common 1-second bars (21.0 days)
+
+========================================================================================================
+C3 — SYNTHETIC CONTROL: two INDEPENDENT random walks (expect ~0 at every lag)
+========================================================================================================
+  SYNTH indep        lag0=-0.0009  best_lead(+)=+16s +0.0019  best_lag(-)= -5s +0.0014  3SE=0.0022  leads=no
+
+========================================================================================================
+C4 — STALE-PRICE CONTROL: real BTC vs a deliberately STALED copy
+========================================================================================================
+  (if the pipeline cannot see this fake lead, it cannot control for it)
+  BTC vs stale/2     lag0=+0.5275  best_lead(+)= +1s +0.5259  best_lag(-)= -1s +0.0854  3SE=0.0022  leads=YES
+  BTC vs stale/5     lag0=+0.2211  best_lead(+)= +4s +0.2340  best_lag(-)= -1s +0.0465  3SE=0.0022  leads=YES
+
+========================================================================================================
+REAL PAIRS — ALL BARS (contaminated by staleness)
+========================================================================================================
+  lag>0 positive => first asset LEADS second
+  BTC -> ETH         lag0=+0.6392  best_lead(+)= +1s +0.0870  best_lag(-)= -1s +0.1548  3SE=0.0022  leads=YES
+  BTC -> SOL         lag0=+0.4259  best_lead(+)= +1s +0.0893  best_lag(-)= -1s +0.0942  3SE=0.0022  leads=YES
+  BTC -> XRP         lag0=+0.4641  best_lead(+)= +1s +0.1029  best_lag(-)= -1s +0.0958  3SE=0.0022  leads=YES
+  BTC -> DOG         lag0=+0.4136  best_lead(+)= +1s +0.0882  best_lag(-)= -1s +0.0850  3SE=0.0022  leads=YES
+  ETH -> SOL         lag0=+0.4515  best_lead(+)= +1s +0.1050  best_lag(-)= -1s +0.0651  3SE=0.0022  leads=YES
+  ETH -> XRP         lag0=+0.4663  best_lead(+)= +1s +0.1211  best_lag(-)= -1s +0.0648  3SE=0.0022  leads=YES
+  ETH -> DOG         lag0=+0.4272  best_lead(+)= +1s +0.1047  best_lag(-)= -1s +0.0582  3SE=0.0022  leads=YES
+  SOL -> XRP         lag0=+0.3316  best_lead(+)= +1s +0.0802  best_lag(-)= -1s +0.0662  3SE=0.0022  leads=YES
+  SOL -> DOG         lag0=+0.3028  best_lead(+)= +1s +0.0668  best_lag(-)= -1s +0.0596  3SE=0.0022  leads=YES
+  XRP -> DOG         lag0=+0.3332  best_lead(+)= +1s +0.0701  best_lag(-)= -1s +0.0722  3SE=0.0022  leads=YES
+
+========================================================================================================
+C2 — REAL PAIRS, ONLY BARS WHERE **BOTH** ASSETS TRADED
+========================================================================================================
+  this removes the stale-price bias; a lead that vanishes here was never real
+  BTC -> ETH [1202687] lag0=+0.6499  best_lead(+)= +1s +0.0910  best_lag(-)= -1s +0.1616  3SE=0.0027  leads=YES
+  BTC -> SOL [833896] lag0=+0.4596  best_lead(+)= +1s +0.1034  best_lag(-)= -1s +0.1018  3SE=0.0033  leads=YES
+  BTC -> XRP [703952] lag0=+0.5078  best_lead(+)= +1s +0.1259  best_lag(-)= -1s +0.1079  3SE=0.0036  leads=YES
+  BTC -> DOG [519877] lag0=+0.4661  best_lead(+)= +1s +0.1194  best_lag(-)= -1s +0.0991  3SE=0.0042  leads=YES
+  ETH -> SOL [706574] lag0=+0.5171  best_lead(+)= +1s +0.1277  best_lag(-)= -1s +0.0739  3SE=0.0036  leads=YES
+  ETH -> XRP [601156] lag0=+0.5406  best_lead(+)= +1s +0.1544  best_lag(-)= -1s +0.0776  3SE=0.0039  leads=YES
+  ETH -> DOG [444188] lag0=+0.5185  best_lead(+)= +1s +0.1484  best_lag(-)= -1s +0.0698  3SE=0.0045  leads=YES
+  SOL -> XRP [435685] lag0=+0.4746  best_lead(+)= +1s +0.1143  best_lag(-)= -1s +0.0950  3SE=0.0045  leads=YES
+  SOL -> DOG [328204] lag0=+0.4716  best_lead(+)= +1s +0.1098  best_lag(-)= -1s +0.0882  3SE=0.0052  leads=YES
+  XRP -> DOG [285007] lag0=+0.5128  best_lead(+)= +1s +0.1103  best_lag(-)= -1s +0.1035  3SE=0.0056  leads=YES
+
+========================================================================================================
+C5 — TWO DISJOINT PERIODS (BTC -> each, joint-trade bars only)
+========================================================================================================
+  BTC->ETH first     lag0=+0.6512  best_lead(+)= +1s +0.0846  best_lag(-)= -1s +0.1499  3SE=0.0039  leads=YES
+  BTC->ETH second    lag0=+0.6483  best_lead(+)= +1s +0.0981  best_lag(-)= -1s +0.1747  3SE=0.0039  leads=YES
+  BTC->SOL first     lag0=+0.4784  best_lead(+)= +1s +0.1012  best_lag(-)= -1s +0.1010  3SE=0.0046  leads=YES
+  BTC->SOL second    lag0=+0.4384  best_lead(+)= +1s +0.1060  best_lag(-)= -1s +0.1026  3SE=0.0046  leads=YES
+  BTC->XRP first     lag0=+0.5325  best_lead(+)= +1s +0.1273  best_lag(-)= -1s +0.1067  3SE=0.0050  leads=YES
+  BTC->XRP second    lag0=+0.4806  best_lead(+)= +1s +0.1245  best_lag(-)= -1s +0.1094  3SE=0.0051  leads=YES
+  BTC->DOG first     lag0=+0.5182  best_lead(+)= +1s +0.1303  best_lag(-)= -1s +0.1051  3SE=0.0061  leads=YES
+  BTC->DOG second    lag0=+0.4205  best_lead(+)= +1s +0.1102  best_lag(-)= -1s +0.0944  3SE=0.0057  leads=YES
+
+wrote C:\Users\gianf\crypto\reports\leadlag.json

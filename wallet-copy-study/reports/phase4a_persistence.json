@@ -1,0 +1,571 @@
+{
+  "meta": {
+    "n_position_rows": 1746750,
+    "n_wallet_market_observations": 1450999,
+    "n_distinct_wallets": 2498,
+    "unit_of_observation": "wallet x market; positions aggregated cost-weighted across tokens within a market",
+    "metric": "excess = (realised value per share - entry price) minus the pooled mean at the same entry-price bucket",
+    "n_bootstrap": 2000,
+    "cuts": [
+      "2024-07-01",
+      "2025-01-01",
+      "2025-07-01",
+      "2026-01-08_fee_regime"
+    ],
+    "min_markets_tested": [
+      10,
+      20,
+      50
+    ]
+  },
+  "price_bucket_benchmark": {
+    "0.60-0.70": {
+      "n": 93796,
+      "mean_edge_pp": 1.9279,
+      "mean_edge_net_pp": 0.4307
+    },
+    "0.50-0.60": {
+      "n": 212811,
+      "mean_edge_pp": 1.3398,
+      "mean_edge_net_pp": -0.8429
+    },
+    "0.40-0.50": {
+      "n": 228304,
+      "mean_edge_pp": 0.3536,
+      "mean_edge_net_pp": -2.2407
+    },
+    "0.95-1.00": {
+      "n": 197756,
+      "mean_edge_pp": 0.23,
+      "mean_edge_net_pp": 0.1634
+    },
+    "0.80-0.90": {
+      "n": 85804,
+      "mean_edge_pp": 1.7531,
+      "mean_edge_net_pp": 1.1551
+    },
+    "0.00-0.05": {
+      "n": 276482,
+      "mean_edge_pp": -0.325,
+      "mean_edge_net_pp": -0.3982
+    },
+    "0.70-0.80": {
+      "n": 79558,
+      "mean_edge_pp": 2.237,
+      "mean_edge_net_pp": 1.167
+    },
+    "0.10-0.20": {
+      "n": 53514,
+      "mean_edge_pp": -0.9265,
+      "mean_edge_net_pp": -1.5585
+    },
+    "0.90-0.95": {
+      "n": 63192,
+      "mean_edge_pp": 1.0138,
+      "mean_edge_net_pp": 0.7315
+    },
+    "0.30-0.40": {
+      "n": 69419,
+      "mean_edge_pp": -0.5661,
+      "mean_edge_net_pp": -1.9555
+    },
+    "0.05-0.10": {
+      "n": 35017,
+      "mean_edge_pp": -0.5453,
+      "mean_edge_net_pp": -0.8781
+    },
+    "0.20-0.30": {
+      "n": 55346,
+      "mean_edge_pp": -1.1217,
+      "mean_edge_net_pp": -2.2392
+    }
+  },
+  "persistence": [
+    {
+      "cut": "2024-07-01",
+      "cut_ts": 1719792000,
+      "min_markets": 10,
+      "n_wallets_qualifying": 63,
+      "survivorship_audit": {
+        "n_p1_qualified": 70,
+        "n_survived_into_p2": 66,
+        "n_quit_after_p1": 4,
+        "attrition_rate": 0.0571,
+        "p1_excess_pp_of_survivors": 0.3257,
+        "p1_excess_pp_of_quitters": -1.9358,
+        "survivor_minus_quitter_pp": 2.2615,
+        "bias_direction": "UPWARD: survivors outperformed quitters in period 1, so the both-periods requirement keeps the better wallets"
+      },
+      "median_markets_p1": 33,
+      "median_markets_p2": 137,
+      "spearman_excess": 0.2281,
+      "spearman_raw_edge": 0.2143,
+      "period1_top_decile": {
+        "n": 6,
+        "p1_mean_excess_pp": 12.7382,
+        "p2_mean_excess_pp": 1.5993,
+        "p2_ci95_pp": [
+          -0.6013,
+          4.0244
+        ]
+      },
+      "period1_bottom_decile": {
+        "n": 6,
+        "p1_mean_excess_pp": -14.3917,
+        "p2_mean_excess_pp": 1.0434
+      },
+      "all_qualifying_wallets_p2_mean_excess_pp": 0.2078,
+      "random_decile_null_p2_excess_pp": {
+        "mean": 0.1989,
+        "p05": -2.5012,
+        "p95": 2.8709
+      },
+      "top_decile_beats_random_decile": false
+    },
+    {
+      "cut": "2024-07-01",
+      "cut_ts": 1719792000,
+      "min_markets": 20,
+      "n_wallets_qualifying": 43,
+      "survivorship_audit": {
+        "n_p1_qualified": 52,
+        "n_survived_into_p2": 50,
+        "n_quit_after_p1": 2,
+        "attrition_rate": 0.0385,
+        "p1_excess_pp_of_survivors": -0.5575,
+        "p1_excess_pp_of_quitters": -3.0031,
+        "survivor_minus_quitter_pp": 2.4456,
+        "bias_direction": "UPWARD: survivors outperformed quitters in period 1, so the both-periods requirement keeps the better wallets"
+      },
+      "median_markets_p1": 65,
+      "median_markets_p2": 258,
+      "spearman_excess": 0.1826,
+      "spearman_raw_edge": 0.2111,
+      "period1_top_decile": {
+        "n": 4,
+        "p1_mean_excess_pp": 7.885,
+        "p2_mean_excess_pp": -1.035,
+        "p2_ci95_pp": null
+      },
+      "period1_bottom_decile": {
+        "n": 4,
+        "p1_mean_excess_pp": -15.9076,
+        "p2_mean_excess_pp": 0.4972
+      },
+      "all_qualifying_wallets_p2_mean_excess_pp": 0.484,
+      "random_decile_null_p2_excess_pp": {
+        "mean": 0.5339,
+        "p05": -1.7252,
+        "p95": 2.7522
+      },
+      "top_decile_beats_random_decile": false
+    },
+    {
+      "cut": "2024-07-01",
+      "cut_ts": 1719792000,
+      "min_markets": 50,
+      "n_wallets_qualifying": 22,
+      "survivorship_audit": {
+        "n_p1_qualified": 27,
+        "n_survived_into_p2": 26,
+        "n_quit_after_p1": 1,
+        "attrition_rate": 0.037,
+        "p1_excess_pp_of_survivors": 1.3232,
+        "p1_excess_pp_of_quitters": 1.5619,
+        "survivor_minus_quitter_pp": -0.2387,
+        "bias_direction": "downward or neutral: survivors did not outperform quitters"
+      },
+      "median_markets_p1": 130,
+      "median_markets_p2": 605,
+      "spearman_excess": 0.2569,
+      "spearman_raw_edge": 0.2908,
+      "period1_top_decile": {
+        "n": 2,
+        "p1_mean_excess_pp": 9.6623,
+        "p2_mean_excess_pp": 0.9217,
+        "p2_ci95_pp": null
+      },
+      "period1_bottom_decile": {
+        "n": 2,
+        "p1_mean_excess_pp": -3.8027,
+        "p2_mean_excess_pp": -1.7332
+      },
+      "all_qualifying_wallets_p2_mean_excess_pp": 0.7639,
+      "random_decile_null_p2_excess_pp": {
+        "mean": 0.9032,
+        "p05": -1.7189,
+        "p95": 3.6876
+      },
+      "top_decile_beats_random_decile": false
+    },
+    {
+      "cut": "2025-01-01",
+      "cut_ts": 1735689600,
+      "min_markets": 10,
+      "n_wallets_qualifying": 462,
+      "survivorship_audit": {
+        "n_p1_qualified": 829,
+        "n_survived_into_p2": 641,
+        "n_quit_after_p1": 188,
+        "attrition_rate": 0.2268,
+        "p1_excess_pp_of_survivors": -0.4441,
+        "p1_excess_pp_of_quitters": -0.9605,
+        "survivor_minus_quitter_pp": 0.5164,
+        "bias_direction": "UPWARD: survivors outperformed quitters in period 1, so the both-periods requirement keeps the better wallets"
+      },
+      "median_markets_p1": 33,
+      "median_markets_p2": 50,
+      "spearman_excess": 0.1623,
+      "spearman_raw_edge": 0.162,
+      "period1_top_decile": {
+        "n": 46,
+        "p1_mean_excess_pp": 7.9719,
+        "p2_mean_excess_pp": 1.1246,
+        "p2_ci95_pp": [
+          -0.482,
+          2.7327
+        ]
+      },
+      "period1_bottom_decile": {
+        "n": 46,
+        "p1_mean_excess_pp": -9.7866,
+        "p2_mean_excess_pp": -3.1402
+      },
+      "all_qualifying_wallets_p2_mean_excess_pp": -0.4271,
+      "random_decile_null_p2_excess_pp": {
+        "mean": -0.4417,
+        "p05": -1.5443,
+        "p95": 0.6322
+      },
+      "top_decile_beats_random_decile": true
+    },
+    {
+      "cut": "2025-01-01",
+      "cut_ts": 1735689600,
+      "min_markets": 20,
+      "n_wallets_qualifying": 288,
+      "survivorship_audit": {
+        "n_p1_qualified": 570,
+        "n_survived_into_p2": 452,
+        "n_quit_after_p1": 118,
+        "attrition_rate": 0.207,
+        "p1_excess_pp_of_survivors": -0.3381,
+        "p1_excess_pp_of_quitters": -0.6196,
+        "survivor_minus_quitter_pp": 0.2815,
+        "bias_direction": "UPWARD: survivors outperformed quitters in period 1, so the both-periods requirement keeps the better wallets"
+      },
+      "median_markets_p1": 62,
+      "median_markets_p2": 94,
+      "spearman_excess": 0.1771,
+      "spearman_raw_edge": 0.1879,
+      "period1_top_decile": {
+        "n": 28,
+        "p1_mean_excess_pp": 6.978,
+        "p2_mean_excess_pp": 1.2176,
+        "p2_ci95_pp": [
+          -0.1085,
+          2.6829
+        ]
+      },
+      "period1_bottom_decile": {
+        "n": 28,
+        "p1_mean_excess_pp": -9.1523,
+        "p2_mean_excess_pp": -2.8633
+      },
+      "all_qualifying_wallets_p2_mean_excess_pp": -0.6311,
+      "random_decile_null_p2_excess_pp": {
+        "mean": -0.6471,
+        "p05": -1.9844,
+        "p95": 0.566
+      },
+      "top_decile_beats_random_decile": true
+    },
+    {
+      "cut": "2025-01-01",
+      "cut_ts": 1735689600,
+      "min_markets": 50,
+      "n_wallets_qualifying": 130,
+      "survivorship_audit": {
+        "n_p1_qualified": 275,
+        "n_survived_into_p2": 223,
+        "n_quit_after_p1": 52,
+        "attrition_rate": 0.1891,
+        "p1_excess_pp_of_survivors": 0.1085,
+        "p1_excess_pp_of_quitters": -0.7161,
+        "survivor_minus_quitter_pp": 0.8246,
+        "bias_direction": "UPWARD: survivors outperformed quitters in period 1, so the both-periods requirement keeps the better wallets"
+      },
+      "median_markets_p1": 147,
+      "median_markets_p2": 261,
+      "spearman_excess": 0.3147,
+      "spearman_raw_edge": 0.3188,
+      "period1_top_decile": {
+        "n": 13,
+        "p1_mean_excess_pp": 6.7284,
+        "p2_mean_excess_pp": 2.3797,
+        "p2_ci95_pp": [
+          0.2025,
+          4.3801
+        ]
+      },
+      "period1_bottom_decile": {
+        "n": 13,
+        "p1_mean_excess_pp": -6.6356,
+        "p2_mean_excess_pp": -2.5491
+      },
+      "all_qualifying_wallets_p2_mean_excess_pp": -0.6642,
+      "random_decile_null_p2_excess_pp": {
+        "mean": -0.6752,
+        "p05": -2.2965,
+        "p95": 0.8752
+      },
+      "top_decile_beats_random_decile": true
+    },
+    {
+      "cut": "2025-07-01",
+      "cut_ts": 1751328000,
+      "min_markets": 10,
+      "n_wallets_qualifying": 621,
+      "survivorship_audit": {
+        "n_p1_qualified": 1529,
+        "n_survived_into_p2": 969,
+        "n_quit_after_p1": 560,
+        "attrition_rate": 0.3663,
+        "p1_excess_pp_of_survivors": -0.534,
+        "p1_excess_pp_of_quitters": -0.7996,
+        "survivor_minus_quitter_pp": 0.2656,
+        "bias_direction": "UPWARD: survivors outperformed quitters in period 1, so the both-periods requirement keeps the better wallets"
+      },
+      "median_markets_p1": 56,
+      "median_markets_p2": 40,
+      "spearman_excess": 0.174,
+      "spearman_raw_edge": 0.1564,
+      "period1_top_decile": {
+        "n": 62,
+        "p1_mean_excess_pp": 7.2496,
+        "p2_mean_excess_pp": 0.62,
+        "p2_ci95_pp": [
+          -0.6956,
+          1.9118
+        ]
+      },
+      "period1_bottom_decile": {
+        "n": 62,
+        "p1_mean_excess_pp": -8.8782,
+        "p2_mean_excess_pp": -3.2935
+      },
+      "all_qualifying_wallets_p2_mean_excess_pp": -1.1289,
+      "random_decile_null_p2_excess_pp": {
+        "mean": -1.1877,
+        "p05": -2.3893,
+        "p95": -0.0497
+      },
+      "top_decile_beats_random_decile": true
+    },
+    {
+      "cut": "2025-07-01",
+      "cut_ts": 1751328000,
+      "min_markets": 20,
+      "n_wallets_qualifying": 394,
+      "survivorship_audit": {
+        "n_p1_qualified": 1163,
+        "n_survived_into_p2": 780,
+        "n_quit_after_p1": 383,
+        "attrition_rate": 0.3293,
+        "p1_excess_pp_of_survivors": -0.6436,
+        "p1_excess_pp_of_quitters": -0.5215,
+        "survivor_minus_quitter_pp": -0.1221,
+        "bias_direction": "downward or neutral: survivors did not outperform quitters"
+      },
+      "median_markets_p1": 96,
+      "median_markets_p2": 92,
+      "spearman_excess": 0.2606,
+      "spearman_raw_edge": 0.2411,
+      "period1_top_decile": {
+        "n": 39,
+        "p1_mean_excess_pp": 5.8503,
+        "p2_mean_excess_pp": 0.9924,
+        "p2_ci95_pp": [
+          -0.6824,
+          2.4776
+        ]
+      },
+      "period1_bottom_decile": {
+        "n": 39,
+        "p1_mean_excess_pp": -8.344,
+        "p2_mean_excess_pp": -3.6402
+      },
+      "all_qualifying_wallets_p2_mean_excess_pp": -1.0222,
+      "random_decile_null_p2_excess_pp": {
+        "mean": -1.0714,
+        "p05": -2.2,
+        "p95": -0.0434
+      },
+      "top_decile_beats_random_decile": true
+    },
+    {
+      "cut": "2025-07-01",
+      "cut_ts": 1751328000,
+      "min_markets": 50,
+      "n_wallets_qualifying": 212,
+      "survivorship_audit": {
+        "n_p1_qualified": 594,
+        "n_survived_into_p2": 423,
+        "n_quit_after_p1": 171,
+        "attrition_rate": 0.2879,
+        "p1_excess_pp_of_survivors": -0.1324,
+        "p1_excess_pp_of_quitters": -0.4556,
+        "survivor_minus_quitter_pp": 0.3232,
+        "bias_direction": "UPWARD: survivors outperformed quitters in period 1, so the both-periods requirement keeps the better wallets"
+      },
+      "median_markets_p1": 173,
+      "median_markets_p2": 252,
+      "spearman_excess": 0.3533,
+      "spearman_raw_edge": 0.3325,
+      "period1_top_decile": {
+        "n": 21,
+        "p1_mean_excess_pp": 6.0532,
+        "p2_mean_excess_pp": 3.0579,
+        "p2_ci95_pp": [
+          1.9975,
+          4.1298
+        ]
+      },
+      "period1_bottom_decile": {
+        "n": 21,
+        "p1_mean_excess_pp": -6.1335,
+        "p2_mean_excess_pp": -2.1864
+      },
+      "all_qualifying_wallets_p2_mean_excess_pp": -0.3366,
+      "random_decile_null_p2_excess_pp": {
+        "mean": -0.3332,
+        "p05": -1.4405,
+        "p95": 0.721
+      },
+      "top_decile_beats_random_decile": true
+    },
+    {
+      "cut": "2026-01-08_fee_regime",
+      "cut_ts": 1767830400,
+      "min_markets": 10,
+      "n_wallets_qualifying": 518,
+      "survivorship_audit": {
+        "n_p1_qualified": 2017,
+        "n_survived_into_p2": 978,
+        "n_quit_after_p1": 1039,
+        "attrition_rate": 0.5151,
+        "p1_excess_pp_of_survivors": -0.5865,
+        "p1_excess_pp_of_quitters": -0.7215,
+        "survivor_minus_quitter_pp": 0.135,
+        "bias_direction": "UPWARD: survivors outperformed quitters in period 1, so the both-periods requirement keeps the better wallets"
+      },
+      "median_markets_p1": 202,
+      "median_markets_p2": 90,
+      "spearman_excess": 0.2338,
+      "spearman_raw_edge": 0.2105,
+      "period1_top_decile": {
+        "n": 51,
+        "p1_mean_excess_pp": 5.19,
+        "p2_mean_excess_pp": 1.0315,
+        "p2_ci95_pp": [
+          -0.3642,
+          2.3819
+        ]
+      },
+      "period1_bottom_decile": {
+        "n": 51,
+        "p1_mean_excess_pp": -5.8559,
+        "p2_mean_excess_pp": -2.5402
+      },
+      "all_qualifying_wallets_p2_mean_excess_pp": -0.9089,
+      "random_decile_null_p2_excess_pp": {
+        "mean": -0.8825,
+        "p05": -1.8796,
+        "p95": 0.0356
+      },
+      "top_decile_beats_random_decile": true
+    },
+    {
+      "cut": "2026-01-08_fee_regime",
+      "cut_ts": 1767830400,
+      "min_markets": 20,
+      "n_wallets_qualifying": 392,
+      "survivorship_audit": {
+        "n_p1_qualified": 1646,
+        "n_survived_into_p2": 880,
+        "n_quit_after_p1": 766,
+        "attrition_rate": 0.4654,
+        "p1_excess_pp_of_survivors": -0.6367,
+        "p1_excess_pp_of_quitters": -0.5207,
+        "survivor_minus_quitter_pp": -0.116,
+        "bias_direction": "downward or neutral: survivors did not outperform quitters"
+      },
+      "median_markets_p1": 303,
+      "median_markets_p2": 154,
+      "spearman_excess": 0.339,
+      "spearman_raw_edge": 0.2976,
+      "period1_top_decile": {
+        "n": 39,
+        "p1_mean_excess_pp": 4.7308,
+        "p2_mean_excess_pp": 1.1515,
+        "p2_ci95_pp": [
+          -0.2054,
+          2.4797
+        ]
+      },
+      "period1_bottom_decile": {
+        "n": 39,
+        "p1_mean_excess_pp": -5.5242,
+        "p2_mean_excess_pp": -2.7926
+      },
+      "all_qualifying_wallets_p2_mean_excess_pp": -0.8159,
+      "random_decile_null_p2_excess_pp": {
+        "mean": -0.8128,
+        "p05": -1.6096,
+        "p95": 0.0435
+      },
+      "top_decile_beats_random_decile": true
+    },
+    {
+      "cut": "2026-01-08_fee_regime",
+      "cut_ts": 1767830400,
+      "min_markets": 50,
+      "n_wallets_qualifying": 279,
+      "survivorship_audit": {
+        "n_p1_qualified": 1026,
+        "n_survived_into_p2": 641,
+        "n_quit_after_p1": 385,
+        "attrition_rate": 0.3752,
+        "p1_excess_pp_of_survivors": -0.664,
+        "p1_excess_pp_of_quitters": -0.4269,
+        "survivor_minus_quitter_pp": -0.2371,
+        "bias_direction": "downward or neutral: survivors did not outperform quitters"
+      },
+      "median_markets_p1": 499,
+      "median_markets_p2": 360,
+      "spearman_excess": 0.3474,
+      "spearman_raw_edge": 0.2976,
+      "period1_top_decile": {
+        "n": 27,
+        "p1_mean_excess_pp": 4.9733,
+        "p2_mean_excess_pp": 1.0253,
+        "p2_ci95_pp": [
+          -0.8216,
+          2.7939
+        ]
+      },
+      "period1_bottom_decile": {
+        "n": 27,
+        "p1_mean_excess_pp": -4.9364,
+        "p2_mean_excess_pp": -2.5145
+      },
+      "all_qualifying_wallets_p2_mean_excess_pp": -0.4135,
+      "random_decile_null_p2_excess_pp": {
+        "mean": -0.4078,
+        "p05": -1.3162,
+        "p95": 0.4487
+      },
+      "top_decile_beats_random_decile": true
+    }
+  ]
+}

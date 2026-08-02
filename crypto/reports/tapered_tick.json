@@ -1,0 +1,131 @@
+{
+  "tick_table": [
+    {
+      "price_c": 1,
+      "tick": 0.001,
+      "fee": 0.000693,
+      "rt_tapered": 0.003386,
+      "rt_flat": 0.021386000000000002
+    },
+    {
+      "price_c": 2,
+      "tick": 0.001,
+      "fee": 0.001372,
+      "rt_tapered": 0.004744,
+      "rt_flat": 0.022744
+    },
+    {
+      "price_c": 3,
+      "tick": 0.001,
+      "fee": 0.002037,
+      "rt_tapered": 0.006074,
+      "rt_flat": 0.024074
+    },
+    {
+      "price_c": 5,
+      "tick": 0.001,
+      "fee": 0.003325,
+      "rt_tapered": 0.00865,
+      "rt_flat": 0.02665
+    },
+    {
+      "price_c": 7,
+      "tick": 0.001,
+      "fee": 0.004557,
+      "rt_tapered": 0.011114,
+      "rt_flat": 0.029114
+    },
+    {
+      "price_c": 10,
+      "tick": 0.01,
+      "fee": 0.0063,
+      "rt_tapered": 0.032600000000000004,
+      "rt_flat": 0.032600000000000004
+    },
+    {
+      "price_c": 15,
+      "tick": 0.01,
+      "fee": 0.008925,
+      "rt_tapered": 0.03785,
+      "rt_flat": 0.03785
+    },
+    {
+      "price_c": 20,
+      "tick": 0.01,
+      "fee": 0.0112,
+      "rt_tapered": 0.0424,
+      "rt_flat": 0.0424
+    },
+    {
+      "price_c": 30,
+      "tick": 0.01,
+      "fee": 0.0147,
+      "rt_tapered": 0.0494,
+      "rt_flat": 0.0494
+    },
+    {
+      "price_c": 50,
+      "tick": 0.01,
+      "fee": 0.0175,
+      "rt_tapered": 0.05500000000000001,
+      "rt_flat": 0.05500000000000001
+    },
+    {
+      "price_c": 70,
+      "tick": 0.01,
+      "fee": 0.0147,
+      "rt_tapered": 0.0494,
+      "rt_flat": 0.0494
+    },
+    {
+      "price_c": 80,
+      "tick": 0.01,
+      "fee": 0.0112,
+      "rt_tapered": 0.0424,
+      "rt_flat": 0.0424
+    },
+    {
+      "price_c": 85,
+      "tick": 0.01,
+      "fee": 0.008925,
+      "rt_tapered": 0.03785,
+      "rt_flat": 0.03785
+    },
+    {
+      "price_c": 90,
+      "tick": 0.01,
+      "fee": 0.0063,
+      "rt_tapered": 0.032600000000000004,
+      "rt_flat": 0.032600000000000004
+    },
+    {
+      "price_c": 93,
+      "tick": 0.001,
+      "fee": 0.004557,
+      "rt_tapered": 0.011114,
+      "rt_flat": 0.029114
+    },
+    {
+      "price_c": 95,
+      "tick": 0.001,
+      "fee": 0.003325,
+      "rt_tapered": 0.00865,
+      "rt_flat": 0.02665
+    },
+    {
+      "price_c": 97,
+      "tick": 0.001,
+      "fee": 0.002037,
+      "rt_tapered": 0.006074,
+      "rt_flat": 0.024074
+    },
+    {
+      "price_c": 99,
+      "tick": 0.001,
+      "fee": 0.000693,
+      "rt_tapered": 0.003386,
+      "rt_flat": 0.021386000000000002
+    }
+  ],
+  "best_edge_over_tick": 1.2835032189487061
+}

@@ -1,0 +1,41 @@
+
+==============================================================================
+PHASE 2 BASE TEST -- entry rule 'deep:12': the first minute at which the
+favourite's price is 12c+ below its pre-match level AND has stopped making new
+lows for 8 minutes, entered 3 min later. A stopping time: no price after the
+firing minute is consulted. Sixteen other entry definitions are in the grid below.
+==============================================================================
+candidate matches (fav >= 60c, valid entry): 544
+events (drop >= 5c):                        508
+median drop 21.0c   median entry mid 49.5c   median pre-match 70.5c
+spread at entry: median 1c  p75 2c  p90 4c  p99 11c
+  (the 1c slippage assumption is optimistic wherever the spread is wide; 12.4% of entries quote 4c or more)
+
+    entry      n  impl p     obs  mis pp      p1      p2   fill   fee  BE win   net c
+      0-5      1   0.025   0.000   -2.50   1.000   1.000    5.0  0.33   0.053   -5.33
+     5-10      1   0.095   0.000   -9.50   1.000   1.000   11.0  0.69   0.117  -11.69
+    10-15      1   0.105   0.000  -10.50   1.000   1.000   12.0  0.74   0.127  -12.74
+    15-20      4   0.175   0.250   +7.50   0.537   1.000   19.0  1.08   0.201   +4.92
+    20-25      7   0.219   0.429  +21.00   0.183   0.365   23.7  1.26   0.250  +17.88
+    25-30     15   0.276   0.200   -7.60   0.828   0.735   29.8  1.46   0.313  -11.26
+    30-35     41   0.325   0.293   -3.23   0.727   0.796   34.5  1.58   0.361   -6.80
+    35-40     58   0.375   0.362   -1.25   0.627   0.953   39.3  1.67   0.410   -4.77
+    40-45     67   0.422   0.448   +2.58   0.376   0.752   44.1  1.72   0.458   -1.04
+    45-50     66   0.474   0.470   -0.45   0.575   1.000   49.4  1.75   0.511   -4.16
+    50-55     57   0.527   0.544   +1.71   0.454   0.909   54.6  1.73   0.564   -2.00
+    55-60     54   0.570   0.593   +2.31   0.422   0.843   58.9  1.69   0.606   -1.36
+    60-65     59   0.622   0.627   +0.47   0.525   1.000   64.5  1.60   0.661   -3.38
+    65-70     36   0.675   0.722   +4.76   0.336   0.672   69.3  1.49   0.708   +1.43
+    70-75     19   0.721   0.632   -8.89   0.867   0.533   74.2  1.34   0.755  -12.34
+    75-80     14   0.775   0.786   +1.11   0.608   1.000   79.4  1.14   0.805   -1.93
+    80-85      4   0.809   0.750   -5.88   0.834   1.000   84.5  0.91   0.854  -10.41
+    85-90      3   0.870   0.333  -53.67   0.998   0.091   89.0  0.68   0.897  -56.35
+    90-95      1   0.915   1.000   +8.50   0.914   1.000   94.0  0.39   0.944   +5.61
+
+POOLED  n=508
+  implied  0.5006     observed 0.5020
+  miscalibration  +0.14 pp   95% CI [-4.08, +4.38]
+  Poisson-binomial  p(one-sided, overshoot) = 0.4898   p(two-sided) = 0.9795
+  net expectancy, hold to settlement, ask+1c fill, exact fees:
+     -3.455 c/contract   95% CI [-7.594, +0.704]
+  breakeven miscalibration needed: +3.59 pp

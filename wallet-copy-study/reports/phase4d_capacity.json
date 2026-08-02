@@ -1,0 +1,112 @@
+{
+  "meta": {
+    "n_fills": 2778373,
+    "n_tokens": 4538,
+    "delay_s": 60,
+    "fee_formula": "0.10*min(p,1-p) per share",
+    "clustering": "market-level bootstrap",
+    "limits": [
+      "impact is measured on the size that ACTUALLY traded; a copier adds their own demand on top, so these capacity numbers are optimistic",
+      "prices are trade prices, not asks, which further flatters the copier"
+    ]
+  },
+  "counters": {
+    "signals": 2234479,
+    "not_copyable": 69986,
+    "copyable": 2164493
+  },
+  "adverse_selection": {
+    "delay_s": 60,
+    "n_signals": 2234479,
+    "n_copyable": 2164493,
+    "n_not_copyable": 69986,
+    "frac_copyable": 0.9687,
+    "copyable_return_net_pp": -1.5444,
+    "copyable_ci95_pp": [
+      -1.8468,
+      -1.2568
+    ],
+    "uncopyable_signal_return_net_pp": -5.3241,
+    "uncopyable_ci95_pp": [
+      -6.6504,
+      -4.0954
+    ],
+    "corr_post_signal_move_with_outcome": 0.33818,
+    "info_share_of_move": 1.06791,
+    "reading": "A positive correlation means the price drifts toward the outcome after a buy, i.e. the signal carried information and delay costs real edge rather than only spread. A copyable return materially below the uncopyable-signal return means being able to copy is itself adversely selected."
+  },
+  "price_impact_by_trade_size": {
+    "0-10": {
+      "n": 1592669,
+      "mean_signed_move_pp": 0.02111,
+      "mean_abs_move_pp": 0.54399
+    },
+    "10-50": {
+      "n": 406379,
+      "mean_signed_move_pp": -0.00665,
+      "mean_abs_move_pp": 0.7091
+    },
+    "250-1000": {
+      "n": 48550,
+      "mean_signed_move_pp": -0.04929,
+      "mean_abs_move_pp": 0.80976
+    },
+    "50-250": {
+      "n": 163910,
+      "mean_signed_move_pp": -0.02343,
+      "mean_abs_move_pp": 0.79518
+    },
+    "1000-5000": {
+      "n": 16743,
+      "mean_signed_move_pp": -0.03295,
+      "mean_abs_move_pp": 0.77292
+    },
+    "5000-25000": {
+      "n": 2785,
+      "mean_signed_move_pp": -0.10919,
+      "mean_abs_move_pp": 0.57647
+    },
+    "25000-inf": {
+      "n": 456,
+      "mean_signed_move_pp": -0.04868,
+      "mean_abs_move_pp": 0.41132
+    }
+  },
+  "capacity": {
+    "0-10": {
+      "n_fills_observed": 1592669,
+      "impact_pp": 0.02111,
+      "net_of_impact_pp": -1.5655
+    },
+    "10-50": {
+      "n_fills_observed": 406379,
+      "impact_pp": -0.00665,
+      "net_of_impact_pp": -1.5377
+    },
+    "50-250": {
+      "n_fills_observed": 163910,
+      "impact_pp": -0.02343,
+      "net_of_impact_pp": -1.521
+    },
+    "250-1000": {
+      "n_fills_observed": 48550,
+      "impact_pp": -0.04929,
+      "net_of_impact_pp": -1.4951
+    },
+    "1000-5000": {
+      "n_fills_observed": 16743,
+      "impact_pp": -0.03295,
+      "net_of_impact_pp": -1.5114
+    },
+    "5000-25000": {
+      "n_fills_observed": 2785,
+      "impact_pp": -0.10919,
+      "net_of_impact_pp": -1.4352
+    },
+    "25000-inf": {
+      "n_fills_observed": 456,
+      "impact_pp": -0.04868,
+      "net_of_impact_pp": -1.4957
+    }
+  }
+}

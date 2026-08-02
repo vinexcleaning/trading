@@ -1,0 +1,48 @@
+﻿
+================================================================================================
+D1/D2 — Binance timestamp unit
+================================================================================================
+  first raw timestamps: [1783641600000000, 1783641601000000, 1783641602000000, 1783641603000000, 1783641604000000, 1783641605000000]
+  consecutive diffs   : [1000000, 1000000, 1000000, 1000000, 1000000]
+  -> bars are 1 second apart and the unit is MICROseconds
+  interpreting as us  -> 2026-07-10 00:00:00+00:00  (a real, plausible date)
+  interpreting as ms  -> year ~58000, which is why the naive conversion raised OSError
+
+  IMPACT ON RESULTS: none. leadlag.py aligned symbols by EXACT
+  timestamp equality and computed returns from bar ORDER, neither
+  of which depends on the unit. The gap check and the cross-source
+  join were the only things that used the unit, and both simply
+  failed loudly rather than producing a wrong number.
+
+================================================================================================
+D2 (corrected) — Binance vs Coinbase vs Kalshi BRTI
+================================================================================================
+  Coinbase minutes 99402, Binance minutes 30240, overlap 30240
+  basis (Binance-Coinbase): mean +8.55bp  sd 2.37bp  p99|.| 14.5bp
+  1-minute return correlation: 0.981978
+  -> ** FAIL (two independent exchanges agreeing to this precision means neither feed is corrupted)
+
+================================================================================================
+D3 — what IS the price at the decision moment?
+================================================================================================
+  1067 captures across 37 windows
+
+  FIRST capture per window (median age 2.7s):
+    n=37  min=18.0c  p25=42.0c  MEDIAN=49.00c  p75=56.0c  max=70.0c
+  ALL captures pooled (0-60s after open):
+    n=1067  MEDIAN=47.00c  sd=12.58c
+
+  The pooled median is contaminated: at ~7.5 min to expiry a
+  1-sigma 60-second BTC move swings the contract ~15c, so later
+  captures are drifted prices, not decision prices.
+
+  CORRECTED FADE BAR
+    median no_ask at first capture = 49.00c
+    + fee at that price            = 1.75c
+    => break-even down-rate        = 50.75%
+
+    previously reported bars: 51.75% (assumed 50c entry), 54.74% (from ONE window at 53c)
+    n is still only 37 windows — this will firm up over the week.
+    2 consec ups   down-rate 54.13% vs bar 50.75%  -> ABOVE by +3.38pp
+    10/20 ups      down-rate 54.39% vs bar 50.75%  -> ABOVE by +3.64pp
+    14/20 ups      down-rate 55.49% vs bar 50.75%  -> ABOVE by +4.74pp

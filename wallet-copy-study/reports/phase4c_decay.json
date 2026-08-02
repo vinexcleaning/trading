@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "n_fills": 2778373,
+    "n_tokens": 4538,
+    "delays_s": [
+      0,
+      1,
+      10,
+      60,
+      300,
+      1800
+    ],
+    "fee_formula": "0.10*min(p,1-p) per share (probe_02)",
+    "max_lookahead_s": 21600,
+    "clustering": "market-level bootstrap",
+    "limits": [
+      "p_d is a TRADE price, not an ask; a real copier pays the ask, so every copy return here is an upper bound",
+      "Polygon block time ~2s, so the +1s row is really 'next block or later'",
+      "no-next-fill observations counted missing, never carried forward"
+    ]
+  },
+  "counters": {
+    "signals": 2234479,
+    "obs_d0": 2234479,
+    "missing_d1": 7683,
+    "missing_d10": 12681,
+    "missing_d60": 45771,
+    "missing_d300": 456486,
+    "missing_d1800": 1224269,
+    "obs_d1": 2205538,
+    "obs_d10": 2199548,
+    "obs_d60": 2164493,
+    "obs_d300": 1750550,
+    "obs_d1800": 976438,
+    "stale_d1": 21258,
+    "stale_d10": 22250,
+    "stale_d60": 24215,
+    "stale_d300": 27443,
+    "stale_d1800": 33772
+  },
+  "decay": {
+    "0": {
+      "n_obs": 2234479,
+      "n_markets": 2271,
+      "copy_return_net_pp": -2.4125,
+      "copy_return_ci95_pp": [
+        -2.6544,
+        -2.166
+      ],
+      "signal_return_net_pp": -2.4125,
+      "edge_kept_pp": 0.0,
+      "mean_price_move_pp": 0.0,
+      "median_actual_lag_s": 0,
+      "p90_actual_lag_s": 0
+    },
+    "1": {
+      "n_obs": 2205538,
+      "n_markets": 2105,
+      "copy_return_net_pp": -1.5794,
+      "copy_return_ci95_pp": [
+        -1.8576,
+        -1.2767
+      ],
+      "signal_return_net_pp": -2.4284,
+      "edge_kept_pp": 0.849,
+      "mean_price_move_pp": -0.8256,
+      "median_actual_lag_s": 2,
+      "p90_actual_lag_s": 294
+    },
+    "10": {
+      "n_obs": 2199548,
+      "n_markets": 2095,
+      "copy_return_net_pp": -1.6363,
+      "copy_return_ci95_pp": [
+        -1.9219,
+        -1.3649
+      ],
+      "signal_return_net_pp": -2.4222,
+      "edge_kept_pp": 0.7859,
+      "mean_price_move_pp": -0.7128,
+      "median_actual_lag_s": 10,
+      "p90_actual_lag_s": 360
+    },
+    "60": {
+      "n_obs": 2164493,
+      "n_markets": 2076,
+      "copy_return_net_pp": -1.5444,
+      "copy_return_ci95_pp": [
+        -1.8468,
+        -1.2568
+      ],
+      "signal_return_net_pp": -2.3184,
+      "edge_kept_pp": 0.774,
+      "mean_price_move_pp": -0.4609,
+      "median_actual_lag_s": 60,
+      "p90_actual_lag_s": 541
+    },
+    "300": {
+      "n_obs": 1750550,
+      "n_markets": 2032,
+      "copy_return_net_pp": -1.4367,
+      "copy_return_ci95_pp": [
+        -1.7526,
+        -1.1378
+      ],
+      "signal_return_net_pp": -1.6102,
+      "edge_kept_pp": 0.1735,
+      "mean_price_move_pp": 0.6779,
+      "median_actual_lag_s": 306,
+      "p90_actual_lag_s": 1246
+    },
+    "1800": {
+      "n_obs": 976438,
+      "n_markets": 1811,
+      "copy_return_net_pp": -1.7023,
+      "copy_return_ci95_pp": [
+        -2.1456,
+        -1.2272
+      ],
+      "signal_return_net_pp": -1.2779,
+      "edge_kept_pp": -0.4244,
+      "mean_price_move_pp": 0.9741,
+      "median_actual_lag_s": 1932,
+      "p90_actual_lag_s": 4852
+    }
+  },
+  "spread_estimate": {
+    "n": 197717,
+    "median_pp": 1.0,
+    "mean_pp": 2.0954,
+    "p90_pp": 4.0745,
+    "note": "range of trade prices within the same block timestamp; a LOWER bound on the quoted spread, so the haircut below is optimistic"
+  }
+}

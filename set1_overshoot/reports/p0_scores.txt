@@ -1,0 +1,38 @@
+﻿kalshi events                   19,782
+  with a usable pair key        19,782
+
+truth rows (set-1 parsed)       5,013
+src
+sackmann      3823
+tennisdata    1190
+
+matched kalshi events           2,911
+  multi-hit (deduped)           214
+  source conflict (dropped)     12
+  final truth rows              2,899
+  set-1 winner resolvable       2,899
+
+  match-winner agreement with Kalshi settlement: 0.9955
+  (this is the join-quality check -- anything below ~0.99 means the name match is wrong, not the detector)
+  after dropping disagreements  2,886
+
+by tour:
+tour
+ATP      458
+CHALL    382
+ITF-M    811
+ITF-W    772
+WTA      463
+
+by source:
+src
+sackmann      2163
+tennisdata     723
+
+by month:
+kdate
+2026-05    1135
+2026-06    1419
+2026-07     332
+
+-> C:\Users\gianf\kalshi\set1_overshoot\data\truth_set1.parquet

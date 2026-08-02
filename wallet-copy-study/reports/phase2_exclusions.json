@@ -1,0 +1,90 @@
+{
+  "meta": {
+    "n_wallets": 2500,
+    "n_fills": 14082296,
+    "n_positions": 1746750,
+    "thresholds": {
+      "mm_two_sided_rate": 0.5,
+      "mm_median_hold_s": 3600,
+      "mm_settle_rate": 0.1,
+      "large_median_notional": 5000
+    },
+    "principle": "structural only -- no rule here consults profitability"
+  },
+  "distributions": {
+    "two_sided_rate": {
+      "p10": 0.0217,
+      "p25": 0.2222,
+      "p50": 0.5625,
+      "p75": 0.9057,
+      "p90": 1.0,
+      "p99": 1.0
+    },
+    "settle_rate": {
+      "p10": 0.0833,
+      "p25": 0.5014,
+      "p50": 0.8974,
+      "p75": 0.9922,
+      "p90": 1.0,
+      "p99": 1.0
+    },
+    "median_hold_s": {
+      "p10": 0,
+      "p25": 0,
+      "p50": 876,
+      "p75": 29486,
+      "p90": 169808,
+      "p99": 1440510
+    },
+    "median_trade_usd": {
+      "p10": 1.1,
+      "p25": 3.12,
+      "p50": 9.0,
+      "p75": 31.33,
+      "p90": 85.55,
+      "p99": 465.5
+    },
+    "median_market_notional_usd": {
+      "p10": 1.93,
+      "p25": 5.37,
+      "p50": 20.0,
+      "p75": 91.91,
+      "p90": 483.1,
+      "p99": 10505.55
+    },
+    "round_lot_rate": {
+      "p10": 0.0104,
+      "p25": 0.0702,
+      "p50": 0.3404,
+      "p75": 0.6545,
+      "p90": 0.9333,
+      "p99": 1.0
+    },
+    "fills_per_active_day": {
+      "p10": 1.78,
+      "p25": 2.76,
+      "p50": 6.89,
+      "p75": 34.58,
+      "p90": 201.57,
+      "p99": 4210.53
+    },
+    "n_markets": {
+      "p10": 10,
+      "p25": 22,
+      "p50": 55,
+      "p75": 246,
+      "p90": 1325,
+      "p99": 8872
+    }
+  },
+  "exclusions": {
+    "n_excluded": 721,
+    "frac_excluded": 0.2884,
+    "by_reason": {
+      "market": 682,
+      "ANY": 721,
+      "too_large_to_copy": 41
+    },
+    "n_remaining": 1779
+  }
+}

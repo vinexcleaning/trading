@@ -1,0 +1,32 @@
+[
+  {
+    "claim": "lead-lag ETH->XRP",
+    "verdict": "UNAFFECTED",
+    "note": "measures correlation by design; conclusion was economic (sub-tick), not statistical"
+  },
+  {
+    "claim": "MM '0 of 4 series'",
+    "verdict": "UNSUPPORTED",
+    "note": "only KXBTCD (58 markets) was ever P&L-tested"
+  },
+  {
+    "claim": "cross-asset streaks",
+    "verdict": "WEAKENED (already stated)",
+    "note": "3-of-4 is ~1.8 observations; 0/136 survive FDR anyway"
+  },
+  {
+    "claim": "fat tails BTC+ETH",
+    "verdict": "UNAFFECTED",
+    "note": "already reported as one finding, not two"
+  },
+  {
+    "claim": "round-number pinning",
+    "verdict": "VOID (already retracted)",
+    "note": "invalid null + duplicated series"
+  },
+  {
+    "claim": "B1 / touch matrix / path",
+    "verdict": "UNAFFECTED",
+    "note": "single-asset; effective-n applies to cross-asset only"
+  }
+]

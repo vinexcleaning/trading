@@ -1,0 +1,154 @@
+{
+  "meta": {
+    "fee_era": [
+      "2026-01-08",
+      "2026-04-28"
+    ],
+    "inner_cut": "2026-03-01",
+    "min_markets": 20,
+    "n_p1_positions": 389330,
+    "n_p2_positions": 627796,
+    "caveat": "about eight weeks per sub-period; sample sizes are much smaller than the long-history runs and are not equivalent"
+  },
+  "n_eligible_fee_era": 368,
+  "persistence_within_fee_era": {
+    "n_wallets_both_periods": 233,
+    "spearman": 0.2565,
+    "top_decile_n": 23,
+    "top_decile_p1_excess_pp": 6.4409,
+    "top_decile_p2_excess_pp": 0.5127,
+    "top_decile_p2_boot": {
+      "mean_pp": 1.5498,
+      "ci95": [
+        0.8243,
+        2.3152
+      ],
+      "p": 0.0005,
+      "n_obs": 6724,
+      "n_markets": 6212
+    },
+    "bottom_decile_p2_excess_pp": -1.1359,
+    "all_qualifying_p2_excess_pp": -0.7399
+  },
+  "top_decile_composition_change": {
+    "fee_era_top_decile_n": 36,
+    "legacy_top_decile_n": 47,
+    "overlap_n": 7,
+    "overlap_frac_of_fee_era_top": 0.1944,
+    "jaccard": 0.0921,
+    "fee_era_top_that_were_legacy_eligible": 13,
+    "fee_era_top_not_even_eligible_before": 23
+  },
+  "exit_component_fee_era": {
+    "fee_era_top_decile": {
+      "exit_component_pp": {
+        "mean_pp": -0.2679,
+        "ci95": [
+          -0.5436,
+          0.0075
+        ],
+        "p": 0.058,
+        "n_obs": 6707,
+        "n_markets": 6192
+      },
+      "exit_copy_delta_1pp_spread": {
+        "mean_pp": -0.6531,
+        "ci95": [
+          -0.9268,
+          -0.3754
+        ],
+        "p": 0.0005,
+        "n_obs": 6707,
+        "n_markets": 6192
+      },
+      "n_positions": 6707
+    },
+    "fee_era_all_eligible": {
+      "exit_component_pp": {
+        "mean_pp": -0.0896,
+        "ci95": [
+          -0.1738,
+          -0.0062
+        ],
+        "p": 0.042,
+        "n_obs": 39018,
+        "n_markets": 20000
+      },
+      "exit_copy_delta_1pp_spread": {
+        "mean_pp": -0.2976,
+        "ci95": [
+          -0.3812,
+          -0.2139
+        ],
+        "p": 0.0005,
+        "n_obs": 39018,
+        "n_markets": 20000
+      },
+      "n_positions": 340921
+    },
+    "fee_era_everyone": {
+      "exit_component_pp": {
+        "mean_pp": -0.1436,
+        "ci95": [
+          -0.2527,
+          -0.0295
+        ],
+        "p": 0.012,
+        "n_obs": 50947,
+        "n_markets": 20000
+      },
+      "exit_copy_delta_1pp_spread": {
+        "mean_pp": -0.592,
+        "ci95": [
+          -0.7046,
+          -0.4794
+        ],
+        "p": 0.0005,
+        "n_obs": 50947,
+        "n_markets": 20000
+      },
+      "n_positions": 549674
+    }
+  },
+  "bh_fdr": {
+    "n_tests": 7,
+    "n_significant": 6,
+    "detail": {
+      "fee_era_exit_delta[fee_era_all_eligible]": {
+        "p": 0.0005,
+        "bh_threshold": 0.007143,
+        "significant_at_fdr_5pct": true
+      },
+      "fee_era_exit_delta[fee_era_everyone]": {
+        "p": 0.0005,
+        "bh_threshold": 0.014286,
+        "significant_at_fdr_5pct": true
+      },
+      "fee_era_exit_delta[fee_era_top_decile]": {
+        "p": 0.0005,
+        "bh_threshold": 0.021429,
+        "significant_at_fdr_5pct": true
+      },
+      "fee_era_top_decile_p2_excess": {
+        "p": 0.0005,
+        "bh_threshold": 0.028571,
+        "significant_at_fdr_5pct": true
+      },
+      "fee_era_exit_component[fee_era_everyone]": {
+        "p": 0.012,
+        "bh_threshold": 0.035714,
+        "significant_at_fdr_5pct": true
+      },
+      "fee_era_exit_component[fee_era_all_eligible]": {
+        "p": 0.042,
+        "bh_threshold": 0.042857,
+        "significant_at_fdr_5pct": true
+      },
+      "fee_era_exit_component[fee_era_top_decile]": {
+        "p": 0.058,
+        "bh_threshold": 0.05,
+        "significant_at_fdr_5pct": false
+      }
+    }
+  }
+}

@@ -1,0 +1,84 @@
+﻿
+====================================================================================================
+1. KALSHI SETTLED MARKETS — the outcome source for every test
+====================================================================================================
+  OK  KXBTC.jsonl      n= 291840 parse_err=0   dup_tickers=0   events=1593   multi_settle_events=0   expv=100.0% no_strike=0
+       results={'no': 290247, 'yes': 1593} span=2026-05-25T00:00 -> 2026-08-01T00:00
+  OK  KXBTC15M.jsonl   n=   6429 parse_err=0   dup_tickers=0   events=6427   multi_settle_events=0   expv=100.0% no_strike=8
+       results={'yes': 3165, 'no': 3264} span=2026-05-25T00:00 -> 2026-08-01T00:30
+  OK  KXBTCD.jsonl     n= 292160 parse_err=0   dup_tickers=0   events=1593   multi_settle_events=0   expv=100.0% no_strike=0
+       results={'yes': 147262, 'no': 144898} span=2026-05-25T00:00 -> 2026-08-01T00:00
+  OK  KXDOGED.jsonl    n=  83030 parse_err=0   dup_tickers=0   events=1592   multi_settle_events=0   expv=100.0% no_strike=83030
+       results={'no': 57291, 'yes': 25739} span=2026-05-25T00:00 -> 2026-07-31T23:00
+  OK  KXETH.jsonl      n= 186945 parse_err=0   dup_tickers=0   events=1593   multi_settle_events=0   expv= 99.9% no_strike=0
+       results={'no': 185352, 'yes': 1593} span=2026-05-25T00:00 -> 2026-08-01T00:00
+  OK  KXETH15M.jsonl   n=   6429 parse_err=0   dup_tickers=0   events=6429   multi_settle_events=0   expv=100.0% no_strike=7
+       results={'yes': 3186, 'no': 3243} span=2026-05-25T00:00 -> 2026-08-01T00:30
+  OK  KXETHD.jsonl     n= 186945 parse_err=0   dup_tickers=0   events=1593   multi_settle_events=0   expv= 99.9% no_strike=0
+       results={'no': 90331, 'yes': 96614} span=2026-05-25T00:00 -> 2026-08-01T00:00
+  OK  KXSOL15M.jsonl   n=   6429 parse_err=0   dup_tickers=0   events=6429   multi_settle_events=0   expv=100.0% no_strike=6
+       results={'yes': 3176, 'no': 3253} span=2026-05-25T00:00 -> 2026-08-01T00:30
+  OK  KXSOLD.jsonl     n= 188975 parse_err=0   dup_tickers=0   events=1593   multi_settle_events=0   expv= 99.9% no_strike=0
+       results={'no': 88166, 'yes': 100809} span=2026-05-25T00:00 -> 2026-08-01T00:00
+  OK  KXXRP.jsonl      n= 117120 parse_err=0   dup_tickers=0   events=1592   multi_settle_events=0   expv=100.0% no_strike=0
+       results={'no': 115528, 'yes': 1592} span=2026-05-25T00:00 -> 2026-07-31T23:00
+  OK  KXXRP15M.jsonl   n=   6429 parse_err=0   dup_tickers=0   events=6428   multi_settle_events=0   expv=100.0% no_strike=8
+       results={'yes': 3174, 'no': 3255} span=2026-05-25T00:00 -> 2026-08-01T00:30
+  OK  KXXRPD.jsonl     n= 117120 parse_err=0   dup_tickers=0   events=1592   multi_settle_events=0   expv=100.0% no_strike=0
+       results={'no': 54907, 'yes': 62213} span=2026-05-25T00:00 -> 2026-07-31T23:00
+
+====================================================================================================
+2. DECISION-TIME PANEL — the input to B1 and the touch matrix
+====================================================================================================
+  rows=89819 parse_err=0 events=250 markets=1968
+  bid<ask violations : 0
+  tau<=0             : 0
+  outcome not in 0/1 : 0
+  timestamps in future: 0
+  ts AFTER close (look-ahead): 0
+  anchor_ts AFTER decision ts (look-ahead): 0
+  duplicate (ticker,ts) keys: 0
+  VERDICT: CLEAN
+
+  variation check (a constant field passes any test for free):
+    bid        distinct=98      ok
+    ask        distinct=98      ok
+    mid        distinct=213     ok
+    spread     distinct=29      ok
+    vol        distinct=17371   ok
+    oi         distinct=18496   ok
+    K          distinct=145     ok
+    anchor     distinct=54      ok
+    settle     distinct=54      ok
+    y          distinct=2       ok
+    tau_s      distinct=59      ok
+
+  outcome vs (settlement > strike) mismatches: 0 / 89819 (0.000%)   <- KXBTCD is a `greater` ladder so these should agree
+
+====================================================================================================
+3. COINBASE 1-MIN SPOT — the model input for B1
+====================================================================================================
+  rows=99402 parse_err=0
+  span 2026-05-24 00:00:00 -> 2026-08-01 01:00:00
+  duplicate timestamps: 0
+  gaps > 60s: 11  (largest 5 min)
+  price range 57781.71 - 77970.64
+  non-positive prices: 0
+  |1-min return| > 5%: 0 (max 1.61%)
+  zero-return minutes: 941 (0.9%)  <- a stuck feed shows up here
+
+====================================================================================================
+4. KXBTC15M OPEN RECORDER — the live capture started this session
+====================================================================================================
+  no files yet (recorder started 08:02 UTC; windows open at :00/:15/:30/:45)
+
+====================================================================================================
+5. MAIN RECORDER — kalshi_quotes / poly_books
+====================================================================================================
+  kalshi_quotes  files=9    sampled_rows=105031   parse_err=0   empty_content=0
+  poly_books     files=9    sampled_rows=28006    parse_err=0   empty_content=0
+  poly_trades    files=9    sampled_rows=6134     parse_err=0   empty_content=0
+
+====================================================================================================
+AUDIT COMPLETE
+====================================================================================================

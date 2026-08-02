@@ -1,0 +1,713 @@
+﻿
+==============================================================================
+$ p1_state.py --subdir candles_ohlc --out paths
+==============================================================================
+loading candles ...
+  6,308,170 rows, 19,781 markets
+
+candle rows seen                6,308,170
+1-minute grid slots             20,547,990
+  masked, no quote on either side   14,241,037  (69.3%)
+  masked, crossed book              0  (0.0%)
+  masked, spread > 15c              989,959  (4.8%)
+  masked, price out of range        0  (0.0%)
+
+markets processed               19,781
+why
+               16921
+no_activity     2843
+no_quotes         17
+
+with a play window              16,921
+  duration plausible (25-330m)  16,203
+  duration  p10 47  med 103  p90 172  max 982
+  pre-match mid  p10 54  med 72  p90 92
+  favourite won  0.7268  (should be well above 0.5)
+
+causal vs backward-walk t0:  identical 0.393   within 5 min 0.433   median -11 min
+pre-match anchor had been unchanged for: median 8 min, 46.3% for 10+ min
+pre-match mid agrees with the mid 60 min earlier (<=2c): 0.811  (n=12,506)
+
+-> C:\Users\gianf\kalshi\set1_overshoot\data\paths_state.parquet
+-> C:\Users\gianf\kalshi\set1_overshoot\data\paths_paths.npz
+
+==============================================================================
+$ audit_a3.py --tag paths --out audit_a3_clean.txt --label CLEAN universe (lexicographic dedupe)
+==============================================================================
+A3 -- SELECTION POINTS UNDER THE STRENGTHENED GUARD
+==============================================================================
+universe: CLEAN universe (lexicographic dedupe)
+
+Guard now returns three values. UNTESTABLE is not a pass: it means the
+rule either fails to discriminate (a mostly-null field chooses nothing,
+so the tie-break does the work) or the test lacks the power to see a
+2 pp bias. Either way the rule is rejected.
+
+## 1. Mirrored-side rules.  Null: P(kept wins) = 0.5000, 19,782 events
+
+side-choice rules
+=================
+  **FAIL**   [higher last_price_dollars] decides 99.9% of pairs (n_eff=19,757/19,782); P(kept wins | decided) = 0.9995, z = +140.43, MDE = 1.00 pp  <-- READS THE OUTCOME. The rule must not depend on volume, open interest, last price, liquidity, or anything else recorded after settlement.
+  **FAIL**   [higher open_interest_fp] decides 99.9% of pairs (n_eff=19,759/19,782); P(kept wins | decided) = 0.5559, z = +15.71, MDE = 1.00 pp  <-- READS THE OUTCOME. The rule must not depend on volume, open interest, last price, liquidity, or anything else recorded after settlement.
+  **FAIL**   [higher volume_fp   (THE PHASE 0 BUG)] decides 99.9% of pairs (n_eff=19,759/19,782); P(kept wins | decided) = 0.5357, z = +10.02, MDE = 1.00 pp  <-- READS THE OUTCOME. The rule must not depend on volume, open interest, last price, liquidity, or anything else recorded after settlement.
+  UNTESTABLE [higher volume_24h_fp] decides 3.9% of pairs (n_eff=776/19,782); P(kept wins | decided) = 0.5026, z = +0.14, MDE = 5.03 pp  <-- UNTESTABLE: the field is degenerate, it separates the two sides in under 10% of pairs. It passes only because it almost never chooses. Innocence by emptiness is not innocence.
+  UNTESTABLE [higher liquidity_dollars] decides 0.0% of pairs (n_eff=0/19,782); P(kept wins | decided) = nan, z = +nan, MDE = inf pp  <-- UNTESTABLE: the field is degenerate, it separates the two sides in under 10% of pairs. It passes only because it almost never chooses. Innocence by emptiness is not innocence.
+  pass       [first ticker alphabetically   (THE FIX)] decides 100.0% of pairs (n_eff=19,782/19,782); P(kept wins | decided) = 0.4969, z = -0.88, MDE = 1.00 pp
+
+6 rules: 1 pass, 3 fail, 2 untestable
+
+## 2. Row filters in the Phase 1-4 pipeline
+
+pipeline filters
+================
+  UNTESTABLE [duration filter, 25-330 min (p1_state MIN_PLAY/MAX_PLAY)] calibration residual: kept +0.0024 (n=16,203) vs dropped +0.0370 (n=718); diff -0.0346, z = -3.53, MDE = 2.75 pp  <-- UNTESTABLE: the smaller arm (718 rows) cannot resolve a 2.0 pp shift.
+  pass       [t0 detectors agree within 5 min (activity-density floor)] calibration residual: kept +0.0112 (n=7,323) vs dropped -0.0017 (n=9,598); diff +0.0129, z = +1.98, MDE = 1.83 pp
+  pass       [pre-match anchor stood >=10 min (t0 detected cleanly)] calibration residual: kept +0.0002 (n=7,832) vs dropped +0.0071 (n=9,089); diff -0.0068, z = -1.04, MDE = 1.83 pp
+  **FAIL**   [below-median exposure to the spread>15c mask] calibration residual: kept -0.0167 (n=8,461) vs dropped +0.0245 (n=8,460); diff -0.0411, z = -6.34, MDE = 1.82 pp  <-- THE FILTER SHIFTS CALIBRATION. It is selecting on something correlated with the outcome.
+  UNTESTABLE [play-window cut (kept-market residual, orientation-free)] calibration residual: kept +0.0006 (n=14,390) vs dropped -0.0260 (n=197); diff +0.0266, z = +1.01, MDE = 7.40 pp  <-- UNTESTABLE: the smaller arm (197 rows) cannot resolve a 2.0 pp shift.
+
+5 rules: 2 pass, 1 fail, 2 untestable
+
+  note: play-window cut drops 2,860/19,781 (14.5%); 5,194 markets have no quote at all and remain structurally excluded
+
+-> C:\Users\gianf\kalshi\set1_overshoot\reports\audit_a3_clean.txt
+
+==============================================================================
+$ p5_gate3e.py --tag paths
+==============================================================================
+# Mirrored-consistency gate (3e)
+
+Run before any calibration number is read. Thresholds fixed in
+`PREREGISTRATION_PARTB.md` §2 before the clean data existed:
+G1 orientation difference |z| < 4.0;  G2 pre-match residual <= 1.5 pp in both orientations.
+
+## G2 — pre-match calibration by orientation
+
+| orientation | n | implied | observed | residual pp | verdict |
+|---|---|---|---|---|---|
+| favourite is YES side | 6,061 | 0.7668 | 0.7689 | +0.21 | pass |
+| favourite is NO side | 6,237 | 0.7702 | 0.7757 | +0.55 | pass |
+
+Contaminated build read **+8.70 / −3.67 pp** here. Clean reads **+0.21 / +0.55 pp**.
+
+**G2b — orientation DIFFERENCE in the pre-match residual: -0.34 pp, z = -0.46** (pass). This is the leak-specific quantity; the contaminated build read +12.37 pp.
+
+### Why is the residual negative in both orientations?
+
+Three candidate causes, separated. Conditioning on `pre_mid >= 60` selects on the
+same price whose calibration is then measured, so any noise in that quote biases
+the selected subset upward and the residual downward. That is a property of my
+filter, not of the market and not of the dedupe.
+
+| diagnostic | n | implied | observed | residual pp |
+|---|---|---|---|---|
+| unconditional, no favourite filter | 16,203 | 0.7159 | 0.7184 | +0.24 |
+| favourite 60-70¢ | 3,884 | 0.6471 | 0.6419 | -0.53 |
+| favourite 70-80¢ | 3,502 | 0.7478 | 0.7501 | +0.23 |
+| favourite 80-90¢ | 3,075 | 0.8460 | 0.8572 | +1.12 |
+| favourite 90-101¢ | 1,837 | 0.9349 | 0.9483 | +1.34 |
+| **selected on t0−1, scored on the mid 60 min earlier** | 9,072 | 0.7595 | 0.7621 | +0.27 |
+
+If that last row is near zero while the filtered rows above are negative, the
+negative residual is **regression to the mean in my own favourite filter**, not
+a market bias and not a leak.
+
+## G1 — in-play miscalibration by orientation
+
+Entry rule `deep:30@38`.
+
+| side | n | implied | observed | mis pp | 95% CI |
+|---|---|---|---|---|---|
+| both (pooled) | 3,436 | 0.3647 | 0.3405 | -2.42 | [-3.93, -0.87] |
+| favourite is YES side | 1,707 | 0.3620 | 0.3263 | -3.57 | [-5.71, -1.50] |
+| favourite is NO side | 1,729 | 0.3673 | 0.3545 | -1.28 | [-3.40, +0.88] |
+
+**Difference (YES − NO): -2.29 pp, 95% CI [-5.30, +0.69], z = -1.49.**
+Contaminated build read **+25.49 pp, z ≈ +15**.
+
+## Verdict
+
+- G1 orientation difference: **PASS** (|z| = 1.49 vs threshold 4.0)
+- G2 pre-match calibration, each orientation: **PASS**
+- G2b pre-match orientation DIFFERENCE (leak-specific): **PASS** (|z| = 0.46)
+
+**GATE PASSED.** The two orientations agree and the pre-match price is
+calibrated in both. Proceeding to read the Phase 2 calibration table.
+
+-> C:\Users\gianf\kalshi\set1_overshoot\reports\p5_gate3e.md
+
+==============================================================================
+$ p1_validate.py 
+==============================================================================
+# PHASE1_DETECTOR_ACCURACY.md
+
+Set-1 state is inferred from price alone -- Kalshi publishes no scoreline and no
+match-start field. This file measures how well that inference works. It gates
+everything downstream.
+
+## Validation sample
+
+- **1,381 matches** with an externally sourced set-1 result.
+- Sources: Sackmann frozen mirror (all tiers, tourney weeks to 2026-06-02) and
+  tennis-data.co.uk (ATP/WTA main tour, to 2026-07-26).
+- Join is on surname+initial pairs within a date window. Kalshi's own settlement
+  agrees with the external match winner on **99.55%** of joined rows, so the
+  join itself is sound and any error below is the detector's, not the join's.
+
+| tour | n |
+|---|---|
+| ATP | 225 |
+| CHALL | 180 |
+| ITF-M | 373 |
+| ITF-W | 382 |
+| WTA | 221 |
+
+## 1. Direction -- who won set 1
+
+Detector: sign of the largest sustained price step in minutes 15-90 of play.
+
+**Overall accuracy: 0.809** (n=1,381, base rate 0.697)
+
+Alternative rules, for comparison -- sign of (mid at minute T) minus the pre-match mid:
+
+| rule | accuracy |
+|---|---|
+| changepoint step | 0.809 |
+| mid at +25min vs pre-match | 0.706 (n=1,381) |
+| mid at +30min vs pre-match | 0.731 (n=1,378) |
+| mid at +35min vs pre-match | 0.768 (n=1,377) |
+| mid at +40min vs pre-match | 0.791 (n=1,374) |
+| mid at +45min vs pre-match | 0.808 (n=1,367) |
+| mid at +50min vs pre-match | 0.816 (n=1,358) |
+| mid at +60min vs pre-match | 0.857 (n=1,335) |
+
+Best rule: **mid at +60min, 0.857**.
+
+### Accuracy by segment (changepoint rule)
+
+| segment | n | accuracy |
+|---|---|---|
+| ATP | 225 | 0.769 |
+| CHALL | 180 | 0.822 |
+| ITF-M | 373 | 0.810 |
+| ITF-W | 382 | 0.848 |
+| WTA | 221 | 0.769 |
+| pre-match <60 | 374 | 0.856 |
+| pre-match 60-70 | 379 | 0.786 |
+| pre-match 70-80 | 268 | 0.787 |
+| pre-match 80-90 | 233 | 0.781 |
+| pre-match 90+ | 127 | 0.835 |
+| step<5c | 116 | 0.897 |
+| 5-10c | 174 | 0.822 |
+| 10-20c | 587 | 0.809 |
+| 20c+ | 500 | 0.788 |
+
+### The number that actually matters
+
+Phase 2 conditions on: pre-match favourite (>=60c) whose price dropped >=5c by the
+entry moment. Of those matches, how many really had the favourite lose set 1?
+
+**0.518** (239 of 461 validated events)
+
+This is far more damaging to the *interpretation* than the 0.825 direction accuracy
+suggests, and it is worth being precise about why. The two numbers measure
+different things. Direction accuracy asks, over all matches, whether the sign of
+the biggest move identifies the set-1 winner. Event precision asks a harder
+question: among matches the entry rule actually fires on, how many were really
+a set-1 loss. A favourite who goes down an early break, sees the price fall 12c,
+and then wins the set from there trips the entry rule and is counted as an event.
+Those matches are not detector *errors* -- the price really did fall -- but they
+are not what the hypothesis is about.
+
+### Precision of each candidate entry rule
+
+Chosen on labelled data, which is legitimate instrument calibration, and reported
+here rather than buried. `after N` restricts firing to minute N onward, since a
+set is rarely over before then.
+
+| entry rule | events fired | precision | n validated |
+|---|---|---|---|
+| deep:8, after 0 min | 5,542 | 0.477 | 474 |
+| deep:8, after 30 min | 5,182 | 0.519 | 445 |
+| deep:8, after 38 min | 5,024 | 0.548 | 440 |
+| deep:12, after 0 min | 5,390 | 0.518 | 461 |
+| deep:12, after 30 min | 5,015 | 0.557 | 429 |
+| deep:12, after 38 min | 4,827 | 0.579 | 420 |
+| deep:16, after 0 min | 4,973 | 0.578 | 424 |
+| deep:16, after 30 min | 4,664 | 0.619 | 399 |
+| deep:16, after 38 min | 4,496 | 0.632 | 386 |
+| deep:20, after 0 min | 4,551 | 0.651 | 384 |
+| deep:20, after 30 min | 4,314 | 0.681 | 367 |
+| deep:20, after 38 min | 4,188 | 0.688 | 359 |
+| deep:25, after 0 min | 4,052 | 0.733 | 333 |
+| deep:25, after 30 min | 3,910 | 0.755 | 322 |
+| deep:25, after 38 min | 3,817 | 0.757 | 317 |
+| deep:30, after 0 min | 3,611 | 0.758 | 302 |
+| deep:30, after 30 min | 3,525 | 0.772 | 294 |
+| deep:30, after 38 min | 3,436 | 0.780 | 286 |
+
+Best-targeted rule: **deep:30, after 38 min**, precision **0.780**.
+
+Even the best rule leaves a substantial minority of entries that were not set-1
+losses. Price alone cannot separate "lost the set" from "went down a break and
+recovered" without a scoreline feed. Phase 2 is therefore run **twice**: once on
+the full fired population, which is the tradeable question, and once on the
+label-verified subsample, which is the literal question the brief asks. Both are
+reported. Neither is allowed to stand in for the other.
+
+## 2. Timing -- when set 1 ended
+
+Unvalidatable directly. Tested instead against a falsifiable prediction: the
+changepoint should sit later in matches where set 1 took more games.
+
+Spearman(games in set 1, changepoint minute) = **+0.266** (p=8.09e-24, n=1,377)
+
+| games in set 1 | n | median changepoint minute |
+|---|---|---|
+| 6 | 61 | 27 |
+| 7 | 152 | 33 |
+| 8 | 242 | 35 |
+| 9 | 292 | 48 |
+| 10 | 339 | 52 |
+| 12 | 116 | 57 |
+| 13+ | 175 | 64 |
+
+## 3. Verdict
+
+Direction accuracy **0.809** clears the 0.80 bar set in the brief.
+
+Structural caveat that applies regardless of the number above: the Phase 2
+calibration test conditions on **entry price**, and conditioning on price is valid
+whether or not the price move was caused by a set loss. If the detector mislabels
+the state, the tested question degrades from *"the favourite lost set 1"* to
+*"the favourite's price fell early in the match"* -- a different and still
+meaningful question, and the one a live trader would actually face. Detector error
+damages the interpretation of Phase 3 segments far more than it damages Phase 2.
+
+-> C:\Users\gianf\kalshi\set1_overshoot\PHASE1_DETECTOR_ACCURACY.md
+
+==============================================================================
+$ p2_calib.py --tag paths --out p2_base_clean.txt --grid
+==============================================================================
+
+==============================================================================
+PHASE 2 BASE TEST -- entry rule 'deep:12': the first minute at which the
+favourite's price is 12c+ below its pre-match level AND has stopped making new
+lows for 8 minutes, entered 3 min later. A stopping time: no price after the
+firing minute is consulted. Twenty-seven other entry definitions are in the grid below.
+==============================================================================
+candidate matches (fav >= 60c, valid entry): 5,799
+events (drop >= 5c):                        5,390
+median drop 19.0c   median entry mid 54.0c   median pre-match 73.0c
+spread at entry: median 2c  p75 4c  p90 6c  p99 13c
+  (the 1c slippage assumption is optimistic wherever the spread is wide; 26.1% of entries quote 4c or more)
+
+    entry      n  impl p     obs  mis pp      p1      p2   fill   fee  BE win   net c
+      0-5      5   0.027   0.000   -2.70   1.000   1.000    4.6  0.31   0.049   -4.91
+     5-10     22   0.071   0.045   -2.52   0.800   1.000    9.8  0.62   0.104   -5.84
+    10-15     18   0.120   0.333  +21.31   0.016   0.032   14.4  0.86   0.152  +18.09
+    15-20     31   0.174   0.129   -4.47   0.815   0.698   20.1  1.12   0.213   -8.35
+    20-25     47   0.227   0.298   +7.09   0.165   0.330   24.9  1.31   0.262   +3.61
+    25-30    102   0.278   0.304   +2.62   0.307   0.614   29.9  1.47   0.314   -0.99
+    30-35    254   0.326   0.307   -1.92   0.761   0.569   34.7  1.59   0.363   -5.62
+    35-40    413   0.376   0.361   -1.49   0.747   0.575   39.6  1.67   0.413   -5.24
+    40-45    545   0.424   0.400   -2.37   0.877   0.281   44.7  1.73   0.464   -6.41
+    45-50    685   0.474   0.416   -5.82   0.999   0.003   49.8  1.75   0.516   -9.98
+    50-55    708   0.524   0.540   +1.59   0.207   0.415   54.8  1.73   0.565   -2.59
+    55-60    656   0.572   0.553   -1.87   0.846   0.346   59.6  1.68   0.613   -5.96
+    60-65    615   0.623   0.610   -1.32   0.764   0.525   64.7  1.60   0.663   -5.36
+    65-70    456   0.673   0.708   +3.58   0.056   0.113   69.7  1.47   0.712   -0.38
+    70-75    386   0.721   0.692   -2.97   0.910   0.218   74.7  1.32   0.760   -6.82
+    75-80    263   0.771   0.783   +1.19   0.352   0.705   79.7  1.13   0.808   -2.47
+    80-85    143   0.820   0.902   +8.20   0.005   0.010   84.4  0.92   0.854   +4.85
+    85-90     38   0.867   0.868   +0.16   0.608   1.000   88.8  0.70   0.895   -2.64
+    90-95      3   0.925   1.000   +7.50   0.791   1.000   95.0  0.33   0.953   +4.67
+
+POOLED  n=5,390
+  implied  0.5403     observed 0.5319
+  miscalibration  -0.84 pp   95% CI [-2.10, +0.42]
+  Poisson-binomial  p(one-sided, overshoot) = 0.9020   p(two-sided) = 0.2058
+  net expectancy, hold to settlement, ask+1c fill, exact fees:
+     -4.792 c/contract   95% CI [-6.048, -3.516]
+  breakeven miscalibration needed: +3.96 pp
+
+==============================================================================
+PHASE 2b BEST-TARGETED RULE -- 'deep:30 after minute 38'.
+Phase 1 measured this as the entry rule whose fired events are most often a
+real set-1 loss (precision 0.788 vs 0.559 for the pre-committed rule above).
+Chosen on labelled state, not on outcomes.
+==============================================================================
+candidate matches (fav >= 60c, valid entry): 3,444
+events (drop >= 5c):                        3,436
+median drop 35.0c   median entry mid 36.0c   median pre-match 71.5c
+spread at entry: median 2c  p75 3c  p90 5c  p99 11c
+  (the 1c slippage assumption is optimistic wherever the spread is wide; 19.2% of entries quote 4c or more)
+
+    entry      n  impl p     obs  mis pp      p1      p2   fill   fee  BE win   net c
+      0-5     54   0.026   0.000   -2.59   1.000   0.488    4.4  0.29   0.047   -4.72
+     5-10     75   0.075   0.067   -0.81   0.672   1.000    9.5  0.60   0.101   -3.40
+    10-15    105   0.124   0.143   +1.92   0.314   0.628   14.4  0.86   0.153   -1.01
+    15-20    157   0.175   0.108   -6.66   0.992   0.029   19.6  1.10   0.207   -9.89
+    20-25    215   0.225   0.200   -2.54   0.836   0.416   24.7  1.30   0.260   -5.96
+    25-30    416   0.274   0.257   -1.65   0.791   0.483   29.5  1.45   0.309   -5.21
+    30-35    595   0.324   0.311   -1.26   0.757   0.541   34.5  1.58   0.361   -5.00
+    35-40    504   0.374   0.343   -3.08   0.931   0.166   39.5  1.67   0.412   -6.90
+    40-45    419   0.423   0.372   -5.10   0.986   0.037   44.6  1.73   0.463   -9.08
+    45-50    325   0.472   0.428   -4.48   0.953   0.117   49.5  1.75   0.512   -8.44
+    50-55    234   0.523   0.509   -1.41   0.692   0.709   54.6  1.73   0.563   -5.45
+    55-60    144   0.571   0.493   -7.81   0.974   0.076   59.4  1.69   0.611  -11.76
+    60-65    106   0.620   0.689   +6.91   0.083   0.166   64.3  1.60   0.659   +2.96
+    65-70     47   0.666   0.723   +5.79   0.247   0.493   68.9  1.50   0.703   +1.99
+    70-75     25   0.720   0.800   +8.00   0.258   0.516   74.4  1.33   0.758   +4.23
+    75-80      9   0.768   0.778   +0.94   0.649   1.000   79.2  1.15   0.804   -2.60
+    80-85      6   0.813   1.000  +18.67   0.288   0.576   84.7  0.91   0.856  +14.43
+
+POOLED  n=3,436
+  implied  0.3647     observed 0.3405
+  miscalibration  -2.42 pp   95% CI [-3.91, -0.93]
+  Poisson-binomial  p(one-sided, overshoot) = 0.9992   p(two-sided) = 0.0019
+  net expectancy, hold to settlement, ask+1c fill, exact fees:
+     -6.114 c/contract   95% CI [-7.618, -4.612]
+  breakeven miscalibration needed: +3.70 pp
+
+==============================================================================
+PHASE 2c LABEL-VERIFIED SUBSAMPLE -- only matches where an external
+scoreline confirms the favourite actually lost set 1. Small, but it is the
+literal question the brief asks, with no inference in the state variable.
+==============================================================================
+candidate matches (fav >= 60c, valid entry): 223
+events (drop >= 5c):                        223
+median drop 33.5c   median entry mid 37.0c   median pre-match 70.5c
+spread at entry: median 1c  p75 3c  p90 4c  p99 7c
+  (the 1c slippage assumption is optimistic wherever the spread is wide; 17.9% of entries quote 4c or more)
+
+    entry      n  impl p     obs  mis pp      p1      p2   fill   fee  BE win   net c
+      0-5      3   0.030   0.000   -3.00   1.000   1.000    5.0  0.33   0.053   -5.33
+     5-10      3   0.073   0.333  +26.00   0.203   0.407    9.0  0.57   0.096  +23.76
+    10-15      4   0.133   0.000  -13.25   1.000   1.000   15.0  0.89   0.159  -15.89
+    15-20     16   0.176   0.125   -5.12   0.800   0.891   19.6  1.10   0.207   -8.23
+    20-25      5   0.223   0.000  -22.30   1.000   0.571   23.8  1.27   0.251  -25.07
+    25-30     22   0.273   0.273   -0.05   0.580   1.000   29.3  1.45   0.307   -3.45
+    30-35     44   0.323   0.295   -2.75   0.704   0.835   34.4  1.58   0.360   -6.47
+    35-40     38   0.376   0.368   -0.75   0.600   1.000   39.5  1.67   0.412   -4.33
+    40-45     30   0.421   0.300  -12.12   0.940   0.247   44.2  1.73   0.460  -15.96
+    45-50     18   0.473   0.167  -30.61   0.999   0.015   49.8  1.75   0.516  -34.91
+    50-55     16   0.527   0.375  -15.19   0.931   0.332   54.8  1.73   0.565  -18.98
+    55-60     14   0.568   0.500   -6.79   0.785   0.789   58.9  1.69   0.606  -10.55
+    60-65      7   0.614   0.857  +24.29   0.176   0.352   63.4  1.62   0.651  +20.66
+    65-70      1   0.675   1.000  +32.50   0.676   1.000   69.0  1.50   0.705  +29.50
+    70-75      1   0.705   1.000  +29.50   0.707   1.000   73.0  1.38   0.744  +25.62
+    75-80      1   0.755   1.000  +24.50   0.756   1.000   79.0  1.16   0.802  +19.84
+
+POOLED  n=223
+  implied  0.3733     observed 0.3139
+  miscalibration  -5.94 pp   95% CI [-11.66, -0.23]
+  Poisson-binomial  p(one-sided, overshoot) = 0.9762   p(two-sided) = 0.0664
+  net expectancy, hold to settlement, ask+1c fill, exact fees:
+     -9.548 c/contract   95% CI [-15.291, -3.606]
+  breakeven miscalibration needed: +3.61 pp
+
+##############################################################################
+  entry rule       n   mis pp             95% CI    net c
+    deep:8+0   5,542    -0.91 [ -2.17, +0.32]   -4.847
+   deep:12+0   5,390    -0.84 [ -2.12, +0.40]   -4.792
+   deep:16+0   4,973    -1.55 [ -2.87, -0.21]   -5.483
+   deep:20+0   4,551    -1.84 [ -3.23, -0.43]   -5.741
+   deep:25+0   4,052    -2.52 [ -4.01, -1.08]   -6.361
+   deep:30+0   3,611    -2.40 [ -3.90, -0.93]   -6.170
+deep:12@38+0   4,827    -1.37 [ -2.69, -0.05]   -5.239
+deep:20@38+0   4,188    -2.18 [ -3.52, -0.77]   -6.008
+deep:30@38+0   3,436    -2.42 [ -3.91, -0.89]   -6.114
+   deep:12+5   4,781    -1.52 [ -2.86, -0.20]   -5.398
+  deep:12+10   4,358    -1.93 [ -3.28, -0.56]   -5.752
+        cp+0   3,524    +0.14 [ -1.28, +1.62]   -3.483
+        cp+5   3,285    +0.24 [ -1.19, +1.67]   -3.361
+       cp+10   3,115    -0.07 [ -1.59, +1.48]   -3.680
+       cp+15   2,934    +0.20 [ -1.36, +1.70]   -3.330
+       cp+20   2,733    -0.06 [ -1.66, +1.49]   -3.613
+  causal:5+0   3,846    -1.34 [ -2.79, +0.19]   -5.246
+  causal:8+0   3,940    -1.41 [ -2.91, +0.04]   -5.316
+ causal:12+0   3,866    -1.97 [ -3.41, -0.50]   -5.819
+ causal:16+0   3,434    -1.99 [ -3.59, -0.39]   -5.801
+    fixed+25   3,094    -1.81 [ -3.44, -0.15]   -5.846
+    fixed+30   3,296    -1.16 [ -2.74, +0.43]   -5.121
+    fixed+35   3,326    -1.16 [ -2.69, +0.45]   -5.059
+    fixed+40   3,341    -2.09 [ -3.66, -0.52]   -5.982
+    fixed+45   3,335    -1.59 [ -3.19, -0.02]   -5.461
+    fixed+50   3,316    -1.69 [ -3.26, -0.12]   -5.577
+    fixed+60   3,381    -1.33 [ -2.87, +0.25]   -5.092
+    fixed+75   3,279    -1.65 [ -3.13, -0.06]   -5.309
+   cpleak-10   4,390    +6.96 [ +5.59, +8.22]   +2.990
+    cpleak+0   3,898    -2.67 [ -4.02, -1.31]   -6.401
+
+-> C:\Users\gianf\kalshi\set1_overshoot\reports\p2_base_clean.txt
+
+==============================================================================
+$ p2_fade.py 
+==============================================================================
+# The other side — fading the favourite after the dip
+
+Phase 2 found a **significant undershoot**: the favourite wins less often than the
+dipped price implies. That makes the favourite the wrong side to buy and raises the
+obvious question of whether the underdog is the right one. This file answers it.
+
+Fill is `100 - favourite_bid` plus 1c slippage — the executable NO side of the same
+market, verified in `reports/p0_mirror.txt` to cost the same as the sibling market's
+YES side to within 0.00c at the median.
+
+| entry rule | n | implied | observed | mis pp | 95% CI | p(1s) | fill | fee | breakeven | net c | net 95% CI |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| deep:12 | 5,390 | 0.4597 | 0.4681 | +0.84 | [-0.41, +2.09] | 0.0999 | 48.4 | 1.60 | 0.4996 | -3.148 | [-4.433, -1.887] |
+| deep:30@38 | 3,436 | 0.6353 | 0.6595 | +2.42 | [+0.89, +3.92] | 0.0011 | 65.7 | 1.44 | 0.6714 | -1.195 | [-2.683, +0.281] |
+| deep:20@38 | 4,188 | 0.5608 | 0.5826 | +2.18 | [+0.80, +3.59] | 0.0011 | 58.3 | 1.54 | 0.5986 | -1.598 | [-2.989, -0.196] |
+| deep:25 | 4,052 | 0.5730 | 0.5982 | +2.52 | [+1.05, +3.96] | 0.0004 | 59.5 | 1.56 | 0.6109 | -1.272 | [-2.693, +0.203] |
+| cp | 3,524 | 0.5568 | 0.5553 | -0.14 | [-1.59, +1.27] | 0.5841 | 57.9 | 1.41 | 0.5926 | -3.725 | [-5.181, -2.301] |
+| fixed | 3,335 | 0.4825 | 0.4984 | +1.59 | [+0.06, +3.15] | 0.0258 | 50.6 | 1.53 | 0.5214 | -2.304 | [-3.859, -0.752] |
+
+## Verdict on the fade
+
+Best cell: **deep:30@38**, net **-1.195 c/contract**, 95% CI [-2.683, +0.281].
+
+**0 of 6 configurations have a positive mean net expectancy. 0 of 6 have a
+confidence interval entirely above zero.**
+
+So the miscalibration is real and it does point at the underdog, but it is
+smaller than the cost of taking the position in every single configuration. The
+reason is arithmetic rather than bad luck. After the dip the underdog is the
+*expensive* side — around 66c on the best-targeted rule — so the fee sits near
+its maximum and the fill eats most of the payout. A 2.5pp edge cannot pay for a
+65.8c fill plus 1c of slippage plus 1.4c of fee, which together demand a 67.2%
+win rate against the 66.1% actually observed.
+
+The best cell's interval does reach slightly above zero ([-2.683, +0.281]), which
+means the data cannot rule out a very small positive expectancy there. It also
+cannot rule out a loss three times that size, the point estimate is negative, and
+this is the best of six cells chosen after the fact. That is not an edge; it is
+the shape a null takes when you look at it from the profitable direction.
+
+## How big would the miscalibration have to be?
+
+| entry rule | observed underdog win rate | breakeven win rate | shortfall (pp) |
+|---|---|---|---|
+| deep:12 | 0.4681 | 0.4996 | -3.15 |
+| deep:30@38 | 0.6595 | 0.6714 | -1.20 |
+| deep:20@38 | 0.5826 | 0.5986 | -1.60 |
+| deep:25 | 0.5982 | 0.6109 | -1.27 |
+| cp | 0.5553 | 0.5926 | -3.72 |
+| fixed | 0.4984 | 0.5214 | -2.30 |
+
+The shortfall column is the whole study in one number: it is how many percentage
+points of additional mispricing the market would have to be offering before this
+trade broke even, before any profit at all.
+
+-> C:\Users\gianf\kalshi\set1_overshoot\reports\p2_fade.md
+
+==============================================================================
+$ p4_validate.py --tag paths
+==============================================================================
+# Phase 4 -- validation
+
+## Temporal split
+
+Split at **2026-07-06 14:54 UTC** (oldest 60% / newest 40%).
+
+- train: 3,234 events, 2026-05-25 to 2026-07-06
+- holdout: 2,156 events, 2026-07-06 to 2026-08-01
+
+**Confound to note explicitly:** the split falls inside the clay-to-grass-to-hard
+run of the calendar. A temporal holdout in tennis is therefore also a surface and
+tournament-mix change, and a configuration failing on holdout may be failing on
+surface rather than on time. The composition of both halves is printed below so
+that is visible rather than buried.
+
+| tour | train | holdout |
+|---|---|---|
+| ATP | 194 | 108 |
+| CHALL | 491 | 331 |
+| ITF-M | 1,212 | 842 |
+| ITF-W | 1,138 | 760 |
+| WTA | 199 | 115 |
+
+## Headline, train vs holdout
+
+| sample | n | implied | observed | mis pp | 95% CI | p(1s) | net c | net 95% CI |
+|---|---|---|---|---|---|---|---|---|
+| all | 5,390 | 0.5403 | 0.5319 | -0.84 | [-2.09, +0.44] | 0.9043 | -4.792 | [-6.065, -3.503] |
+| train (oldest 60%) | 3,234 | 0.5399 | 0.5275 | -1.24 | [-2.91, +0.37] | 0.9331 | -5.295 | [-6.951, -3.687] |
+| holdout (newest 40%) | 2,156 | 0.5408 | 0.5385 | -0.23 | [-2.28, +1.77] | 0.5924 | -4.037 | [-5.982, -2.036] |
+
+## Top configurations on the holdout, run once
+
+Selected on **train only**, by train miscalibration, then evaluated once here.
+
+| config | train mis pp | train n | holdout n | holdout mis pp | 95% CI | p(1s) | holdout net c |
+|---|---|---|---|---|---|---|---|
+| f_strength=90+ | +8.09 | 248 | 153 | +3.72 | [-2.72, +9.79] | 0.1590 | +0.268 |
+| f_drop=30c+ | +0.55 | 479 | 283 | +2.09 | [-3.25, +7.46] | 0.2391 | -1.490 |
+| f_drop=5-10c | -0.28 | 441 | 333 | +1.50 | [-3.39, +6.38] | 0.2923 | -2.225 |
+
+## Purged walk-forward
+
+Five sequential folds, each evaluated on data strictly after its training
+window, with a **48-hour embargo** between them. Tennis matches settle within
+hours, so 48h is comfortably longer than any single observation's life and no
+information can straddle the boundary.
+
+| fold | train n | test n | test window | test mis pp | 95% CI | test net c |
+|---|---|---|---|---|---|---|
+| 1 | 899 | 768 | 06-09 to 06-17 | -2.22 | [-5.61, +1.05] | -6.156 |
+| 2 | 1,797 | 740 | 06-19 to 06-29 | -0.80 | [-4.28, +2.63] | -4.729 |
+| 3 | 2,695 | 643 | 07-01 to 07-10 | -0.20 | [-3.89, +3.55] | -4.179 |
+| 4 | 3,593 | 815 | 07-12 to 07-21 | +3.13 | [-0.04, +6.36] | -0.759 |
+| 5 | 4,491 | 694 | 07-23 to 08-01 | -3.75 | [-7.43, -0.40] | -7.459 |
+
+Fold-to-fold miscalibration: mean -0.77 pp, sd 2.30 pp, 1/5 positive.
+
+## The undershoot on the holdout, and the fade it implies
+
+Phase 2 found the market undershoots, so the direction with any edge in it is
+buying the **underdog** at `100 - favourite_bid`. Phase 2 also showed that trade
+losing money in every configuration. The question left for the holdout is narrow:
+is the undershoot itself stable over time, or was it a property of the first half
+of the sample?
+
+| sample | n | fav implied | fav observed | mis pp | 95% CI | p(1s undershoot) | fade net c | fade net 95% CI |
+|---|---|---|---|---|---|---|---|---|
+| all | 3,436 | 0.3647 | 0.3405 | -2.42 | [-3.93, -0.89] | 0.0009 | -1.195 | [-2.712, +0.346] |
+| train (oldest 60%) | 2,062 | 0.3651 | 0.3400 | -2.51 | [-4.45, -0.54] | 0.0058 | -1.200 | [-3.147, +0.725] |
+| holdout (newest 40%) | 1,374 | 0.3640 | 0.3413 | -2.27 | [-4.66, +0.17] | 0.0310 | -1.188 | [-3.583, +1.236] |
+
+## Day-clustered bootstrap
+
+Each row is already one match, so the ordinary bootstrap is match-clustered by
+construction. But matches on the same day at the same tournament share weather,
+court, balls and draw quality, so the effective sample is smaller than the match
+count. Resampling whole days instead of individual matches prices that in.
+
+- distinct days: **69**, median 75 events per day
+- miscalibration, day-clustered 95% CI: **[-2.32, +0.54] pp** (match-clustered was [-2.09, +0.44])
+- net expectancy, day-clustered 95% CI: **[-6.272, -3.403] c** (match-clustered was [-6.065, -3.503])
+
+## Deflated Sharpe
+
+- variants evaluated (ledger rows): **39**
+- per-trade Sharpe of the base configuration: **-0.1010** (skew -0.11, kurtosis 1.34)
+- expected maximum Sharpe from 39 pure-noise variants: **+2.1795**
+- **deflated Sharpe probability: 0.0000** (probability the true Sharpe exceeds zero once selection is accounted for)
+
+The observed Sharpe does not exceed what this many variants would produce from noise alone.
+
+-> C:\Users\gianf\kalshi\set1_overshoot\reports\p4_validation.md
+
+==============================================================================
+$ p5_task1b.py --tag paths
+==============================================================================
+# Task 1b — maker versus taker
+
+Entry rule `deep:30@38`, n = **3,436** opportunities. Fade = sell the favourite.
+
+**Taker baseline**: fills 100% by assumption, mean fill 65.70¢, fee 1.44¢, net **-1.195¢** [-2.670, +0.318].
+
+## Fill rates
+
+Fill requires the favourite's bid to trade **strictly above** the resting level in
+some later minute — last in queue, no credit for merely being touched.
+
+| resting style | mean level ¢ | 5 min | 10 min | 20 min | 30 min | to end of match |
+|---|---|---|---|---|---|---|
+| improve | 36.29 | 70.9% | 79.7% | 84.3% | 86.5% | 88.2% |
+| join_ask | 37.65 | 63.1% | 73.6% | 80.0% | 82.9% | 85.6% |
+| passive | 38.65 | 55.0% | 67.3% | 75.5% | 79.3% | 82.8% |
+
+## Net expectancy, maker vs taker
+
+`per fill` is the mean over filled trades only. **`per opportunity` is the number
+that matters** — unfilled chances earn nothing, and a strategy is judged on the
+signals it acts on, not the subset it happened to catch.
+
+| resting style | window | fill % | fill px ¢ | per fill, verified schedule ¢ | per fill, pessimistic (1/4 taker everywhere) ¢ | per opportunity (verified fee) ¢ |
+|---|---|---|---|---|---|---|
+| improve | 5 | 70.9% | 62.82 | -1.338 | -1.683 | **-0.949** |
+| improve | 10 | 79.7% | 62.90 | -1.093 | -1.439 | **-0.871** |
+| improve | 20 | 84.3% | 62.81 | -0.985 | -1.332 | **-0.831** |
+| improve | 30 | 86.5% | 62.81 | -1.046 | -1.393 | **-0.905** |
+| improve | end | 88.2% | 62.79 | -1.384 | -1.731 | **-1.220** |
+| join_ask | 5 | 63.1% | 61.62 | -0.326 | -0.672 | **-0.205** |
+| join_ask | 10 | 73.6% | 61.50 | -0.413 | -0.762 | **-0.304** |
+| join_ask | 20 | 80.0% | 61.40 | -0.570 | -0.921 | **-0.456** |
+| join_ask | 30 | 82.9% | 61.37 | -0.714 | -1.066 | **-0.592** |
+| join_ask | end | 85.6% | 61.33 | -1.018 | -1.370 | **-0.871** |
+| passive | 5 | 55.0% | 60.30 | -0.572 | -0.923 | **-0.314** |
+| passive | 10 | 67.3% | 60.28 | -0.625 | -0.978 | **-0.421** |
+| passive | 20 | 75.5% | 60.25 | -0.775 | -1.130 | **-0.585** |
+| passive | 30 | 79.3% | 60.21 | -0.825 | -1.181 | **-0.654** |
+| passive | end | 82.8% | 60.15 | -1.179 | -1.536 | **-0.976** |
+
+## Adverse selection — the pre-specified kill test
+
+A resting sell of the favourite fills only when the favourite ticks **up**. If the
+fills are systematically the matches about to go wrong, the fee and spread saving
+is illusory.
+
+| resting style | window | fill % | dog win, filled | dog win, all | shift pp | fav mid at signal | fav mid at fill | drift ¢ |
+|---|---|---|---|---|---|---|---|---|
+| improve | 10 | 79.7% | 0.6183 | 0.6595 | -4.12 | 37.33 | 40.32 | +3.00 |
+| improve | 30 | 86.5% | 0.6180 | 0.6595 | -4.15 | 37.40 | 40.43 | +3.03 |
+| improve | end | 88.2% | 0.6144 | 0.6595 | -4.51 | 37.41 | 40.46 | +3.05 |
+| join_ask | 10 | 73.6% | 0.6112 | 0.6595 | -4.83 | 37.40 | 41.46 | +4.07 |
+| join_ask | 30 | 82.9% | 0.6069 | 0.6595 | -5.26 | 37.48 | 41.65 | +4.17 |
+| join_ask | end | 85.6% | 0.6034 | 0.6595 | -5.61 | 37.51 | 41.72 | +4.21 |
+| passive | 10 | 67.3% | 0.5969 | 0.6595 | -6.26 | 37.61 | 42.75 | +5.13 |
+| passive | 30 | 79.3% | 0.5941 | 0.6595 | -6.54 | 37.65 | 42.89 | +5.24 |
+| passive | end | 82.8% | 0.5900 | 0.6595 | -6.95 | 37.69 | 42.98 | +5.29 |
+
+### Decomposition on the best cell (`join_ask`, 5 min)
+
+Same matches, both ways — this isolates the price improvement from the
+selection effect.
+
+| quantity | value |
+|---|---|
+| opportunities | 3,436 |
+| filled | 2,167 (63.1%) |
+| price improvement vs taker, same matches | +3.179 ¢ |
+| fee saving vs taker, same matches | +1.431 ¢ |
+| **gross saving from being a maker** | **+4.610 ¢** |
+| underdog win rate, all opportunities | 0.6595 |
+| underdog win rate, filled only | 0.6133 |
+| **cost of adverse selection** | **-4.620 ¢** (1 pp of win rate = 1 ¢) |
+
+
+### Four-way decomposition, per opportunity
+
+Reported in the same units as the sibling crypto market-making run so the two
+are comparable, but **this is not two-sided market making** and the terms are
+not the same objects. A passive directional entry quotes one side, so there is
+no bid-ask capture; the analogue is price improvement against fair value. And
+because the position is held to settlement, **the residual is marked at the
+actual 0/100 outcome, never defaulted to 0.5** — the inventory-carry defect that
+fabricated +2.96¢ in the crypto session cannot arise here.
+
+| term | ¢/opportunity |
+|---|---|
+| edge at fair value (63.1% × 65.95% vs 62.71¢) | +2.040 |
+| **adverse selection** (-4.62 pp on filled) | **-2.914** |
+| price improvement vs fair value | +0.689 |
+| maker fees (verified schedule) | -0.021 |
+| **net per opportunity** | **-0.205** |
+| identity check vs direct calculation | -0.205 (diff +0.0000) |
+
+| bottom line | ¢/contract |
+|---|---|
+| taker, all 3,436 opportunities | -1.195 |
+| taker, the 2,167 that would have filled | -4.936 |
+| maker, those same fills | -0.326 |
+| **maker, per opportunity** | **-0.205** |
+| 95% CI, match-clustered | [-1.446, +1.062] |
+| 95% CI, day-clustered | [-1.454, +1.061] |
+
+-> C:\Users\gianf\kalshi\set1_overshoot\reports\p5_task1b.md
+
+ledger: 54 hypotheses, 21 survive BH at q=0.1  -> C:\Users\gianf\kalshi\set1_overshoot\HYPOTHESIS_LEDGER.md
+
+Part B complete

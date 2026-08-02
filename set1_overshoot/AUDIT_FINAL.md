@@ -1,0 +1,94 @@
+# AUDIT_FINAL.md — Part A
+
+Every number below is recomputed from stored data, not read from a report.
+
+## A1. Data integrity
+
+### Market universe
+
+- raw market records: **40,526**, duplicate tickers: **0**
+- decided: 40,304; yes/no: 39,564; scalar: 730 (**1.81%**)
+- universe matches: **19,782**, duplicate event_ticker: 0
+- date range: **2026-05-25 → 2026-08-01**
+- per series: ATP 850, CHALL 2,458, ITF-M 8,357, ITF-W 7,243, WTA 874
+- paired events: 19,782; **inconsistent settlements: 0**
+
+### Candles
+
+- rows: **6,308,170** across 15 parts; columns: ['ticker', 'ts', 'bid_o', 'bid_h', 'bid_l', 'bid', 'ask_o', 'ask_h', 'ask_l', 'ask', 'last', 'vol', 'oi']
+- duplicate (ticker, ts): **0**
+- crossed quotes (ask < bid): **0**
+- both sides absent: 0; exactly one side absent: 0
+- markets with candles: **19,781**
+
+### Derived state and paths
+
+- state rows: **19,781**; path array: (19781, 300)
+- ok: 16,921; plausible: 16,203
+- ticker alignment state↔paths: **OK**
+- bid_high ≥ bid everywhere: **True**; ask_low ≤ ask everywhere: **True**
+- crossed on the favourite-oriented grid: **0**; spread > 15¢: 0
+- **look-ahead assert**: pre-match anchor index < t0 for **16,921/16,921** rows (index is relative to t0 = 0, so all must be ≥ 0 by construction and the anchor is taken at t0−1 or earlier)
+- **entry strictly after t0**: min entry index **49** (must be > 0)
+- **entry strictly before match end**: violations **0**
+
+### Scoreline truth set
+
+- rows: **2,887**; duplicate tickers: 0
+- date range: 2026-05-25 → 2026-07-26
+- per tour: ATP 458, CHALL 382, ITF-M 812, ITF-W 772, WTA 463
+- **settlement vs external winner agreement: 1.0000** (n=2,887)
+- in the current universe: **2,887** of 2,887 (the rest were on the other mirror side after the dedupe fix)
+
+### Recorded depth
+
+- snapshots: **65,417** across 13 hour-files (2026-08-01/06 → 2026-08-01/18)
+- parse errors: **0**; empty books: **679** (1.04%)
+
+## A2. Selection audit — complete, three-valued
+
+```
+all selection points
+====================
+  **FAIL**   [dedupe on last_price] decides 99.9% of pairs (n_eff=19,757/19,782); P(kept wins | decided) = 0.9995, z = +140.43, MDE = 1.00 pp  <-- READS THE OUTCOME. The rule must not depend on volume, open interest, last price, liquidity, or anything else recorded after settlement.
+  **FAIL**   [dedupe on open_interest] decides 99.9% of pairs (n_eff=19,759/19,782); P(kept wins | decided) = 0.5559, z = +15.71, MDE = 1.00 pp  <-- READS THE OUTCOME. The rule must not depend on volume, open interest, last price, liquidity, or anything else recorded after settlement.
+  **FAIL**   [dedupe on volume (THE BUG)] decides 99.9% of pairs (n_eff=19,759/19,782); P(kept wins | decided) = 0.5357, z = +10.02, MDE = 1.00 pp  <-- READS THE OUTCOME. The rule must not depend on volume, open interest, last price, liquidity, or anything else recorded after settlement.
+  UNTESTABLE [dedupe on volume_24h] decides 3.9% of pairs (n_eff=776/19,782); P(kept wins | decided) = 0.5026, z = +0.14, MDE = 5.03 pp  <-- UNTESTABLE: the field is degenerate, it separates the two sides in under 10% of pairs. It passes only because it almost never chooses. Innocence by emptiness is not innocence.
+  UNTESTABLE [dedupe on liquidity] decides 0.0% of pairs (n_eff=0/19,782); P(kept wins | decided) = nan, z = +nan, MDE = inf pp  <-- UNTESTABLE: the field is degenerate, it separates the two sides in under 10% of pairs. It passes only because it almost never chooses. Innocence by emptiness is not innocence.
+  pass       [dedupe on ticker (LIVE RULE)] decides 100.0% of pairs (n_eff=19,782/19,782); P(kept wins | decided) = 0.4969, z = -0.88, MDE = 1.00 pp
+  pass       [LIVE universe.parquet] decides 100.0% of pairs (n_eff=19,782/19,782); P(kept wins | decided) = 0.4969, z = -0.88, MDE = 1.00 pp
+  UNTESTABLE [plausible duration filter] calibration residual: kept +0.0024 (n=16,203) vs dropped +0.0370 (n=718); diff -0.0346, z = -3.53, MDE = 2.75 pp  <-- UNTESTABLE: the smaller arm (718 rows) cannot resolve a 2.0 pp shift.
+  **FAIL**   [spread>15c mask exposure (below median)] calibration residual: kept -0.0167 (n=8,461) vs dropped +0.0245 (n=8,460); diff -0.0411, z = -6.34, MDE = 1.82 pp  <-- THE FILTER SHIFTS CALIBRATION. It is selecting on something correlated with the outcome.
+  pass       [pre-match anchor stood >=10 min] calibration residual: kept +0.0002 (n=7,832) vs dropped +0.0071 (n=9,089); diff -0.0068, z = -1.04, MDE = 1.83 pp
+  UNTESTABLE [play-window cut (orientation-free)] calibration residual: kept +0.0006 (n=14,390) vs dropped -0.0260 (n=197); diff +0.0266, z = +1.01, MDE = 7.40 pp  <-- UNTESTABLE: the smaller arm (197 rows) cannot resolve a 2.0 pp shift.
+
+11 rules: 3 pass, 4 fail, 4 untestable
+```
+
+## A3. Every headline number, recomputed
+
+| number | previously reported | recomputed | Δ | verdict |
+|---|---|---|---|---|
+| θ, deep:30@38 (pp) | -2.4200 | -2.4153 | +0.0047 | CONFIRMED |
+| θ train (pp) | -2.5100 | -2.5126 | -0.0026 | CONFIRMED |
+| θ holdout (pp) | -2.2700 | -2.2693 | +0.0007 | CONFIRMED |
+| θ, deep:12 (pp) | -0.8400 | -0.8365 | +0.0035 | CONFIRMED |
+| fade net (¢) | -1.1950 | -1.1951 | -0.0001 | CONFIRMED |
+| cost bar: half-spread (¢) | +1.1700 | +1.1697 | -0.0003 | CONFIRMED |
+| cost bar: slippage (¢) | +1.0000 | +1.0000 | +0.0000 | CONFIRMED |
+| cost bar: fee (¢) | +1.4390 | +1.4407 | +0.0017 | CONFIRMED |
+| cost bar: total (pp) | +3.6100 | +3.6104 | +0.0004 | CONFIRMED |
+| maker best cell (¢/opportunity) | -0.2050 | -0.2055 | -0.0005 | CONFIRMED |
+| maker fill rate (join_ask/5min) | +0.6310 | +0.6307 | -0.0003 | CONFIRMED |
+| adverse selection (¢) | -2.9140 | -2.9136 | +0.0004 | CONFIRMED |
+| price improvement (¢) | +0.6890 | +0.6889 | -0.0001 | CONFIRMED |
+| adverse selection (pp on filled) | -4.6200 | -4.6198 | +0.0002 | CONFIRMED |
+| detector accuracy | +0.8090 | +0.8214 | +0.0124 | **MISMATCH** |
+
+detector validation n = **2,771**
+
+## Verdict
+
+- numbers recomputed: **15**
+- CONFIRMED: **14**
+- MISMATCHED: **1** — detector accuracy

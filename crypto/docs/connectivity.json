@@ -1,0 +1,235 @@
+{
+  "probed_at_utc": "2026-07-31T23:38:40.252300+00:00",
+  "results": [
+    {
+      "name": "kalshi_exchange_status",
+      "url": "https://api.elections.kalshi.com/trade-api/v2/exchange/status",
+      "method": "GET",
+      "status": 200,
+      "ms": 428,
+      "content_length": 324,
+      "snippet": "{\"exchange_active\":true,\"exchange_index_statuses\":[{\"exchange_active\":true,\"exchange_index\":0,\"intra_exchange_transfers_active\":true,\"trading_active\":true},{\"exchange_active\":true,\"exchange_index\":1,\"intra_exchange_transfers_active\":true,\"trading_active\":false}],\"intra_exchange_transfers_active\":true,\"trading_active\":true}",
+      "ok": true
+    },
+    {
+      "name": "kalshi_series_list_crypto",
+      "url": "https://api.elections.kalshi.com/trade-api/v2/series",
+      "method": "GET",
+      "status": 200,
+      "ms": 371,
+      "content_length": 230603,
+      "snippet": "{\"series\":[{\"additional_prohibitions\":[\"Persons who are employed by any of the Source Agencies are not permitted to trade on the Contract.\",\"Persons who hold any material, non-public information on the Underlying are not permitted to trade on the Contract.\"],\"category\":\"Crypto\",\"contract_terms_url\":\"https://assets.kalshi.com/contract_terms/CRYPTO.pdf\",\"contract_url\":\"https://assets.kalshi.com/regu",
+      "ok": true
+    },
+    {
+      "name": "kalshi_markets_open",
+      "url": "https://api.elections.kalshi.com/trade-api/v2/markets",
+      "method": "GET",
+      "status": 200,
+      "ms": 370,
+      "content_length": 14909,
+      "snippet": "{\"cursor\":\"CgwIxOS00wYQiKaXpwMSOUtYTVZFU1BPUlRTTVVMVElHQU1FRVhURU5ERUQtUzIwMjYwOTNBQzM3ODU3NC1BRUMyN0EyMjE3OA\",\"markets\":[{\"can_close_early\":true,\"close_time\":\"2026-08-03T23:07:00Z\",\"created_time\":\"2026-07-31T23:39:48.934211Z\",\"custom_strike\":{\"Associated Events\":\"KXMLBHIT-26JUL311907STLTOR,KXMLBKS-26JUL311907STLTOR,KXMLBKS-26JUL311907STLTOR\",\"Associated Market Sides\":\"yes,yes,yes\",\"Associated Mar",
+      "ok": true
+    },
+    {
+      "name": "kalshi_legacy_host",
+      "url": "https://trading-api.kalshi.com/trade-api/v2/exchange/status",
+      "method": "GET",
+      "status": 401,
+      "ms": 586,
+      "content_length": 96,
+      "snippet": "API has been moved to https://api.elections.kalshi.com/ Please check our docs on how to migrate.",
+      "ok": false
+    },
+    {
+      "name": "polymarket_gamma_markets",
+      "url": "https://gamma-api.polymarket.com/markets",
+      "method": "GET",
+      "status": 200,
+      "ms": 494,
+      "content_length": 19476,
+      "snippet": "[{\"id\":\"540817\",\"question\":\"New Rihanna Album before GTA VI?\",\"conditionId\":\"0x1fad72fae204143ff1c3035e99e7c0f65ea8d5cd9bd1070987bd1a3316f772be\",\"slug\":\"new-rhianna-album-before-gta-vi-926\",\"resolutionSource\":\"\",\"endDate\":\"2026-07-31T12:00:00Z\",\"liquidity\":\"15588.6387\",\"startDate\":\"2025-05-02T15:48:10.582Z\",\"image\":\"https://polymarket-upload.s3.us-east-2.amazonaws.com/what-will-happen-before-gta-v",
+      "ok": true
+    },
+    {
+      "name": "polymarket_clob_ok",
+      "url": "https://clob.polymarket.com/",
+      "method": "GET",
+      "status": 200,
+      "ms": 497,
+      "content_length": 4,
+      "snippet": "\"OK\"",
+      "ok": true
+    },
+    {
+      "name": "polymarket_clob_markets",
+      "url": "https://clob.polymarket.com/markets",
+      "method": "GET",
+      "status": 200,
+      "ms": 530,
+      "content_length": 1823351,
+      "snippet": "{\"data\":[{\"enable_order_book\":false,\"active\":true,\"closed\":true,\"archived\":false,\"accepting_orders\":false,\"accepting_order_timestamp\":null,\"minimum_order_size\":15,\"minimum_tick_size\":0.01,\"condition_id\":\"0x5eed579ff6763914d78a966c83473ba2485ac8910d0a0914eef6d9fcb33085de\",\"question_id\":\"0x2d5ddf657e4a090bc22921bf6865bcdb741a7b96ce45eb583be041756fad04a0\",\"question\":\"NCAAB: Arizona State Sun Devils v",
+      "ok": true
+    },
+    {
+      "name": "polymarket_data_api",
+      "url": "https://data-api.polymarket.com/trades",
+      "method": "GET",
+      "status": 200,
+      "ms": 521,
+      "content_length": 2156,
+      "snippet": "[{\"proxyWallet\":\"0x8856e15c9bbdd939cb98e2776f725f502aaef6ad\",\"side\":\"BUY\",\"asset\":\"54183385178078094577803661419278043256908456406708994596607932741939158113379\",\"conditionId\":\"0x4c6ed3d0eb7a0920a3cb83f350d7a5e22b003708038ea66b7035e328773d7b1a\",\"size\":1.51515,\"price\":0.66,\"timestamp\":1785540908,\"title\":\"Bitcoin Up or Down - July 31, 7:35PM-7:40PM ET\",\"slug\":\"btc-updown-5m-1785540900\",\"icon\":\"https",
+      "ok": true
+    },
+    {
+      "name": "deribit_index",
+      "url": "https://www.deribit.com/api/v2/public/get_index_price",
+      "method": "GET",
+      "status": 200,
+      "ms": 566,
+      "content_length": 165,
+      "snippet": "{\"jsonrpc\":\"2.0\",\"result\":{\"estimated_delivery_price\":62924.12,\"index_price\":62924.12},\"usIn\":1785541193184519,\"usOut\":1785541193184757,\"usDiff\":238,\"testnet\":false}",
+      "ok": true
+    },
+    {
+      "name": "deribit_instruments",
+      "url": "https://www.deribit.com/api/v2/public/get_instruments",
+      "method": "GET",
+      "status": 200,
+      "ms": 451,
+      "content_length": 725709,
+      "snippet": "{\"jsonrpc\":\"2.0\",\"result\":[{\"state\":\"open\",\"price_index\":\"btc_usd\",\"kind\":\"option\",\"instrument_name\":\"BTC-1AUG26-56000-C\",\"instrument_type\":\"reversed\",\"maker_commission\":0.0003,\"taker_commission\":0.0003,\"underlying_type\":\"crypto\",\"instrument_id\":666777,\"expiration_timestamp\":1785571200000,\"is_active\":true,\"creation_timestamp\":1785225614000,\"tick_size\":0.0001,\"contract_size\":1.0,\"strike\":5.6e4,\"bas",
+      "ok": true
+    },
+    {
+      "name": "okx_ticker",
+      "url": "https://www.okx.com/api/v5/market/ticker",
+      "method": "GET",
+      "status": 200,
+      "ms": 563,
+      "content_length": 343,
+      "snippet": "{\"code\":\"0\",\"msg\":\"\",\"data\":[{\"instType\":\"SWAP\",\"instId\":\"BTC-USDT-SWAP\",\"last\":\"62950\",\"lastSz\":\"0.42\",\"askPx\":\"62950\",\"askSz\":\"976.81\",\"bidPx\":\"62949.9\",\"bidSz\":\"306.05\",\"open24h\":\"65054.3\",\"high24h\":\"65390.8\",\"low24h\":\"62410.5\",\"volCcy24h\":\"102238.8697\",\"vol24h\":\"10223886.97\",\"ts\":\"1785541193059\",\"sodUtc0\":\"64757.6\",\"sodUtc8\":\"62691.3\"}]}",
+      "ok": true
+    },
+    {
+      "name": "coinbase_ticker",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/ticker",
+      "method": "GET",
+      "status": 200,
+      "ms": 344,
+      "content_length": 185,
+      "snippet": "{\"ask\":\"62921.51\",\"bid\":\"62921.5\",\"volume\":\"8160.21844761\",\"trade_id\":1065233405,\"price\":\"62921.5\",\"size\":\"0.00000009\",\"time\":\"2026-07-31T23:39:53.403446356Z\",\"rfq_volume\":\"212.563933\"}",
+      "ok": true
+    },
+    {
+      "name": "kraken_ticker",
+      "url": "https://api.kraken.com/0/public/Ticker",
+      "method": "GET",
+      "status": 200,
+      "ms": 339,
+      "content_length": 309,
+      "snippet": "{\"error\":[],\"result\":{\"XXBTZUSD\":{\"a\":[\"62921.30000\",\"1\",\"1.000\"],\"b\":[\"62921.20000\",\"1\",\"1.000\"],\"c\":[\"62921.30000\",\"0.00015658\"],\"v\":[\"2256.72005066\",\"2270.62387220\"],\"p\":[\"63458.90717\",\"63467.36583\"],\"t\":[59001,59833],\"l\":[\"62344.00000\",\"62344.00000\"],\"h\":[\"65369.80000\",\"65369.80000\"],\"o\":\"64723.00000\"}}}",
+      "ok": true
+    },
+    {
+      "name": "bitstamp_ticker",
+      "url": "https://www.bitstamp.net/api/v2/ticker/btcusd/",
+      "method": "GET",
+      "status": 200,
+      "ms": 494,
+      "content_length": 256,
+      "snippet": "{\"timestamp\":\"1785541195\",\"open\":\"64716.76\",\"high\":\"65340.42\",\"low\":\"62369.00\",\"last\":\"62918.00\",\"volume\":\"1237.29639498\",\"vwap\":\"63318.39\",\"bid\":\"62917.99\",\"ask\":\"62918.00\",\"side\":\"0\",\"open_24\":\"65021.27\",\"percent_change_24\":\"-3.23\",\"market_type\":\"SPOT\"} ",
+      "ok": true
+    },
+    {
+      "name": "gemini_ticker",
+      "url": "https://api.gemini.com/v1/pubticker/btcusd",
+      "method": "GET",
+      "status": 200,
+      "ms": 561,
+      "content_length": 146,
+      "snippet": "{\"bid\":\"62926.42000\",\"ask\":\"62926.43000\",\"last\":\"62926.43000\",\"volume\":{\"BTC\":\"203.7536869\",\"USD\":\"12821492.115954767\",\"timestamp\":1785541140000}}",
+      "ok": true
+    },
+    {
+      "name": "lmax_public",
+      "url": "https://public-data-api.london-digital.lmax.com/v1/",
+      "method": "GET",
+      "status": 404,
+      "ms": 539,
+      "content_length": 54,
+      "snippet": "{\"error_code\":\"NOT_FOUND\",\"error_message\":\"Not found\"}",
+      "ok": false
+    },
+    {
+      "name": "binance_api",
+      "url": "https://api.binance.com/api/v3/ticker/price",
+      "method": "GET",
+      "status": 451,
+      "ms": 327,
+      "content_length": 224,
+      "snippet": "{   \"code\": 0,   \"msg\": \"Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believe you received this message in error.\" }",
+      "ok": false
+    },
+    {
+      "name": "binance_vision_root",
+      "url": "https://data.binance.vision/?prefix=data/spot/daily/klines/BTCUSDT/1s/",
+      "method": "GET",
+      "status": 200,
+      "ms": 1053,
+      "content_length": 2591,
+      "snippet": "<!DOCTYPE html> <html> <head>   <title>Binance Data Collection</title>   <link href=\"bootstrap.min.css\" rel=\"stylesheet\"> </head> <body>   <nav class=\"navbar navbar-dark bg-dark\">     <div class=\"container-md\">       <div class=\"row justify-content-between\" style=\"width: 100%\">         <div class=\"col-sm\">           <a href=\"/\"><img src=\"logo.png\" height=\"30\" class=\"d-inline-block align-top\" alt=\"",
+      "ok": true
+    },
+    {
+      "name": "binance_vision_file_head",
+      "url": "https://data.binance.vision/data/spot/daily/klines/BTCUSDT/1m/BTCUSDT-1m-2026-07-01.zip",
+      "method": "HEAD",
+      "status": 200,
+      "ms": 842,
+      "content_length": 0,
+      "snippet": "",
+      "ok": true
+    },
+    {
+      "name": "bybit_ticker",
+      "url": "https://api.bybit.com/v5/market/tickers",
+      "method": "GET",
+      "status": 403,
+      "ms": 435,
+      "content_length": 96,
+      "snippet": "{     error:The Amazon CloudFront distribution is configured to block access from your country }",
+      "ok": false
+    },
+    {
+      "name": "cfbenchmarks_api",
+      "url": "https://www.cfbenchmarks.com/api/v1/indices",
+      "method": "GET",
+      "status": 200,
+      "ms": 480,
+      "content_length": 56,
+      "snippet": "{\"serverTime\":\"2026-07-31T23:39:59.654Z\",\"payload\":[]}\r ",
+      "ok": true
+    },
+    {
+      "name": "polygon_rpc",
+      "url": "https://polygon-rpc.com",
+      "method": "POST",
+      "status": 401,
+      "ms": 449,
+      "content_length": 101,
+      "snippet": "{\"error\":\"message: API key disabled, reason: tenant disabled, json-rpc code: -32051, rest code: 403\"}",
+      "ok": false
+    },
+    {
+      "name": "polymarket_subgraph_goldsky",
+      "url": "https://api.goldsky.com/api/public/project_cl6mb8i9h0003e201j6li0diw/subgraphs/orderbook-subgraph/prod/gn",
+      "method": "POST",
+      "status": 200,
+      "ms": 523,
+      "content_length": 48,
+      "snippet": "{\"data\":{\"_meta\":{\"block\":{\"number\":87814766}}}}",
+      "ok": true
+    }
+  ]
+}

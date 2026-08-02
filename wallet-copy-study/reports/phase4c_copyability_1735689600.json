@@ -1,0 +1,101 @@
+{
+  "meta": {
+    "cut_iso": "2025-01-01",
+    "selection": "period-1 only, >= 50 markets, non-MM",
+    "n_eligible": 211,
+    "n_top_decile": 21,
+    "definitions": {
+      "wallet_edge": "(proceeds + settlement) / shares_in - cost / shares_in",
+      "wallet_excess": "wallet_edge minus period-2 pooled mean at same entry-price bucket",
+      "copier_buy_and_hold": "outcome - entry_price - fee(entry_price); what copying the ENTRY and holding gives",
+      "gap": "wallet_edge - copier_return; the part of the wallet's edge that lives in its EXITS rather than its entries"
+    },
+    "clustering": "market-level bootstrap"
+  },
+  "period2": {
+    "top_decile": {
+      "n_wallets": 18,
+      "n_wallet_markets": 16468,
+      "n_markets": 15143,
+      "wallet_edge_pp": 4.3113,
+      "wallet_excess_pp": 3.953,
+      "wallet_excess_ci95": [
+        3.4703,
+        4.4213
+      ],
+      "copier_buy_and_hold_pp": 1.9811,
+      "copier_ci95": [
+        1.4496,
+        2.5198
+      ],
+      "gap_edge_minus_copier_pp": 2.3302,
+      "mean_frac_held_to_settlement": 0.6035,
+      "frac_positions_with_any_sell": 0.5366,
+      "mean_entry_px": 0.4005
+    },
+    "bottom_decile": {
+      "n_wallets": 16,
+      "n_wallet_markets": 2855,
+      "n_markets": 2694,
+      "wallet_edge_pp": -2.5978,
+      "wallet_excess_pp": -3.2182,
+      "wallet_excess_ci95": [
+        -4.5707,
+        -1.8938
+      ],
+      "copier_buy_and_hold_pp": -4.6979,
+      "copier_ci95": [
+        -6.1312,
+        -3.331
+      ],
+      "gap_edge_minus_copier_pp": 2.1002,
+      "mean_frac_held_to_settlement": 0.7048,
+      "frac_positions_with_any_sell": 0.3159,
+      "mean_entry_px": 0.4954
+    },
+    "all_eligible": {
+      "n_wallets": 167,
+      "n_wallet_markets": 84947,
+      "n_markets": 52889,
+      "wallet_edge_pp": 0.7775,
+      "wallet_excess_pp": 0.2494,
+      "wallet_excess_ci95": [
+        -0.1172,
+        0.5859,
+        "subsampled_clusters"
+      ],
+      "copier_buy_and_hold_pp": -1.2703,
+      "copier_ci95": [
+        -1.6041,
+        -0.7812,
+        "subsampled_clusters"
+      ],
+      "gap_edge_minus_copier_pp": 2.0478,
+      "mean_frac_held_to_settlement": 0.7101,
+      "frac_positions_with_any_sell": 0.3563,
+      "mean_entry_px": 0.5316
+    },
+    "everyone": {
+      "n_wallets": 2219,
+      "n_wallet_markets": 1370845,
+      "n_markets": 434410,
+      "wallet_edge_pp": 0.4867,
+      "wallet_excess_pp": -0.0,
+      "wallet_excess_ci95": [
+        -0.2949,
+        0.1692,
+        "subsampled_clusters"
+      ],
+      "copier_buy_and_hold_pp": -1.6558,
+      "copier_ci95": [
+        -1.9389,
+        -1.4097,
+        "subsampled_clusters"
+      ],
+      "gap_edge_minus_copier_pp": 2.1425,
+      "mean_frac_held_to_settlement": 0.7811,
+      "frac_positions_with_any_sell": 0.257,
+      "mean_entry_px": 0.488
+    }
+  }
+}

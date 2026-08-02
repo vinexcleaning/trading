@@ -1,0 +1,402 @@
+﻿POST-SETTLEMENT FIELD OCCURRENCES
+====================================================================================================
+
+### set1_overshoot (this phase)  --  C:\Users\gianf\kalshi\set1_overshoot\src
+
+  audit_selection.py
+        3         [volume                  ] The volume-dedupe bug was not a one-off. It is an instance of a class: any
+       26         [volume                  ] "volume": r"\bvolume(_fp|_24h_fp)?\b",
+       27         [open_interest           ] "open_interest": r"\bopen_interest(_fp)?\b",
+       28         [result                  ] "result": r"[\"']result[\"']|\bresult\b\s*==",
+       29         [settlement_value        ] "settlement_value": r"settlement_value(_dollars)?",
+       30         [settlement_ts           ] "settlement_ts": r"settlement_ts|settlement_timer",
+       31         [expiration_value        ] "expiration_value": r"expiration_value",
+       32         [last_price              ] "last_price": r"last_price(_dollars)?|[\"']last[\"']",
+       33         [previous_price          ] "previous_price": r"previous_(price|yes_bid|yes_ask)(_dollars)?",
+       34         [close_time              ] "close_time": r"\bclose_time\b",
+       35         [status                  ] "status": r"[\"']status[\"']|\bstatus\b\s*(==|\.isin)",
+       36         [liquidity               ] "liquidity": r"liquidity(_dollars)?",
+       37         [updated_time            ] "updated_time": r"\bupdated_time\b",
+       38         [duration/endpoint-derived] "duration/endpoint-derived": r"\bdur_min\b|\bplausible\b|\bt1\b\s*=|minutes",
+  p0_candles.py
+       96         [volume                  ] vol = int(float(c.get("volume_fp") or 0))
+      111         [open_interest           ] int(float(c.get("open_interest_fp") or 0)),
+      135         [close_time              ] int(r.close_time.timestamp()) + 300)
+      149         [close_time              ] int(r.close_time.timestamp()) + 300)
+      189         [last_price              ] "last": arr[:, 9].astype("int16"),
+  p0_markets.py
+       61         [status                  ] st[m.get("status", "?")] = st.get(m.get("status", "?"), 0) + 1
+  p0_mirror.py
+       72         [duration/endpoint-derived] w(f"aligned minutes       {n_min:,}")
+  p0_scores.py
+       79         [result                  ] "player_won": kept.get("result") == "yes",
+       82         [close_time              ] df = df.merge(uni[["event_ticker", "tour", "close_time", "open_time"]],
+       85         [close_time              ] df["kdate"] = pd.to_datetime(df["close_time"]).dt.tz_convert("UTC").dt.date
+      117         [duration/endpoint-derived] "tour", "tier", "minutes"])
+      131         [duration/endpoint-derived] "s1_w": g[0], "s1_l": g[1], "minutes": r.minutes,
+      157         [duration/endpoint-derived] "s1_w": w1, "s1_l": l1, "minutes": float("nan"),
+      221         [duration/endpoint-derived] "player_won", "player_won_s1", "s1_w", "s1_l", "minutes", "score",
+  p0_universe.py
+       43         [status                  ] "status": m.get("status"),
+       44         [result                  ] "result": m.get("result"),
+       45         [settlement_value        ] "settlement_value": m.get("settlement_value_dollars"),
+       46         [expiration_value        ] "expiration_value": m.get("expiration_value"),
+       51         [close_time              ] "close_time": ts(m.get("close_time")),
+       54         [settlement_ts           ] "settlement_ts": ts(m.get("settlement_ts")),
+       55         [volume                  ] "volume": float(m.get("volume_fp") or 0),
+       62 SELECT? [status                  ] df = df[df["status"].isin(["finalized", "settled", "closed"])].copy()
+       64 SELECT? [result                  ] df = df[df["result"].isin(["yes", "no"])].copy()
+       77 SELECT? [result                  ] g = df[df["paired"]].groupby("event_ticker")["result"]
+       86         [close_time              ] df["date"] = df["close_time"].dt.date
+       87         [close_time              ] print(f"\ndate range (close_time)         "
+       90         [close_time              ] dur = (df["close_time"] - df["open_time"]).dt.total_seconds() / 3600
+      129         [result                  ] pk = (keep["result"] == "yes").mean()
+      135         [volume                  ] "The rule must not depend on volume, open interest, last price, or "
+      140         [close_time              ] keep["week"] = pd.to_datetime(keep["close_time"]).dt.tz_convert("UTC") \
+      155         [result                  ] sides[["event_ticker", "ticker", "series", "result", "open_time",
+      156         [volume                  ] "close_time", "volume"]].to_parquet(DATA / "sides.parquet",
+  p1_state.py
+       25         [duration/endpoint-derived] FFILL_MAX = 25           # minutes a stale quote is allowed to stand
+       29         [duration/endpoint-derived] GAP_MIN = 12             # minutes of a frozen quote that ends the in-play run
+       32         [duration/endpoint-derived] PATH_MIN = 300           # minutes of path stored per match
+      177         [result                  ] ["event_ticker", "tour", "series", "result", "open_time",
+      178         [volume                  ] "close_time", "volume"]].to_dict("index")
+      220         [duration/endpoint-derived] t0, t1 = w
+      242         [result                  ] fav_won = m["result"] == "yes"
+      251         [result                  ] fav_won = m["result"] == "no"
+      295         [duration/endpoint-derived] "dur_min": int(dur),
+      299         [close_time              ] "close_time": m["close_time"],
+      300         [duration/endpoint-derived] "plausible": bool(MIN_PLAY <= dur <= MAX_PLAY),
+      319         [duration/endpoint-derived] print(f"  duration plausible ({MIN_PLAY}-{MAX_PLAY}m)  "
+      320         [duration/endpoint-derived] f"{good['plausible'].sum():,}")
+      321         [duration/endpoint-derived] d = good["dur_min"]
+  p1_tune_t0.py
+        3         [duration/endpoint-derived] Sackmann records `minutes` (actual playing time) for main-tour matches. Kalshi's
+        6         [duration/endpoint-derived] error, not correlation -- a detector that is 40 minutes early on every match
+       10         [duration/endpoint-derived] Sackmann's playing minutes by the changeovers, medical timeouts and rain delays
+       31         [duration/endpoint-derived] truth = truth[truth["minutes"].notna() & (truth["minutes"] > 20)]
+       39         [duration/endpoint-derived] tmin = truth.set_index("ticker")["minutes"].to_dict()
+       76         [duration/endpoint-derived] print("\ninferred window length minus true playing minutes:")
+  p1_validate.py
+       34         [duration/endpoint-derived] "ok": st["ok"].values & st["plausible"].values,
+       37         [duration/endpoint-derived] "dur_min": st["dur_min"].values,
+       91         [duration/endpoint-derived] w("Detector: sign of the largest sustained price step in minutes "
+  p2_calib.py
+       35         [duration/endpoint-derived] CP_LO, CP_HI = 15, 90   # minutes from t0 to search for the set-1 changepoint
+       37         [duration/endpoint-derived] STAB = 3                # minutes of stabilisation after the changepoint
+       82         [duration/endpoint-derived] for c, v in (("plausible", False), ("kept_is_fav", False),
+       85         [duration/endpoint-derived] for c in ("pre_bid", "pre_ask", "dur_min", "flat_before"):
+      166         [duration/endpoint-derived] minutes, i.e. the fall has stopped for now
+      196         [duration/endpoint-derived] ok = st["ok"].values & st["plausible"].values
+      234         [duration/endpoint-derived] ok = st["ok"].values & st["plausible"].values
+      238         [duration/endpoint-derived] valid &= (e < st["dur_min"].values)
+      251         [close_time              ] "close_time": st["close_time"].values if "close_time" in st else pd.NaT,
+      252         [duration/endpoint-derived] "dur_min": st["dur_min"].values,
+      405         [duration/endpoint-derived] f"level AND has stopped making new\nlows for 8 minutes, entered "
+  p2_scalar.py
+       39 SELECT? [result                  ] if m.get("result") != "scalar":
+       44         [result                  ] "result": "yes",          # placeholder; scalar handled below
+       45         [settlement_value        ] "settle": float(m.get("settlement_value_dollars") or 0),
+       47         [close_time              ] "close_time": pd.Timestamp(m["close_time"]),
+       48         [volume                  ] "volume": float(m.get("volume_fp") or 0),
+       54         [duration/endpoint-derived] df["plausible"] = True
+  p3_segment.py
+       32         [duration/endpoint-derived] dur = ev["dur_min"].values.astype(int)
+      108         [close_time              ] e["close_time"] = pd.to_datetime(e["close_time"], utc=True)
+      109         [close_time              ] cut = e["close_time"].quantile(0.60)
+      110         [close_time              ] e_train = e[e["close_time"] <= cut].copy()
+      111         [close_time              ] e_hold = e[e["close_time"] > cut].copy()
+      237         [duration/endpoint-derived] dur = use["dur_min"].values.astype(int)
+      315         [close_time              ] half = use["close_time"].quantile(0.5)
+      316         [close_time              ] a = g[g["close_time"] <= half]
+      317         [close_time              ] b = g[g["close_time"] > half]
+  p4_validate.py
+       66         [close_time              ] e["close_time"] = pd.to_datetime(e["close_time"], utc=True)
+       67 SELECT? [close_time              ] e = e.sort_values("close_time")
+       77         [close_time              ] cut = e["close_time"].quantile(0.60)
+       78         [close_time              ] tr = e[e["close_time"] <= cut]
+       79         [close_time              ] ho = e[e["close_time"] > cut]
+       86         [close_time              ] f"{tr['close_time'].min():%Y-%m-%d} to {tr['close_time'].max():%Y-%m-%d}")
+       88         [close_time              ] f"{ho['close_time'].min():%Y-%m-%d} to {ho['close_time'].max():%Y-%m-%d}")
+      185         [close_time              ] ti = pd.to_datetime(e["close_time"], utc=True)
+      202         [close_time              ] f"{g['close_time'].min():%m-%d} to {g['close_time'].max():%m-%d} | "
+      227         [close_time              ] et["close_time"] = pd.to_datetime(et["close_time"], utc=True)
+      228         [close_time              ] cut_t = et["close_time"].quantile(0.60)
+      233         [close_time              ] ("train (oldest 60%)", et[et["close_time"] <= cut_t]),
+      234         [close_time              ] ("holdout (newest 40%)", et[et["close_time"] > cut_t])):
+      267         [close_time              ] day = pd.to_datetime(e["close_time"]).dt.strftime("%Y-%m-%d").values
+  p5_dedupe_bias.py
+        3         [volume                  ] Phase 0 kept "the higher-volume side" of each mirrored pair. Volume is read from
+       22         [result                  ] if m.get("result") in ("yes", "no"):
+       23         [result                  ] rows.append((m["event_ticker"], m["ticker"], m["result"],
+       24         [volume                  ] float(m.get("volume_fp") or 0),
+       25         [open_interest           ] float(m.get("open_interest_fp") or 0)))
+       68         [volume                  ] w(f"Winning side's share of the event's total volume: "
+       70         [volume                  ] w(f"Winning side has the larger volume in {100 * (share > 0.5).mean():.1f}% "
+       74         [volume                  ] w("the two books do not share volume. As a match resolves, trading "
+       76         [volume                  ] w("in the side that is winning. Reading volume after settlement therefore")
+  p5_mirror_build.py
+       30         [volume                  ] mir["volume"] = 1.0
+       31         [result                  ] mir = mir[["event_ticker", "ticker", "series", "tour", "result",
+       32         [volume                  ] "open_time", "close_time", "volume"]]
+  p5_task1b.py
+      107         [duration/endpoint-derived] dur = e["dur_min"].values.astype(int)
+      255         [close_time              ] if "close_time" in e:
+      256         [close_time              ] day = pd.to_datetime(e["close_time"], utc=True).dt.strftime(
+  probe_api.py
+        9         [status                  ] "status": "settled"}, timeout=60)
+       19         [close_time              ] close_ts = m["close_time"]
+  synth.py
+       29         [duration/endpoint-derived] PRE_MIN = 240        # minutes of dormant pre-match quoting
+       82         [close_time              ] "close_time": pd.Timestamp(ts[-1], unit="s", tz="UTC"),
+       83         [volume                  ] "volume": 1000.0,
+       95 SELECT? [result                  ] md["result"] = np.where(md["true_win"] == 1, "yes", "no")
+      116         [duration/endpoint-derived] st = st[st["ok"].fillna(False) & st["plausible"].fillna(False)]
+      118         [duration/endpoint-derived] dur = rng.choice(st["dur_min"].values, size=args.n)
+
+### kalshi Stage 0-5 player model  --  C:\Users\gianf\kalshi\src
+
+  diag_gaps.py
+       70         [duration/endpoint-derived] print(f"  {p:<34} -> (no plausible candidate)")
+  download_kalshi.py
+       76         [status                  ] statuses[m.get("status", "?")] = statuses.get(m.get("status", "?"), 0) + 1
+  download_kalshi_prices.py
+       88         [volume                  ] "volume_pre": f(last.get("volume_fp")),
+       89         [open_interest           ] "oi_pre": f(last.get("open_interest_fp")),
+  explore_kalshi.py
+       39         [result                  ] print(f"  sample result values: {Counter(m.get('result','') for m in rows).most_common(6)}")
+  pinnacle_vs_kalshi.py
+      137         [volume                  ] "hours_before": r.hours_before, "volume": r.volume_pre,
+  probe_ta_coverage.py
+       73         [last_price              ] df = pd.DataFrame(results, columns=["seg", "name", "status", "detail", "last"])
+       76         [status                  ] ok = (g["status"] == "ok").mean()
+       77         [status                  ] print(f"=== {seg}: {(g['status'] == 'ok').sum()}/{len(g)} resolved ({ok * 100:.0f}%)")
+       79         [status                  ] print(f"    {r['name']:<32} {r['status']:<12} {r['detail'] or ''}")
+       82 SELECT? [status                  ] good = df[df["status"] == "ok"]
+       85         [last_price              ] print(f"most recent match date across sample: {good['last'].max()}")
+       87         [last_price              ] print(good["last"].str[:6].value_counts().sort_index().to_string())
+  stage0_audit.py
+      104         [status                  ] "tour": r["tour"], "tier": r["tier"], "status": r["status"],
+      159         [status                  ] surface=("surface", "first"), status=("status", "first"),
+      188         [status                  ] act = mk[mk["status"] == "active"]
+      241         [status                  ] st = ev["status"].value_counts()
+      244         [status                  ] settled_covered = ((~after) & (ev["status"] != "active")).sum()
+  stage1_features.py
+       44         [duration/endpoint-derived] "breaks_made", "minutes",
+       46         [duration/endpoint-derived] FATIGUE = ("matches_7d", "matches_14d", "minutes_14d", "days_since",
+      121         [duration/endpoint-derived] num_cols = ["minutes",
+      201         [duration/endpoint-derived] col[f"{side}_minutes_14d"][i] = min14
+      245         [duration/endpoint-derived] mins = C["minutes"][i]
+      275         [duration/endpoint-derived] for c, src in (("best_of", "best_of"), ("minutes", "minutes"),
+  stage2_shrinkage.py
+      212         [duration/endpoint-derived] "winner_lost_set1", "n_sets", "minutes", "has_serve"]].copy()
+      219         [duration/endpoint-derived] for c in ("matches_7d", "matches_14d", "minutes_14d", "days_since",
+  stage4_model.py
+       76         [duration/endpoint-derived] for col in ["matches_7d", "matches_14d", "minutes_14d", "days_since",
+  stage5_selective.py
+      131         [liquidity               ] d["liquidity"] = pd.cut(d["spread"], [-1, 0.02, 0.05, 0.10, 1.01],
+      187         [liquidity               ] emit(d["liquidity"].value_counts().sort_index().to_string())
+      216         [liquidity               ] for extra in ("gap_band", "density", "liquidity"):
+  tennis_data.py
+      109         [duration/endpoint-derived] "loser_ht", "winner_age", "loser_age", "best_of", "minutes",
+      137         [duration/endpoint-derived] "tourney_level", "round", "best_of", "minutes"]
+      215         [status                  ] "status": a.get("status"),
+      216         [result                  ] "result_a": a.get("result"),
+      217         [result                  ] "result_b": b.get("result"),
+      219         [close_time              ] "close_time": a.get("close_time"),
+      221         [last_price              ] "last_price_a": _f(a.get("last_price_dollars")),
+      224         [volume                  ] "volume_a": _f(a.get("volume_fp")),
+      225         [open_interest           ] "open_interest_a": _f(a.get("open_interest_fp")),
+  verify_data.py
+       19         [duration/endpoint-derived] "round", "minutes", "w_ace", "w_df", "w_svpt", "w_1stIn", "w_1stWon",
+
+### crypto  --  C:\Users\gianf\crypto\src
+
+  analyze_panel.py
+       68         [duration/endpoint-derived] print(f"  rows (market-minutes) : {n}")
+      104         [duration/endpoint-derived] print(f"  spot series loaded    : {len(spot)} minutes")
+      136         [expiration_value        ] v, ct = m.get("expiration_value"), m.get("close_time")
+      210         [duration/endpoint-derived] r["sigma"] = sd_1m * math.sqrt(525960.0)   # minutes per year
+      270         [duration/endpoint-derived] print(f"  rows                : {len(rows)} market-minutes")
+  build_panel.py
+       13         [close_time              ] all events sorted by close_time, so every calendar week is represented equally.
+       78         [expiration_value        ] v = m.get("expiration_value")
+       92         [duration/endpoint-derived] ap.add_argument("--minutes-before-close", type=int, default=60)
+       97         [close_time              ] evs = sorted(by_ev, key=lambda e: by_ev[e][0].get("close_time") or "")
+      109         [close_time              ] po = iso(by_ev[prev][0]["close_time"])
+      135         [close_time              ] close = iso(mkts[0]["close_time"])
+      137         [duration/endpoint-derived] start_ts = close_ts - args.minutes_before_close * 60
+      157 SELECT? [result                  ] y = 1.0 if str(m.get("result")) == "yes" else 0.0
+      189         [volume                  ] "vol": float(c.get("volume_fp") or 0),
+      190         [open_interest           ] "oi": float(c.get("open_interest_fp") or 0),
+  check_task3_feasibility.py
+       49         [last_price              ] for src, dst in ((m.get("last_price_dollars"), last),
+       50         [previous_price          ] (m.get("previous_yes_bid_dollars"), pbid),
+       51         [previous_price          ] (m.get("previous_yes_ask_dollars"), pask),
+       57         [result                  ] res.append(str(m.get("result")))
+       60         [last_price              ] for name, arr in (("last_price", last),
+       61         [previous_price          ] ("previous_yes_bid", pbid),
+       62         [previous_price          ] ("previous_yes_ask", pask),
+      110         [close_time              ] ot, ct = m.get("open_time"), m.get("close_time")
+  deribit_chain.py
+       43         [result                  ] return j.get("result")
+       99         [open_interest           ] oi = sum(b.get("open_interest") or 0 for b in rows)
+      148         [open_interest           ] b.get("open_interest")))
+  deribit_pricer.py
+       57         [result                  ] return r.json().get("result")
+      230         [open_interest           ] "oi": b.get("open_interest") or 0})
+      331         [duration/endpoint-derived] t0, t1 = taus[i - 1], taus[i]
+  fat_tails.py
+        3         [expiration_value        ] `expiration_value` is the realised CF Benchmarks 60-second-average settlement at
+       35         [close_time              ] """-> sorted list of (close_time, settlement), one per event."""
+       46         [expiration_value        ] ev, v, ct = (m.get("event_ticker"), m.get("expiration_value"),
+       47         [close_time              ] m.get("close_time"))
+       77         [expiration_value        ] f"`expiration_value`, deduplicated to ONE row per event_ticker")
+  kalshi_settled.py
+       53         [status                  ] p = {"series_ticker": series, "status": "settled", "limit": limit}
+       73         [close_time              ] s = m.get("close_time") or ""
+       76         [result                  ] results = Counter(str(m.get("result")) for m in rows)
+       78         [expiration_value        ] if m.get("expiration_value") not in (None, "", "0"))
+      110         [expiration_value        ] "with_expiration_value": has_sv,
+  kalshi_strikes.py
+       95         [close_time              ] f"close={rows[0].get('close_time')}")
+      106         [volume                  ] f"vol={str(m.get('volume_fp')):>11} "
+      107         [open_interest           ] f"oi={str(m.get('open_interest_fp')):>11}")
+  mid_calibration.py
+        9         [duration/endpoint-derived] 1. The reliability table has NO event clustering. Consecutive minutes of the
+  panel_scope.py
+       17         [close_time              ] sorting distinct events on close_time and taking a fixed stride, so no calendar
+       83         [close_time              ] ot, ct = m.get("open_time"), m.get("close_time")
+       99         [close_time              ] print(f"  close_time range: {closes[0][:16]} -> {closes[-1][:16]}")
+      103         [close_time              ] evs = sorted(by_ev, key=lambda e: by_ev[e][0].get("close_time") or "")
+      108         [close_time              ] print(f"  sampling rule: {len(evs)} events sorted by close_time, "
+      110         [close_time              ] print(f"  sampled closes: {[by_ev[e][0]['close_time'][:13] for e in sample]}")
+      120         [expiration_value        ] if m.get("expiration_value"):
+      122         [expiration_value        ] settle = float(m["expiration_value"])
+      128         [close_time              ] ct = iso(rows[0]["close_time"])
+      178         [duration/endpoint-derived] f"median 2-sided minutes={med:.0f}")
+  pinning_test.py
+        3         [expiration_value        ] Uses `expiration_value` from the settled Kalshi hourly ladders — the realised
+       29         [close_time              ] """One (event, close_time, settlement) per event."""
+       41         [expiration_value        ] v = m.get("expiration_value")
+       52         [close_time              ] by_ev[ev] = (m.get("close_time"), x)
+  poly_dated_history.py
+      102         [liquidity               ] for k in ("conditionId", "closed", "volumeNum", "liquidityNum",
+      113         [duration/endpoint-derived] t0, t1 = pts[0]["t"], pts[-1]["t"]
+  poly_slug_walk.py
+       91         [liquidity               ] for k in ("conditionId", "closed", "volumeNum", "liquidityNum", "spread",
+  polymarket_probe.py
+      101         [volume                  ] print(f"\n  crypto EVENTS (open, by 24h volume): {len(evs)}")
+  probe_candles.py
+       64         [expiration_value        ] if m.get("expiration_value"):
+       65         [expiration_value        ] settle = float(m["expiration_value"])
+       68         [close_time              ] close = mkts[0]["close_time"]
+      133         [close_time              ] keys = sorted(evs, key=lambda k: evs[k].get("close_time") or "")
+      137         [close_time              ] m["close_time"].replace("Z", "+00:00"))
+      143         [close_time              ] print(f"  {k:<24} close={m['close_time'][:16]} "
+  probe_connectivity.py
+       25         [status                  ] {"limit": 5, "status": "open"}),
+      100         [status                  ] rec["status"] = r.status_code
+      107         [status                  ] rec["status"] = None
+      121         [status                  ] print(f"{flag} {name:34s} {str(rec['status']):>5} {rec['ms']:>6}ms  "
+  pull_spot.py
+       10         [expiration_value        ] it is a PROXY. The proxy is validated directly: `expiration_value` in the
+       80         [duration/endpoint-derived] f"{len(rows)} minutes", flush=True)
+       87         [duration/endpoint-derived] print(f"\nwrote {path}: {len(rows)} minutes over {calls} calls")
+      104         [expiration_value        ] "(expiration_value at hourly boundaries)")
+      112         [expiration_value        ] v, ct = m.get("expiration_value"), m.get("close_time")
+  recorder.py
+      164         [status                  ] "status": "open", "limit": 200})
+      183         [volume                  ] m.get("volume_fp"), m.get("open_interest_fp"))
+      208         [last_price              ] "last_price": m.get("last_price_dollars"),
+      209         [volume                  ] "volume": m.get("volume_fp"),
+      210         [open_interest           ] "open_interest": m.get("open_interest_fp"),
+      211         [liquidity               ] "liquidity": m.get("liquidity_dollars"),
+      213         [status                  ] "status": m.get("status"),
+      215         [updated_time            ] "ts_event_ns": iso_to_ns(m.get("updated_time")),
+      216         [close_time              ] "ts_close_ns": iso_to_ns(m.get("close_time")),
+      335         [duration/endpoint-derived] ap.add_argument("--minutes", type=float, default=60.0)
+      346         [duration/endpoint-derived] t_end = time.monotonic() + args.minutes * 60
+      351         [duration/endpoint-derived] f"minutes={args.minutes} interval={args.interval}s")
+  recorder_health.py
+        5         [duration/endpoint-derived] non-emptiness and plausible value ranges on a sample of RECENT rows, checks
+      135 SELECT? [duration/endpoint-derived] f"-> {'plausible' if 0 <= kp.min() and kp.max() <= 1 else 'IMPLAUSIBLE'}")
+  time_calls.py
+       13         [close_time              ] ct = dt.datetime.fromisoformat(m["close_time"].replace("Z", "+00:00"))
+  validate_settled.py
+       12         [expiration_value        ] - `expiration_value` parses as a number
+       23         [result                  ] REQUIRED = ["ticker", "event_ticker", "close_time", "result"]
+       31         [expiration_value        ] "expiration_value_ok": 0, "expiration_value_missing": 0,
+       51         [result                  ] if str(m.get("result")) not in ("yes", "no"):
+       53         [expiration_value        ] ev = m.get("expiration_value")
+       55         [expiration_value        ] rep["expiration_value_missing"] += 1
+       59         [expiration_value        ] rep["expiration_value_ok"] += 1
+       61         [expiration_value        ] rep["expiration_value_missing"] += 1
+       69         [close_time              ] if m.get("close_time"):
+       70         [close_time              ] closes.append(m["close_time"])
+      101         [expiration_value        ] f"exp_val={r['expiration_value_ok']:>7}/"
+      102         [expiration_value        ] f"{r['expiration_value_ok']+r['expiration_value_missing']}")
+
+### kalshi_backup (Desktop copy)  --  C:\Users\gianf\Desktop\kalshi_backup\src
+
+  diag_gaps.py
+       70         [duration/endpoint-derived] print(f"  {p:<34} -> (no plausible candidate)")
+  download_kalshi.py
+       76         [status                  ] statuses[m.get("status", "?")] = statuses.get(m.get("status", "?"), 0) + 1
+  download_kalshi_prices.py
+       88         [volume                  ] "volume_pre": f(last.get("volume_fp")),
+       89         [open_interest           ] "oi_pre": f(last.get("open_interest_fp")),
+  explore_kalshi.py
+       39         [result                  ] print(f"  sample result values: {Counter(m.get('result','') for m in rows).most_common(6)}")
+  pinnacle_vs_kalshi.py
+      137         [volume                  ] "hours_before": r.hours_before, "volume": r.volume_pre,
+  probe_ta_coverage.py
+       73         [last_price              ] df = pd.DataFrame(results, columns=["seg", "name", "status", "detail", "last"])
+       76         [status                  ] ok = (g["status"] == "ok").mean()
+       77         [status                  ] print(f"=== {seg}: {(g['status'] == 'ok').sum()}/{len(g)} resolved ({ok * 100:.0f}%)")
+       79         [status                  ] print(f"    {r['name']:<32} {r['status']:<12} {r['detail'] or ''}")
+       82 SELECT? [status                  ] good = df[df["status"] == "ok"]
+       85         [last_price              ] print(f"most recent match date across sample: {good['last'].max()}")
+       87         [last_price              ] print(good["last"].str[:6].value_counts().sort_index().to_string())
+  stage0_audit.py
+      104         [status                  ] "tour": r["tour"], "tier": r["tier"], "status": r["status"],
+      159         [status                  ] surface=("surface", "first"), status=("status", "first"),
+      188         [status                  ] act = mk[mk["status"] == "active"]
+      241         [status                  ] st = ev["status"].value_counts()
+      244         [status                  ] settled_covered = ((~after) & (ev["status"] != "active")).sum()
+  stage1_features.py
+       44         [duration/endpoint-derived] "breaks_made", "minutes",
+       46         [duration/endpoint-derived] FATIGUE = ("matches_7d", "matches_14d", "minutes_14d", "days_since",
+      121         [duration/endpoint-derived] num_cols = ["minutes",
+      201         [duration/endpoint-derived] col[f"{side}_minutes_14d"][i] = min14
+      245         [duration/endpoint-derived] mins = C["minutes"][i]
+      275         [duration/endpoint-derived] for c, src in (("best_of", "best_of"), ("minutes", "minutes"),
+  stage2_shrinkage.py
+      212         [duration/endpoint-derived] "winner_lost_set1", "n_sets", "minutes", "has_serve"]].copy()
+      219         [duration/endpoint-derived] for c in ("matches_7d", "matches_14d", "minutes_14d", "days_since",
+  stage4_model.py
+       76         [duration/endpoint-derived] for col in ["matches_7d", "matches_14d", "minutes_14d", "days_since",
+  stage5_selective.py
+      131         [liquidity               ] d["liquidity"] = pd.cut(d["spread"], [-1, 0.02, 0.05, 0.10, 1.01],
+      187         [liquidity               ] emit(d["liquidity"].value_counts().sort_index().to_string())
+      216         [liquidity               ] for extra in ("gap_band", "density", "liquidity"):
+  tennis_data.py
+      109         [duration/endpoint-derived] "loser_ht", "winner_age", "loser_age", "best_of", "minutes",
+      137         [duration/endpoint-derived] "tourney_level", "round", "best_of", "minutes"]
+      215         [status                  ] "status": a.get("status"),
+      216         [result                  ] "result_a": a.get("result"),
+      217         [result                  ] "result_b": b.get("result"),
+      219         [close_time              ] "close_time": a.get("close_time"),
+      221         [last_price              ] "last_price_a": _f(a.get("last_price_dollars")),
+      224         [volume                  ] "volume_a": _f(a.get("volume_fp")),
+      225         [open_interest           ] "open_interest_a": _f(a.get("open_interest_fp")),
+  verify_data.py
+       19         [duration/endpoint-derived] "round", "minutes", "w_ace", "w_df", "w_svpt", "w_1stIn", "w_1stWon",
+
+total occurrences: 315
+
+SELECT? marks a line where a post-settlement field appears alongside a
+filtering/sorting/dedupe construct. It is a prompt to read the line, not
+a verdict -- classification is in SELECTION_AUDIT.md.
+
+-> C:\Users\gianf\kalshi\set1_overshoot\reports\audit_occurrences.txt

@@ -1,0 +1,61 @@
+# Queue position and the ATP liquidity inversion
+
+Recorded books: **65,528** snapshots, 150 markets, 06:58–18:14 UTC on 2026-08-01.
+
+## 5. Why is ATP the thinnest book?
+
+| series | snapshots | median spread ¢ | median top size | median mid ¢ | share of snapshots with mid in 5–95¢ |
+|---|---|---|---|---|---|
+| KXATPCHALLENGERMATCH | 3,836 | 1.0 | 2,005 | 56 | 99% |
+| KXATPMATCH | 22,395 | 1.0 | 312 | 54 | 100% |
+| KXITFMATCH | 11,678 | 1.0 | 465 | 48 | 98% |
+| KXITFWMATCH | 10,491 | 1.0 | 512 | 44 | 98% |
+| KXWTAMATCH | 15,954 | 1.0 | 1,187 | 48 | 96% |
+
+**Hypothesis tested:** the inversion is a *price-level* effect, not a tour effect.
+Books thin out near 0 and 100 because there is little left to trade for. If ATP
+markets sit at more extreme prices, they will look thinner without being less
+liquid in any useful sense.
+
+| mid band ¢ | snapshots | median top size | median spread ¢ |
+|---|---|---|---|
+| 0–10 | 2,095 | 1,058 | 1.0 |
+| 10–25 | 4,371 | 649 | 1.0 |
+| 25–50 | 23,926 | 549 | 1.0 |
+| 50–75 | 27,209 | 483 | 1.0 |
+| 75–90 | 5,520 | 477 | 1.0 |
+| 90–100 | 1,233 | 6,526 | 1.0 |
+
+Same comparison **within a single price band**, which removes the price-level
+explanation if the gap survives:
+
+| series | snapshots in 25–75¢ | median top size | median spread ¢ |
+|---|---|---|---|
+| KXATPCHALLENGERMATCH | 3,418 | 1,872 | 1.0 |
+| KXATPMATCH | 19,487 | 298 | 1.0 |
+| KXITFMATCH | 8,687 | 388 | 2.0 |
+| KXITFWMATCH | 7,369 | 420 | 2.0 |
+| KXWTAMATCH | 12,313 | 1,192 | 1.0 |
+
+## 4. Queue position — is 'the book trades through' generous?
+
+Task 1b fills a resting order only when the bid trades **strictly above** it,
+which implies everything at that level cleared. The question is how much that is.
+
+- median size resting at the touch: **564** contracts
+- p10 2, p90 7,240
+
+- fraction of consecutive minutes in which the best bid **rose** (i.e. the touch cleared): median across markets **6.1%**, n=150 markets
+
+**Reading.** A resting sell fills in Task 1b when the bid ticks up through it. The
+books show that happens in ~6% of minutes, and the queue that has to clear is a
+median of 564 contracts. Those are consistent with the 55–88% fill rates
+Task 1b reported over 5–60 minute windows, so the trade-through assumption is not
+obviously generous at 1 contract.
+
+**What this does NOT establish.** Queue position *within* a level is invisible here:
+the API gives aggregate size at each price, not order-level priority. A resting
+order that arrives last still cannot be shown to fill when only part of the level
+clears. Measuring that needs order-level data Kalshi does not publish, so the
+honest statement is that the fill model is **bounded above** by these numbers and
+cannot be tightened further with public data.
