@@ -1,0 +1,519 @@
+[
+ {
+  "family": "npb",
+  "name": "NPB official site",
+  "url": "https://npb.jp/bis/2026/stats/",
+  "http": 200,
+  "bytes": 59112,
+  "status": "OK",
+  "snippet": "<!DOCTYPE html> <html lang=\"ja\"> <head> <!-- Google Tag Manager --> <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getT"
+ },
+ {
+  "family": "npb",
+  "name": "npb repo search",
+  "url": "https://api.github.com/search/repositories?q=NPB+baseball+data&sort=updated&per_page=8",
+  "http": 200,
+  "bytes": 53287,
+  "status": "OK",
+  "json_keys": [
+   "incomplete_results",
+   "items",
+   "total_count"
+  ],
+  "total_count": 10,
+  "repos": [
+   [
+    "armstjc/Nippon-Baseball-Data-Repository",
+    "2026-07-28",
+    6
+   ],
+   [
+    "yasumorishima/npb-2021-backtest",
+    "2026-03-24",
+    0
+   ],
+   [
+    "MehdiKhouch/Data-Analyst",
+    "2026-01-08",
+    0
+   ],
+   [
+    "jkmende05/pynpb",
+    "2025-03-14",
+    0
+   ],
+   [
+    "yamam00s/scraping-baseball-data",
+    "2023-01-09",
+    0
+   ],
+   [
+    "alyssapacleb/Databases_baseball",
+    "2020-01-04",
+    0
+   ]
+  ]
+ },
+ {
+  "family": "npb",
+  "name": "pybaseball NPB?",
+  "url": "https://api.github.com/search/repositories?q=japanese+baseball+scraper&sort=updated&per_page=8",
+  "http": 200,
+  "bytes": 6268,
+  "status": "OK",
+  "json_keys": [
+   "incomplete_results",
+   "items",
+   "total_count"
+  ],
+  "total_count": 1,
+  "repos": [
+   [
+    "aaacevedo95/NPB-Scraper",
+    "2025-07-28",
+    0
+   ]
+  ]
+ },
+ {
+  "family": "kbo",
+  "name": "KBO official",
+  "url": "https://www.koreabaseball.com/Record/Player/HitterBasic/Basic1.aspx",
+  "http": 200,
+  "bytes": 79827,
+  "status": "OK",
+  "snippet": "<!DOCTYPE html> <html lang=\"ko\"> <head><title> \ud0c0\uc790 | \uc120\uc218 \uae30\ub85d | \uae30\ub85d\uc2e4 | \uae30\ub85d/\uc21c\uc704 | KBO </title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-"
+ },
+ {
+  "family": "kbo",
+  "name": "kbo data repo search",
+  "url": "https://api.github.com/search/repositories?q=KBO+baseball+data&sort=updated&per_page=8",
+  "http": 200,
+  "bytes": 50925,
+  "status": "OK",
+  "json_keys": [
+   "incomplete_results",
+   "items",
+   "total_count"
+  ],
+  "total_count": 10,
+  "repos": [
+   [
+    "kellytodhunter/KBO-Player-Analysis",
+    "2026-07-22",
+    1
+   ],
+   [
+    "Seunggon-Kim/b_project",
+    "2026-06-21",
+    0
+   ],
+   [
+    "Hawk-Jo/baseball_analysis",
+    "2026-02-10",
+    0
+   ],
+   [
+    "kyengwook/baseball",
+    "2025-10-15",
+    0
+   ],
+   [
+    "mingksong/pivot-momentum-baseball",
+    "2025-08-09",
+    0
+   ],
+   [
+    "mingksong/kboElo_zeroSum",
+    "2025-06-20",
+    1
+   ]
+  ]
+ },
+ {
+  "family": "soccer",
+  "name": "openfootball MLS",
+  "url": "https://raw.githubusercontent.com/openfootball/football.json/master/2024-25/mls.json",
+  "http": 404,
+  "bytes": 14,
+  "status": "DEAD"
+ },
+ {
+  "family": "soccer",
+  "name": "football-data.co.uk MX?",
+  "url": "https://www.football-data.co.uk/new/MEX.csv",
+  "http": 200,
+  "bytes": 563722,
+  "n_rows": 4673,
+  "n_columns": 25,
+  "columns": [
+   "\u00ef\u00bb\u00bfCountry",
+   "League",
+   "Season",
+   "Date",
+   "Time",
+   "Home",
+   "Away",
+   "HG",
+   "AG",
+   "Res",
+   "PSCH",
+   "PSCD",
+   "PSCA",
+   "MaxCH",
+   "MaxCD",
+   "MaxCA",
+   "AvgCH",
+   "AvgCD",
+   "AvgCA",
+   "BFECH"
+  ],
+  "status": "OK"
+ },
+ {
+  "family": "soccer",
+  "name": "football-data.co.uk USA (MLS)",
+  "url": "https://www.football-data.co.uk/new/USA.csv",
+  "http": 200,
+  "bytes": 719977,
+  "n_rows": 6069,
+  "n_columns": 25,
+  "columns": [
+   "\u00ef\u00bb\u00bfCountry",
+   "League",
+   "Season",
+   "Date",
+   "Time",
+   "Home",
+   "Away",
+   "HG",
+   "AG",
+   "Res",
+   "PSCH",
+   "PSCD",
+   "PSCA",
+   "MaxCH",
+   "MaxCD",
+   "MaxCA",
+   "AvgCH",
+   "AvgCD",
+   "AvgCA",
+   "BFECH"
+  ],
+  "status": "OK"
+ },
+ {
+  "family": "soccer",
+  "name": "api.football-data.org MLS",
+  "url": "https://api.football-data.org/v4/competitions/2145/matches",
+  "http": 403,
+  "bytes": 152,
+  "status": "DEAD"
+ },
+ {
+  "family": "soccer",
+  "name": "understat league list",
+  "url": "https://understat.com/league/La_liga",
+  "http": 200,
+  "bytes": 18670,
+  "status": "OK",
+  "snippet": "<!DOCTYPE html> <html lang=\"en\"> <head> <base href=\"https://understat.com/\"> <title>La liga xG Table and Scorers for the 2025/2026 season | Understat."
+ },
+ {
+  "family": "soccer",
+  "name": "ClubElo ratings API",
+  "url": "http://api.clubelo.com/2026-08-01",
+  "http": 200,
+  "bytes": 33182,
+  "n_rows": 593,
+  "n_columns": 7,
+  "columns": [
+   "Rank",
+   "Club",
+   "Country",
+   "Level",
+   "Elo",
+   "From",
+   "To"
+  ],
+  "status": "OK"
+ },
+ {
+  "family": "soccer",
+  "name": "openligadb",
+  "url": "https://api.openligadb.de/getmatchdata/bl1/2025",
+  "http": 200,
+  "bytes": 553144,
+  "status": "OK",
+  "n_items": 306,
+  "item_keys": [
+   "goals",
+   "group",
+   "lastUpdateDateTime",
+   "leagueId",
+   "leagueName",
+   "leagueSeason",
+   "leagueShortcut",
+   "location",
+   "matchDateTime",
+   "matchDateTimeUTC",
+   "matchID",
+   "matchIsFinished",
+   "matchResults",
+   "numberOfViewers",
+   "team1",
+   "team2"
+  ]
+ },
+ {
+  "family": "golf",
+  "name": "PGA Tour stats repo search",
+  "url": "https://api.github.com/search/repositories?q=pga+tour+data+scraper&sort=updated&per_page=8",
+  "http": 200,
+  "bytes": 25865,
+  "status": "OK",
+  "json_keys": [
+   "incomplete_results",
+   "items",
+   "total_count"
+  ],
+  "total_count": 4,
+  "repos": [
+   [
+    "dtung8068/PGA-Tour-Scraper",
+    "2025-03-13",
+    0
+   ],
+   [
+    "vetherton/PGATour-Data-Project",
+    "2024-07-16",
+    0
+   ],
+   [
+    "btatkinson/golf_scraper",
+    "2019-06-27",
+    5
+   ],
+   [
+    "jdubbert/Scrape-golf-data-from-web",
+    "2019-02-24",
+    7
+   ]
+  ]
+ },
+ {
+  "family": "golf",
+  "name": "DataGolf (free endpoint?)",
+  "url": "https://feeds.datagolf.com/preds/get-dg-rankings?file_format=json",
+  "http": 403,
+  "bytes": 63,
+  "status": "DEAD"
+ },
+ {
+  "family": "golf",
+  "name": "ESPN golf leaderboard",
+  "url": "https://site.api.espn.com/apis/site/v2/sports/golf/pga/leaderboard",
+  "http": 404,
+  "bytes": 181,
+  "status": "DEAD"
+ },
+ {
+  "family": "golf",
+  "name": "ESPN golf scoreboard",
+  "url": "https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard",
+  "http": 200,
+  "bytes": 1144230,
+  "status": "OK",
+  "json_keys": [
+   "day",
+   "events",
+   "leagues",
+   "provider",
+   "season"
+  ],
+  "n_items": 1,
+  "sample_event": "Rocket Classic"
+ },
+ {
+  "family": "esports",
+  "name": "Leaguepedia scoreboard games",
+  "url": "https://lol.fandom.com/api.php?action=cargoquery&tables=ScoreboardGames&fields=Tournament,Team1,Team2,Winner,DateTime_UTC,Gamelength&limit=20&format=json&order_by=DateTime_UTC%20DESC",
+  "http": 200,
+  "bytes": 372,
+  "status": "OK",
+  "json_keys": [
+   "error"
+  ]
+ },
+ {
+  "family": "esports",
+  "name": "vlr.gg valorant (unofficial api)",
+  "url": "https://vlrggapi.vercel.app/match?q=results",
+  "http": 402,
+  "bytes": 78,
+  "status": "DEAD"
+ },
+ {
+  "family": "esports",
+  "name": "Liquipedia valorant api",
+  "url": "https://liquipedia.net/valorant/api.php?action=parse&page=Main_Page&format=json",
+  "http": 200,
+  "bytes": 343736,
+  "status": "OK",
+  "json_keys": [
+   "parse"
+  ]
+ },
+ {
+  "family": "esports",
+  "name": "OpenDota (dota, as a control)",
+  "url": "https://api.opendota.com/api/proMatches",
+  "http": 200,
+  "bytes": 32832,
+  "status": "OK",
+  "n_items": 100,
+  "item_keys": [
+   "dire_name",
+   "dire_score",
+   "dire_team_id",
+   "duration",
+   "league_name",
+   "leagueid",
+   "match_id",
+   "radiant_name",
+   "radiant_score",
+   "radiant_team_id",
+   "radiant_win",
+   "series_id",
+   "series_type",
+   "start_time",
+   "version"
+  ]
+ },
+ {
+  "family": "espn",
+  "name": "ESPN MLB scoreboard",
+  "url": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard",
+  "http": 200,
+  "bytes": 440278,
+  "status": "OK",
+  "json_keys": [
+   "day",
+   "events",
+   "leagues",
+   "provider",
+   "season"
+  ],
+  "n_items": 15,
+  "sample_event": "St. Louis Cardinals at Toronto Blue Jays"
+ },
+ {
+  "family": "espn",
+  "name": "ESPN NBA scoreboard",
+  "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard",
+  "http": 200,
+  "bytes": 6394,
+  "status": "OK",
+  "json_keys": [
+   "day",
+   "events",
+   "leagues",
+   "provider",
+   "season"
+  ],
+  "n_items": 1,
+  "sample_event": "Miami Heat at Toronto Raptors"
+ },
+ {
+  "family": "espn",
+  "name": "ESPN tennis scoreboard",
+  "url": "https://site.api.espn.com/apis/site/v2/sports/tennis/atp/scoreboard",
+  "http": 200,
+  "bytes": 711880,
+  "status": "OK",
+  "json_keys": [
+   "day",
+   "events",
+   "leagues",
+   "provider",
+   "season"
+  ],
+  "n_items": 2,
+  "sample_event": "Mubadala DC Open"
+ },
+ {
+  "family": "espn",
+  "name": "ESPN soccer MLS scoreboard",
+  "url": "https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard",
+  "http": 200,
+  "bytes": 154813,
+  "status": "OK",
+  "json_keys": [
+   "day",
+   "events",
+   "leagues",
+   "provider",
+   "season"
+  ],
+  "n_items": 14,
+  "sample_event": "New England Revolution at CF Montr\u00e9al"
+ },
+ {
+  "family": "espn",
+  "name": "ESPN boxing scoreboard",
+  "url": "https://site.api.espn.com/apis/site/v2/sports/boxing/scoreboard",
+  "http": 404,
+  "bytes": 12,
+  "status": "DEAD"
+ },
+ {
+  "family": "tennis",
+  "name": "MatchCharting overview stats",
+  "url": "https://raw.githubusercontent.com/JeffSackmann/tennis_MatchChartingProject/master/charting-m-stats-Overview.csv",
+  "http": 200,
+  "bytes": 6651805,
+  "n_rows": 56850,
+  "n_columns": 20,
+  "columns": [
+   "match_id",
+   "player",
+   "set",
+   "serve_pts",
+   "aces",
+   "dfs",
+   "first_in",
+   "first_won",
+   "second_in",
+   "second_won",
+   "bk_pts",
+   "bp_saved",
+   "return_pts",
+   "return_pts_won",
+   "winners",
+   "winners_fh",
+   "winners_bh",
+   "unforced",
+   "unforced_fh",
+   "unforced_bh"
+  ],
+  "status": "OK"
+ },
+ {
+  "family": "tennis",
+  "name": "tennisabstract",
+  "url": "https://www.tennisabstract.com/",
+  "http": 200,
+  "bytes": 68089,
+  "status": "OK",
+  "snippet": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> <html xmlns=\"https://www.w3"
+ },
+ {
+  "family": "tennis",
+  "name": "ultimatetennisstatistics",
+  "url": "https://www.ultimatetennisstatistics.com/rankingsTable",
+  "http": 200,
+  "bytes": 29900,
+  "status": "OK",
+  "snippet": "<!DOCTYPE html> <html> <head> <meta charset=\"utf-8\"/> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/> <title>Ultimate Tennis Sta"
+ }
+]

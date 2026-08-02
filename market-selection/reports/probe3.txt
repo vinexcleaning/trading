@@ -1,0 +1,64 @@
+﻿npb       OK           200     59112  NPB official site
+npb       OK           200     53287  npb repo search
+           total_count=10
+           repos=[('armstjc/Nippon-Baseball-Data-Repository', '2026-07-28', 6), ('yasumorishima/npb-2021-backtest', '2026-03-24', 0), ('MehdiKhouch/Data-Analyst', '2026-01-08', 0), ('jkmende05
+npb       OK           200      6268  pybaseball NPB?
+           total_count=1
+           repos=[('aaacevedo95/NPB-Scraper', '2025-07-28', 0)]
+kbo       OK           200     79827  KBO official
+kbo       OK           200     50925  kbo data repo search
+           total_count=10
+           repos=[('kellytodhunter/KBO-Player-Analysis', '2026-07-22', 1), ('Seunggon-Kim/b_project', '2026-06-21', 0), ('Hawk-Jo/baseball_analysis', '2026-02-10', 0), ('kyengwook/baseball', '
+soccer    DEAD         404        14  openfootball MLS
+soccer    OK           200    563722  football-data.co.uk MX?
+           n_rows=4673
+           n_columns=25
+           columns=['ï»¿Country', 'League', 'Season', 'Date', 'Time', 'Home', 'Away', 'HG', 'AG', 'Res', 'PSCH', 'PSCD', 'PSCA', 'MaxCH', 'MaxCD', 'MaxCA', 'AvgCH', 'AvgCD', 'AvgCA', 'BFECH']
+soccer    OK           200    719977  football-data.co.uk USA (MLS)
+           n_rows=6069
+           n_columns=25
+           columns=['ï»¿Country', 'League', 'Season', 'Date', 'Time', 'Home', 'Away', 'HG', 'AG', 'Res', 'PSCH', 'PSCD', 'PSCA', 'MaxCH', 'MaxCD', 'MaxCA', 'AvgCH', 'AvgCD', 'AvgCA', 'BFECH']
+soccer    DEAD         403       152  api.football-data.org MLS
+soccer    OK           200     18670  understat league list
+soccer    OK           200     33182  ClubElo ratings API
+           n_rows=593
+           n_columns=7
+           columns=['Rank', 'Club', 'Country', 'Level', 'Elo', 'From', 'To']
+soccer    OK           200    553144  openligadb
+           n_items=306
+           item_keys=['goals', 'group', 'lastUpdateDateTime', 'leagueId', 'leagueName', 'leagueSeason', 'leagueShortcut', 'location', 'matchDateTime', 'matchDateTimeUTC', 'matchID', 'matchIsFinish
+golf      OK           200     25865  PGA Tour stats repo search
+           total_count=4
+           repos=[('dtung8068/PGA-Tour-Scraper', '2025-03-13', 0), ('vetherton/PGATour-Data-Project', '2024-07-16', 0), ('btatkinson/golf_scraper', '2019-06-27', 5), ('jdubbert/Scrape-golf-dat
+golf      DEAD         403        63  DataGolf (free endpoint?)
+golf      DEAD         404       181  ESPN golf leaderboard
+golf      OK           200   1144230  ESPN golf scoreboard
+           n_items=1
+           sample_event=Rocket Classic
+esports   OK           200       372  Leaguepedia scoreboard games
+esports   DEAD         402        78  vlr.gg valorant (unofficial api)
+esports   OK           200    343736  Liquipedia valorant api
+esports   OK           200     32832  OpenDota (dota, as a control)
+           n_items=100
+           item_keys=['dire_name', 'dire_score', 'dire_team_id', 'duration', 'league_name', 'leagueid', 'match_id', 'radiant_name', 'radiant_score', 'radiant_team_id', 'radiant_win', 'series_id', 
+espn      OK           200    440278  ESPN MLB scoreboard
+           n_items=15
+           sample_event=St. Louis Cardinals at Toronto Blue Jays
+espn      OK           200      6394  ESPN NBA scoreboard
+           n_items=1
+           sample_event=Miami Heat at Toronto Raptors
+espn      OK           200    711880  ESPN tennis scoreboard
+           n_items=2
+           sample_event=Mubadala DC Open
+espn      OK           200    154813  ESPN soccer MLS scoreboard
+           n_items=14
+           sample_event=New England Revolution at CF Montréal
+espn      DEAD         404        12  ESPN boxing scoreboard
+tennis    OK           200   6651805  MatchCharting overview stats
+           n_rows=56850
+           n_columns=20
+           columns=['match_id', 'player', 'set', 'serve_pts', 'aces', 'dfs', 'first_in', 'first_won', 'second_in', 'second_won', 'bk_pts', 'bp_saved', 'return_pts', 'return_pts_won', 'winners', 
+tennis    OK           200     68089  tennisabstract
+tennis    OK           200     29900  ultimatetennisstatistics
+
+22/28 OK
