@@ -1,0 +1,62 @@
+﻿propBets on event 401816352: count=555
+
+=== one entry, fully expanded ===
+{
+ "competition": {
+  "$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816352/competitions/401816352?lang=en&region=us"
+ },
+ "athlete": {
+  "$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/seasons/2026/athletes/32667?lang=en&region=us"
+ },
+ "provider": {
+  "$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/casinos/100?lang=en&region=us"
+ },
+ "type": {
+  "id": "46",
+  "name": "Total Strikeouts"
+ },
+ "odds": {
+  "american": {
+   "value": "+112",
+   "open": "-109"
+  },
+  "decimal": {
+   "value": "2.12",
+   "open": "1.91"
+  },
+  "fraction": {
+   "value": "28/25",
+   "open": "100/109"
+  },
+  "total": {
+   "value": "5.5",
+   "open": "5.5"
+  }
+ },
+ "lastUpdated": "2026-08-01T07:36Z",
+ "current": {
+  "target": {
+   "value": 5.5,
+   "displayValue": "5.5"
+  }
+ },
+ "open": {
+  "target": {
+   "value": 5.5,
+   "displayValue": "5.5"
+  }
+ }
+}
+
+=== resolving sub-refs on 6 entries ===
+python.exe : Traceback (most recent call last):
+At line:1 char:339
++ ... nf\trading; & "C:\Users\gianf\AppData\Local\Programs\Python\Python312 ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "C:\Users\gianf\trading\market-selection\src\expand_propbets.py", line 50, in <module>
+    kinds[rec.get("type")] += 1
+    ~~~~~^^^^^^^^^^^^^^^^^
+TypeError: unhashable type: 'dict'

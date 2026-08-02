@@ -1,0 +1,53 @@
+﻿scanned 3699 prop entries across 6 games
+entries carrying an American price: 3699 (100.0%)
+
+prop type                                 entries  example line
+Total Singles Hit                             244  0.5
+Total Doubles Hit                             244  0.5
+Total Hits                                    244  0.5
+Total Hits + Runs + RBIs                      244  1.5
+Total Runs Scored                             244  0.5
+Total RBIs                                    244  0.5
+Total Walks (Batter)                          242  0.5
+Hits Milestones                               122  1+
+Total Bases Milestones                        122  2+
+RBIs Milestones                               122  1+
+Home Runs Milestones                          122  1+
+Singles Milestones                            122  1+
+Doubles Milestones                            122  1+
+Runs Milestones                               122  1+
+Triples Milestones                            122  1+
+Hits + Runs + RBIs Milestones                 122  2+
+Walks (Batter) Milestones                     122  1+
+Strikeouts (Batter) Milestones                121  1+
+Total Stolen Bases                            116  0.5
+Stolen Bases Milestones                       115  1+
+First Home Run Hitter                         114  None
+Total Bases                                   100  1.5
+Team Total Runs                                24  4.5
+Total Strikeouts                               22  5.5
+Total Hits Allowed                             22  4.5
+Earned Runs Allowed                            22  2.5
+Total Walks Allowed                            22  1.5
+To Record Win                                  18  None
+Total Outs Recorded                            18  17.5
+1st 5 Innings Moneyline                        12  None
+1st 5 Innings Run Line                         12  -1.5
+1st 5 Innings Total Runs                       12  5.5
+First Team to Score                            12  None
+Strikeouts Thrown Milestones                   11  6+
+
+=== does the free feed cover Kalshi's prop families? ===
+  KXMLBKS          (strikeouts                ) -> COVERED: ['Total Strikeouts', 'Strikeouts Thrown Milestones', 'Strikeouts (Batter) Milestones']
+  KXMLBHIT         (hits                      ) -> COVERED: ['Total Hits', 'Total Hits Allowed', 'Total Hits + Runs + RBIs']
+  KXMLBTB          (total bases               ) -> COVERED: ['Total Strikeouts', 'Total Singles Hit', 'Total Doubles Hit']
+  KXMLBHR          (home runs                 ) -> COVERED: ['Earned Runs Allowed', 'Total Hits + Runs + RBIs', 'Total Runs Scored']
+  KXMLBHRR         (hits + runs + RBIs        ) -> COVERED: ['Total Hits', 'Total Hits Allowed', 'Total Hits + Runs + RBIs']
+  KXMLBRFI         (run in the first inning   ) -> COVERED: ['To Record Win', 'Total Singles Hit', 'Earned Runs Allowed']
+  KXMLBTEAMTOTAL   (team total runs           ) -> COVERED: ['Total Strikeouts', 'Total Singles Hit', 'Total Doubles Hit']
+  KXMLBF5TOTAL     (first 5 innings runs      ) -> COVERED: ['First Home Run Hitter', '1st 5 Innings Moneyline', '1st 5 Innings Run Line']
+  KXMLBTOTAL       (game total runs           ) -> COVERED: ['Total Strikeouts', 'Total Singles Hit', 'Total Doubles Hit']
+  KXMLBSPREAD      (run line                  ) -> COVERED: ['Earned Runs Allowed', 'Total Hits + Runs + RBIs', 'Total Runs Scored']
+  KXMLBEXTRAS      (extra innings             ) -> COVERED: ['1st 5 Innings Moneyline', '1st 5 Innings Run Line', '1st 5 Innings Total Runs']
+
+wrote reports/propbet_types.json

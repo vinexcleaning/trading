@@ -1,0 +1,42 @@
+{
+ "DraftKings": [
+  "awayTeamOdds",
+  "close",
+  "current",
+  "details",
+  "homeTeamOdds",
+  "initialOverUnder",
+  "initialSpread",
+  "links",
+  "moneylineWinner",
+  "open",
+  "overOdds",
+  "overUnder",
+  "price",
+  "propBets",
+  "provider",
+  "spread",
+  "spreadWinner",
+  "underOdds"
+ ],
+ "odds/{id}/head-to-heads": {
+  "http": 200,
+  "detail": "keys=['count', 'items', 'pageCount', 'pageIndex', 'pageSize']"
+ },
+ "predictor": {
+  "http": 200,
+  "detail": "keys=['$ref', 'awayTeam', 'homeTeam', 'lastModified', 'name', 'shortName']"
+ },
+ "probabilities": {
+  "http": 200,
+  "detail": "keys=['count', 'items', 'pageCount', 'pageIndex', 'pageSize']"
+ },
+ "situation": {
+  "http": 200,
+  "detail": "keys=['$ref', 'balls', 'batter', 'lastPlay', 'outs', 'pitcher', 'situationNotes', 'strikes']"
+ },
+ "competition root": {
+  "http": 200,
+  "detail": "keys=['$ref', 'attendance', 'boxscoreAvailable', 'boxscoreSource', 'bracketAvailable', 'broadcasts', 'commentaryAvailable', 'competitors', 'conferenceCompetition', 'conversationAvailable', 'dataFormat', 'date', 'details', 'divisionCompetition', 'duration', 'format']"
+ }
+}

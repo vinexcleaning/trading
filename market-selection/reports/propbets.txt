@@ -1,0 +1,47 @@
+﻿
+event 401816352 provider DraftKings
+  propBets = {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816352/competitions/401816352/odds/100/propBets?lang=en&region=us"}
+  -> lb/events/401816352/competitions/401816352/odds/100/propBets  http=200 bytes=18532
+     keys=['count', 'items', 'pageCount', 'pageIndex', 'pageSize'] count=555 items=25
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816352/competitions/401816352?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816352/competitions/401816352?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816352/competitions/401816352?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816352/competitions/401816352?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816352/competitions/401816352?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816352/competitions/401816352?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+
+event 401816348 provider DraftKings
+  propBets = {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816348/competitions/401816348/odds/100/propBets?lang=en&region=us"}
+  -> lb/events/401816348/competitions/401816348/odds/100/propBets  http=200 bytes=18757
+     keys=['count', 'items', 'pageCount', 'pageIndex', 'pageSize'] count=593 items=25
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816348/competitions/401816348?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816348/competitions/401816348?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816348/competitions/401816348?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816348/competitions/401816348?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816348/competitions/401816348?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816348/competitions/401816348?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+
+event 401816349 provider DraftKings
+  propBets = {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816349/competitions/401816349/odds/100/propBets?lang=en&region=us"}
+  -> lb/events/401816349/competitions/401816349/odds/100/propBets  http=200 bytes=18491
+     keys=['count', 'items', 'pageCount', 'pageIndex', 'pageSize'] count=677 items=25
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816349/competitions/401816349?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816349/competitions/401816349?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816349/competitions/401816349?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816349/competitions/401816349?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816349/competitions/401816349?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816349/competitions/401816349?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+
+event 401816360 provider DraftKings
+  propBets = {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816360/competitions/401816360/odds/100/propBets?lang=en&region=us"}
+  -> lb/events/401816360/competitions/401816360/odds/100/propBets  http=200 bytes=18516
+     keys=['count', 'items', 'pageCount', 'pageIndex', 'pageSize'] count=635 items=25
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816360/competitions/401816360?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816360/competitions/401816360?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816360/competitions/401816360?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816360/competitions/401816360?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816360/competitions/401816360?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+       {"competition": {"$ref": "http://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/events/401816360/competitions/401816360?lang=en&region=us"}, "athlete": {"$ref": "http://sports.core.api.espn.c
+
+VERDICT
+  ESPN's free feed DOES expose 2460 prop entries -- SHORTLIST #1's mechanism is weakened or dead.

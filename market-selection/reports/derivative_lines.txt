@@ -1,0 +1,33 @@
+﻿events: 15
+
+odds providers on the first event: 1
+
+=== provider: DraftKings ===
+  top-level keys: ['awayTeamOdds', 'close', 'current', 'details', 'homeTeamOdds', 'initialOverUnder', 'initialSpread', 'links', 'moneylineWinner', 'open', 'overOdds', 'overUnder', 'price', 'propBets', 'provider', 'spread', 'spreadWinner', 'underOdds']
+    details = TOR -179
+    overUnder = 8.0
+    spread = -1.5
+    overOdds = -112.0
+    underOdds = -108.0
+    moneylineWinner = False
+    spreadWinner = False
+    awayTeamOdds: keys=['close', 'current', 'favorite', 'moneyLine', 'open', 'team', 'underdog']
+      moneyLine = 147
+      favorite = False
+      underdog = True
+    homeTeamOdds: keys=['close', 'current', 'favorite', 'moneyLine', 'open', 'team', 'underdog']
+      moneyLine = -179
+      favorite = True
+      underdog = False
+
+=== is there a separate endpoint for derivative markets? ===
+  odds/{id}/head-to-heads    http=200 bytes=64 keys=['count', 'items', 'pageCount', 'pageIndex', 'pageSize']
+  predictor                  http=200 bytes=3790 keys=['$ref', 'awayTeam', 'homeTeam', 'lastModified', 'name', 'shortName']
+  probabilities              http=200 bytes=23191 keys=['count', 'items', 'pageCount', 'pageIndex', 'pageSize']
+  situation                  http=200 bytes=1655 keys=['$ref', 'balls', 'batter', 'lastPlay', 'outs', 'pitcher', 'situationNotes', 'strikes']
+  competition root           http=200 bytes=11883 keys=['$ref', 'attendance', 'boxscoreAvailable', 'boxscoreSource', 'bracketAvailable', 'broadcasts', 'commentaryAvailable', 'competitors', 'conferenceCompetition', 'conversationAvailable', 'dataFormat', 'date', 'details', 'divisionCompetition', 'duration', 'format']
+
+VERDICT:
+  free providers: ['DraftKings']
+  The odds object exposes moneyline, spread and a single game overUnder.
+  No first-5, no first-inning, no player prop fields were present.
