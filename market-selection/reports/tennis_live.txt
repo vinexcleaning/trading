@@ -1,0 +1,23 @@
+﻿
+=== ESPN tennis/atp scoreboard: http 200, 711880 bytes ===
+  events (tournaments): 2
+    Mubadala DC Open                                             matches=0 groupings=[]
+    National Bank Open presented by Rogers                       matches=0 groupings=[]
+
+=== ESPN tennis/wta scoreboard: http 200, 1061661 bytes ===
+  events (tournaments): 5
+    Mubadala DC Open                                             matches=0 groupings=[]
+    The Memphis Classic                                          matches=0 groupings=[]
+    Axeria Open 2026 powered by Intaro Sport                     matches=0 groupings=[]
+    National Bank Open presented by Rogers                       matches=0 groupings=[]
+    Warsaw T-Mobile Polish Open                                  matches=0 groupings=[]
+
+=== does anything free cover ITF / Challenger? ===
+  ESPN tennis all leagues              http=404 bytes=12 
+  ITF official                         http=200 bytes=212 
+  ITF api                              http=200 bytes=212 
+  ATP challenger tour page             http=403 bytes=5587 
+  Tennis Live Data (rapidapi probe)    http=401 bytes=91 
+  flashscore-ish: sofascore api        http=403 bytes=48 
+
+wrote reports/tennis_live_sources.json

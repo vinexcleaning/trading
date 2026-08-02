@@ -1,0 +1,64 @@
+{
+ "atp": [
+  {
+   "name": "Mubadala DC Open",
+   "matches": 0
+  },
+  {
+   "name": "National Bank Open presented by Rogers",
+   "matches": 0
+  }
+ ],
+ "wta": [
+  {
+   "name": "Mubadala DC Open",
+   "matches": 0
+  },
+  {
+   "name": "The Memphis Classic",
+   "matches": 0
+  },
+  {
+   "name": "Axeria Open 2026 powered by Intaro Sport",
+   "matches": 0
+  },
+  {
+   "name": "National Bank Open presented by Rogers",
+   "matches": 0
+  },
+  {
+   "name": "Warsaw T-Mobile Polish Open",
+   "matches": 0
+  }
+ ],
+ "ESPN tennis all leagues": {
+  "http": 404,
+  "bytes": 12,
+  "detail": ""
+ },
+ "ITF official": {
+  "http": 200,
+  "bytes": 212,
+  "detail": ""
+ },
+ "ITF api": {
+  "http": 200,
+  "bytes": 212,
+  "detail": ""
+ },
+ "ATP challenger tour page": {
+  "http": 403,
+  "bytes": 5587,
+  "detail": ""
+ },
+ "Tennis Live Data (rapidapi probe)": {
+  "http": 401,
+  "bytes": 91,
+  "detail": ""
+ },
+ "flashscore-ish: sofascore api": {
+  "http": 403,
+  "bytes": 48,
+  "detail": ""
+ }
+}
