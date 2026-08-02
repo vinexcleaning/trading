@@ -1,0 +1,32 @@
+﻿KXMLBRFI         mkts=   38 evts=  38 2sid=100.0% spr=  1.0 bidSz= 263745.9 d5c= 2294506.4 bar=  2.25 linear_cent
+                 'San Diego vs Arizona First Inning Run?' / 'Yes'
+KXMLBKS          mkts=  157 evts=  12 2sid=100.0% spr=  1.0 bidSz=    403.0 d5c=   12279.4 bar=  2.25 linear_cent
+                 'Cade Cavalli: 9+ strikeouts?' / 'Cade Cavalli: 9+'
+KXMLBHR          mkts=   61 evts=  12 2sid= 92.9% spr=  1.0 bidSz=   3070.0 d5c=   66180.0 bar=  2.25 linear_cent
+                 'Ronald Acuña Jr.: 2+ home runs?' / 'Ronald Acuña Jr.: 2+'
+KXMLBHIT         mkts=   98 evts=  11 2sid=100.0% spr=  1.0 bidSz=    122.0 d5c=    9398.3 bar=  2.25 linear_cent
+                 'Steven Kwan: 4+ hits?' / 'Steven Kwan: 4+'
+KXMLBTB          mkts=  127 evts=  11 2sid=100.0% spr=  1.0 bidSz=    352.0 d5c=   10549.0 bar=  2.25 linear_cent
+                 'Steven Kwan: 5+ total bases?' / 'Steven Kwan: 5+'
+KXMLBHRR         mkts=  140 evts=  11 2sid=100.0% spr=  1.0 bidSz=    128.0 d5c=    7615.0 bar=  2.25 linear_cent
+                 'Steven Kwan: 5+ hits + runs + RBIs?' / 'Steven Kwan: 5+'
+KXMLBTEAMTOTAL   mkts=  210 evts=  15 2sid=100.0% spr=  2.0 bidSz=     81.0 d5c=   11563.5 bar=  2.75 linear_cent
+                 'Will Texas score over 7.5 runs?' / 'Texas over 7.5 runs scored'
+KXMLBF5          mkts=   45 evts=  15 2sid=100.0% spr=  2.0 bidSz=    420.0 d5c=   31097.8 bar=  2.75 linear_cent
+                 'Texas vs Houston first 5 innings tie?' / 'Tie'
+KXMLBF5TOTAL     mkts=  105 evts=  15 2sid=100.0% spr=  1.0 bidSz=    806.0 d5c=   14817.8 bar=  2.25 linear_cent
+                 'Texas vs Houston first 5 innings runs?' / 'Over 6.5 runs in the first 5 innings'
+KXMLBF3          mkts=   45 evts=  15 2sid=100.0% spr=  2.0 bidSz=    331.0 d5c=    4294.7 bar=  2.75 linear_cent
+                 'Texas vs Houston first 3 innings tie?' / 'Tie'
+KXMLBF7          mkts=   45 evts=  15 2sid=100.0% spr=  2.0 bidSz=      8.0 d5c=    5213.0 bar=  2.75 linear_cent
+                 'Texas vs Houston first 7 innings tie?' / 'Tie'
+KXMLBEXTRAS      mkts=   38 evts=  38 2sid=100.0% spr=  2.0 bidSz=     30.0 d5c=    2984.0 bar=  2.75 linear_cent
+                 'Will there be extra innings in the Detroit vs Seattle game originally scheduled for Aug 4, 2026 at 9:40 PM EDT?' / 'Game goes to extra innings'
+KXMLBTOTAL       mkts=  164 evts=  15 2sid=100.0% spr=  1.0 bidSz=  15943.8 d5c=  315292.5 bar=  2.25 linear_cent
+                 'Texas vs Houston Total Runs?' / 'Over 8.5 runs scored'
+KXMLBSPREAD      mkts=   90 evts=  15 2sid=100.0% spr=  1.0 bidSz=   8573.0 d5c= 1242839.4 bar=  2.25 linear_cent
+                 'Texas wins by over 3.5 runs?' / 'Texas wins by over 3.5 runs'
+KXMLBGAME        mkts=   76 evts=  38 2sid=100.0% spr=  1.0 bidSz=  27996.7 d5c= 1238545.1 bar=  2.25 linear_cent
+                 'Detroit vs Seattle Winner?' / 'Seattle'
+
+wrote reports/mlb_props.json

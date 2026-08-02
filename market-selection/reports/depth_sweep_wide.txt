@@ -1,0 +1,43 @@
+﻿tape: 5,992,000 trades, 2008 series
+probing top 300 series x up to 3 markets
+
+  40/300  56s
+  80/300  114s
+  120/300  167s
+  160/300  225s
+  200/300  284s
+  240/300  338s
+  280/300  396s
+
+probed 262 series with open markets
+series with NO two-sided quote on any sampled market: 37 (14%)
+
+busiest families with NO two-sided quote (kill candidates):
+series                           trades sampled anydepth
+KXBTC15M                        1191657       1        0
+KXMVESPORTSMULTIGAMEEXTENDED     510281       3        0
+KXETH15M                         170775       1        0
+KXMVECROSSCATEGORY               136326       3        0
+KXXRP15M                          84950       1        0
+KXDOGE15M                         83613       1        0
+KXHYPE15M                         77956       1        0
+KXSOL15M                          74912       1        0
+KXBNB15M                          74754       1        0
+KXNPBGAME                         18923       3        0
+KXNEAR15M                         18035       1        0
+KXZEC15M                          14011       1        0
+KXHIGHLAX                          7579       3        3
+KXFOXNEWSMENTION                   6876       3        3
+KXNPBTOTAL                         6269       3        0
+KXRAIN                             5677       3        3
+KXTRUMPSAY                         4693       3        3
+KXAFLGAME                          4644       3        3
+KXHIGHDEN                          4609       3        0
+KXMLBNEXTTEAM                      4376       3        3
+KXTRUTHSOCIAL                      3579       3        3
+KXHIGHTSFO                         3501       3        3
+KXTEMPAUSH                         3333       3        0
+KXHIGHTSEA                         3220       3        3
+KXHIGHTPHX                         3194       3        0
+
+wrote reports/depth_sweep_wide.json  (427s)

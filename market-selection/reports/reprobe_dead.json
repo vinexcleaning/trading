@@ -1,0 +1,632 @@
+[
+ {
+  "series": "KXBTC15M",
+  "trades_in_tape": 1191657,
+  "open_now": 1,
+  "sampled": 1,
+  "two_sided": 1,
+  "any_depth": 1,
+  "spreads": [
+   0.1
+  ],
+  "bid_sz": [
+   57.0
+  ],
+  "pct_two_sided": 100.0,
+  "spread_med_c": 0.1,
+  "bid_sz_med": 57.0,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXMVESPORTSMULTIGAMEEXTENDED",
+  "trades_in_tape": 510281,
+  "open_now": 200,
+  "sampled": 4,
+  "two_sided": 0,
+  "any_depth": 0,
+  "spreads": [],
+  "bid_sz": [],
+  "pct_two_sided": 0.0,
+  "spread_med_c": null,
+  "bid_sz_med": null,
+  "verdict": "CONFIRMED no book"
+ },
+ {
+  "series": "KXETH15M",
+  "trades_in_tape": 170775,
+  "open_now": 1,
+  "sampled": 1,
+  "two_sided": 1,
+  "any_depth": 1,
+  "spreads": [
+   0.2
+  ],
+  "bid_sz": [
+   193.0
+  ],
+  "pct_two_sided": 100.0,
+  "spread_med_c": 0.2,
+  "bid_sz_med": 193.0,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXMVECROSSCATEGORY",
+  "trades_in_tape": 136326,
+  "open_now": 200,
+  "sampled": 4,
+  "two_sided": 0,
+  "any_depth": 0,
+  "spreads": [],
+  "bid_sz": [],
+  "pct_two_sided": 0.0,
+  "spread_med_c": null,
+  "bid_sz_med": null,
+  "verdict": "CONFIRMED no book"
+ },
+ {
+  "series": "KXXRP15M",
+  "trades_in_tape": 84950,
+  "open_now": 1,
+  "sampled": 1,
+  "two_sided": 1,
+  "any_depth": 1,
+  "spreads": [
+   1.0
+  ],
+  "bid_sz": [
+   2.0
+  ],
+  "pct_two_sided": 100.0,
+  "spread_med_c": 1.0,
+  "bid_sz_med": 2.0,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXDOGE15M",
+  "trades_in_tape": 83613,
+  "open_now": 1,
+  "sampled": 1,
+  "two_sided": 1,
+  "any_depth": 1,
+  "spreads": [
+   2.0
+  ],
+  "bid_sz": [
+   80.0
+  ],
+  "pct_two_sided": 100.0,
+  "spread_med_c": 2.0,
+  "bid_sz_med": 80.0,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXHYPE15M",
+  "trades_in_tape": 77956,
+  "open_now": 1,
+  "sampled": 1,
+  "two_sided": 1,
+  "any_depth": 1,
+  "spreads": [
+   0.1
+  ],
+  "bid_sz": [
+   592.0
+  ],
+  "pct_two_sided": 100.0,
+  "spread_med_c": 0.1,
+  "bid_sz_med": 592.0,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXSOL15M",
+  "trades_in_tape": 74912,
+  "open_now": 1,
+  "sampled": 1,
+  "two_sided": 1,
+  "any_depth": 1,
+  "spreads": [
+   1.7
+  ],
+  "bid_sz": [
+   1.0
+  ],
+  "pct_two_sided": 100.0,
+  "spread_med_c": 1.7,
+  "bid_sz_med": 1.0,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXBNB15M",
+  "trades_in_tape": 74754,
+  "open_now": 1,
+  "sampled": 1,
+  "two_sided": 1,
+  "any_depth": 1,
+  "spreads": [
+   1.0
+  ],
+  "bid_sz": [
+   6.0
+  ],
+  "pct_two_sided": 100.0,
+  "spread_med_c": 1.0,
+  "bid_sz_med": 6.0,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXNPBGAME",
+  "trades_in_tape": 18923,
+  "open_now": 34,
+  "sampled": 4,
+  "two_sided": 4,
+  "any_depth": 4,
+  "spreads": [
+   2.0,
+   1.0,
+   3.0,
+   2.0
+  ],
+  "bid_sz": [
+   2331.23,
+   851.5,
+   23.0,
+   2043.0
+  ],
+  "pct_two_sided": 100.0,
+  "spread_med_c": 2.0,
+  "bid_sz_med": 2043.0,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXNEAR15M",
+  "trades_in_tape": 18035,
+  "open_now": 1,
+  "sampled": 1,
+  "two_sided": 1,
+  "any_depth": 1,
+  "spreads": [
+   0.3
+  ],
+  "bid_sz": [
+   27.0
+  ],
+  "pct_two_sided": 100.0,
+  "spread_med_c": 0.3,
+  "bid_sz_med": 27.0,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXZEC15M",
+  "trades_in_tape": 14011,
+  "open_now": 1,
+  "sampled": 1,
+  "two_sided": 1,
+  "any_depth": 1,
+  "spreads": [
+   0.5
+  ],
+  "bid_sz": [
+   27.0
+  ],
+  "pct_two_sided": 100.0,
+  "spread_med_c": 0.5,
+  "bid_sz_med": 27.0,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXHIGHLAX",
+  "trades_in_tape": 7579,
+  "open_now": 12,
+  "sampled": 4,
+  "two_sided": 0,
+  "any_depth": 4,
+  "spreads": [],
+  "bid_sz": [],
+  "pct_two_sided": 0.0,
+  "spread_med_c": null,
+  "bid_sz_med": null,
+  "verdict": "ONE-SIDED only"
+ },
+ {
+  "series": "KXFOXNEWSMENTION",
+  "trades_in_tape": 6876,
+  "open_now": 15,
+  "sampled": 4,
+  "two_sided": 0,
+  "any_depth": 4,
+  "spreads": [],
+  "bid_sz": [],
+  "pct_two_sided": 0.0,
+  "spread_med_c": null,
+  "bid_sz_med": null,
+  "verdict": "ONE-SIDED only"
+ },
+ {
+  "series": "KXNPBTOTAL",
+  "trades_in_tape": 6269,
+  "open_now": 68,
+  "sampled": 4,
+  "two_sided": 4,
+  "any_depth": 4,
+  "spreads": [
+   2.0,
+   3.0,
+   2.0,
+   4.0
+  ],
+  "bid_sz": [
+   3.0,
+   76.05,
+   1292.01,
+   4310.0
+  ],
+  "pct_two_sided": 100.0,
+  "spread_med_c": 3.0,
+  "bid_sz_med": 1292.0,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXRAIN",
+  "trades_in_tape": 5677,
+  "open_now": 20,
+  "sampled": 4,
+  "two_sided": 0,
+  "any_depth": 4,
+  "spreads": [],
+  "bid_sz": [],
+  "pct_two_sided": 0.0,
+  "spread_med_c": null,
+  "bid_sz_med": null,
+  "verdict": "ONE-SIDED only"
+ },
+ {
+  "series": "KXTRUMPSAY",
+  "trades_in_tape": 4693,
+  "open_now": 17,
+  "sampled": 4,
+  "two_sided": 0,
+  "any_depth": 4,
+  "spreads": [],
+  "bid_sz": [],
+  "pct_two_sided": 0.0,
+  "spread_med_c": null,
+  "bid_sz_med": null,
+  "verdict": "ONE-SIDED only"
+ },
+ {
+  "series": "KXAFLGAME",
+  "trades_in_tape": 4644,
+  "open_now": 18,
+  "sampled": 4,
+  "two_sided": 0,
+  "any_depth": 4,
+  "spreads": [],
+  "bid_sz": [],
+  "pct_two_sided": 0.0,
+  "spread_med_c": null,
+  "bid_sz_med": null,
+  "verdict": "ONE-SIDED only"
+ },
+ {
+  "series": "KXHIGHDEN",
+  "trades_in_tape": 4609,
+  "open_now": 6,
+  "sampled": 4,
+  "two_sided": 4,
+  "any_depth": 4,
+  "spreads": [
+   2.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "bid_sz": [
+   6.18,
+   250.03,
+   115.9,
+   262.33
+  ],
+  "pct_two_sided": 100.0,
+  "spread_med_c": 1.0,
+  "bid_sz_med": 250.0,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXMLBNEXTTEAM",
+  "trades_in_tape": 4376,
+  "open_now": 200,
+  "sampled": 4,
+  "two_sided": 1,
+  "any_depth": 4,
+  "spreads": [
+   7.0
+  ],
+  "bid_sz": [
+   10.0
+  ],
+  "pct_two_sided": 25.0,
+  "spread_med_c": 7.0,
+  "bid_sz_med": 10.0,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXTRUTHSOCIAL",
+  "trades_in_tape": 3579,
+  "open_now": 10,
+  "sampled": 4,
+  "two_sided": 0,
+  "any_depth": 4,
+  "spreads": [],
+  "bid_sz": [],
+  "pct_two_sided": 0.0,
+  "spread_med_c": null,
+  "bid_sz_med": null,
+  "verdict": "ONE-SIDED only"
+ },
+ {
+  "series": "KXHIGHTSFO",
+  "trades_in_tape": 3501,
+  "open_now": 12,
+  "sampled": 4,
+  "two_sided": 0,
+  "any_depth": 4,
+  "spreads": [],
+  "bid_sz": [],
+  "pct_two_sided": 0.0,
+  "spread_med_c": null,
+  "bid_sz_med": null,
+  "verdict": "ONE-SIDED only"
+ },
+ {
+  "series": "KXTEMPAUSH",
+  "trades_in_tape": 3333,
+  "open_now": 10,
+  "sampled": 4,
+  "two_sided": 0,
+  "any_depth": 4,
+  "spreads": [],
+  "bid_sz": [],
+  "pct_two_sided": 0.0,
+  "spread_med_c": null,
+  "bid_sz_med": null,
+  "verdict": "ONE-SIDED only"
+ },
+ {
+  "series": "KXHIGHTSEA",
+  "trades_in_tape": 3220,
+  "open_now": 12,
+  "sampled": 4,
+  "two_sided": 0,
+  "any_depth": 4,
+  "spreads": [],
+  "bid_sz": [],
+  "pct_two_sided": 0.0,
+  "spread_med_c": null,
+  "bid_sz_med": null,
+  "verdict": "ONE-SIDED only"
+ },
+ {
+  "series": "KXHIGHTPHX",
+  "trades_in_tape": 3194,
+  "open_now": 6,
+  "sampled": 4,
+  "two_sided": 3,
+  "any_depth": 4,
+  "spreads": [
+   3.0,
+   1.0,
+   1.0
+  ],
+  "bid_sz": [
+   11.17,
+   209.33,
+   114.48
+  ],
+  "pct_two_sided": 75.0,
+  "spread_med_c": 1.0,
+  "bid_sz_med": 114.5,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXTEMPLAXH",
+  "trades_in_tape": 3115,
+  "open_now": 10,
+  "sampled": 4,
+  "two_sided": 0,
+  "any_depth": 4,
+  "spreads": [],
+  "bid_sz": [],
+  "pct_two_sided": 0.0,
+  "spread_med_c": null,
+  "bid_sz_med": null,
+  "verdict": "ONE-SIDED only"
+ },
+ {
+  "series": "KXNPBSPREAD",
+  "trades_in_tape": 2287,
+  "open_now": 68,
+  "sampled": 4,
+  "two_sided": 4,
+  "any_depth": 4,
+  "spreads": [
+   9.0,
+   1.0,
+   2.0,
+   38.0
+  ],
+  "bid_sz": [
+   2.0,
+   962.0,
+   3132.0,
+   9331.06
+  ],
+  "pct_two_sided": 100.0,
+  "spread_med_c": 9.0,
+  "bid_sz_med": 3132.0,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXHIGHTLV",
+  "trades_in_tape": 2172,
+  "open_now": 12,
+  "sampled": 4,
+  "two_sided": 0,
+  "any_depth": 4,
+  "spreads": [],
+  "bid_sz": [],
+  "pct_two_sided": 0.0,
+  "spread_med_c": null,
+  "bid_sz_med": null,
+  "verdict": "ONE-SIDED only"
+ },
+ {
+  "series": "KXNEXTTEAMMLB",
+  "trades_in_tape": 2106,
+  "open_now": 200,
+  "sampled": 4,
+  "two_sided": 0,
+  "any_depth": 4,
+  "spreads": [],
+  "bid_sz": [],
+  "pct_two_sided": 0.0,
+  "spread_med_c": null,
+  "bid_sz_med": null,
+  "verdict": "ONE-SIDED only"
+ },
+ {
+  "series": "KXTEMPNYCH",
+  "trades_in_tape": 1834,
+  "open_now": 10,
+  "sampled": 4,
+  "two_sided": 0,
+  "any_depth": 4,
+  "spreads": [],
+  "bid_sz": [],
+  "pct_two_sided": 0.0,
+  "spread_med_c": null,
+  "bid_sz_med": null,
+  "verdict": "ONE-SIDED only"
+ },
+ {
+  "series": "KXBNBD",
+  "trades_in_tape": 1282,
+  "open_now": 165,
+  "sampled": 4,
+  "two_sided": 1,
+  "any_depth": 4,
+  "spreads": [
+   6.0
+  ],
+  "bid_sz": [
+   10.0
+  ],
+  "pct_two_sided": 25.0,
+  "spread_med_c": 6.0,
+  "bid_sz_med": 10.0,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXUSL1HTOTAL",
+  "trades_in_tape": 1247,
+  "open_now": 6,
+  "sampled": 4,
+  "two_sided": 3,
+  "any_depth": 4,
+  "spreads": [
+   68.0,
+   62.0,
+   65.0
+  ],
+  "bid_sz": [
+   7.0,
+   8.0,
+   11.0
+  ],
+  "pct_two_sided": 75.0,
+  "spread_med_c": 65.0,
+  "bid_sz_med": 8.0,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXTEMPDCH",
+  "trades_in_tape": 1059,
+  "open_now": 10,
+  "sampled": 4,
+  "two_sided": 0,
+  "any_depth": 4,
+  "spreads": [],
+  "bid_sz": [],
+  "pct_two_sided": 0.0,
+  "spread_med_c": null,
+  "bid_sz_med": null,
+  "verdict": "ONE-SIDED only"
+ },
+ {
+  "series": "KXTEMPCHIH",
+  "trades_in_tape": 982,
+  "open_now": 10,
+  "sampled": 4,
+  "two_sided": 0,
+  "any_depth": 4,
+  "spreads": [],
+  "bid_sz": [],
+  "pct_two_sided": 0.0,
+  "spread_med_c": null,
+  "bid_sz_med": null,
+  "verdict": "ONE-SIDED only"
+ },
+ {
+  "series": "KXNPBRFI",
+  "trades_in_tape": 854,
+  "open_now": 17,
+  "sampled": 4,
+  "two_sided": 3,
+  "any_depth": 4,
+  "spreads": [
+   5.0,
+   5.0,
+   6.0
+  ],
+  "bid_sz": [
+   272.5,
+   629.33,
+   478.34
+  ],
+  "pct_two_sided": 75.0,
+  "spread_med_c": 5.0,
+  "bid_sz_med": 478.3,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXLOWTSEA",
+  "trades_in_tape": 650,
+  "open_now": 12,
+  "sampled": 4,
+  "two_sided": 1,
+  "any_depth": 4,
+  "spreads": [
+   2.0
+  ],
+  "bid_sz": [
+   2.36
+  ],
+  "pct_two_sided": 25.0,
+  "spread_med_c": 2.0,
+  "bid_sz_med": 2.4,
+  "verdict": "REVIVED -- stale ticker, family is quoted"
+ },
+ {
+  "series": "KXWNBANEXTTEAM",
+  "trades_in_tape": 581,
+  "open_now": 48,
+  "sampled": 4,
+  "two_sided": 0,
+  "any_depth": 4,
+  "spreads": [],
+  "bid_sz": [],
+  "pct_two_sided": 0.0,
+  "spread_med_c": null,
+  "bid_sz_med": null,
+  "verdict": "ONE-SIDED only"
+ }
+]

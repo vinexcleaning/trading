@@ -1,0 +1,46 @@
+# LEDGER_ADDITIONS.md — claims produced by the market-selection session
+
+Same schema as [LEDGER.md](../LEDGER.md). Kept separate because that file's
+header states that nothing in it was recomputed and every row was read off an
+existing artifact; these rows were **measured on 2026-08-02** and are new.
+
+Prefix `M` for market-selection. Merge into LEDGER.md at the next inventory.
+
+## ⚠ RETRACTED first, per the house convention
+
+| ID | Retracted claim | Why it died |
+|---|---|---|
+| **M001** | *"Kalshi's `/orderbook` returns empty; order-book depth is not public."* Held by a prior session, and **independently reproduced by this session on 85 markets** including one with 1.6 M in 24 h volume. | Both readings were made against a key that does not exist. The response has exactly one top-level key, `orderbook_fp`, holding `yes_dollars`/`no_dollars`. There is no `orderbook` key and no `yes`/`no` key, so the parse yields an empty book from an HTTP 200 on **every** market, liquid or dead. Depth is public, free, unauthenticated, **20 levels a side**. `S013` was right all along. |
+| **M002** | *(this session, earlier)* "Kalshi's MLB mid deviates from the free DraftKings line by a median 3.74¢, and 6 of 8 game sides exceed the cost bar." | n=8 sides = **4 games**, and the ESPN line for LAA/MIL was stale (67.56 on re-pull vs 59.13). At n=26 sides / 13 games: median **0.37¢**, max 1.94¢, **0 of 26** exceed the bar. |
+| **M003** | *(the tasking's premise)* "archive.pmxt.dev has rolling 30-day retention and deletes itself continuously." | Frozen, not rolling. 2026-05-16 files still serve at **78 days old**; everything after 2026-06-11T03 is 404. Under 30-day retention the surviving set would be the exact inverse of what is observed. |
+| **M004** | *(a memory)* "pmxt covers 2026-05-15 00:00 → 06-10 23:00, 648 files." | Measured hour by hour at both boundaries: **2026-05-14T14 → 2026-06-11T03, 662 files.** |
+
+## New claims
+
+| ID | Claim in plain English | Artifact | n + unit | Effect | STATUS |
+|---|---|---|---|---|---|
+| M005 | Kalshi order-book depth is **free, public, unauthenticated, 20 levels a side**, via `orderbook_fp.{yes,no}_dollars`. | `src/kalshi_api.py::orderbook`, `reports/orderbook_resolution.json`, live recorder | 231 markets × 18 cycles, 85 series | **92.2% of snapshots carry depth, 86.1% two-sided** | **SETTLED** |
+| M006 | Kalshi's legacy integer-cent price fields are **null on every market**. | `reports/probe_orderbook.json` | 200 open markets | `yes_bid`,`yes_ask`,`no_bid`,`no_ask`,`last_price`,`volume`,`open_interest`,`liquidity` non-null on **0 of 200** | **SETTLED** — confirms GUARDS #12 live |
+| M007 | `tick_size` **does not exist** on the Kalshi market object. The tick is `price_level_structure`. | `reports/price_levels.txt` | 419,828 open markets | `deci_cent` 348,428 / `linear_cent` 63,207 / `tapered_deci_cent` 8,193; `tick_size`, `tick_size_dollars`, `min_tick` present on **0** | **SETTLED** |
+| M008 | Only **78 of 3,074 series charge a maker fee**, and they carry **58% of 24 h volume**. | `reports/kalshi_universe.json` | 3,074 series | `quadratic_with_maker_fees` on 78 series / 2,172 markets / $29.0 M of $50.0 M | **SETTLED** — reproduces S010 at family level |
+| M009 | The Kalshi trade tape retains **exactly 69 days** and rolls daily. Settled markets **inside** the window still resolve as `finalized`. | `reports/tape_backfill.txt`, bisection | windows at 13 ages; 8 tickers spot-checked at 68 d | trades present at 69 d (2026-05-25), **zero at 70 d**; 8/8 old markets resolved `finalized` | **SETTLED** |
+| M010 | Therefore the trade tape matching the pmxt order-book window is **expiring one day per day**, and **2026-05-14→05-24 is already unrecoverable**. | M009 + `reports/pmxt_coverage.md` | — | whole overlap gone by **2026-08-19** | **SETTLED** (arithmetic) |
+| M011 | **Kalshi's MLB moneyline already tracks the free DraftKings line.** No pre-match modelling edge is available against any public reference. | `src/kalshi_vs_book.py` → `reports/kalshi_vs_dk_mlb.json` | **26 game sides = 13 games** | median \|Kalshi mid − devigged DK\| **0.37¢**, p90 0.75¢, max 1.94¢; **0 of 26** exceed the cost bar | **SUGGESTIVE** — one snapshot, not a closing line, DK is retail not Pinnacle. Direction reproduces T012 for a second sport. |
+| M012 | Kalshi's **3-way soccer ladders are internally consistent**; no basket arbitrage. | `src/threeway_sum.py` → `reports/threeway_sum.json` | **93 fully-quoted 3-way events**, 11 series | median ask overround **+3.00¢**; **0 of 93** net profitable either direction; 3 events quote a 99¢ gross ask-sum, killed by the 3-leg fee | **SETTLED** — guarded against C014 by requiring a complete two-sided 3-leg tiling |
+| M013 | **Cross-venue MLB arbitrage is structurally dead**, not statistically absent. | `src/cross_venue.py` → `reports/cross_venue_mlb.json` | **66 game sides ≈ 40 independent games** | median \|mid gap\| **1.00¢**, max 4.00¢ gross, against a **6.75¢** two-venue fee at 50¢; **0 of 66** net positive | **SETTLED** |
+| M014 | On MLB moneyline **Kalshi dominates Polymarket on cost**: same 1.00¢ median spread, **2.86× lower fee**. | same | 66 sides | — | **SETTLED** |
+| M015 | Sackmann's ATP/WTA match archive is **deleted**, not moved. The account now has **exactly one public repo**. | `reports/sackmann_forks.json` | GitHub API | `tennis_atp` 404, `tennis_wta` 404, account lists 1 repo (`tennis_MatchChartingProject`) | **SETTLED** |
+| M016 | No surviving Sackmann mirror was found — **but the search was not exhaustive**. | same | 23 candidate repos × 4 paths | 0 hits; 660 repos match `tennis_atp`; GitHub *code* search needs a token | **UNVERIFIED** — reported as not-found, not as absent |
+| M017 | **football-data.co.uk serves a wrong-country file, HTTP 200**, for codes it does not carry. | `src/check_soccer_odds_coverage.py` → `reports/soccer_odds_coverage.json` | sha256 of 13 country files | `COL`≡`POL`≡`BOL` (Poland), `KOR`≡`NOR` (Norway), `CHL`≡`CHI`≡`CHN` (China) — byte-identical | **SETTLED** — a naive probe "confirms" Colombian/Peruvian/Korean/Chilean odds that do not exist |
+| M018 | Free **Pinnacle closing lines** genuinely exist for four leagues Kalshi trades. | same | league column verified per file | Liga MX 4,437 · MLS 5,800 · Argentina 5,928 · Brazil Serie A 5,275 matches | **SETTLED** |
+| M019 | MLB **player props are tight but thin**; MLB **game-level markets are deep**. | `src/inspect_mlb_props.py` → `reports/mlb_props.json` | 14 markets sampled per family | props (KS/HIT/TB/HRR) 1¢ spread, **122–403** at touch; RFI **263,746**, moneyline 27,997, spread 8,573 at touch | **SUGGESTIVE** — 14 markets per family, busiest-first |
+| M020 | Kalshi's open-market count is **82.9% two exotic parlay series** with zero volume and 0.1% two-sided quotes. | `reports/kalshi_universe.json` | 419,828 markets | KXMVESPORTSMULTIGAMEEXTENDED 267,739 + KXMVECROSSCATEGORY 80,097 | **SETTLED** |
+| M021 | Polymarket's gamma API caps `limit` at 100 and **422s at offset 2100**. | `src/pull_poly_universe.py` | — | top 2,100 events by volume are enumerable; the tail is not | **SETTLED** (API fact) |
+| M022 | Polymarket books carry **more price levels than Kalshi's server cap**. | `reports/poly_depth_by_tag.json` | 208 markets, 26 tags | median 38–233 levels/market vs Kalshi's hard 20-a-side | **SUGGESTIVE** — busiest markets per tag |
+
+## The directional prior still holds
+
+Four retractions this session (M001–M004). **Every one shrank the edge or
+removed a premise.** M002 in particular took a measurement from "6 of 8 game
+sides beat the cost bar" to "0 of 26". Not one correction revealed a larger
+effect. That is now ~45 corrections across the archive with the same sign.

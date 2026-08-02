@@ -1,0 +1,45 @@
+﻿re-probing 37 families with FRESH listings
+
+series                           trades  open  samp 2sided  spread      bidSz  verdict
+KXBTC15M                        1191657     1     1 100.0%     0.1       57.0  REVIVED -- stale ticker, family is quoted
+KXMVESPORTSMULTIGAMEEXTENDED     510281   200     4   0.0%    None       None  CONFIRMED no book
+KXETH15M                         170775     1     1 100.0%     0.2      193.0  REVIVED -- stale ticker, family is quoted
+KXMVECROSSCATEGORY               136326   200     4   0.0%    None       None  CONFIRMED no book
+KXXRP15M                          84950     1     1 100.0%     1.0        2.0  REVIVED -- stale ticker, family is quoted
+KXDOGE15M                         83613     1     1 100.0%     2.0       80.0  REVIVED -- stale ticker, family is quoted
+KXHYPE15M                         77956     1     1 100.0%     0.1      592.0  REVIVED -- stale ticker, family is quoted
+KXSOL15M                          74912     1     1 100.0%     1.7        1.0  REVIVED -- stale ticker, family is quoted
+KXBNB15M                          74754     1     1 100.0%     1.0        6.0  REVIVED -- stale ticker, family is quoted
+KXNPBGAME                         18923    34     4 100.0%     2.0     2043.0  REVIVED -- stale ticker, family is quoted
+KXNEAR15M                         18035     1     1 100.0%     0.3       27.0  REVIVED -- stale ticker, family is quoted
+KXZEC15M                          14011     1     1 100.0%     0.5       27.0  REVIVED -- stale ticker, family is quoted
+KXHIGHLAX                          7579    12     4   0.0%    None       None  ONE-SIDED only
+KXFOXNEWSMENTION                   6876    15     4   0.0%    None       None  ONE-SIDED only
+KXNPBTOTAL                         6269    68     4 100.0%     3.0     1292.0  REVIVED -- stale ticker, family is quoted
+KXRAIN                             5677    20     4   0.0%    None       None  ONE-SIDED only
+KXTRUMPSAY                         4693    17     4   0.0%    None       None  ONE-SIDED only
+KXAFLGAME                          4644    18     4   0.0%    None       None  ONE-SIDED only
+KXHIGHDEN                          4609     6     4 100.0%     1.0      250.0  REVIVED -- stale ticker, family is quoted
+KXMLBNEXTTEAM                      4376   200     4  25.0%     7.0       10.0  REVIVED -- stale ticker, family is quoted
+KXTRUTHSOCIAL                      3579    10     4   0.0%    None       None  ONE-SIDED only
+KXHIGHTSFO                         3501    12     4   0.0%    None       None  ONE-SIDED only
+KXTEMPAUSH                         3333    10     4   0.0%    None       None  ONE-SIDED only
+KXHIGHTSEA                         3220    12     4   0.0%    None       None  ONE-SIDED only
+KXHIGHTPHX                         3194     6     4  75.0%     1.0      114.5  REVIVED -- stale ticker, family is quoted
+KXTEMPLAXH                         3115    10     4   0.0%    None       None  ONE-SIDED only
+KXNPBSPREAD                        2287    68     4 100.0%     9.0     3132.0  REVIVED -- stale ticker, family is quoted
+KXHIGHTLV                          2172    12     4   0.0%    None       None  ONE-SIDED only
+KXNEXTTEAMMLB                      2106   200     4   0.0%    None       None  ONE-SIDED only
+KXTEMPNYCH                         1834    10     4   0.0%    None       None  ONE-SIDED only
+KXBNBD                             1282   165     4  25.0%     6.0       10.0  REVIVED -- stale ticker, family is quoted
+KXUSL1HTOTAL                       1247     6     4  75.0%    65.0        8.0  REVIVED -- stale ticker, family is quoted
+KXTEMPDCH                          1059    10     4   0.0%    None       None  ONE-SIDED only
+KXTEMPCHIH                          982    10     4   0.0%    None       None  ONE-SIDED only
+KXNPBRFI                            854    17     4  75.0%     5.0      478.3  REVIVED -- stale ticker, family is quoted
+KXLOWTSEA                           650    12     4  25.0%     2.0        2.4  REVIVED -- stale ticker, family is quoted
+KXWNBANEXTTEAM                      581    48     4   0.0%    None       None  ONE-SIDED only
+
+REVIVED (the sweep was wrong): 19
+ONE-SIDED only:                 16
+CONFIRMED no book:              2
+NO OPEN MARKETS right now:      0
