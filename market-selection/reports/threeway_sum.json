@@ -1,0 +1,3443 @@
+[
+ {
+  "series": "KXLIGAMXGAME",
+  "event": "KXLIGAMXGAME-26AUG02TOLNCX",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -5.83,
+  "sell_all_net_c": -5.71,
+  "min_leg_sz": 74363.16,
+  "legs": [
+   {
+    "ticker": "KXLIGAMXGAME-26AUG02TOLNCX-TOL",
+    "side": "Toluca",
+    "bid": 62.0,
+    "ask": 63.0,
+    "bid_sz": 14936.14,
+    "ask_sz": 95763.48
+   },
+   {
+    "ticker": "KXLIGAMXGAME-26AUG02TOLNCX-TIE",
+    "side": "Tie",
+    "bid": 20.0,
+    "ask": 21.0,
+    "bid_sz": 6742.3,
+    "ask_sz": 105969.57
+   },
+   {
+    "ticker": "KXLIGAMXGAME-26AUG02TOLNCX-NCX",
+    "side": "Necaxa",
+    "bid": 16.0,
+    "ask": 18.0,
+    "bid_sz": 31001.11,
+    "ask_sz": 74363.16
+   }
+  ]
+ },
+ {
+  "series": "KXLIGAMXGAME",
+  "event": "KXLIGAMXGAME-26AUG02AMESLA",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 99.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 1.0,
+  "buy_all_net_c": -5.42,
+  "sell_all_net_c": -4.35,
+  "min_leg_sz": 8970.51,
+  "legs": [
+   {
+    "ticker": "KXLIGAMXGAME-26AUG02AMESLA-TIE",
+    "side": "Tie",
+    "bid": 17.0,
+    "ask": 18.0,
+    "bid_sz": 22675.56,
+    "ask_sz": 68830.29
+   },
+   {
+    "ticker": "KXLIGAMXGAME-26AUG02AMESLA-SLA",
+    "side": "Santos Laguna",
+    "bid": 14.000000000000002,
+    "ask": 15.0,
+    "bid_sz": 1476.4,
+    "ask_sz": 8970.51
+   },
+   {
+    "ticker": "KXLIGAMXGAME-26AUG02AMESLA-AME",
+    "side": "America",
+    "bid": 68.0,
+    "ask": 69.0,
+    "bid_sz": 15689.32,
+    "ask_sz": 117043.07
+   }
+  ]
+ },
+ {
+  "series": "KXARGPREMDIVGAME",
+  "event": "KXARGPREMDIVGAME-26AUG05BOCELP",
+  "ask_sum_c": 106.0,
+  "bid_sum_c": 96.0,
+  "overround_ask_c": 6.0,
+  "underround_bid_c": 4.0,
+  "buy_all_net_c": -10.66,
+  "sell_all_net_c": -8.41,
+  "min_leg_sz": 1.0,
+  "legs": [
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG05BOCELP-TIE",
+    "side": "Tie",
+    "bid": 31.0,
+    "ask": 34.0,
+    "bid_sz": 3.0,
+    "ask_sz": 77.0
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG05BOCELP-ELP",
+    "side": "Estudiantes La Plata",
+    "bid": 22.0,
+    "ask": 26.0,
+    "bid_sz": 73.0,
+    "ask_sz": 1.0
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG05BOCELP-BOC",
+    "side": "Boca Juniors",
+    "bid": 43.0,
+    "ask": 46.0,
+    "bid_sz": 2.0,
+    "ask_sz": 77.0
+   }
+  ]
+ },
+ {
+  "series": "KXARGPREMDIVGAME",
+  "event": "KXARGPREMDIVGAME-26AUG03HURTUC",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 96.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 4.0,
+  "buy_all_net_c": -6.46,
+  "sell_all_net_c": -8.35,
+  "min_leg_sz": 75.0,
+  "legs": [
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG03HURTUC-TUC",
+    "side": "Tucuman",
+    "bid": 20.0,
+    "ask": 21.0,
+    "bid_sz": 799.0,
+    "ask_sz": 1391.0
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG03HURTUC-TIE",
+    "side": "Tie",
+    "bid": 31.0,
+    "ask": 33.0,
+    "bid_sz": 420.0,
+    "ask_sz": 2376.0
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG03HURTUC-HUR",
+    "side": "Huracan",
+    "bid": 45.0,
+    "ask": 48.0,
+    "bid_sz": 1400.0,
+    "ask_sz": 75.0
+   }
+  ]
+ },
+ {
+  "series": "KXARGPREMDIVGAME",
+  "event": "KXARGPREMDIVGAME-26AUG03CCSLA",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -6.69,
+  "sell_all_net_c": -6.6,
+  "min_leg_sz": 1048.0,
+  "legs": [
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG03CCSLA-TIE",
+    "side": "Tie",
+    "bid": 32.0,
+    "ask": 33.0,
+    "bid_sz": 787.0,
+    "ask_sz": 1621.0
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG03CCSLA-SLA",
+    "side": "San Lorenzo de Almagro",
+    "bid": 37.0,
+    "ask": 38.0,
+    "bid_sz": 1001.54,
+    "ask_sz": 1230.0
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG03CCSLA-CC",
+    "side": "Central Cordoba",
+    "bid": 28.999999999999996,
+    "ask": 31.0,
+    "bid_sz": 69.0,
+    "ask_sz": 1048.0
+   }
+  ]
+ },
+ {
+  "series": "KXARGPREMDIVGAME",
+  "event": "KXARGPREMDIVGAME-26AUG03VELCAI",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 99.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 1.0,
+  "buy_all_net_c": -6.69,
+  "sell_all_net_c": -5.62,
+  "min_leg_sz": 727.0,
+  "legs": [
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG03VELCAI-VEL",
+    "side": "Velez Sarsfield",
+    "bid": 37.0,
+    "ask": 38.0,
+    "bid_sz": 420.0,
+    "ask_sz": 727.0
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG03VELCAI-TIE",
+    "side": "Tie",
+    "bid": 33.0,
+    "ask": 34.0,
+    "bid_sz": 420.0,
+    "ask_sz": 1775.0
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG03VELCAI-CAI",
+    "side": "Independiente Avellaneda",
+    "bid": 28.999999999999996,
+    "ask": 30.0,
+    "bid_sz": 208.0,
+    "ask_sz": 2160.3
+   }
+  ]
+ },
+ {
+  "series": "KXARGPREMDIVGAME",
+  "event": "KXARGPREMDIVGAME-26AUG03PLACAT",
+  "ask_sum_c": 101.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 1.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -5.67,
+  "sell_all_net_c": -6.6,
+  "min_leg_sz": 78.0,
+  "legs": [
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG03PLACAT-TIE",
+    "side": "Tie",
+    "bid": 33.0,
+    "ask": 34.0,
+    "bid_sz": 420.0,
+    "ask_sz": 1491.0
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG03PLACAT-PLA",
+    "side": "Platense",
+    "bid": 36.0,
+    "ask": 37.0,
+    "bid_sz": 448.0,
+    "ask_sz": 78.0
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG03PLACAT-CAT",
+    "side": "Talleres Cordoba",
+    "bid": 28.999999999999996,
+    "ask": 30.0,
+    "bid_sz": 69.0,
+    "ask_sz": 420.0
+   }
+  ]
+ },
+ {
+  "series": "KXARGPREMDIVGAME",
+  "event": "KXARGPREMDIVGAME-26AUG03CASIRM",
+  "ask_sum_c": 103.0,
+  "bid_sum_c": 100.0,
+  "overround_ask_c": 3.0,
+  "underround_bid_c": 0.0,
+  "buy_all_net_c": -7.6,
+  "sell_all_net_c": -4.53,
+  "min_leg_sz": 2388.03,
+  "legs": [
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG03CASIRM-TIE",
+    "side": "Tie",
+    "bid": 31.0,
+    "ask": 32.0,
+    "bid_sz": 420.0,
+    "ask_sz": 3868.09
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG03CASIRM-IRM",
+    "side": "Rivadavia",
+    "bid": 44.0,
+    "ask": 44.99999999999999,
+    "bid_sz": 16.16,
+    "ask_sz": 3884.41
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG03CASIRM-CAS",
+    "side": "Junin",
+    "bid": 25.0,
+    "ask": 26.0,
+    "bid_sz": 5650.0,
+    "ask_sz": 2388.03
+   }
+  ]
+ },
+ {
+  "series": "KXARGPREMDIVGAME",
+  "event": "KXARGPREMDIVGAME-26AUG02LANIACC",
+  "ask_sum_c": 100.0,
+  "bid_sum_c": 97.0,
+  "overround_ask_c": 0.0,
+  "underround_bid_c": 3.0,
+  "buy_all_net_c": -4.5,
+  "sell_all_net_c": -7.42,
+  "min_leg_sz": 1025.0,
+  "legs": [
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG02LANIACC-TIE",
+    "side": "Tie",
+    "bid": 31.0,
+    "ask": 32.0,
+    "bid_sz": 1856.32,
+    "ask_sz": 1025.0
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG02LANIACC-LAN",
+    "side": "Lanus",
+    "bid": 44.0,
+    "ask": 44.99999999999999,
+    "bid_sz": 1847.0,
+    "ask_sz": 5825.0
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG02LANIACC-IACC",
+    "side": "Instituto Cordoba",
+    "bid": 22.0,
+    "ask": 23.0,
+    "bid_sz": 2014.74,
+    "ask_sz": 1252.88
+   }
+  ]
+ },
+ {
+  "series": "KXARGPREMDIVGAME",
+  "event": "KXARGPREMDIVGAME-26AUG02RIVCARC",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 99.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 1.0,
+  "buy_all_net_c": -6.48,
+  "sell_all_net_c": -5.41,
+  "min_leg_sz": 2434.0,
+  "legs": [
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG02RIVCARC-TIE",
+    "side": "Tie",
+    "bid": 30.0,
+    "ask": 31.0,
+    "bid_sz": 715.0,
+    "ask_sz": 2673.62
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG02RIVCARC-RIV",
+    "side": "River Plate",
+    "bid": 47.0,
+    "ask": 48.0,
+    "bid_sz": 1163.0,
+    "ask_sz": 2434.0
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG02RIVCARC-CARC",
+    "side": "Rosario",
+    "bid": 22.0,
+    "ask": 23.0,
+    "bid_sz": 69.0,
+    "ask_sz": 6521.04
+   }
+  ]
+ },
+ {
+  "series": "KXARGPREMDIVGAME",
+  "event": "KXARGPREMDIVGAME-26AUG02NOBBOC",
+  "ask_sum_c": 101.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 1.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -5.57,
+  "sell_all_net_c": -6.5,
+  "min_leg_sz": 1023.85,
+  "legs": [
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG02NOBBOC-TIE",
+    "side": "Tie",
+    "bid": 30.0,
+    "ask": 31.0,
+    "bid_sz": 5905.0,
+    "ask_sz": 1027.17
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG02NOBBOC-NOB",
+    "side": "Newell's Old Boys",
+    "bid": 25.0,
+    "ask": 26.0,
+    "bid_sz": 1032.2,
+    "ask_sz": 1023.85
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG02NOBBOC-BOC",
+    "side": "Boca Juniors",
+    "bid": 43.0,
+    "ask": 43.99999999999999,
+    "bid_sz": 914.0,
+    "ask_sz": 1206.35
+   }
+  ]
+ },
+ {
+  "series": "KXARGPREMDIVGAME",
+  "event": "KXARGPREMDIVGAME-26AUG02CAAGLP",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 99.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 1.0,
+  "buy_all_net_c": -6.69,
+  "sell_all_net_c": -5.62,
+  "min_leg_sz": 162.83,
+  "legs": [
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG02CAAGLP-TIE",
+    "side": "Tie",
+    "bid": 34.0,
+    "ask": 35.0,
+    "bid_sz": 51.0,
+    "ask_sz": 3502.08
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG02CAAGLP-GLP",
+    "side": "Gimnasia La Plata",
+    "bid": 36.0,
+    "ask": 37.0,
+    "bid_sz": 446.0,
+    "ask_sz": 1336.71
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG02CAAGLP-CAA",
+    "side": "Aldosivi",
+    "bid": 28.999999999999996,
+    "ask": 30.0,
+    "bid_sz": 438.0,
+    "ask_sz": 162.83
+   }
+  ]
+ },
+ {
+  "series": "KXARGPREMDIVGAME",
+  "event": "KXARGPREMDIVGAME-26AUG02RIEBAR",
+  "ask_sum_c": 101.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 1.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -5.54,
+  "sell_all_net_c": -6.46,
+  "min_leg_sz": 1966.76,
+  "legs": [
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG02RIEBAR-TIE",
+    "side": "Tie",
+    "bid": 33.0,
+    "ask": 34.0,
+    "bid_sz": 8549.19,
+    "ask_sz": 1966.76
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG02RIEBAR-RIE",
+    "side": "Riestra",
+    "bid": 43.0,
+    "ask": 43.99999999999999,
+    "bid_sz": 12161.47,
+    "ask_sz": 3856.27
+   },
+   {
+    "ticker": "KXARGPREMDIVGAME-26AUG02RIEBAR-BAR",
+    "side": "Barracas",
+    "bid": 22.0,
+    "ask": 23.0,
+    "bid_sz": 840.0,
+    "ask_sz": 5835.49
+   }
+  ]
+ },
+ {
+  "series": "KXCOPADOBRASILGAME",
+  "event": "KXCOPADOBRASILGAME-26AUG05GPAMIR",
+  "ask_sum_c": 228.0,
+  "bid_sum_c": 18.0,
+  "overround_ask_c": 128.0,
+  "underround_bid_c": 82.0,
+  "buy_all_net_c": -131.83,
+  "sell_all_net_c": -83.18,
+  "min_leg_sz": 4.0,
+  "legs": [
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG05GPAMIR-TIE",
+    "side": "Reg Time: Tie",
+    "bid": 6.0,
+    "ask": 76.0,
+    "bid_sz": 16.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG05GPAMIR-MIR",
+    "side": "Reg Time: Mirassol",
+    "bid": 6.0,
+    "ask": 76.0,
+    "bid_sz": 16.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG05GPAMIR-GPA",
+    "side": "Reg Time: Gremio",
+    "bid": 6.0,
+    "ask": 76.0,
+    "bid_sz": 16.0,
+    "ask_sz": 4.0
+   }
+  ]
+ },
+ {
+  "series": "KXCOPADOBRASILGAME",
+  "event": "KXCOPADOBRASILGAME-26AUG05CRUCHA",
+  "ask_sum_c": 228.0,
+  "bid_sum_c": 18.0,
+  "overround_ask_c": 128.0,
+  "underround_bid_c": 82.0,
+  "buy_all_net_c": -131.83,
+  "sell_all_net_c": -83.18,
+  "min_leg_sz": 4.0,
+  "legs": [
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG05CRUCHA-TIE",
+    "side": "Reg Time: Tie",
+    "bid": 6.0,
+    "ask": 76.0,
+    "bid_sz": 16.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG05CRUCHA-CRU",
+    "side": "Reg Time: Cruzeiro",
+    "bid": 6.0,
+    "ask": 76.0,
+    "bid_sz": 16.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG05CRUCHA-CHA",
+    "side": "Reg Time: Chapecoense",
+    "bid": 6.0,
+    "ask": 76.0,
+    "bid_sz": 16.0,
+    "ask_sz": 4.0
+   }
+  ]
+ },
+ {
+  "series": "KXCOPADOBRASILGAME",
+  "event": "KXCOPADOBRASILGAME-26AUG04CRSAN",
+  "ask_sum_c": 107.0,
+  "bid_sum_c": 94.0,
+  "overround_ask_c": 7.0,
+  "underround_bid_c": 6.0,
+  "buy_all_net_c": -11.66,
+  "sell_all_net_c": -10.34,
+  "min_leg_sz": 70.0,
+  "legs": [
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG04CRSAN-TIE",
+    "side": "Reg Time: Tie",
+    "bid": 28.000000000000004,
+    "ask": 31.0,
+    "bid_sz": 3.0,
+    "ask_sz": 3701.0
+   },
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG04CRSAN-SAN",
+    "side": "Reg Time: Santos",
+    "bid": 44.0,
+    "ask": 48.0,
+    "bid_sz": 2.0,
+    "ask_sz": 70.0
+   },
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG04CRSAN-CR",
+    "side": "Reg Time: Remo",
+    "bid": 22.0,
+    "ask": 28.0,
+    "bid_sz": 73.0,
+    "ask_sz": 1278.0
+   }
+  ]
+ },
+ {
+  "series": "KXCOPADOBRASILGAME",
+  "event": "KXCOPADOBRASILGAME-26AUG04JUVATL",
+  "ask_sum_c": 110.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 10.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -14.78,
+  "sell_all_net_c": -6.5,
+  "min_leg_sz": 5.11,
+  "legs": [
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG04JUVATL-TIE",
+    "side": "Reg Time: Tie",
+    "bid": 28.999999999999996,
+    "ask": 37.0,
+    "bid_sz": 9.0,
+    "ask_sz": 70.0
+   },
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG04JUVATL-JUV",
+    "side": "Reg Time: Juventude RS",
+    "bid": 26.0,
+    "ask": 28.0,
+    "bid_sz": 69.0,
+    "ask_sz": 466.0
+   },
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG04JUVATL-ATL",
+    "side": "Reg Time: Atletico Mineiro",
+    "bid": 43.0,
+    "ask": 44.99999999999999,
+    "bid_sz": 5.11,
+    "ask_sz": 5.11
+   }
+  ]
+ },
+ {
+  "series": "KXCOPADOBRASILGAME",
+  "event": "KXCOPADOBRASILGAME-26AUG03CAPVIT",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -5.72,
+  "sell_all_net_c": -5.61,
+  "min_leg_sz": 700.0,
+  "legs": [
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG03CAPVIT-VIT",
+    "side": "Vitoria",
+    "bid": 12.0,
+    "ask": 13.0,
+    "bid_sz": 69.0,
+    "ask_sz": 777.0
+   },
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG03CAPVIT-TIE",
+    "side": "Tie",
+    "bid": 23.0,
+    "ask": 25.0,
+    "bid_sz": 4.0,
+    "ask_sz": 3701.0
+   },
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG03CAPVIT-CAP",
+    "side": "Paranaense",
+    "bid": 63.0,
+    "ask": 64.0,
+    "bid_sz": 0.03,
+    "ask_sz": 700.0
+   }
+  ]
+ },
+ {
+  "series": "KXCOPADOBRASILGAME",
+  "event": "KXCOPADOBRASILGAME-26AUG02INTCOR",
+  "ask_sum_c": 100.0,
+  "bid_sum_c": 97.0,
+  "overround_ask_c": 0.0,
+  "underround_bid_c": 3.0,
+  "buy_all_net_c": -4.58,
+  "sell_all_net_c": -7.5,
+  "min_leg_sz": 97.72,
+  "legs": [
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG02INTCOR-TIE",
+    "side": "Tie",
+    "bid": 31.0,
+    "ask": 32.0,
+    "bid_sz": 1164.22,
+    "ask_sz": 1511.09
+   },
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG02INTCOR-INT",
+    "side": "Internacional",
+    "bid": 41.0,
+    "ask": 42.00000000000001,
+    "bid_sz": 1221.5,
+    "ask_sz": 1563.0
+   },
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG02INTCOR-COR",
+    "side": "Corinthians",
+    "bid": 25.0,
+    "ask": 26.0,
+    "bid_sz": 1188.0,
+    "ask_sz": 97.72
+   }
+  ]
+ },
+ {
+  "series": "KXCOPADOBRASILGAME",
+  "event": "KXCOPADOBRASILGAME-26AUG02CHACRU",
+  "ask_sum_c": 101.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 1.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -5.32,
+  "sell_all_net_c": -6.25,
+  "min_leg_sz": 703.24,
+  "legs": [
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG02CHACRU-TIE",
+    "side": "Tie",
+    "bid": 27.0,
+    "ask": 28.0,
+    "bid_sz": 116.0,
+    "ask_sz": 2147.0
+   },
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG02CHACRU-CRU",
+    "side": "Cruzeiro",
+    "bid": 51.0,
+    "ask": 52.0,
+    "bid_sz": 1371.0,
+    "ask_sz": 1677.4
+   },
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG02CHACRU-CHA",
+    "side": "Chapecoense",
+    "bid": 20.0,
+    "ask": 21.0,
+    "bid_sz": 744.0,
+    "ask_sz": 703.24
+   }
+  ]
+ },
+ {
+  "series": "KXCOPADOBRASILGAME",
+  "event": "KXCOPADOBRASILGAME-26AUG02MIRGPA",
+  "ask_sum_c": 103.0,
+  "bid_sum_c": 99.0,
+  "overround_ask_c": 3.0,
+  "underround_bid_c": 1.0,
+  "buy_all_net_c": -7.5,
+  "sell_all_net_c": -5.4,
+  "min_leg_sz": 1058.76,
+  "legs": [
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG02MIRGPA-TIE",
+    "side": "Tie",
+    "bid": 28.000000000000004,
+    "ask": 30.0,
+    "bid_sz": 861.0,
+    "ask_sz": 2506.0
+   },
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG02MIRGPA-MIR",
+    "side": "Mirassol",
+    "bid": 48.0,
+    "ask": 49.0,
+    "bid_sz": 21.0,
+    "ask_sz": 2994.03
+   },
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG02MIRGPA-GPA",
+    "side": "Gremio",
+    "bid": 23.0,
+    "ask": 24.0,
+    "bid_sz": 454.0,
+    "ask_sz": 1058.76
+   }
+  ]
+ },
+ {
+  "series": "KXCOPADOBRASILGAME",
+  "event": "KXCOPADOBRASILGAME-26AUG02PALFOR",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 99.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 1.0,
+  "buy_all_net_c": -4.56,
+  "sell_all_net_c": -3.49,
+  "min_leg_sz": 548.0,
+  "legs": [
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG02PALFOR-TIE",
+    "side": "Tie",
+    "bid": 15.0,
+    "ask": 16.0,
+    "bid_sz": 444.0,
+    "ask_sz": 2102.0
+   },
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG02PALFOR-PAL",
+    "side": "Palmeiras",
+    "bid": 78.0,
+    "ask": 79.0,
+    "bid_sz": 497.83,
+    "ask_sz": 1581.05
+   },
+   {
+    "ticker": "KXCOPADOBRASILGAME-26AUG02PALFOR-FOR",
+    "side": "Fortaleza",
+    "bid": 6.0,
+    "ask": 7.0,
+    "bid_sz": 420.0,
+    "ask_sz": 548.0
+   }
+  ]
+ },
+ {
+  "series": "KXDIMAYORGAME",
+  "event": "KXDIMAYORGAME-26AUG05INTJAG",
+  "ask_sum_c": 189.0,
+  "bid_sum_c": 32.0,
+  "overround_ask_c": 89.0,
+  "underround_bid_c": 68.0,
+  "buy_all_net_c": -93.89,
+  "sell_all_net_c": -70.0,
+  "min_leg_sz": 2.0,
+  "legs": [
+   {
+    "ticker": "KXDIMAYORGAME-26AUG05INTJAG-TIE",
+    "side": "Tie",
+    "bid": 11.0,
+    "ask": 65.0,
+    "bid_sz": 9.0,
+    "ask_sz": 2.0
+   },
+   {
+    "ticker": "KXDIMAYORGAME-26AUG05INTJAG-JAG",
+    "side": "Jaguares",
+    "bid": 11.0,
+    "ask": 64.0,
+    "bid_sz": 9.0,
+    "ask_sz": 2.0
+   },
+   {
+    "ticker": "KXDIMAYORGAME-26AUG05INTJAG-INT",
+    "side": "Internacional de Bogota",
+    "bid": 10.0,
+    "ask": 60.0,
+    "bid_sz": 350.0,
+    "ask_sz": 302.0
+   }
+  ]
+ },
+ {
+  "series": "KXDIMAYORGAME",
+  "event": "KXDIMAYORGAME-26AUG04MILPAS",
+  "ask_sum_c": 106.0,
+  "bid_sum_c": 99.0,
+  "overround_ask_c": 6.0,
+  "underround_bid_c": 1.0,
+  "buy_all_net_c": -9.97,
+  "sell_all_net_c": -4.85,
+  "min_leg_sz": 1.0,
+  "legs": [
+   {
+    "ticker": "KXDIMAYORGAME-26AUG04MILPAS-TIE",
+    "side": "Tie",
+    "bid": 24.0,
+    "ask": 26.0,
+    "bid_sz": 4.0,
+    "ask_sz": 1.0
+   },
+   {
+    "ticker": "KXDIMAYORGAME-26AUG04MILPAS-PAS",
+    "side": "Pasto",
+    "bid": 15.0,
+    "ask": 17.0,
+    "bid_sz": 6.0,
+    "ask_sz": 29.0
+   },
+   {
+    "ticker": "KXDIMAYORGAME-26AUG04MILPAS-MIL",
+    "side": "Millonarios",
+    "bid": 60.0,
+    "ask": 63.0,
+    "bid_sz": 1.0,
+    "ask_sz": 78.0
+   }
+  ]
+ },
+ {
+  "series": "KXDIMAYORGAME",
+  "event": "KXDIMAYORGAME-26AUG04TOLDIM",
+  "ask_sum_c": 105.0,
+  "bid_sum_c": 97.0,
+  "overround_ask_c": 5.0,
+  "underround_bid_c": 3.0,
+  "buy_all_net_c": -9.61,
+  "sell_all_net_c": -7.44,
+  "min_leg_sz": 77.0,
+  "legs": [
+   {
+    "ticker": "KXDIMAYORGAME-26AUG04TOLDIM-TOL",
+    "side": "Tolima",
+    "bid": 44.0,
+    "ask": 47.0,
+    "bid_sz": 2.0,
+    "ask_sz": 77.0
+   },
+   {
+    "ticker": "KXDIMAYORGAME-26AUG04TOLDIM-TIE",
+    "side": "Tie",
+    "bid": 28.999999999999996,
+    "ask": 32.0,
+    "bid_sz": 3.0,
+    "ask_sz": 4578.0
+   },
+   {
+    "ticker": "KXDIMAYORGAME-26AUG04TOLDIM-DIM",
+    "side": "Ind. Medellin",
+    "bid": 24.0,
+    "ask": 26.0,
+    "bid_sz": 69.0,
+    "ask_sz": 1501.0
+   }
+  ]
+ },
+ {
+  "series": "KXDIMAYORGAME",
+  "event": "KXDIMAYORGAME-26AUG04LLAFOR",
+  "ask_sum_c": 105.0,
+  "bid_sum_c": 97.0,
+  "overround_ask_c": 5.0,
+  "underround_bid_c": 3.0,
+  "buy_all_net_c": -9.64,
+  "sell_all_net_c": -7.44,
+  "min_leg_sz": 1.0,
+  "legs": [
+   {
+    "ticker": "KXDIMAYORGAME-26AUG04LLAFOR-TIE",
+    "side": "Tie",
+    "bid": 28.999999999999996,
+    "ask": 32.0,
+    "bid_sz": 269.0,
+    "ask_sz": 49.9
+   },
+   {
+    "ticker": "KXDIMAYORGAME-26AUG04LLAFOR-LLA",
+    "side": "Llaneros",
+    "bid": 44.0,
+    "ask": 46.0,
+    "bid_sz": 2.0,
+    "ask_sz": 258.0
+   },
+   {
+    "ticker": "KXDIMAYORGAME-26AUG04LLAFOR-FOR",
+    "side": "Fortaleza",
+    "bid": 24.0,
+    "ask": 27.0,
+    "bid_sz": 2.0,
+    "ask_sz": 1.0
+   }
+  ]
+ },
+ {
+  "series": "KXDIMAYORGAME",
+  "event": "KXDIMAYORGAME-26AUG03BUCCUC",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 97.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 3.0,
+  "buy_all_net_c": -5.85,
+  "sell_all_net_c": -6.76,
+  "min_leg_sz": 15.0,
+  "legs": [
+   {
+    "ticker": "KXDIMAYORGAME-26AUG03BUCCUC-TIE",
+    "side": "Tie",
+    "bid": 23.0,
+    "ask": 25.0,
+    "bid_sz": 1393.0,
+    "ask_sz": 1581.0
+   },
+   {
+    "ticker": "KXDIMAYORGAME-26AUG03BUCCUC-CUC",
+    "side": "Cucuta",
+    "bid": 14.000000000000002,
+    "ask": 15.0,
+    "bid_sz": 61.0,
+    "ask_sz": 2005.01
+   },
+   {
+    "ticker": "KXDIMAYORGAME-26AUG03BUCCUC-BUC",
+    "side": "Bucaramanga",
+    "bid": 60.0,
+    "ask": 62.0,
+    "bid_sz": 200.0,
+    "ask_sz": 15.0
+   }
+  ]
+ },
+ {
+  "series": "KXDIMAYORGAME",
+  "event": "KXDIMAYORGAME-26AUG02SFEOC",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -6.56,
+  "sell_all_net_c": -6.46,
+  "min_leg_sz": 1332.0,
+  "legs": [
+   {
+    "ticker": "KXDIMAYORGAME-26AUG02SFEOC-TIE",
+    "side": "Tie",
+    "bid": 28.000000000000004,
+    "ask": 29.0,
+    "bid_sz": 649.0,
+    "ask_sz": 1548.0
+   },
+   {
+    "ticker": "KXDIMAYORGAME-26AUG02SFEOC-SFE",
+    "side": "Independ. Santa Fe",
+    "bid": 45.0,
+    "ask": 46.0,
+    "bid_sz": 474.0,
+    "ask_sz": 1332.0
+   },
+   {
+    "ticker": "KXDIMAYORGAME-26AUG02SFEOC-OC",
+    "side": "Once Caldas",
+    "bid": 25.0,
+    "ask": 27.0,
+    "bid_sz": 977.0,
+    "ask_sz": 2296.0
+   }
+  ]
+ },
+ {
+  "series": "KXDIMAYORGAME",
+  "event": "KXDIMAYORGAME-26AUG02AMECHI",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -5.07,
+  "sell_all_net_c": -5.03,
+  "min_leg_sz": 1591.55,
+  "legs": [
+   {
+    "ticker": "KXDIMAYORGAME-26AUG02AMECHI-TIE",
+    "side": "Tie",
+    "bid": 19.0,
+    "ask": 20.0,
+    "bid_sz": 739.0,
+    "ask_sz": 1634.0
+   },
+   {
+    "ticker": "KXDIMAYORGAME-26AUG02AMECHI-CHI",
+    "side": "Boyaca Chico",
+    "bid": 8.0,
+    "ask": 9.0,
+    "bid_sz": 664.0,
+    "ask_sz": 1591.55
+   },
+   {
+    "ticker": "KXDIMAYORGAME-26AUG02AMECHI-AME",
+    "side": "America Cali",
+    "bid": 71.0,
+    "ask": 73.0,
+    "bid_sz": 1232.0,
+    "ask_sz": 1983.96
+   }
+  ]
+ },
+ {
+  "series": "KXDIMAYORGAME",
+  "event": "KXDIMAYORGAME-26AUG02JAGCAN",
+  "ask_sum_c": 103.0,
+  "bid_sum_c": 99.0,
+  "overround_ask_c": 3.0,
+  "underround_bid_c": 1.0,
+  "buy_all_net_c": -7.22,
+  "sell_all_net_c": -5.16,
+  "min_leg_sz": 221.0,
+  "legs": [
+   {
+    "ticker": "KXDIMAYORGAME-26AUG02JAGCAN-TIE",
+    "side": "Tie",
+    "bid": 26.0,
+    "ask": 27.0,
+    "bid_sz": 420.0,
+    "ask_sz": 221.0
+   },
+   {
+    "ticker": "KXDIMAYORGAME-26AUG02JAGCAN-JAG",
+    "side": "Jaguares",
+    "bid": 19.0,
+    "ask": 20.0,
+    "bid_sz": 489.0,
+    "ask_sz": 1070.87
+   },
+   {
+    "ticker": "KXDIMAYORGAME-26AUG02JAGCAN-CAN",
+    "side": "Atletico Nacional",
+    "bid": 54.0,
+    "ask": 56.0,
+    "bid_sz": 460.0,
+    "ask_sz": 8679.52
+   }
+  ]
+ },
+ {
+  "series": "KXDIMAYORGAME",
+  "event": "KXDIMAYORGAME-26JUL25CHICAN",
+  "ask_sum_c": 138.0,
+  "bid_sum_c": 82.0,
+  "overround_ask_c": 38.0,
+  "underround_bid_c": 18.0,
+  "buy_all_net_c": -42.71,
+  "sell_all_net_c": -21.94,
+  "min_leg_sz": 1.0,
+  "legs": [
+   {
+    "ticker": "KXDIMAYORGAME-26JUL25CHICAN-TIE",
+    "side": "Tie",
+    "bid": 21.0,
+    "ask": 30.0,
+    "bid_sz": 2.0,
+    "ask_sz": 11.0
+   },
+   {
+    "ticker": "KXDIMAYORGAME-26JUL25CHICAN-CHI",
+    "side": "Boyaca Chico",
+    "bid": 19.0,
+    "ask": 41.0,
+    "bid_sz": 3.0,
+    "ask_sz": 1.0
+   },
+   {
+    "ticker": "KXDIMAYORGAME-26JUL25CHICAN-CAN",
+    "side": "Atletico Nacional",
+    "bid": 42.0,
+    "ask": 67.0,
+    "bid_sz": 2.0,
+    "ask_sz": 91.63
+   }
+  ]
+ },
+ {
+  "series": "KXPERLIGA1GAME",
+  "event": "KXPERLIGA1GAME-26AUG02CIEUNI",
+  "ask_sum_c": 101.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 1.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -5.65,
+  "sell_all_net_c": -6.58,
+  "min_leg_sz": 125.64,
+  "legs": [
+   {
+    "ticker": "KXPERLIGA1GAME-26AUG02CIEUNI-UNI",
+    "side": "Universitario",
+    "bid": 32.0,
+    "ask": 33.0,
+    "bid_sz": 1420.0,
+    "ask_sz": 125.64
+   },
+   {
+    "ticker": "KXPERLIGA1GAME-26AUG02CIEUNI-TIE",
+    "side": "Tie",
+    "bid": 28.000000000000004,
+    "ask": 29.0,
+    "bid_sz": 1560.0,
+    "ask_sz": 2052.5
+   },
+   {
+    "ticker": "KXPERLIGA1GAME-26AUG02CIEUNI-CIE",
+    "side": "Cienciano",
+    "bid": 38.0,
+    "ask": 39.0,
+    "bid_sz": 897.0,
+    "ask_sz": 2482.0
+   }
+  ]
+ },
+ {
+  "series": "KXPERLIGA1GAME",
+  "event": "KXPERLIGA1GAME-26AUG02MOQMEL",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -6.47,
+  "sell_all_net_c": -6.37,
+  "min_leg_sz": 360.0,
+  "legs": [
+   {
+    "ticker": "KXPERLIGA1GAME-26AUG02MOQMEL-TIE",
+    "side": "Tie",
+    "bid": 27.0,
+    "ask": 29.0,
+    "bid_sz": 218.0,
+    "ask_sz": 360.0
+   },
+   {
+    "ticker": "KXPERLIGA1GAME-26AUG02MOQMEL-MOQ",
+    "side": "Ucv Moquegua",
+    "bid": 23.0,
+    "ask": 24.0,
+    "bid_sz": 69.0,
+    "ask_sz": 462.0
+   },
+   {
+    "ticker": "KXPERLIGA1GAME-26AUG02MOQMEL-MEL",
+    "side": "Melgar",
+    "bid": 48.0,
+    "ask": 49.0,
+    "bid_sz": 884.0,
+    "ask_sz": 1662.0
+   }
+  ]
+ },
+ {
+  "series": "KXPERLIGA1GAME",
+  "event": "KXPERLIGA1GAME-26AUG02ASODEP",
+  "ask_sum_c": 101.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 1.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -5.55,
+  "sell_all_net_c": -6.48,
+  "min_leg_sz": 1000.0,
+  "legs": [
+   {
+    "ticker": "KXPERLIGA1GAME-26AUG02ASODEP-TIE",
+    "side": "Tie",
+    "bid": 27.0,
+    "ask": 28.0,
+    "bid_sz": 1683.0,
+    "ask_sz": 1000.0
+   },
+   {
+    "ticker": "KXPERLIGA1GAME-26AUG02ASODEP-DEP",
+    "side": "Deportivo Garcilaso",
+    "bid": 27.0,
+    "ask": 28.0,
+    "bid_sz": 1420.0,
+    "ask_sz": 1584.6
+   },
+   {
+    "ticker": "KXPERLIGA1GAME-26AUG02ASODEP-ASO",
+    "side": "Asociacion Deportiva Tarma",
+    "bid": 44.0,
+    "ask": 44.99999999999999,
+    "bid_sz": 1791.0,
+    "ask_sz": 2004.0
+   }
+  ]
+ },
+ {
+  "series": "KXPERLIGA1GAME",
+  "event": "KXPERLIGA1GAME-26AUG02CRIJUA",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 99.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 1.0,
+  "buy_all_net_c": -4.67,
+  "sell_all_net_c": -3.6,
+  "min_leg_sz": 1424.0,
+  "legs": [
+   {
+    "ticker": "KXPERLIGA1GAME-26AUG02CRIJUA-TIE",
+    "side": "Tie",
+    "bid": 14.000000000000002,
+    "ask": 15.0,
+    "bid_sz": 1817.0,
+    "ask_sz": 1424.0
+   },
+   {
+    "ticker": "KXPERLIGA1GAME-26AUG02CRIJUA-JUA",
+    "side": "Juan Pablo II College",
+    "bid": 8.0,
+    "ask": 9.0,
+    "bid_sz": 1852.0,
+    "ask_sz": 2390.0
+   },
+   {
+    "ticker": "KXPERLIGA1GAME-26AUG02CRIJUA-CRI",
+    "side": "Sporting Cristal",
+    "bid": 77.0,
+    "ask": 78.0,
+    "bid_sz": 460.38,
+    "ask_sz": 6268.51
+   }
+  ]
+ },
+ {
+  "series": "KXECULPGAME",
+  "event": "KXECULPGAME-26AUG03LDUDSC",
+  "ask_sum_c": 103.0,
+  "bid_sum_c": 100.0,
+  "overround_ask_c": 3.0,
+  "underround_bid_c": 0.0,
+  "buy_all_net_c": -5.77,
+  "sell_all_net_c": -2.7,
+  "min_leg_sz": 713.0,
+  "legs": [
+   {
+    "ticker": "KXECULPGAME-26AUG03LDUDSC-TIE",
+    "side": "Tie",
+    "bid": 18.0,
+    "ask": 19.0,
+    "bid_sz": 30.0,
+    "ask_sz": 13002.96
+   },
+   {
+    "ticker": "KXECULPGAME-26AUG03LDUDSC-LDU",
+    "side": "LDU Quito",
+    "bid": 76.0,
+    "ask": 77.0,
+    "bid_sz": 3010.0,
+    "ask_sz": 2625.38
+   },
+   {
+    "ticker": "KXECULPGAME-26AUG03LDUDSC-DSC",
+    "side": "Delfin",
+    "bid": 6.0,
+    "ask": 7.0,
+    "bid_sz": 2489.0,
+    "ask_sz": 713.0
+   }
+  ]
+ },
+ {
+  "series": "KXECULPGAME",
+  "event": "KXECULPGAME-26AUG02LEOBSC",
+  "ask_sum_c": 101.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 1.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -5.68,
+  "sell_all_net_c": -6.6,
+  "min_leg_sz": 1003.73,
+  "legs": [
+   {
+    "ticker": "KXECULPGAME-26AUG02LEOBSC-TIE",
+    "side": "Tie",
+    "bid": 28.999999999999996,
+    "ask": 30.0,
+    "bid_sz": 1945.12,
+    "ask_sz": 3789.0
+   },
+   {
+    "ticker": "KXECULPGAME-26AUG02LEOBSC-LEO",
+    "side": "Leones",
+    "bid": 35.0,
+    "ask": 36.0,
+    "bid_sz": 3801.41,
+    "ask_sz": 1003.73
+   },
+   {
+    "ticker": "KXECULPGAME-26AUG02LEOBSC-BSC",
+    "side": "Barcelona",
+    "bid": 34.0,
+    "ask": 35.0,
+    "bid_sz": 1834.46,
+    "ask_sz": 4552.77
+   }
+  ]
+ },
+ {
+  "series": "KXECULPGAME",
+  "event": "KXECULPGAME-26AUG02MACGUA",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 99.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 1.0,
+  "buy_all_net_c": -5.66,
+  "sell_all_net_c": -4.59,
+  "min_leg_sz": 1954.25,
+  "legs": [
+   {
+    "ticker": "KXECULPGAME-26AUG02MACGUA-TIE",
+    "side": "Tie",
+    "bid": 23.0,
+    "ask": 24.0,
+    "bid_sz": 328.0,
+    "ask_sz": 9489.32
+   },
+   {
+    "ticker": "KXECULPGAME-26AUG02MACGUA-MAC",
+    "side": "Macara",
+    "bid": 64.0,
+    "ask": 65.0,
+    "bid_sz": 896.0,
+    "ask_sz": 6963.02
+   },
+   {
+    "ticker": "KXECULPGAME-26AUG02MACGUA-GUA",
+    "side": "Guayaquil City",
+    "bid": 12.0,
+    "ask": 13.0,
+    "bid_sz": 4142.91,
+    "ask_sz": 1954.25
+   }
+  ]
+ },
+ {
+  "series": "KXECULPGAME",
+  "event": "KXECULPGAME-26AUG02INDCUE",
+  "ask_sum_c": 104.0,
+  "bid_sum_c": 101.0,
+  "overround_ask_c": 4.0,
+  "underround_bid_c": -1.0,
+  "buy_all_net_c": -6.93,
+  "sell_all_net_c": -1.86,
+  "min_leg_sz": 642.0,
+  "legs": [
+   {
+    "ticker": "KXECULPGAME-26AUG02INDCUE-TIE",
+    "side": "Tie",
+    "bid": 18.0,
+    "ask": 19.0,
+    "bid_sz": 30.0,
+    "ask_sz": 28234.74
+   },
+   {
+    "ticker": "KXECULPGAME-26AUG02INDCUE-IND",
+    "side": "Ind. del Valle",
+    "bid": 75.0,
+    "ask": 76.0,
+    "bid_sz": 3210.0,
+    "ask_sz": 642.0
+   },
+   {
+    "ticker": "KXECULPGAME-26AUG02INDCUE-CUE",
+    "side": "Cuenca",
+    "bid": 8.0,
+    "ask": 9.0,
+    "bid_sz": 319.0,
+    "ask_sz": 5178.04
+   }
+  ]
+ },
+ {
+  "series": "KXURYPDGAME",
+  "event": "KXURYPDGAME-26JUL26RCMBRI",
+  "ask_sum_c": 101.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 1.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -5.1,
+  "sell_all_net_c": -6.03,
+  "min_leg_sz": 68.0,
+  "legs": [
+   {
+    "ticker": "KXURYPDGAME-26JUL26RCMBRI-TIE",
+    "side": "Tie",
+    "bid": 25.0,
+    "ask": 26.0,
+    "bid_sz": 5050.0,
+    "ask_sz": 68.0
+   },
+   {
+    "ticker": "KXURYPDGAME-26JUL26RCMBRI-RCM",
+    "side": "Racing Club",
+    "bid": 56.00000000000001,
+    "ask": 57.0,
+    "bid_sz": 526.54,
+    "ask_sz": 782.0
+   },
+   {
+    "ticker": "KXURYPDGAME-26JUL26RCMBRI-BRI",
+    "side": "Boston River",
+    "bid": 17.0,
+    "ask": 18.0,
+    "bid_sz": 695.0,
+    "ask_sz": 1356.5
+   }
+  ]
+ },
+ {
+  "series": "KXURYPDGAME",
+  "event": "KXURYPDGAME-26JUL25DEFCER",
+  "ask_sum_c": 100.0,
+  "bid_sum_c": 96.0,
+  "overround_ask_c": 0.0,
+  "underround_bid_c": 4.0,
+  "buy_all_net_c": -4.09,
+  "sell_all_net_c": -7.97,
+  "min_leg_sz": 420.0,
+  "legs": [
+   {
+    "ticker": "KXURYPDGAME-26JUL25DEFCER-TIE",
+    "side": "Tie",
+    "bid": 26.0,
+    "ask": 27.0,
+    "bid_sz": 45.0,
+    "ask_sz": 1292.7
+   },
+   {
+    "ticker": "KXURYPDGAME-26JUL25DEFCER-DEF",
+    "side": "Defensor",
+    "bid": 55.00000000000001,
+    "ask": 56.0,
+    "bid_sz": 0.04,
+    "ask_sz": 420.0
+   },
+   {
+    "ticker": "KXURYPDGAME-26JUL25DEFCER-CER",
+    "side": "Cerro",
+    "bid": 15.0,
+    "ask": 17.0,
+    "bid_sz": 445.0,
+    "ask_sz": 1442.0
+   }
+  ]
+ },
+ {
+  "series": "KXURYPDGAME",
+  "event": "KXURYPDGAME-26JUL25ESPLIV",
+  "ask_sum_c": 101.0,
+  "bid_sum_c": 95.0,
+  "overround_ask_c": 1.0,
+  "underround_bid_c": 5.0,
+  "buy_all_net_c": -5.55,
+  "sell_all_net_c": -9.43,
+  "min_leg_sz": 43.0,
+  "legs": [
+   {
+    "ticker": "KXURYPDGAME-26JUL25ESPLIV-TIE",
+    "side": "Tie",
+    "bid": 28.000000000000004,
+    "ask": 30.0,
+    "bid_sz": 6840.0,
+    "ask_sz": 43.0
+   },
+   {
+    "ticker": "KXURYPDGAME-26JUL25ESPLIV-LIV",
+    "side": "Liverpool M",
+    "bid": 42.0,
+    "ask": 44.99999999999999,
+    "bid_sz": 1074.0,
+    "ask_sz": 1618.0
+   },
+   {
+    "ticker": "KXURYPDGAME-26JUL25ESPLIV-ESP",
+    "side": "Central Espanol",
+    "bid": 25.0,
+    "ask": 26.0,
+    "bid_sz": 420.0,
+    "ask_sz": 1329.72
+   }
+  ]
+ },
+ {
+  "series": "KXURYPDGAME",
+  "event": "KXURYPDGAME-26JUL24NACPRO",
+  "ask_sum_c": 100.0,
+  "bid_sum_c": 95.0,
+  "overround_ask_c": 0.0,
+  "underround_bid_c": 5.0,
+  "buy_all_net_c": -3.38,
+  "sell_all_net_c": -8.28,
+  "min_leg_sz": 379.0,
+  "legs": [
+   {
+    "ticker": "KXURYPDGAME-26JUL24NACPRO-TIE",
+    "side": "Tie",
+    "bid": 19.0,
+    "ask": 20.0,
+    "bid_sz": 5940.0,
+    "ask_sz": 379.0
+   },
+   {
+    "ticker": "KXURYPDGAME-26JUL24NACPRO-PRO",
+    "side": "Progreso",
+    "bid": 10.0,
+    "ask": 12.0,
+    "bid_sz": 231.0,
+    "ask_sz": 1098.0
+   },
+   {
+    "ticker": "KXURYPDGAME-26JUL24NACPRO-NAC",
+    "side": "Nacional",
+    "bid": 66.0,
+    "ask": 68.0,
+    "bid_sz": 100.0,
+    "ask_sz": 1127.28
+   }
+  ]
+ },
+ {
+  "series": "KXUSLGAME",
+  "event": "KXUSLGAME-26AUG01BIRRHO",
+  "ask_sum_c": 108.0,
+  "bid_sum_c": 88.0,
+  "overround_ask_c": 8.0,
+  "underround_bid_c": 12.0,
+  "buy_all_net_c": -12.8,
+  "sell_all_net_c": -16.27,
+  "min_leg_sz": 10.0,
+  "legs": [
+   {
+    "ticker": "KXUSLGAME-26AUG01BIRRHO-TIE",
+    "side": "Tie",
+    "bid": 25.0,
+    "ask": 32.0,
+    "bid_sz": 0.13,
+    "ask_sz": 10.0
+   },
+   {
+    "ticker": "KXUSLGAME-26AUG01BIRRHO-RHO",
+    "side": "Rhode Island FC",
+    "bid": 38.0,
+    "ask": 42.00000000000001,
+    "bid_sz": 103.32,
+    "ask_sz": 10.0
+   },
+   {
+    "ticker": "KXUSLGAME-26AUG01BIRRHO-BIR",
+    "side": "Birmingham Legion FC",
+    "bid": 25.0,
+    "ask": 34.0,
+    "bid_sz": 80.93,
+    "ask_sz": 14.06
+   }
+  ]
+ },
+ {
+  "series": "KXUSLGAME",
+  "event": "KXUSLGAME-26JUL24BIRNEW",
+  "ask_sum_c": 130.0,
+  "bid_sum_c": 75.0,
+  "overround_ask_c": 30.0,
+  "underround_bid_c": 25.0,
+  "buy_all_net_c": -35.09,
+  "sell_all_net_c": -28.88,
+  "min_leg_sz": 3.0,
+  "legs": [
+   {
+    "ticker": "KXUSLGAME-26JUL24BIRNEW-TIE",
+    "side": "Tie",
+    "bid": 18.0,
+    "ask": 40.0,
+    "bid_sz": 4.0,
+    "ask_sz": 97.0
+   },
+   {
+    "ticker": "KXUSLGAME-26JUL24BIRNEW-NEW",
+    "side": "New Mexico United",
+    "bid": 30.0,
+    "ask": 39.0,
+    "bid_sz": 2.0,
+    "ask_sz": 11.0
+   },
+   {
+    "ticker": "KXUSLGAME-26JUL24BIRNEW-BIR",
+    "side": "Birmingham Legion FC",
+    "bid": 27.0,
+    "ask": 51.0,
+    "bid_sz": 55.0,
+    "ask_sz": 3.0
+   }
+  ]
+ },
+ {
+  "series": "KXNWSLGAME",
+  "event": "KXNWSLGAME-26AUG02DENBOS",
+  "ask_sum_c": 99.0,
+  "bid_sum_c": 96.0,
+  "overround_ask_c": -1.0,
+  "underround_bid_c": 4.0,
+  "buy_all_net_c": -3.26,
+  "sell_all_net_c": -8.19,
+  "min_leg_sz": 1186.77,
+  "legs": [
+   {
+    "ticker": "KXNWSLGAME-26AUG02DENBOS-TIE",
+    "side": "Tie",
+    "bid": 23.0,
+    "ask": 24.0,
+    "bid_sz": 178.0,
+    "ask_sz": 1420.0
+   },
+   {
+    "ticker": "KXNWSLGAME-26AUG02DENBOS-DEN",
+    "side": "Denver Summit FC",
+    "bid": 51.0,
+    "ask": 52.0,
+    "bid_sz": 2150.0,
+    "ask_sz": 1186.77
+   },
+   {
+    "ticker": "KXNWSLGAME-26AUG02DENBOS-BOS",
+    "side": "Boston Legacy FC",
+    "bid": 22.0,
+    "ask": 23.0,
+    "bid_sz": 100.0,
+    "ask_sz": 1520.0
+   }
+  ]
+ },
+ {
+  "series": "KXNWSLGAME",
+  "event": "KXNWSLGAME-26AUG02UROPTH",
+  "ask_sum_c": 101.0,
+  "bid_sum_c": 97.0,
+  "overround_ask_c": 1.0,
+  "underround_bid_c": 3.0,
+  "buy_all_net_c": -5.58,
+  "sell_all_net_c": -7.49,
+  "min_leg_sz": 555.0,
+  "legs": [
+   {
+    "ticker": "KXNWSLGAME-26AUG02UROPTH-URO",
+    "side": "Utah Royals",
+    "bid": 41.0,
+    "ask": 43.00000000000001,
+    "bid_sz": 369.0,
+    "ask_sz": 1064.0
+   },
+   {
+    "ticker": "KXNWSLGAME-26AUG02UROPTH-TIE",
+    "side": "Tie",
+    "bid": 24.0,
+    "ask": 25.0,
+    "bid_sz": 69.0,
+    "ask_sz": 555.0
+   },
+   {
+    "ticker": "KXNWSLGAME-26AUG02UROPTH-PTH",
+    "side": "Portland Thorns",
+    "bid": 32.0,
+    "ask": 33.0,
+    "bid_sz": 992.11,
+    "ask_sz": 1100.0
+   }
+  ]
+ },
+ {
+  "series": "KXNWSLGAME",
+  "event": "KXNWSLGAME-26AUG02WSPSAN",
+  "ask_sum_c": 99.0,
+  "bid_sum_c": 96.0,
+  "overround_ask_c": -1.0,
+  "underround_bid_c": 4.0,
+  "buy_all_net_c": -3.52,
+  "sell_all_net_c": -8.44,
+  "min_leg_sz": 454.53,
+  "legs": [
+   {
+    "ticker": "KXNWSLGAME-26AUG02WSPSAN-WSP",
+    "side": "Washington",
+    "bid": 42.0,
+    "ask": 43.00000000000001,
+    "bid_sz": 275.0,
+    "ask_sz": 2322.0
+   },
+   {
+    "ticker": "KXNWSLGAME-26AUG02WSPSAN-TIE",
+    "side": "Tie",
+    "bid": 23.0,
+    "ask": 24.0,
+    "bid_sz": 819.0,
+    "ask_sz": 454.53
+   },
+   {
+    "ticker": "KXNWSLGAME-26AUG02WSPSAN-SAN",
+    "side": "San Diego Wave FC",
+    "bid": 31.0,
+    "ask": 32.0,
+    "bid_sz": 1823.0,
+    "ask_sz": 655.0
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG03SHAALG",
+  "ask_sum_c": 175.0,
+  "bid_sum_c": 95.0,
+  "overround_ask_c": 75.0,
+  "underround_bid_c": 5.0,
+  "buy_all_net_c": -79.9,
+  "sell_all_net_c": -9.41,
+  "min_leg_sz": 1.0,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG03SHAALG-TIE",
+    "side": "Tie",
+    "bid": 26.0,
+    "ask": 61.0,
+    "bid_sz": 3.0,
+    "ask_sz": 5.0
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG03SHAALG-SHA",
+    "side": "Al-Shabab",
+    "bid": 43.0,
+    "ask": 69.0,
+    "bid_sz": 12.0,
+    "ask_sz": 2.0
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG03SHAALG-ALG",
+    "side": "MC Alger",
+    "bid": 26.0,
+    "ask": 44.99999999999999,
+    "bid_sz": 3.0,
+    "ask_sz": 1.0
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02LFCLEE",
+  "ask_sum_c": 105.0,
+  "bid_sum_c": 102.0,
+  "overround_ask_c": 5.0,
+  "underround_bid_c": -2.0,
+  "buy_all_net_c": -9.31,
+  "sell_all_net_c": -2.24,
+  "min_leg_sz": 77.0,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02LFCLEE-TIE",
+    "side": "Tie",
+    "bid": 21.0,
+    "ask": 22.0,
+    "bid_sz": 652.0,
+    "ask_sz": 2936.7
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02LFCLEE-LFC",
+    "side": "Liverpool",
+    "bid": 55.00000000000001,
+    "ask": 56.0,
+    "bid_sz": 1520.83,
+    "ask_sz": 77.0
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02LFCLEE-LEE",
+    "side": "Leeds United",
+    "bid": 26.0,
+    "ask": 27.0,
+    "bid_sz": 10.67,
+    "ask_sz": 18977.19
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02ASCLAZ",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 99.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 1.0,
+  "buy_all_net_c": -5.83,
+  "sell_all_net_c": -4.76,
+  "min_leg_sz": 44.0,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02ASCLAZ-TIE",
+    "side": "Tie",
+    "bid": 18.0,
+    "ask": 19.0,
+    "bid_sz": 30.0,
+    "ask_sz": 5359.0
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02ASCLAZ-LAZ",
+    "side": "Lazio",
+    "bid": 62.0,
+    "ask": 63.0,
+    "bid_sz": 5759.04,
+    "ask_sz": 44.0
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02ASCLAZ-ASC",
+    "side": "Ascoli",
+    "bid": 19.0,
+    "ask": 20.0,
+    "bid_sz": 345.01,
+    "ask_sz": 8446.01
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02GALREN",
+  "ask_sum_c": 103.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 3.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -7.5,
+  "sell_all_net_c": -6.39,
+  "min_leg_sz": 257.6,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02GALREN-TIE",
+    "side": "Tie",
+    "bid": 22.0,
+    "ask": 24.0,
+    "bid_sz": 69.0,
+    "ask_sz": 1602.0
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02GALREN-REN",
+    "side": "Stade Rennais",
+    "bid": 28.999999999999996,
+    "ask": 30.0,
+    "bid_sz": 574.0,
+    "ask_sz": 1206.79
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02GALREN-GAL",
+    "side": "Galatasaray",
+    "bid": 47.0,
+    "ask": 49.0,
+    "bid_sz": 254.0,
+    "ask_sz": 257.6
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02GENTWE",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 99.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 1.0,
+  "buy_all_net_c": -6.61,
+  "sell_all_net_c": -5.54,
+  "min_leg_sz": 583.83,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02GENTWE-TWE",
+    "side": "Enschede",
+    "bid": 32.0,
+    "ask": 33.0,
+    "bid_sz": 696.0,
+    "ask_sz": 708.0
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02GENTWE-TIE",
+    "side": "Tie",
+    "bid": 25.0,
+    "ask": 26.0,
+    "bid_sz": 30.0,
+    "ask_sz": 1222.0
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02GENTWE-GEN",
+    "side": "Genk",
+    "bid": 42.0,
+    "ask": 43.00000000000001,
+    "bid_sz": 31.0,
+    "ask_sz": 583.83
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02SUNWRE",
+  "ask_sum_c": 100.0,
+  "bid_sum_c": 97.0,
+  "overround_ask_c": 0.0,
+  "underround_bid_c": 3.0,
+  "buy_all_net_c": -4.52,
+  "sell_all_net_c": -7.45,
+  "min_leg_sz": 823.2,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02SUNWRE-WRE",
+    "side": "Wrexham",
+    "bid": 28.000000000000004,
+    "ask": 29.0,
+    "bid_sz": 380.0,
+    "ask_sz": 823.2
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02SUNWRE-TIE",
+    "side": "Tie",
+    "bid": 25.0,
+    "ask": 26.0,
+    "bid_sz": 771.0,
+    "ask_sz": 1250.0
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02SUNWRE-SUN",
+    "side": "Sunderland",
+    "bid": 44.0,
+    "ask": 44.99999999999999,
+    "bid_sz": 422.0,
+    "ask_sz": 1466.0
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02DESPAR",
+  "ask_sum_c": 141.0,
+  "bid_sum_c": 69.0,
+  "overround_ask_c": 41.0,
+  "underround_bid_c": 31.0,
+  "buy_all_net_c": -45.96,
+  "sell_all_net_c": -34.7,
+  "min_leg_sz": 1.02,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02DESPAR-TIE",
+    "side": "Tie",
+    "bid": 25.0,
+    "ask": 53.0,
+    "bid_sz": 30.0,
+    "ask_sz": 7.0
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02DESPAR-PAR",
+    "side": "Parma Calcio 1913 U20",
+    "bid": 25.0,
+    "ask": 57.0,
+    "bid_sz": 30.0,
+    "ask_sz": 1.02
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02DESPAR-DES",
+    "side": "Desenzano",
+    "bid": 19.0,
+    "ask": 31.0,
+    "bid_sz": 56.0,
+    "ask_sz": 7.0
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02ALBINT",
+  "ask_sum_c": 109.0,
+  "bid_sum_c": 102.0,
+  "overround_ask_c": 9.0,
+  "underround_bid_c": -2.0,
+  "buy_all_net_c": -13.66,
+  "sell_all_net_c": -2.53,
+  "min_leg_sz": 7.0,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02ALBINT-TIE",
+    "side": "Tie",
+    "bid": 26.0,
+    "ask": 28.0,
+    "bid_sz": 1.0,
+    "ask_sz": 7.0
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02ALBINT-INT",
+    "side": "Inter Milano",
+    "bid": 28.999999999999996,
+    "ask": 31.0,
+    "bid_sz": 29.0,
+    "ask_sz": 108.0
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02ALBINT-ALB",
+    "side": "Albinoleffe",
+    "bid": 47.0,
+    "ask": 50.0,
+    "bid_sz": 2.0,
+    "ask_sz": 166.0
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02PARIRA",
+  "ask_sum_c": 99.0,
+  "bid_sum_c": 96.0,
+  "overround_ask_c": -1.0,
+  "underround_bid_c": 4.0,
+  "buy_all_net_c": -2.27,
+  "sell_all_net_c": -7.2,
+  "min_leg_sz": 54.0,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02PARIRA-TIE",
+    "side": "Tie",
+    "bid": 17.0,
+    "ask": 18.0,
+    "bid_sz": 101.0,
+    "ask_sz": 494.12
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02PARIRA-PAR",
+    "side": "Parma Calcio",
+    "bid": 68.0,
+    "ask": 69.0,
+    "bid_sz": 788.01,
+    "ask_sz": 54.0
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02PARIRA-IRA",
+    "side": "Iraklis Thessaloniki",
+    "bid": 11.0,
+    "ask": 12.0,
+    "bid_sz": 102.53,
+    "ask_sz": 850.58
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02UDITRA",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -6.66,
+  "sell_all_net_c": -6.56,
+  "min_leg_sz": 292.0,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02UDITRA-UDI",
+    "side": "Udinese",
+    "bid": 33.0,
+    "ask": 34.0,
+    "bid_sz": 42.0,
+    "ask_sz": 6202.0
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02UDITRA-TRA",
+    "side": "Trabzonspor",
+    "bid": 39.0,
+    "ask": 40.0,
+    "bid_sz": 474.0,
+    "ask_sz": 2098.0
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02UDITRA-TIE",
+    "side": "Tie",
+    "bid": 26.0,
+    "ask": 28.0,
+    "bid_sz": 284.0,
+    "ask_sz": 292.0
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02BURTOR",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 97.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 3.0,
+  "buy_all_net_c": -6.62,
+  "sell_all_net_c": -7.51,
+  "min_leg_sz": 480.36,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02BURTOR-TOR",
+    "side": "Torino",
+    "bid": 30.0,
+    "ask": 32.0,
+    "bid_sz": 733.0,
+    "ask_sz": 480.36
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02BURTOR-TIE",
+    "side": "Tie",
+    "bid": 26.0,
+    "ask": 27.0,
+    "bid_sz": 588.0,
+    "ask_sz": 1155.2
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02BURTOR-BUR",
+    "side": "Burnley",
+    "bid": 41.0,
+    "ask": 43.00000000000001,
+    "bid_sz": 660.0,
+    "ask_sz": 2154.0
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02FEYATA",
+  "ask_sum_c": 104.0,
+  "bid_sum_c": 100.0,
+  "overround_ask_c": 4.0,
+  "underround_bid_c": 0.0,
+  "buy_all_net_c": -8.66,
+  "sell_all_net_c": -4.58,
+  "min_leg_sz": 627.12,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02FEYATA-TIE",
+    "side": "Tie",
+    "bid": 25.0,
+    "ask": 26.0,
+    "bid_sz": 30.0,
+    "ask_sz": 13636.35
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02FEYATA-FEY",
+    "side": "Feyenoord",
+    "bid": 34.0,
+    "ask": 35.0,
+    "bid_sz": 720.0,
+    "ask_sz": 627.12
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02FEYATA-ATA",
+    "side": "Atalanta",
+    "bid": 41.0,
+    "ask": 43.00000000000001,
+    "bid_sz": 1121.46,
+    "ask_sz": 1553.0
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02VOLAJA",
+  "ask_sum_c": 103.0,
+  "bid_sum_c": 100.0,
+  "overround_ask_c": 3.0,
+  "underround_bid_c": 0.0,
+  "buy_all_net_c": -6.54,
+  "sell_all_net_c": -3.47,
+  "min_leg_sz": 381.95,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02VOLAJA-VOL",
+    "side": "Volendam",
+    "bid": 15.0,
+    "ask": 16.0,
+    "bid_sz": 69.0,
+    "ask_sz": 2947.22
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02VOLAJA-TIE",
+    "side": "Tie",
+    "bid": 18.0,
+    "ask": 19.0,
+    "bid_sz": 420.0,
+    "ask_sz": 823.56
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02VOLAJA-AJA",
+    "side": "Ajax",
+    "bid": 67.0,
+    "ask": 68.0,
+    "bid_sz": 491.0,
+    "ask_sz": 381.95
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02FCUSEV",
+  "ask_sum_c": 104.0,
+  "bid_sum_c": 101.0,
+  "overround_ask_c": 4.0,
+  "underround_bid_c": -1.0,
+  "buy_all_net_c": -8.56,
+  "sell_all_net_c": -3.5,
+  "min_leg_sz": 1060.15,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02FCUSEV-TIE",
+    "side": "Tie",
+    "bid": 25.0,
+    "ask": 26.0,
+    "bid_sz": 30.0,
+    "ask_sz": 3192.35
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02FCUSEV-SEV",
+    "side": "Sevilla",
+    "bid": 47.0,
+    "ask": 48.0,
+    "bid_sz": 420.0,
+    "ask_sz": 9348.89
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02FCUSEV-FCU",
+    "side": "Utrecht",
+    "bid": 28.999999999999996,
+    "ask": 30.0,
+    "bid_sz": 241.29,
+    "ask_sz": 1060.15
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02AEKSTT",
+  "ask_sum_c": 105.0,
+  "bid_sum_c": 102.0,
+  "overround_ask_c": 5.0,
+  "underround_bid_c": -2.0,
+  "buy_all_net_c": -9.47,
+  "sell_all_net_c": -2.41,
+  "min_leg_sz": 85.0,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02AEKSTT-TIE",
+    "side": "Tie",
+    "bid": 25.0,
+    "ask": 26.0,
+    "bid_sz": 30.0,
+    "ask_sz": 85.0
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02AEKSTT-STT",
+    "side": "St. Truidense",
+    "bid": 26.0,
+    "ask": 27.0,
+    "bid_sz": 5.23,
+    "ask_sz": 2011.78
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02AEKSTT-AEK",
+    "side": "AEK Athens",
+    "bid": 51.0,
+    "ask": 52.0,
+    "bid_sz": 5250.01,
+    "ask_sz": 1116.0
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02AACTRI",
+  "ask_sum_c": 100.0,
+  "bid_sum_c": 96.0,
+  "overround_ask_c": 0.0,
+  "underround_bid_c": 4.0,
+  "buy_all_net_c": -3.79,
+  "sell_all_net_c": -7.73,
+  "min_leg_sz": 37.0,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02AACTRI-TRI",
+    "side": "Trier",
+    "bid": 15.0,
+    "ask": 16.0,
+    "bid_sz": 3.0,
+    "ask_sz": 667.16
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02AACTRI-TIE",
+    "side": "Tie",
+    "bid": 21.0,
+    "ask": 22.0,
+    "bid_sz": 38.0,
+    "ask_sz": 6296.09
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02AACTRI-AAC",
+    "side": "Aachen",
+    "bid": 60.0,
+    "ask": 62.0,
+    "bid_sz": 50.01,
+    "ask_sz": 37.0
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02LUTGAE",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -6.53,
+  "sell_all_net_c": -6.43,
+  "min_leg_sz": 37.0,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02LUTGAE-TIE",
+    "side": "Tie",
+    "bid": 25.0,
+    "ask": 26.0,
+    "bid_sz": 30.0,
+    "ask_sz": 2632.29
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02LUTGAE-LUT",
+    "side": "Luton",
+    "bid": 46.0,
+    "ask": 47.0,
+    "bid_sz": 420.0,
+    "ask_sz": 1066.72
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02LUTGAE-GAE",
+    "side": "GA Eagles",
+    "bid": 27.0,
+    "ask": 29.0,
+    "bid_sz": 337.0,
+    "ask_sz": 37.0
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02UNICAG",
+  "ask_sum_c": 103.0,
+  "bid_sum_c": 97.0,
+  "overround_ask_c": 3.0,
+  "underround_bid_c": 3.0,
+  "buy_all_net_c": -7.7,
+  "sell_all_net_c": -7.56,
+  "min_leg_sz": 328.0,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02UNICAG-UNI",
+    "side": "Union Berlin",
+    "bid": 36.0,
+    "ask": 38.0,
+    "bid_sz": 429.0,
+    "ask_sz": 328.0
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02UNICAG-TIE",
+    "side": "Tie",
+    "bid": 27.0,
+    "ask": 29.0,
+    "bid_sz": 161.0,
+    "ask_sz": 2290.29
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02UNICAG-CAG",
+    "side": "Cagliari",
+    "bid": 34.0,
+    "ask": 36.0,
+    "bid_sz": 79.0,
+    "ask_sz": 1180.63
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02LEYRAFC",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -6.66,
+  "sell_all_net_c": -6.57,
+  "min_leg_sz": 592.77,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02LEYRAFC-TIE",
+    "side": "Tie",
+    "bid": 26.0,
+    "ask": 27.0,
+    "bid_sz": 716.0,
+    "ask_sz": 592.77
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02LEYRAFC-RAFC",
+    "side": "Royal Antwerp",
+    "bid": 38.0,
+    "ask": 39.0,
+    "bid_sz": 510.0,
+    "ask_sz": 1220.31
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02LEYRAFC-LEY",
+    "side": "Leyton Orient",
+    "bid": 34.0,
+    "ask": 36.0,
+    "bid_sz": 741.0,
+    "ask_sz": 1655.35
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG02RAGSVS",
+  "ask_sum_c": 103.0,
+  "bid_sum_c": 94.0,
+  "overround_ask_c": 3.0,
+  "underround_bid_c": 6.0,
+  "buy_all_net_c": -7.28,
+  "sell_all_net_c": -10.05,
+  "min_leg_sz": 39.0,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG02RAGSVS-TIE",
+    "side": "Tie",
+    "bid": 25.0,
+    "ask": 26.0,
+    "bid_sz": 30.0,
+    "ask_sz": 3041.41
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02RAGSVS-SVS",
+    "side": "Schermbeck",
+    "bid": 17.0,
+    "ask": 22.0,
+    "bid_sz": 147.0,
+    "ask_sz": 56.04
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG02RAGSVS-RAG",
+    "side": "Ratingen",
+    "bid": 52.0,
+    "ask": 55.0,
+    "bid_sz": 500.0,
+    "ask_sz": 39.0
+   }
+  ]
+ },
+ {
+  "series": "KXCLUBFGAME",
+  "event": "KXCLUBFGAME-26AUG04PAUAVL",
+  "ask_sum_c": 102.0,
+  "bid_sum_c": 98.0,
+  "overround_ask_c": 2.0,
+  "underround_bid_c": 2.0,
+  "buy_all_net_c": -4.92,
+  "sell_all_net_c": -4.79,
+  "min_leg_sz": 3.38,
+  "legs": [
+   {
+    "ticker": "KXCLUBFGAME-26AUG04PAUAVL-TIE",
+    "side": "Tie",
+    "bid": 7.000000000000001,
+    "ask": 9.0,
+    "bid_sz": 326.0,
+    "ask_sz": 294.56
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG04PAUAVL-PAU",
+    "side": "Pathum United",
+    "bid": 17.0,
+    "ask": 18.0,
+    "bid_sz": 69.0,
+    "ask_sz": 140.99
+   },
+   {
+    "ticker": "KXCLUBFGAME-26AUG04PAUAVL-AVL",
+    "side": "Aston Villa",
+    "bid": 74.0,
+    "ask": 75.0,
+    "bid_sz": 82.0,
+    "ask_sz": 3.38
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG08ORLLEO",
+  "ask_sum_c": 240.0,
+  "bid_sum_c": 9.0,
+  "overround_ask_c": 140.0,
+  "underround_bid_c": 91.0,
+  "buy_all_net_c": -143.36,
+  "sell_all_net_c": -91.61,
+  "min_leg_sz": 10.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG08ORLLEO-TIE",
+    "side": "Tie",
+    "bid": 3.0,
+    "ask": 80.0,
+    "bid_sz": 100.0,
+    "ask_sz": 10.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG08ORLLEO-ORL",
+    "side": "Orlando",
+    "bid": 3.0,
+    "ask": 80.0,
+    "bid_sz": 100.0,
+    "ask_sz": 10.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG08ORLLEO-LEO",
+    "side": "Leon",
+    "bid": 3.0,
+    "ask": 80.0,
+    "bid_sz": 110.0,
+    "ask_sz": 10.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG07VANJUA",
+  "ask_sum_c": 240.0,
+  "bid_sum_c": 9.0,
+  "overround_ask_c": 140.0,
+  "underround_bid_c": 91.0,
+  "buy_all_net_c": -143.36,
+  "sell_all_net_c": -91.61,
+  "min_leg_sz": 10.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG07VANJUA-VAN",
+    "side": "Vancouver",
+    "bid": 3.0,
+    "ask": 80.0,
+    "bid_sz": 100.0,
+    "ask_sz": 10.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG07VANJUA-TIE",
+    "side": "Tie",
+    "bid": 3.0,
+    "ask": 80.0,
+    "bid_sz": 100.0,
+    "ask_sz": 10.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG07VANJUA-JUA",
+    "side": "Juarez",
+    "bid": 3.0,
+    "ask": 80.0,
+    "bid_sz": 110.0,
+    "ask_sz": 10.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG07TIGMIN",
+  "ask_sum_c": 240.0,
+  "bid_sum_c": 9.0,
+  "overround_ask_c": 140.0,
+  "underround_bid_c": 91.0,
+  "buy_all_net_c": -143.36,
+  "sell_all_net_c": -91.61,
+  "min_leg_sz": 10.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG07TIGMIN-TIG",
+    "side": "Tigres",
+    "bid": 3.0,
+    "ask": 80.0,
+    "bid_sz": 100.0,
+    "ask_sz": 10.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG07TIGMIN-TIE",
+    "side": "Tie",
+    "bid": 3.0,
+    "ask": 80.0,
+    "bid_sz": 100.0,
+    "ask_sz": 10.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG07TIGMIN-MIN",
+    "side": "Minnesota",
+    "bid": 3.0,
+    "ask": 80.0,
+    "bid_sz": 110.0,
+    "ask_sz": 10.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG07CINPUM",
+  "ask_sum_c": 240.0,
+  "bid_sum_c": 9.0,
+  "overround_ask_c": 140.0,
+  "underround_bid_c": 91.0,
+  "buy_all_net_c": -143.36,
+  "sell_all_net_c": -91.61,
+  "min_leg_sz": 10.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG07CINPUM-TIE",
+    "side": "Tie",
+    "bid": 3.0,
+    "ask": 80.0,
+    "bid_sz": 100.0,
+    "ask_sz": 10.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG07CINPUM-PUM",
+    "side": "Pumas UNAM",
+    "bid": 3.0,
+    "ask": 80.0,
+    "bid_sz": 100.0,
+    "ask_sz": 10.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG07CINPUM-CIN",
+    "side": "Cincinnati",
+    "bid": 3.0,
+    "ask": 80.0,
+    "bid_sz": 110.0,
+    "ask_sz": 10.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG07CLBPAC",
+  "ask_sum_c": 220.0,
+  "bid_sum_c": 15.0,
+  "overround_ask_c": 120.0,
+  "underround_bid_c": 85.0,
+  "buy_all_net_c": -124.1,
+  "sell_all_net_c": -86.0,
+  "min_leg_sz": 3.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG07CLBPAC-TIE",
+    "side": "Tie",
+    "bid": 5.0,
+    "ask": 73.0,
+    "bid_sz": 21.0,
+    "ask_sz": 3.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG07CLBPAC-PAC",
+    "side": "Pachuca",
+    "bid": 5.0,
+    "ask": 71.0,
+    "bid_sz": 20.0,
+    "ask_sz": 3.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG07CLBPAC-CLB",
+    "side": "Columbus",
+    "bid": 5.0,
+    "ask": 76.0,
+    "bid_sz": 20.0,
+    "ask_sz": 4.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG07CLTATL",
+  "ask_sum_c": 224.0,
+  "bid_sum_c": 15.0,
+  "overround_ask_c": 124.0,
+  "underround_bid_c": 85.0,
+  "buy_all_net_c": -127.96,
+  "sell_all_net_c": -86.0,
+  "min_leg_sz": 3.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG07CLTATL-TIE",
+    "side": "Tie",
+    "bid": 5.0,
+    "ask": 76.0,
+    "bid_sz": 20.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG07CLTATL-CLT",
+    "side": "Charlotte",
+    "bid": 5.0,
+    "ask": 76.0,
+    "bid_sz": 20.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG07CLTATL-ATL",
+    "side": "Atlas",
+    "bid": 5.0,
+    "ask": 72.0,
+    "bid_sz": 20.0,
+    "ask_sz": 3.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG06PORPUE",
+  "ask_sum_c": 219.0,
+  "bid_sum_c": 29.0,
+  "overround_ask_c": 119.0,
+  "underround_bid_c": 71.0,
+  "buy_all_net_c": -123.1,
+  "sell_all_net_c": -72.74,
+  "min_leg_sz": 3.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG06PORPUE-TIE",
+    "side": "Tie",
+    "bid": 5.0,
+    "ask": 76.0,
+    "bid_sz": 20.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG06PORPUE-PUE",
+    "side": "Puebla",
+    "bid": 5.0,
+    "ask": 67.0,
+    "bid_sz": 20.0,
+    "ask_sz": 3.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG06PORPUE-POR",
+    "side": "Portland",
+    "bid": 19.0,
+    "ask": 76.0,
+    "bid_sz": 5.0,
+    "ask_sz": 4.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG06AMESD",
+  "ask_sum_c": 221.0,
+  "bid_sum_c": 23.0,
+  "overround_ask_c": 121.0,
+  "underround_bid_c": 77.0,
+  "buy_all_net_c": -125.05,
+  "sell_all_net_c": -78.46,
+  "min_leg_sz": 3.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG06AMESD-TIE",
+    "side": "Tie",
+    "bid": 5.0,
+    "ask": 76.0,
+    "bid_sz": 20.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG06AMESD-SD",
+    "side": "San Diego FC",
+    "bid": 5.0,
+    "ask": 69.0,
+    "bid_sz": 20.0,
+    "ask_sz": 3.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG06AMESD-AME",
+    "side": "America",
+    "bid": 13.0,
+    "ask": 76.0,
+    "bid_sz": 7.0,
+    "ask_sz": 4.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG06ATXTIJ",
+  "ask_sum_c": 233.0,
+  "bid_sum_c": 29.0,
+  "overround_ask_c": 133.0,
+  "underround_bid_c": 71.0,
+  "buy_all_net_c": -136.63,
+  "sell_all_net_c": -72.74,
+  "min_leg_sz": 4.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG06ATXTIJ-TIJ",
+    "side": "Tijuana de Caliente",
+    "bid": 19.0,
+    "ask": 81.0,
+    "bid_sz": 5.0,
+    "ask_sz": 290.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG06ATXTIJ-TIE",
+    "side": "Tie",
+    "bid": 5.0,
+    "ask": 76.0,
+    "bid_sz": 20.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG06ATXTIJ-ATX",
+    "side": "Austin",
+    "bid": 5.0,
+    "ask": 76.0,
+    "bid_sz": 20.0,
+    "ask_sz": 4.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG06CHINCX",
+  "ask_sum_c": 232.0,
+  "bid_sum_c": 19.0,
+  "overround_ask_c": 132.0,
+  "underround_bid_c": 81.0,
+  "buy_all_net_c": -135.67,
+  "sell_all_net_c": -82.24,
+  "min_leg_sz": 4.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG06CHINCX-TIE",
+    "side": "Tie",
+    "bid": 5.0,
+    "ask": 76.0,
+    "bid_sz": 20.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG06CHINCX-NCX",
+    "side": "Necaxa",
+    "bid": 5.0,
+    "ask": 76.0,
+    "bid_sz": 20.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG06CHINCX-CHI",
+    "side": "Chicago Fire",
+    "bid": 9.0,
+    "ask": 80.0,
+    "bid_sz": 11.0,
+    "ask_sz": 5.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG06CRAPHI",
+  "ask_sum_c": 226.0,
+  "bid_sum_c": 15.0,
+  "overround_ask_c": 126.0,
+  "underround_bid_c": 85.0,
+  "buy_all_net_c": -129.88,
+  "sell_all_net_c": -86.0,
+  "min_leg_sz": 3.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG06CRAPHI-TIE",
+    "side": "Tie",
+    "bid": 5.0,
+    "ask": 76.0,
+    "bid_sz": 20.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG06CRAPHI-PHI",
+    "side": "Philadelphia",
+    "bid": 5.0,
+    "ask": 71.0,
+    "bid_sz": 20.0,
+    "ask_sz": 3.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG06CRAPHI-CRA",
+    "side": "Cruz Azul",
+    "bid": 5.0,
+    "ask": 79.0,
+    "bid_sz": 69.0,
+    "ask_sz": 10.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG06NYCSLA",
+  "ask_sum_c": 196.0,
+  "bid_sum_c": 39.0,
+  "overround_ask_c": 96.0,
+  "underround_bid_c": 61.0,
+  "buy_all_net_c": -100.44,
+  "sell_all_net_c": -63.23,
+  "min_leg_sz": 1.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG06NYCSLA-TIE",
+    "side": "Tie",
+    "bid": 4.0,
+    "ask": 48.0,
+    "bid_sz": 9.0,
+    "ask_sz": 1.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG06NYCSLA-SLA",
+    "side": "Santos Laguna",
+    "bid": 11.0,
+    "ask": 73.0,
+    "bid_sz": 6.0,
+    "ask_sz": 3.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG06NYCSLA-NYC",
+    "side": "New York City",
+    "bid": 24.0,
+    "ask": 75.0,
+    "bid_sz": 2.0,
+    "ask_sz": 4.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG05LAFCCDG",
+  "ask_sum_c": 154.0,
+  "bid_sum_c": 52.0,
+  "overround_ask_c": 54.0,
+  "underround_bid_c": 48.0,
+  "buy_all_net_c": -59.04,
+  "sell_all_net_c": -50.97,
+  "min_leg_sz": 2.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG05LAFCCDG-TIE",
+    "side": "Tie",
+    "bid": 18.0,
+    "ask": 38.0,
+    "bid_sz": 7.0,
+    "ask_sz": 15.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG05LAFCCDG-LAFC",
+    "side": "Los Angeles F",
+    "bid": 22.0,
+    "ask": 62.0,
+    "bid_sz": 6.0,
+    "ask_sz": 7.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG05LAFCCDG-CDG",
+    "side": "Guadalajara",
+    "bid": 12.0,
+    "ask": 54.0,
+    "bid_sz": 9.0,
+    "ask_sz": 2.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG05TOLSEA",
+  "ask_sum_c": 217.0,
+  "bid_sum_c": 77.0,
+  "overround_ask_c": 117.0,
+  "underround_bid_c": 23.0,
+  "buy_all_net_c": -121.16,
+  "sell_all_net_c": -26.54,
+  "min_leg_sz": 1.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG05TOLSEA-TOL",
+    "side": "Toluca",
+    "bid": 46.0,
+    "ask": 79.0,
+    "bid_sz": 3.0,
+    "ask_sz": 75.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG05TOLSEA-TIE",
+    "side": "Tie",
+    "bid": 11.0,
+    "ask": 69.0,
+    "bid_sz": 1.0,
+    "ask_sz": 3.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG05TOLSEA-SEA",
+    "side": "Seattle",
+    "bid": 20.0,
+    "ask": 69.0,
+    "bid_sz": 105.0,
+    "ask_sz": 1.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG05DALQUE",
+  "ask_sum_c": 224.0,
+  "bid_sum_c": 56.0,
+  "overround_ask_c": 124.0,
+  "underround_bid_c": 44.0,
+  "buy_all_net_c": -127.94,
+  "sell_all_net_c": -47.13,
+  "min_leg_sz": 1.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG05DALQUE-TIE",
+    "side": "Tie",
+    "bid": 11.0,
+    "ask": 72.0,
+    "bid_sz": 9.0,
+    "ask_sz": 3.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG05DALQUE-QUE",
+    "side": "Queretaro",
+    "bid": 22.0,
+    "ask": 80.0,
+    "bid_sz": 5.0,
+    "ask_sz": 11.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG05DALQUE-DAL",
+    "side": "Dallas",
+    "bid": 23.0,
+    "ask": 72.0,
+    "bid_sz": 4.0,
+    "ask_sz": 1.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG05NSHLEO",
+  "ask_sum_c": 208.0,
+  "bid_sum_c": 36.0,
+  "overround_ask_c": 108.0,
+  "underround_bid_c": 64.0,
+  "buy_all_net_c": -112.37,
+  "sell_all_net_c": -66.11,
+  "min_leg_sz": 2.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG05NSHLEO-TIE",
+    "side": "Tie",
+    "bid": 9.0,
+    "ask": 74.0,
+    "bid_sz": 11.0,
+    "ask_sz": 3.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG05NSHLEO-NSH",
+    "side": "Nashville",
+    "bid": 22.0,
+    "ask": 74.0,
+    "bid_sz": 4.0,
+    "ask_sz": 3.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG05NSHLEO-LEO",
+    "side": "Leon",
+    "bid": 5.0,
+    "ask": 60.0,
+    "bid_sz": 20.0,
+    "ask_sz": 2.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG05MONORL",
+  "ask_sum_c": 228.0,
+  "bid_sum_c": 23.0,
+  "overround_ask_c": 128.0,
+  "underround_bid_c": 77.0,
+  "buy_all_net_c": -131.83,
+  "sell_all_net_c": -78.48,
+  "min_leg_sz": 4.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG05MONORL-TIE",
+    "side": "Tie",
+    "bid": 7.000000000000001,
+    "ask": 76.0,
+    "bid_sz": 14.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG05MONORL-ORL",
+    "side": "Orlando",
+    "bid": 7.000000000000001,
+    "ask": 76.0,
+    "bid_sz": 13.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG05MONORL-MON",
+    "side": "Monterrey",
+    "bid": 9.0,
+    "ask": 76.0,
+    "bid_sz": 11.0,
+    "ask_sz": 4.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG05MIAASL",
+  "ask_sum_c": 186.0,
+  "bid_sum_c": 52.0,
+  "overround_ask_c": 86.0,
+  "underround_bid_c": 48.0,
+  "buy_all_net_c": -90.35,
+  "sell_all_net_c": -50.85,
+  "min_leg_sz": 4.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG05MIAASL-TIE",
+    "side": "Tie",
+    "bid": 5.0,
+    "ask": 65.0,
+    "bid_sz": 1.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG05MIAASL-MIA",
+    "side": "Miami",
+    "bid": 24.0,
+    "ask": 81.0,
+    "bid_sz": 4.0,
+    "ask_sz": 251.92
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG05MIAASL-ASL",
+    "side": "San Luis",
+    "bid": 23.0,
+    "ask": 40.0,
+    "bid_sz": 5.0,
+    "ask_sz": 4.55
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG04VANALA",
+  "ask_sum_c": 219.0,
+  "bid_sum_c": 24.0,
+  "overround_ask_c": 119.0,
+  "underround_bid_c": 76.0,
+  "buy_all_net_c": -123.1,
+  "sell_all_net_c": -77.54,
+  "min_leg_sz": 1.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG04VANALA-VAN",
+    "side": "Vancouver",
+    "bid": 9.0,
+    "ask": 76.0,
+    "bid_sz": 11.0,
+    "ask_sz": 1.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG04VANALA-TIE",
+    "side": "Tie",
+    "bid": 5.0,
+    "ask": 76.0,
+    "bid_sz": 20.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG04VANALA-ALA",
+    "side": "Atlante",
+    "bid": 10.0,
+    "ask": 67.0,
+    "bid_sz": 10.0,
+    "ask_sz": 118.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG04TIGRSL",
+  "ask_sum_c": 216.0,
+  "bid_sum_c": 29.0,
+  "overround_ask_c": 116.0,
+  "underround_bid_c": 71.0,
+  "buy_all_net_c": -120.22,
+  "sell_all_net_c": -72.8,
+  "min_leg_sz": 3.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG04TIGRSL-TIG",
+    "side": "Tigres",
+    "bid": 9.0,
+    "ask": 68.0,
+    "bid_sz": 11.0,
+    "ask_sz": 233.75
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG04TIGRSL-TIE",
+    "side": "Tie",
+    "bid": 5.0,
+    "ask": 74.0,
+    "bid_sz": 20.0,
+    "ask_sz": 3.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG04TIGRSL-RSL",
+    "side": "Salt Lake",
+    "bid": 15.0,
+    "ask": 74.0,
+    "bid_sz": 6.0,
+    "ask_sz": 3.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG04MINJUA",
+  "ask_sum_c": 218.0,
+  "bid_sum_c": 27.0,
+  "overround_ask_c": 118.0,
+  "underround_bid_c": 73.0,
+  "buy_all_net_c": -122.12,
+  "sell_all_net_c": -74.71,
+  "min_leg_sz": 1.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG04MINJUA-TIE",
+    "side": "Tie",
+    "bid": 7.000000000000001,
+    "ask": 76.0,
+    "bid_sz": 14.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG04MINJUA-MIN",
+    "side": "Minnesota",
+    "bid": 11.0,
+    "ask": 76.0,
+    "bid_sz": 9.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG04MINJUA-JUA",
+    "side": "Juarez",
+    "bid": 9.0,
+    "ask": 66.0,
+    "bid_sz": 11.0,
+    "ask_sz": 1.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG04CLTPUM",
+  "ask_sum_c": 224.0,
+  "bid_sum_c": 62.0,
+  "overround_ask_c": 124.0,
+  "underround_bid_c": 38.0,
+  "buy_all_net_c": -127.93,
+  "sell_all_net_c": -40.41,
+  "min_leg_sz": 4.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG04CLTPUM-TIE",
+    "side": "Tie",
+    "bid": 5.0,
+    "ask": 78.0,
+    "bid_sz": 20.0,
+    "ask_sz": 4.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG04CLTPUM-PUM",
+    "side": "Pumas UNAM",
+    "bid": 52.0,
+    "ask": 68.0,
+    "bid_sz": 1.0,
+    "ask_sz": 179.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG04CLTPUM-CLT",
+    "side": "Charlotte",
+    "bid": 5.0,
+    "ask": 78.0,
+    "bid_sz": 30.0,
+    "ask_sz": 4.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG04CLBATL",
+  "ask_sum_c": 208.0,
+  "bid_sum_c": 44.0,
+  "overround_ask_c": 108.0,
+  "underround_bid_c": 56.0,
+  "buy_all_net_c": -112.37,
+  "sell_all_net_c": -58.56,
+  "min_leg_sz": 3.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG04CLBATL-TIE",
+    "side": "Tie",
+    "bid": 7.000000000000001,
+    "ask": 74.0,
+    "bid_sz": 14.0,
+    "ask_sz": 3.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG04CLBATL-CLB",
+    "side": "Columbus",
+    "bid": 16.0,
+    "ask": 74.0,
+    "bid_sz": 6.0,
+    "ask_sz": 3.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG04CLBATL-ATL",
+    "side": "Atlas",
+    "bid": 21.0,
+    "ask": 60.0,
+    "bid_sz": 4.0,
+    "ask_sz": 4.0
+   }
+  ]
+ },
+ {
+  "series": "KXLEAGUESCUPGAME",
+  "event": "KXLEAGUESCUPGAME-26AUG04CINPAC",
+  "ask_sum_c": 112.0,
+  "bid_sum_c": 56.0,
+  "overround_ask_c": 12.0,
+  "underround_bid_c": 44.0,
+  "buy_all_net_c": -16.48,
+  "sell_all_net_c": -46.87,
+  "min_leg_sz": 1.0,
+  "legs": [
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG04CINPAC-TIE",
+    "side": "Tie",
+    "bid": 5.0,
+    "ask": 46.0,
+    "bid_sz": 4.0,
+    "ask_sz": 1.0
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG04CINPAC-PAC",
+    "side": "Pachuca",
+    "bid": 16.0,
+    "ask": 17.0,
+    "bid_sz": 1.23,
+    "ask_sz": 2.33
+   },
+   {
+    "ticker": "KXLEAGUESCUPGAME-26AUG04CINPAC-CIN",
+    "side": "Cincinnati",
+    "bid": 35.0,
+    "ask": 49.0,
+    "bid_sz": 2.0,
+    "ask_sz": 2.0
+   }
+  ]
+ }
+]

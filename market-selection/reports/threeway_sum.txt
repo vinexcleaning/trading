@@ -1,0 +1,33 @@
+﻿KXLIGAMXGAME             events=   2 fully-quoted 3-way=   2
+KXMLSGAME                events=   0 fully-quoted 3-way=   0
+KXARGPREMDIVGAME         events=  11 fully-quoted 3-way=  11
+KXCOPADOBRASILGAME       events=   9 fully-quoted 3-way=   9
+KXDIMAYORGAME            events=   9 fully-quoted 3-way=   9
+KXPERLIGA1GAME           events=   4 fully-quoted 3-way=   4
+KXECULPGAME              events=   4 fully-quoted 3-way=   4
+KXURYPDGAME              events=   4 fully-quoted 3-way=   4
+KXUSLGAME                events=   2 fully-quoted 3-way=   2
+KXNWSLGAME               events=   3 fully-quoted 3-way=   3
+KXCLUBFGAME              events=  21 fully-quoted 3-way=  21
+KXINTLFRIENDLYGAME       events=   0 fully-quoted 3-way=   0
+KXLEAGUESCUPGAME         events=  24 fully-quoted 3-way=  24
+
+unit of observation: one fully-quoted 3-way soccer event, n=93
+ASK-side overround (sum of 3 asks - 100c):
+  min -1.00  p10 +1.00  median +3.00  p90 +126.00  max +140.00
+BID-side underround (100c - sum of 3 bids):
+  min -2.00  median +3.00  max +91.00
+
+events where buying all three at the ask is NET PROFITABLE after 3 fees: 0 of 93
+events where selling all three at the bid is NET PROFITABLE: 0 of 93
+events with a GROSS ask-sum below 100c (before fees): 3 of 93
+  KXNWSLGAME             KXNWSLGAME-26AUG02DENBOS       askSum=  99.00 bidSum=  96.00 buyNet=  -3.26 minSz=1186.77
+  KXNWSLGAME             KXNWSLGAME-26AUG02WSPSAN       askSum=  99.00 bidSum=  96.00 buyNet=  -3.52 minSz=454.53
+  KXCLUBFGAME            KXCLUBFGAME-26AUG02PARIRA      askSum=  99.00 bidSum=  96.00 buyNet=  -2.27 minSz=54.0
+  KXARGPREMDIVGAME       KXARGPREMDIVGAME-26AUG02LANIAC askSum= 100.00 bidSum=  97.00 buyNet=  -4.50 minSz=1025.0
+  KXCOPADOBRASILGAME     KXCOPADOBRASILGAME-26AUG02INTC askSum= 100.00 bidSum=  97.00 buyNet=  -4.58 minSz=97.72
+  KXURYPDGAME            KXURYPDGAME-26JUL25DEFCER      askSum= 100.00 bidSum=  96.00 buyNet=  -4.09 minSz=420.0
+  KXURYPDGAME            KXURYPDGAME-26JUL24NACPRO      askSum= 100.00 bidSum=  95.00 buyNet=  -3.38 minSz=379.0
+  KXCLUBFGAME            KXCLUBFGAME-26AUG02SUNWRE      askSum= 100.00 bidSum=  97.00 buyNet=  -4.52 minSz=823.2
+
+wrote reports/threeway_sum.json
