@@ -1,0 +1,80 @@
+[
+ {
+  "competition_id": 81,
+  "season_id": 48,
+  "name": "Liga Profesional",
+  "season": "1997/1998",
+  "country": "Argentina",
+  "matches": 1,
+  "first": "1997-10-25",
+  "last": "1997-10-25",
+  "n_teams": 2,
+  "sample_events": 3572,
+  "sample_shots_with_xg": 32
+ },
+ {
+  "competition_id": 81,
+  "season_id": 275,
+  "name": "Liga Profesional",
+  "season": "1981",
+  "country": "Argentina",
+  "matches": 1,
+  "first": "1981-04-10",
+  "last": "1981-04-10",
+  "n_teams": 2,
+  "sample_events": 3086,
+  "sample_shots_with_xg": 24
+ },
+ {
+  "competition_id": 44,
+  "season_id": 107,
+  "name": "Major League Soccer",
+  "season": "2023",
+  "country": "United States of America",
+  "matches": 6,
+  "first": "2023-08-27",
+  "last": "2023-10-22",
+  "n_teams": 7,
+  "sample_events": 4138,
+  "sample_shots_with_xg": 21
+ },
+ {
+  "competition_id": 116,
+  "season_id": 68,
+  "name": "North American League",
+  "season": "1977",
+  "country": "North and Central America",
+  "matches": 1,
+  "first": "1977-08-28",
+  "last": "1977-08-28",
+  "n_teams": 2,
+  "sample_events": 3205,
+  "sample_shots_with_xg": 50
+ },
+ {
+  "competition_id": 49,
+  "season_id": 107,
+  "name": "NWSL",
+  "season": "2023",
+  "country": "United States of America",
+  "matches": 137,
+  "first": "2023-03-25",
+  "last": "2023-11-12",
+  "n_teams": 12,
+  "sample_events": 3232,
+  "sample_shots_with_xg": 30
+ },
+ {
+  "competition_id": 49,
+  "season_id": 3,
+  "name": "NWSL",
+  "season": "2018",
+  "country": "United States of America",
+  "matches": 36,
+  "first": "2018-04-15",
+  "last": "2018-08-12",
+  "n_teams": 9,
+  "sample_events": 3157,
+  "sample_shots_with_xg": 28
+ }
+]

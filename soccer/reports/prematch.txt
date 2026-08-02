@@ -1,0 +1,60 @@
+﻿
+=== mex.1: 2 events, 2 not yet completed ===
+  Santos at América                              T-   5.3h  status=STATUS_SCHEDULED
+     rosters=2 players=0 starters=0 formations=[None, None]
+     odds_blocks=1 officials=[] keyEvents=0
+     odds: provider=DraftKings home=-225 draw={'moneyLine': 370.0} away=550
+  Necaxa at Toluca                               T-   7.3h  status=STATUS_SCHEDULED
+     rosters=2 players=0 starters=0 formations=[None, None]
+     odds_blocks=1 officials=[] keyEvents=0
+     odds: provider=DraftKings home=-190 draw={'moneyLine': 340.0} away=475
+
+=== arg.1: 27 events, 27 not yet completed ===
+  Gimnasia La Plata at Aldosivi                  T-  -0.2h  status=STATUS_SCHEDULED
+     rosters=2 players=46 starters=22 formations=['3-4-2-1', '4-2-3-1']
+     odds_blocks=3 officials=['Luis Medina'] keyEvents=6
+     odds: provider=DraftKings home=215 draw={'moneyLine': 175.0} away=165
+  Barracas Central at Deportivo Riestra          T-  -0.2h  status=STATUS_SCHEDULED
+     rosters=2 players=46 starters=22 formations=['5-4-1', '5-3-2']
+     odds_blocks=3 officials=['Dario Herrera'] keyEvents=1
+     odds: provider=DraftKings home=125 draw={'moneyLine': 170.0} away=320
+  Boca Juniors at Newell's Old Boys              T-   2.3h  status=STATUS_SCHEDULED
+     rosters=2 players=0 starters=0 formations=[None, None]
+     odds_blocks=1 officials=[] keyEvents=0
+     odds: provider=DraftKings home=310 draw={'moneyLine': 220.0} away=100
+
+=== col.1: 19 events, 19 not yet completed ===
+  Atlético Nacional at Jaguares de Córdoba       T-   3.0h  status=STATUS_SCHEDULED
+     rosters=2 players=0 starters=0 formations=[None, None]
+     odds_blocks=1 officials=[] keyEvents=0
+     odds: provider=DraftKings home=390 draw={'moneyLine': 275.0} away=-155
+  Boyacá Chicó FC at América de Cali             T-   5.0h  status=STATUS_SCHEDULED
+     rosters=2 players=0 starters=0 formations=[None, None]
+     odds_blocks=1 officials=[] keyEvents=0
+     odds: provider=DraftKings home=-300 draw={'moneyLine': 360.0} away=800
+  Once Caldas at Independiente Santa Fe          T-   7.3h  status=STATUS_SCHEDULED
+     rosters=2 players=0 starters=0 formations=[None, None]
+     odds_blocks=1 officials=[] keyEvents=0
+     odds: provider=DraftKings home=110 draw={'moneyLine': 220.0} away=240
+
+=== bra.1: 10 events, 10 not yet completed ===
+  São Paulo at Grêmio                            T- 145.3h  status=STATUS_SCHEDULED
+     rosters=2 players=0 starters=0 formations=[None, None]
+     odds_blocks=1 officials=[] keyEvents=0
+     odds: provider=DraftKings home=135 draw={'moneyLine': 210.0} away=195
+  Atlético-MG at Remo                            T- 147.8h  status=STATUS_SCHEDULED
+     rosters=2 players=0 starters=0 formations=[None, None]
+     odds_blocks=1 officials=[] keyEvents=0
+     odds: provider=DraftKings home=195 draw={'moneyLine': 215.0} away=135
+  Chapecoense at Coritiba                        T- 149.8h  status=STATUS_SCHEDULED
+     rosters=2 players=0 starters=0 formations=[None, None]
+     odds_blocks=1 officials=[] keyEvents=0
+     odds: provider=DraftKings home=-160 draw={'moneyLine': 280.0} away=400
+
+=== usa.1: 1 events, 1 not yet completed ===
+  Houston Dynamo FC at New England Revolution    T- 146.8h  status=STATUS_SCHEDULED
+     rosters=2 players=0 starters=0 formations=[None, None]
+     odds_blocks=2 officials=[] keyEvents=0
+     odds: provider=DraftKings home=140 draw={'moneyLine': 225.0} away=170
+
+wrote reports/prematch_availability.json

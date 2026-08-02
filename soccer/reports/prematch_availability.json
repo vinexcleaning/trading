@@ -1,0 +1,174 @@
+{
+ "mex.1:401877020": {
+  "hours_to_kickoff": 5.254459173333333,
+  "status": "STATUS_SCHEDULED",
+  "n_rosters": 2,
+  "n_players": 0,
+  "starters": 0,
+  "formations": [
+   null,
+   null
+  ],
+  "odds_blocks": 1,
+  "officials": [],
+  "n_keyEvents": 0
+ },
+ "mex.1:401877019": {
+  "hours_to_kickoff": 7.337792506666667,
+  "status": "STATUS_SCHEDULED",
+  "n_rosters": 2,
+  "n_players": 0,
+  "starters": 0,
+  "formations": [
+   null,
+   null
+  ],
+  "odds_blocks": 1,
+  "officials": [],
+  "n_keyEvents": 0
+ },
+ "arg.1:401841470": {
+  "hours_to_kickoff": -0.24554082666666666,
+  "status": "STATUS_SCHEDULED",
+  "n_rosters": 2,
+  "n_players": 46,
+  "starters": 22,
+  "formations": [
+   "3-4-2-1",
+   "4-2-3-1"
+  ],
+  "odds_blocks": 3,
+  "officials": [
+   "Luis Medina"
+  ],
+  "n_keyEvents": 6
+ },
+ "arg.1:401841467": {
+  "hours_to_kickoff": -0.24554082666666666,
+  "status": "STATUS_SCHEDULED",
+  "n_rosters": 2,
+  "n_players": 46,
+  "starters": 22,
+  "formations": [
+   "5-4-1",
+   "5-3-2"
+  ],
+  "odds_blocks": 3,
+  "officials": [
+   "Dario Herrera"
+  ],
+  "n_keyEvents": 1
+ },
+ "arg.1:401841473": {
+  "hours_to_kickoff": 2.2544591733333332,
+  "status": "STATUS_SCHEDULED",
+  "n_rosters": 2,
+  "n_players": 0,
+  "starters": 0,
+  "formations": [
+   null,
+   null
+  ],
+  "odds_blocks": 1,
+  "officials": [],
+  "n_keyEvents": 0
+ },
+ "col.1:401877990": {
+  "hours_to_kickoff": 3.0044591733333337,
+  "status": "STATUS_SCHEDULED",
+  "n_rosters": 2,
+  "n_players": 0,
+  "starters": 0,
+  "formations": [
+   null,
+   null
+  ],
+  "odds_blocks": 1,
+  "officials": [],
+  "n_keyEvents": 0
+ },
+ "col.1:401877871": {
+  "hours_to_kickoff": 5.004459173333333,
+  "status": "STATUS_SCHEDULED",
+  "n_rosters": 2,
+  "n_players": 0,
+  "starters": 0,
+  "formations": [
+   null,
+   null
+  ],
+  "odds_blocks": 1,
+  "officials": [],
+  "n_keyEvents": 0
+ },
+ "col.1:401877966": {
+  "hours_to_kickoff": 7.254459173333333,
+  "status": "STATUS_SCHEDULED",
+  "n_rosters": 2,
+  "n_players": 0,
+  "starters": 0,
+  "formations": [
+   null,
+   null
+  ],
+  "odds_blocks": 1,
+  "officials": [],
+  "n_keyEvents": 0
+ },
+ "bra.1:401841181": {
+  "hours_to_kickoff": 145.25445917333334,
+  "status": "STATUS_SCHEDULED",
+  "n_rosters": 2,
+  "n_players": 0,
+  "starters": 0,
+  "formations": [
+   null,
+   null
+  ],
+  "odds_blocks": 1,
+  "officials": [],
+  "n_keyEvents": 0
+ },
+ "bra.1:401841178": {
+  "hours_to_kickoff": 147.75445917333334,
+  "status": "STATUS_SCHEDULED",
+  "n_rosters": 2,
+  "n_players": 0,
+  "starters": 0,
+  "formations": [
+   null,
+   null
+  ],
+  "odds_blocks": 1,
+  "officials": [],
+  "n_keyEvents": 0
+ },
+ "bra.1:401841184": {
+  "hours_to_kickoff": 149.75445917333334,
+  "status": "STATUS_SCHEDULED",
+  "n_rosters": 2,
+  "n_players": 0,
+  "starters": 0,
+  "formations": [
+   null,
+   null
+  ],
+  "odds_blocks": 1,
+  "officials": [],
+  "n_keyEvents": 0
+ },
+ "usa.1:761469": {
+  "hours_to_kickoff": 146.75445917333334,
+  "status": "STATUS_SCHEDULED",
+  "n_rosters": 2,
+  "n_players": 0,
+  "starters": 0,
+  "formations": [
+   null,
+   null
+  ],
+  "odds_blocks": 2,
+  "officials": [],
+  "n_keyEvents": 0
+ }
+}

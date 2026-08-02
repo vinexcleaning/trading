@@ -1,0 +1,44 @@
+﻿
+=== MEX ===
+  2022:   342 rows | PSCH   342 (100.0%) | AvgCH   342 | MaxCH   342
+  2023:   341 rows | PSCH   339 ( 99.4%) | AvgCH   341 | MaxCH   341
+  2024:   340 rows | PSCH   338 ( 99.4%) | AvgCH   340 | MaxCH   340
+  2025:   339 rows | PSCH   305 ( 90.0%) | AvgCH   339 | MaxCH   339
+  2026:   185 rows | PSCH     0 (  0.0%) | AvgCH   185 | MaxCH   185
+  IN THE KALSHI WINDOW (>= 2026-05-24): 19 rows, PSCH on 0 (0.0%), AvgCH on 19 (100.0%)
+    2026-07-26 Tigres UANL        PSCH='' AvgCH='1.45'
+    2026-07-27 Necaxa             PSCH='' AvgCH='3.31'
+    2026-07-27 Pachuca            PSCH='' AvgCH='1.62'
+
+=== ARG ===
+  2022:   581 rows | PSCH   581 (100.0%) | AvgCH   581 | MaxCH   581
+  2023:   582 rows | PSCH   582 (100.0%) | AvgCH   582 | MaxCH   582
+  2024:   581 rows | PSCH   580 ( 99.8%) | AvgCH   581 | MaxCH   581
+  2025:   510 rows | PSCH   465 ( 91.2%) | AvgCH   510 | MaxCH   510
+  2026:   281 rows | PSCH     0 (  0.0%) | AvgCH   281 | MaxCH   281
+  IN THE KALSHI WINDOW (>= 2026-05-24): 28 rows, PSCH on 0 (0.0%), AvgCH on 28 (100.0%)
+    2026-07-30 Talleres Cordoba   PSCH='' AvgCH='2.28'
+    2026-07-31 Central Cordoba    PSCH='' AvgCH='3.2'
+    2026-07-31 Independiente      PSCH='' AvgCH='1.53'
+
+=== BRA ===
+  2022:   380 rows | PSCH   380 (100.0%) | AvgCH   380 | MaxCH   380
+  2023:   380 rows | PSCH   380 (100.0%) | AvgCH   380 | MaxCH   380
+  2024:   380 rows | PSCH   380 (100.0%) | AvgCH   380 | MaxCH   380
+  2025:   380 rows | PSCH   336 ( 88.4%) | AvgCH   380 | MaxCH   380
+  2026:   205 rows | PSCH     0 (  0.0%) | AvgCH   205 | MaxCH   205
+  IN THE KALSHI WINDOW (>= 2026-05-24): 44 rows, PSCH on 0 (0.0%), AvgCH on 44 (100.0%)
+    2026-07-30 Vitoria            PSCH='' AvgCH='3.99'
+    2026-07-30 Corinthians        PSCH='' AvgCH='2.21'
+    2026-07-31 Coritiba           PSCH='' AvgCH='3.19'
+
+=== USA ===
+  2022:   489 rows | PSCH   489 (100.0%) | AvgCH   489 | MaxCH   489
+  2023:   521 rows | PSCH   521 (100.0%) | AvgCH   521 | MaxCH   521
+  2024:   522 rows | PSCH   522 (100.0%) | AvgCH   522 | MaxCH   522
+  2025:   540 rows | PSCH   525 ( 97.2%) | AvgCH   540 | MaxCH   540
+  2026:   253 rows | PSCH     0 (  0.0%) | AvgCH   253 | MaxCH   253
+  IN THE KALSHI WINDOW (>= 2026-05-24): 48 rows, PSCH on 0 (0.0%), AvgCH on 48 (100.0%)
+    2026-07-26 Los Angeles FC     PSCH='' AvgCH='1.23'
+    2026-07-26 Portland Timbers   PSCH='' AvgCH='2.64'
+    2026-07-26 San Jose Earthquak PSCH='' AvgCH='2.01'
