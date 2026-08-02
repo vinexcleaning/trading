@@ -1,0 +1,76 @@
+﻿=== 1. ESPN historical depth: matches per past season ===
+  mex.1    matches in a sample week: {2026: 17, 2024: 12, 2022: 15, 2019: 12, 2015: 11}
+  arg.1    matches in a sample week: {2026: 13, 2024: 0, 2022: 0, 2019: 15, 2015: 21}
+  bra.1    matches in a sample week: {2026: 0, 2024: 0, 2022: 0, 2019: 0, 2015: 0}
+  col.1    matches in a sample week: {2026: 9, 2024: 12, 2022: 12, 2019: 11, 2015: 15}
+  usa.1    matches in a sample week: {2026: 18, 2024: 14, 2022: 14, 2019: 12, 2015: 10}
+
+=== 2. StatsBomb open data: which competitions? ===
+  80 competition-seasons, 24 distinct country/competition pairs:
+    Africa                 African Cup of Nations
+    Argentina              Liga Profesional
+    England                FA Women's Super League
+    England                Premier League
+    Europe                 Champions League
+    Europe                 UEFA Euro
+    Europe                 UEFA Europa League
+    Europe                 UEFA Women's Euro
+    France                 Ligue 1
+    Germany                1. Bundesliga
+    Germany                Frauen Bundesliga
+    India                  Indian Super league
+    International          FIFA U20 World Cup
+    International          FIFA World Cup
+    International          Women's World Cup
+    Italy                  Serie A
+    Italy                  Serie A Women
+    North and Central Amer North American League
+    South America          Copa America
+    Spain                  Copa del Rey
+    Spain                  La Liga
+    Spain                  Liga F
+    United States of Ameri Major League Soccer
+    United States of Ameri NWSL
+
+  covering OUR leagues: [('Argentina', 'Liga Profesional')]
+
+=== 3. ClubElo: does it rate these leagues? ===
+  593 clubs across 55 countries
+    MEX: 0 clubs
+    ARG: 0 clubs
+    BRA: 0 clubs
+    COL: 0 clubs
+    USA: 0 clubs
+  top countries: [('ENG', 43), ('ESP', 42), ('ITA', 40), ('FRA', 36), ('GER', 32), ('NED', 18), ('TUR', 18), ('BEL', 17), ('POL', 17), ('NOR', 16)]
+  /Toluca -> 2 history rows; sample: []
+
+=== 4. Understat: which leagues does it actually carry? ===
+  league links present on the homepage: ['EPL', 'La_liga', 'Bundesliga', 'Serie_A', 'Ligue_1', 'RFPL']
+
+=== 5. community scrapers for OUR leagues ===
+
+  'liga mx data': 17 repos
+    erickrallado12-ai/liga-mx                    pushed=2026-07-29 stars=   0 size=121KB
+    Axllarena/liga-mx-predictor                  pushed=2026-07-30 stars=   0 size=11KB
+    alejandrys/liga_mx_data_scraping             pushed=2026-05-20 stars=   0 size=377KB
+    maubtw/Liga-MX-Data-viz                      pushed=2026-04-29 stars=   0 size=26KB
+    Raul-Rangel94/-Probabilistic-Football-Modeli pushed=2026-04-13 stars=   0 size=1587KB
+    Espana-zip/LigaMx-predictions-               pushed=2026-02-05 stars=   0 size=91KB
+
+  'liga mx scraper': 1 repos
+    villegascmarco/liga-mx-goal-scoring-table-sc pushed=2021-09-14 stars=   0 size=15KB
+
+  'brasileirao dataset': 24 repos
+    leeofernandes1980/brasileirao-dataset        pushed=2026-08-02 stars=   1 size=15001KB
+    felipef268/Projeto_Brasileirao               pushed=2026-07-06 stars=   0 size=11KB
+    GabrielSorge/Analise-estatistica-brasileirao pushed=2026-05-27 stars=   0 size=631KB
+    jasperusz/brasileirao-stats                  pushed=2026-05-18 stars=   0 size=816KB
+    TayschreN/eda-brasileirao-pandas             pushed=2026-04-20 stars=   0 size=1227KB
+    MarianoAnderson/Analise-Brasileirao          pushed=2026-03-31 stars=   0 size=12KB
+
+  'argentina primera datos futbol': 1 repos
+    fabrid022-cmyk/API-Futbol-argentino          pushed=2025-11-16 stars=   0 size=8KB
+
+  'soccerdata liga mx': 0 repos
+
+wrote reports/hunt_sources2.json

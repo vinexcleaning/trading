@@ -1,0 +1,47 @@
+﻿=== Kalshi soccer markets ===
+  KXLIGAMXGAME           settled  78
+  KXLIGAMXGAME           open     6
+  KXLIGAMXTOTAL          settled  135
+  KXLIGAMXTOTAL          open     12
+  KXARGPREMDIVGAME       settled  96
+  KXARGPREMDIVGAME       open     33
+  KXDIMAYORGAME          settled  51
+  KXDIMAYORGAME          open     27
+  KXCOPADOBRASILGAME     settled  9
+  KXCOPADOBRASILGAME     open     27
+  KXMLSGAME              settled  159
+  KXMLSGAME              open     0
+  633 markets -> 162 fixtures (28 unparsed titles)
+    unparsed: {'event': 'KXLIGAMXTOTAL-26AUG01CRAALA', 'title': 'Will over 6.5 goals be scored?'}
+    unparsed: {'event': 'KXLIGAMXTOTAL-26AUG01QUETIG', 'title': 'Will over 7.5 goals be scored?'}
+    unparsed: {'event': 'KXLIGAMXTOTAL-26JUL31JUAPUM', 'title': 'Will over 8.5 goals be scored?'}
+    unparsed: {'event': 'KXLIGAMXTOTAL-26AUG01LEOPAC', 'title': 'Will over 5.5 goals be scored?'}
+    unparsed: {'event': 'KXLIGAMXTOTAL-26AUG01ATLMON', 'title': 'Will over 5.5 goals be scored?'}
+
+=== ESPN events ===
+  arg.1                  78 events
+  bra.1                  82 events
+  bra.copa_do_brazil     27 events
+  col.1                  55 events
+  mex.1                  45 events
+  usa.1                  112 events
+  312 distinct ESPN matches
+
+=== JOIN ===
+  Kalshi fixtures      162
+  matched to ESPN      160  (98.8%)
+  failed to match      2
+  date offsets used    {1: 79, 0: 80, 2: 1}
+
+  series                    matched  failed    rate
+  KXARGPREMDIVGAME               43       0  100.0%
+  KXCOPADOBRASILGAME             12       0  100.0%
+  KXDIMAYORGAME                  25       1   96.2%
+  KXLIGAMXGAME                   28       0  100.0%
+  KXMLSGAME                      52       1   98.1%
+
+  FAILURES (first 30) -- inspect, do not assume:
+    KXDIMAYORGAME      2026-07-25 Boyaca Chico         vs Atletico Nacional    | None
+    KXMLSGAME          2026-07-16 Chicago Fire         vs Vancouver            | None
+
+wrote data/join.json

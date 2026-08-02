@@ -34,7 +34,12 @@ import kalshi_api as K  # noqa: E402
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "data", "tape_pmxt_window")
 START = datetime(2026, 5, 25, tzinfo=timezone.utc)   # oldest still reachable
-END = datetime(2026, 6, 11, tzinfo=timezone.utc)
+# INCLUSIVE of 2026-06-11. The first version used `while day < END` with END set
+# to 06-11, which silently excluded the final day -- and the pmxt archive runs
+# to 2026-06-11T03, so four hours of mirrored order book would have had no
+# matching trades. Caught by content-validating the finished backfill rather
+# than by trusting days_complete=17.
+END = datetime(2026, 6, 12, tzinfo=timezone.utc)
 
 
 def already_done(path, day):

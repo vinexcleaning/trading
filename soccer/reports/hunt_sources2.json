@@ -1,0 +1,214 @@
+{
+ "espn_history": {
+  "mex.1": {
+   "2026": 17,
+   "2024": 12,
+   "2022": 15,
+   "2019": 12,
+   "2015": 11
+  },
+  "arg.1": {
+   "2026": 13,
+   "2024": 0,
+   "2022": 0,
+   "2019": 15,
+   "2015": 21
+  },
+  "bra.1": {
+   "2026": 0,
+   "2024": 0,
+   "2022": 0,
+   "2019": 0,
+   "2015": 0
+  },
+  "col.1": {
+   "2026": 9,
+   "2024": 12,
+   "2022": 12,
+   "2019": 11,
+   "2015": 15
+  },
+  "usa.1": {
+   "2026": 18,
+   "2024": 14,
+   "2022": 14,
+   "2019": 12,
+   "2015": 10
+  }
+ },
+ "statsbomb": {
+  "n": 80,
+  "pairs": [
+   [
+    "Africa",
+    "African Cup of Nations"
+   ],
+   [
+    "Argentina",
+    "Liga Profesional"
+   ],
+   [
+    "England",
+    "FA Women's Super League"
+   ],
+   [
+    "England",
+    "Premier League"
+   ],
+   [
+    "Europe",
+    "Champions League"
+   ],
+   [
+    "Europe",
+    "UEFA Euro"
+   ],
+   [
+    "Europe",
+    "UEFA Europa League"
+   ],
+   [
+    "Europe",
+    "UEFA Women's Euro"
+   ],
+   [
+    "France",
+    "Ligue 1"
+   ],
+   [
+    "Germany",
+    "1. Bundesliga"
+   ],
+   [
+    "Germany",
+    "Frauen Bundesliga"
+   ],
+   [
+    "India",
+    "Indian Super league"
+   ],
+   [
+    "International",
+    "FIFA U20 World Cup"
+   ],
+   [
+    "International",
+    "FIFA World Cup"
+   ],
+   [
+    "International",
+    "Women's World Cup"
+   ],
+   [
+    "Italy",
+    "Serie A"
+   ],
+   [
+    "Italy",
+    "Serie A Women"
+   ],
+   [
+    "North and Central America",
+    "North American League"
+   ],
+   [
+    "South America",
+    "Copa America"
+   ],
+   [
+    "Spain",
+    "Copa del Rey"
+   ],
+   [
+    "Spain",
+    "La Liga"
+   ],
+   [
+    "Spain",
+    "Liga F"
+   ],
+   [
+    "United States of America",
+    "Major League Soccer"
+   ],
+   [
+    "United States of America",
+    "NWSL"
+   ]
+  ],
+  "ours": [
+   [
+    "Argentina",
+    "Liga Profesional"
+   ]
+  ]
+ },
+ "clubelo": {
+  "n_clubs": 593,
+  "by_country": {
+   "ENG": 43,
+   "FRA": 36,
+   "ESP": 42,
+   "ITA": 40,
+   "GER": 32,
+   "POR": 4,
+   "NED": 18,
+   "BEL": 17,
+   "NOR": 16,
+   "DEN": 12,
+   "TUR": 18,
+   "RUS": 16,
+   "CZE": 15,
+   "GRE": 8,
+   "SRB": 14,
+   "CRO": 10,
+   "SCO": 12,
+   "CYP": 4,
+   "AZE": 4,
+   "POL": 17,
+   "HUN": 12,
+   "SWE": 16,
+   "AUT": 12,
+   "SUI": 13,
+   "ISR": 14,
+   "ROM": 15,
+   "SVN": 9,
+   "BUL": 14,
+   "SLK": 4,
+   "KAZ": 3,
+   "MOL": 4,
+   "IRL": 4,
+   "FIN": 4,
+   "ARM": 4,
+   "ISL": 3,
+   "LAT": 4,
+   "BHZ": 4,
+   "LIE": 1,
+   "UKR": 14,
+   "KOS": 4,
+   "MAC": 4,
+   "BLR": 2,
+   "FAR": 4,
+   "ALB": 4,
+   "LIT": 4,
+   "GEO": 4,
+   "EST": 4,
+   "MLT": 4,
+   "NIR": 4,
+   "MNT": 4,
+   "WAL": 4,
+   "GIB": 3,
+   "LUX": 4,
+   "AND": 3,
+   "SMR": 3
+  }
+ },
+ "understat_leagues": [
+  "EPL",
+  "La_liga",
+  "Bundesliga",
+  "Serie_A",
+  "Ligue_1",
+  "RFPL"
+ ]
+}

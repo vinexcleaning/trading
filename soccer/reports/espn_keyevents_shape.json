@@ -1,0 +1,123 @@
+{
+ "wallclockAvailable": true,
+ "n_keyEvents": 34,
+ "sample": [
+  {
+   "id": "49898462",
+   "type": {
+    "id": "80",
+    "text": "Kickoff",
+    "type": "kickoff"
+   },
+   "period": {
+    "number": 1
+   },
+   "clock": {
+    "value": 0.0,
+    "displayValue": ""
+   },
+   "scoringPlay": false,
+   "source": {
+    "id": "38",
+    "description": "SA.ENVOY"
+   },
+   "wallclock": "2026-07-22T01:00:26Z",
+   "shootout": false
+  },
+  {
+   "id": "49899460",
+   "type": {
+    "id": "70",
+    "text": "Goal",
+    "type": "goal"
+   },
+   "text": "Goal! Cruz Azul 0, Puebla 1. Fernando Mon\u00e1rrez (Puebla) left footed shot from outside the box to the bottom right corner. Assisted by Alberto Herrera.",
+   "shortText": "Fernando Monarrez Goal",
+   "period": {
+    "number": 1
+   },
+   "clock": {
+    "value": 1667.0,
+    "displayValue": "28'"
+   },
+   "scoringPlay": true,
+   "team": {
+    "id": "231",
+    "displayName": "Puebla"
+   },
+   "participants": [
+    {
+     "athlete": {
+      "id": "284657",
+      "displayName": "Fernando Monarrez"
+     }
+    },
+    {
+     "athlete": {
+      "id": "327782",
+      "displayName": "Alberto Herrera"
+     }
+    }
+   ],
+   "source": {
+    "id": "38",
+    "description": "SA.ENVOY"
+   },
+   "wallclock": "2026-07-22T01:28:13Z",
+   "shootout": false,
+   "goalPositionY": 46.4,
+   "fieldPositionX": 73.4,
+   "fieldPositionY": 63.6,
+   "fieldPosition2X": 100.0,
+   "fieldPosition2Y": 46.4
+  },
+  {
+   "id": "49899556",
+   "type": {
+    "id": "129",
+    "text": "Start Delay",
+    "type": "start-delay"
+   },
+   "text": "Delay in match because of an injury Gonzalo Piovi (Cruz Azul).",
+   "period": {
+    "number": 1
+   },
+   "clock": {
+    "value": 2084.0,
+    "displayValue": "35'"
+   },
+   "scoringPlay": false,
+   "team": {
+    "id": "218",
+    "displayName": "Cruz Azul"
+   },
+   "source": {
+    "id": "38",
+    "description": "SA.ENVOY"
+   },
+   "wallclock": "2026-07-22T01:35:10Z",
+   "shootout": false
+  }
+ ],
+ "summary_keys": [
+  "boxscore",
+  "broadcasts",
+  "commentary",
+  "format",
+  "gameInfo",
+  "hasOdds",
+  "header",
+  "keyEvents",
+  "lastFiveGames",
+  "leaders",
+  "meta",
+  "news",
+  "odds",
+  "pickcenter",
+  "rosters",
+  "seasonseries",
+  "standings",
+  "videos",
+  "wallclockAvailable"
+ ]
+}

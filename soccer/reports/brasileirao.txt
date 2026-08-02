@@ -1,0 +1,27 @@
+﻿
+=== campeonato-brasileiro-full.csv ===
+  http=200 bytes=1,127,694 sha256=4ab04cc56718d960
+  rows=8,405 cols=16
+  columns: ['ID', 'rodata', 'data', 'hora', 'mandante', 'visitante', 'formacao_mandante', 'formacao_visitante', 'tecnico_mandante', 'tecnico_visitante', 'vencedor', 'arena', 'mandante_Placar', 'visitante_Placar', 'mandante_Estado', 'visitante_Estado']
+  date range: 01/02/2021 .. 31/10/2023
+  sample row: ['1', '1', '29/03/2003', '16:00', 'Guarani', 'Vasco', '', '', '', '', 'Guarani', '\xa0Brinco de Ouro']
+
+=== campeonato-brasileiro-estatisticas-full.csv ===
+  http=200 bytes=1,105,424 sha256=afeda89a36fb875d
+  rows=16,810 cols=13
+  columns: ['partida_id', 'rodata', 'clube', 'chutes', 'chutes_no_alvo', 'posse_de_bola', 'passes', 'precisao_passes', 'faltas', 'cartao_amarelo', 'cartao_vermelho', 'impedimentos', 'escanteios']
+  sample row: ['1', '1', 'Guarani', '0', '0', '', '0', '', '0', '0', '0', '0']
+
+=== campeonato-brasileiro-gols.csv ===
+  http=200 bytes=462,440 sha256=96414956f0ae054e
+  rows=8,932 cols=6
+  columns: ['partida_id', 'rodata', 'clube', 'atleta', 'minuto', 'tipo_de_gol']
+  sample row: ['4607', '1', 'Fluminense', 'Nirley da Silva Fonseca', '59', 'Gol Contra']
+
+=== campeonato-brasileiro-cartoes.csv ===
+  http=200 bytes=1,397,712 sha256=7b45e6a1a695da49
+  rows=18,857 cols=8
+  columns: ['partida_id', 'rodata', 'clube', 'cartao', 'atleta', 'num_camisa', 'posicao', 'minuto']
+  sample row: ['4607', '1', 'Figueirense', 'Amarelo', 'Paulo Roberto da Silva', '28', '', '66']
+
+wrote reports/brasileirao.json

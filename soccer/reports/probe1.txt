@@ -1,0 +1,96 @@
+﻿=== how many SETTLED soccer markets are reachable? ===
+  KXLIGAMXGAME           {'settled': 78, 'finalized': None, 'closed': 0, 'open': 6}
+  KXARGPREMDIVGAME       {'settled': 96, 'finalized': None, 'closed': 0, 'open': 33}
+  KXLIGAMXTOTAL          {'settled': 135, 'finalized': None, 'closed': 0, 'open': 12}
+  KXDIMAYORGAME          {'settled': 51, 'finalized': None, 'closed': 0, 'open': 27}
+  KXCOPADOBRASILGAME     {'settled': 9, 'finalized': None, 'closed': 0, 'open': 27}
+  KXMLSGAME              {'settled': 159, 'finalized': None, 'closed': 0, 'open': 0}
+
+=== a settled market, and its candlesticks ===
+  got 20 settled/finalized markets
+  ticker=KXLIGAMXGAME-26AUG01CRAALA-TIE  title='Cruz Azul vs Atlante Winner?'
+  yes_sub='Tie'  result='no'
+  open=2026-07-27T03:18:00Z  close=2026-08-02T05:01:14Z
+
+  candlesticks period_interval=1: http=400
+    body: {"error":{"code":"bad_request","message":"bad request","details":"requested time range with candlesticks: 8743.233333, max candlesticks: 5000"}}
+
+  candlesticks period_interval=60: http=200
+    top-level keys: ['candlesticks', 'ticker']
+    n candles: 146
+    FIRST CANDLE:
+{
+      "end_period_ts": 1785124800,
+      "open_interest_fp": "27.67",
+      "price": {
+            "close_dollars": "0.2000",
+            "high_dollars": "0.2000",
+            "low_dollars": "0.2000",
+            "mean_dollars": "0.2000",
+            "open_dollars": "0.2000"
+      },
+      "volume_fp": "27.67",
+      "yes_ask": {
+            "close_dollars": "0.2000",
+            "high_dollars": "1.0000",
+            "low_dollars": "0.2000",
+            "open_dollars": "1.0000"
+      },
+      "yes_bid": {
+            "close_dollars": "0.1800",
+            "high_dollars": "0.1900",
+            "low_dollars": "0.0200",
+            "open_dollars": "0.0200"
+      }
+}
+
+
+=== ESPN: play-by-play / timeline for a soccer match ===
+  mex.1    scoreboard http=200 events=2
+  arg.1    scoreboard http=200 events=5
+  bra.1    scoreboard http=200 events=2
+  usa.1    scoreboard http=200 events=14
+  col.1    scoreboard http=200 events=3
+
+=== ESPN summary with timeline (a finished match) ===
+  events in the last week: 11
+    2026-07-26T23:00Z  Monterrey at Necaxa  status=STATUS_FULL_TIME
+    2026-07-27T01:06Z  Querétaro at Pachuca  status=STATUS_FULL_TIME
+    2026-08-01T01:00Z  Guadalajara at Puebla  status=STATUS_FULL_TIME
+
+  summary event=401877029 http=200 bytes=388119
+  summary keys: ['boxscore', 'broadcasts', 'commentary', 'format', 'gameInfo', 'hasOdds', 'header', 'keyEvents', 'lastFiveGames', 'leaders', 'meta', 'news', 'odds', 'pickcenter', 'rosters', 'seasonseries', 'standings', 'videos', 'wallclockAvailable']
+
+  --- keyEvents: 42 entries ---
+{
+    "id": "50108326",
+    "type": {
+        "id": "80",
+        "text": "Kickoff",
+        "type": "kickoff"
+    },
+    "period": {
+        "number": 1
+    },
+    "clock": {
+        "value": 0.0,
+        "displayValue": ""
+    },
+    "scoringPlay": false,
+    "source": {
+        "id": "38",
+        "description": "SA.ENVOY"
+    },
+    "wallclock": "2026-07-26T23:00:10Z",
+    "shootout": false
+}
+
+  --- commentary: 137 entries ---
+{
+    "sequence": 0,
+    "time": {
+        "value": 0.0,
+        "displayValue": ""
+    },
+    "text": "Lineups are announced and players are warming up."
+}

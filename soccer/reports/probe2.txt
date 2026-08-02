@@ -1,0 +1,92 @@
+﻿completed mex.1 matches in the window: 16
+using event 401877036: Puebla at Cruz Azul  date=2026-07-22T01:00Z
+
+wallclockAvailable = True
+
+=== keyEvents: 34 ===
+{
+  "id": "49898462",
+  "type": {
+    "id": "80",
+    "text": "Kickoff",
+    "type": "kickoff"
+  },
+  "period": {
+    "number": 1
+  },
+  "clock": {
+    "value": 0.0,
+    "displayValue": ""
+  },
+  "scoringPlay": false,
+  "source": {
+    "id": "38",
+    "description": "SA.ENVOY"
+  },
+  "wallclock": "2026-07-22T01:00:26Z",
+  "shootout": false
+}
+
+=== every event type present, with clock and wallclock ===
+  P1         wc=  2026-07-22T01:00:26Z Kickoff                scoring=False team=None
+  P1     28' wc=  2026-07-22T01:28:13Z Goal                   scoring=True team=Puebla
+  P1     35' wc=  2026-07-22T01:35:10Z Start Delay            scoring=False team=Cruz Azul
+  P1     35' wc=  2026-07-22T01:35:11Z Start Delay            scoring=False team=Puebla
+  P1     35' wc=  2026-07-22T01:35:17Z End Delay              scoring=False team=Cruz Azul
+  P1     35' wc=  2026-07-22T01:35:17Z End Delay              scoring=False team=Puebla
+  P1     37' wc=  2026-07-22T01:36:28Z Yellow Card            scoring=False team=Cruz Azul
+  P1     38' wc=  2026-07-22T01:37:31Z Start Delay            scoring=False team=Puebla
+  P1     38' wc=  2026-07-22T01:37:32Z Start Delay            scoring=False team=Cruz Azul
+  P1     39' wc=  2026-07-22T01:38:33Z End Delay              scoring=False team=Puebla
+  P1     39' wc=  2026-07-22T01:38:33Z End Delay              scoring=False team=Cruz Azul
+  P1     44' wc=  2026-07-22T01:44:04Z Goal - Header          scoring=True team=Cruz Azul
+  P1  45'+2' wc=  2026-07-22T01:46:43Z Yellow Card            scoring=False team=Cruz Azul
+  P1  45'+6' wc=  2026-07-22T01:50:30Z Halftime               scoring=False team=None
+  P2     45' wc=  2026-07-22T02:07:57Z Start 2nd Half         scoring=False team=None
+  P2     53' wc=  2026-07-22T02:15:18Z Start Delay            scoring=False team=Cruz Azul
+  P2     53' wc=  2026-07-22T02:15:19Z Start Delay            scoring=False team=Puebla
+  P2     53' wc=  2026-07-22T02:15:53Z End Delay              scoring=False team=Cruz Azul
+  P2     53' wc=  2026-07-22T02:15:54Z End Delay              scoring=False team=Puebla
+  P2     56' wc=  2026-07-22T02:18:47Z Substitution           scoring=False team=Puebla
+  P2     56' wc=  2026-07-22T02:18:52Z Substitution           scoring=False team=Puebla
+  P2     58' wc=  2026-07-22T02:20:45Z Substitution           scoring=False team=Cruz Azul
+  P2     58' wc=  2026-07-22T02:20:49Z Substitution           scoring=False team=Cruz Azul
+  P2     67' wc=  2026-07-22T02:29:30Z Substitution           scoring=False team=Cruz Azul
+  P2     67' wc=  2026-07-22T02:29:46Z Substitution           scoring=False team=Cruz Azul
+  P2     68' wc=  2026-07-22T02:29:59Z Substitution           scoring=False team=Cruz Azul
+  P2     77' wc=  2026-07-22T02:39:52Z Substitution           scoring=False team=Puebla
+  P2     78' wc=  2026-07-22T02:40:02Z Substitution           scoring=False team=Puebla
+  P2     82' wc=  2026-07-22T02:44:41Z Goal                   scoring=True team=Cruz Azul
+  P2     84' wc=  2026-07-22T02:46:45Z Yellow Card            scoring=False team=Puebla
+  P2     87' wc=  2026-07-22T02:49:07Z Substitution           scoring=False team=Puebla
+  P2  90'+1' wc=  2026-07-22T02:53:38Z Yellow Card            scoring=False team=Puebla
+  P2  90'+5' wc=  2026-07-22T02:57:10Z Yellow Card            scoring=False team=Puebla
+  P2  90'+7' wc=  2026-07-22T02:59:23Z End Regular Time       scoring=False team=None
+
+=== commentary: does it carry wallclock? ===
+  109 entries
+{
+  "sequence": 0,
+  "time": {
+    "value": 0.0,
+    "displayValue": ""
+  },
+  "text": "Lineups are announced and players are warming up."
+}
+  entries with a clock: 106/109
+
+=== other domain-relevant blocks in this one payload ===
+  rosters        list n=2  keys=['formation', 'homeAway', 'roster', 'team', 'uniform', 'winner']
+  odds           list n=1  keys=['awayTeamOdds', 'details', 'drawOdds', 'footer', 'header', 'homeTeamOdds', 'link', 'links', 'moneyline', 'overOdds']
+  pickcenter     list n=1  keys=['awayTeamOdds', 'details', 'drawOdds', 'footer', 'header', 'homeTeamOdds', 'link', 'links', 'moneyline', 'overOdds']
+  standings      dict keys=['fullViewLink', 'groups', 'header']
+  lastFiveGames  list n=2  keys=['displayOrder', 'events', 'team']
+  seasonseries   list n=1  keys=['completed', 'events', 'seriesLabel', 'seriesScore', 'shortSummary', 'summary', 'title', 'totalCompetitions', 'type']
+  gameInfo       dict keys=['attendance', 'officials', 'venue']
+  boxscore       dict keys=['teams']
+
+  gameInfo: venue='Estadio Banorte' attendance=0 officials=['Karen Hernández Andrade']
+
+  rosters[0]: team='Cruz Azul' formation=4-2-2-2 n_players=21
+    player keys: ['active', 'athlete', 'formationPlace', 'jersey', 'media', 'position', 'starter', 'stats', 'subbedIn', 'subbedOut']
+    starter=True pos=G name='Kevin Mier'

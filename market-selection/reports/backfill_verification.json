@@ -1,0 +1,177 @@
+{
+ "days": [
+  {
+   "day": "2026-05-25",
+   "trades": 3447536,
+   "hours": 24,
+   "series": 1664,
+   "torn": 0,
+   "badpx": 0,
+   "dup_ids": 0,
+   "verdict": "OK"
+  },
+  {
+   "day": "2026-05-26",
+   "trades": 3466712,
+   "hours": 24,
+   "series": 1688,
+   "torn": 0,
+   "badpx": 0,
+   "dup_ids": 0,
+   "verdict": "OK"
+  },
+  {
+   "day": "2026-05-27",
+   "trades": 3967951,
+   "hours": 24,
+   "series": 1826,
+   "torn": 0,
+   "badpx": 0,
+   "dup_ids": 0,
+   "verdict": "OK"
+  },
+  {
+   "day": "2026-05-28",
+   "trades": 3457997,
+   "hours": 23,
+   "series": 1836,
+   "torn": 0,
+   "badpx": 0,
+   "dup_ids": 0,
+   "verdict": "CHECK"
+  },
+  {
+   "day": "2026-05-29",
+   "trades": 3716158,
+   "hours": 24,
+   "series": 1894,
+   "torn": 0,
+   "badpx": 0,
+   "dup_ids": 0,
+   "verdict": "OK"
+  },
+  {
+   "day": "2026-05-30",
+   "trades": 4228536,
+   "hours": 24,
+   "series": 1786,
+   "torn": 0,
+   "badpx": 0,
+   "dup_ids": 0,
+   "verdict": "OK"
+  },
+  {
+   "day": "2026-05-31",
+   "trades": 4269081,
+   "hours": 24,
+   "series": 1795,
+   "torn": 0,
+   "badpx": 0,
+   "dup_ids": 0,
+   "verdict": "OK"
+  },
+  {
+   "day": "2026-06-01",
+   "trades": 3365509,
+   "hours": 24,
+   "series": 1800,
+   "torn": 0,
+   "badpx": 0,
+   "dup_ids": 0,
+   "verdict": "OK"
+  },
+  {
+   "day": "2026-06-02",
+   "trades": 3680549,
+   "hours": 24,
+   "series": 1853,
+   "torn": 0,
+   "badpx": 0,
+   "dup_ids": 0,
+   "verdict": "OK"
+  },
+  {
+   "day": "2026-06-03",
+   "trades": 3963059,
+   "hours": 24,
+   "series": 1895,
+   "torn": 0,
+   "badpx": 0,
+   "dup_ids": 0,
+   "verdict": "OK"
+  },
+  {
+   "day": "2026-06-04",
+   "trades": 4193157,
+   "hours": 23,
+   "series": 1878,
+   "torn": 0,
+   "badpx": 0,
+   "dup_ids": 0,
+   "verdict": "CHECK"
+  },
+  {
+   "day": "2026-06-05",
+   "trades": 4173676,
+   "hours": 24,
+   "series": 1858,
+   "torn": 0,
+   "badpx": 0,
+   "dup_ids": 0,
+   "verdict": "OK"
+  },
+  {
+   "day": "2026-06-06",
+   "trades": 4861417,
+   "hours": 24,
+   "series": 1842,
+   "torn": 0,
+   "badpx": 0,
+   "dup_ids": 0,
+   "verdict": "OK"
+  },
+  {
+   "day": "2026-06-07",
+   "trades": 4372915,
+   "hours": 24,
+   "series": 1759,
+   "torn": 0,
+   "badpx": 0,
+   "dup_ids": 0,
+   "verdict": "OK"
+  },
+  {
+   "day": "2026-06-08",
+   "trades": 3616743,
+   "hours": 24,
+   "series": 1794,
+   "torn": 0,
+   "badpx": 0,
+   "dup_ids": 0,
+   "verdict": "OK"
+  },
+  {
+   "day": "2026-06-09",
+   "trades": 4824449,
+   "hours": 24,
+   "series": 1876,
+   "torn": 0,
+   "badpx": 0,
+   "dup_ids": 0,
+   "verdict": "OK"
+  },
+  {
+   "day": "2026-06-10",
+   "trades": 4685319,
+   "hours": 24,
+   "series": 1872,
+   "torn": 0,
+   "badpx": 0,
+   "dup_ids": 0,
+   "verdict": "OK"
+  }
+ ],
+ "missing": [
+  "2026-06-11"
+ ]
+}

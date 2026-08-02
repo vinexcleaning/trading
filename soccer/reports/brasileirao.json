@@ -1,0 +1,71 @@
+{
+ "campeonato-brasileiro-full.csv": {
+  "rows": 8405,
+  "cols": 16,
+  "date_first": "01/02/2021",
+  "date_last": "31/10/2023",
+  "columns": [
+   "ID",
+   "rodata",
+   "data",
+   "hora",
+   "mandante",
+   "visitante",
+   "formacao_mandante",
+   "formacao_visitante",
+   "tecnico_mandante",
+   "tecnico_visitante",
+   "vencedor",
+   "arena",
+   "mandante_Placar",
+   "visitante_Placar",
+   "mandante_Estado",
+   "visitante_Estado"
+  ]
+ },
+ "campeonato-brasileiro-estatisticas-full.csv": {
+  "rows": 16810,
+  "cols": 13,
+  "columns": [
+   "partida_id",
+   "rodata",
+   "clube",
+   "chutes",
+   "chutes_no_alvo",
+   "posse_de_bola",
+   "passes",
+   "precisao_passes",
+   "faltas",
+   "cartao_amarelo",
+   "cartao_vermelho",
+   "impedimentos",
+   "escanteios"
+  ]
+ },
+ "campeonato-brasileiro-gols.csv": {
+  "rows": 8932,
+  "cols": 6,
+  "columns": [
+   "partida_id",
+   "rodata",
+   "clube",
+   "atleta",
+   "minuto",
+   "tipo_de_gol"
+  ]
+ },
+ "campeonato-brasileiro-cartoes.csv": {
+  "rows": 18857,
+  "cols": 8,
+  "columns": [
+   "partida_id",
+   "rodata",
+   "clube",
+   "cartao",
+   "atleta",
+   "num_camisa",
+   "posicao",
+   "minuto"
+  ]
+ }
+}

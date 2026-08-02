@@ -1,0 +1,24 @@
+﻿=== StatsBomb: Argentina Liga Profesional ===
+  competition_id=81 season_id=48 Liga Profesional 1997/1998 gender=male 360=False
+  competition_id=81 season_id=275 Liga Profesional 1981 gender=male 360=False
+  -> 1 matches, 1997-10-25..1997-10-25, 1 teams
+     sample teams: ['River Plate']
+     event file for match 3889115: 3572 events, 32 shots with statsbomb_xg
+     top event types: [('Pass', 929), ('Ball Receipt*', 870), ('Carry', 710), ('Pressure', 338), ('Ball Recovery', 155), ('Duel', 107)]
+  -> 1 matches, 1981-04-10..1981-04-10, 1 teams
+     sample teams: ['Boca Juniors']
+     event file for match 3889082: 3086 events, 24 shots with statsbomb_xg
+     top event types: [('Pass', 737), ('Ball Receipt*', 698), ('Carry', 630), ('Pressure', 351), ('Ball Recovery', 112), ('Dribble', 79)]
+
+  TOTAL StatsBomb Argentina matches: 2
+
+=== ESPN Brazil, sampled IN SEASON (August, not March) ===
+  bra.1 2026 first week of August: 4 matches
+  bra.1 2024 first week of August: 10 matches
+  bra.1 2022 first week of August: 11 matches
+  bra.1 2019 first week of August: 10 matches
+  bra.1 2015 first week of August: 10 matches
+
+=== the brasileirao-dataset repo ===
+  pushed=2026-08-02T13:02:54Z size=15001KB stars=1 licence=None
+  191 files; csv/json: ['campeonato-brasileiro-cartoes.csv', 'campeonato-brasileiro-estatisticas-full.csv', 'campeonato-brasileiro-full.csv', 'campeonato-brasileiro-gols.csv', 'dashboard/package-lock.json', 'dashboard/package.json', 'dashboard/public/data/json/artilharia.json', 'dashboard/public/data/json/campeoes.json', 'dashboard/public/data/json/cartoes.json', 'dashboard/public/data/json/classificacao.json']

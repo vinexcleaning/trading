@@ -1,0 +1,310 @@
+{
+ "football_data": [
+  {
+   "code": "MEX",
+   "status": "OK",
+   "sha256_16": "4d2b419dca03ccc9",
+   "rows": 4673,
+   "with_pinnacle": 4437,
+   "leagues": [
+    "Liga MX"
+   ],
+   "cols": 25,
+   "date_first": "21/07/2012",
+   "date_last": "27/07/2026"
+  },
+  {
+   "code": "ARG",
+   "status": "OK",
+   "sha256_16": "c965c6386bc384f0",
+   "rows": 6262,
+   "with_pinnacle": 5928,
+   "leagues": [
+    "Copa De La Liga Profesional",
+    "Liga Profesional",
+    "Liga Profesional "
+   ],
+   "cols": 25,
+   "date_first": "03/08/2012",
+   "date_last": "31/07/2026"
+  },
+  {
+   "code": "BRA",
+   "status": "OK",
+   "sha256_16": "be05c27d84633fbb",
+   "rows": 5525,
+   "with_pinnacle": 5275,
+   "leagues": [
+    "Serie A"
+   ],
+   "cols": 25,
+   "date_first": "19/05/2012",
+   "date_last": "31/07/2026"
+  },
+  {
+   "code": "USA",
+   "status": "OK",
+   "sha256_16": "ee836eb1c9d6df26",
+   "rows": 6069,
+   "with_pinnacle": 5800,
+   "leagues": [
+    "MLS"
+   ],
+   "cols": 25,
+   "date_first": "10/03/2012",
+   "date_last": "26/07/2026"
+  },
+  {
+   "code": "COL",
+   "status": "OK",
+   "sha256_16": "413112121c43355e",
+   "rows": 4091,
+   "with_pinnacle": 3887,
+   "leagues": [
+    "Ekstraklasa"
+   ],
+   "cols": 25,
+   "date_first": "17/08/2012",
+   "date_last": "27/07/2026"
+  },
+  {
+   "code": "PER",
+   "status": "DEAD"
+  },
+  {
+   "code": "ECU",
+   "status": "DEAD"
+  },
+  {
+   "code": "URY",
+   "status": "DEAD"
+  },
+  {
+   "code": "CHL",
+   "status": "OK",
+   "sha256_16": "d171bd98c8ce64b7",
+   "rows": 2964,
+   "with_pinnacle": 2759,
+   "leagues": [
+    "Super League"
+   ],
+   "cols": 25,
+   "date_first": "07/03/2014",
+   "date_last": "26/07/2026"
+  },
+  {
+   "code": "JPN",
+   "status": "OK",
+   "sha256_16": "f333fb04b600778b",
+   "rows": 4523,
+   "with_pinnacle": 4503,
+   "leagues": [
+    " J1 League",
+    "J1 League"
+   ],
+   "cols": 25,
+   "date_first": "10/03/2012",
+   "date_last": "06/12/2025"
+  },
+  {
+   "code": "KOR",
+   "status": "OK",
+   "sha256_16": "9459e47a88e678d2",
+   "rows": 3496,
+   "with_pinnacle": 3346,
+   "leagues": [
+    "Eliteserien"
+   ],
+   "cols": 25,
+   "date_first": "23/03/2012",
+   "date_last": "27/07/2026"
+  },
+  {
+   "code": "CHN",
+   "status": "DUPLICATE_OF_CHL",
+   "sha256_16": "d171bd98c8ce64b7",
+   "rows": 2964,
+   "with_pinnacle": 2759,
+   "leagues": [
+    "Super League"
+   ],
+   "cols": 25,
+   "date_first": "07/03/2014",
+   "date_last": "26/07/2026"
+  },
+  {
+   "code": "POL",
+   "status": "DUPLICATE_OF_COL",
+   "sha256_16": "413112121c43355e",
+   "rows": 4091,
+   "with_pinnacle": 3887,
+   "leagues": [
+    "Ekstraklasa"
+   ],
+   "cols": 25,
+   "date_first": "17/08/2012",
+   "date_last": "27/07/2026"
+  },
+  {
+   "code": "NOR",
+   "status": "DUPLICATE_OF_KOR",
+   "sha256_16": "9459e47a88e678d2",
+   "rows": 3496,
+   "with_pinnacle": 3346,
+   "leagues": [
+    "Eliteserien"
+   ],
+   "cols": 25,
+   "date_first": "23/03/2012",
+   "date_last": "27/07/2026"
+  }
+ ],
+ "espn": {
+  "mex.1": {
+   "teams": 18,
+   "standings_http": 200,
+   "seasons": 27,
+   "core_events_count": 2
+  },
+  "arg.1": {
+   "teams": 30,
+   "standings_http": 200,
+   "seasons": 27,
+   "core_events_count": 5
+  },
+  "bra.1": {
+   "teams": 20,
+   "standings_http": 200,
+   "seasons": 21,
+   "core_events_count": 2
+  },
+  "col.1": {
+   "teams": 20,
+   "standings_http": 200,
+   "seasons": 22,
+   "core_events_count": 3
+  },
+  "usa.1": {
+   "teams": 30,
+   "standings_http": 200,
+   "seasons": 31,
+   "core_events_count": 14
+  }
+ },
+ "espn_team injuries (core)": {
+  "http": 200,
+  "detail": "keys=['count', 'items', 'pageCount', 'pageIndex', 'pageSize'] count=0"
+ },
+ "espn_team roster (site)": {
+  "http": 200,
+  "detail": "keys=['athletes', 'season', 'status', 'team', 'timestamp'] count=None"
+ },
+ "espn_team detail (site)": {
+  "http": 200,
+  "detail": "keys=['team'] count=None"
+ },
+ "espn_news": {
+  "http": 200,
+  "detail": "keys=['articles', 'header', 'link'] count=None"
+ },
+ "StatsBomb open competitions": {
+  "http": 200,
+  "bytes": 34887,
+  "n_items": 80
+ },
+ "Understat EPL (big-5 only?)": {
+  "http": 200,
+  "bytes": 18654
+ },
+ "FBref Liga MX": {
+  "http": 403,
+  "bytes": 5756
+ },
+ "Transfermarkt Liga MX": {
+  "http": 200,
+  "bytes": 224972
+ },
+ "API-Football (no key)": {
+  "http": 403,
+  "bytes": 219
+ },
+ "openligadb (DE only)": {
+  "http": 200,
+  "bytes": 120626,
+  "n_items": 818
+ },
+ "ClubElo Liga MX club": {
+  "http": 200,
+  "bytes": 38,
+  "rows": 2
+ },
+ "ClubElo all clubs today": {
+  "http": 200,
+  "bytes": 33182,
+  "rows": 593
+ },
+ "Wikipedia 2026 Liga MX": {
+  "http": 200,
+  "bytes": 2047,
+  "keys": [
+   "content_urls",
+   "description",
+   "description_source",
+   "dir",
+   "displaytitle",
+   "extract",
+   "extract_html",
+   "lang",
+   "namespace",
+   "pageid"
+  ]
+ },
+ "football-json (openfootball)": {
+  "http": 200,
+  "bytes": 7562,
+  "keys": [
+   "allow_forking",
+   "archive_url",
+   "archived",
+   "assignees_url",
+   "blobs_url",
+   "branches_url",
+   "clone_url",
+   "collaborators_url",
+   "comments_url",
+   "commits_url"
+  ]
+ },
+ "soccerdata pkg": {
+  "http": 200,
+  "bytes": 6247,
+  "keys": [
+   "allow_forking",
+   "archive_url",
+   "archived",
+   "assignees_url",
+   "blobs_url",
+   "branches_url",
+   "clone_url",
+   "collaborators_url",
+   "comments_url",
+   "commits_url"
+  ]
+ },
+ "worldfootballR": {
+  "http": 200,
+  "bytes": 5965,
+  "keys": [
+   "allow_forking",
+   "archive_url",
+   "archived",
+   "assignees_url",
+   "blobs_url",
+   "branches_url",
+   "clone_url",
+   "collaborators_url",
+   "comments_url",
+   "commits_url"
+  ]
+ }
+}

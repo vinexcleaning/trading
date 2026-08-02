@@ -1,0 +1,822 @@
+﻿=== ESPN team names available, per league ===
+
+arg.1 (30 teams):
+    Aldosivi                           -> aldosivi
+    Argentinos Juniors                 -> argentinos
+    Atlético Tucumán                   -> tucuman
+    Banfield                           -> banfield
+    Barracas Central                   -> barracas
+    Belgrano (Córdoba)                 -> belgranocordoba
+    Boca Juniors                       -> boca
+    Central Córdoba (Santiago del Estero) -> centralcordobasantiagoestero
+    Defensa y Justicia                 -> defensa
+    Deportivo Riestra                  -> riestra
+    Estudiantes de La Plata            -> estudiantes
+    Estudiantes de Río Cuarto          -> estudiantesriocuarto
+    Gimnasia (Mendoza)                 -> gimnasiamendoza
+    Gimnasia La Plata                  -> gimnasia
+    Huracán                            -> huracan
+    Independiente                      -> independiente
+    Independiente Rivadavia            -> independienterivadavia
+    Instituto (Córdoba)                -> institutocordoba
+    Lanús                              -> lanus
+    Newell's Old Boys                  -> newells
+    Platense                           -> platense
+    Racing Club                        -> racing
+    River Plate                        -> river
+    Rosario Central                    -> rosariocentral
+    San Lorenzo                        -> sanlorenzo
+    Sarmiento (Junín)                  -> sarmientojunin
+    Talleres (Córdoba)                 -> tallerescordoba
+    Tigre                              -> tigre
+    Unión (Santa Fe)                   -> union
+    Vélez Sarsfield                    -> velez
+
+bra.1 (20 teams):
+    Athletico-PR                       -> athleticopr
+    Atlético-MG                        -> mg
+    Bahia                              -> bahia
+    Botafogo                           -> botafogo
+    Chapecoense                        -> chapecoense
+    Corinthians                        -> corinthians
+    Coritiba                           -> coritiba
+    Cruzeiro                           -> cruzeiro
+    Flamengo                           -> flamengo
+    Fluminense                         -> fluminense
+    Grêmio                             -> gremio
+    Internacional                      -> internacional
+    Mirassol                           -> mirassol
+    Palmeiras                          -> palmeiras
+    Red Bull Bragantino                -> bragantino
+    Remo                               -> remo
+    Santos                             -> santos
+    São Paulo                          -> saopaulo
+    Vasco da Gama                      -> vasco
+    Vitória                            -> vitoria
+
+bra.copa_do_brazil (22 teams):
+    Athletico-PR                       -> athleticopr
+    Atlético Goianiense                -> goianiense
+    Atlético-MG                        -> mg
+    Barra FC                           -> barra
+    Botafogo                           -> botafogo
+    CRB                                -> crb
+    Chapecoense                        -> chapecoense
+    Confiança                          -> confianca
+    Corinthians                        -> corinthians
+    Cruzeiro                           -> cruzeiro
+    Flamengo                           -> flamengo
+    Fluminense                         -> fluminense
+    Fortaleza                          -> fortaleza
+    Grêmio                             -> gremio
+    Internacional                      -> internacional
+    Juventude                          -> juventude
+    Mirassol                           -> mirassol
+    Palmeiras                          -> palmeiras
+    Remo                               -> remo
+    Santos                             -> santos
+    Vasco da Gama                      -> vasco
+    Vitória                            -> vitoria
+
+col.1 (20 teams):
+    Alianza FC                         -> alianza
+    América de Cali                    -> americacali
+    Atlético Bucaramanga               -> bucaramanga
+    Atlético Junior                    -> junior
+    Atlético Nacional                  -> atleticonacional
+    Boyacá Chicó FC                    -> boyacachico
+    Cúcuta Deportivo                   -> cucuta
+    Deportes Tolima                    -> tolima
+    Deportivo Cali                     -> deportivocali
+    Deportivo Pasto                    -> pasto
+    Deportivo Pereira                  -> pereira
+    Fortaleza CEIF                     -> fortalezaceif
+    Independiente Medellín             -> medellin
+    Independiente Santa Fe             -> santafe
+    Internacional de Bogotá            -> internacionalbogota
+    Jaguares de Córdoba                -> jaguarescordoba
+    Llaneros FC                        -> llaneros
+    Millonarios                        -> millonarios
+    Once Caldas                        -> oncecaldas
+    Águilas Doradas                    -> aguilasdoradas
+
+mex.1 (18 teams):
+    América                            -> america
+    Atlante                            -> atlante
+    Atlas                              -> atlas
+    Atlético de San Luis               -> sanluis
+    Cruz Azul                          -> cruzazul
+    FC Juarez                          -> juarez
+    Guadalajara                        -> guadalajara
+    León                               -> leon
+    Monterrey                          -> monterrey
+    Necaxa                             -> necaxa
+    Pachuca                            -> pachuca
+    Puebla                             -> puebla
+    Pumas UNAM                         -> pumas
+    Querétaro                          -> queretaro
+    Santos                             -> santos
+    Tigres UANL                        -> tigres
+    Tijuana                            -> tijuana
+    Toluca                             -> toluca
+
+usa.1 (32 teams):
+    Atlanta United FC                  -> atlanta
+    Austin FC                          -> austin
+    CF Montréal                        -> montreal
+    Charlotte FC                       -> charlotte
+    Chicago Fire FC                    -> chicagofire
+    Colorado Rapids                    -> coloradorapids
+    Columbus Crew                      -> columbuscrew
+    D.C. United                        -> dc
+    FC Cincinnati                      -> cincinnati
+    FC Dallas                          -> dallas
+    Houston Dynamo FC                  -> houstondynamo
+    Inter Miami CF                     -> intermiami
+    LA Galaxy                          -> galaxy
+    LAFC                               -> lafc
+    Liga MX All-Stars                  -> ligamxallstars
+    MLS All-Stars                      -> mlsallstars
+    Minnesota United FC                -> minnesota
+    Nashville SC                       -> nashville
+    New England Revolution             -> newenglandrevolution
+    New York City FC                   -> newyorkcity
+    Orlando City SC                    -> orlandocity
+    Philadelphia Union                 -> philadelphiaunion
+    Portland Timbers                   -> portlandtimbers
+    Real Salt Lake                     -> saltlake
+    Red Bull New York                  -> redbullnewyork
+    San Diego FC                       -> sandiego
+    San Jose Earthquakes               -> sanjoseearthquakes
+    Seattle Sounders FC                -> seattlesounders
+    Sporting Kansas City               -> kansascity
+    St. Louis CITY SC                  -> stlouiscity
+    Toronto FC                         -> toronto
+    Vancouver Whitecaps                -> vancouverwhitecaps
+
+
+=== failed fixtures, with same-date ESPN candidates ===
+
+KXLIGAMXGAME 2026-07-31  KALSHI: 'San Luis' vs 'Tijuana de Caliente'  -> ['sanluis', 'tijuanacaliente']
+    ESPN off=+1: 'Puebla' vs 'Guadalajara' -> (puebla, guadalajara)
+    ESPN off=+1: 'Atlético de San Luis' vs 'Tijuana' -> (sanluis, tijuana)
+    ESPN off=+1: 'FC Juarez' vs 'Pumas UNAM' -> (juarez, pumas)
+    ESPN off=+1: 'Querétaro' vs 'Tigres UANL' -> (queretaro, tigres)
+    ESPN off=+2: 'Atlas' vs 'Monterrey' -> (atlas, monterrey)
+    ESPN off=+2: 'León' vs 'Pachuca' -> (leon, pachuca)
+
+KXLIGAMXGAME 2026-07-24  KALSHI: 'Tijuana de Caliente' vs 'Leon'  -> ['leon', 'tijuanacaliente']
+    ESPN off=+1: 'Atlante' vs 'América' -> (atlante, america)
+    ESPN off=+1: 'Tijuana' vs 'León' -> (tijuana, leon)
+    ESPN off=+1: 'Guadalajara' vs 'FC Juarez' -> (guadalajara, juarez)
+    ESPN off=+2: 'Santos' vs 'Atlas' -> (santos, atlas)
+    ESPN off=+2: 'Tigres UANL' vs 'Atlético de San Luis' -> (tigres, sanluis)
+    ESPN off=+2: 'Necaxa' vs 'Monterrey' -> (necaxa, monterrey)
+
+KXLIGAMXGAME 2026-07-16  KALSHI: 'Tijuana de Caliente' vs 'Tigres'  -> ['tigres', 'tijuanacaliente']
+    ESPN off=+1: 'Necaxa' vs 'Atlante' -> (necaxa, atlante)
+    ESPN off=+1: 'Tijuana' vs 'Tigres UANL' -> (tijuana, tigres)
+    ESPN off=+2: 'Atlético de San Luis' vs 'Cruz Azul' -> (sanluis, cruzazul)
+    ESPN off=+2: 'León' vs 'Atlas' -> (leon, atlas)
+    ESPN off=+2: 'FC Juarez' vs 'Puebla' -> (juarez, puebla)
+    ESPN off=+2: 'Pumas UNAM' vs 'Pachuca' -> (pumas, pachuca)
+
+KXARGPREMDIVGAME 2026-08-01  KALSHI: 'Racing Avellaneda' vs 'Tigre'  -> ['racingavellaneda', 'tigre']
+    ESPN off=+0: 'Estudiantes de Río Cuarto' vs 'Banfield' -> (estudiantesriocuarto, banfield)
+    ESPN off=+0: 'Gimnasia (Mendoza)' vs 'Unión (Santa Fe)' -> (gimnasiamendoza, union)
+    ESPN off=+0: 'Belgrano (Córdoba)' vs 'Argentinos Juniors' -> (belgranocordoba, argentinos)
+    ESPN off=+0: 'Estudiantes de La Plata' vs 'Defensa y Justicia' -> (estudiantes, defensa)
+    ESPN off=+0: 'Racing Club' vs 'Tigre' -> (racing, tigre)
+    ESPN off=+1: 'Aldosivi' vs 'Gimnasia La Plata' -> (aldosivi, gimnasia)
+
+KXARGPREMDIVGAME 2026-08-01  KALSHI: 'Rio Cuarto' vs 'Banfield'  -> ['banfield', 'riocuarto']
+    ESPN off=+0: 'Estudiantes de Río Cuarto' vs 'Banfield' -> (estudiantesriocuarto, banfield)
+    ESPN off=+0: 'Gimnasia (Mendoza)' vs 'Unión (Santa Fe)' -> (gimnasiamendoza, union)
+    ESPN off=+0: 'Belgrano (Córdoba)' vs 'Argentinos Juniors' -> (belgranocordoba, argentinos)
+    ESPN off=+0: 'Estudiantes de La Plata' vs 'Defensa y Justicia' -> (estudiantes, defensa)
+    ESPN off=+0: 'Racing Club' vs 'Tigre' -> (racing, tigre)
+    ESPN off=+1: 'Aldosivi' vs 'Gimnasia La Plata' -> (aldosivi, gimnasia)
+
+KXARGPREMDIVGAME 2026-08-01  KALSHI: 'Mendoza' vs 'Union Santa Fe'  -> ['mendoza', 'union']
+    ESPN off=+0: 'Estudiantes de Río Cuarto' vs 'Banfield' -> (estudiantesriocuarto, banfield)
+    ESPN off=+0: 'Gimnasia (Mendoza)' vs 'Unión (Santa Fe)' -> (gimnasiamendoza, union)
+    ESPN off=+0: 'Belgrano (Córdoba)' vs 'Argentinos Juniors' -> (belgranocordoba, argentinos)
+    ESPN off=+0: 'Estudiantes de La Plata' vs 'Defensa y Justicia' -> (estudiantes, defensa)
+    ESPN off=+0: 'Racing Club' vs 'Tigre' -> (racing, tigre)
+    ESPN off=+1: 'Aldosivi' vs 'Gimnasia La Plata' -> (aldosivi, gimnasia)
+
+KXARGPREMDIVGAME 2026-07-30  KALSHI: 'Central Cordoba' vs 'Tucuman'  -> ['centralcordoba', 'tucuman']
+    ESPN off=+0: 'Instituto (Córdoba)' vs 'Platense' -> (institutocordoba, platense)
+    ESPN off=+0: 'Independiente Rivadavia' vs 'Huracán' -> (independienterivadavia, huracan)
+    ESPN off=+0: 'Talleres (Córdoba)' vs 'Vélez Sarsfield' -> (tallerescordoba, velez)
+    ESPN off=+1: 'Central Córdoba (Santiago del Estero)' vs 'Atlético Tucumán' -> (centralcordobasantiagoestero, tucuman)
+    ESPN off=+1: 'Independiente' vs "Newell's Old Boys" -> (independiente, newells)
+    ESPN off=-1: 'Argentinos Juniors' vs 'Estudiantes de Río Cuarto' -> (argentinos, estudiantesriocuarto)
+
+KXARGPREMDIVGAME 2026-07-30  KALSHI: 'Independiente Avellaneda' vs "Newell's Old Boys"  -> ['independienteavellaneda', 'newells']
+    ESPN off=+0: 'Instituto (Córdoba)' vs 'Platense' -> (institutocordoba, platense)
+    ESPN off=+0: 'Independiente Rivadavia' vs 'Huracán' -> (independienterivadavia, huracan)
+    ESPN off=+0: 'Talleres (Córdoba)' vs 'Vélez Sarsfield' -> (tallerescordoba, velez)
+    ESPN off=+1: 'Central Córdoba (Santiago del Estero)' vs 'Atlético Tucumán' -> (centralcordobasantiagoestero, tucuman)
+    ESPN off=+1: 'Independiente' vs "Newell's Old Boys" -> (independiente, newells)
+    ESPN off=-1: 'Argentinos Juniors' vs 'Estudiantes de Río Cuarto' -> (argentinos, estudiantesriocuarto)
+
+KXARGPREMDIVGAME 2026-07-30  KALSHI: 'Rivadavia' vs 'Huracan'  -> ['huracan', 'rivadavia']
+    ESPN off=+0: 'Instituto (Córdoba)' vs 'Platense' -> (institutocordoba, platense)
+    ESPN off=+0: 'Independiente Rivadavia' vs 'Huracán' -> (independienterivadavia, huracan)
+    ESPN off=+0: 'Talleres (Córdoba)' vs 'Vélez Sarsfield' -> (tallerescordoba, velez)
+    ESPN off=+1: 'Central Córdoba (Santiago del Estero)' vs 'Atlético Tucumán' -> (centralcordobasantiagoestero, tucuman)
+    ESPN off=+1: 'Independiente' vs "Newell's Old Boys" -> (independiente, newells)
+    ESPN off=-1: 'Argentinos Juniors' vs 'Estudiantes de Río Cuarto' -> (argentinos, estudiantesriocuarto)
+
+KXARGPREMDIVGAME 2026-07-28  KALSHI: 'Rosario' vs 'Racing Avellaneda'  -> ['racingavellaneda', 'rosario']
+    ESPN off=+0: 'Banfield' vs 'Sarmiento (Junín)' -> (banfield, sarmientojunin)
+    ESPN off=+0: 'San Lorenzo' vs 'Gimnasia (Mendoza)' -> (sanlorenzo, gimnasiamendoza)
+    ESPN off=+1: 'Argentinos Juniors' vs 'Estudiantes de Río Cuarto' -> (argentinos, estudiantesriocuarto)
+    ESPN off=+1: 'Rosario Central' vs 'Racing Club' -> (rosariocentral, racing)
+    ESPN off=+1: 'Barracas Central' vs 'Aldosivi' -> (barracas, aldosivi)
+    ESPN off=+1: 'Defensa y Justicia' vs 'Deportivo Riestra' -> (defensa, riestra)
+
+KXARGPREMDIVGAME 2026-07-28  KALSHI: 'Argentinos Juniors' vs 'Rio Cuarto'  -> ['argentinos', 'riocuarto']
+    ESPN off=+0: 'Banfield' vs 'Sarmiento (Junín)' -> (banfield, sarmientojunin)
+    ESPN off=+0: 'San Lorenzo' vs 'Gimnasia (Mendoza)' -> (sanlorenzo, gimnasiamendoza)
+    ESPN off=+1: 'Argentinos Juniors' vs 'Estudiantes de Río Cuarto' -> (argentinos, estudiantesriocuarto)
+    ESPN off=+1: 'Rosario Central' vs 'Racing Club' -> (rosariocentral, racing)
+    ESPN off=+1: 'Barracas Central' vs 'Aldosivi' -> (barracas, aldosivi)
+    ESPN off=+1: 'Defensa y Justicia' vs 'Deportivo Riestra' -> (defensa, riestra)
+
+KXARGPREMDIVGAME 2026-07-28  KALSHI: 'Banfield' vs 'Junin'  -> ['banfield', 'junin']
+    ESPN off=+0: 'Banfield' vs 'Sarmiento (Junín)' -> (banfield, sarmientojunin)
+    ESPN off=+0: 'San Lorenzo' vs 'Gimnasia (Mendoza)' -> (sanlorenzo, gimnasiamendoza)
+    ESPN off=+1: 'Argentinos Juniors' vs 'Estudiantes de Río Cuarto' -> (argentinos, estudiantesriocuarto)
+    ESPN off=+1: 'Rosario Central' vs 'Racing Club' -> (rosariocentral, racing)
+    ESPN off=+1: 'Barracas Central' vs 'Aldosivi' -> (barracas, aldosivi)
+    ESPN off=+1: 'Defensa y Justicia' vs 'Deportivo Riestra' -> (defensa, riestra)
+
+KXARGPREMDIVGAME 2026-07-28  KALSHI: 'San Lorenzo de Almagro' vs 'Mendoza'  -> ['mendoza', 'sanlorenzoalmagro']
+    ESPN off=+0: 'Banfield' vs 'Sarmiento (Junín)' -> (banfield, sarmientojunin)
+    ESPN off=+0: 'San Lorenzo' vs 'Gimnasia (Mendoza)' -> (sanlorenzo, gimnasiamendoza)
+    ESPN off=+1: 'Argentinos Juniors' vs 'Estudiantes de Río Cuarto' -> (argentinos, estudiantesriocuarto)
+    ESPN off=+1: 'Rosario Central' vs 'Racing Club' -> (rosariocentral, racing)
+    ESPN off=+1: 'Barracas Central' vs 'Aldosivi' -> (barracas, aldosivi)
+    ESPN off=+1: 'Defensa y Justicia' vs 'Deportivo Riestra' -> (defensa, riestra)
+
+KXARGPREMDIVGAME 2026-07-26  KALSHI: 'Estudiantes La Plata' vs 'Independiente Avellaneda'  -> ['estudiantes', 'independienteavellaneda']
+    ESPN off=+0: 'Lanús' vs 'San Lorenzo' -> (lanus, sanlorenzo)
+    ESPN off=+0: 'Atlético Tucumán' vs 'Independiente Rivadavia' -> (tucuman, independienterivadavia)
+    ESPN off=+0: 'Estudiantes de La Plata' vs 'Independiente' -> (estudiantes, independiente)
+    ESPN off=+0: 'Deportivo Riestra' vs 'Boca Juniors' -> (riestra, boca)
+    ESPN off=-1: 'Huracán' vs 'Banfield' -> (huracan, banfield)
+    ESPN off=-1: 'Platense' vs 'Unión (Santa Fe)' -> (platense, union)
+
+KXARGPREMDIVGAME 2026-07-26  KALSHI: 'Tucuman' vs 'Rivadavia'  -> ['rivadavia', 'tucuman']
+    ESPN off=+0: 'Lanús' vs 'San Lorenzo' -> (lanus, sanlorenzo)
+    ESPN off=+0: 'Atlético Tucumán' vs 'Independiente Rivadavia' -> (tucuman, independienterivadavia)
+    ESPN off=+0: 'Estudiantes de La Plata' vs 'Independiente' -> (estudiantes, independiente)
+    ESPN off=+0: 'Deportivo Riestra' vs 'Boca Juniors' -> (riestra, boca)
+    ESPN off=-1: 'Huracán' vs 'Banfield' -> (huracan, banfield)
+    ESPN off=-1: 'Platense' vs 'Unión (Santa Fe)' -> (platense, union)
+
+KXARGPREMDIVGAME 2026-07-25  KALSHI: 'Lanus' vs 'San Lorenzo de Almagro'  -> ['lanus', 'sanlorenzoalmagro']
+    ESPN off=+0: 'Huracán' vs 'Banfield' -> (huracan, banfield)
+    ESPN off=+0: 'Platense' vs 'Unión (Santa Fe)' -> (platense, union)
+    ESPN off=+0: 'Estudiantes de Río Cuarto' vs 'Tigre' -> (estudiantesriocuarto, tigre)
+    ESPN off=+0: "Newell's Old Boys" vs 'Talleres (Córdoba)' -> (newells, tallerescordoba)
+    ESPN off=+0: 'River Plate' vs 'Barracas Central' -> (river, barracas)
+    ESPN off=+1: 'Lanús' vs 'San Lorenzo' -> (lanus, sanlorenzo)
+
+KXARGPREMDIVGAME 2026-07-25  KALSHI: 'Rio Cuarto' vs 'Tigre'  -> ['riocuarto', 'tigre']
+    ESPN off=+0: 'Huracán' vs 'Banfield' -> (huracan, banfield)
+    ESPN off=+0: 'Platense' vs 'Unión (Santa Fe)' -> (platense, union)
+    ESPN off=+0: 'Estudiantes de Río Cuarto' vs 'Tigre' -> (estudiantesriocuarto, tigre)
+    ESPN off=+0: "Newell's Old Boys" vs 'Talleres (Córdoba)' -> (newells, tallerescordoba)
+    ESPN off=+0: 'River Plate' vs 'Barracas Central' -> (river, barracas)
+    ESPN off=+1: 'Lanús' vs 'San Lorenzo' -> (lanus, sanlorenzo)
+
+KXARGPREMDIVGAME 2026-07-24  KALSHI: 'Racing Avellaneda' vs 'Gimnasia La Plata'  -> ['gimnasia', 'racingavellaneda']
+    ESPN off=+0: 'Defensa y Justicia' vs 'Aldosivi' -> (defensa, aldosivi)
+    ESPN off=+0: 'Gimnasia (Mendoza)' vs 'Central Córdoba (Santiago del Estero)' -> (gimnasiamendoza, centralcordobasantiagoestero)
+    ESPN off=+0: 'Racing Club' vs 'Gimnasia La Plata' -> (racing, gimnasia)
+    ESPN off=+0: 'Vélez Sarsfield' vs 'Instituto (Córdoba)' -> (velez, institutocordoba)
+    ESPN off=+1: 'Huracán' vs 'Banfield' -> (huracan, banfield)
+    ESPN off=+1: 'Platense' vs 'Unión (Santa Fe)' -> (platense, union)
+
+KXARGPREMDIVGAME 2026-07-24  KALSHI: 'Mendoza' vs 'Central Cordoba'  -> ['centralcordoba', 'mendoza']
+    ESPN off=+0: 'Defensa y Justicia' vs 'Aldosivi' -> (defensa, aldosivi)
+    ESPN off=+0: 'Gimnasia (Mendoza)' vs 'Central Córdoba (Santiago del Estero)' -> (gimnasiamendoza, centralcordobasantiagoestero)
+    ESPN off=+0: 'Racing Club' vs 'Gimnasia La Plata' -> (racing, gimnasia)
+    ESPN off=+0: 'Vélez Sarsfield' vs 'Instituto (Córdoba)' -> (velez, institutocordoba)
+    ESPN off=+1: 'Huracán' vs 'Banfield' -> (huracan, banfield)
+    ESPN off=+1: 'Platense' vs 'Unión (Santa Fe)' -> (platense, union)
+
+KXARGPREMDIVGAME 2026-07-23  KALSHI: 'Belgrano de Cordoba' vs 'Rosario'  -> ['belgranocordoba', 'rosario']
+    ESPN off=+0: 'Belgrano (Córdoba)' vs 'Rosario Central' -> (belgranocordoba, rosariocentral)
+    ESPN off=+0: 'Sarmiento (Junín)' vs 'Argentinos Juniors' -> (sarmientojunin, argentinos)
+    ESPN off=+1: 'Defensa y Justicia' vs 'Aldosivi' -> (defensa, aldosivi)
+    ESPN off=+1: 'Gimnasia (Mendoza)' vs 'Central Córdoba (Santiago del Estero)' -> (gimnasiamendoza, centralcordobasantiagoestero)
+    ESPN off=+1: 'Racing Club' vs 'Gimnasia La Plata' -> (racing, gimnasia)
+    ESPN off=+1: 'Vélez Sarsfield' vs 'Instituto (Córdoba)' -> (velez, institutocordoba)
+
+KXARGPREMDIVGAME 2026-07-23  KALSHI: 'Junin' vs 'Argentinos Juniors'  -> ['argentinos', 'junin']
+    ESPN off=+0: 'Belgrano (Córdoba)' vs 'Rosario Central' -> (belgranocordoba, rosariocentral)
+    ESPN off=+0: 'Sarmiento (Junín)' vs 'Argentinos Juniors' -> (sarmientojunin, argentinos)
+    ESPN off=+1: 'Defensa y Justicia' vs 'Aldosivi' -> (defensa, aldosivi)
+    ESPN off=+1: 'Gimnasia (Mendoza)' vs 'Central Córdoba (Santiago del Estero)' -> (gimnasiamendoza, centralcordobasantiagoestero)
+    ESPN off=+1: 'Racing Club' vs 'Gimnasia La Plata' -> (racing, gimnasia)
+    ESPN off=+1: 'Vélez Sarsfield' vs 'Instituto (Córdoba)' -> (velez, institutocordoba)
+
+KXARGPREMDIVGAME 2026-08-03  KALSHI: 'Central Cordoba' vs 'San Lorenzo de Almagro'  -> ['centralcordoba', 'sanlorenzoalmagro']
+    ESPN off=+0: 'Lanús' vs 'Instituto (Córdoba)' -> (lanus, institutocordoba)
+    ESPN off=+0: 'Sarmiento (Junín)' vs 'Independiente Rivadavia' -> (sarmientojunin, independienterivadavia)
+    ESPN off=+0: 'Platense' vs 'Talleres (Córdoba)' -> (platense, tallerescordoba)
+    ESPN off=+0: 'Vélez Sarsfield' vs 'Independiente' -> (velez, independiente)
+    ESPN off=+1: 'Central Córdoba (Santiago del Estero)' vs 'San Lorenzo' -> (centralcordobasantiagoestero, sanlorenzo)
+    ESPN off=+1: 'Huracán' vs 'Atlético Tucumán' -> (huracan, tucuman)
+
+KXARGPREMDIVGAME 2026-08-03  KALSHI: 'Velez Sarsfield' vs 'Independiente Avellaneda'  -> ['independienteavellaneda', 'velez']
+    ESPN off=+0: 'Lanús' vs 'Instituto (Córdoba)' -> (lanus, institutocordoba)
+    ESPN off=+0: 'Sarmiento (Junín)' vs 'Independiente Rivadavia' -> (sarmientojunin, independienterivadavia)
+    ESPN off=+0: 'Platense' vs 'Talleres (Córdoba)' -> (platense, tallerescordoba)
+    ESPN off=+0: 'Vélez Sarsfield' vs 'Independiente' -> (velez, independiente)
+    ESPN off=+1: 'Central Córdoba (Santiago del Estero)' vs 'San Lorenzo' -> (centralcordobasantiagoestero, sanlorenzo)
+    ESPN off=+1: 'Huracán' vs 'Atlético Tucumán' -> (huracan, tucuman)
+
+KXARGPREMDIVGAME 2026-08-03  KALSHI: 'Junin' vs 'Rivadavia'  -> ['junin', 'rivadavia']
+    ESPN off=+0: 'Lanús' vs 'Instituto (Córdoba)' -> (lanus, institutocordoba)
+    ESPN off=+0: 'Sarmiento (Junín)' vs 'Independiente Rivadavia' -> (sarmientojunin, independienterivadavia)
+    ESPN off=+0: 'Platense' vs 'Talleres (Córdoba)' -> (platense, tallerescordoba)
+    ESPN off=+0: 'Vélez Sarsfield' vs 'Independiente' -> (velez, independiente)
+    ESPN off=+1: 'Central Córdoba (Santiago del Estero)' vs 'San Lorenzo' -> (centralcordobasantiagoestero, sanlorenzo)
+    ESPN off=+1: 'Huracán' vs 'Atlético Tucumán' -> (huracan, tucuman)
+
+KXARGPREMDIVGAME 2026-08-02  KALSHI: 'River Plate' vs 'Rosario'  -> ['river', 'rosario']
+    ESPN off=+0: 'Aldosivi' vs 'Gimnasia La Plata' -> (aldosivi, gimnasia)
+    ESPN off=+0: 'Deportivo Riestra' vs 'Barracas Central' -> (riestra, barracas)
+    ESPN off=+0: "Newell's Old Boys" vs 'Boca Juniors' -> (newells, boca)
+    ESPN off=+0: 'River Plate' vs 'Rosario Central' -> (river, rosariocentral)
+    ESPN off=+1: 'Lanús' vs 'Instituto (Córdoba)' -> (lanus, institutocordoba)
+    ESPN off=+1: 'Sarmiento (Junín)' vs 'Independiente Rivadavia' -> (sarmientojunin, independienterivadavia)
+
+KXDIMAYORGAME 2026-08-01  KALSHI: 'Ind. Medellin' vs 'Cali'  -> ['deportivocali', 'indmedellin']
+    ESPN off=+0: 'Fortaleza CEIF' vs 'Deportivo Pereira' -> (fortalezaceif, pereira)
+    ESPN off=+0: 'Deportivo Pasto' vs 'Águilas Doradas' -> (pasto, aguilasdoradas)
+    ESPN off=+0: 'Alianza FC' vs 'Deportes Tolima' -> (alianza, tolima)
+    ESPN off=+0: 'Independiente Medellín' vs 'Deportivo Cali' -> (medellin, deportivocali)
+    ESPN off=+1: 'Atlético Junior' vs 'Millonarios' -> (junior, millonarios)
+    ESPN off=+1: 'Jaguares de Córdoba' vs 'Atlético Nacional' -> (jaguarescordoba, atleticonacional)
+
+KXDIMAYORGAME 2026-08-01  KALSHI: 'Alianza FC Valledupar' vs 'Tolima'  -> ['alianzavalledupar', 'tolima']
+    ESPN off=+0: 'Fortaleza CEIF' vs 'Deportivo Pereira' -> (fortalezaceif, pereira)
+    ESPN off=+0: 'Deportivo Pasto' vs 'Águilas Doradas' -> (pasto, aguilasdoradas)
+    ESPN off=+0: 'Alianza FC' vs 'Deportes Tolima' -> (alianza, tolima)
+    ESPN off=+0: 'Independiente Medellín' vs 'Deportivo Cali' -> (medellin, deportivocali)
+    ESPN off=+1: 'Atlético Junior' vs 'Millonarios' -> (junior, millonarios)
+    ESPN off=+1: 'Jaguares de Córdoba' vs 'Atlético Nacional' -> (jaguarescordoba, atleticonacional)
+
+KXDIMAYORGAME 2026-08-01  KALSHI: 'Pasto' vs 'Aguilas Doradas Rionegro'  -> ['aguilasdoradasrionegro', 'pasto']
+    ESPN off=+0: 'Fortaleza CEIF' vs 'Deportivo Pereira' -> (fortalezaceif, pereira)
+    ESPN off=+0: 'Deportivo Pasto' vs 'Águilas Doradas' -> (pasto, aguilasdoradas)
+    ESPN off=+0: 'Alianza FC' vs 'Deportes Tolima' -> (alianza, tolima)
+    ESPN off=+0: 'Independiente Medellín' vs 'Deportivo Cali' -> (medellin, deportivocali)
+    ESPN off=+1: 'Atlético Junior' vs 'Millonarios' -> (junior, millonarios)
+    ESPN off=+1: 'Jaguares de Córdoba' vs 'Atlético Nacional' -> (jaguarescordoba, atleticonacional)
+
+KXDIMAYORGAME 2026-07-31  KALSHI: 'Fortaleza' vs 'Pereira'  -> ['fortaleza', 'pereira']
+    ESPN off=+0: 'Atlético Bucaramanga' vs 'Llaneros FC' -> (bucaramanga, llaneros)
+    ESPN off=+1: 'Fortaleza CEIF' vs 'Deportivo Pereira' -> (fortalezaceif, pereira)
+    ESPN off=+1: 'Deportivo Pasto' vs 'Águilas Doradas' -> (pasto, aguilasdoradas)
+    ESPN off=+1: 'Alianza FC' vs 'Deportes Tolima' -> (alianza, tolima)
+    ESPN off=+1: 'Independiente Medellín' vs 'Deportivo Cali' -> (medellin, deportivocali)
+    ESPN off=+2: 'Atlético Junior' vs 'Millonarios' -> (junior, millonarios)
+
+KXDIMAYORGAME 2026-07-26  KALSHI: 'Alianza FC Valledupar' vs 'Fortaleza'  -> ['alianzavalledupar', 'fortaleza']
+    ESPN off=+0: 'Deportes Tolima' vs 'Atlético Junior' -> (tolima, junior)
+    ESPN off=+0: 'Internacional de Bogotá' vs 'América de Cali' -> (internacionalbogota, americacali)
+    ESPN off=+0: 'Águilas Doradas' vs 'Independiente Santa Fe' -> (aguilasdoradas, santafe)
+    ESPN off=+0: 'Alianza FC' vs 'Fortaleza CEIF' -> (alianza, fortalezaceif)
+    ESPN off=+1: 'Once Caldas' vs 'Cúcuta Deportivo' -> (oncecaldas, cucuta)
+    ESPN off=-1: 'Deportivo Cali' vs 'Jaguares de Córdoba' -> (deportivocali, jaguarescordoba)
+
+KXDIMAYORGAME 2026-07-26  KALSHI: 'Aguilas Doradas Rionegro' vs 'Independ. Santa Fe'  -> ['aguilasdoradasrionegro', 'independsantafe']
+    ESPN off=+0: 'Deportes Tolima' vs 'Atlético Junior' -> (tolima, junior)
+    ESPN off=+0: 'Internacional de Bogotá' vs 'América de Cali' -> (internacionalbogota, americacali)
+    ESPN off=+0: 'Águilas Doradas' vs 'Independiente Santa Fe' -> (aguilasdoradas, santafe)
+    ESPN off=+0: 'Alianza FC' vs 'Fortaleza CEIF' -> (alianza, fortalezaceif)
+    ESPN off=+1: 'Once Caldas' vs 'Cúcuta Deportivo' -> (oncecaldas, cucuta)
+    ESPN off=-1: 'Deportivo Cali' vs 'Jaguares de Córdoba' -> (deportivocali, jaguarescordoba)
+
+KXDIMAYORGAME 2026-07-25  KALSHI: 'Ind. Medellin' vs 'Pasto'  -> ['indmedellin', 'pasto']
+    ESPN off=+0: 'Deportivo Cali' vs 'Jaguares de Córdoba' -> (deportivocali, jaguarescordoba)
+    ESPN off=+0: 'Independiente Medellín' vs 'Deportivo Pasto' -> (medellin, pasto)
+    ESPN off=+0: 'Millonarios' vs 'Atlético Bucaramanga' -> (millonarios, bucaramanga)
+    ESPN off=+1: 'Deportes Tolima' vs 'Atlético Junior' -> (tolima, junior)
+    ESPN off=+1: 'Internacional de Bogotá' vs 'América de Cali' -> (internacionalbogota, americacali)
+    ESPN off=+1: 'Águilas Doradas' vs 'Independiente Santa Fe' -> (aguilasdoradas, santafe)
+
+KXDIMAYORGAME 2026-07-24  KALSHI: 'Cali' vs 'Jaguares'  -> ['deportivocali', 'jaguares']
+    ESPN off=+0: 'Llaneros FC' vs 'Deportivo Pereira' -> (llaneros, pereira)
+    ESPN off=+1: 'Deportivo Cali' vs 'Jaguares de Córdoba' -> (deportivocali, jaguarescordoba)
+    ESPN off=+1: 'Independiente Medellín' vs 'Deportivo Pasto' -> (medellin, pasto)
+    ESPN off=+1: 'Millonarios' vs 'Atlético Bucaramanga' -> (millonarios, bucaramanga)
+    ESPN off=+2: 'Deportes Tolima' vs 'Atlético Junior' -> (tolima, junior)
+    ESPN off=+2: 'Internacional de Bogotá' vs 'América de Cali' -> (internacionalbogota, americacali)
+
+KXDIMAYORGAME 2026-08-05  KALSHI: 'Internacional de Bogota' vs 'Jaguares'  -> ['internacionalbogota', 'jaguares']
+    ESPN off=+0: 'Millonarios' vs 'Deportivo Pasto' -> (millonarios, pasto)
+    ESPN off=+0: 'Internacional de Bogotá' vs 'Jaguares de Córdoba' -> (internacionalbogota, jaguarescordoba)
+    ESPN off=+0: 'Deportivo Pereira' vs 'Independiente Santa Fe' -> (pereira, santafe)
+    ESPN off=+1: 'Once Caldas' vs 'América de Cali' -> (oncecaldas, americacali)
+    ESPN off=-1: 'Atlético Bucaramanga' vs 'Cúcuta Deportivo' -> (bucaramanga, cucuta)
+    ESPN off=-1: 'Llaneros FC' vs 'Fortaleza CEIF' -> (llaneros, fortalezaceif)
+
+KXDIMAYORGAME 2026-08-04  KALSHI: 'Tolima' vs 'Ind. Medellin'  -> ['indmedellin', 'tolima']
+    ESPN off=+0: 'Atlético Bucaramanga' vs 'Cúcuta Deportivo' -> (bucaramanga, cucuta)
+    ESPN off=+0: 'Llaneros FC' vs 'Fortaleza CEIF' -> (llaneros, fortalezaceif)
+    ESPN off=+0: 'Deportes Tolima' vs 'Independiente Medellín' -> (tolima, medellin)
+    ESPN off=+1: 'Millonarios' vs 'Deportivo Pasto' -> (millonarios, pasto)
+    ESPN off=+1: 'Internacional de Bogotá' vs 'Jaguares de Córdoba' -> (internacionalbogota, jaguarescordoba)
+    ESPN off=+1: 'Deportivo Pereira' vs 'Independiente Santa Fe' -> (pereira, santafe)
+
+KXDIMAYORGAME 2026-08-04  KALSHI: 'Llaneros' vs 'Fortaleza'  -> ['fortaleza', 'llaneros']
+    ESPN off=+0: 'Atlético Bucaramanga' vs 'Cúcuta Deportivo' -> (bucaramanga, cucuta)
+    ESPN off=+0: 'Llaneros FC' vs 'Fortaleza CEIF' -> (llaneros, fortalezaceif)
+    ESPN off=+0: 'Deportes Tolima' vs 'Independiente Medellín' -> (tolima, medellin)
+    ESPN off=+1: 'Millonarios' vs 'Deportivo Pasto' -> (millonarios, pasto)
+    ESPN off=+1: 'Internacional de Bogotá' vs 'Jaguares de Córdoba' -> (internacionalbogota, jaguarescordoba)
+    ESPN off=+1: 'Deportivo Pereira' vs 'Independiente Santa Fe' -> (pereira, santafe)
+
+KXDIMAYORGAME 2026-08-02  KALSHI: 'Independ. Santa Fe' vs 'Once Caldas'  -> ['independsantafe', 'oncecaldas']
+    ESPN off=+0: 'Atlético Junior' vs 'Millonarios' -> (junior, millonarios)
+    ESPN off=+0: 'Jaguares de Córdoba' vs 'Atlético Nacional' -> (jaguarescordoba, atleticonacional)
+    ESPN off=+0: 'América de Cali' vs 'Boyacá Chicó FC' -> (americacali, boyacachico)
+    ESPN off=+1: 'Independiente Santa Fe' vs 'Once Caldas' -> (santafe, oncecaldas)
+    ESPN off=-1: 'Fortaleza CEIF' vs 'Deportivo Pereira' -> (fortalezaceif, pereira)
+    ESPN off=-1: 'Deportivo Pasto' vs 'Águilas Doradas' -> (pasto, aguilasdoradas)
+
+KXDIMAYORGAME 2026-08-02  KALSHI: 'Jaguares' vs 'Atletico Nacional'  -> ['atleticonacional', 'jaguares']
+    ESPN off=+0: 'Atlético Junior' vs 'Millonarios' -> (junior, millonarios)
+    ESPN off=+0: 'Jaguares de Córdoba' vs 'Atlético Nacional' -> (jaguarescordoba, atleticonacional)
+    ESPN off=+0: 'América de Cali' vs 'Boyacá Chicó FC' -> (americacali, boyacachico)
+    ESPN off=+1: 'Independiente Santa Fe' vs 'Once Caldas' -> (santafe, oncecaldas)
+    ESPN off=-1: 'Fortaleza CEIF' vs 'Deportivo Pereira' -> (fortalezaceif, pereira)
+    ESPN off=-1: 'Deportivo Pasto' vs 'Águilas Doradas' -> (pasto, aguilasdoradas)
+
+KXDIMAYORGAME 2026-07-25  KALSHI: 'Boyaca Chico' vs 'Atletico Nacional'  -> ['atleticonacional', 'boyacachico']
+    ESPN off=+0: 'Deportivo Cali' vs 'Jaguares de Córdoba' -> (deportivocali, jaguarescordoba)
+    ESPN off=+0: 'Independiente Medellín' vs 'Deportivo Pasto' -> (medellin, pasto)
+    ESPN off=+0: 'Millonarios' vs 'Atlético Bucaramanga' -> (millonarios, bucaramanga)
+    ESPN off=+1: 'Deportes Tolima' vs 'Atlético Junior' -> (tolima, junior)
+    ESPN off=+1: 'Internacional de Bogotá' vs 'América de Cali' -> (internacionalbogota, americacali)
+    ESPN off=+1: 'Águilas Doradas' vs 'Independiente Santa Fe' -> (aguilasdoradas, santafe)
+
+KXCOPADOBRASILGAME 2026-08-01  KALSHI: 'Atletico Mineiro' vs 'Juventude RS'  -> ['juventuders', 'mineiro']
+    ESPN off=+0: 'Vasco da Gama' vs 'Fluminense' -> (vasco, fluminense)
+    ESPN off=+0: 'Atlético-MG' vs 'Juventude' -> (mg, juventude)
+    ESPN off=+1: 'Santos' vs 'Remo' -> (santos, remo)
+    ESPN off=+1: 'Palmeiras' vs 'Fortaleza' -> (palmeiras, fortaleza)
+    ESPN off=+1: 'Mirassol' vs 'Grêmio' -> (mirassol, gremio)
+    ESPN off=+1: 'Chapecoense' vs 'Cruzeiro' -> (chapecoense, cruzeiro)
+
+KXCOPADOBRASILGAME 2026-08-04  KALSHI: 'Juventude RS' vs 'Atletico Mineiro'  -> ['juventuders', 'mineiro']
+    ESPN off=+0: 'Athletico-PR' vs 'Vitória' -> (athleticopr, vitoria)
+    ESPN off=+0: 'Juventude' vs 'Atlético-MG' -> (juventude, mg)
+    ESPN off=+1: 'Remo' vs 'Santos' -> (remo, santos)
+    ESPN off=+1: 'Cruzeiro' vs 'Chapecoense' -> (cruzeiro, chapecoense)
+    ESPN off=+1: 'Grêmio' vs 'Mirassol' -> (gremio, mirassol)
+    ESPN off=+2: 'Fluminense' vs 'Vasco da Gama' -> (fluminense, vasco)
+
+KXCOPADOBRASILGAME 2026-08-03  KALSHI: 'Paranaense' vs 'Vitoria'  -> ['paranaense', 'vitoria']
+    ESPN off=+1: 'Athletico-PR' vs 'Vitória' -> (athleticopr, vitoria)
+    ESPN off=+1: 'Juventude' vs 'Atlético-MG' -> (juventude, mg)
+    ESPN off=-1: 'Santos' vs 'Remo' -> (santos, remo)
+    ESPN off=-1: 'Palmeiras' vs 'Fortaleza' -> (palmeiras, fortaleza)
+    ESPN off=-1: 'Mirassol' vs 'Grêmio' -> (mirassol, gremio)
+    ESPN off=-1: 'Chapecoense' vs 'Cruzeiro' -> (chapecoense, cruzeiro)
+
+KXMLSGAME 2026-08-01  KALSHI: 'Portland' vs 'Seattle'  -> ['portland', 'seattle']
+    ESPN off=+0: 'CF Montréal' vs 'New England Revolution' -> (montreal, newenglandrevolution)
+    ESPN off=+0: 'D.C. United' vs 'Nashville SC' -> (dc, nashville)
+    ESPN off=+0: 'Philadelphia Union' vs 'Atlanta United FC' -> (philadelphiaunion, atlanta)
+    ESPN off=+0: 'Red Bull New York' vs 'Orlando City SC' -> (redbullnewyork, orlandocity)
+    ESPN off=+0: 'Vancouver Whitecaps' vs 'LAFC' -> (vancouverwhitecaps, lafc)
+    ESPN off=+1: 'Inter Miami CF' vs 'Columbus Crew' -> (intermiami, columbuscrew)
+
+KXMLSGAME 2026-08-01  KALSHI: 'Los Angeles G' vs 'Dallas'  -> ['angelesg', 'dallas']
+    ESPN off=+0: 'CF Montréal' vs 'New England Revolution' -> (montreal, newenglandrevolution)
+    ESPN off=+0: 'D.C. United' vs 'Nashville SC' -> (dc, nashville)
+    ESPN off=+0: 'Philadelphia Union' vs 'Atlanta United FC' -> (philadelphiaunion, atlanta)
+    ESPN off=+0: 'Red Bull New York' vs 'Orlando City SC' -> (redbullnewyork, orlandocity)
+    ESPN off=+0: 'Vancouver Whitecaps' vs 'LAFC' -> (vancouverwhitecaps, lafc)
+    ESPN off=+1: 'Inter Miami CF' vs 'Columbus Crew' -> (intermiami, columbuscrew)
+
+KXMLSGAME 2026-08-01  KALSHI: 'Colorado' vs 'Austin'  -> ['austin', 'colorado']
+    ESPN off=+0: 'CF Montréal' vs 'New England Revolution' -> (montreal, newenglandrevolution)
+    ESPN off=+0: 'D.C. United' vs 'Nashville SC' -> (dc, nashville)
+    ESPN off=+0: 'Philadelphia Union' vs 'Atlanta United FC' -> (philadelphiaunion, atlanta)
+    ESPN off=+0: 'Red Bull New York' vs 'Orlando City SC' -> (redbullnewyork, orlandocity)
+    ESPN off=+0: 'Vancouver Whitecaps' vs 'LAFC' -> (vancouverwhitecaps, lafc)
+    ESPN off=+1: 'Inter Miami CF' vs 'Columbus Crew' -> (intermiami, columbuscrew)
+
+KXMLSGAME 2026-08-01  KALSHI: 'Saint Louis' vs 'Salt Lake'  -> ['saintlouis', 'saltlake']
+    ESPN off=+0: 'CF Montréal' vs 'New England Revolution' -> (montreal, newenglandrevolution)
+    ESPN off=+0: 'D.C. United' vs 'Nashville SC' -> (dc, nashville)
+    ESPN off=+0: 'Philadelphia Union' vs 'Atlanta United FC' -> (philadelphiaunion, atlanta)
+    ESPN off=+0: 'Red Bull New York' vs 'Orlando City SC' -> (redbullnewyork, orlandocity)
+    ESPN off=+0: 'Vancouver Whitecaps' vs 'LAFC' -> (vancouverwhitecaps, lafc)
+    ESPN off=+1: 'Inter Miami CF' vs 'Columbus Crew' -> (intermiami, columbuscrew)
+
+KXMLSGAME 2026-08-01  KALSHI: 'Kansas City' vs 'Houston'  -> ['houston', 'kansascity']
+    ESPN off=+0: 'CF Montréal' vs 'New England Revolution' -> (montreal, newenglandrevolution)
+    ESPN off=+0: 'D.C. United' vs 'Nashville SC' -> (dc, nashville)
+    ESPN off=+0: 'Philadelphia Union' vs 'Atlanta United FC' -> (philadelphiaunion, atlanta)
+    ESPN off=+0: 'Red Bull New York' vs 'Orlando City SC' -> (redbullnewyork, orlandocity)
+    ESPN off=+0: 'Vancouver Whitecaps' vs 'LAFC' -> (vancouverwhitecaps, lafc)
+    ESPN off=+1: 'Inter Miami CF' vs 'Columbus Crew' -> (intermiami, columbuscrew)
+
+KXMLSGAME 2026-08-01  KALSHI: 'Vancouver' vs 'Los Angeles F'  -> ['angelesf', 'vancouver']
+    ESPN off=+0: 'CF Montréal' vs 'New England Revolution' -> (montreal, newenglandrevolution)
+    ESPN off=+0: 'D.C. United' vs 'Nashville SC' -> (dc, nashville)
+    ESPN off=+0: 'Philadelphia Union' vs 'Atlanta United FC' -> (philadelphiaunion, atlanta)
+    ESPN off=+0: 'Red Bull New York' vs 'Orlando City SC' -> (redbullnewyork, orlandocity)
+    ESPN off=+0: 'Vancouver Whitecaps' vs 'LAFC' -> (vancouverwhitecaps, lafc)
+    ESPN off=+1: 'Inter Miami CF' vs 'Columbus Crew' -> (intermiami, columbuscrew)
+
+KXMLSGAME 2026-08-01  KALSHI: 'Philadelphia' vs 'Atlanta'  -> ['atlanta', 'philadelphia']
+    ESPN off=+0: 'CF Montréal' vs 'New England Revolution' -> (montreal, newenglandrevolution)
+    ESPN off=+0: 'D.C. United' vs 'Nashville SC' -> (dc, nashville)
+    ESPN off=+0: 'Philadelphia Union' vs 'Atlanta United FC' -> (philadelphiaunion, atlanta)
+    ESPN off=+0: 'Red Bull New York' vs 'Orlando City SC' -> (redbullnewyork, orlandocity)
+    ESPN off=+0: 'Vancouver Whitecaps' vs 'LAFC' -> (vancouverwhitecaps, lafc)
+    ESPN off=+1: 'Inter Miami CF' vs 'Columbus Crew' -> (intermiami, columbuscrew)
+
+KXMLSGAME 2026-08-01  KALSHI: 'New York RB' vs 'Orlando'  -> ['newyorkrb', 'orlando']
+    ESPN off=+0: 'CF Montréal' vs 'New England Revolution' -> (montreal, newenglandrevolution)
+    ESPN off=+0: 'D.C. United' vs 'Nashville SC' -> (dc, nashville)
+    ESPN off=+0: 'Philadelphia Union' vs 'Atlanta United FC' -> (philadelphiaunion, atlanta)
+    ESPN off=+0: 'Red Bull New York' vs 'Orlando City SC' -> (redbullnewyork, orlandocity)
+    ESPN off=+0: 'Vancouver Whitecaps' vs 'LAFC' -> (vancouverwhitecaps, lafc)
+    ESPN off=+1: 'Inter Miami CF' vs 'Columbus Crew' -> (intermiami, columbuscrew)
+
+KXMLSGAME 2026-08-01  KALSHI: 'Montreal' vs 'New England'  -> ['montreal', 'newengland']
+    ESPN off=+0: 'CF Montréal' vs 'New England Revolution' -> (montreal, newenglandrevolution)
+    ESPN off=+0: 'D.C. United' vs 'Nashville SC' -> (dc, nashville)
+    ESPN off=+0: 'Philadelphia Union' vs 'Atlanta United FC' -> (philadelphiaunion, atlanta)
+    ESPN off=+0: 'Red Bull New York' vs 'Orlando City SC' -> (redbullnewyork, orlandocity)
+    ESPN off=+0: 'Vancouver Whitecaps' vs 'LAFC' -> (vancouverwhitecaps, lafc)
+    ESPN off=+1: 'Inter Miami CF' vs 'Columbus Crew' -> (intermiami, columbuscrew)
+
+KXMLSGAME 2026-08-01  KALSHI: 'Miami' vs 'Columbus'  -> ['columbus', 'miami']
+    ESPN off=+0: 'CF Montréal' vs 'New England Revolution' -> (montreal, newenglandrevolution)
+    ESPN off=+0: 'D.C. United' vs 'Nashville SC' -> (dc, nashville)
+    ESPN off=+0: 'Philadelphia Union' vs 'Atlanta United FC' -> (philadelphiaunion, atlanta)
+    ESPN off=+0: 'Red Bull New York' vs 'Orlando City SC' -> (redbullnewyork, orlandocity)
+    ESPN off=+0: 'Vancouver Whitecaps' vs 'LAFC' -> (vancouverwhitecaps, lafc)
+    ESPN off=+1: 'Inter Miami CF' vs 'Columbus Crew' -> (intermiami, columbuscrew)
+
+KXMLSGAME 2026-08-01  KALSHI: 'Cincinnati' vs 'San Jose'  -> ['cincinnati', 'sanjose']
+    ESPN off=+0: 'CF Montréal' vs 'New England Revolution' -> (montreal, newenglandrevolution)
+    ESPN off=+0: 'D.C. United' vs 'Nashville SC' -> (dc, nashville)
+    ESPN off=+0: 'Philadelphia Union' vs 'Atlanta United FC' -> (philadelphiaunion, atlanta)
+    ESPN off=+0: 'Red Bull New York' vs 'Orlando City SC' -> (redbullnewyork, orlandocity)
+    ESPN off=+0: 'Vancouver Whitecaps' vs 'LAFC' -> (vancouverwhitecaps, lafc)
+    ESPN off=+1: 'Inter Miami CF' vs 'Columbus Crew' -> (intermiami, columbuscrew)
+
+KXMLSGAME 2026-07-25  KALSHI: 'San Jose' vs 'Los Angeles G'  -> ['angelesg', 'sanjose']
+    ESPN off=+0: 'Red Bull New York' vs 'Charlotte FC' -> (redbullnewyork, charlotte)
+    ESPN off=+0: 'Columbus Crew' vs 'FC Cincinnati' -> (columbuscrew, cincinnati)
+    ESPN off=+0: 'CF Montréal' vs 'Inter Miami CF' -> (montreal, intermiami)
+    ESPN off=+0: 'D.C. United' vs 'Toronto FC' -> (dc, toronto)
+    ESPN off=+0: 'New England Revolution' vs 'Atlanta United FC' -> (newenglandrevolution, atlanta)
+    ESPN off=+0: 'New York City FC' vs 'Chicago Fire FC' -> (newyorkcity, chicagofire)
+
+KXMLSGAME 2026-07-25  KALSHI: 'Portland' vs 'Salt Lake'  -> ['portland', 'saltlake']
+    ESPN off=+0: 'Red Bull New York' vs 'Charlotte FC' -> (redbullnewyork, charlotte)
+    ESPN off=+0: 'Columbus Crew' vs 'FC Cincinnati' -> (columbuscrew, cincinnati)
+    ESPN off=+0: 'CF Montréal' vs 'Inter Miami CF' -> (montreal, intermiami)
+    ESPN off=+0: 'D.C. United' vs 'Toronto FC' -> (dc, toronto)
+    ESPN off=+0: 'New England Revolution' vs 'Atlanta United FC' -> (newenglandrevolution, atlanta)
+    ESPN off=+0: 'New York City FC' vs 'Chicago Fire FC' -> (newyorkcity, chicagofire)
+
+KXMLSGAME 2026-07-25  KALSHI: 'Los Angeles F' vs 'Kansas City'  -> ['angelesf', 'kansascity']
+    ESPN off=+0: 'Red Bull New York' vs 'Charlotte FC' -> (redbullnewyork, charlotte)
+    ESPN off=+0: 'Columbus Crew' vs 'FC Cincinnati' -> (columbuscrew, cincinnati)
+    ESPN off=+0: 'CF Montréal' vs 'Inter Miami CF' -> (montreal, intermiami)
+    ESPN off=+0: 'D.C. United' vs 'Toronto FC' -> (dc, toronto)
+    ESPN off=+0: 'New England Revolution' vs 'Atlanta United FC' -> (newenglandrevolution, atlanta)
+    ESPN off=+0: 'New York City FC' vs 'Chicago Fire FC' -> (newyorkcity, chicagofire)
+
+KXMLSGAME 2026-07-25  KALSHI: 'Saint Louis' vs 'Colorado'  -> ['colorado', 'saintlouis']
+    ESPN off=+0: 'Red Bull New York' vs 'Charlotte FC' -> (redbullnewyork, charlotte)
+    ESPN off=+0: 'Columbus Crew' vs 'FC Cincinnati' -> (columbuscrew, cincinnati)
+    ESPN off=+0: 'CF Montréal' vs 'Inter Miami CF' -> (montreal, intermiami)
+    ESPN off=+0: 'D.C. United' vs 'Toronto FC' -> (dc, toronto)
+    ESPN off=+0: 'New England Revolution' vs 'Atlanta United FC' -> (newenglandrevolution, atlanta)
+    ESPN off=+0: 'New York City FC' vs 'Chicago Fire FC' -> (newyorkcity, chicagofire)
+
+KXMLSGAME 2026-07-25  KALSHI: 'Minnesota' vs 'Vancouver'  -> ['minnesota', 'vancouver']
+    ESPN off=+0: 'Red Bull New York' vs 'Charlotte FC' -> (redbullnewyork, charlotte)
+    ESPN off=+0: 'Columbus Crew' vs 'FC Cincinnati' -> (columbuscrew, cincinnati)
+    ESPN off=+0: 'CF Montréal' vs 'Inter Miami CF' -> (montreal, intermiami)
+    ESPN off=+0: 'D.C. United' vs 'Toronto FC' -> (dc, toronto)
+    ESPN off=+0: 'New England Revolution' vs 'Atlanta United FC' -> (newenglandrevolution, atlanta)
+    ESPN off=+0: 'New York City FC' vs 'Chicago Fire FC' -> (newyorkcity, chicagofire)
+
+KXMLSGAME 2026-07-25  KALSHI: 'Houston' vs 'Austin'  -> ['austin', 'houston']
+    ESPN off=+0: 'Red Bull New York' vs 'Charlotte FC' -> (redbullnewyork, charlotte)
+    ESPN off=+0: 'Columbus Crew' vs 'FC Cincinnati' -> (columbuscrew, cincinnati)
+    ESPN off=+0: 'CF Montréal' vs 'Inter Miami CF' -> (montreal, intermiami)
+    ESPN off=+0: 'D.C. United' vs 'Toronto FC' -> (dc, toronto)
+    ESPN off=+0: 'New England Revolution' vs 'Atlanta United FC' -> (newenglandrevolution, atlanta)
+    ESPN off=+0: 'New York City FC' vs 'Chicago Fire FC' -> (newyorkcity, chicagofire)
+
+KXMLSGAME 2026-07-25  KALSHI: 'Philadelphia' vs 'Seattle'  -> ['philadelphia', 'seattle']
+    ESPN off=+0: 'Red Bull New York' vs 'Charlotte FC' -> (redbullnewyork, charlotte)
+    ESPN off=+0: 'Columbus Crew' vs 'FC Cincinnati' -> (columbuscrew, cincinnati)
+    ESPN off=+0: 'CF Montréal' vs 'Inter Miami CF' -> (montreal, intermiami)
+    ESPN off=+0: 'D.C. United' vs 'Toronto FC' -> (dc, toronto)
+    ESPN off=+0: 'New England Revolution' vs 'Atlanta United FC' -> (newenglandrevolution, atlanta)
+    ESPN off=+0: 'New York City FC' vs 'Chicago Fire FC' -> (newyorkcity, chicagofire)
+
+KXMLSGAME 2026-07-25  KALSHI: 'Orlando' vs 'Nashville'  -> ['nashville', 'orlando']
+    ESPN off=+0: 'Red Bull New York' vs 'Charlotte FC' -> (redbullnewyork, charlotte)
+    ESPN off=+0: 'Columbus Crew' vs 'FC Cincinnati' -> (columbuscrew, cincinnati)
+    ESPN off=+0: 'CF Montréal' vs 'Inter Miami CF' -> (montreal, intermiami)
+    ESPN off=+0: 'D.C. United' vs 'Toronto FC' -> (dc, toronto)
+    ESPN off=+0: 'New England Revolution' vs 'Atlanta United FC' -> (newenglandrevolution, atlanta)
+    ESPN off=+0: 'New York City FC' vs 'Chicago Fire FC' -> (newyorkcity, chicagofire)
+
+KXMLSGAME 2026-07-25  KALSHI: 'New England' vs 'Atlanta'  -> ['atlanta', 'newengland']
+    ESPN off=+0: 'Red Bull New York' vs 'Charlotte FC' -> (redbullnewyork, charlotte)
+    ESPN off=+0: 'Columbus Crew' vs 'FC Cincinnati' -> (columbuscrew, cincinnati)
+    ESPN off=+0: 'CF Montréal' vs 'Inter Miami CF' -> (montreal, intermiami)
+    ESPN off=+0: 'D.C. United' vs 'Toronto FC' -> (dc, toronto)
+    ESPN off=+0: 'New England Revolution' vs 'Atlanta United FC' -> (newenglandrevolution, atlanta)
+    ESPN off=+0: 'New York City FC' vs 'Chicago Fire FC' -> (newyorkcity, chicagofire)
+
+KXMLSGAME 2026-07-25  KALSHI: 'Montreal' vs 'Miami'  -> ['miami', 'montreal']
+    ESPN off=+0: 'Red Bull New York' vs 'Charlotte FC' -> (redbullnewyork, charlotte)
+    ESPN off=+0: 'Columbus Crew' vs 'FC Cincinnati' -> (columbuscrew, cincinnati)
+    ESPN off=+0: 'CF Montréal' vs 'Inter Miami CF' -> (montreal, intermiami)
+    ESPN off=+0: 'D.C. United' vs 'Toronto FC' -> (dc, toronto)
+    ESPN off=+0: 'New England Revolution' vs 'Atlanta United FC' -> (newenglandrevolution, atlanta)
+    ESPN off=+0: 'New York City FC' vs 'Chicago Fire FC' -> (newyorkcity, chicagofire)
+
+KXMLSGAME 2026-07-25  KALSHI: 'Columbus' vs 'Cincinnati'  -> ['cincinnati', 'columbus']
+    ESPN off=+0: 'Red Bull New York' vs 'Charlotte FC' -> (redbullnewyork, charlotte)
+    ESPN off=+0: 'Columbus Crew' vs 'FC Cincinnati' -> (columbuscrew, cincinnati)
+    ESPN off=+0: 'CF Montréal' vs 'Inter Miami CF' -> (montreal, intermiami)
+    ESPN off=+0: 'D.C. United' vs 'Toronto FC' -> (dc, toronto)
+    ESPN off=+0: 'New England Revolution' vs 'Atlanta United FC' -> (newenglandrevolution, atlanta)
+    ESPN off=+0: 'New York City FC' vs 'Chicago Fire FC' -> (newyorkcity, chicagofire)
+
+KXMLSGAME 2026-07-25  KALSHI: 'New York RB' vs 'Charlotte'  -> ['charlotte', 'newyorkrb']
+    ESPN off=+0: 'Red Bull New York' vs 'Charlotte FC' -> (redbullnewyork, charlotte)
+    ESPN off=+0: 'Columbus Crew' vs 'FC Cincinnati' -> (columbuscrew, cincinnati)
+    ESPN off=+0: 'CF Montréal' vs 'Inter Miami CF' -> (montreal, intermiami)
+    ESPN off=+0: 'D.C. United' vs 'Toronto FC' -> (dc, toronto)
+    ESPN off=+0: 'New England Revolution' vs 'Atlanta United FC' -> (newenglandrevolution, atlanta)
+    ESPN off=+0: 'New York City FC' vs 'Chicago Fire FC' -> (newyorkcity, chicagofire)
+
+KXMLSGAME 2026-07-22  KALSHI: 'San Jose' vs 'Orlando'  -> ['orlando', 'sanjose']
+    ESPN off=+0: 'Columbus Crew' vs 'New York City FC' -> (columbuscrew, newyorkcity)
+    ESPN off=+0: 'FC Cincinnati' vs 'Vancouver Whitecaps' -> (cincinnati, vancouverwhitecaps)
+    ESPN off=+0: 'Inter Miami CF' vs 'Chicago Fire FC' -> (intermiami, chicagofire)
+    ESPN off=+0: 'New England Revolution' vs 'Toronto FC' -> (newenglandrevolution, toronto)
+    ESPN off=+0: 'Philadelphia Union' vs 'Red Bull New York' -> (philadelphiaunion, redbullnewyork)
+    ESPN off=+1: 'Charlotte FC' vs 'Atlanta United FC' -> (charlotte, atlanta)
+
+KXMLSGAME 2026-07-22  KALSHI: 'Portland' vs 'Dallas'  -> ['dallas', 'portland']
+    ESPN off=+0: 'Columbus Crew' vs 'New York City FC' -> (columbuscrew, newyorkcity)
+    ESPN off=+0: 'FC Cincinnati' vs 'Vancouver Whitecaps' -> (cincinnati, vancouverwhitecaps)
+    ESPN off=+0: 'Inter Miami CF' vs 'Chicago Fire FC' -> (intermiami, chicagofire)
+    ESPN off=+0: 'New England Revolution' vs 'Toronto FC' -> (newenglandrevolution, toronto)
+    ESPN off=+0: 'Philadelphia Union' vs 'Red Bull New York' -> (philadelphiaunion, redbullnewyork)
+    ESPN off=+1: 'Charlotte FC' vs 'Atlanta United FC' -> (charlotte, atlanta)
+
+KXMLSGAME 2026-07-22  KALSHI: 'Los Angeles F' vs 'Salt Lake'  -> ['angelesf', 'saltlake']
+    ESPN off=+0: 'Columbus Crew' vs 'New York City FC' -> (columbuscrew, newyorkcity)
+    ESPN off=+0: 'FC Cincinnati' vs 'Vancouver Whitecaps' -> (cincinnati, vancouverwhitecaps)
+    ESPN off=+0: 'Inter Miami CF' vs 'Chicago Fire FC' -> (intermiami, chicagofire)
+    ESPN off=+0: 'New England Revolution' vs 'Toronto FC' -> (newenglandrevolution, toronto)
+    ESPN off=+0: 'Philadelphia Union' vs 'Red Bull New York' -> (philadelphiaunion, redbullnewyork)
+    ESPN off=+1: 'Charlotte FC' vs 'Atlanta United FC' -> (charlotte, atlanta)
+
+KXMLSGAME 2026-07-22  KALSHI: 'Los Angeles G' vs 'Saint Louis'  -> ['angelesg', 'saintlouis']
+    ESPN off=+0: 'Columbus Crew' vs 'New York City FC' -> (columbuscrew, newyorkcity)
+    ESPN off=+0: 'FC Cincinnati' vs 'Vancouver Whitecaps' -> (cincinnati, vancouverwhitecaps)
+    ESPN off=+0: 'Inter Miami CF' vs 'Chicago Fire FC' -> (intermiami, chicagofire)
+    ESPN off=+0: 'New England Revolution' vs 'Toronto FC' -> (newenglandrevolution, toronto)
+    ESPN off=+0: 'Philadelphia Union' vs 'Red Bull New York' -> (philadelphiaunion, redbullnewyork)
+    ESPN off=+1: 'Charlotte FC' vs 'Atlanta United FC' -> (charlotte, atlanta)
+
+KXMLSGAME 2026-07-22  KALSHI: 'Colorado' vs 'San Diego FC'  -> ['colorado', 'sandiego']
+    ESPN off=+0: 'Columbus Crew' vs 'New York City FC' -> (columbuscrew, newyorkcity)
+    ESPN off=+0: 'FC Cincinnati' vs 'Vancouver Whitecaps' -> (cincinnati, vancouverwhitecaps)
+    ESPN off=+0: 'Inter Miami CF' vs 'Chicago Fire FC' -> (intermiami, chicagofire)
+    ESPN off=+0: 'New England Revolution' vs 'Toronto FC' -> (newenglandrevolution, toronto)
+    ESPN off=+0: 'Philadelphia Union' vs 'Red Bull New York' -> (philadelphiaunion, redbullnewyork)
+    ESPN off=+1: 'Charlotte FC' vs 'Atlanta United FC' -> (charlotte, atlanta)
+
+KXMLSGAME 2026-07-22  KALSHI: 'Houston' vs 'DC United'  -> ['dc', 'houston']
+    ESPN off=+0: 'Columbus Crew' vs 'New York City FC' -> (columbuscrew, newyorkcity)
+    ESPN off=+0: 'FC Cincinnati' vs 'Vancouver Whitecaps' -> (cincinnati, vancouverwhitecaps)
+    ESPN off=+0: 'Inter Miami CF' vs 'Chicago Fire FC' -> (intermiami, chicagofire)
+    ESPN off=+0: 'New England Revolution' vs 'Toronto FC' -> (newenglandrevolution, toronto)
+    ESPN off=+0: 'Philadelphia Union' vs 'Red Bull New York' -> (philadelphiaunion, redbullnewyork)
+    ESPN off=+1: 'Charlotte FC' vs 'Atlanta United FC' -> (charlotte, atlanta)
+
+KXMLSGAME 2026-07-22  KALSHI: 'Austin' vs 'Seattle'  -> ['austin', 'seattle']
+    ESPN off=+0: 'Columbus Crew' vs 'New York City FC' -> (columbuscrew, newyorkcity)
+    ESPN off=+0: 'FC Cincinnati' vs 'Vancouver Whitecaps' -> (cincinnati, vancouverwhitecaps)
+    ESPN off=+0: 'Inter Miami CF' vs 'Chicago Fire FC' -> (intermiami, chicagofire)
+    ESPN off=+0: 'New England Revolution' vs 'Toronto FC' -> (newenglandrevolution, toronto)
+    ESPN off=+0: 'Philadelphia Union' vs 'Red Bull New York' -> (philadelphiaunion, redbullnewyork)
+    ESPN off=+1: 'Charlotte FC' vs 'Atlanta United FC' -> (charlotte, atlanta)
+
+KXMLSGAME 2026-07-22  KALSHI: 'Philadelphia' vs 'New York RB'  -> ['newyorkrb', 'philadelphia']
+    ESPN off=+0: 'Columbus Crew' vs 'New York City FC' -> (columbuscrew, newyorkcity)
+    ESPN off=+0: 'FC Cincinnati' vs 'Vancouver Whitecaps' -> (cincinnati, vancouverwhitecaps)
+    ESPN off=+0: 'Inter Miami CF' vs 'Chicago Fire FC' -> (intermiami, chicagofire)
+    ESPN off=+0: 'New England Revolution' vs 'Toronto FC' -> (newenglandrevolution, toronto)
+    ESPN off=+0: 'Philadelphia Union' vs 'Red Bull New York' -> (philadelphiaunion, redbullnewyork)
+    ESPN off=+1: 'Charlotte FC' vs 'Atlanta United FC' -> (charlotte, atlanta)
+
+KXMLSGAME 2026-07-22  KALSHI: 'New England' vs 'Toronto'  -> ['newengland', 'toronto']
+    ESPN off=+0: 'Columbus Crew' vs 'New York City FC' -> (columbuscrew, newyorkcity)
+    ESPN off=+0: 'FC Cincinnati' vs 'Vancouver Whitecaps' -> (cincinnati, vancouverwhitecaps)
+    ESPN off=+0: 'Inter Miami CF' vs 'Chicago Fire FC' -> (intermiami, chicagofire)
+    ESPN off=+0: 'New England Revolution' vs 'Toronto FC' -> (newenglandrevolution, toronto)
+    ESPN off=+0: 'Philadelphia Union' vs 'Red Bull New York' -> (philadelphiaunion, redbullnewyork)
+    ESPN off=+1: 'Charlotte FC' vs 'Atlanta United FC' -> (charlotte, atlanta)
+
+KXMLSGAME 2026-07-22  KALSHI: 'Miami' vs 'Chicago Fire'  -> ['chicagofire', 'miami']
+    ESPN off=+0: 'Columbus Crew' vs 'New York City FC' -> (columbuscrew, newyorkcity)
+    ESPN off=+0: 'FC Cincinnati' vs 'Vancouver Whitecaps' -> (cincinnati, vancouverwhitecaps)
+    ESPN off=+0: 'Inter Miami CF' vs 'Chicago Fire FC' -> (intermiami, chicagofire)
+    ESPN off=+0: 'New England Revolution' vs 'Toronto FC' -> (newenglandrevolution, toronto)
+    ESPN off=+0: 'Philadelphia Union' vs 'Red Bull New York' -> (philadelphiaunion, redbullnewyork)
+    ESPN off=+1: 'Charlotte FC' vs 'Atlanta United FC' -> (charlotte, atlanta)
+
+KXMLSGAME 2026-07-22  KALSHI: 'Columbus' vs 'New York City'  -> ['columbus', 'newyorkcity']
+    ESPN off=+0: 'Columbus Crew' vs 'New York City FC' -> (columbuscrew, newyorkcity)
+    ESPN off=+0: 'FC Cincinnati' vs 'Vancouver Whitecaps' -> (cincinnati, vancouverwhitecaps)
+    ESPN off=+0: 'Inter Miami CF' vs 'Chicago Fire FC' -> (intermiami, chicagofire)
+    ESPN off=+0: 'New England Revolution' vs 'Toronto FC' -> (newenglandrevolution, toronto)
+    ESPN off=+0: 'Philadelphia Union' vs 'Red Bull New York' -> (philadelphiaunion, redbullnewyork)
+    ESPN off=+1: 'Charlotte FC' vs 'Atlanta United FC' -> (charlotte, atlanta)
+
+KXMLSGAME 2026-07-22  KALSHI: 'Cincinnati' vs 'Vancouver'  -> ['cincinnati', 'vancouver']
+    ESPN off=+0: 'Columbus Crew' vs 'New York City FC' -> (columbuscrew, newyorkcity)
+    ESPN off=+0: 'FC Cincinnati' vs 'Vancouver Whitecaps' -> (cincinnati, vancouverwhitecaps)
+    ESPN off=+0: 'Inter Miami CF' vs 'Chicago Fire FC' -> (intermiami, chicagofire)
+    ESPN off=+0: 'New England Revolution' vs 'Toronto FC' -> (newenglandrevolution, toronto)
+    ESPN off=+0: 'Philadelphia Union' vs 'Red Bull New York' -> (philadelphiaunion, redbullnewyork)
+    ESPN off=+1: 'Charlotte FC' vs 'Atlanta United FC' -> (charlotte, atlanta)
+
+KXMLSGAME 2026-07-17  KALSHI: 'Los Angeles G' vs 'Los Angeles F'  -> ['angelesf', 'angelesg']
+    ESPN off=+0: 'St. Louis CITY SC' vs 'Sporting Kansas City' -> (stlouiscity, kansascity)
+    ESPN off=+0: 'Seattle Sounders FC' vs 'Portland Timbers' -> (seattlesounders, portlandtimbers)
+    ESPN off=+1: 'Nashville SC' vs 'Atlanta United FC' -> (nashville, atlanta)
+    ESPN off=+1: 'LA Galaxy' vs 'LAFC' -> (galaxy, lafc)
+    ESPN off=-1: 'CF Montréal' vs 'Toronto FC' -> (montreal, toronto)
+
+KXMLSGAME 2026-07-16  KALSHI: 'Seattle' vs 'Portland'  -> ['portland', 'seattle']
+    ESPN off=+0: 'CF Montréal' vs 'Toronto FC' -> (montreal, toronto)
+    ESPN off=+1: 'St. Louis CITY SC' vs 'Sporting Kansas City' -> (stlouiscity, kansascity)
+    ESPN off=+1: 'Seattle Sounders FC' vs 'Portland Timbers' -> (seattlesounders, portlandtimbers)
+    ESPN off=+2: 'Nashville SC' vs 'Atlanta United FC' -> (nashville, atlanta)
+    ESPN off=+2: 'LA Galaxy' vs 'LAFC' -> (galaxy, lafc)
+
+KXMLSGAME 2026-07-16  KALSHI: 'Saint Louis' vs 'Kansas City'  -> ['kansascity', 'saintlouis']
+    ESPN off=+0: 'CF Montréal' vs 'Toronto FC' -> (montreal, toronto)
+    ESPN off=+1: 'St. Louis CITY SC' vs 'Sporting Kansas City' -> (stlouiscity, kansascity)
+    ESPN off=+1: 'Seattle Sounders FC' vs 'Portland Timbers' -> (seattlesounders, portlandtimbers)
+    ESPN off=+2: 'Nashville SC' vs 'Atlanta United FC' -> (nashville, atlanta)
+    ESPN off=+2: 'LA Galaxy' vs 'LAFC' -> (galaxy, lafc)
+
+KXMLSGAME 2026-07-16  KALSHI: 'Chicago Fire' vs 'Vancouver'  -> ['chicagofire', 'vancouver']
+    ESPN off=+0: 'CF Montréal' vs 'Toronto FC' -> (montreal, toronto)
+    ESPN off=+1: 'St. Louis CITY SC' vs 'Sporting Kansas City' -> (stlouiscity, kansascity)
+    ESPN off=+1: 'Seattle Sounders FC' vs 'Portland Timbers' -> (seattlesounders, portlandtimbers)
+    ESPN off=+2: 'Nashville SC' vs 'Atlanta United FC' -> (nashville, atlanta)
+    ESPN off=+2: 'LA Galaxy' vs 'LAFC' -> (galaxy, lafc)
+
+KXMLSGAME 2026-05-24  KALSHI: 'Los Angeles F' vs 'Seattle'  -> ['angelesf', 'seattle']
+    ESPN off=+0: 'Chicago Fire FC' vs 'Toronto FC' -> (chicagofire, toronto)
+    ESPN off=+0: 'Nashville SC' vs 'New York City FC' -> (nashville, newyorkcity)
+    ESPN off=+0: 'Sporting Kansas City' vs 'Red Bull New York' -> (kansascity, redbullnewyork)
+    ESPN off=+0: 'Colorado Rapids' vs 'FC Dallas' -> (coloradorapids, dallas)
+    ESPN off=+0: 'Portland Timbers' vs 'San Jose Earthquakes' -> (portlandtimbers, sanjoseearthquakes)
+    ESPN off=+0: 'San Diego FC' vs 'Vancouver Whitecaps' -> (sandiego, vancouverwhitecaps)
+
+KXMLSGAME 2026-05-24  KALSHI: 'Miami' vs 'Philadelphia'  -> ['miami', 'philadelphia']
+    ESPN off=+0: 'Chicago Fire FC' vs 'Toronto FC' -> (chicagofire, toronto)
+    ESPN off=+0: 'Nashville SC' vs 'New York City FC' -> (nashville, newyorkcity)
+    ESPN off=+0: 'Sporting Kansas City' vs 'Red Bull New York' -> (kansascity, redbullnewyork)
+    ESPN off=+0: 'Colorado Rapids' vs 'FC Dallas' -> (coloradorapids, dallas)
+    ESPN off=+0: 'Portland Timbers' vs 'San Jose Earthquakes' -> (portlandtimbers, sanjoseearthquakes)
+    ESPN off=+0: 'San Diego FC' vs 'Vancouver Whitecaps' -> (sandiego, vancouverwhitecaps)
+
+
+=== summary of failure causes ===
+{}

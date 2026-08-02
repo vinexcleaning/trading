@@ -1,0 +1,16 @@
+completed matched fixtures: 130
+  25/130 fixtures, 77 events
+  50/130 fixtures, 119 events
+  75/130 fixtures, 164 events
+  100/130 fixtures, 200 events
+  125/130 fixtures, 249 events
+
+fixtures with no ESPN summary: 0
+fixtures with no candles:      0
+events captured:               255
+  goals     229
+  red cards 26
+
+CLOCK DIVERGENCE (minute-implied minus true wallclock), n=362
+  median -17.52 min   p10 -21.80   p90 +0.78   min -29.52   max +0.98
+  |error| > 2 min on 55.2% of events
