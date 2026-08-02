@@ -1,0 +1,81 @@
+﻿========================================================================
+A. PRIMARY FREE FEEDS
+========================================================================
+  StatsAPI schedule: 2015 sample week 91 games, 2026 sample week 99 games
+  sample final gamePk: 822781
+  linescore: 9 innings
+    inning 1: away runs=0 home runs=0
+    -> THE RFI LABEL IS DIRECTLY AVAILABLE, free, per game
+  boxscore home: battingOrder n=9 pitchers n=5
+  TOMORROW: 8 games, 7 with a probable pitcher, 0 with lineups
+  Statcast one day: 2923 pitches x 119 cols
+    RFI-relevant columns present: ['release_speed', 'batter', 'pitcher', 'events', 'home_team', 'away_team', 'inning', 'launch_speed', 'game_pk', 'estimated_woba_using_speedangle', 'at_bat_number', 'pitch_number']
+
+========================================================================
+B. FIRST-INNING SPECIFICS
+========================================================================
+  Savant pitcher 1st-inning split        http=200 bytes=4701253
+  FanGraphs leaders (free page)          http=403 bytes=5706
+  Baseball-Reference                     http=200 bytes=505017
+  Retrosheet event files                 http=200 bytes=44553
+  pybaseball repo                        http=200 bytes=5719
+
+========================================================================
+C. WHAT THE COMMUNITY HAS ALREADY BUILT
+========================================================================
+
+  'YRFI NRFI': 6 repos
+    digitalgrowthguy/mlb-whop-dashboard            2026-08-02 *1       2280KB  YRFI / NRFI 
+    phatcobra/nrfi-predictor                       2026-08-01 *0      45883KB  Autonomous MLB NRFI/YRFI (first-inning 0.5 runs) pre
+    Srb709/NRFI                                    2026-05-02 *0        224KB  NRFI YRFI program 
+    scottynyland25-commits/nrfi-predictor          2026-04-08 *0         17KB  NRFI/YRFI Prediction model
+    callensw/yrfi-nrfi-claude-skill                2026-03-27 *0        413KB  
+    Jmags0/NRFI-YRFI                               2025-04-03 *0          0KB  
+
+  'first inning run prediction': 4 repos
+    RishiSharma01/First-Innings-Score-Prediction-- 2025-12-22 *0       5399KB  This project uses machine learning to predict the fi
+    bhavesh-1244/IPL-MATCH-WINNER-PREDICTION-MODEL 2025-11-16 *0         72KB  The IPL Match Winner Prediction Model uses machine l
+    Suyogt467/cricket_run_prediction               2023-07-28 *0       3197KB  T20 First Inning Runs Prediction
+    VAMSI-datascience/Web-App-for-prediction-of-Fi 2021-03-20 *0      28577KB  
+
+  'NRFI model baseball': 2 repos
+    MattGross3/baseball-predictor                  2026-07-23 *0        388KB  MLB moneyline/totals/NRFI/prop prediction platform -
+    dbasley/NRFI_Project                           2025-04-20 *1      12402KB  No Runs First Inning Models
+
+  'mlb first inning betting': 2 repos
+    lucasreydman/sharprfi                          2026-07-22 *1       6258KB  MLB YRFI model that estimates first-inning run proba
+    lucasreydman/nrfi                              2026-04-12 *0       2507KB  MLB NRFI model that estimates scoreless first-inning
+
+  'statcast first inning': 0 repos
+
+  'kalshi mlb': 26 repos
+    bbroeking/trea-kalshi-relay                    2026-08-02 *0       1405KB  Zero-cost public MLB and Kalshi snapshot relay for T
+    gehrenberg823/mlb-playoff-odds                 2026-08-02 *0        535KB  Daily MLB playoff/division/pennant/WS fair odds (mea
+    kalchikee/MLBKalchi                            2026-08-02 *0       3125KB  MLB Oracle v4.0 - Kalshi prediction engine with Disc
+    SidSub1041/kalshi-mlb-market-analysis          2026-08-01 *0        300KB  
+    abudnick8/prop-edge                            2026-08-02 *5    1091594KB  Sports prediction market bot — scans Kalshi, Polymar
+    eziCode/mlb-kalshi-trader                      2026-07-30 *0       3440KB  
+    ellingtonfagan/kalshiscenariobot               2026-08-02 *0       1282KB  Agentic sports-market research and execution system 
+    Rohan5commit/kalshi-sports-bot                 2026-07-28 *0        241KB  Automated Kalshi sports prediction trading bot — NBA
+
+  'mlb prop model statcast': 2 repos
+    gstoke8/mlb-props                              2026-07-05 *0       3086KB  Automated MLB player props betting model — HR, K, an
+    BucinAMAZIN/MyStuff                            2026-05-09 *0          0KB  Data-driven MLB batter vs pitcher props model with w
+
+  'baseball betting model': 18 repos
+    austinlmcconnell/mlb-nsfi-model                2026-08-02 *0       2793KB  Developed a model in Python that determines the prob
+    thomasosbot/baseball-sims                      2026-08-02 *1     116814KB  MLB Monte Carlo simulation model — predicts game out
+    trevmon28/CollegeBaseballAnalytics             2026-08-02 *0        538KB  NCAA college baseball analytics: power rankings, win
+    SJTreadway/mlb_py                              2026-06-28 *0      39963KB  MLB HR & game winner prediction models built on Stat
+    PadresFan1/baseball-model                      2026-06-11 *0      90824KB  Vibe Coding an MLB Betting Model
+    ceparman/Baseball-Betting-Model                2026-03-05 *0       6235KB  
+    mathieudesch/SluggerStats                      2025-09-30 *0         19KB  a statistical model for finding profitable betting o
+    skiba33/baseball-model                         2025-08-03 *0          0KB  betting model
+
+  --- Reddit: what are people saying about YRFI/NRFI edges? ---
+    r/sportsbook 'NRFI': http 403
+    r/algobetting 'first inning': http 403
+    r/Sabermetrics 'first inning': http 403
+    r/dfsports 'NRFI': http 403
+
+wrote reports/hunt_mlb.json

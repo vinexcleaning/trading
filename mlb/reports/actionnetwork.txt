@@ -1,0 +1,19 @@
+﻿http=200 bytes=411640
+
+=== every occurrence of 'rfi' in context ===
+
+top-level keys: ['content_live_count', 'games', 'league', 'market_rules']
+games: 15
+game keys: ['attendance', 'away_rotation_number', 'away_team_id', 'boxscore', 'broadcast', 'core_id', 'coverage', 'home_rotation_number', 'home_team_id', 'id', 'is_free', 'last_play', 'league_id', 'league_name', 'markets', 'meta', 'num_bets', 'player_stats', 'real_status', 'season', 'start_time', 'status', 'status_display', 'teams', 'trending', 'type', 'week', 'winning_team_id']
+
+odds blocks on game 0: 0
+  g['markets'] = {"15": {"event": {"core_bet_type_6_team_score": [{"outcome_id": "2792409631", "market_id": "23549576", "event_type": "game", "event_id": 292410, "league_id": 8, "book_id": 15, "book_parent_id": 18, "type": "core_bet_type_6_team_score", "option_type_id": 2, "side": "under", "period": "event", "team_i
+  g['type'] = "reg"
+
+=== period values present across all odds blocks ===
+  {}
+
+VERDICT:
+  No first-inning period in the free scoreboard feed. The 'rfi'
+  substring is not a priced first-inning market here.
+  periods offered: []

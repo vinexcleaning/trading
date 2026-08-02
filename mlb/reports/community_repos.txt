@@ -1,0 +1,86 @@
+﻿
+========================================================================
+lucasreydman/sharprfi
+========================================================================
+  pushed=2026-07-22 stars=1 licence=None
+  MLB YRFI model that estimates first-inning run probability and break-even betting odds for each game.
+  README 10360 chars; performance claims found: 3
+    | | Baseball Savant (`baseballsavant.mlb.com`) | Pitcher barrel rate, hard-hit rate — season CSV, cached 12hr | 
+    | | Variant | Brier | Calibration gap |
+    | | `savant-pitchers:{year}` | `Record<string, SavantStats>` | 12 hr | Barrel rate + hard-hit rate by pitcher |
+  67 files: 31 code, 5 data
+    code: ['__tests__/game-status.test.ts', '__tests__/kv.test.ts', '__tests__/mlb-api.test.ts', '__tests__/mode.test.ts', '__tests__/model-breakdown.test.ts', '__tests__/poisson.test.ts', '__tests__/savant-api.test.ts', '__tests__/sim.test.ts', '__tests__/weather-api.test.ts', 'app/api/games/route.ts']
+    data: ['.vscode/settings.json', 'package-lock.json', 'package.json', 'tsconfig.json', 'vercel.json']
+    __tests__/model-breakdown.test.ts                       2254 chars  signals=[]
+    lib/model-breakdown.ts                                  6293 chars  signals=[]
+    lib/model-config.ts                                      797 chars  signals=['brier', 'backtest']
+    lib/nrfi-color.ts                                       1376 chars  signals=['nrfi', 'yrfi']
+
+========================================================================
+lucasreydman/nrfi
+========================================================================
+  pushed=2026-04-12 stars=0 licence=None
+  MLB NRFI model that estimates scoreless first-inning probability and break-even betting odds for each game.
+  README 7699 chars; performance claims found: 2
+    | | Baseball Savant (`baseballsavant.mlb.com`) | Pitcher barrel rate, hard-hit rate — season CSV, cached 12hr | 
+    | | `savant-pitchers:{year}` | `Record<string, SavantStats>` | 12 hr | Barrel rate + hard-hit rate by pitcher |
+  45 files: 20 code, 4 data
+    code: ['__tests__/model-breakdown.test.ts', '__tests__/savant-api.test.ts', 'app/api/games/route.ts', 'jest.config.ts', 'jest.setup.ts', 'lib/cache.ts', 'lib/game-status.ts', 'lib/kv.ts', 'lib/mlb-api.ts', 'lib/model-breakdown.ts']
+    data: ['package-lock.json', 'package.json', 'tsconfig.json', 'vercel.json']
+    __tests__/model-breakdown.test.ts                       2254 chars  signals=[]
+    lib/model-breakdown.ts                                  6293 chars  signals=[]
+    lib/nrfi-color.ts                                       1376 chars  signals=['nrfi', 'yrfi']
+
+========================================================================
+dbasley/NRFI_Project
+========================================================================
+  pushed=2025-04-20 stars=1 licence=NOASSERTION
+  No Runs First Inning Models
+  README 249 chars; performance claims found: 0
+  10 files: 1 code, 2 data
+    code: ['Statcast_data.py']
+    data: ['statcast_2023_first_inning.csv', 'statcast_2024_first_inning.csv']
+
+========================================================================
+phatcobra/nrfi-predictor
+========================================================================
+  pushed=2026-08-01 stars=0 licence=MIT
+  Autonomous MLB NRFI/YRFI (first-inning 0.5 runs) prediction system using SportsDataIO, pybaseball, Retrosheet, and LightGBM. Full data pipeline, feature engineering, model training, daily predictions, REST API, and dashboard.
+  README 5590 chars; performance claims found: 1
+    | | `nrfi/grade_nightly.py` | Brier, log-loss, calibration, and market diagnostics |
+  48 files: 33 code, 0 data
+    code: ['nrfi/__init__.py', 'nrfi/_obs.py', 'nrfi/api.py', 'nrfi/audit_monthly.py', 'nrfi/build_features.py', 'nrfi/config.py', 'nrfi/data_readiness.py', 'nrfi/ensemble.py', 'nrfi/grade_nightly.py', 'nrfi/guards.py']
+    data: []
+    nrfi/__init__.py                                           0 chars  signals=[]
+    nrfi/_obs.py                                            1071 chars  signals=['nrfi']
+    nrfi/api.py                                            12199 chars  signals=['nrfi', 'yrfi', 'brier']
+    nrfi/audit_monthly.py                                   3933 chars  signals=['nrfi', 'brier']
+  FEATURE NAMES seen across their code (6):
+    ['away_pitcher', 'block_reason', 'generated_at', 'home_pitcher', 'lineup_confirmed', 'window_days']
+
+========================================================================
+austinlmcconnell/mlb-nsfi-model
+========================================================================
+  pushed=2026-08-02 stars=0 licence=None
+  Developed a model in Python that determines the probability of no strikeouts (and other statistical outcomes) occurring in the top or bottom of the 1st inning in specific baseball games. The idea of this model is to deploy it against various sports betting lines to mine out positive expected value and make long-term profit.
+  README 2243 chars; performance claims found: 0
+  275 files: 11 code, 252 data
+    code: ['.ipynb_checkpoints/NSFI_Probability_Model-checkpoint.ipynb', '.ipynb_checkpoints/Throwaway-checkpoint.ipynb', '.ipynb_checkpoints/model-checkpoint.ipynb', 'NSFI_Probability_Model.ipynb', 'fetch_2024_data.py', 'fetch_daily.py', 'fetch_lineups.py', 'model.ipynb', 'model.py', 'run_model.py']
+    data: ['Example_CSV_Files/LHH_data.csv', 'Example_CSV_Files/LHP_data.csv', 'Example_CSV_Files/MLB_season.csv', 'Example_CSV_Files/RHH_data.csv', 'Example_CSV_Files/RHP_data.csv', 'Example_CSV_Files/batting_gb_rates.csv']
+    .ipynb_checkpoints/NSFI_Probability_Model-checkpoint  118422 chars  signals=[]
+    .ipynb_checkpoints/model-checkpoint.ipynb               3629 chars  signals=['first inning']
+    NSFI_Probability_Model.ipynb                          107932 chars  signals=['roi']
+    model.ipynb                                             3629 chars  signals=['first inning']
+  FEATURE NAMES seen across their code (2):
+    ['batting_order', 'ev_under_four_batters_to_plate']
+
+========================================================================
+abudnick8/prop-edge
+========================================================================
+  pushed=2026-08-02 stars=5 licence=None
+  Sports prediction market bot — scans Kalshi, Polymarket, DraftKings across NFL/NBA/MLB/NHL with confidence scoring and alerts
+  189 files: 50 code, 18 data
+    code: ['client/src/data/bracketData.ts', 'client/src/data/livePlayoffTeams.ts', 'client/src/data/playerTeams.ts', 'client/src/data/playoffData.ts', 'client/src/data/tournamentCalendar.ts', 'client/src/hooks/use-toast.ts', 'client/src/hooks/useVersionCheck.ts', 'client/src/hooks/useWebSocket.ts', 'client/src/lib/bracketEngine.ts', 'client/src/lib/bracketPdf.ts']
+    data: ['components.json', 'data-backup/server/ml_data/bet_outcome_log.json', 'data-backup/server/ml_data/bts_ml_weights.json', 'data-backup/server/ml_data/bts_picks.json', 'data-backup/server/ml_data/graded_ids.json', 'data-backup/server/ml_data/ml_insights.json']
+
+wrote reports/community_repos.json

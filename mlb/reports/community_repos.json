@@ -1,0 +1,91 @@
+{
+ "lucasreydman/sharprfi": {
+  "pushed": "2026-07-22T13:18:38Z",
+  "stars": 1,
+  "license": null,
+  "desc": "MLB YRFI model that estimates first-inning run probability and break-even betting odds for each game.",
+  "readme_len": 10360,
+  "claims": [
+   "| Baseball Savant (`baseballsavant.mlb.com`) | Pitcher barrel rate, hard-hit rate \u2014 season CSV, cached 12hr | None |",
+   "| Variant | Brier | Calibration gap |",
+   "| `savant-pitchers:{year}` | `Record<string, SavantStats>` | 12 hr | Barrel rate + hard-hit rate by pitcher |"
+  ],
+  "n_files": 67,
+  "n_code": 31,
+  "n_data": 5,
+  "features_seen": []
+ },
+ "lucasreydman/nrfi": {
+  "pushed": "2026-04-12T01:30:39Z",
+  "stars": 0,
+  "license": null,
+  "desc": "MLB NRFI model that estimates scoreless first-inning probability and break-even betting odds for each game.",
+  "readme_len": 7699,
+  "claims": [
+   "| Baseball Savant (`baseballsavant.mlb.com`) | Pitcher barrel rate, hard-hit rate \u2014 season CSV, cached 12hr | None |",
+   "| `savant-pitchers:{year}` | `Record<string, SavantStats>` | 12 hr | Barrel rate + hard-hit rate by pitcher |"
+  ],
+  "n_files": 45,
+  "n_code": 20,
+  "n_data": 4,
+  "features_seen": []
+ },
+ "dbasley/NRFI_Project": {
+  "pushed": "2025-04-20T21:36:39Z",
+  "stars": 1,
+  "license": "NOASSERTION",
+  "desc": "No Runs First Inning Models",
+  "readme_len": 249,
+  "claims": [],
+  "n_files": 10,
+  "n_code": 1,
+  "n_data": 2,
+  "features_seen": []
+ },
+ "phatcobra/nrfi-predictor": {
+  "pushed": "2026-08-01T02:45:31Z",
+  "stars": 0,
+  "license": "MIT",
+  "desc": "Autonomous MLB NRFI/YRFI (first-inning 0.5 runs) prediction system using SportsDataIO, pybaseball, Retrosheet, and LightGBM. Full data pipeline, feature engineering, model training, daily predictions, REST API, and dashboard.",
+  "readme_len": 5590,
+  "claims": [
+   "| `nrfi/grade_nightly.py` | Brier, log-loss, calibration, and market diagnostics |"
+  ],
+  "n_files": 48,
+  "n_code": 33,
+  "n_data": 0,
+  "features_seen": [
+   "away_pitcher",
+   "block_reason",
+   "generated_at",
+   "home_pitcher",
+   "lineup_confirmed",
+   "window_days"
+  ]
+ },
+ "austinlmcconnell/mlb-nsfi-model": {
+  "pushed": "2026-08-02T19:41:37Z",
+  "stars": 0,
+  "license": null,
+  "desc": "Developed a model in Python that determines the probability of no strikeouts (and other statistical outcomes) occurring in the top or bottom of the 1st inning in specific baseball games. The idea of this model is to deploy it against various sports betting lines to mine out positive expected value and make long-term profit.",
+  "readme_len": 2243,
+  "claims": [],
+  "n_files": 275,
+  "n_code": 11,
+  "n_data": 252,
+  "features_seen": [
+   "batting_order",
+   "ev_under_four_batters_to_plate"
+  ]
+ },
+ "abudnick8/prop-edge": {
+  "pushed": "2026-08-02T21:22:40Z",
+  "stars": 5,
+  "license": null,
+  "desc": "Sports prediction market bot \u2014 scans Kalshi, Polymarket, DraftKings across NFL/NBA/MLB/NHL with confidence scoring and alerts",
+  "n_files": 189,
+  "n_code": 50,
+  "n_data": 18,
+  "features_seen": []
+ }
+}

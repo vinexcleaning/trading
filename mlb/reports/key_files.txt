@@ -1,0 +1,149 @@
+﻿========================================================================
+sharprfi README -- the performance table and the model description
+========================================================================
+  
+  Since July 2026 the headline probability is a **50/50 blend of two engines** (see `lib/model-config.ts`):
+  
+  1. **Poisson model** (original) — expected first-inning runs (λ) per half-inning, described below.
+  2. **Monte Carlo simulation** (`lib/sim.ts`) — a batter-level engine contributed by Francisco Nevarez and adapted for this site: e
+  
+  On the 2026-03-26 → 2026-07-05 backtest (1,344 games, `npm run backtest -- 2026-03-26 2026-07-05 --compare-sim`):
+  
+  | Variant | Brier | Calibration gap |
+  |---|---|---|
+  | **Blend Poisson + Sim** | **0.2447** | +1.2% |
+  | Sim alone (no streaks) | 0.2463 | +3.5% |
+  | Poisson alone | 0.2476 | −1.1% |
+  | Sim + streak factors | 0.2538 | +7.8% |
+  | Original contributed script (as-coded) | 0.2577 | −10.3% |
+  
+  ------------------------------------------------------------
+
+========================================================================
+phatcobra/nrfi-predictor -- guards and grading
+========================================================================
+
+--- nrfi/guards.py (3782 chars) ---
+  """Central fail-closed status and display rules."""
+  from __future__ import annotations
+  
+  from datetime import datetime, timezone
+  from typing import Optional
+  
+  from nrfi.config import (
+      FEATURE_COVERAGE_MIN,
+      HIGH_TIER_COVERAGE_MIN,
+      MIN_BOOKS_FOR_MARKET,
+      ODDS_MAX_AGE_SECONDS,
+  )
+  
+  OK, DEGRADED, BLOCKED = "OK", "DEGRADED", "BLOCKED"
+  GREEN, AMBER, RED = "green", "amber", "red"
+  PREDICTION_STALE_AFTER_S = 6 * 3600
+  
+  
+  def odds_fresh(odds_age_sec: Optional[int]) -> bool:
+      return (
+          odds_age_sec is not None
+          and 0 <= odds_age_sec <= ODDS_MAX_AGE_SECONDS
+      )
+  
+  
+  def market_usable(p_market: Optional[float], books_n: int,
+                    odds_age_sec: Optional[int]) -> tuple[bool, Optional[str]]:
+      """Return market usability and one stable machine-readable reason."""
+      if p_market is None and books_n == 0 and odds_age_sec is None:
+          return False, "no_market_consensus"
+      if odds_age_sec is None:
+          return False, "odds_age_unknown"
+  functions: ['odds_fresh', 'market_usable', 'coverage_blocks', 'tier_for', 'data_health', 'display_fields']
+
+--- nrfi/grade_nightly.py (7481 chars) ---
+  """Nightly grading: outcomes, proper scores, market movement, and drift."""
+  from __future__ import annotations
+  
+  import json
+  import math
+  import os
+  from datetime import datetime, timedelta, timezone
+  
+  import numpy as np
+  
+  from nrfi._obs import logger, sentry_sdk
+  from nrfi.config import TZ_ET
+  from nrfi.ingest_first_inning_outcomes import backfill
+  from nrfi.snowflake_loader import SnowflakeLoader
+  
+  DRIFT_GAP = 0.07
+  DRIFT_MIN_N = 20
+  TRAILING = 200
+  
+  
+  def _github_issue(title: str, body: str) -> None:
+      token, repo = os.getenv("GH_TOKEN"), os.getenv("GITHUB_REPO")
+      if not token or not repo:
+          logger.warning(f"ALERT (no GH_TOKEN set, log-only): {title}")
+          return
+      import requests
+  
+      try:
+          requests.post(
+              f"https://api.github.com/repos/{repo}/issues",
+              headers={
+                  "Authorization": f"Bearer {token}",
+  functions: ['_github_issue', 'grade_date', 'check_drift', 'evidence_readiness', 'main']
+
+--- nrfi/build_features.py (21267 chars) ---
+  """Leakage-safe set-based feature construction used by training and serving.
+  
+  Every source table is loaded once. Per-game windows use only rows strictly before
+  ``game_date``. Missing observations remain missing; they are never converted into
+  zero-valued outcomes or included in rate denominators.
+  """
+  from __future__ import annotations
+  
+  import json
+  import logging
+  from datetime import datetime, timezone
+  from typing import Dict, List, Optional, Sequence
+  
+  import numpy as np
+  import pandas as pd
+  
+  from nrfi.snowflake_loader import SnowflakeLoader
+  
+  logger = logging.getLogger(__name__)
+  
+  NAN = float("nan")
+  FEATURE_VERSION = "fv3.1"
+  PITCHER_DAY_WINDOWS = [7, 14, 30, 90, 365]
+  TEAM_DAY_WINDOWS = [7, 14, 30]
+  PITCHER_GS_WINDOW = 30
+  WEATHER_KEYS = frozenset(
+      {"temp_f", "wind_speed", "humidity", "wind_out_component"}
+  )
+  
+  
+  def _missing(value: object) -> bool:
+      return value is None or bool(pd.isna(value))
+  functions: ['_missing', 'coverage', '__init__', 'window', '_ratio', '_per_observation', '_count', '_family_missing', '__init__', '_bulk', 'prepare', 'build_game', 'build_games', '_pitcher', '_team', '_park', '_weather', 'number', '_lineups', 'persist']
+
+========================================================================
+phatcobra feature list
+========================================================================
+  37 candidate feature names:
+    _n_first_inning_hits, _n_first_inning_walks, at_bats, away_pitcher_id, barrels, batted_balls
+    batter_id, batters, coverage, earned_runs, first_inning_hits, first_inning_runs
+    first_inning_walks, hard_hits, home_pitcher_id, innings_pitched, lineups, park_
+    park_hits_factor, park_hr_factor, park_missing, park_runs_factor, parks, pitcher_fi
+    pitcher_games, pitcher_id, runs, runs_allowed, runs_factor, statcast_pitcher
+    temp_f, temperature, wind_dir_deg, wind_out_component, wind_speed, woba_den
+    woba_num
+
+========================================================================
+dbasley first-inning Statcast CSVs -- are they usable?
+========================================================================
+  statcast_2023_first_inning.csv: 83065 rows, 42,895,037 bytes
+    header: pitch_type,game_date,release_speed,release_pos_x,release_pos_z,player_name,batter,pitcher,events,description,spin_dir,spin_rate_deprecated,break_angle_deprecated,break_length_deprecated,zone,des,game_
+  statcast_2024_first_inning.csv: 9953 rows, 5,148,068 bytes
+    header: pitch_type,game_date,release_speed,release_pos_x,release_pos_z,player_name,batter,pitcher,events,description,spin_dir,spin_rate_deprecated,break_angle_deprecated,break_length_deprecated,zone,des,game_

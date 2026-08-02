@@ -1,0 +1,81 @@
+﻿======================================================================
+A. EXHAUSTIVE SCAN: every DraftKings prop type ESPN exposes
+======================================================================
+  15 MLB events today
+  scanned 9802 prop entries across all providers
+  34 distinct prop types:
+
+    Total Hits                                       652  line=0.5
+    Total Singles Hit                                648  line=0.5
+    Total RBIs                                       643  line=0.5
+    Total Hits + Runs + RBIs                         641  line=1.5
+    Total Doubles Hit                                610  line=0.5
+    Total Runs Scored                                610  line=0.5
+    Total Walks (Batter)                             609  line=0.5
+    Hits + Runs + RBIs Milestones                    348  line=2+
+    Hits Milestones                                  339  line=1+
+    Singles Milestones                               339  line=1+
+    Total Bases Milestones                           336  line=2+
+    Home Runs Milestones                             336  line=1+
+    Strikeouts (Batter) Milestones                   334  line=1+
+    RBIs Milestones                                  330  line=1+
+    Total Bases                                      322  line=1.5
+    Triples Milestones                               315  line=1+
+    Walks (Batter) Milestones                        313  line=1+
+    Doubles Milestones                               308  line=1+
+    Runs Milestones                                  308  line=1+
+    Stolen Bases Milestones                          303  line=1+
+    Total Stolen Bases                               301  line=0.5
+    First Home Run Hitter                            288  line=None
+    Team Total Runs                                   72  line=3.5
+    Total Strikeouts                                  58  line=7.5
+    Total Hits Allowed                                58  line=4.5
+    Earned Runs Allowed                               58  line=1.5
+    To Record Win                                     54  line=None
+    Total Walks Allowed                               54  line=1.5
+    Total Outs Recorded                               52  line=17.5
+    1st 5 Innings Run Line                            36  line=-1.5
+    1st 5 Innings Total Runs                          34  line=2.5
+    Strikeouts Thrown Milestones                      33  line=8+
+    1st 5 Innings Moneyline                           30  line=None
+    First Team to Score                               30  line=None
+
+  types mentioning an inning: ['1st 5 Innings Moneyline', '1st 5 Innings Run Line', '1st 5 Innings Total Runs']
+  types that are a FIRST-INNING RUN market: NONE
+
+======================================================================
+B. OTHER FREE SOURCES that might carry an RFI/YRFI line
+======================================================================
+  ESPN site odds (scoreboard)            http=200 bytes= 358752 mentions_RFI=False
+  the-odds-api markets list (no key)     http=401 bytes=    152 mentions_RFI=False
+  oddsapi alt                            http=401 bytes=    152 mentions_RFI=False
+  Covers.com MLB                         http=200 bytes=3346648 mentions_RFI=False
+  actionnetwork MLB odds                 http=200 bytes= 413429 mentions_RFI=True
+  scoresandodds MLB                      http=200 bytes= 308440 mentions_RFI=False
+  rotowire YRFI                          http=404 bytes= 309977 mentions_RFI=True
+  bettingpros YRFI                       http=403 bytes=     23 mentions_RFI=False
+
+======================================================================
+C. THE KALSHI MARKETS THEMSELVES
+======================================================================
+series            open  events  2sided   spr      bidSz     depth5c  bar@50                   fee_type
+KXMLBRFI            28      28  100.0%   8.0       19.0      1491.4    5.75                  quadratic
+KXMLBF5             30      10   85.0%  17.0        3.7       194.0   10.25                  quadratic
+KXMLBF5TOTAL        70      10   65.0%   3.0      473.2     13316.6    3.25                  quadratic
+KXMLBF5SPREAD       40      10   80.0%  50.0       10.0      2726.0   26.75                  quadratic
+KXMLBGAME           62      31  100.0%   1.0    41054.0    454724.6    2.25  quadratic_with_maker_fees
+KXMLBTOTAL         144      13   80.0%   2.0    12827.9     25342.4    2.75                  quadratic
+KXMLBSPREAD         93      13   70.0%   1.0     5960.9     30072.6    2.25                  quadratic
+
+======================================================================
+VERDICT
+======================================================================
+  No first-inning run market found in any free odds source checked.
+  KXMLBRFI SURVIVES step 1 -- proceed, but this is an absence of
+  evidence, not proof. Re-check if a new source appears.
+
+  NOTE: inning-related types that DO exist free: ['1st 5 Innings Moneyline', '1st 5 Innings Run Line', '1st 5 Innings Total Runs']
+  If these include 1st-5-innings, that family is referenced and
+  should be expected to behave like the game-winner (efficient).
+
+wrote reports/step1_verify.json

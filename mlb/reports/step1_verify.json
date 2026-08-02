@@ -1,0 +1,171 @@
+{
+ "prop_types": {
+  "Total Strikeouts": 58,
+  "To Record Win": 54,
+  "Total Singles Hit": 648,
+  "Total Doubles Hit": 610,
+  "Total Bases": 322,
+  "Total Hits": 652,
+  "Total Hits Allowed": 58,
+  "Earned Runs Allowed": 58,
+  "Total Hits + Runs + RBIs": 641,
+  "Total Runs Scored": 610,
+  "Total RBIs": 643,
+  "Total Stolen Bases": 301,
+  "Total Walks Allowed": 54,
+  "First Home Run Hitter": 288,
+  "1st 5 Innings Moneyline": 30,
+  "1st 5 Innings Run Line": 36,
+  "1st 5 Innings Total Runs": 34,
+  "Team Total Runs": 72,
+  "First Team to Score": 30,
+  "Hits Milestones": 339,
+  "Strikeouts Thrown Milestones": 33,
+  "Total Bases Milestones": 336,
+  "RBIs Milestones": 330,
+  "Home Runs Milestones": 336,
+  "Singles Milestones": 339,
+  "Stolen Bases Milestones": 303,
+  "Doubles Milestones": 308,
+  "Runs Milestones": 308,
+  "Triples Milestones": 315,
+  "Hits + Runs + RBIs Milestones": 348,
+  "Strikeouts (Batter) Milestones": 334,
+  "Walks (Batter) Milestones": 313,
+  "Total Walks (Batter)": 609,
+  "Total Outs Recorded": 52
+ },
+ "inning_types": [
+  "1st 5 Innings Moneyline",
+  "1st 5 Innings Run Line",
+  "1st 5 Innings Total Runs"
+ ],
+ "rfi_types": [],
+ "ESPN site odds (scoreboard)": {
+  "http": 200,
+  "bytes": 358752,
+  "mentions_rfi": false,
+  "snippet": "{\"leagues\":[{\"id\":\"10\",\"uid\":\"s:1~l:10\",\"name\":\"Major League Baseball\",\"abbreviation\":\"MLB\",\"midsizeName\":\"MLB\",\"slug\":\""
+ },
+ "the-odds-api markets list (no key)": {
+  "http": 401,
+  "bytes": 152,
+  "mentions_rfi": false,
+  "snippet": "{\"message\":\"API key is missing\",\"error_code\":\"MISSING_KEY\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api"
+ },
+ "oddsapi alt": {
+  "http": 401,
+  "bytes": 152,
+  "mentions_rfi": false,
+  "snippet": "{\"message\":\"API key is missing\",\"error_code\":\"MISSING_KEY\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api"
+ },
+ "Covers.com MLB": {
+  "http": 200,
+  "bytes": 3346648,
+  "mentions_rfi": false,
+  "snippet": "\r <!DOCTYPE html>\r <html lang=\"en\">\r <head>\r     <meta name=\"keywords\" content=\"\">\r \r     <style>\r      \r         @media"
+ },
+ "actionnetwork MLB odds": {
+  "http": 200,
+  "bytes": 413429,
+  "mentions_rfi": true,
+  "snippet": "{\"league\":{\"id\":8,\"sport\":\"baseball\",\"name\":\"mlb\",\"description\":\"Major League Baseball\",\"logo\":\"https://static.sprtactn."
+ },
+ "scoresandodds MLB": {
+  "http": 200,
+  "bytes": 308440,
+  "mentions_rfi": false,
+  "snippet": "<!DOCTYPE html> <html lang=\"en\"> <head> <title>MLB Schedules and Scores</title> <link rel=\"shortcut icon\" href=\"https://"
+ },
+ "rotowire YRFI": {
+  "http": 404,
+  "bytes": 309977,
+  "mentions_rfi": true,
+  "snippet": " <!DOCTYPE html> <html lang=\"en\"> <head> \t     <script>         window.dataLayer = window.dataLayer || [];         windo"
+ },
+ "bettingpros YRFI": {
+  "http": 403,
+  "bytes": 23,
+  "mentions_rfi": false,
+  "snippet": "{\"message\":\"Forbidden\"}"
+ },
+ "kalshi_markets": {
+  "KXMLBRFI": {
+   "open": 28,
+   "events": 28,
+   "sampled": 20,
+   "two_sided": 20,
+   "spread_med": 8.0,
+   "bid_sz_med": 19.0,
+   "depth5c_med": 1491.4,
+   "cost_bar_50c": 5.75,
+   "fee_type": "quadratic"
+  },
+  "KXMLBF5": {
+   "open": 30,
+   "events": 10,
+   "sampled": 20,
+   "two_sided": 17,
+   "spread_med": 17.0,
+   "bid_sz_med": 3.7,
+   "depth5c_med": 194.0,
+   "cost_bar_50c": 10.25,
+   "fee_type": "quadratic"
+  },
+  "KXMLBF5TOTAL": {
+   "open": 70,
+   "events": 10,
+   "sampled": 20,
+   "two_sided": 13,
+   "spread_med": 3.0,
+   "bid_sz_med": 473.2,
+   "depth5c_med": 13316.6,
+   "cost_bar_50c": 3.25,
+   "fee_type": "quadratic"
+  },
+  "KXMLBF5SPREAD": {
+   "open": 40,
+   "events": 10,
+   "sampled": 20,
+   "two_sided": 16,
+   "spread_med": 50.0,
+   "bid_sz_med": 10.0,
+   "depth5c_med": 2726.0,
+   "cost_bar_50c": 26.75,
+   "fee_type": "quadratic"
+  },
+  "KXMLBGAME": {
+   "open": 62,
+   "events": 31,
+   "sampled": 20,
+   "two_sided": 20,
+   "spread_med": 1.0,
+   "bid_sz_med": 41054.0,
+   "depth5c_med": 454724.6,
+   "cost_bar_50c": 2.25,
+   "fee_type": "quadratic_with_maker_fees"
+  },
+  "KXMLBTOTAL": {
+   "open": 144,
+   "events": 13,
+   "sampled": 20,
+   "two_sided": 16,
+   "spread_med": 2.0,
+   "bid_sz_med": 12827.9,
+   "depth5c_med": 25342.4,
+   "cost_bar_50c": 2.75,
+   "fee_type": "quadratic"
+  },
+  "KXMLBSPREAD": {
+   "open": 93,
+   "events": 13,
+   "sampled": 20,
+   "two_sided": 14,
+   "spread_med": 1.0,
+   "bid_sz_med": 5960.9,
+   "depth5c_med": 30072.6,
+   "cost_bar_50c": 2.25,
+   "fee_type": "quadratic"
+  }
+ }
+}

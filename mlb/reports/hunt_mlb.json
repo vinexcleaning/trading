@@ -1,0 +1,216 @@
+{
+ "statsapi_schedule": {
+  "2015_week": 91,
+  "2026_week": 99
+ },
+ "rfi_label_available": true,
+ "boxscore_batting_order": 9,
+ "tomorrow": {
+  "games": 8,
+  "probable_pitcher": 7,
+  "lineups": 0
+ },
+ "statcast": {
+  "pitches_one_day": 2923,
+  "cols": 119
+ },
+ "Savant pitcher 1st-inning split": 200,
+ "FanGraphs leaders (free page)": 403,
+ "Baseball-Reference": 200,
+ "Retrosheet event files": 200,
+ "pybaseball repo": 200,
+ "repos": {
+  "digitalgrowthguy/mlb-whop-dashboard": {
+   "pushed": "2026-08-02",
+   "stars": 1,
+   "size_kb": 2280,
+   "desc": "YRFI / NRFI "
+  },
+  "phatcobra/nrfi-predictor": {
+   "pushed": "2026-08-01",
+   "stars": 0,
+   "size_kb": 45883,
+   "desc": "Autonomous MLB NRFI/YRFI (first-inning 0.5 runs) prediction system using SportsD"
+  },
+  "Srb709/NRFI": {
+   "pushed": "2026-05-02",
+   "stars": 0,
+   "size_kb": 224,
+   "desc": "NRFI YRFI program "
+  },
+  "scottynyland25-commits/nrfi-predictor": {
+   "pushed": "2026-04-08",
+   "stars": 0,
+   "size_kb": 17,
+   "desc": "NRFI/YRFI Prediction model"
+  },
+  "callensw/yrfi-nrfi-claude-skill": {
+   "pushed": "2026-03-27",
+   "stars": 0,
+   "size_kb": 413,
+   "desc": ""
+  },
+  "Jmags0/NRFI-YRFI": {
+   "pushed": "2025-04-03",
+   "stars": 0,
+   "size_kb": 0,
+   "desc": ""
+  },
+  "RishiSharma01/First-Innings-Score-Prediction---IPL": {
+   "pushed": "2025-12-22",
+   "stars": 0,
+   "size_kb": 5399,
+   "desc": "This project uses machine learning to predict the first-innings score in IPL T20"
+  },
+  "bhavesh-1244/IPL-MATCH-WINNER-PREDICTION-MODEL": {
+   "pushed": "2025-11-16",
+   "stars": 0,
+   "size_kb": 72,
+   "desc": "The IPL Match Winner Prediction Model uses machine learning to predict the winne"
+  },
+  "Suyogt467/cricket_run_prediction": {
+   "pushed": "2023-07-28",
+   "stars": 0,
+   "size_kb": 3197,
+   "desc": "T20 First Inning Runs Prediction"
+  },
+  "VAMSI-datascience/Web-App-for-prediction-of-First-Innings-runs-in-IPL": {
+   "pushed": "2021-03-20",
+   "stars": 0,
+   "size_kb": 28577,
+   "desc": ""
+  },
+  "MattGross3/baseball-predictor": {
+   "pushed": "2026-07-23",
+   "stars": 0,
+   "size_kb": 388,
+   "desc": "MLB moneyline/totals/NRFI/prop prediction platform - ingestion, feature engineer"
+  },
+  "dbasley/NRFI_Project": {
+   "pushed": "2025-04-20",
+   "stars": 1,
+   "size_kb": 12402,
+   "desc": "No Runs First Inning Models"
+  },
+  "lucasreydman/sharprfi": {
+   "pushed": "2026-07-22",
+   "stars": 1,
+   "size_kb": 6258,
+   "desc": "MLB YRFI model that estimates first-inning run probability and break-even bettin"
+  },
+  "lucasreydman/nrfi": {
+   "pushed": "2026-04-12",
+   "stars": 0,
+   "size_kb": 2507,
+   "desc": "MLB NRFI model that estimates scoreless first-inning probability and break-even "
+  },
+  "bbroeking/trea-kalshi-relay": {
+   "pushed": "2026-08-02",
+   "stars": 0,
+   "size_kb": 1405,
+   "desc": "Zero-cost public MLB and Kalshi snapshot relay for TREA Market Lab"
+  },
+  "gehrenberg823/mlb-playoff-odds": {
+   "pushed": "2026-08-02",
+   "stars": 0,
+   "size_kb": 535,
+   "desc": "Daily MLB playoff/division/pennant/WS fair odds (mean of 5 FanGraphs projections"
+  },
+  "kalchikee/MLBKalchi": {
+   "pushed": "2026-08-02",
+   "stars": 0,
+   "size_kb": 3125,
+   "desc": "MLB Oracle v4.0 - Kalshi prediction engine with Discord alerts"
+  },
+  "SidSub1041/kalshi-mlb-market-analysis": {
+   "pushed": "2026-08-01",
+   "stars": 0,
+   "size_kb": 300,
+   "desc": ""
+  },
+  "abudnick8/prop-edge": {
+   "pushed": "2026-08-02",
+   "stars": 5,
+   "size_kb": 1091594,
+   "desc": "Sports prediction market bot \u2014 scans Kalshi, Polymarket, DraftKings across NFL/N"
+  },
+  "eziCode/mlb-kalshi-trader": {
+   "pushed": "2026-07-30",
+   "stars": 0,
+   "size_kb": 3440,
+   "desc": ""
+  },
+  "ellingtonfagan/kalshiscenariobot": {
+   "pushed": "2026-08-02",
+   "stars": 0,
+   "size_kb": 1282,
+   "desc": "Agentic sports-market research and execution system for Kalshi. It combines live"
+  },
+  "Rohan5commit/kalshi-sports-bot": {
+   "pushed": "2026-07-28",
+   "stars": 0,
+   "size_kb": 241,
+   "desc": "Automated Kalshi sports prediction trading bot \u2014 NBA/NFL/MLB, XGBoost+BN ensembl"
+  },
+  "gstoke8/mlb-props": {
+   "pushed": "2026-07-05",
+   "stars": 0,
+   "size_kb": 3086,
+   "desc": "Automated MLB player props betting model \u2014 HR, K, and Hits with Statcast feature"
+  },
+  "BucinAMAZIN/MyStuff": {
+   "pushed": "2026-05-09",
+   "stars": 0,
+   "size_kb": 0,
+   "desc": "Data-driven MLB batter vs pitcher props model with weather, park factors, Statca"
+  },
+  "austinlmcconnell/mlb-nsfi-model": {
+   "pushed": "2026-08-02",
+   "stars": 0,
+   "size_kb": 2793,
+   "desc": "Developed a model in Python that determines the probability of no strikeouts (an"
+  },
+  "thomasosbot/baseball-sims": {
+   "pushed": "2026-08-02",
+   "stars": 1,
+   "size_kb": 116814,
+   "desc": "MLB Monte Carlo simulation model \u2014 predicts game outcomes from Statcast data, fi"
+  },
+  "trevmon28/CollegeBaseballAnalytics": {
+   "pushed": "2026-08-02",
+   "stars": 0,
+   "size_kb": 538,
+   "desc": "NCAA college baseball analytics: power rankings, win probability, and Kelly Crit"
+  },
+  "SJTreadway/mlb_py": {
+   "pushed": "2026-06-28",
+   "stars": 0,
+   "size_kb": 39963,
+   "desc": "MLB HR & game winner prediction models built on Statcast data. XGBoost/LightGBM "
+  },
+  "PadresFan1/baseball-model": {
+   "pushed": "2026-06-11",
+   "stars": 0,
+   "size_kb": 90824,
+   "desc": "Vibe Coding an MLB Betting Model"
+  },
+  "ceparman/Baseball-Betting-Model": {
+   "pushed": "2026-03-05",
+   "stars": 0,
+   "size_kb": 6235,
+   "desc": ""
+  },
+  "mathieudesch/SluggerStats": {
+   "pushed": "2025-09-30",
+   "stars": 0,
+   "size_kb": 19,
+   "desc": "a statistical model for finding profitable betting opportunities in baseball"
+  },
+  "skiba33/baseball-model": {
+   "pushed": "2025-08-03",
+   "stars": 0,
+   "size_kb": 0,
+   "desc": "betting model"
+  }
+ }
+}
