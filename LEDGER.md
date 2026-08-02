@@ -1,0 +1,272 @@
+# LEDGER.md — every claim ever made across all trading projects
+
+Built 2026-08-02 by inventory. **Nothing here was recomputed.** Every row was
+read off an artifact on disk, a git log, or a project document. Where a document
+asserts a number and no artifact backs it, the row says `NONE` and the status is
+`UNVERIFIED` — regardless of how confident the prose was.
+
+## Status key
+
+| Status | Meaning |
+|---|---|
+| **SETTLED** | Reproducible artifact, adequate n, validated out of sample (or true by arithmetic / API fact). Safe to build on. |
+| **SUGGESTIVE** | Real artifact, but underpowered, no CI, or never validated out of sample. Directional only. |
+| **UNVERIFIED** | Asserted somewhere, no artifact findable. Machinery may exist; it was never run at real n. |
+| **BROKEN** | Artifact exists but carries a defect that invalidates the number. |
+| **RETRACTED** | Stated confidently, corrected later. **Read these first.** |
+
+## Tally
+
+| Status | Count |
+|---|---|
+| **RETRACTED** | **41** |
+| SETTLED | 109 |
+| SUGGESTIVE | 30 |
+| UNVERIFIED | 26 |
+| BROKEN | 6 |
+| **Total** | **212** |
+
+## The directional prior, and it is the single most informative number here
+
+**Across all four projects, ~41 corrections. Every one shrank the edge. Not one
+ever revealed a larger effect.** set1_overshoot logged this explicitly at 28 and
+crypto at 25 within their own scopes. That asymmetry is what no-edge looks like
+from the inside; a real edge survives scrutiny and often grows under it.
+
+## ⚠ RETRACTED — loudly, first
+
+These were stated as findings and are wrong. Anything built on them is void.
+
+| ID | Retracted claim | Project | Why it died |
+|---|---|---|---|
+| **S011** | Set-1 undershoot −2.53pp, p=0.0007, and everything in Phases 2–5 built on it | set1_overshoot | Dedupe kept the higher-`volume_fp` side. P(kept side wins) = **0.5356, z=+10.0**. The two orientations disagreed by **25.5pp**. Voided Phases 2, 3, 4 and the 90¢+ result in one stroke. |
+| **S003** | Label-verified subsample −5.75pp [−9.71,−1.79], p=0.0062 | set1_overshoot | 1.9× its own mechanism ceiling; decays **+3.365¢ → +0.311¢** on holdout; join canary **UNTESTABLE** (z=+2.15). Presumed artifact. |
+| **S012** | "ATP is the thinnest book — median 30 lots, 3¢ spread" | set1_overshoot | A single 68-minute window at market open. Full day: **1.0¢ spread, 312 lots**. |
+| **S013** | "Median 106 contracts at the touch" | set1_overshoot | Same 68-minute artifact. Full day: **564**. |
+| **C003** | Round-number settlement pinning, 6/20 survive BH at p≈0 | crypto | Three disqualifiers: effects run the **wrong way** (repulsion, not attraction); the uniform null is invalid at exactly the levels that "worked" (BTC spans ~4 periods of 5000); and **10 of 20 tests were duplicate series** (KXBTC/KXBTCD share settlements). |
+| **C006** | Fat-tail edge worth 1.5–1.9¢ net at 2.5–3σ | crypto | Benchmarked against a **Gaussian strawman**, not Kalshi's mid. Later retired on evidence: M3 fat-tail model *loses* to the mid (+0.003703, CI excludes zero). |
+| **C013** | Mid calibration gap +4.2pp, net +1.00¢ at the ask | crypto | No event clustering. CIs widen **~10×**; 14 of 17 buckets go to zero; best p=0.029 vs BH threshold 0.0059; magnitudes halve between disjoint halves; **opposite sign at n=13**. |
+| **C014** | 464 profitable bucket-sum arbitrage violations at 96–97¢ | crypto | Forward-filled partial ladder — 3 of 80 buckets. Buying 3 buckets pays $1 only if the outcome lands in those 3. All 464 vanished on the fix. |
+| **C015** | Polymarket taker cost is identical to Kalshi | crypto | Trusted docs over the venue's own API. On-chain says **2.86× Kalshi at 50¢**. |
+| **W006** | **"72% of the edge lives in exits"** | wallet-copy-study | A **fee artifact**. `gap` compared a *gross* wallet edge against a *net* copier return; ~80% of positions settle so the whole gap is the fee. Genuine exit component: **−0.106pp = −4.3%**, not +72%. Named the highest-value follow-up in the original verdict — it was a mirage. |
+| **W011** | Prior study's naive favourite benchmark +7.05pp on n=98,766 | wallet-copy-study | Unauditable (no dataset found anywhere on disk); recomputed from scratch at **+2.09pp, CI [−1.37,+5.35]**, and **−0.29pp net**. Almost certainly a trade-clustered interval on a market-clustered phenomenon. |
+| **W012** | Copying selected wallets loses −5.90pp | wallet-copy-study | Measured on a 140-market overlap. Re-measured on the full wallet panel (31,703 wallet-markets): **+0.937pp**. The wide interval was the warning. |
+| **W015** | Polymarket fee formula fits at median relative error 0.96 | wallet-copy-study | Inverted maker side. Corrected: **100.0% of 5,362 fills within 1%**. |
+| **W016** | `enable_order_book` is a valid eligibility criterion | wallet-copy-study | Returns *current* tradability — false for essentially every resolved market. Gave **0 eligible of 2,108,796**. |
+| **T008** | Stage 5 selective betting returns **+14.4% to +24.6% ROI** | kalshi-tennis | Priced at the mid. Re-priced at executable fills (buy YES lifts the **ask**; buy NO costs **1−bid**): **−24.3% to −30.9%**, every CI entirely below zero. Mean entry moved 27–32¢. |
+| **T010** | Kalshi beats the Betfair closing line by 0.022 Brier | kalshi-tennis | **Look-ahead leak.** `occurrence_datetime` is at/after match end; 4.1% of quotes sat outside 2c–98c and were **100% correct**. At a clean −6h anchor the advantage vanishes (+0.00122). |
+| **T007** | Market beats model once wide quotes are excluded (+0.03711) | kalshi-tennis | The spread filter **read the leaking anchor**. Feature leak *and* a selection leak. The *direction* is separately confirmed by T012; this particular number is void. |
+| **T017** | Stage 0 coverage is 74.5%; there is no ITF tier on Kalshi | kalshi-tennis | Hand-written regex missed "ITF Men's Match". ITF is **31,894 markets ≈ 76% of Kalshi's tennis book**. Corrected coverage **36.9%**. Caught by the user from their own fill history. |
+| CH001–CH020 | 20 further retractions from the chat archive | various | Full detail in [kalshi-chat-audit/LEDGER_CHATS.md](kalshi-chat-audit/LEDGER_CHATS.md). Carried below. |
+
+---
+
+# SECTION 1 — set1_overshoot (Kalshi tennis, in-play set-1 study)
+
+Artifacts: `C:\Users\gianf\kalshi\set1_overshoot\` (original, **recorder live**) and
+`trading/set1_overshoot/` (code copy). Full 97-hypothesis grid with BH-FDR:
+`reports/hypothesis_ledger.csv`.
+
+Unit of observation is **the match**. Kalshi data **2026-05-25 → 2026-08-01**,
+19,782 matches, 5 series.
+
+| ID | Claim in plain English | Project | Artifact (script + output) | n + unit | Date range | Effect + CI | FDR? | Holdout? | STATUS |
+|---|---|---|---|---|---|---|---|---|---|
+| S001 | The market **undershoots** after a set-1 dip — it does not overshoot. The effect is real. | set1_overshoot | `src/p2_calib.py` → `reports/p2_base.txt`, `hypothesis_ledger.csv#2` | 3,436 matches | 05-25→08-01 | −2.4153pp [−3.90,−0.93], p=0.0019 | **yes** (BH q=0.1, thr 0.0374) | train −2.51 / holdout −2.27, p=0.062 — **decays below significance** | **SETTLED** (effect) |
+| S002 | The **pre-committed primary** entry rule (`deep:12`) shows no effect at all. | set1_overshoot | same, `hypothesis_ledger.csv#1` | 5,390 matches | 05-25→08-01 | −0.84pp [−2.10,+0.42], p=0.2058 | no | — | **SETTLED** (null) |
+| S003 | Fixing the labels rescues the trade: −5.75pp on the label-verified subsample. | set1_overshoot | `reports/p6_task2_margin.md`, `ledger#85` | 479 matches | 05-25→07-26 | −5.75pp [−9.71,−1.79], p=0.0067 | yes | **NO — +3.365¢ → +0.311¢** | **RETRACTED** |
+| S004 | The cost bar to beat is **3.6104pp** = 1.170 spread + 1.000 slip + 1.441 fee. | set1_overshoot | `src/fees.py` (exact `Decimal`) → `reports/audit_rerun.txt` | 3,436 matches | 05-25→08-01 | 3.6104pp, recomputed from data every run | n/a | n/a | **SETTLED** |
+| S005 | **No time or tier bucket clears the bar.** 0 of 25. | set1_overshoot | `src/p5_segment.py` → `reports/p5_segment_time.md`, `ledger#59–84` | 25 buckets / 3,436 matches | 05-25→08-01 | 0 of 25 clear; median MDE 3.7–9.0¢ vs ~2¢ target | 4 nominal survive BH, none clears the cost bar | — | **SETTLED** (null) |
+| S006 | **No set-1 margin bucket clears the bar.** 0 of 10 (0.25 expected by chance). | set1_overshoot | `src/p6_margin.py` → `reports/p6_task2_margin.md`, `ledger#85–96` | 10 buckets / 479 matches | 05-25→07-26 | 0 of 10; median MDE **9.9¢** vs ~2¢ target | 6 nominal survive BH, none clears the bar | no bucket qualified | **SETTLED** (null) |
+| S007 | Effect strengthens monotonically as set 1 gets shorter/more lopsided (10.86→5.58→2.77pp; 8.15→4.12→1.84pp). | set1_overshoot | `reports/p6_task2_margin.md` | 99–223 matches/cell | 05-25→07-26 | monotone gradient, every cell inside its noise band | — | untested | **SUGGESTIVE** |
+| S008 | **Maker/resting orders do not fix it.** All 15 fill configurations are net-negative per opportunity. | set1_overshoot | `src/p5_maker.py` → `reports/p5_task1b.md`, `ledger#40–54` | 1,889–3,029 opportunities | 05-25→08-01 | net −0.205¢ to −1.220¢; fill rates 0.550–0.882 | n/a (no positive to correct) | — | **SETTLED** |
+| S009 | Maker price improvement is already exceeded by adverse selection. | set1_overshoot | `src/p5_maker.py` → `reports/p5_task1b.md` | per-opportunity decomposition | 05-25→08-01 | adverse selection > price improvement at every window | — | — | **SETTLED** |
+| S010 | Maker fee is **zero on Challenger/ITF (91% of the book)**, applies only on ATP/WTA. | set1_overshoot | resolved empirically from series `fee_type`; git `0c96a40` | full series list | 2026-08 | structural fact | n/a | n/a | **SETTLED** |
+| S011 | Set-1 undershoot −2.53pp p=0.0007 (**the original Phase 2 headline**). | set1_overshoot | `SELECTION_AUDIT.md` row 1; `reports/p5_dedupe_bias.txt` | 19,782 matches | 05-25→07-xx | **VOID** — orientations disagree by 25.5pp | — | — | **RETRACTED** |
+| S012 | ATP is the thinnest book (30 lots, 3¢ spread). | set1_overshoot | `reports/p6_queue_atp.md` | 1,857 → 22,395 snapshots | 08-01 | full day: **1.0¢ / 312 lots** | — | — | **RETRACTED** |
+| S013 | Median 106 contracts at the touch. | set1_overshoot | `reports/depth_analysis.md` | 64,898 snapshots | 08-01 06:58–18:15 | full day median **564** lots | — | — | **RETRACTED** |
+| S014 | The set-1 detector calls direction correctly 82.5% of the time. | set1_overshoot | `src/p0_scores.py` → `PHASE1_DETECTOR_ACCURACY.md` | 2,787 external scorelines | 05-25→07-26 | 0.825 accuracy, validated against **external** labels not outcomes | n/a | n/a | **SETTLED** |
+| S015 | `t0` (set-1 end) is estimated +5 min median, MAD 6, against real playing minutes. | set1_overshoot | `src/p1_state.py` → `reports/p1_t0_tuning.csv` | tuned vs Sackmann durations | — | +5 min, MAD 6 | n/a | n/a | **SETTLED** |
+| S016 | Mirrored Kalshi markets are exact inverses (median mid difference 0.00¢). | set1_overshoot | `src/p0_mirror.py` → `reports/p0_mirror.txt` | sampled markets | 05-25→08-01 | median 0.00¢ | n/a | n/a | **SETTLED** |
+| S017 | The P&L decomposition is an exact identity. | set1_overshoot | `src/p5_maker.py` → `reports/p5_task1b.md` | per-opportunity | — | **+0.0000¢** residual | n/a | n/a | **SETTLED** |
+| S018 | Label coverage cannot be raised. Apify hard-capped; Flashscore `dayOffsets` is −7..+7 against a −68 need. | set1_overshoot | Apify error payload; actor schema | — | 08-01 | structural blocker; true cost ~$20 not $3.44 | n/a | n/a | **SETTLED** |
+| S019 | Trade-through is not a generous fill assumption — best bid rises in only 6.1% of minutes. | set1_overshoot | `reports/depth_analysis.md` | 150 markets | 08-01 | median 6.1% of minutes | n/a | n/a | **SETTLED** |
+| S020 | 15 headline numbers recomputed independently; **14 confirmed**, 1 baseline updated. | set1_overshoot | `src/audit_final.py` → `reports/audit_final_stdout.txt`, `AUDIT_FINAL.md` | 15 numbers | 08-01 | 14/15 CONFIRMED | n/a | n/a | **SETTLED** |
+| S021 | The tennis strategy line cannot be resolved with the sample available. | set1_overshoot | power calc in `HANDOFF.md` §9 | 3,436 events, sd 45¢ | — | needs n≈3,970 for a 2¢ edge; accrues ~1,900 matches/week | n/a | n/a | **SETTLED** |
+| S022 | Retirement add-back costs −0.004¢. | set1_overshoot | `reports/p2_scalar.txt` | scalar settlements | 05-25→07-xx | −0.004¢ | — | — | **BROKEN** (computed on the void event set; needs re-run) |
+| S023 | The fade side loses in all 6 configurations. | set1_overshoot | `reports/p2_fade.md` | 6 configs | 05-25→07-xx | all negative | — | — | **BROKEN** (edge term void; cost arithmetic likely carries the conclusion — needs re-run) |
+| S024 | `plausible` duration filter (25–330 min) is immaterial to θ. | set1_overshoot | `src/audit_plausible.py` → `reports/audit_plausible.md` | 16,258 kept / 682 dropped | 05-25→08-01 | +0.02pp; residual z=−2.59 (borderline, below \|z\|=4) | n/a | n/a | **SUGGESTIVE** (measured on the contaminated universe; re-test pending) |
+
+---
+
+# SECTION 2 — crypto (BTC/ETH/SOL/XRP prediction markets)
+
+Artifacts: `C:\Users\gianf\crypto\` (original, **recorder live**) and
+`trading/crypto/`. Ledger: `HYPOTHESIS_LEDGER.md`, headline `MORNING_REPORT.md`.
+
+**17 hypotheses / 101 individual tests. Facts surviving correction: 2. Tradeable
+edges surviving correction: 0.**
+
+| ID | Claim in plain English | Project | Artifact (script + output) | n + unit | Date range | Effect + CI | FDR? | Holdout? | STATUS |
+|---|---|---|---|---|---|---|---|---|---|
+| C010 | **No model beats Kalshi's own mid.** Two tie, two lose. The crypto ladder is efficiently priced. | crypto | `src/analyze_panel.py` → `reports/b1_output.txt`, `b1_KXBTCD.json` | **250 events**, 89,806 market-minutes, 1,968 markets | 05-25→07-30 | M1 +0.000261 [−0.00157,+0.00219]; **M2 −0.000081 [−0.00188,+0.00182]**; M3 +0.003703 [+0.0015,+0.006]; M3t +0.022455 | n/a (null) | event-clustered CIs; 2 disjoint periods | **SETTLED** |
+| C011 | The settlement-average correction genuinely improves the model (M2 beats M1). | crypto | same | 250 events | 05-25→07-30 | **−0.000342 [−0.000436,−0.000242]**, p<1e-3 | **yes** | consistent | **SETTLED** |
+| C012 | Feeding the model **fatter** tails than the market uses makes the forecast worse. | crypto | same | 250 events | 05-25→07-30 | M3 vs M2 +0.003784 [+0.00182,+0.00582] | **yes** | — | **SETTLED** |
+| C005 | Hourly BTC/ETH returns are severely fat-tailed. | crypto | `src/fat_tails.py` → `reports/fat_tails.json` | 1,582 returns / 1,593 events, 68 days | 68-day window | excess kurtosis **13.08 / 12.85**; ν≈2.03/2.02; Hill α 2.55/2.69; 4σ tail **140×** Gaussian | **yes**, p<1e-300 | — | **SETTLED** (descriptive; BTC/ETH corr 0.891 ⇒ **one** finding not two) |
+| C001 | Kalshi `greater` ladders are monotone in strike — no arbitrage. | crypto | `src/ladder_arb.py` → `reports/ladder_arb.json` | 3,187 scans / 26 events / 10.5 min | 08-01 | **0 violations**, gross or net | n/a | — | **SUGGESTIVE** (clean null but only 10.5 min; extends prior 1,083-scan null in kind, not duration) |
+| C002 | `between` bucket families sum to 100¢ — no arbitrage net of fees. | crypto | same | 1,135 complete scans / 26 events | 08-01 | 1 gross violation (+1.00¢), **0 profitable net** (75-leg fee floor ≈1.93¢) | n/a | — | **SUGGESTIVE** (same duration caveat; structural mechanism given) |
+| C004 | Polymarket's fee is **`0.10 × min(p,1−p)`**, not the documented `0.07·p(1−p)`. | crypto | `src/poly_fee.py` → `reports/poly_fee_resolution.json`, `poly_fee_verify.json` | 4,310 fee-bearing on-chain fills | 04-20→04-27 | median relative error 0.000000; **100% within 1%** | n/a (exact) | independently reproduced in wallet-copy-study on 5,362 fills | **SETTLED** |
+| C016 | The "cheap wings" are not tradeable — they have an ask but **no bid**. | crypto | `reports/b1_KXBTCD.json`, `MORNING_REPORT.md` §0000 | 60-strike ladder, per-minute over final hour | 08-01 | at \|K−settle\| ≥ $893: **0 of 61 minutes** two-sided, all 11 strikes | n/a | n/a | **SETTLED** |
+| C017 | Deribit cannot serve as a reference price for the hourly ladders. | crypto | `docs/deribit_method.md`, `docs/venue_comparison.md` | — | 08-01 | shortest usable expiry **54.2h** vs ladder median lifetime **1.0h**; only 0.1% reach 54h | n/a | n/a | **SETTLED** (cancels hypothesis X4) |
+| C018 | Kalshi unauthenticated rate limit is 15 req/s sustained; 25 req/s ⇒ 56% rejection. | crypto | paced probe, `docs/connectivity.json` | — | 07-30 | 15 r/s = 0% reject | n/a | n/a | **SETTLED** |
+| C007 | The pipeline finds **no** edge in synthetic data containing no edge. | crypto | `src/synthetic_control.py` → `reports/synthetic_control.json` | 1,500 synthetic events × 9 strikes | — | diff −0.000028 [−0.00013,+0.00008], **contains zero**, p=0.593 | n/a | n/a | **SETTLED** (control) |
+| C008 | The pipeline **detects** an injected 15% wing bias, and a 5% one. | crypto | same | 1,500 events each | — | −0.002655 [−0.00310,−0.00217]; 5%: −0.000334 [−0.00050,−0.00014] | p<0.0001 | n/a | **SETTLED** (control — this is what makes C010's null credible) |
+| C009 | The pipeline **detects** outcome leaked into a feature. | crypto | same | 1,500 events | — | Brier 0.0004 vs 0.1032 | p<0.0001 | n/a | **SETTLED** (control) |
+| C003 | BTC/ETH settlements pin near round numbers. | crypto | `src/pinning_test.py` → `reports/pinning_test.json` | 1,593 events, 68 days | 68-day window | 6/20 survived BH at p≈0, Rayleigh R≤0.244 | initially yes — **invalid** | — | **RETRACTED** |
+| C006 | The fat-tail mispricing is economically tradeable (1.5–1.9¢ at 2.5–3σ). | crypto | `reports/fat_tails.json` | — | — | benchmark was a Gaussian, not Kalshi's mid | — | — | **RETRACTED** |
+| C013 | The mid's calibration gap is real and tradeable (+4.2pp, net +1.00¢). | crypto | `src/mid_calibration.py` → `reports/mid_calibration.json` | 250 events × 17 buckets | 05-25→07-30 | best p=0.029 vs BH threshold **0.0059** | **no** | **no** — no bucket significant in both halves | **RETRACTED** |
+| C014 | 464 profitable bucket-sum violations at 96–97¢. | crypto | `reports/ladder_arb.json` (pre-fix) | 464 "violations" | 08-01 | all 464 vanished on requiring a complete contiguous tiling | — | — | **RETRACTED** |
+| C015 | Polymarket taker cost is identical to Kalshi's. | crypto | `reports/poly_fee_resolution.json` | — | — | **2.86× Kalshi at 50¢** | — | — | **RETRACTED** |
+| C019 | Effective sample size is far below row count — ~360 correlated minutes per event. | crypto | `src/effective_n.py` → `reports/effective_n_audit.json`, `.txt`, `docs/EFFECTIVE_N_AUDIT.md` | 89,806 market-minutes → 250 events | 05-25→07-30 | pseudo-replication factor ~10× on CI width | n/a | n/a | **SETTLED** |
+| C020 | ETH does not lead BTC. | crypto | `src/leadlag.py` → `reports/leadlag.json`, `leadlag_tradeable.json` | recorded tick data | 07-30 | contemporaneous corr **0.845** vs **0.037** at best lead | n/a | — | **SETTLED** |
+| C021 | Path/streak structure in 15m opens is tradeable. | crypto | `src/path_streak.py` → `reports/path_streak.json`, `streak_fade.json`, `streaks_multiasset.json`, `PATH_STREAK_RESULTS.md` | multi-asset | — | see `PATH_STREAK_RESULTS.md` — no edge clears the cost bar | no | — | **SETTLED** (null) |
+| C022 | Market-making on the ladders is viable. | crypto | `src/mm_*.py` → `reports/mm_latency_fixed.json`, `mm_synthetic_control.json`, `MM_RESULTS.md` | — | — | see `MM_RESULTS.md`; synthetic control present | no | — | **SETTLED** (null) |
+| C023 | Hold-to-settlement on the ladders is profitable. | crypto | `src/hold_settle.py` → `reports/hold_to_settlement.json`, `hold_settle.txt` | — | — | negative | no | — | **SETTLED** (null) |
+| C024 | A silent orderbook parse bug wrote **real row counts with empty content** for 1h45m. | crypto | recorder output inspection; `reports/data_audit.txt` | 1h45m of recording | 07-30 | caught **by accident** | n/a | n/a | **SETTLED** (bug) / fix status **UNVERIFIED** |
+
+---
+
+# SECTION 3 — wallet-copy-study (Polymarket copy trading)
+
+Artifacts: `trading/wallet-copy-study/` (moved; 17 GB of data stays local and
+gitignored). Verdict: `COPY_TRADING_VERDICT.md`. Seed 20260801 throughout.
+
+**Sample:** 2,500 wallets · 14,082,296 wallet-panel fills · 1,746,750 positions ·
+2,529 sampled markets · 2,778,373 market-panel fills · 2,108,796 market universe,
+874,943 eligible. 32 validation tests pass.
+
+**Verdict: EDGE, SLOW DECAY — do not build the bot.**
+
+| ID | Claim in plain English | Project | Artifact (script + output) | n + unit | Date range | Effect + CI | FDR? | Holdout? | STATUS |
+|---|---|---|---|---|---|---|---|---|---|
+| W001 | **Wallet skill is real and persists out of sample.** | wallet-copy-study | `src/phase4a_persistence.py` → `reports/phase4a_persistence.json`, `phase4a_persistence_clean.json` | 1,028–1,778 wallets; unit = market and (wallet,series,day) | 2025-01-01 → 2026-04-28 | Spearman ρ **0.157–0.433, positive in all 36 cells**; rises with markets-per-wallet | n/a | **yes** — 3 independent split points | **SETTLED** |
+| W002 | A period-1 top decile keeps **+2.567pp of excess** into an untouched period 2. | wallet-copy-study | `reports/phase4c_copyability.json` | 31,703 wallet-markets / 479 wallets | P2 = 2025-07-01→ | **+2.567pp [2.19, 2.96]** | n/a | **yes** — selection on P1 only | **SETTLED** |
+| W003 | But a **copier** who buys the same entries and holds gets only **+0.937pp**. | wallet-copy-study | same | 31,703 wallet-markets | P2 | **+0.937pp [0.53, 1.38]** | n/a | yes | **SETTLED** |
+| W004 | And that is **less than the spread**, so the strategy is break-even at best. | wallet-copy-study | `reports/phase4d_capacity.json` + arithmetic in `COPY_TRADING_VERDICT.md` | median same-block trade dispersion | P2 | +0.937 − 1.000 = **−0.063pp**, and 1.0pp is a **lower bound** (mean 2.10, p90 4.07) | n/a | n/a | **SETTLED** |
+| W005 | The copier return **declines monotonically** across split points: +1.98 → +0.94 → **−0.14**. | wallet-copy-study | `reports/phase4c_copyability_1735689600.json`, `_1767830400.json` | 211 / 479 / 822 eligible wallets | 3 cuts to 2026-04-28 | +1.981 [1.45,2.52] → +0.937 [0.53,1.38] → **−0.135 [−0.93,+0.63]** | n/a | yes, at each cut | **SETTLED** |
+| W006 | **72% of the edge lives in exits.** | wallet-copy-study | `reports/exit_stage1_decomposition.json` | top decile | P2 | genuine exit component **−0.106pp = −4.3%**; the rest was the fee | — | — | **RETRACTED** |
+| W007 | Copying exits **destroys** value at every delay. | wallet-copy-study | `src/exit_study.py` → `reports/exit_anatomy.json`, `exit_stage2_decay.json` | 8,600 positions with sells; balanced panel n=2,879/delay | P2 | −0.505pp [−0.643,−0.373] p=0.0005; −0.698pp at 1.0pp/leg spread | **yes — 18 of 20 under BH-FDR 5%** | yes | **SETTLED** |
+| W008 | It is **not timing skill** — duration-matched, the wallets add nothing. | wallet-copy-study | `reports/exit_anatomy.json` | 8,600 positions | P2 | wallet − mechanical = **−0.401pp [−1.03,+0.24], p=0.224** | n/a | yes | **SETTLED** |
+| W009 | It is **not tail-risk avoidance** — shorter holding is strictly worse, monotonically. | wallet-copy-study | `reports/exit_stage2_decay.json` | 3,200 tokens / 10,755,763 fills | P2 | 60s −3.548 [−4.74,−2.34] … 86400s −1.523 [−2.43,−0.62] vs buy-and-hold | **yes — 12 of 13 under BH** | yes | **SETTLED** |
+| W010 | Selling winners early and losers early are **two enormous effects that cancel**. | wallet-copy-study | `reports/exit_anatomy.json` | 8,600 positions (4,125 win / 4,475 lose) | P2 | winners **−23.988pp**, losers **+21.196pp**, net −0.476 [−1.02,+0.04] | 10 of 20 under BH | yes | **SETTLED** |
+| W011 | Naive favourite-band buying earns +7.05pp (the prior study's benchmark). | wallet-copy-study | none findable — recursive search of `C:\Users\gianf` found no dataset | claimed n=98,766 | — | recomputed: **+2.09pp [−1.37,+5.35] gross, −0.29pp net** | n/a | n/a | **RETRACTED** |
+| W012 | Copying selected wallets loses −5.90pp. | wallet-copy-study | `reports/phase4c_copyability.json` (intermediate) | 1,944 signals / 140 markets | P2 | re-measured on full panel: **+0.937pp** | — | — | **RETRACTED** |
+| W013 | **Entries do decay** for selected wallets: +3.436 → +0.427pp over 5 minutes. | wallet-copy-study | `reports/exit_stage2_decay.json` | balanced panel, n=2,879 | P2 | ~3pp in 5 min, most in the first 10s | n/a | **not a clean holdout** — subsample is positions with sells, not random entries | **SUGGESTIVE** |
+| W014 | The **unconditional** decay curve is flat from 0s to 1800s — a bot buys nothing. | wallet-copy-study | `reports/phase4c_decay.json`, `phase4c_decay_selected.json` | 2,234,479 buy signals | full history | copy return moves ~0.3pp between +1s and +1800s | n/a | yes | **SETTLED** (but W013 shows the *conditional* statement was too strong) |
+| W015 | Below ~20 markets per wallet, the **entire** spread in wallet performance is sampling noise. | wallet-copy-study | `src/phase4b_shrinkage.py` → `reports/phase4b_shrinkage.json` | 1,630 wallets at min=10 | full history | τ = **0.000pp** at min 10; best raw +18.98pp shrinks to **−0.63pp** | n/a | n/a | **SETTLED** (this is the exact mechanism that made a coinflip a "+95pp genius") |
+| W016 | Only **27%** of wallets have enough markets to detect a +5pp edge at 80% power. | wallet-copy-study | same | 485 of 1,778 non-MM wallets | full history | σ=0.296 ⇒ n≈**274 markets** needed | n/a | n/a | **SETTLED** |
+| W017 | Polymarket charged **no fee for 91% of on-chain history**, switching on **2026-01-08**. | wallet-copy-study | bisected to the day; `reports/exit_fee_era_ranking.json` | on-chain history | to 2026-04-28 | regime break confirmed | n/a | n/a | **SETTLED** |
+| W018 | Ranking inside the fee era finds an **almost entirely different** top decile. | wallet-copy-study | `reports/exit_fee_era_ranking.json` | 36 wallets | 2026-01-08→04-28 | overlap **7 of 36**, Jaccard **0.092**; 23 of 36 not previously eligible; retained excess collapses +6.441 → **+0.513pp** | 6 of 7 under BH | yes | **SETTLED** (composition) / **SUGGESTIVE** (point estimate — 8 weeks/sub-period) |
+| W019 | **Capacity is not the constraint** — price impact does not scale with trade size. | wallet-copy-study | `reports/phase4d_capacity.json` | 2,231,492 trades across 7 size buckets | full history | absolute move 0.41–0.81pp across **four orders of magnitude** — that is the spread, not impact | n/a | n/a | **SETTLED** |
+| W020 | **Adverse selection is not present** — copyable fills are *better*, not worse. | wallet-copy-study | same | 96.9% of signals copyable at +60s | full history | copyable −1.54pp vs uncopyable −5.32pp | n/a | n/a | **SETTLED** |
+| W021 | Market making is **not** the explanation for persistence. | wallet-copy-study | `src/phase2_exclusions.py` → `reports/phase2_exclusions.json` | 721 of 2,500 wallets excluded (28.8%), none on performance | full history | removing them barely moved ρ (scenario A→B) | n/a | n/a | **SETTLED** |
+| W022 | Survivorship is not driving the result. | wallet-copy-study | `reports/phase4a_persistence_clean.json` | attrition 3.7%–37.5% by cut | full history | survivor-minus-quitter P1 excess +0.82 / +0.32pp at two cuts, **negative** at the other two | n/a | n/a | **SETTLED** |
+| W023 | The excess metric scores a null strategy at zero. | wallet-copy-study | `reports/selection_audit.json` | random subsets | — | **−0.0pp**, random subsets straddle zero | n/a | n/a | **SETTLED** (canary) |
+| W024 | Phase 5 (sizing, portfolio, forward test) was **deliberately not run**. | wallet-copy-study | `COPY_TRADING_VERDICT.md` | — | — | gate requires persistence **and** an actionable window; the window does not exist | n/a | n/a | **SETTLED** (a decision, not a result) |
+
+---
+
+# SECTION 4 — kalshi-tennis (Stage 0–5 pre-match player model)
+
+Artifacts: `trading/kalshi-tennis/reports/` — eight `.txt` files, all present.
+This folder is the **only** copy of the Stage 0–5 work and was unversioned until
+this repo. See `reports/README_DEFECTS.md`.
+
+| ID | Claim in plain English | Project | Artifact (script + output) | n + unit | Date range | Effect + CI | FDR? | Holdout? | STATUS |
+|---|---|---|---|---|---|---|---|---|---|
+| T001 | Only **36.9%** of Kalshi tennis markets clear all three modelling thresholds. | kalshi-tennis | `src/stage0_audit.py` → `reports/stage0_coverage.txt` | 20,922 markets / 9,262 players | to 2026-07 | 86.6% have both players in Sackmann; 36.9% usable; ATP-ITF 20.9% | n/a | n/a | **SETTLED** |
+| T002 | The binding constraint: Sackmann features end **2026-06-02**, and 85.0% of markets are after that. | kalshi-tennis | same | 20,922 markets | to 2026-07 | only **3,145** markets are both settled and inside the window | n/a | n/a | **SETTLED** |
+| T003 | Sackmann's upstream repos are **gone (404)**; the project runs on a frozen mirror. | kalshi-tennis | `src/verify_data.py` (4 known finals reproduced) | — | mirror last commit 2026-06-25 | verified 404 + schema check | n/a | n/a | **SETTLED** |
+| T004 | **"Comeback ability" is ~75% just overall skill.** | kalshi-tennis | `src/stage3_traits.py` → `reports/stage3_traits.txt` | **3,446,840 player-match rows; 15,812 players** | full history | split-half r **+0.439** raw → **+0.125** residualised; tiebreak r +0.091→+0.049; **positive control** (match win rate) r=+0.633 | n/a | split-half **with** a positive control and a null | **SETTLED** |
+| T005 | The model itself is good: held-out Brier 0.19884, AUC 0.75984. | kalshi-tennis | `src/stage4_model.py` → `reports/stage4_model.txt` | test n=**80,657** (2025+), 1,530,252 rows, 50 features | train <2023 / val 2023-24 / test 2025+ | Brier 0.19884, LogLoss 0.58007, AUC 0.75984, Acc 0.68707; calibration within ~0.021 | 6 variants declared | **yes** — chronological split | **SETTLED** |
+| T006 | **But the model loses to the bookmakers.** This is the Stage 4 gate, and it failed. | kalshi-tennis | same | n=**2,645** matches (avg close), n=1,774 (Pinnacle-labelled) | 2025+ | **+0.01922 [+0.01438, +0.02417]**; Pinnacle row +0.01816 [+0.01216,+0.02425] | n/a | yes; **contains no Kalshi data so the leak never touched it** | **SETTLED** |
+| T007 | The market beats the model on tradeable Kalshi quotes (+0.03711). | kalshi-tennis | `src/stage4_kalshi_liquid.py` → `reports/stage4_kalshi_liquid.txt` | n=302 / 287 / 186 matches | 2026 | +0.03711 [+0.0165,+0.0569]; monotone across 3 liquidity filters | n/a | — | **RETRACTED** — the spread filter read the leaking anchor (`SELECTION_AUDIT.md` row 19). Direction survives via T012. |
+| T008 | Selective betting returns **+14.4% to +24.6% ROI**. | kalshi-tennis | `src/stage5_selective.py` → `reports/stage5_selective.txt` | 465/389/294 bets over 502 held-out matches | 2026 | at executable fills: **−24.3% to −30.9%**, every CI below zero | — | had a holdout; the **fill model** was the defect | **RETRACTED** |
+| T009 | 43 selective segments tested with Benjamini-Hochberg; **19 survive and every one is negative**. | kalshi-tennis | same | 43 segments / 502 matches | 2026 | 19 survive at α=0.05, all negative | **yes** | held-out matches | **SETTLED** |
+| T010 | Kalshi beats the Betfair closing line by 0.022 Brier. | kalshi-tennis | `src/pinnacle_vs_kalshi.py` → `reports/pinnacle_vs_kalshi.txt` | n≈844 joined matches | 2026 | at a clean −6h anchor the advantage vanishes (+0.00122) | — | — | **RETRACTED** |
+| T011 | The anchor sweep proves **which** Kalshi anchor is leak-free. | kalshi-tennis | `src/anchor_leak_test.py` → `reports/anchor_leak_test.txt` | n=575–877 per anchor | 2026 | −0h: 4.1% of quotes outside 2c–98c and **100% correct**; −6h: 0.1% extreme, corr **0.9775** | n/a | n/a | **SETTLED** — the two independent books agree at corr 0.9985, so any anchor where Kalshi beats both is leaking |
+| T012 | **Kalshi is the sharp line** — indistinguishable from Betfair at a clean anchor. | kalshi-tennis | `reports/pinnacle_vs_kalshi.txt` | n=**809** matches | 2026, −6h anchor | r=**0.9878**, MAD **1.95¢** vs a 2.44¢ round-trip cost; Brier diff −0.00053 **[−0.00312,+0.00157]** | n/a | 4,000-sample bootstrap; **no model fitted ⇒ no holdout needed** | **SETTLED** |
+| T013 | Where the two venues disagree by more than it costs to act, **Kalshi is closer 49.1% of the time** — a coin flip measured precisely. | kalshi-tennis | same | 230 of 809 disagreements (28.4%); 14 segments | 2026 | **49.1% [42.7%, 55.6%]**; **all 14 segments cross zero** | n/a | segments span tour, surface, favourite band, time-to-start, period | **SETTLED** |
+| T014 | tennis-data.co.uk **stopped carrying Pinnacle in 2026**; the real benchmark is the Betfair Exchange close. | kalshi-tennis | `reports/pinnacle_vs_kalshi.txt` (`with a real Pinnacle price: 0`) | 844 joined matches | 2026 | Pinnacle coverage collapsed to **5.1%**; Betfair 93.6% | n/a | n/a | **SETTLED** — ⚠ **naming trap**: the script, the report and a Stage 4 row are all still labelled "Pinnacle" |
+| T015 | **39.8%** of held-out Kalshi markets quote wider than 10¢ — a 1c/99c quote has a 50c "mid" nobody trades at. | kalshi-tennis | `reports/stage5_selective.txt` | n=502 markets | 2026 | median spread 3.0¢, 39.8% > 10¢ | n/a | n/a | **SETTLED** — this is the mechanism behind both T008 and T007 |
+| T016 | Shrinkage behaves correctly across all 8 statistics × 2 buckets. | kalshi-tennis | `src/stage2_shrinkage.py` → `reports/stage2_shrinkage.txt` | 16 statistic×bucket cells | full history | raw sd collapses toward population sd everywhere | n/a | n/a | **SETTLED** (sanity check) |
+| T017 | Stage 0 coverage is 74.5% and there is no ITF tier on Kalshi. | kalshi-tennis | `src/stage0_audit.py` (pre-fix) | 20,922 markets | — | ITF is **31,894 markets ≈ 76%** of the book | — | — | **RETRACTED** |
+| T018 | The ITF tier **cannot** be modelled from Sackmann — serve stats on only 4.6% of futures rows. | kalshi-tennis | `reports/stage0_coverage.txt` | futures rows | full history | 4.6% | n/a | n/a | **SETTLED** — with T001 this is the "where the data exists the market is hard; where the market is soft the data doesn't exist" constraint |
+| T019 | Player order is assigned cleanly (alphabetical), not by outcome. | kalshi-tennis | `src/stage4_model.py:43-47`; `SELECTION_AUDIT.md` row 80 | — | — | `swap = w > l`, target ~50/50 | n/a | n/a | **SETTLED** (guard) |
+| T020 | The API-listing-order side choice is clean. | kalshi-tennis | `src/tennis_data.py:196-198` | 19,782-market canary | — | **z = +1.44** | n/a | n/a | **SETTLED** (guard) |
+| T021 | `stage5_selective.py:255` sorts variants on `mean_pnl` over the **full sample with no holdout**. | kalshi-tennis | `SELECTION_AUDIT.md` row 86 | — | — | not post-settlement, but an overfitting hazard | n/a | **no** | **BROKEN** (separate defect class, still live in the code) |
+| T022 | `stage5_selective.py:99` dedupes with `keep="first"` — order-dependent and non-deterministic. | kalshi-tennis | `SELECTION_AUDIT.md` row 87 | — | — | not outcome-correlated, but needs an explicit sort | n/a | n/a | **BROKEN** (minor; unfixed) |
+
+---
+
+# SECTION 5 — claims from the chat archive (CH001–CH128)
+
+Full text, per-claim validation and source conversation codes:
+**[kalshi-chat-audit/LEDGER_CHATS.md](kalshi-chat-audit/LEDGER_CHATS.md)**
+(129 rows) and **[kalshi-chat-audit/FAILURE_MODES_CHATS.md](kalshi-chat-audit/FAILURE_MODES_CHATS.md)**.
+
+These come from 21 Claude Pro conversations + 1 Max conversation, 2026-07-25 →
+07-31. They are **not** duplicated row-by-row here because that file already
+carries them in this exact schema. What matters for this ledger:
+
+| Group | Count | Where the artifacts live |
+|---|---|---|
+| CH001–CH020 | 20 **RETRACTED** | mostly the tennis bot and copy-trading threads |
+| CH021–CH046 | Tennis live-trading bot | **desktop machine** (`C:\Users\vinig\kalshi`) — not in this repo |
+| CH047–CH058 | v3 candlestick backtest | **desktop machine** |
+| CH059–CH074 | Stage 0–5 player model | **in this repo** — superseded by Section 4 above, which applies the selection audit on top |
+| CH075–CH077 | `/tennis-live-predictor` skill accuracy | chat only, no artifact |
+| CH078–CH091 | BTC 15-min + exchange-wide scan | partly superseded by Section 2 |
+| CH092–CH097 | Polymarket copy trading | superseded by Section 3, which recomputed the benchmark from scratch |
+| CH098–CH111 | Discord signal bot ("rot") | chat + export only |
+| CH112–CH123 | Manual discretionary trading | screenshots only |
+| CH124–CH128 | Process and infrastructure | derived |
+
+### The five CH rows that still gate decisions
+
+| ID | Claim | STATUS | Why it matters |
+|---|---|---|---|
+| **CH057** | "4 weeks / 14k markets / 0 of 480 configs profitable" | **UNVERIFIED** | ~**100× the evidence base** of every other conclusion in the archive, flagged "Not re-verified" in its own handoff. Named the single highest-value verification available, twice. Still open. |
+| **CH031** | The score-staleness guard never fired — `fetched_at` was stamped at cache read | **SETTLED** (bug) | **No live entry result anywhere in the archive is a valid test of the entry logic.** The 4-for-10 included. |
+| **CH022** | Three irreconcilable P&L figures for one session (+$0.60 / +$2.51 / −$3.55) | **BROKEN** | The fee ceiling proves −$3.55 is impossible; true net is in **[−$0.68, +$2.51]**. CH021 and CH029 are unusable until this is resolved. |
+| **CH035** | Every negative result in the project is a **taker** result | **UNVERIFIED** | No resting-order strategy was ever tested on any market — until S008 above, which tested it on tennis and found all 15 configurations negative. |
+| **CH044** | A position-sizing blowout produced 64 contracts against an intended 9 | **SETTLED** (bug exists) / cause **UNVERIFIED** | Combined with `max_daily_loss_pct = 0 (OFF)` on a live bot, this is the top standing financial risk. Never diagnosed, never fixed. |
+
+---
+
+## What is SETTLED enough to build on
+
+Only these. Everything else is either negative, underpowered, or void.
+
+1. **Kalshi is a sharp line on tennis** (T012, T013) and **efficiently priced on
+   crypto ladders** (C010). Both measured against clean benchmarks, both with
+   adequate n, neither dependent on any leaking anchor.
+2. **Cost arithmetic** — Kalshi's fee formula (CH034 taker side), Polymarket's
+   true fee `0.10·min(p,1−p)` (C004, independently reproduced), and the 3.61pp
+   tennis cost bar (S004). Exact-decimal, unit-tested, reproduced across projects.
+3. **Wallet skill on Polymarket persists out of sample** (W001, W002) — but the
+   copyable fraction is smaller than the spread (W003, W004) and shrinking (W005).
+4. **Trait statistics collapse when residualised against overall skill** (T004),
+   on 3.4M rows with a positive control and a null. This settles the belief the
+   entire player-model direction rested on.
+5. **The guards themselves** — see [GUARDS.md](GUARDS.md). These are the most
+   reusable output of all four projects.
+
+## What is negative and should stop
+
+- Tennis set-1 overshoot: real undershoot, **uncollectable** against the cost bar
+  (S001, S004, S005, S006), and the sample cannot resolve it (S021).
+- Crypto ladder modelling: **no model beats the mid** (C010), with a validated
+  positive control proving the test could have found an effect (C008).
+- Polymarket copy trading: **do not build the bot** (W003–W005).
+- Stage 0–5 player model: **the model loses to the bookmakers** (T006). Gate failed.
