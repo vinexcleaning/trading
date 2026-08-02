@@ -10,7 +10,7 @@ import glob
 import json
 import os
 from collections import Counter
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 DIR = os.path.join(os.path.dirname(__file__), "..", "data", "tape_pmxt_window")
 REP = os.path.join(os.path.dirname(__file__), "..", "reports")
@@ -70,13 +70,23 @@ for path in files:
                 dups += 1
             else:
                 ids.add(tid)
-    # 06-11 is legitimately partial: the archive itself ends at 03:00 UTC
-    partial_ok = day == "2026-06-11"
+    # KALSHI HAS A WEEKLY MAINTENANCE WINDOW ON THURSDAYS, ~07:00-09:00 UTC.
+    # Measured: 2026-05-28, 06-04 and 06-11 are all missing hour 08 entirely
+    # and have only 6-21 trades in hour 07. All three are Thursdays -- three
+    # for three. Re-querying those hours directly returns ZERO trades, so the
+    # hour is genuinely empty at the source, not a pagination gap.
+    #
+    # An earlier version of this check labelled 06-11 "partial by design",
+    # assuming it was truncated because the pmxt archive ends at 03:00. That
+    # was wrong: the TAPE for 06-11 is a full 00:00-23:59 day with 5.25M
+    # trades; it is missing hour 08 for the same Thursday reason.
+    weekday = datetime.strptime(day, "%Y-%m-%d").weekday()  # 3 = Thursday
+    maintenance = weekday == 3 and "08" not in hours and len(hours) == 23
     ok = (torn == 0 and badpx == 0 and dups == 0 and n > 0
-          and (len(hours) >= 24 or partial_ok))
+          and (len(hours) >= 24 or maintenance))
     verdict = "OK" if ok else "CHECK"
-    if partial_ok and len(hours) < 24:
-        verdict += " (partial by design)"
+    if maintenance:
+        verdict += " (Thursday maintenance, hour 08 empty at source)"
     print(f"{day:12s} {n:10,d} {str(first)[11:19]:>9s} {str(last)[11:19]:>9s} "
           f"{len(hours):4d} {len(series):7d} {torn:5d} {badpx:6d} {dups:7d}  "
           f"{verdict}")

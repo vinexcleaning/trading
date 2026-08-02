@@ -235,7 +235,7 @@ corrections, all shrinking or removing a claim.**
 | **Pre-match recorder** (NEW) — lineups, formations, referee, odds drift, 5 leagues, 10-min cycle | `soccer/data/prematch/<date>/prematch.jsonl` | 2026-08-02 17:46 UTC | alive; cycles 1–2: 10 fixtures each, **10 ok, 2 with lineups, 2 with referees, 0 failures** |
 | Broad depth recorder | `market-selection/data/depth_broad/` | 06:38 UTC | alive; 98.5% non-empty. **Shortlisted soccer verified: LIGAMXGAME 876 rows, ARGPREMDIV 825, LIGAMXTOTAL 855, DIMAYOR 855, COPADOBRASIL 825 — all 100% two-sided.** KXMLSGAME 0 rows because it has **0 open markets**, not a recorder fault. Re-lists live (fixed last session). |
 | pmxt L2 mirror | `market-selection/data/pmxt/` | complete | **662/662 files, 63.0 GB, bad=0** |
-| Trade backfill | `market-selection/data/tape_pmxt_window/` | 07:17 UTC | **17 days complete, 23.6 GB**; 2026-06-11 finishing now — completes the whole pmxt overlap |
+| Trade backfill | `market-selection/data/tape_pmxt_window/` | 07:17 UTC | **COMPLETE.** 2026-05-25 → 06-11 **contiguous, no gaps, 73,545,969 trades**, content-verified: 0 torn lines, 0 prices outside (0,1), 0 duplicate trade ids, **0 days failing**. The entire pmxt order-book overlap now has its matching tape. 2026-05-14 → 05-24 stays permanently unrecoverable. **Kalshi has a weekly Thursday maintenance window ~07:00–09:00 UTC** — 2026-05-28, 06-04 and 06-11 are each missing hour 08 entirely, three for three, and re-querying returns zero at the source. |
 | Tennis depth (PID 17892), crypto 15m (PID 24756) | unchanged | 08-01 | **untouched**, alive |
 
 Heartbeat now **logs to `market-selection/data/heartbeat.log` every 30 min and
