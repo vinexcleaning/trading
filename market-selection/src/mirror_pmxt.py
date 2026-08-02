@@ -100,12 +100,24 @@ def validate(path):
     if lo is not None and not (0.0 < lo and hi < 1.0):
         return False, {**d, "err": f"price out of (0,1): {lo}..{hi}"}
 
-    # event types present in row group 0
+    # event types present in row group 0.
+    #
+    # Requiring `orderbook_delta` here was too strict and produced a THIRD
+    # false FAIL from this validator. The archive's final six hours
+    # (2026-06-10T19 .. 2026-06-11T03) contain ONLY `orderbook_snapshot` rows,
+    # which is what a capture emits while it is restarting -- and is arguably
+    # the more directly usable form, since a pure snapshot needs no replay.
+    # The real assertion is that the rows are recognisable book events, not
+    # that a particular one is present.
     t0 = pf.read_row_group(0, columns=["event_type"])
     kinds = set(t0.column("event_type").to_pylist()[:200000])
     d["event_types_rg0"] = sorted(kinds)
-    if "orderbook_delta" not in kinds:
-        return False, {**d, "err": f"no deltas in rg0: {sorted(kinds)}"}
+    d["snapshot_only"] = kinds == {"orderbook_snapshot"}
+    known = {"orderbook_delta", "orderbook_snapshot"}
+    if not kinds or not (kinds & known):
+        return False, {**d, "err": f"no recognised book events in rg0: {sorted(kinds)}"}
+    if kinds - known:
+        return False, {**d, "err": f"unexpected event types: {sorted(kinds - known)}"}
     return True, d
 
 
