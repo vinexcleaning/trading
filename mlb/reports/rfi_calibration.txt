@@ -1,0 +1,53 @@
+﻿pulling settled KXMLBRFI markets ...
+  896 settled markets
+  50/896 ... 50 usable
+  100/896 ... 100 usable
+  150/896 ... 150 usable
+  200/896 ... 200 usable
+  250/896 ... 250 usable
+  300/896 ... 299 usable
+  350/896 ... 349 usable
+  400/896 ... 399 usable
+  450/896 ... 449 usable
+  500/896 ... 498 usable
+  550/896 ... 547 usable
+  600/896 ... 596 usable
+  650/896 ... 645 usable
+  700/896 ... 694 usable
+  750/896 ... 743 usable
+  800/896 ... 793 usable
+  850/896 ... 843 usable
+
+settled markets: 896
+dropped: {'first_pitch_after_close': 1, 'not_yes_no': 6}
+usable with a quote STRICTLY BEFORE first pitch: 889
+
+=== BASE RATE ===
+  a run was scored in the first inning in 0.5152 of 889 markets
+  Brier of always predicting the base rate: 0.2498
+  ^ any model must beat this before it is interesting
+
+=== THE MARKET ===
+  mid price: median 49.5c  mean 49.5c  min 12  max 70
+  spread:    median 1.0c  p90 2.0c
+  cost bar at the median price and spread: 2.25c => need a 2.25 pp edge to break even
+
+=== IS THE MARKET BETTER THAN THE BASE RATE? ===
+  market Brier     0.2455
+  base-rate Brier  0.2498
+  difference       -0.0042  (negative = the market adds information)
+
+=== CALIBRATION: when the price says X, how often does it happen? ===
+      price band     n  avg price   actual      gap
+          30-40c    12       38.8    50.0%    +11.2
+          40-50c   455       46.2    48.1%     +1.9
+          50-60c   406       53.1    54.2%     +1.1
+          60-70c    14       63.2    92.9%    +29.6
+
+=== IS THERE A SYSTEMATIC LEAN? ===
+  mean (outcome - price) = +2.05c  +/- 3.25 (95%)
+  ^ no significant lean: the market is unbiased on average
+
+=== SPREAD REALITY CHECK ===
+  markets quoted wider than 5c: 1 of 889 (0%)
+  median minutes with a two-sided quote in the final 6h: 248
