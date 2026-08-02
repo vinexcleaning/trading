@@ -96,35 +96,46 @@ def pick_markets():
     that looks good here has only been shown to have one good market, which is
     why the analysis reports markets-traded-per-day separately.
     """
-    by_series = defaultdict(list)
-    with open(DUMP, encoding="utf-8") as fh:
-        for line in fh:
-            m = json.loads(line)
-            v = K.f(m.get("volume_24h_fp")) or 0.0
-            by_series[K.series_of(m["ticker"])].append((v, m["ticker"]))
-
     ranked = rank_series()
-    if not ranked:      # tape not written yet -- fall back to 24h volume
+    if not ranked:
+        # tape not written yet -- fall back to 24h volume off the static dump
+        by_series = defaultdict(list)
+        with open(DUMP, encoding="utf-8") as fh:
+            for line in fh:
+                m = json.loads(line)
+                v = K.f(m.get("volume_24h_fp")) or 0.0
+                by_series[K.series_of(m["ticker"])].append((v, m["ticker"]))
         ranked = [s for _, s in sorted(
             ((sum(v for v, _ in ms), s) for s, ms in by_series.items()),
             reverse=True)]
 
-    picked, seen, fams = [], set(), 0
+    # RE-LIST LIVE, PER SERIES. An earlier version chose tickers from the
+    # static market dump, which was captured once and never refreshed. Markets
+    # settle; the list did not. Long-lived families (MLB games listed days
+    # ahead) were unaffected, but short-lived ones silently accumulated closed
+    # tickers, and a closed book reads as "no counterparty":
+    #   KXBTC15M   recorded 0.0% two-sided over 36 snapshots
+    #              -- a fresh listing shows it quoted two-sided at a 0.1c spread
+    #   KXNPBGAME  recorded 27.9% over 129 snapshots
+    #              -- a fresh listing shows 100%, 2,043 contracts at the touch
+    # The instrument was measuring its own staleness. Now every refresh asks
+    # the API which markets are actually open.
+    picked, fams = [], 0
     for s in ranked:
         if fams >= N_SERIES:
             break
-        ms = by_series.get(s)
+        r = K.get("/markets", {"series_ticker": s, "status": "open",
+                               "limit": 200})
+        if r is None or r.status_code != 200:
+            continue
+        ms = r.json().get("markets", [])
         if not ms:
-            continue        # traded but no longer open, e.g. settled overnight
+            continue        # traded recently but nothing open right now
+        ms.sort(key=lambda m: -(K.f(m.get("volume_24h_fp")) or 0.0))
         n = 1 if s in PARLAY else PER_SERIES
-        added = 0
-        for v, t in sorted(ms, reverse=True)[:n]:
-            if t not in seen:
-                seen.add(t)
-                picked.append((s, t))
-                added += 1
-        if added:
-            fams += 1
+        for m in ms[:n]:
+            picked.append((s, m["ticker"]))
+        fams += 1
     return picked
 
 

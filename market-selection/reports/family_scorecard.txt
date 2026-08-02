@@ -1,0 +1,201 @@
+tape: 8,867,978 trades over 25 distinct hours (scaling to 24h by x0.96)
+depth recorder: 8,827 snapshots in 3 hour-files
+universe: 3,074 series
+
+series appearing in the tape: 2205
+series also covered by the depth recorder: 153
+of those, surviving the kill switch: 93
+
+SURVIVORS
+series                     cat            trd/d  mkt/d  2side sprMed   p90  >tick   bidSz      d5c   bar  fee
+KXMLBGAME                  Sports        377022     97 100.0%    1.0   2.0  0.129 20887.2 1290590.4 2.2472  quadratic_with_maker_fee
+KXBTCD                     Crypto        301072    738  75.0%    1.0   2.0  0.101   215.0  16381.5 2.2493  quadratic
+KXATPMATCH                 Sports        248880     88 100.0%    1.0   2.0  0.246   440.0 154535.8 2.2472  quadratic_with_maker_fee
+KXITFMATCH                 Sports        243522     95  65.1%    1.0   2.0  0.268   479.3  38359.2 2.2325  quadratic
+KXITFWMATCH                Sports        180378    136 100.0%    1.0   2.0  0.362   943.4  36087.6 2.2493  quadratic
+KXWTAMATCH                 Sports        180049     96 100.0%    1.0   1.0  0.039   809.5 176950.9 2.2437  quadratic_with_maker_fee
+KXMLBTOTAL                 Sports        154517    314 100.0%    1.0   1.0  0.087  7802.0 306989.2 2.2437  quadratic
+KXUFCFIGHT                 Sports        145347     45 100.0%    1.0  21.0  0.356   373.0  16045.0  2.25  quadratic
+KXATPCHALLENGERMATCH       Sports         82919    102 100.0%    1.0   1.0  0.065   679.0 135758.2 2.2325  quadratic
+KXCLUBFGAME                Sports         81915     76 100.0%    1.0   2.0   0.14   834.0  53777.7  2.18  quadratic
+KXMLBSPREAD                Sports         68341    178 100.0%    1.0   1.0  0.093  8734.4 1590111.2 2.2052  quadratic
+KXCS2GAME                  Sports         64572    135 100.0%    1.0   1.0    0.0 21236.0 326383.9 2.2493  quadratic
+KXBOXING                   Sports         55985     36 100.0%    2.0   3.0  0.562   104.0   2301.9 2.7493  quadratic
+KXCHNSLGAME                Sports         49500     20 100.0%    1.0   1.0    0.0  2654.0  77896.8 2.1653  quadratic
+KXVALORANTGAME             Sports         48664     40 100.0%    1.0   2.0  0.235  1606.2  57270.7 2.2493  quadratic
+KXPRESNOMD                 Elections      42265     32 100.0%    0.1   0.2    0.0 47585.8 3711683.5  0.05  quadratic
+KXUSLGAME                  Sports         41640     35 100.0%    7.0  10.0    1.0    25.5    515.7 5.1653  quadratic
+KXMLBRFI                   Sports         40889     30 100.0%    1.0   1.0    0.0 301578.1 2280908.6 2.2437  quadratic
+KXPGATOUR                  Sports         37774     70 100.0%    0.6   1.0    0.0 24214.9 610381.4 0.7557  quadratic_with_maker_fee
+KXLOLGAME                  Sports         35985    108 100.0%    1.0   2.0  0.125  5999.9 155813.1  2.25  quadratic
+KXWNBATOTAL                Sports         31502     62 100.0%    1.0   1.0    0.0  2656.0  26447.2 2.2437  quadratic
+KXARGPREMDIVGAME           Sports         31195     40 100.0%    1.0   1.0    0.0  1032.2  68360.0 2.0477  quadratic
+KXMLBF5                    Sports         29971     82 100.0%    3.0   3.0    1.0   922.0  32500.4 3.2248  quadratic
+KXCS2MAP                   Sports         27535    158 100.0%    3.0  10.0    1.0   130.0   1369.0 3.2388  quadratic
+KXCZEFLGAME                Sports         27336     20 100.0%    1.0   2.0  0.333   420.0  39454.5 2.0232  quadratic
+KXMLBF5TOTAL               Sports         27314    156 100.0%    1.0   2.0  0.162   971.0  11131.8 2.2325  quadratic
+KXWNBASPREAD               Sports         26979     70 100.0%    1.0   1.0    0.0   606.0  23480.3 2.2325  quadratic
+KXLIGAMXTOTAL              Sports         26663     36 100.0%    1.0   1.0    0.0  2761.0  64959.8 2.2325  quadratic
+KXLOLMAP                   Sports         26653     93  66.7%    1.0   2.0  0.429  2359.6  28976.8 2.2493  quadratic
+KXCHLLDPGAME               Sports         26636     22 100.0%    1.0  31.0  0.333   430.0  45755.7 2.1128  quadratic
+KXT20MATCH                 Sports         26317     45 100.0%    2.0   4.0  0.792   381.0   3721.3 2.7493  quadratic
+KXARGNACBGAME              Sports         25586     43 100.0%   50.0  56.0    1.0   107.0    231.3 26.6128  quadratic
+KXMLBHR                    Sports         25378    456 100.0%    1.0   1.0    0.0  5359.5  59638.8 1.2917  quadratic
+KXDIMAYORGAME              Sports         25010     26 100.0%    2.0   2.0  0.608   664.0  52775.0 2.5232  quadratic
+KXMLBKS                    Sports         23641    308 100.0%    1.0   2.0  0.147   644.0  19611.6 2.2437  quadratic
+KXETHD                     Crypto         23111    996  98.0%    1.0   3.0   0.45   500.0  14246.0 2.2472  quadratic
+KXCOPADOBRASILGAME         Sports         21576     26 100.0%    1.0   2.0  0.333   420.0  40002.9 2.0925  quadratic
+KXMLBTEAMTOTAL             Sports         20486    255 100.0%    1.0   1.0    0.0   299.0  13193.3 2.2472  quadratic
+KXATPSETWINNER             Sports         20292     92 100.0%    1.0   2.0  0.333   597.0  10158.0 2.2388  quadratic
+KXPERLIGA1GAME             Sports         19884     21 100.0%    1.0   1.0    0.0  1420.0  48125.5 2.0232  quadratic
+KXITFWDOUBLES              Sports         19361     30 100.0%   22.0  32.0    1.0   108.0    150.8 12.7493  quadratic
+KXVALORANTMAP              Sports         18084     45 100.0%    1.0   6.0  0.486  1000.0   9571.5  2.25  quadratic
+KXDOTA2GAME                Sports         17932     61 100.0%    2.0   9.0  0.657    73.0   3181.5 2.7472  quadratic
+KXBTC                      Crypto         17914    267 100.0%    2.0   2.0  0.578  1085.3  14793.9 2.5708  quadratic
+KXKBOGAME                  Sports         17487     25  94.4%    1.0   2.0  0.329   421.0   8293.9 2.2493  quadratic
+KXWTASETWINNER             Sports         15601     93 100.0%    1.0   3.0  0.357   800.0   9691.8 2.2437  quadratic
+KXMLBF3                    Sports         13526     64 100.0%    2.0   2.0  0.667   494.0   4259.7 2.7248  quadratic
+KXARGPREMDIVTOTAL          Sports         13379     43 100.0%    1.0   2.0  0.319   672.3  40990.3 2.0925  quadratic
+KXCHNSLTOTAL               Sports         12516     44 100.0%    1.0   1.0    0.0  3253.0  54608.7 2.1128  quadratic
+KXMLBHIT                   Sports         12461    742 100.0%    1.0   1.0    0.0    50.0  11219.6  2.25  quadratic
+KXCLUBFTOTAL               Sports         12221     86 100.0%    1.0   1.0    0.0   880.0  28411.0 2.2472  quadratic
+KXNWSLTOTAL                Sports         10635     36 100.0%    1.0   2.0  0.306  1081.0  42888.5 2.2248  quadratic
+KXRT                       Entertainmen   10620    118  61.9%    1.0   1.0    0.0   393.7  97047.4 1.3925  quadratic
+KXUSLTOTAL                 Sports         10473     77 100.0%   18.0  57.0    1.0   331.0   1235.0 10.7157  quadratic
+KXCZEFLTOTAL               Sports         10429     33 100.0%    1.0   2.0  0.333  1977.0  56934.1 2.1492  quadratic
+KXPERLIGA1TOTAL            Sports         10149     30 100.0%    1.0   1.0    0.0  1295.0  45422.3 2.2157  quadratic
+KXSOLD                     Crypto         10082    532 100.0%    2.0   4.0    0.6   232.0  12418.0  2.75  quadratic
+KXLIGAMXSPREAD             Sports          9797     24 100.0%    1.0   1.0    0.0  1406.1  39417.5 1.7397  quadratic
+KXMLBHRR                   Sports          9230    917 100.0%    1.0   2.0  0.138   118.0   7872.0 2.2388  quadratic
+KXLIGAMXSCORE              Sports          8752    105 100.0%    2.0   2.0  0.633    33.0  23749.0 1.8925  quadratic
+KXMLBF5SPREAD              Sports          8560     77 100.0%    2.0   3.0    1.0   398.0  11363.2 2.5477  quadratic
+KXCHLLDPTOTAL              Sports          8445     32 100.0%    1.0  30.0  0.333  1815.0  41000.8 2.2157  quadratic
+KXMLBTB                    Sports          8016    821 100.0%    1.0   2.0  0.149   295.0   7403.4 2.2052  quadratic
+KXARGNACBTOTAL             Sports          7784     57 100.0%    1.0  48.0  0.333   430.0    570.0 2.2493  quadratic
+KXATPEXACTMATCH            Sports          7012    108 100.0%    4.0   7.0  0.683     7.0   2833.7 3.5477  quadratic
+KXATPGTOTAL                Sports          6998     77 100.0%    1.0   2.0  0.333   800.0  24308.0 2.2325  quadratic
+KXCOPADOBRASILTOTAL        Sports          6793     28 100.0%    1.0   1.0    0.0   810.0  45402.4 1.8468  quadratic
+KXLPGATOUR                 Sports          6684     36 100.0%    1.1   2.0  0.619   500.0  10375.0 1.7512  quadratic
+KXECULPTOTAL               Sports          5717     35 100.0%    1.0   1.0    0.0  1273.0  37314.0 2.2325  quadratic
+KXMLBF7                    Sports          5618     54 100.0%    2.0   2.0  0.667   250.0   5247.0 2.7388  quadratic
+KXDIMAYORTOTAL             Sports          5538     31 100.0%    2.0  47.0  0.667  1000.0   8123.0 2.6653  quadratic
+KXLIGAEXPTOTAL             Sports          4824     26 100.0%   57.0  91.0    1.0   500.1   1552.0 29.9112  quadratic
+KXLIGAMXTEAMTOTAL          Sports          4703     32 100.0%    2.0   3.0  0.583    91.0  19051.6 2.7248  quadratic
+KXMLB                      Sports          4242     29 100.0%    0.4   0.5  0.926    35.5 156766.8 0.9392  quadratic_with_maker_fee
+KXETH                      Crypto          4140    123  66.7%    2.0   2.0    0.5     0.0  12428.1 2.6128  quadratic
+KXPGATOP20                 Sports          3891     70 100.0%    2.0   2.0  0.667   192.0  62601.3 2.7248  quadratic
+KXKFTOUR                   Sports          3322     31  81.0%    4.0  13.3  0.824   134.0  12840.0  3.47  quadratic
+KXYTVIEWSW                 Entertainmen    3070     59  50.0%    1.0   4.0  0.333   153.3   2260.6 0.8325  quadratic
+KXKBOTOTAL                 Sports          3022     34 100.0%    6.0  41.0  0.833   200.0   1473.2  4.75  quadratic
+KXWTI                      Commodities     2982     92 100.0%    1.0   3.0  0.208   523.6   2085.8 2.2437  quadratic
+KXLMBGAME                  Sports          2659     28 100.0%   10.0  29.0    0.8    19.0    188.5 6.6492  quadratic
+KXAAAGASW                  Economics       2545     26  66.7%    1.0  10.0   0.25   128.7   3111.1 1.7768  quadratic
+KXBTCY                     Crypto          2445     27 100.0%    0.4   0.8  0.722   747.7  56887.0 0.7152  quadratic
+KXPGATOP10                 Sports          2260     65 100.0%    3.0   4.0  0.722    52.0 101478.0 3.2325  quadratic
+KXATP                      Sports          2242     29 100.0%    2.0   3.0  0.667   743.0   8604.8 2.7325  quadratic
+KXNEXTTEAMNBA              Sports          2130    109  81.0%    1.0   1.0    0.0  5766.3  45620.5 1.0733  quadratic
+KXUSLSPREAD                Sports          1987     47 100.0%   44.0  46.0    1.0    47.7    446.0 23.1613  quadratic
+KXMLBEXTRAS                Sports          1955     36 100.0%    3.0   3.0  0.667    30.0   2540.0 2.2392  quadratic
+KXPGATOP5                  Sports          1788     54  83.3%    3.0   4.0    0.8  2756.1  65862.4 3.1492  quadratic
+KXSB                       Sports           911     30  83.3%    1.0   1.0    0.0 284630.0 3610454.7 0.8325  quadratic_with_maker_fee
+KXFEDDECISION              Economics        528     20  83.3%    1.0   1.0    0.0  8776.2 152258.2 2.2052  quadratic_with_maker_fee
+KXNBA                      Sports           515     24  83.3%    1.0   1.0    0.0 16362.3 1404649.0 1.2392  quadratic_with_maker_fee
+KXNCAAF                    Sports           312     27 100.0%    1.0   1.0    0.0 14581.9 843367.0  1.13  quadratic_with_maker_fee
+
+KILLED (sampled by the recorder but failed a gate)
+series                     cat            trd/d  mkt/d  2side sprMed   p90  >tick   bidSz      d5c   bar  fee
+KXBTC15M                   Crypto       1753887     93   0.0%   None  None   None    None     None  None  two-sided uptime 0.0% < 50%
+KXMVESPORTSMULTIGAMEEXTEND Exotics       688887 326942   0.0%   None  None   None    None     None  None  two-sided uptime 0.0% < 50%
+KXETH15M                   Crypto        264218     93   0.0%   None  None   None    None     None  None  two-sided uptime 0.0% < 50%
+KXMVECROSSCATEGORY         Exotics       181509  95647   0.0%   None  None   None    None     None  None  two-sided uptime 0.0% < 50%
+KXLIGAMXGAME               Sports        156942     17 100.0%    1.0   2.0   0.31 18062.3 332643.8  1.97  markets/day 17 < 20
+KXDOGE15M                  Crypto        127764     93   0.0%   None  None   None    None     None  None  two-sided uptime 0.0% < 50%
+KXXRP15M                   Crypto        127212     93   0.0%   None  None   None    None     None  None  two-sided uptime 0.0% < 50%
+KXHYPE15M                  Crypto        121581     93   0.0%   None  None   None    None     None  None  two-sided uptime 0.0% < 50%
+KXSOL15M                   Crypto        115409     93   0.0%   None  None   None    None     None  None  two-sided uptime 0.0% < 50%
+KXBNB15M                   Crypto        113014     93   0.0%   None  None   None    None     None  None  two-sided uptime 0.0% < 50%
+KXWNBAGAME                 Sports         64353     19 100.0%    1.0   1.0    0.0  5279.1 197882.5 2.2493  markets/day 19 < 20
+KXNPBGAME                  Sports         48960     30  27.9%    2.0   4.0  0.528   434.7   7739.2 2.7472  two-sided uptime 27.9% < 50%
+KXWTACHALLENGERMATCH       Sports         27705     15 100.0%    1.0   1.0  0.097   389.2  34432.0 2.2437  markets/day 15 < 20
+KXNWSLGAME                 Sports         26283     19 100.0%    1.0   2.0  0.364   169.0  11393.5 2.1317  markets/day 19 < 20
+KXNEAR15M                  Crypto         26210     93   0.0%   None  None   None    None     None  None  two-sided uptime 0.0% < 50%
+KXZEC15M                   Crypto         23159     93   0.0%   None  None   None    None     None  None  two-sided uptime 0.0% < 50%
+KXURYPDGAME                Sports         22524     18 100.0%    2.0   2.0  0.847   445.0  29537.5 2.5925  markets/day 18 < 20
+KXSCOTTISHPREMGAME         Sports         22017     14 100.0%    1.0   1.0    0.0  3093.0  87803.6 2.0925  markets/day 14 < 20
+KXASEANGAME                Sports         20630     18 100.0%    2.0   4.0  0.667    56.0   1533.0 2.1613  markets/day 18 < 20
+KXHUNDREDMATCH             Sports         20001     10 100.0%    1.0   1.0    0.0  1405.5  55494.1 2.2388  markets/day 10 < 20
+KXKLEAGUEGAME              Sports         16377     17 100.0%    1.0   1.0    0.0  1821.6  67405.1 2.1492  markets/day 17 < 20
+KXEKSTRAKLASAGAME          Sports         15173     14 100.0%    1.0   2.0  0.333  1095.0  37990.6 2.0477  markets/day 14 < 20
+KXHIGHLAX                  Climate and    14839     17   0.0%   None  None   None    None     None  None  markets/day 17 < 20; two-sided uptime 0.
+KXSWISSLEAGUEGAME          Sports         14586     15 100.0%    1.0   1.0    0.0   475.0  43218.4 2.2325  markets/day 15 < 20
+KXECULPGAME                Sports         14314     19 100.0%    1.0   2.0  0.111  1884.5  62957.6 2.1128  markets/day 19 < 20
+KXLPLMATCH                 Sports         13372      4 100.0%    1.0   2.0   0.25   238.0   6523.1 2.2472  markets/day 4 < 20
+KXNPBTOTAL                 Sports         13087     49  35.9%    2.0  12.0  0.571    34.0   1239.5 2.6492  two-sided uptime 35.9% < 50%
+KXDOTA2MAP                 Sports         12461     57  33.3%    4.0   4.0    1.0     1.0   5408.0 3.7472  two-sided uptime 33.3% < 50%
+KXLIGAEXPGAME              Sports         12256     13 100.0%   51.0  56.0    1.0   318.6   1241.3 27.0925  markets/day 13 < 20
+KXWHUNDREDMATCH            Sports         12196     12 100.0%    1.0   2.0  0.333  2072.0  90116.7 2.2493  markets/day 12 < 20
+KXHNLGAME                  Sports         11996     12 100.0%    1.0   2.0  0.143   370.2  38122.6 2.1492  markets/day 12 < 20
+KXDENSUPERLIGAGAME         Sports         10677     15 100.0%    1.0   1.0    0.0   949.0  55676.2  2.18  markets/day 15 < 20
+KXFOXNEWSMENTION           Mentions        8608     14   0.0%   None  None   None    None     None  None  markets/day 14 < 20; two-sided uptime 0.
+KXCFLGAME                  Sports          8364      8 100.0%    5.0   6.0    1.0    12.0   1897.5 4.2437  markets/day 8 < 20
+KXRAIN                     Climate and     7581     42   0.0%   None  None   None    None     None  None  two-sided uptime 0.0% < 50%
+KXAPFDDHGAME               Sports          7355     12 100.0%    1.0   2.0  0.333  1207.0  43172.0 2.0708  markets/day 12 < 20
+KXTRUMPSAY                 Mentions        6140     16   7.7%    2.0   4.0  0.833    31.3   5631.1 1.6853  markets/day 16 < 20; two-sided uptime 7.
+KXAFLGAME                  Sports          6114     18  93.3%    4.0   5.0  0.875    83.0   2284.0 3.7437  markets/day 18 < 20
+KXHIGHMIA                  Climate and     5939     12 100.0%    3.0   4.0    1.0    26.6    562.5  2.97  markets/day 12 < 20
+KXWNBAMENTION              Mentions        5901     35   0.0%   None  None   None    None     None  None  two-sided uptime 0.0% < 50%
+KXLOWTDAL                  Climate and     5536     12 100.0%    2.0   7.0  0.567     9.1    179.1 2.5477  markets/day 12 < 20
+KXMLBNEXTTEAM              Sports          5458     77   0.0%   None  None   None    None     None  None  two-sided uptime 0.0% < 50%
+KXTEMPAUSH                 Climate and     5284    210   0.0%   None  None   None    None     None  None  two-sided uptime 0.0% < 50%
+KXNPBSPREAD                Sports          5124     46  33.3%    2.0   5.0    0.9     2.0     71.0 2.7437  two-sided uptime 33.3% < 50%
+KXLIGAMXBTTS               Sports          4446      6 100.0%    1.0   1.0    0.0  1000.0  41900.1 2.2325  markets/day 6 < 20
+KXLIGAMX1H                 Sports          4323     17 100.0%    1.0   1.0    0.0  1058.0  11615.9 2.2157  markets/day 17 < 20
+KXBERNIEMENTION            Mentions        4183     17 100.0%    1.0   2.0    0.3    49.8   1132.2 2.1653  markets/day 17 < 20
+KXHIGHPHIL                 Climate and     4140     12 100.0%    1.0   3.0  0.367     8.9    290.2 1.9112  markets/day 12 < 20
+KXTRUTHSOCIAL              Politics        3760     10   0.0%   None  None   None    None     None  None  markets/day 10 < 20; two-sided uptime 0.
+KXLIGAMX1HTOTAL            Sports          2988     13 100.0%    2.0   2.0  0.667   147.0  20946.0  2.68  markets/day 13 < 20
+KXNEXTTEAMMLB              Sports          2532     55   0.0%   None  None   None    None     None  None  two-sided uptime 0.0% < 50%
+KXCHAMPTOUR                Sports          2390     17 100.0%    4.0   4.0    1.0    17.0    414.6 3.4973  markets/day 17 < 20
+KXNPBRFI                   Sports          1367     12  33.3%    1.0   1.0    0.0     1.0    599.3 1.9973  markets/day 12 < 20; two-sided uptime 33
+KXBTCMAXMON                Crypto          1353      8 100.0%    1.0   1.0    0.0  1166.5   9452.9 2.1492  markets/day 8 < 20
+KXGOVFLNOMR                Elections        958      5  66.7%    0.1   0.2    0.0  2025.7 255696.9 0.2537  markets/day 5 < 20
+KXSAVEACT                  Politics         840      1 100.0%    0.1   0.1    0.0    34.6 389499.4 0.4448  markets/day 1 < 20
+KXHORMUZNORM               Politics         818      9 100.0%    1.0   2.0  0.167   144.7  55285.7 1.6613  markets/day 9 < 20
+KXSENATEMID                Elections        703      3  33.3%    0.3   0.3    0.0 18544.5 1561390.4 0.4188  markets/day 3 < 20; two-sided uptime 33.
+KXUSAIRANAGREEMENT         Politics         643      9 100.0%    1.0   1.0    0.0   454.7   4042.4 1.5332  markets/day 9 < 20
+KXMI13D                    Elections        146      3  40.0%    1.0   1.0    0.0 25648.4 112606.5 1.4408  markets/day 3 < 20; two-sided uptime 40.
+
+TOP 30 BY TRADES/DAY, whether or not depth was sampled
+series                       cat               trd/d  mkt/d      ctr/d  blk%  medPx
+KXBTC15M                     Crypto          1753887     93  127997422   0.0   50.0
+KXMVESPORTSMULTIGAMEEXTENDED Exotics          688887 326942  477411632   0.0    7.8
+KXMLBGAME                    Sports           377022     97   85007549   0.0   48.0
+KXBTCD                       Crypto           301072    738   27124819   0.0   49.0
+KXETH15M                     Crypto           264218     93    8772693   0.0   50.0
+KXATPMATCH                   Sports           248880     88   57517448   0.0   48.0
+KXITFMATCH                   Sports           243522     95   31050541   0.0   45.0
+KXMLSGAME                                     204378     40   16825766   0.0   34.0
+KXMVECROSSCATEGORY           Exotics          181509  95647   91051913   0.0   13.7
+KXITFWMATCH                  Sports           180378    136   21629902   0.0   49.0
+KXWTAMATCH                   Sports           180049     96   44853318   0.0   47.0
+KXLIGAMXGAME                 Sports           156942     17   12871617   0.0   30.0
+KXMLBTOTAL                   Sports           154517    314   26812309   0.0   47.0
+KXUFCFIGHT                   Sports           145347     45   21099043   0.0   50.0
+KXDOGE15M                    Crypto           127764     93    2925060   0.0   50.0
+KXXRP15M                     Crypto           127212     93    3056691   0.0   56.0
+KXHYPE15M                    Crypto           121581     93    3661581   0.0   49.0
+KXSOL15M                     Crypto           115409     93    2539529   0.0   55.0
+KXBNB15M                     Crypto           113014     93    2601338   0.0   50.0
+KXATPCHALLENGERMATCH         Sports            82919    102   13190416   0.0   45.0
+KXCLUBFGAME                  Sports            81915     76    8006511   0.0   40.0
+KXMLBSPREAD                  Sports            68341    178   12460176   0.0   42.0
+KXUFCMOV                                       66454     94    6171083   0.0   24.0
+KXCS2GAME                    Sports            64572    135    3663108   0.0   51.0
+KXWNBAGAME                   Sports            64353     19    8852327   0.0   51.0
+KXBOXING                     Sports            55985     36    4564283   0.0   49.0
+KXMLSTOTAL                                     55093     98    5324829   0.0   45.0
+KXCHNSLGAME                  Sports            49500     20    2743108   0.0   39.0
+KXNPBGAME                    Sports            48960     30    2382470   0.0   52.0
+KXVALORANTGAME               Sports            48664     40    3110522   0.0   49.0
+
+wrote reports/family_scorecard.json
