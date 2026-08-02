@@ -14,6 +14,8 @@ Prefix `M` for market-selection. Merge into LEDGER.md at the next inventory.
 | **M002** | *(this session, earlier)* "Kalshi's MLB mid deviates from the free DraftKings line by a median 3.74¢, and 6 of 8 game sides exceed the cost bar." | n=8 sides = **4 games**, and the ESPN line for LAA/MIL was stale (67.56 on re-pull vs 59.13). At n=26 sides / 13 games: median **0.37¢**, max 1.94¢, **0 of 26** exceed the bar. |
 | **M003** | *(the tasking's premise)* "archive.pmxt.dev has rolling 30-day retention and deletes itself continuously." | Frozen, not rolling. 2026-05-16 files still serve at **78 days old**; everything after 2026-06-11T03 is 404. Under 30-day retention the surviving set would be the exact inverse of what is observed. |
 | **M004** | *(a memory)* "pmxt covers 2026-05-15 00:00 → 06-10 23:00, 648 files." | Measured hour by hour at both boundaries: **2026-05-14T14 → 2026-06-11T03, 662 files.** |
+| **M005r** | *(this session, in a draft of SHORTLIST.md)* "No free public reference price exists for MLB player props" — offered as the whole mechanism for the top-ranked family. | ESPN's free odds object carries a `propBets` `$ref` resolving, unkeyed, to **555–677 fully priced DraftKings prop entries per game**. 3,699 entries scanned across 6 games, **100% carrying an American price**, plus the line and the opening price. Coverage includes Total Strikeouts, Total Hits, Total Bases, HR Milestones, Hits+Runs+RBIs, Team Total Runs and 1st-5-Innings moneyline/run line/total. |
+| **M006r** | *(this session)* "Kalshi props deviate from DraftKings by a median 4.55¢ with 79% exceeding the cost bar." | DK prop entries are **one-sided**, so the implied probability carries the book's margin. The −3.52¢ mean signed gap is what a 4–7% vig looks like. A de-vigging pass found **zero** two-sided prop lines (`overOdds`/`underOdds` exist only on the game-level object). **Verdict: INCONCLUSIVE, not suggestive.** |
 
 ## New claims
 
@@ -38,9 +40,21 @@ Prefix `M` for market-selection. Merge into LEDGER.md at the next inventory.
 | M021 | Polymarket's gamma API caps `limit` at 100 and **422s at offset 2100**. | `src/pull_poly_universe.py` | — | top 2,100 events by volume are enumerable; the tail is not | **SETTLED** (API fact) |
 | M022 | Polymarket books carry **more price levels than Kalshi's server cap**. | `reports/poly_depth_by_tag.json` | 208 markets, 26 tags | median 38–233 levels/market vs Kalshi's hard 20-a-side | **SUGGESTIVE** — busiest markets per tag |
 
+| M023 | ESPN's free feed publishes **priced DraftKings player props**, unkeyed. | `src/propbet_types.py` → `reports/propbet_types.json` | 3,699 entries / 6 games | 100% priced; 34 distinct prop types; line + current + **opening** price | **SETTLED** |
+| M024 | Those prop entries are **one-sided and cannot be de-vigged** from free data. | `src/kalshi_vs_dk_props2.py` | all prop entries scanned | **0** carry both `overOdds` and `underOdds` | **SETTLED** |
+| M025 | Therefore **Kalshi-vs-DraftKings on props is unanswerable with free data**. | same | n=105 matched props | median \|gap\| 4.55¢ **confounded by vig** | **CANCELLED** — pre-registered but unanswerable; kept in the denominator per the crypto convention |
+| M026 | **KXMLBRFI (first-inning run) has no free reference** in DraftKings' prop list, and the deepest book of any MLB family. | `reports/propbet_types.json`, `reports/mlb_props.json` | 34 prop types; 14 markets sampled | no first-inning type present; RFI **263,746 contracts at the touch**, 2.29 M within 5¢ | **SUGGESTIVE** |
+| M027 | **No free data source covering ITF tennis was found.** | `src/check_tennis_live.py` → `reports/tennis_live_sources.json` | 6 sources probed | ITF's own API returns **212 bytes**; ATP Challenger archive **403**; Sofascore **403**; ESPN covers ATP/WTA main tour only | **SETTLED** — ITF is ~76% of Kalshi's tennis book |
+
 ## The directional prior still holds
 
-Four retractions this session (M001–M004). **Every one shrank the edge or
-removed a premise.** M002 in particular took a measurement from "6 of 8 game
-sides beat the cost bar" to "0 of 26". Not one correction revealed a larger
-effect. That is now ~45 corrections across the archive with the same sign.
+**Six retractions this session** (M001–M004, M005r, M006r). **Every one shrank
+the edge or removed a premise.** M002 took a measurement from "6 of 8 game sides
+beat the cost bar" to "0 of 26". M005r removed the entire stated mechanism of
+what had been the top-ranked shortlist entry. M006r turned a 79%-exceed-the-bar
+reading into an uninterpretable one.
+
+Not one correction revealed a larger effect. That is now **~47 corrections
+across the archive with the same sign**, and the three added tonight were all
+found by trying to falsify my own claims rather than by anyone else checking
+them.
