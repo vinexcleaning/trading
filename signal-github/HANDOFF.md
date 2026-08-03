@@ -188,10 +188,12 @@ family**.
 | — G1 empty repo, 0 KB | 99 |
 | **deep-fetched and scored** | **40** |
 | of which credibility metrics fetched | **40 (all of them)** |
-| **read in full** | **4** |
+| **read in full** | **9 — the entire top 10 by strict score, bar one** |
 | repos scoring 9–10 strict | 3 |
 | repos with a backtest module AND separate order-submission code | **8 of 40 (20%)** |
-| repos publishing a backtest artifact behind their own profit claim | **0 of 40** |
+| repos committing a backtest artifact behind their own strategy | **1 of 40** (`oracle3`) |
+| ...and whether that artifact supports the strategy | **no — its own performance block reports Sharpe −1.57, profit factor 0.95** |
+| strategies extracted that model costs at all | **5 of 14** |
 | defects found only by reading (3 in 2 well-scoring repos) | `reports/repo_defects.json` |
 | **"trust me bro"** — a results claim, <10 commits, no artifact | **3 of 40** |
 | API spend | 8 core + 58 search for retrieval; ~60 core for the tree tier; 861 raw; 13 sourcegraph |
@@ -200,10 +202,10 @@ The bad numbers, stated plainly:
 
 - **40 of 2,562 gated repos were deep-fetched. That is 1.6% coverage.** The
   ranking below the top 40 is prescreen-ordered, not scored.
-- **4 repos were read in full**, out of 40 scored and 2,562 gated. The prompt's
-  own rule is one per turn, and 60 core calls/hour rationed how many could be
-  prepared. Reading is where every defect in `reports/repo_defects.json` came
-  from, so this is the number most worth increasing next.
+- **9 repos were read in full**, out of 40 scored and 2,562 gated. That covers
+  the whole top 10 by strict score except `almanak-co/sdk`. Reading is where
+  every one of the five entries in `reports/repo_defects.json` came from, and
+  where the single most important finding of the project came from — see below.
 - **77 repos were dropped because no README could be fetched** at `README.md` or
   `README.rst` on the default/main/master branch. A repo with an on-topic
   codebase and no README is invisible to G3. Real false-negative channel.
