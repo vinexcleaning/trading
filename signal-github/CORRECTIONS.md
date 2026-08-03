@@ -110,6 +110,31 @@ unquotable. **The rule that survives is: pick a series whose maker multiplier is
 zero *and* which has a book.** On Kalshi those two conditions are close to
 mutually exclusive.
 
+### C1a — the failure mode this creates in the wild, found twice
+
+Applying the maker rate **without checking `fee_type` per series** is its own
+error, and it is made by exactly the repos careful enough to model maker fees at
+all. Two independent, and both are among the most rigorous in the corpus:
+
+| repo | where | what it does |
+|---|---|---|
+| `artyomderkach-bit/kalshi-15m-market-maker` | `backtest/pairdata.py:12`, `backtest/maker_model.py:11` | charges its own maker strategy `MAKER_RATE = 0.0175` on `KXBTC15M`/`KXETH15M`/`KXSOL15M`/`KXXRP15M`/`KXDOGE15M` |
+| `hamad-khawaja/kalshi-trading-bot` | `src/strategy/market_maker.py:213,248`, `src/strategy/edge_detector.py:151`, 6 sites in `src/bot.py` | subtracts a maker fee inside the **edge calculation** on `KXBTC15M`/`KXETH15M` |
+
+**None of those series charge a maker fee. Zero 15-minute series anywhere on
+Kalshi do.** Both repos therefore penalise themselves: the first adds 0.1–0.3¢
+per contract of phantom cost to a strategy it reports as *"roughly break-even"*;
+the second demands a larger edge than it needs before entering, at the money
+about 0.44¢ per contract.
+
+The error is invisible to any check that compares a constant against the
+published schedule, because **the constant is right**. Only the per-series
+`fee_type` makes it wrong.
+
+This is direct external validation of the design of `common/kalshi_fees.py`:
+`maker_fee_order_cents()` takes no default for the series and raises rather than
+guess. Two repos in the wild demonstrate the exact failure that refusal prevents.
+
 **Canonical implementation:** `common/kalshi_fees.py`. It takes a `SeriesFees`
 read from the API and refuses to guess — `maker_fee_order_cents()` has no default
 argument for the series, because a caller that does not know the series' fee_type

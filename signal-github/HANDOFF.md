@@ -561,6 +561,42 @@ it still only reaches break-even. That is independent support for the kill, from
 someone who built the full apparatus and reached the same place. **It does not
 reopen the thread.**
 
+## 2j. Fourth read — the same defect again, which makes it a pattern
+
+`hamad-khawaja/kalshi-trading-bot` — 2★, **104 commits over 13 days**, 103 files,
+CI workflow, 15 test files, a `robustness_check.py`, six documented strategy
+flows. `s_strict` 10, fee constants correct. It trades `KXBTC15M` and `KXETH15M`.
+
+It makes **the same error as §2i, independently**, and deeper in the stack:
+
+| site | what it does |
+|---|---|
+| `src/strategy/market_maker.py:213, 248` | charges a maker fee on **both quoting legs** |
+| `src/strategy/edge_detector.py:151` | subtracts a maker fee **inside the edge calculation** |
+| `src/bot.py` (6 sites), `position_tracker.py:533`, `fomo_detector.py:166`, `trend_continuation_detector.py:218` | `is_maker=True` throughout the decision path |
+| `CLAUDE.md:69` | documents `maker rate=0.0175, taker rate=0.07` — **both correct** against the published schedule |
+
+`KXBTC15M` and `KXETH15M` charge **no maker fee**. So the bot subtracts roughly
+**0.44¢ per contract at the money** from an edge that does not have to cover it,
+and declines trades that are actually profitable.
+
+**Two independent repos, both among the most rigorous found, making the same
+mistake, makes it a pattern worth naming.** It is recorded as correction **C1a**:
+
+> The published maker rate is right. Applying it without checking the series'
+> `fee_type` is wrong — and the repos careful enough to model maker fees at all
+> are precisely the ones that get this wrong, because the careless ones use
+> taker or zero everywhere.
+
+The error is invisible to any check that compares a constant against the
+schedule, **because the constant is correct**. Only the per-series `fee_type`
+makes it wrong.
+
+This is direct external validation of a design decision already made in this
+repo: `common/kalshi_fees.py::maker_fee_order_cents()` takes no default for the
+series and raises rather than guess. Two repos in the wild demonstrate exactly
+the failure that refusal prevents.
+
 ---
 
 ## 3. The no-README false-negative channel is closed
