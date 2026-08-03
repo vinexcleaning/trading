@@ -147,14 +147,58 @@ and converts the most actionable method in the file from *probably broken* to
   `f9a1e88 checkpoint`, but has **ZERO remotes**. One disk failure from gone.
 - `C:\Users\gianf\crypto` — **not a git repo at all.** No backup of any kind.
 
-**Both recorders named in the root STATUS.md are dead:**
-- PID 17892 `record_depth.py` (tennis depth) — **NOT RUNNING.** Last write to
-  `set1_overshoot\data\depth` was **09:59**, now 12:46 → **~2h47m gap.**
-  STATUS.md states these gaps are irrecoverable; Kalshi has no historical
-  order-book endpoint. **Nobody has restarted it.**
-- PID 24756 `record_15m_opens_v2.py` (crypto) — not running, but **a parallel
-  session restarted it at 12:46:33 as PID 22260**. Gap 08:30 → 12:46, ~4h16m.
+**Both recorders named in the root STATUS.md were dead. BOTH ARE NOW BACK UP** —
+re-verified 12:48:48, two minutes after the lines above were written.
 
-**Processes running, none of them mine:** 21208 wallet-copy-study · 17996 and
-17308 `fetch_repo.py` (signal-github, one of them borrowing this project's venv) ·
-22260 the restarted crypto recorder.
+- `record_depth.py` (tennis depth) — **RUNNING again as PID 14072, started
+  12:46:47.** Confirmed live: `set1_overshoot\data\depth\2026-08-03\16\depth.jsonl`
+  written at **12:48:07**, 41 s before the check. **Gap is 09:59:12 → 12:48:07 =
+  ~2h49m and is permanently lost** — Kalshi has no historical order-book endpoint,
+  so this cannot be backfilled by anyone, ever.
+- `record_15m_opens_v2.py` (crypto) — **RUNNING as PID 22260**, restarted 12:46:33
+  with `--hours 168`. Its log and err files were written at start. **Caveat: the
+  data file `crypto\data\btc15m_opens\opens_all_2026-08-03.jsonl` has not been
+  appended to since 08:30:58.** Two minutes in that is expected — it waits for the
+  next 15-minute boundary — but if it is still 08:30 an hour from now the process
+  is up and not collecting. **Check that file's mtime, not the process list.**
+  Gap so far 08:30 → 12:46, ~4h16m.
+
+**Machine sleep:** `powercfg SUB_SLEEP STANDBYIDLE` AC index = `0x00000000` —
+never sleeps on mains. On battery it is not covered by that setting; both
+recorders die on sleep and neither gap is recoverable. Keep it plugged in.
+
+**Processes running, NONE of them mine** (this session started no background job):
+| PID | what | writes to | dies on sleep |
+|---|---|---|---|
+| 14072 | `record_depth.py` — tennis order-book depth | `kalshi\set1_overshoot\data\depth\<date>\<hr>\depth.jsonl` | **yes, unrecoverable** |
+| 22260 | `record_15m_opens_v2.py --hours 168` — crypto 15m opens | `crypto\data\btc15m_opens\opens_all_<date>.jsonl` | **yes, unrecoverable** |
+| 21208 | `wallet-copy-study\src\spec_20_pull_missing.py`, running since 10:29 | `wallet-copy-study\reports\` | re-runnable |
+| 17996 | `src/fetch_repo.py tree 400` (signal-github) — **borrowing this project's venv** | signal-github | re-runnable |
+| 17308 | `src/fetch_repo.py tree 400` (signal-github, second copy) | signal-github | re-runnable |
+
+The two recorders are the only irreplaceable things in that list.
+
+## 8. Checkpoint status, 2026-08-03 12:48
+
+**Working directory `C:\Users\gianf\trading\youtube-signal` — inside the repo.**
+Git top level is `C:\Users\gianf\trading`.
+
+**Working tree is CLEAN. Nothing untracked.** `git add -A` and
+`git commit -m "checkpoint"` are both no-ops right now — a parallel session's
+`checkpoint` commit (`3137c2d`) already swept everything at 12:4x.
+
+**THE PUSH DID NOT HAPPEN.** `git push` was denied twice by the Claude Code
+permission classifier (transient stage-2 error), not by git and not by the remote.
+`main` is **15 commits ahead of `origin/main`** and none of this session's work is
+backed up remotely. This needs a human to run it or to grant the permission.
+
+Ignored and deliberately not committed (privacy — the repo is public and these
+hold judgments about named creators): `youtube-signal/KNOWLEDGE.md`,
+`youtube-signal/reports/`, `youtube-signal/data/`.
+
+**One thing to look at in `3137c2d` before pushing:** that `git add -A` swept 13
+new `wallet-copy-study/reports/*.json` files into history, two of which carry
+wallet addresses (`rec_probe.json` 2, `spec_latency_panels.json` 22). That
+directory was *already* tracked and public — 39 such files are on `origin/main`
+already — so this is not a new class of exposure, but it is the exact mechanism
+`CLAUDE.md` forbids `git add -A` for, firing for the fourth time.
