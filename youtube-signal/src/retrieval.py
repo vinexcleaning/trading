@@ -131,8 +131,14 @@ class Retriever:
             )
         ud = info.get("upload_date")
         d = dt.datetime.strptime(ud, "%Y%m%d").date() if ud else None
+        # The DESCRIPTION is typed by the creator; the transcript is auto-captioned
+        # speech. Spoken product names get garbled ("Kreo" -> "Creo") but the
+        # description carries the literal URL, plus referral links and discount
+        # codes that are never said out loud. Capture it at fetch time -- it is
+        # free here and expensive to backfill.
         return {
             "info": info,
+            "description": info.get("description") or "",
             "upload_date": d.isoformat() if d else None,
             "age_months": round((self.today - d).days / 30.44, 2) if d else None,
             "title": info.get("title"),

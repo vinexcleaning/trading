@@ -98,7 +98,8 @@ def main():
                    channel_name=COALESCE(?, channel_name), title=COALESCE(?, title),
                    view_count=COALESCE(?, view_count), duration_s=COALESCE(?, duration_s),
                    upload_date=?, age_months=?, transcript_words=?, transcript_via=?,
-                   is_stale=?, gate_status=?, metadata_fetched=1
+                   is_stale=?, gate_status=?, metadata_fetched=1,
+                   description=COALESCE(?, description)
                WHERE video_id=?""",
             (
                 meta["channel_id"], meta["channel_name"], meta["title"],
@@ -107,7 +108,7 @@ def main():
                 sum(len(s["text"].split()) for s in snips) if snips else 0,
                 via,
                 1 if status == "STALE_G2" else 0,
-                status, vid,
+                status, meta.get("description"), vid,
             ),
         )
         if status.startswith("DROP") or status == "STALE_G2":
