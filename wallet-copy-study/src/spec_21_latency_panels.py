@@ -23,6 +23,7 @@ headline is selected on liquidity and must be reported as such.
 """
 import json
 import sys
+from array import array
 from bisect import bisect_left
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -47,30 +48,45 @@ MIN_EVENTS = 30
 
 survivors = set(json.loads(TARGETS.read_text(encoding="utf-8"))["survivors"])
 
-print("loading books...", flush=True)
-bts, bpx = defaultdict(list), defaultdict(list)
-n = 0
+# The book files now total ~63M fills across ~11.4GB. Holding those as Python
+# lists would need well over the free RAM on this box, so two economies:
+#   1. keep only tokens the panel actually needs (most of fills.jsonl and
+#      exit_fills.jsonl is irrelevant here);
+#   2. store timestamps and prices in array('i')/array('d'), roughly a quarter
+#      of the footprint of Python lists of boxed scalars.
+print("collecting needed tokens...", flush=True)
+needed = set()
+for line in PANEL.open(encoding="utf-8"):
+    r = json.loads(line)
+    if r["ts"] >= CUT and r["w"] in survivors:
+        needed.add(r["tok"])
+print(f"  {len(needed):,} tokens needed")
+
+print("loading books (filtered)...", flush=True)
+bts, bpx = defaultdict(lambda: array("i")), defaultdict(lambda: array("d"))
+n = kept = 0
 for p in BOOKS:
     if not p.exists():
         continue
     for line in p.open(encoding="utf-8"):
+        n += 1
+        if n % 20_000_000 == 0:
+            print(f"  scanned {n:,}, kept {kept:,}", flush=True)
         try:
             f = json.loads(line)
         except Exception:  # noqa: BLE001
             continue
         t = f.get("token")
-        if t is None:
+        if t is None or t not in needed:
             continue
         bts[t].append(f["ts"])
         bpx[t].append(f["price"])
-        n += 1
-        if n % 10_000_000 == 0:
-            print(f"  {n:,}", flush=True)
-for t in bts:
+        kept += 1
+for t in list(bts):
     z = sorted(zip(bts[t], bpx[t]))
-    bts[t] = [a for a, _ in z]
-    bpx[t] = [b for _, b in z]
-print(f"  {n:,} fills over {len(bts):,} tokens")
+    bts[t] = array("i", [a for a, _ in z])
+    bpx[t] = array("d", [b for _, b in z])
+print(f"  scanned {n:,} fills, kept {kept:,} over {len(bts):,} tokens")
 
 
 def px_at(tok, when):
@@ -221,4 +237,18 @@ res["per_wallet"] = {"n_reportable": n_report,
 
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text(json.dumps(res, indent=2), encoding="utf-8")
+
+# Cache per-event contributions for the per-delay population so leave-one-out
+# can be run without re-reading 63M fills. Saved for the NEGATIVE result
+# specifically -- the same robustness test the positive politics finding got.
+RAW = D / "spec_latency_raw.json"
+rawdump = {}
+for d in DELAYS:
+    ev = defaultdict(list)
+    for r, vals in resolved:
+        if vals[d] is not None:
+            ev[r["ev"]].append(round(vals[d], 6))
+    rawdump[str(d)] = dict(ev)
+RAW.write_text(json.dumps(rawdump), encoding="utf-8")
 print(f"\nwrote {OUT}")
+print(f"wrote {RAW} (per-event contributions for leave-one-out)")

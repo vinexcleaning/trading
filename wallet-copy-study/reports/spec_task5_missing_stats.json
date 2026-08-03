@@ -1,0 +1,13 @@
+{
+  "tokens_targeted": 16033,
+  "tokens_done": 13150,
+  "fills_added": 25167022,
+  "hours": 7.0,
+  "counters": {
+    "batch_truncated": 341,
+    "tokens_done": 13150,
+    "batches": 526,
+    "query_failed": 3,
+    "stopped_on_time_budget": 1
+  }
+}

@@ -1,0 +1,443 @@
+{
+  "10": {
+    "baseline_gross_pp": -0.6608,
+    "baseline_net_pp": -1.6608,
+    "baseline_p": 0.005333,
+    "n_events": 5495,
+    "n_eff": 253.7,
+    "largest_event_share": 0.0146,
+    "top15_drops": [
+      {
+        "event": "series:btc-updown-15m:20461",
+        "n_obs": 413,
+        "mean_without_pp": -0.6376,
+        "net_without_pp": -1.6376,
+        "shift_pp": 0.0232,
+        "still_negative_net": true,
+        "p": 0.015
+      },
+      {
+        "event": "series:btc-updown-15m:20467",
+        "n_obs": 393,
+        "mean_without_pp": -0.7194,
+        "net_without_pp": -1.7194,
+        "shift_pp": -0.0586,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20468",
+        "n_obs": 386,
+        "mean_without_pp": -0.6916,
+        "net_without_pp": -1.6916,
+        "shift_pp": -0.0308,
+        "still_negative_net": true,
+        "p": 0.005
+      },
+      {
+        "event": "series:btc-updown-15m:20466",
+        "n_obs": 368,
+        "mean_without_pp": -0.6663,
+        "net_without_pp": -1.6663,
+        "shift_pp": -0.0055,
+        "still_negative_net": true,
+        "p": 0.0125
+      },
+      {
+        "event": "series:btc-updown-15m:20472",
+        "n_obs": 345,
+        "mean_without_pp": -0.6304,
+        "net_without_pp": -1.6304,
+        "shift_pp": 0.0304,
+        "still_negative_net": true,
+        "p": 0.01
+      },
+      {
+        "event": "series:btc-updown-5m:20540",
+        "n_obs": 340,
+        "mean_without_pp": -0.5895,
+        "net_without_pp": -1.5895,
+        "shift_pp": 0.0713,
+        "still_negative_net": true,
+        "p": 0.0075
+      },
+      {
+        "event": "series:btc-updown-5m:20541",
+        "n_obs": 324,
+        "mean_without_pp": -0.6279,
+        "net_without_pp": -1.6279,
+        "shift_pp": 0.0329,
+        "still_negative_net": true,
+        "p": 0.0075
+      },
+      {
+        "event": "series:btc-updown-15m:20473",
+        "n_obs": 323,
+        "mean_without_pp": -0.6548,
+        "net_without_pp": -1.6548,
+        "shift_pp": 0.006,
+        "still_negative_net": true,
+        "p": 0.0075
+      },
+      {
+        "event": "series:btc-updown-15m:20465",
+        "n_obs": 316,
+        "mean_without_pp": -0.6436,
+        "net_without_pp": -1.6436,
+        "shift_pp": 0.0172,
+        "still_negative_net": true,
+        "p": 0.015
+      },
+      {
+        "event": "series:btc-updown-15m:20478",
+        "n_obs": 302,
+        "mean_without_pp": -0.6894,
+        "net_without_pp": -1.6894,
+        "shift_pp": -0.0286,
+        "still_negative_net": true,
+        "p": 0.01
+      },
+      {
+        "event": "series:btc-updown-15m:20469",
+        "n_obs": 300,
+        "mean_without_pp": -0.6535,
+        "net_without_pp": -1.6535,
+        "shift_pp": 0.0073,
+        "still_negative_net": true,
+        "p": 0.0075
+      },
+      {
+        "event": "series:btc-updown-15m:20475",
+        "n_obs": 298,
+        "mean_without_pp": -0.6406,
+        "net_without_pp": -1.6406,
+        "shift_pp": 0.0202,
+        "still_negative_net": true,
+        "p": 0.005
+      },
+      {
+        "event": "series:btc-updown-15m:20474",
+        "n_obs": 291,
+        "mean_without_pp": -0.6821,
+        "net_without_pp": -1.6821,
+        "shift_pp": -0.0213,
+        "still_negative_net": true,
+        "p": 0.0025
+      },
+      {
+        "event": "series:btc-updown-15m:20470",
+        "n_obs": 273,
+        "mean_without_pp": -0.694,
+        "net_without_pp": -1.694,
+        "shift_pp": -0.0332,
+        "still_negative_net": true,
+        "p": 0.0025
+      },
+      {
+        "event": "series:btc-updown-15m:20477",
+        "n_obs": 270,
+        "mean_without_pp": -0.6404,
+        "net_without_pp": -1.6404,
+        "shift_pp": 0.0204,
+        "still_negative_net": true,
+        "p": 0.0125
+      }
+    ],
+    "max_abs_shift_pp": 0.0713,
+    "all_15_still_negative_net": true
+  },
+  "60": {
+    "baseline_gross_pp": -1.2001,
+    "baseline_net_pp": -2.2001,
+    "baseline_p": 0.000667,
+    "n_events": 5366,
+    "n_eff": 245.9,
+    "largest_event_share": 0.0157,
+    "top15_drops": [
+      {
+        "event": "series:btc-updown-15m:20461",
+        "n_obs": 403,
+        "mean_without_pp": -1.1673,
+        "net_without_pp": -2.1673,
+        "shift_pp": 0.0328,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20467",
+        "n_obs": 372,
+        "mean_without_pp": -1.2773,
+        "net_without_pp": -2.2773,
+        "shift_pp": -0.0772,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20468",
+        "n_obs": 354,
+        "mean_without_pp": -1.2137,
+        "net_without_pp": -2.2137,
+        "shift_pp": -0.0136,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20466",
+        "n_obs": 344,
+        "mean_without_pp": -1.2062,
+        "net_without_pp": -2.2062,
+        "shift_pp": -0.0061,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-5m:20540",
+        "n_obs": 335,
+        "mean_without_pp": -1.1281,
+        "net_without_pp": -2.1281,
+        "shift_pp": 0.072,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20472",
+        "n_obs": 324,
+        "mean_without_pp": -1.1671,
+        "net_without_pp": -2.1671,
+        "shift_pp": 0.033,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-5m:20541",
+        "n_obs": 319,
+        "mean_without_pp": -1.1715,
+        "net_without_pp": -2.1715,
+        "shift_pp": 0.0286,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20465",
+        "n_obs": 297,
+        "mean_without_pp": -1.1878,
+        "net_without_pp": -2.1878,
+        "shift_pp": 0.0123,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20473",
+        "n_obs": 293,
+        "mean_without_pp": -1.172,
+        "net_without_pp": -2.172,
+        "shift_pp": 0.0281,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20478",
+        "n_obs": 286,
+        "mean_without_pp": -1.2104,
+        "net_without_pp": -2.2104,
+        "shift_pp": -0.0103,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20469",
+        "n_obs": 283,
+        "mean_without_pp": -1.1771,
+        "net_without_pp": -2.1771,
+        "shift_pp": 0.023,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20475",
+        "n_obs": 279,
+        "mean_without_pp": -1.1598,
+        "net_without_pp": -2.1598,
+        "shift_pp": 0.0403,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20474",
+        "n_obs": 271,
+        "mean_without_pp": -1.2142,
+        "net_without_pp": -2.2142,
+        "shift_pp": -0.0141,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-5m:20542",
+        "n_obs": 263,
+        "mean_without_pp": -1.1817,
+        "net_without_pp": -2.1817,
+        "shift_pp": 0.0184,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20470",
+        "n_obs": 251,
+        "mean_without_pp": -1.224,
+        "net_without_pp": -2.224,
+        "shift_pp": -0.0239,
+        "still_negative_net": true,
+        "p": 0.00125
+      }
+    ],
+    "max_abs_shift_pp": -0.0772,
+    "all_15_still_negative_net": true
+  },
+  "300": {
+    "baseline_gross_pp": -1.0548,
+    "baseline_net_pp": -2.0548,
+    "baseline_p": 0.000667,
+    "n_events": 4919,
+    "n_eff": 254.9,
+    "largest_event_share": 0.0182,
+    "top15_drops": [
+      {
+        "event": "series:btc-updown-15m:20461",
+        "n_obs": 316,
+        "mean_without_pp": -1.0372,
+        "net_without_pp": -2.0372,
+        "shift_pp": 0.0176,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-5m:20540",
+        "n_obs": 305,
+        "mean_without_pp": -0.9748,
+        "net_without_pp": -1.9748,
+        "shift_pp": 0.08,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-5m:20541",
+        "n_obs": 298,
+        "mean_without_pp": -1.0118,
+        "net_without_pp": -2.0118,
+        "shift_pp": 0.043,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-5m:20542",
+        "n_obs": 244,
+        "mean_without_pp": -1.0495,
+        "net_without_pp": -2.0495,
+        "shift_pp": 0.0053,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20467",
+        "n_obs": 236,
+        "mean_without_pp": -1.1292,
+        "net_without_pp": -2.1292,
+        "shift_pp": -0.0744,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20466",
+        "n_obs": 216,
+        "mean_without_pp": -1.0398,
+        "net_without_pp": -2.0398,
+        "shift_pp": 0.015,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20468",
+        "n_obs": 213,
+        "mean_without_pp": -1.0666,
+        "net_without_pp": -2.0666,
+        "shift_pp": -0.0118,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20465",
+        "n_obs": 208,
+        "mean_without_pp": -1.0528,
+        "net_without_pp": -2.0528,
+        "shift_pp": 0.002,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20478",
+        "n_obs": 189,
+        "mean_without_pp": -1.0487,
+        "net_without_pp": -2.0487,
+        "shift_pp": 0.0061,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20473",
+        "n_obs": 183,
+        "mean_without_pp": -1.0662,
+        "net_without_pp": -2.0662,
+        "shift_pp": -0.0114,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20472",
+        "n_obs": 175,
+        "mean_without_pp": -1.0463,
+        "net_without_pp": -2.0463,
+        "shift_pp": 0.0085,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20474",
+        "n_obs": 172,
+        "mean_without_pp": -1.0502,
+        "net_without_pp": -2.0502,
+        "shift_pp": 0.0046,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20475",
+        "n_obs": 162,
+        "mean_without_pp": -1.0667,
+        "net_without_pp": -2.0667,
+        "shift_pp": -0.0119,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20469",
+        "n_obs": 158,
+        "mean_without_pp": -1.0252,
+        "net_without_pp": -2.0252,
+        "shift_pp": 0.0296,
+        "still_negative_net": true,
+        "p": 0.00125
+      },
+      {
+        "event": "series:btc-updown-15m:20470",
+        "n_obs": 152,
+        "mean_without_pp": -1.069,
+        "net_without_pp": -2.069,
+        "shift_pp": -0.0142,
+        "still_negative_net": true,
+        "p": 0.00125
+      }
+    ],
+    "max_abs_shift_pp": 0.08,
+    "all_15_still_negative_net": true
+  }
+}
