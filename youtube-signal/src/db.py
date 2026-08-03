@@ -66,6 +66,18 @@ CREATE TABLE IF NOT EXISTS retrieval_log (
     error      TEXT
 );
 
+-- Transcript text is cached at gate time. G1 fetches it anyway, and Phase 2
+-- scoring needs the timestamped snippets for its evidence requirement; refetching
+-- 470 transcripts later would cost ~35 minutes for nothing.
+CREATE TABLE IF NOT EXISTS transcripts (
+    video_id      TEXT PRIMARY KEY,
+    via           TEXT,
+    n_snippets    INTEGER,
+    n_words       INTEGER,
+    snippets_json TEXT,
+    fetched_utc   TEXT
+);
+
 CREATE TABLE IF NOT EXISTS drops (
     video_id  TEXT,
     gate      TEXT,

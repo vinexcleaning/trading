@@ -84,6 +84,15 @@ def main():
         status, detail = gates.classify(video, snips)
         counts[status] = counts.get(status, 0) + 1
 
+        if snips:
+            con.execute(
+                "INSERT OR REPLACE INTO transcripts (video_id, via, n_snippets,"
+                " n_words, snippets_json, fetched_utc) VALUES (?,?,?,?,?,?)",
+                (vid, via, len(snips),
+                 sum(len(s["text"].split()) for s in snips),
+                 json.dumps(snips, separators=(",", ":")), db.now()),
+            )
+
         con.execute(
             """UPDATE videos SET channel_id=COALESCE(?, channel_id),
                    channel_name=COALESCE(?, channel_name), title=COALESCE(?, title),
