@@ -194,15 +194,16 @@ as GitHub code search); forks of the client libraries for dependents.
 
 | | |
 |---|---|
-| repos retrieved | **3,133** across 6 axes |
-| gate PASS / STALE / DROP | 2,441 / 121 / 571 |
-| deep-fetched and scored | **105** (4.1% of gated); credibility for 40 |
-| read in full | **9** — the top 10 by strict score bar one |
+| repos retrieved | 3,133 across 6 axes (laptop) · **2,806 rebuilt on the desktop 08-03** |
+| gate PASS / STALE / DROP | 2,441 / 121 / 571 · **desktop: 2,221 / 126 / 459** |
+| deep-fetched and scored | ~~105 (4.1%)~~ → **862 (36.7% of gated), 08-03, for ZERO core API calls** |
+| how | `codeload` tarballs return the whole tree **and every file's contents**, unmetered. 1,197 archives in 266 s vs ~20 h at 60 tree-calls/hour. Depth no longer needs a token. |
+| read in full | 12 (laptop) + **2 (desktop) → 5 more defects**, in repos scoring 10 and 9 |
+| **fee audit, 862 repos** | 19 repos model Kalshi's maker fee correctly and have **65 stars between them**; 15 hardcode it to zero and have **1,493**. On a fact with published ground truth, popularity points the wrong way. |
 | **F1 vs F2 Jaccard** | **0.033** (YouTube: 0.037 over 446 videos) |
 | code-search hits found by neither family | 41 of 47 |
-| **stars vs S_strict** | **rho +0.241, p 0.013 at n=105** (was −0.019 at n=40 — corrected) |
-| forks vs S_strict / commits vs S_strict | +0.126 (p .20) / +0.147 (p .36) |
-| | **stars explain ~6% of rank variance — weak, real, still useless for sorting** |
+| **stars vs S_strict** | ~~rho +0.241, p 0.013 at n=105~~ — **RE-CORRECTED 08-03: −0.004, p 0.90 at n=862.** The n=105 bump decayed monotonically to zero (105 → 200 → 400 → 600 → 862). It was a small-sample artifact; **stars carry no usable information after all**, and the earlier withdrawal of that claim was itself the error. |
+| forks vs S_strict / **tree_files vs S_strict** | −0.009 (p .79) / **+0.593 (p<0.0001)** — the ranking is substantially a *size* ranking; normalise for repo size before anything else |
 | two repos both scoring 10/10 strict | one is 67 files/1 venue/no backtest and says so; the other 797 files/17 venues with a documented backtest API and no result. **The scorer cannot separate them; reading can.** |
 | repos committing a backtest artifact behind their own strategy | **1 of 40** (`YichengYang-Ethan/oracle3`) |
 | does that artifact support the strategy? | **no.** Headline reads +0.49%; the `performance` block in the same file reports total_pnl −8.80, Sharpe −1.5749, profit factor 0.9526, and the equity curve ends below its start. Zero mentions of fee, slippage or commission in 126 KB. |
