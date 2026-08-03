@@ -444,6 +444,125 @@ exact-value buckets are quoted above, and `reports/fee_audit.json` carries
 
 ---
 
+## 2h. The Kalshi member agreement — read, and it changes the venue answer
+
+The previous handoff listed this as the one input that could invalidate the venue
+recommendation, and as human-only work. **It is neither.** It is at
+`kalshi.com/docs/kalshi-member-agreement.pdf` — same URL shape as the fee
+schedule — and downloaded on the second attempt with a browser User-Agent.
+9 pages, 34,214 characters, v1.6.
+
+**What it does not say.** Term census over the full text:
+
+| term | occurrences |
+|---|---|
+| bot, automated, automation, algorithmic, programmatic | **0** |
+| API, script, scrape, scraping, robot | **0** |
+| high-frequency, co-locate | **0** |
+| manipulat*, spoof, wash trade, self-trade, disruptive | **0** |
+| **Rulebook** | **19** |
+| market maker | 11 |
+
+**The member agreement is silent on automation.** It neither permits nor
+prohibits bots. So it does not contradict the project's automation claims — but
+it does not support them either, and the conduct rules are not in it. They are in
+the **Rulebook**, which is incorporated by reference and, in the agreement's own
+words, *"In the event of any conflict between this Agreement and the Kalshi
+Rulebook, the Kalshi Rulebook will govern."* **The Rulebook is the operative
+document for the automation question and is still unread** — `kalshi.com/regulatory/rulebook`
+returns 145 KB of HTML that yields 581 characters of text, and renders an empty
+body in a real browser too.
+
+**What it does say, and this is the material part.** Clause T, quoted because
+paraphrase would soften it:
+
+> *"Under the rules, market makers will make markets on Kalshi in exchange for
+> receiving benefits. The benefits can include monetary benefits, such as
+> **discounts on fees, rebates on fees, revenue share from fees** … Market makers
+> who receive these benefits **may be able to price their quotes in ways that are
+> materially different** from other Kalshi members who are not eligible … Market
+> makers may also be eligible for … **order protections whereby orders are
+> canceled if the market maker's trading session disconnects** … and may be
+> eligible to **greater throughput to the Exchange** … **These tools may give
+> market makers a trading advantage over members who are not market makers**."*
+
+And clause U: designated makers must hold a maximum spread and minimum depth only
+*"during specific times"*; outside those, *"pricing and liquidity … may be
+worse."*
+
+**Consequence.** The project's single most promising strategy was maker-only
+two-sided quoting. On Kalshi, the venue states in its own contract that a
+non-designated participant running that strategy is competing against
+counterparties who get fee discounts, rebates and revenue share on the very fees
+the retail participant pays in full (and per §2 pays at all, on the 130 liquid
+series), plus cancel-on-disconnect protection and higher throughput. **This is
+the venue telling you, in the agreement you sign, that you are structurally
+disadvantaged in exactly that strategy.** It is a stronger argument against
+retail maker-only quoting on Kalshi than anything the project had derived.
+
+**Polymarket's terms remain unread and are worse than "not tried".** `/tos`
+returns HTTP 200, sets the page title to "Terms of Use | Polymarket", and renders
+the **homepage body** — in a real browser, after client-side routing, with the
+footer link clicked. There is no terms text. The previous handoff's advice to
+"read it in a browser" does not work; that recommendation is withdrawn.
+
+---
+
+## 2i. Third read — the most honest repo in the corpus, and it understates itself
+
+`artyomderkach-bit/kalshi-15m-market-maker` — **0 stars**, 10 commits over 8
+days, 41 files, MIT, `s_strict` 10, and top of the combined shortlist (§3c). A
+market maker for Kalshi's 15-minute crypto series.
+
+It is the anti-pattern to everything else read this session:
+
+- **It says what it is withholding.** *"This is the public version … the
+  proprietary parts removed … the architecture, engine, backtest harness and
+  tooling are the real thing; **the edge itself is not in this repo**."*
+- **It makes no profit claim and pre-empts one:** *"This is not a promise of
+  alpha."* It ships in **paper mode** running *"the one strategy that is roughly
+  break-even under pessimistic fill assumptions"*.
+- **It reports its own negative result:** *"Almost every edge that looked real
+  in-sample decayed out-of-sample within a few weeks as the market makers on the
+  other side sharpened up."* That is an independent corroboration of this
+  programme's own central finding.
+- **It is designed against the exact defect §2d found in `evan-kolberg`:** the
+  fair-value function *"is imported by both the live engine and the backtests so
+  they can never drift apart."*
+- **Its paper fill detection is deliberately conservative** — a print must go
+  *through* the resting level; *"it never lets a touch count as a fill."*
+- Its fee helper is `math.ceil(raw * 100.0 - 1e-9) / 100.0` — independently the
+  same float-dust guard that `common/kalshi_fees.py` exists to provide across
+  this repo's own five codebases.
+
+**And it has a real defect, in the opposite direction from every other one found
+this session.** `backtest/pairdata.py:12` sets `MAKER_RATE = 0.0175` and
+`backtest/maker_model.py:11` charges *"maker fee 0.0175"* on its own maker
+strategy. Per §2, **the 15-minute crypto series do not charge makers at all**:
+
+| series | fee_type | maker pays |
+|---|---|---|
+| `KXBTC15M` `KXETH15M` `KXSOL15M` `KXXRP15M` `KXDOGE15M` | `quadratic` | **zero** |
+
+**Zero 15-minute series anywhere on Kalshi charge a maker fee.** At the repo's own
+quoting range of $0.80–0.99 in 10-lots, it charges itself $0.01–0.03 per fill —
+**0.1–0.3¢ per contract of phantom cost** — against a strategy it describes as
+roughly break-even. That is the whole margin.
+
+**So the most careful repo in the corpus is understating its own strategy.** Of
+the six defects reading has found this session, five flatter the repo and this
+one penalises it — and it is in the only repo that did everything else right.
+
+**Why this matters for `STATUS.md`'s closed BTC-15-minute thread.** That thread
+was killed structurally: *"every contract is minted at-the-money on the peak of
+the fee curve."* This repo's answer is to quote the **wings** at $0.80–0.99,
+where `p(1−p)` is small — sidestepping the fee peak rather than fighting it — and
+it still only reaches break-even. That is independent support for the kill, from
+someone who built the full apparatus and reached the same place. **It does not
+reopen the thread.**
+
+---
+
 ## 3. The no-README false-negative channel is closed
 
 77 repos were dropped last session purely for having no fetchable README, and it
