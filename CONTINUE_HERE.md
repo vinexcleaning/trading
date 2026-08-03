@@ -207,6 +207,34 @@ reconstruction error is 2–3¢ — the error is the size of the thing being
 measured. Queue position and adverse selection are not testable at this
 precision. Do not build a fill simulator on this.
 
+## ⏳ AN AUTONOMOUS PIPELINE IS RUNNING — CHECK IT FIRST
+
+`mlb/src/run_pipeline.py` was launched 2026-08-03 06:11 UTC and runs unattended
+through four stages. **Read `mlb/reports/PIPELINE.txt` first** — it logs the
+start, end and exit code of every stage.
+
+| Stage | Script | Output |
+|---|---|---|
+| 1 | wait for the Statcast download | `mlb/data/statcast_fetch.out` |
+| 2 | `statcast_features.py` | `mlb/data/sc_features.jsonl` |
+| 3 | **`model_rfi_v2.py` — THE GATE** | `mlb/reports/stage3_gate_v2.txt`, `model_rfi_v2.json` |
+| 4 | `book_first_look.py` (descriptive) | `mlb/reports/stage4_book.txt` |
+
+**Stage 3 is the result that matters.** It re-runs the gate with Statcast pitch
+quality added. Compare against v1:
+
+- v1: model − market **+0.00237 [−0.00072, +0.00553]** — did not beat
+- v1 model probability spread: **1.89pp**, Kalshi's ≈ **6.5pp**
+
+**The diagnostic to read first is the SPREAD, not the Brier.** If Statcast does
+not widen the model's spread toward 6.5pp, then the market's extra information
+is not pitch quality, and no further feature work will close it. That would be
+the cleanest possible signal to stop.
+
+If the CI upper bound is **below zero**, the model beats the market — the first
+positive result in six tests. Treat it with maximum suspicion: re-check the
+join, the chronological split, and the controls before believing it.
+
 ## Immediate next actions when you resume
 
 1. Verify the running processes above are still alive.
