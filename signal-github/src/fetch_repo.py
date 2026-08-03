@@ -1,11 +1,25 @@
-"""STEP 3a — deep fetch. The only stage that spends the 60/hour core budget.
+"""STEP 3a — deep fetch.
 
-Per repo: 3 core calls (commits, contributors, tree) plus 1 search call for the
-closed-issue count. README and every source file come from raw.githubusercontent,
-which is unmetered — so the expensive part is metadata, not content.
+**As of 2026-08-03 the cheap level spends NO core budget at all.** It used to
+cost one core call per repo for the git tree, which rationed the whole project
+to 60 repos/hour. `gh.archive()` now pulls the complete file tree *and the
+contents of every text file* from codeload in a single unmetered request.
 
-Resumable: `fetched=1` repos are skipped. Run it as many times as the budget
-needs. Nothing is cloned.
+Two consequences beyond the speed:
+
+  - The source corpus is no longer rationed. It used to be the 30 largest files
+    up to 400 KB, because each file was a separate HTTP request. It is now every
+    text file in the repo. S1 (cost side in source) and S2 (a live order path)
+    were both measured over that truncated 30-file window and are now measured
+    over the whole repository.
+  - A repo with no README is no longer invisible. 77 repos were dropped last
+    session for having no fetchable README; gating can now read their code.
+
+`level='full'` still spends core on commits/contributors/first-commit, which
+have no free substitute — but it degrades to `gh.commits_atom()` (free, last ~20
+commits) when core is exhausted, instead of stalling for an hour.
+
+Resumable: `fetched>=1` repos are skipped at the cheap level. Nothing is cloned.
 """
 from __future__ import annotations
 
@@ -25,8 +39,11 @@ NOW = datetime.datetime.now(UTC)
 
 SRC_EXT = (".py", ".ts", ".tsx", ".js", ".rs", ".go", ".java", ".rb", ".ipynb",
            ".sol", ".cs", ".cpp", ".sh", ".yaml", ".yml", ".toml", ".cfg")
-MAX_SRC_FILES = 30
-MAX_SRC_BYTES = 400_000
+# These used to be 30 files / 400 KB because every file was its own HTTP
+# request. The archive transport delivers them all in one, so the only reason
+# for a cap now is to keep a vendored monorepo from dominating the grep.
+MAX_SRC_FILES = 400
+MAX_SRC_BYTES = 4_000_000
 
 COST_RE = re.compile(r"\b(fee|fees|slippage|spread|commission|taker|maker|"
                      r"transaction_cost|trading_cost|gas_cost)\b", re.I)
@@ -73,6 +90,24 @@ def fetch_one(con, row, level: str = "tree"):
     commits, last_sha, last_msg, last_date = row["commits"], "", "", ""
     contributors, first_date, span_days = row["contributors"], "", row["span_days"]
 
+    if level == "full" and gh.core_remaining() == 0 and not gh.TOKEN:
+        # Core is exhausted and there is no token. Rather than sleep an hour per
+        # repo, take what the free atom feed gives: recency, cadence and the last
+        # commit message. It cannot give a total commit count, so `commits` stays
+        # NULL and `trust_me_bro` stays undecided — which is the honest result,
+        # not a guess. The row is left at level 1 so a later run with core
+        # available upgrades it.
+        at = gh.commits_atom(fn, branches=(branch, "main", "master"))
+        if at.get("dates"):
+            last_date = at["dates"][0]
+            last_msg = (at["titles"][0] if at.get("titles") else "").strip()[:200]
+            ev_atom = f"atom: {len(at['dates'])} recent commits, newest {last_date}"
+        else:
+            ev_atom = "atom: unavailable"
+        con.execute("UPDATE repos SET notes=COALESCE(notes,'')||? WHERE full_name=?",
+                    (f" | credibility degraded to atom feed (no core, no token): {ev_atom}", fn))
+        level = "tree"  # score it, but do not claim credibility metrics
+
     if level == "full":
         # --- core: commits (count via Link, plus the last commit itself) ---
         c = gh.core(f"/repos/{fn}/commits?per_page=1")
@@ -103,25 +138,35 @@ def fetch_one(con, row, level: str = "tree"):
             except ValueError:
                 pass
 
-    # --- core: tree. The one call the cheap level spends. ---
-    tree, used_branch = tree_of(fn, branch)
+    # --- archive: the whole repo, free. Replaces the git-tree core call. ---
+    arch = gh.archive(fn, branches=tuple(x for x in (branch, "main", "master") if x))
+    used_branch = arch.get("branch") or branch
+    paths = arch.get("paths") or []
+    contents: dict[str, str] = arch.get("files") or {}
 
-    # A repo with real bytes on disk MUST have a tree. Getting none back means
-    # the call failed — almost always core-budget exhaustion mid-run — not that
-    # the repo is empty. Marking it fetched anyway used to poison the row: it
-    # was excluded from retry forever AND counted in the "scored" total with a
-    # NULL score. 266 rows were corrupted this way before it was caught.
-    # -2 means "retryable failure", and the tree selector picks those up again.
-    if not tree and (row["size_kb"] or 0) > 0:
+    if not paths:
+        # Fall back to the core tree once, in case codeload is the thing that is
+        # broken rather than the repo. Paths only — no contents — so the score
+        # from this path is weaker, and `notes` records that.
+        tree, used_branch = tree_of(fn, branch)
+        paths = [t["path"] for t in tree if t.get("type") == "blob"]
+        sizes = {t["path"]: t.get("size", 0) for t in tree if t.get("type") == "blob"}
+    else:
+        sizes = {p: len(contents.get(p, "")) for p in paths}
+
+    # A repo with real bytes on disk MUST have files. Getting none back from
+    # BOTH transports means the fetch failed, not that the repo is empty.
+    # Marking it fetched anyway used to poison the row: excluded from retry
+    # forever AND counted in the "scored" total with a NULL score. 266 rows were
+    # corrupted this way before it was caught. -2 means "retryable failure".
+    if not paths and (row["size_kb"] or 0) > 0:
         con.execute("UPDATE repos SET fetched=-2, notes=? WHERE full_name=?",
-                    (f"tree fetch returned nothing for a {row['size_kb']} KB repo "
-                     f"(branch {branch!r}) — retryable", fn))
+                    (f"archive+tree both returned nothing for a {row['size_kb']} KB repo "
+                     f"(branch {branch!r}, archive status {arch.get('status')}) — retryable", fn))
         con.commit()
-        print(f"  [{level}] {fn:48s} TREE FAILED, will retry  core_left={gh.core_remaining()}",
-              flush=True)
+        print(f"  [{level}] {fn:48s} FETCH FAILED, will retry  "
+              f"(archive {arch.get('status')})", flush=True)
         return
-    paths = [t["path"] for t in tree if t.get("type") == "blob"]
-    sizes = {t["path"]: t.get("size", 0) for t in tree if t.get("type") == "blob"}
 
     # --- search: closed issues (search budget at 600/hour, not core at 60) ---
     closed_issues = row["closed_issues"]
@@ -129,15 +174,32 @@ def fetch_one(con, row, level: str = "tree"):
         ci = gh.search("issues", f"repo:{fn} is:issue is:closed", per_page=1)
         closed_issues = ci.get("total_count")
 
-    # --- free: README ---
-    readme = ""
-    for name in ("README.md", "readme.md", "README.rst", "README.txt", "README"):
-        txt, _u = gh.raw(fn, name, branches=(used_branch, "main", "master"))
-        if txt:
-            readme = txt
-            break
+    def read_file(p: str):
+        """Contents from the archive if we have it, else one free raw fetch."""
+        if p in contents:
+            return contents[p]
+        txt, _u = gh.raw(fn, p, branches=(used_branch, "main", "master"))
+        return txt
 
-    # --- free: source files, largest first, capped ---
+    # --- free: README. Case-insensitive, any extension, top level only. ---
+    readme = ""
+    readme_path = ""
+    for p in paths:
+        if "/" in p:
+            continue
+        if os.path.splitext(p)[0].lower() == "readme":
+            txt = read_file(p)
+            if txt:
+                readme, readme_path = txt, p
+                break
+    if not readme:
+        for name in ("README.md", "readme.md", "README.rst", "README.txt", "README"):
+            txt, _u = gh.raw(fn, name, branches=(used_branch, "main", "master"))
+            if txt:
+                readme, readme_path = txt, name
+                break
+
+    # --- free: source files. Every one of them, not the largest 30. ---
     src = [p for p in paths if p.lower().endswith(SRC_EXT)
            and not any(seg in p.lower() for seg in
                        ("node_modules/", "/vendor/", "site-packages", "/dist/", "/.venv/"))]
@@ -147,7 +209,7 @@ def fetch_one(con, row, level: str = "tree"):
     for p in src[:MAX_SRC_FILES]:
         if budget <= 0:
             break
-        txt, _u = gh.raw(fn, p, branches=(used_branch,))
+        txt = read_file(p)
         if txt:
             corpus.append((p, txt))
             budget -= len(txt)
@@ -204,7 +266,7 @@ def fetch_one(con, row, level: str = "tree"):
                   "poetry.lock", "pipfile", "go.mod", "environment.yml", "uv.lock")]
     pinned = []
     for p in dep_files[:4]:
-        txt, _u = gh.raw(fn, p, branches=(used_branch,))
+        txt = read_file(p)
         if txt and re.search(r"[=~^><]=?\s*\d+\.\d+|\"\^?\d+\.\d+", txt):
             pinned.append(f"pinned: {p}")
     entry = [p for p in paths if os.path.basename(p).lower() in

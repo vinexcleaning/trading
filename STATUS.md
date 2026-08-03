@@ -223,14 +223,27 @@ last push 2024-11-05) are all archived. Live successors `py-clob-client-v2` 163�
 parallel `youtube-signal` session, which dates CLOB V2 go-live to 28 Apr 2026.
 
 **Venue asymmetry that decides the market-making question.** Both venues price
-fees on expected earnings, `rate × qty × p × (1−p)`, peaking at p=0.50. Kalshi:
-`ceil_to_cent(0.07 × qty × p × (1−p))`, **same rate for makers and takers**
-(source: `evan-kolberg/prediction-market-backtesting`
-→ `adapters/kalshi/fee_model.py:908`, modified 2026-03-11). Polymarket: **makers
-pay zero**, plus a 20–25% rebate share of taker fees, plus a daily liquidity-
-rewards pool. Kalshi's only official client is 17 months stale; Polymarket ships
-eight maintained repos. Kalshi's edge is the API docs — published rate-limit
-tiers (Basic 200/100 tokens/s → Prestige 6,000/8,000) and FIX.
+fees on expected earnings, `rate × qty × p × (1−p)`, peaking at p=0.50.
+
+> **CORRECTED 2026-08-03.** This section previously read *"Kalshi:
+> `ceil_to_cent(0.07 × qty × p × (1−p))`, same rate for makers and takers"*,
+> sourced from a third-party repo's fee model. **That is wrong.** Kalshi's own
+> fee schedule (effective 7 Jul 2026, now retrieved) charges takers
+> `roundup(M × 0.07 × C × P × (1−P))` with `M` defaulting to **1**, and makers
+> `roundup(M × 0.0175 × C × P × (1−P))` — a quarter of the rate — with `M`
+> defaulting to **0**. Confirmed independently against the live API: of 12,396
+> series, **12,266 are taker-only and exactly 130 charge makers**. So Kalshi
+> makers pay nothing on 98.9% of series — but **107 of the 130 are Sports**,
+> including `KXATPMATCH` and `KXWTAMATCH`, the tennis series this repo trades.
+> Full write-up and reproduction: [signal-github/CORRECTIONS.md](signal-github/CORRECTIONS.md),
+> `signal-github/src/kalshi_fees_census.py`. Canonical arithmetic:
+> `common/kalshi_fees.py`.
+
+Polymarket: **makers pay zero**, plus a 20–25% rebate share of taker fees, plus
+a daily liquidity-rewards pool. Kalshi's only official client is 17 months
+stale; Polymarket ships eight maintained repos. Kalshi's edge is the API docs —
+published rate-limit tiers (Basic 200/100 tokens/s → Prestige 6,000/8,000) and
+FIX.
 
 **You cannot properly backtest Kalshi.** `evan-kolberg/prediction-market-
 backtesting` (1,094★, 254 files, NautilusTrader-based, working Polymarket L2
@@ -248,7 +261,12 @@ contingent on queue position. **This contradicts the copy-trading method in
 `youtube-signal/KNOWLEDGE.md`, which argues only about which wallet to pick.**
 
 **The one strategy whose income is not required to overcome a fee first:**
-maker-only two-sided quoting on Polymarket, in fee-free or low-fee categories.
+maker-only two-sided quoting, in fee-free or low-fee categories. *(Corrected
+2026-08-03: this read "on Polymarket", on the false premise that Kalshi charged
+makers the full taker rate. Kalshi makers pay zero on 12,266 of 12,396 series,
+so the venue is not excluded on fee grounds — but the 130 that do charge makers
+are 107 Sports series, i.e. where Kalshi's liquidity is. The rule that survives
+is **pick a series whose maker multiplier is zero**, on either venue.)*
 Reference implementation `warproxxx/poly-maker` (1,427★, MIT, 83 tests, mypy
 strict, 37 commits over 465 days, migrated to v2). Post BUY-YES at `r−δ` and
 BUY-NO at `(1−r)−δ`; both legs are bids, so a filled pair merges to 1 USDC at

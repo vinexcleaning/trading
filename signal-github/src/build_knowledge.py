@@ -84,6 +84,19 @@ def main():
       f"{allrepos} retrieved.**\n")
     a("---\n")
 
+    # ---------------- corrections ----------------
+    # Hand-written and tracked in git, unlike this generated file. A claim that
+    # turned out to be wrong has to survive a regeneration, or the regeneration
+    # quietly reinstates it. CORRECTIONS.md is the only part of this document
+    # that is not derived from the database.
+    corr_path = os.path.join(gh.ROOT, "CORRECTIONS.md")
+    if os.path.exists(corr_path):
+        with open(corr_path, "r", encoding="utf-8") as fh:
+            body = fh.read().strip()
+        if body:
+            a(body)
+            a("\n---\n")
+
     # ---------------- toolchain ----------------
     a("## The toolchain — libraries that working repos actually import\n")
     if deps:
