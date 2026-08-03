@@ -203,7 +203,9 @@ as GitHub code search); forks of the client libraries for dependents.
 | **F1 vs F2 Jaccard** | **0.033** (YouTube: 0.037 over 446 videos) |
 | code-search hits found by neither family | 41 of 47 |
 | **stars vs S_strict** | ~~rho +0.241, p 0.013 at n=105~~ — **RE-CORRECTED 08-03: −0.004, p 0.90 at n=862.** The n=105 bump decayed monotonically to zero (105 → 200 → 400 → 600 → 862). It was a small-sample artifact; **stars carry no usable information after all**, and the earlier withdrawal of that claim was itself the error. |
+| why that artifact appeared | the fetch queue is ordered by prescreen score and `prescreen.py` awards up to +3 for stars, so the early sample was star-enriched: `rho(prescreen, stars) = +0.444`. Correlating *within* prescreen bands cancels it — −0.143 / +0.164 / −0.090 / −0.002, n-weighted mean **−0.068**. Mechanism and outcome agree. |
 | forks vs S_strict / **tree_files vs S_strict** | −0.009 (p .79) / **+0.593 (p<0.0001)** — the ranking is substantially a *size* ranking; normalise for repo size before anything else |
+| | **no free proxy predicts substance** |
 | two repos both scoring 10/10 strict | one is 67 files/1 venue/no backtest and says so; the other 797 files/17 venues with a documented backtest API and no result. **The scorer cannot separate them; reading can.** |
 | repos committing a backtest artifact behind their own strategy | **1 of 40** (`YichengYang-Ethan/oracle3`) |
 | does that artifact support the strategy? | **no.** Headline reads +0.49%; the `performance` block in the same file reports total_pnl −8.80, Sharpe −1.5749, profit factor 0.9526, and the equity curve ends below its start. Zero mentions of fee, slippage or commission in 126 KB. |

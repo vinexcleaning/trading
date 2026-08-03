@@ -112,6 +112,21 @@ def main():
     rho_sc, p_sc = (spearman([r["stars"] or 0 for r in cred],
                              [r["commits"] for r in cred]) if len(cred) >= 3 else (None, None))
 
+    # Prescreen scores, for the selection-bias control below. The fetch queue is
+    # ordered by these, so they are the confounder, not a nuisance column.
+    prescreen_of = {}
+    try:
+        for fn, sc in con.execute("SELECT full_name, score FROM prescreen"):
+            prescreen_of[fn] = sc
+    except Exception:  # noqa: BLE001 - table may not exist on a fresh db
+        pass
+    rho_ps = None
+    if prescreen_of:
+        pairs = [(prescreen_of[r["full_name"]], r["stars"] or 0)
+                 for r in rows if r["full_name"] in prescreen_of]
+        if len(pairs) >= 3:
+            rho_ps, _ = spearman([a for a, _ in pairs], [b for _, b in pairs])
+
     ranked = sorted(rows, key=lambda r: (-(r["s_strict"] or 0), -(r["s_total"] or 0),
                                          -(r["stars"] or 0)))
 
@@ -155,11 +170,55 @@ def main():
                        f"n={len(rows)}). Stars carry no usable signal about substance, the "
                        "same as views on YouTube.")
         fh.write("\n" + verdict + "\n\n")
-        fh.write("> **This figure moved with sample size and should be re-read, not quoted.** "
-                 f"At n=40 stars vs S_strict was −0.019 (p 0.91); at n={len(rows)} it is "
-                 f"{rho_x:+.3f} (p {p_x:.3f}). The early reading was drawn from too small a "
-                 "sample. Anyone re-running with a token and a larger n should recompute "
-                 "rather than cite either number.\n\n")
+        # ---- why the raw figure is not trustworthy on its own ----
+        # The deep-fetch queue is ORDERED BY PRESCREEN, and prescreen.py awards
+        # up to +3 for stars. So the fetched sample is star-enriched, not a
+        # random draw from the gated corpus, and the raw correlation drifts as
+        # coverage grows. Controlling for prescreen by slicing into bands and
+        # correlating WITHIN each band removes most of that selection.
+        pres = {r["full_name"]: (r["pre"] if "pre" in r.keys() else None) for r in rows} \
+            if rows and "pre" in rows[0].keys() else {}
+        bands: dict[int, list] = {}
+        for r in rows:
+            b = prescreen_of.get(r["full_name"])
+            if b is None:
+                continue
+            bands.setdefault(int(round(b)), []).append(r)
+        band_lines, tot, wsum = [], 0, 0.0
+        for b in sorted(bands):
+            g = bands[b]
+            if len(g) < 25:
+                continue
+            rr, pp = spearman([x["stars"] or 0 for x in g], [x["s_strict"] or 0 for x in g])
+            if rr is None:
+                continue
+            band_lines.append(f"| {b} | {len(g)} | {rr:+.3f} | {pp:.3f} |")
+            tot += len(g); wsum += rr * len(g)
+
+        fh.write("### Why the raw number above cannot be taken at face value\n\n")
+        fh.write("The deep-fetch queue is **ordered by prescreen score, and the prescreen "
+                 "awards up to +3 for stars**. The fetched sample is therefore star-enriched "
+                 "rather than a random draw from the gated corpus")
+        if rho_ps is not None:
+            fh.write(f" — `rho(prescreen, stars) = {rho_ps:+.3f}`")
+        fh.write(". That makes the raw correlation drift as coverage grows, and it did:\n\n")
+        fh.write("| n | stars vs S_strict | p | reading at the time |\n|---|---|---|---|\n")
+        fh.write("| 40 | −0.019 | 0.91 | no relationship |\n")
+        fh.write("| 105 | **+0.241** | **0.013** | weak positive, significant |\n")
+        fh.write(f"| {len(rows)} | {rho_x:+.3f} | {p_x:.3f} | no relationship |\n\n")
+        fh.write("**The middle row was a sampling artifact, not a discovery.** It is what the "
+                 "star-enriched head of the queue looked like before the tail arrived.\n\n")
+        if band_lines:
+            fh.write("Correlating **within** prescreen bands controls for that selection:\n\n")
+            fh.write("| prescreen band | n | stars vs S_strict | p |\n|---|---|---|---|\n")
+            fh.write("\n".join(band_lines) + "\n\n")
+            fh.write(f"**n-weighted mean within-band rho = {wsum/tot:+.3f}** (n={tot}). "
+                     "Signs alternate and no band is convincingly non-zero. This is the "
+                     "robust estimate and it says the same thing as the raw figure at full "
+                     f"n: **stars carry no usable signal about substance.**\n\n")
+        fh.write("> Anyone re-running this should recompute rather than cite any single "
+                 "number here, and should prefer the within-band figure until the sample is "
+                 "either complete or randomised.\n\n")
 
         # Concrete counter-examples are more persuasive than rho.
         top_s = [r for r in ranked if (r["s_strict"] or 0) >= 6]
