@@ -1,0 +1,45 @@
+24,443 base feature rows
+25,833 games with Statcast features
+merged onto 22,001 games (90.0%)
+  home_sp_xwoba       83.5%
+  home_sp_hard        83.5%
+  home_sp_k           83.5%
+  home_sp_bb          83.5%
+
+train <=2024 20,332   test 2025+ 4,111
+
+==================================================================
+TEST 1 -- vs the base rate, held out
+==================================================================
+  n=4,111  base 0.24998  model 0.24965  improvement +0.00034
+  MODEL PROBABILITY SPREAD: sd 2.89pp   range 38.2-61.9c
+  (v1 was sd 1.89pp; Kalshi is ~6.5pp)
+
+==================================================================
+TEST 2 -- calibration
+==================================================================
+  0.40-0.45: n=  286  pred 0.438  actual 0.490
+  0.45-0.50: n= 2313  pred 0.478  actual 0.486
+  0.50-0.55: n= 1395  pred 0.518  actual 0.538
+  0.55-0.60: n=  110  pred 0.560  actual 0.482
+
+==================================================================
+TEST 3 -- THE GATE vs Kalshi's price
+==================================================================
+  joined 771 markets
+  n=771  outcome 0.5175
+  KALSHI 0.24543   MODEL 0.24755
+  model - market +0.00212  [-0.00099, +0.00520]  (positive = worse)
+  VERDICT: model DOES NOT BEAT Kalshi
+  v1 was +0.00237 [-0.00072, +0.00553]
+
+  |model - market|: median 2.90c  p90 6.79c
+  disagreements beyond the 2.25c cost bar: 463 of 771
+
+==================================================================
+CONTROLS
+==================================================================
+  NULL   model 0.25105  market 0.25135
+  PEEK   0.00040  vs market 0.24543  diff -0.24503
+
+wrote reports/model_rfi_v2.json

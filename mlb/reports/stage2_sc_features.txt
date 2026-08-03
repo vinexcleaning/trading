@@ -1,0 +1,10 @@
+57 statcast chunks
+  25,833 games, 846,343 first-inning pitches
+
+wrote 25,833 games to C:\Users\gianf\trading\mlb\src\..\data\sc_features.jsonl
+  home_sp_xwoba        present on 23,309 ( 90.2%)
+  home_sp_k            present on 23,338 ( 90.3%)
+  home_bat_xwoba       present on 25,178 ( 97.5%)
+  away_sp_xwoba        present on 23,140 ( 89.6%)
+  away_bat_xwoba       present on 25,227 ( 97.7%)
+  distinct pitchers tracked: 1,468   batters: 1,887
