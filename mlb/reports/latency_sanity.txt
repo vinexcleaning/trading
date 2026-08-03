@@ -5,3 +5,26 @@ lags: n=54, within 0..900s: 51 (94%)
   SANE-ONLY lag: median +51.2s  p25 +27.0  p75 +103.5  max +174.5
 
 re-scanning 18 tape files for 56 tickers ...
+  62,904 trades
+
+==================================================================
+BASELINE INTER-TRADE GAP (no event) vs the measured LAG
+==================================================================
+  gaps in the 20 min BEFORE the run: n=26918
+    median 0.5s   p75 2.6s   p90 6.4s
+  per-market median gap: median of medians 0.8s  (n=55 markets)
+
+  measured lag (sane only): median 51.2s
+
+  lag / baseline gap = 107.38x
+  => the lag is materially longer than the normal trade gap,
+     so it is not purely an artefact of quietness.
+
+==================================================================
+LIQUIDITY IN THE 60 SECONDS AFTER THE RUN
+==================================================================
+  trades printed in that window: median 60  mean 59.5  zero-trade markets 5 of 56
+
+  If most markets print ZERO trades in the 60s after a run, then
+  there is nobody to trade against inside the supposed window, and
+  the 'opportunity' cannot be taken regardless of its length.
