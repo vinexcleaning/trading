@@ -63,21 +63,50 @@ markets you would actually trade charge makers nothing — stands; the literal
 NBA, MLB, NHL and college series. Kalshi charges makers on the sports series,
 which are its flagship product: **107 of the 130 are Sports.**
 
-Whether the maker-fee series also hold most of Kalshi's *liquidity* is the
-question that decides the strategy, and it is **not measured here**. A first
-attempt aborted — paginating `/markets?status=open` spends its first 16,200 rows
-inside a single 12,160-market exotics series (`KXMVESPORTSMULTIGAMEEXTENDED`), so
-a capped scan reaches 7 series and answers nothing. Stated as the open question
-it is rather than guessed at.
+**And they hold the liquidity — measured, not argued.** This is the question
+that decides the strategy, so it was measured rather than left as an inference
+from "Sports is the flagship product". All 130 maker-fee series plus a random
+sample of 300 taker-only series, queried per series
+(`src/kalshi_liquidity_survey.py`, seed 20260803):
+
+| per series, open markets | maker-fee (n=130) | taker-only (n=300 sampled) |
+|---|---|---|
+| mean open volume | **1,812,418** | 16,627 |
+| median open volume | 17,038 | 0 |
+| mean open interest | **1,399,160** | 8,919 |
+| series with any open volume | 78 of 130 (60%) | 86 of 300 (29%) |
+
+Mann-Whitney on per-series open volume: **U = 28,065, z = 11.5, p < 1e-15**. The
+same test on open interest agrees (U = 28,207).
+
+The rank statistic is the one to remember. Of the 430 surveyed series ordered by
+open volume — a pool that is 30% maker-fee by construction, and 1.0% maker-fee in
+the population — the **top 25 are all maker-fee**, and 45 of the top 50 are.
+`KXSB` (53.0M), `KXMLB` (43.4M), `KXNBA` (19.7M) and **`KXATPMATCH` (13.4M)** head
+the list.
+
+Two caveats, stated because they are the ones that could overturn it. `volume` is
+cumulative since a market opened, so long-dated season futures accumulate more
+purely by age — but `open_interest` is a stock rather than a flow, is not
+age-biased in the same way, and shows the same 157× gap. And the taker-only side
+is a 300-series sample; the rank result does not depend on projecting it, which
+is why it is reported instead of an extrapolated share of total volume.
+
+**So: Kalshi charges makers on 1.0% of series and on essentially all of the
+liquid ones.** "Makers pay nothing on 98.9% of series" is true and close to
+useless.
 
 **Consequence for the venue recommendation.** The report concluded that
 maker-only two-sided quoting on Polymarket was *"the one strategy whose income is
 not required to overcome a fee first"*. That rested on Kalshi charging makers the
 full 0.07. It does not — Kalshi makers pay nothing on 98.9% of series by count —
-so Kalshi is **not** excluded on fee grounds the way the report said. The honest
-version is narrower and more useful: **on either venue, pick a series whose maker
-multiplier is zero.** On Kalshi that is 12,266 of 12,396 series, but it excludes
-almost every liquid sports market.
+so Kalshi is **not** excluded on fee grounds the way the report said — the
+premise was wrong. But the conclusion survives the correction, for a reason the
+report never gave: the Kalshi series that charge makers nothing are the ones with
+no liquidity. Fee-free maker quoting on Kalshi is available and mostly
+unquotable. **The rule that survives is: pick a series whose maker multiplier is
+zero *and* which has a book.** On Kalshi those two conditions are close to
+mutually exclusive.
 
 **Canonical implementation:** `common/kalshi_fees.py`. It takes a `SeriesFees`
 read from the API and refuses to guess — `maker_fee_order_cents()` has no default

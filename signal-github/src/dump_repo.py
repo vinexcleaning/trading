@@ -60,19 +60,35 @@ def main():
     print(f"evidence_strict={json.dumps(evs, indent=1)[:2000]}")
     print(f"description: {r['description']}\n")
 
-    tr = gh.core(f"/repos/{fn}/git/trees/{branch}?recursive=1", cache_only=True)
-    paths = [t["path"] for t in (tr or {}).get("data", {}).get("tree", [])
-             if t.get("type") == "blob"] if tr else []
-    print(f"--- FILE TREE ({len(paths)} files) ---")
-    for p in sorted(paths)[:200]:
+    # Prefer the archive: it holds every file, whereas the old per-file raw
+    # cache only ever held the 30 the deep fetch could afford to request. The
+    # read step was being done on a sample of the repo without saying so.
+    arch = gh.archive(fn, branches=tuple(dict.fromkeys(
+        [b for b in (branch, r["default_branch"] or "", "main", "master") if b])))
+    files: dict[str, str] = arch.get("files") or {}
+    if arch.get("paths"):
+        branch = arch.get("branch") or branch
+        paths = arch["paths"]
+    else:
+        tr = gh.core(f"/repos/{fn}/git/trees/{branch}?recursive=1", cache_only=True)
+        paths = [t["path"] for t in (tr or {}).get("data", {}).get("tree", [])
+                 if t.get("type") == "blob"] if tr else []
+
+    def read_any(path):
+        return files.get(path) or cache_read(fn, branch, path)
+
+    print(f"--- FILE TREE ({len(paths)} files, {len(files)} with text available) ---")
+    for p in sorted(paths)[:300]:
         print(" ", p)
     print()
 
-    readme = None
-    for nm in ("README.md", "readme.md", "README.rst"):
-        readme = cache_read(fn, branch, nm)
-        if readme:
-            break
+    readme = next((t for p, t in files.items()
+                   if "/" not in p and os.path.splitext(p)[0].lower() == "readme"), None)
+    if not readme:
+        for nm in ("README.md", "readme.md", "README.rst"):
+            readme = cache_read(fn, branch, nm)
+            if readme:
+                break
     if readme:
         print(f"--- README.md ({len(readme)} chars) ---")
         print(readme[:20000])
@@ -85,7 +101,7 @@ def main():
     for p in src:
         if budget <= 0:
             break
-        t = cache_read(fn, branch, p)
+        t = read_any(p)
         if not t:
             continue
         take = min(len(t), max(2000, budget // 3))
@@ -95,7 +111,7 @@ def main():
         budget -= take
 
     for nm in ("requirements.txt", "pyproject.toml", "package.json", "Cargo.toml", "Makefile"):
-        t = cache_read(fn, branch, nm)
+        t = read_any(nm)
         if t:
             print(f"--- {nm} ---")
             print(t[:3000])
