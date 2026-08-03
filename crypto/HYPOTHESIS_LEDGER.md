@@ -124,10 +124,17 @@ centre, less in the shoulders — and is not an "edge" in either direction.
 
 **Sample caveat on `A1`/`A2`, stated plainly:** 10.5 minutes of recording, 26
 events. This is
-a *preliminary* null, not a strong one. It extends prior work's "zero violations
-in 1,083 scans" in kind (adding fee-inclusive accounting and the monotonicity
-constraint) but not yet in duration. No FDR correction is applied to these two
-rows because neither produced a positive to correct.
+a *preliminary* null, not a strong one. It extends prior work in kind (adding
+fee-inclusive accounting and the monotonicity constraint) but not yet in
+duration. No FDR correction is applied to these two rows because neither
+produced a positive to correct.
+
+> **⚠ CITATION CORRECTED 2026-08-03.** This previously read *"prior work's
+> 'zero violations in 1,083 scans'"*. The 1,083-scan study is
+> `kalshi-market-scan`, and it found **52 net-positive violations**, none with
+> tradeable size — not zero. The no-money conclusion is shared; the
+> zero-violations characterisation was wrong. `A2` here also found **1** gross
+> bucket-sum violation, so neither project found zero. See LEDGER K007.
 
 ---
 

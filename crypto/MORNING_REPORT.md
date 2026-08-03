@@ -552,9 +552,26 @@ exceed ~2¢ merely to break even at 75 legs. **The ladder is wide enough that
 legging it is self-defeating.** This is structural, not a small-sample artifact.
 
 **Sample caveat, stated plainly: 10.5 minutes, 26 events.** This is a
-*preliminary* null. It extends prior work's "zero violations in 1,083 scans" in
-kind — adding fee-inclusive accounting, the monotonicity constraint, and a
-dwell-time measurement — but not yet in duration.
+*preliminary* null. It extends prior work in kind — adding fee-inclusive
+accounting, the monotonicity constraint, and a dwell-time measurement — but not
+yet in duration.
+
+> **⚠ CITATION CORRECTED 2026-08-03.** This paragraph previously described the
+> prior work as **"zero violations in 1,083 scans"**. That misstates it. The
+> 1,083-scan study is `kalshi-market-scan` (same n, same subject, same week),
+> and it found **52 net-positive violations** — its own report says *"the
+> detector does fire"* — of which **0 had tradeable size**.
+>
+> The practical conclusion is the same in both projects (no money in ladder
+> arbitrage) but the **mechanism claim is not**. "Zero violations" says the
+> book is efficient and the detector never fires. "52 violations, none
+> tradeable" says the book is inefficient and the inefficiency is
+> uncapturable — which is in fact *closer* to this section's own argument that
+> the ladder is too wide to leg profitably.
+>
+> Note also that this project did not find zero either: C002 records **1 gross
+> bucket-sum violation** in 1,135 complete scans, unprofitable net. Nobody
+> found zero. See LEDGER C001/C002/K007.
 
 ### 2.2 Two false positives caught and killed
 
