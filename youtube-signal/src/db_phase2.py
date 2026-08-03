@@ -57,9 +57,15 @@ CREATE TABLE IF NOT EXISTS tools (
     mention_count   INTEGER DEFAULT 1,
     resolution      TEXT,           -- resolved | dead | unreachable | not_checked
     resolution_detail TEXT,
-    resolved_utc    TEXT,
-    UNIQUE (name, url)
+    resolved_utc    TEXT
 );
+
+-- NOT `UNIQUE (name, url)`. In SQL, NULL != NULL, so a plain unique constraint
+-- never fires for a tool with no URL -- every reload inserted a duplicate row
+-- instead of bumping mention_count. Grok and Perplexity each reached 3 rows
+-- before this was caught. COALESCE makes the null case compare equal.
+CREATE UNIQUE INDEX IF NOT EXISTS idx_tools_uniq
+    ON tools(name, COALESCE(url, ''));
 
 CREATE TABLE IF NOT EXISTS claims (
     claim_id        INTEGER PRIMARY KEY AUTOINCREMENT,
