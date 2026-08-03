@@ -78,19 +78,28 @@ SG_REPO_RE = re.compile(r"^github\.com/([^/]+/[^/]+)$")
 
 
 def code_search(term: str):
-    """Sourcegraph substitute. Yields full_names only; metadata is filled in by a
-    follow-up repo search so we never spend core on it."""
-    hits = gh.sourcegraph(f'"{term}"', count=40)
-    names = []
-    for h in hits:
-        m = SG_REPO_RE.match(h.get("repository", ""))
-        if m:
-            names.append((m.group(1), h.get("path", "")))
-    uniq = {}
-    for fn, path in names:
-        uniq.setdefault(fn, path)
-    print(f"  [F2_CODE] {term!r}: {len(uniq)} repos", flush=True)
-    return uniq
+    """Code search. Yields full_names only; metadata is filled in by a follow-up
+    repo search so we never spend core on it.
+
+    GitHub's own index when a token is present, Sourcegraph otherwise. The
+    provenance is recorded per repo (`github_code:` vs `sourcegraph:`) because
+    the two are not like-for-like: Sourcegraph indexes a subset of GitHub and
+    excludes forks by default, and it has degraded badly - 0 repos for
+    `KalshiHttpClient`, where GitHub's index returns 266 files.
+    """
+    if gh.TOKEN:
+        uniq = gh.code_search(f'"{term}"', pages=2)
+        src = "github_code"
+    else:
+        hits = gh.sourcegraph(f'"{term}"', count=40)
+        uniq = {}
+        for h in hits:
+            m = SG_REPO_RE.match(h.get("repository", ""))
+            if m:
+                uniq.setdefault(m.group(1), h.get("path", ""))
+        src = "sourcegraph"
+    print(f"  [F2_CODE/{src}] {term!r}: {len(uniq)} repos", flush=True)
+    return {fn: f"{src}:{path}" for fn, path in uniq.items()}
 
 
 def hydrate_code_hits(pending: dict[str, str]):
@@ -112,7 +121,7 @@ def hydrate_code_hits(pending: dict[str, str]):
         q = " ".join(f"repo:{fn}" for fn in b)
         res = gh.search("repositories", q, per_page=100)
         for it in res.get("items") or []:
-            _record(it, "F2_CODE", "sourcegraph:" + pending.get(it["full_name"], ""))
+            _record(it, "F2_CODE", pending.get(it["full_name"], "code_search"))
         got = {it["full_name"] for it in (res.get("items") or [])}
         for fn in b:
             if fn not in got:

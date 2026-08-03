@@ -28,6 +28,7 @@ import datetime
 import json
 import os
 import re
+import sqlite3
 import sys
 import time
 
@@ -379,9 +380,19 @@ def main():
             fetch_one(con, row, level=level)
         except Exception as e:  # noqa: BLE001 - one bad repo must not end the run
             print(f"  !! {row['full_name']}: {type(e).__name__}: {e}", flush=True)
-            con.execute("UPDATE repos SET fetched=-1, notes=? WHERE full_name=?",
-                        (f"fetch error: {type(e).__name__}: {e}", row["full_name"]))
-            con.commit()
+            # -1 is "failed for a reason specific to this repo" and is NOT
+            # retried. A locked database or a dropped connection is neither
+            # specific nor permanent, so those get -2, which the selector does
+            # pick up again.
+            transient = isinstance(e, (sqlite3.OperationalError, OSError, TimeoutError))
+            code = -2 if transient else -1
+            try:
+                con.execute("UPDATE repos SET fetched=?, notes=? WHERE full_name=?",
+                            (code, f"fetch error ({'retryable' if transient else 'permanent'}): "
+                                   f"{type(e).__name__}: {e}", row["full_name"]))
+                con.commit()
+            except sqlite3.OperationalError:
+                pass  # could not even record it; the row stays at 0 and is retried
     db.log(con, "fetch", f"level={level} n={len(rows)} core={gh.STATS['core_calls']} "
                          f"raw={gh.STATS['raw_calls']} search={gh.STATS['search_calls']} "
                          f"cache={gh.STATS['cache_hits']}")

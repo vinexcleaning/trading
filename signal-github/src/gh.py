@@ -88,7 +88,7 @@ _core_remaining = None
 _core_reset = 0.0
 
 STATS = {"core_calls": 0, "search_calls": 0, "raw_calls": 0, "sg_calls": 0,
-         "archive_calls": 0, "atom_calls": 0, "cache_hits": 0}
+         "archive_calls": 0, "atom_calls": 0, "code_search_calls": 0, "cache_hits": 0}
 
 
 def _key(url: str) -> str:
@@ -427,6 +427,62 @@ def commits_atom(full_name: str, branches=("main", "master")):
         titles = re.findall(r"<title>([^<]*)</title>", body)
         return {"status": 200, "branch": br, "dates": dates[1:], "titles": titles[1:]}
     return {"status": 404, "dates": [], "titles": []}
+
+
+def code_search(query: str, pages: int = 2, per_page: int = 100):
+    """GitHub's own code search. Requires a token; returns 401 without one.
+
+    This is the axis Sourcegraph was standing in for. Measured 2026-08-03, the
+    substitution was costing a great deal: Sourcegraph returned **0** repos for
+    `KalshiHttpClient` while GitHub returns **266 files**, and the whole
+    Sourcegraph axis yielded 15 repos this session against 37 the session
+    before, several terms returning nothing at all.
+
+    Rate limit is its own bucket: 10/minute authenticated. Paced accordingly and
+    cached like everything else. Returns {full_name: first_path_seen}.
+    """
+    if not TOKEN:
+        return {}
+    out: dict[str, str] = {}
+    for page in range(1, pages + 1):
+        params = {"q": query, "per_page": per_page, "page": page}
+        url = "https://api.github.com/search/code?" + urllib.parse.urlencode(params)
+        cp = _cache_path(url, "json")
+        hit = _read_cache(cp)
+        if hit is not None:
+            try:
+                data = json.loads(hit)
+            except json.JSONDecodeError:
+                data = {"items": []}
+        else:
+            global _last_search
+            gap = 6.5 - (time.time() - _last_search)  # code search is 10/min even authed
+            if gap > 0:
+                time.sleep(gap)
+            status, _h, body = _fetch(url)
+            _last_search = time.time()
+            STATS["code_search_calls"] += 1
+            if status == 403:
+                time.sleep(65)
+                status, _h, body = _fetch(url)
+                _last_search = time.time()
+                STATS["code_search_calls"] += 1
+            if status != 200:
+                break
+            try:
+                data = json.loads(body)
+            except json.JSONDecodeError:
+                data = {"items": []}
+            with open(cp, "w", encoding="utf-8") as fh:
+                json.dump(data, fh)
+        items = data.get("items") or []
+        for it in items:
+            fn = ((it.get("repository") or {}).get("full_name") or "")
+            if fn:
+                out.setdefault(fn, it.get("path", ""))
+        if len(items) < per_page:
+            break
+    return out
 
 
 def sourcegraph(query: str, count: int = 30, timeout: int = 60):

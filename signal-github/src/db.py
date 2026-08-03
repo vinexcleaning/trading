@@ -102,8 +102,14 @@ CREATE TABLE IF NOT EXISTS runlog (
 
 def connect():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
-    con = sqlite3.connect(DB_PATH)
+    con = sqlite3.connect(DB_PATH, timeout=60.0)
     con.row_factory = sqlite3.Row
+    # Two passes now routinely run at once (a deep fetch writing per repo while
+    # a retrieval writes a 3,000-row batch). Without a busy timeout the second
+    # one raises "database is locked", and fetch_repo's per-repo error handler
+    # would record that as fetched=-1 — a state the retry selector does NOT
+    # pick up, so a transient lock would look like a permanently dead repo.
+    con.execute("PRAGMA busy_timeout = 60000")
     con.executescript(SCHEMA)
     return con
 
