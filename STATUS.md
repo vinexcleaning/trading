@@ -1,7 +1,9 @@
 # STATUS.md
 
-As of **2026-08-02**. Inventory only — nothing was recomputed and no process was
-touched. Claims: [LEDGER.md](LEDGER.md). Reusable checks: [GUARDS.md](GUARDS.md).
+As of **2026-08-02** for the laptop, **2026-08-03** for the desktop. The laptop
+inventory recomputed nothing and touched no process. The desktop pass moved
+directories and patched the live bot — see the dated section at the end.
+Claims: [LEDGER.md](LEDGER.md). Reusable checks: [GUARDS.md](GUARDS.md).
 
 ---
 
@@ -22,9 +24,9 @@ touched. Claims: [LEDGER.md](LEDGER.md). Reusable checks: [GUARDS.md](GUARDS.md)
 |---|---|---|
 | **Depth recorder (tennis)** | Running since 08-01 06:58. 79–120 markets, 0.55 s pacing, content-checked ×5/day at 98.8% non-empty. | Leave it. It is accruing the only asset that cannot be re-pulled. |
 | **15m opens recorder (crypto)** | Running since 08-01 13:42, `--hours 168`. | Leave it. |
-| **v3 structural-event backtest** | "14k markets, 480 configs, 0 profitable" — **~100× the evidence base of everything else and never verified.** Lives on the desktop. | **One grep**: which field orders its mirrored-market dedupe? `volume`/`open_interest`/`last_price` ⇒ void; ticker/API order ⇒ clean. ~10 minutes. |
-| **Desktop recorder integrity** | Kalshi's legacy price fields now return `None`; values moved to `*_dollars`/`*_fp`. Never checked. | **One grep** of `kalshi_client.py` and `record_data.py`. If they write `None`, every recorded book on that machine is worthless. This gates all Tier B work. |
-| **Live bot position-sizing bug** | 64 contracts placed against an intended 9, on a $125 bankroll, with `max_daily_loss_pct = 0 (OFF)`. Cause never identified. | Diagnose or disable the bot. **Top standing financial risk.** |
+| ~~v3 structural-event backtest~~ | **RESOLVED 08-03 — CLEAN, the result stands.** See "Desktop, 2026-08-03" below. | None. |
+| ~~Desktop recorder integrity~~ | **RESOLVED 08-03 — no bug. The desktop already reads `*_dollars`/`*_fp`.** Tier B is unblocked. | None. |
+| ~~Live bot position-sizing bug~~ | **DIAGNOSED AND FIXED 08-03.** Not a sizing bug — a martingale. See below. | Decide whether it trades at all: its own backtest says −9¢/trade. |
 | **Score-staleness (already fixed)** | `fetched_at` was stamped at cache read, so the 30 s guard never rejected anything. | Nothing to fix — but **no live entry result predating the fix is a valid test of the entry logic.** Treat the 4-for-10 as void. |
 | **Label coverage (tennis)** | Blocked. Apify at a monthly hard limit; Flashscore's `dayOffsets` is −7..+7 against a −68 need. | Restore quota, then label day-by-day via `crawlstone/tennis-scraper` or `tennisexplorer` (~$20, not $3.44). Only path above 13.9% coverage. |
 | **youtube-signal** | **Phase 2 BLOCKED at Step 0: no `ANTHROPIC_API_KEY`, so the LLM read never ran and no S or H component has ever fired.** All LLM-free work done: corpus 718 gated / 369 passing / 683 transcripts cached, G3 retuned to recall 1.000, F3 cut, F2B's 12 new insider terms added (88.5% exclusive, Jaccard 0.041 vs F2), 60-video read set selected, Wilson n-check verified. Retrieval win (F1∩F2 Jaccard 0.037, 2.25× low-view yield) is **still not cashed out** — different videos, not yet demonstrably better ones. | **Buy $5 of Anthropic API credit, add the key, run the read on 2 videos.** Measured cost for all 60 is $3.64 on Sonnet. Everything else waits on this one input. |
@@ -76,6 +78,15 @@ re-pull to "replace" a local archive.
    `C:\Users\vinig\kalshi` share a name and have **zero files in common** — one
    is the Stage 0–5 research pipeline, the other is the live in-play bot. A
    folder-level copy in either direction destroys a project.
+   *Update 08-03: the desktop projects are now renamed so this cannot recur —
+   `kalshi-inplay-bot`, `kalshi-market-scan`, `polymarket-tennis-copy`,
+   `ptis-polymarket`. The laptop's `kalshi-tennis` keeps its name. The one
+   folder still called `kalshi` is the desktop live bot, which could not be
+   moved — see below.*
+5. **`C:\Users\vinig\OneDrive\Desktop\kalshi\kalshi_private_key.pem`** — the
+   live order-signing key is sitting in a **OneDrive-synced folder**, byte
+   identical to the one in the bot directory. Not deleted by any session; it
+   is the user's call. Rotate on kalshi.com, then remove both old copies.
 
 ### ⚠️ Two source trees are temporarily duplicated
 
@@ -260,3 +271,181 @@ almost certainly less honest than they are.
 **Next:** put a free `GITHUB_TOKEN` in the environment. Core goes 60/hour →
 5,000/hour and code search unblocks, with no code change — `gh.py` already reads
 it. Both constraints on this session are fixed by one environment variable.
+
+---
+
+## Desktop machine â€” inventory, consolidation, three blocked tasks (2026-08-03)
+
+Machine `C:\Users\vinig`. Full write-up in [DESKTOP_INVENTORY.md](DESKTOP_INVENTORY.md).
+This section is additive â€” nothing above it was rewritten except the three
+thread rows that these tasks closed.
+
+### What is running on the desktop: nothing
+
+No `python`, `node`, or any other interpreter in the full process table. No
+`.recorder.lock`. Empty Startup folder. No matching scheduled task. **The
+desktop contributes zero running processes and zero open file handles**, so
+none of its directories were frozen. It has also therefore **recorded nothing
+since 17:32 UTC on 30 July** â€” the 8.5 h book recording in `kalshi-market-scan`
+is a closed, finite asset, not a growing one.
+
+### Consolidated into this repo
+
+| Was | Now | Why renamed |
+|---|---|---|
+| `C:\Users\vinig\kalshi markets` | `kalshi-market-scan/` | space in path; `kalshi*` prefix collision |
+| `C:\Users\vinig\tennis copy trade` | `polymarket-tennis-copy/` | space in path |
+| `â€¦\Codex\2026-07-23\files-mentioned-by-the-user-master-2` | `ptis-polymarket/` | the old name carried no meaning |
+| Discord export from `OneDrive\Desktop\kalshi` | `discord-trades-export/` | unique artifact, promoted out of a stale snapshot |
+
+`kalshi-market-scan` had **21 commits and no remote** â€” that history existed
+nowhere else and is preserved verbatim to
+`kalshi-market-scan/GIT_LOG_PRE_CONSOLIDATION.txt`. Its inner `.git` and two
+empty nested `.git` dirs were removed; **no nested `.git` remains**.
+
+Archived, not deleted, under the gitignored `_archive/`: the stale 26 Jul
+desktop snapshot of the bot (4 files, all superseded), `weather-market-bot-staging`
+(redundant against the pushed `weather-market-bot`), `polymarket-shadow-copy`
+(superseded by PTIS), and three byte-identical duplicate prompts.
+
+`.gitignore` was extended **before** anything was staged: `node_modules/`,
+sqlite `-wal`/`-shm` sidecars, `*.bak*`, `bot_state.json` (it carries live
+Kalshi order ids), `*.lock`, and `discord-trades-export/` (it names real people
+and this repo is public). **Secret scan on the staged set: clean** â€” 245 files,
+no keys, no data blobs. The only `.env`-shaped hit is `.env.example`,
+placeholders only.
+
+### âš  One directory could NOT be moved
+
+`C:\Users\vinig\kalshi` â€” **the live money bot** â€” is still outside the repo.
+It is the working directory of the agent session doing the move, and Windows
+refuses to rename a directory with an open handle. Per the standing rule the
+move was **not forced**. It has **no version control of any kind**, which makes
+it the single most exposed thing on either machine.
+
+To finish, from a session whose cwd is *not* that folder:
+
+```bash
+mv "C:/Users/vinig/kalshi" "C:/Users/vinig/trading/kalshi-inplay-bot"
+```
+
+Nothing is running, so this will succeed. `bot_state.json` (5 open positions
+with live order ids) and `kalshi_private_key.pem` travel with it; both are
+gitignored.
+
+### Task 1 â€” desktop recorder integrity: NO BUG. Tier B unblocked.
+
+Verified three independent ways:
+
+1. **Code.** `kalshi_client.py:232-237` already reads `yes_bid_dollars`,
+   `yes_ask_dollars`, `last_price_dollars`, `volume_fp`, `open_interest_fp`.
+   `record_data.py` reads the dataclass attributes, not raw API fields.
+2. **The recorded tape.** `tennis_data.jsonl` (7,170 rows) and
+   `tennis_data_laptop.jsonl` (27,083 rows) are **98.6â€“99.6% populated** â€”
+   0.0% zero asks in both. A legacy read would have written 0 everywhere,
+   because `_cents()` returns 0 on `TypeError`.
+3. **The live API**, 100 open markets sampled today: every legacy field
+   (`yes_bid`, `yes_ask`, `last_price`, `volume`, `open_interest`) is `None`
+   on **100/100**; every `*_dollars`/`*_fp` replacement is present on 100/100.
+
+**One thing worth noting for the laptop:** the running
+`crypto/src/record_15m_opens_v2.py` also reads the new names (`:174-185`) and
+stores them under local keys, so its `valid()` gate at `:56` is correct. The
+`_v2` rewrite *is* this fix. No action.
+
+Candlestick objects are a **different schema** â€” there `yes_bid` is still a
+valid nested dict with `open_dollars`/`close_dollars`. `pull_data.py:132-133`,
+`soccer/src/inplay.py`, `set1_overshoot/src/p0_candles.py` and the
+`kalshi-tennis` downloaders all read candles and are all correct. Do not
+"fix" them.
+
+### Task 2 â€” v3 dedupe field: CLEAN. The 14,162-market result stands.
+
+The mirrored-market dedupe is ordered by **signal timestamp**, with **ticker
+order** as the stable tie-break. Neither `volume` nor `open_interest` nor
+`last_price` participates.
+
+The chain, end to end:
+
+| Step | Where | What it does |
+|---|---|---|
+| 1 | `engine.py:56` | `df.sort_values(["ticker","ts"])` â€” the only sort in the file |
+| 2 | `engine.py:157` | `groupby("ticker", sort=False)` â†’ first-appearance order = ticker order |
+| 3 | `run_backtest.py:54` | `build_views(...)`, no re-sort |
+| 4 | `strategies.py:147` | candidates appended in views order |
+| 5 | `strategies.py:149` | `cand.sort(key=lambda x: x[0])` â€” **entry timestamp only**; Python sorts stably, so ties fall back to ticker order |
+| 6 | `strategies.py:153-155` | chronological walk; `busy[v.event]` blocks the mirrored side |
+
+Corroborating: **`strategies.py` contains zero occurrences of `volume`,
+`open_interest`, `last_price` or `settlement`.** The dedupe is decidable at
+decision time. No look-ahead. Per the pre-declared criterion, this is the
+"ticker/API order â‡’ clean" branch.
+
+That makes the ~100Ã— evidence base **usable**, and its verdict â€” 480 configs,
+0 profitable, S1 âˆ’9.36Â¢ against random-entry S5 âˆ’8.28Â¢ â€” the best-supported
+result in the programme.
+
+### Task 3 â€” live bot "sizing bug": it is a martingale, not a sizing bug
+
+Reconstructed from `_orders.json` / `_fills.json`, market
+`KXITFWMATCH-26JUL28SAGLEV-LEV`, 28 Jul:
+
+| Time | Action | Price | Qty | Sizing check |
+|---|---|---|---|---|
+| 14:17:24 | buy | 49Â¢ | 12 | $6.25 / 0.49 = 12 âœ” |
+| 14:30:54 | stopped out | 29Â¢ | âˆ’12 | âˆ’$2.40 |
+| 14:31:18 | **re-entry, +24 s** | 31Â¢ | 20 | $6.25 / 0.31 = 20 âœ” |
+| 14:43:24 | stopped out | 18Â¢ | âˆ’20 | âˆ’$2.60 |
+| 14:43:47 | **re-entry, +23 s** | 19Â¢ | 32 | $6.25 / 0.19 = 32 âœ” |
+| 15:07:47 | stopped out | 11Â¢ | âˆ’32 | âˆ’$2.56 |
+
+**64 = 12 + 20 + 32.** Every individual size is arithmetically correct.
+`qty = int(stake / price)` did exactly what it says. **That is the bug**: a
+*fixed-dollar* stake buys *more contracts as the price falls*, so re-entering a
+collapsing market martingales automatically. Nobody designed it; it is an
+emergent property of sizing by dollars. Total â‰ˆ **âˆ’$7.56 on one match in 50
+minutes**, on a $125 book.
+
+Three conditions had to hold at once, and all three did:
+
+1. sizing by dollars â†’ each re-entry larger than the last;
+2. `rearm_above = stop_price + 2` (`position_manager.py`) â†’ a **2Â¢ bounce off
+   your own stop** re-arms entry, which in a falling market is ordinary
+   bid/ask noise;
+3. `max_daily_loss_pct = 0` â†’ nothing counted the damage across legs.
+
+Fixed, with the sequence replayed against the patched engine as the test:
+
+| Fix | Where |
+|---|---|
+| `max_contracts = 15` hard cap on any single entry | `tennis_engine.Config` |
+| `reentry_cooldown_sec = 900` (was 24 s in practice) | `tennis_engine`, gated in `evaluate()` |
+| `max_reentries_per_event = 1` | same |
+| the `min_entry_price` floor now applies to **re-entries too** | same |
+| `max_daily_loss_pct` **0 â†’ 15** | same |
+| re-arm at `max(entry_price, stop+2)` instead of `stop+2` | `position_manager._fire_stop` |
+| durable `stop_history` ledger, persisted across restarts | `position_manager` |
+| `run_both.bat` / `autostart.bat` default **`--live` â†’ `--watch`** | both |
+
+The ledger is deliberately **not** stored on `ManagedPosition`: `check()`
+retires a stopped-out position two passes after it closes, so anything held
+there is gone within about a minute â€” far short of a 15-minute cooldown. It
+survives retirement *and* an app restart, so closing and reopening the app is
+no longer a way to buy straight back in.
+
+Replay result: all three SAGLEV legs are now refused (four independent ways
+each); a legitimate 70Â¢ entry is **unchanged** at 8 contracts / $5.72.
+
+`autostart.bat` was designed to be shortcut into Startup, so as written it would
+resume **unattended live trading** after any reboot. It now comes back read-only.
+
+**Still the user's call, and unchanged by any of this:** the bot's own
+14,162-market backtest says this strategy loses ~9Â¢/trade against a ~4Â¢ cost
+base, and the config it runs was tuned on 125â€“137 live observations and appears
+nowhere in the sweep. These fixes stop it losing money *fast*. They do not make
+it profitable.
+
+> **These fixes live in `C:\Users\vinig\kalshi`, which is NOT in this repo**
+> (see above). They are unversioned and exist on one machine only until that
+> folder is moved.
+
