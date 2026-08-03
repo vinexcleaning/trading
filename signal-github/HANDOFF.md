@@ -141,8 +141,9 @@ seed 20260803):
 | mean open interest | **1,399,160** | 8,919 |
 | any open volume at all | 78 (60%) | 86 (29%) |
 
-Mann-Whitney on open volume **U = 28,065, z = 11.5, p < 1e-15**; open interest
-agrees. **Of the 430 surveyed series ranked by open volume, the top 25 are all
+Mann-Whitney on open volume **U = 28,065, z = 8.28, p ≈ 2e-16** (tie-corrected);
+open interest agrees at U = 28,207, z = 8.42. Ratio of means 109× on volume,
+157× on open interest. **Of the 430 surveyed series ranked by open volume, the top 25 are all
 maker-fee** and 45 of the top 50 are — in a pool that is 30% maker-fee by
 construction and 1.0% in the population. `KXSB` 53.0M, `KXMLB` 43.4M,
 `KXNBA` 19.7M, **`KXATPMATCH` 13.4M**.

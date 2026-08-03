@@ -76,8 +76,10 @@ sample of 300 taker-only series, queried per series
 | mean open interest | **1,399,160** | 8,919 |
 | series with any open volume | 78 of 130 (60%) | 86 of 300 (29%) |
 
-Mann-Whitney on per-series open volume: **U = 28,065, z = 11.5, p < 1e-15**. The
-same test on open interest agrees (U = 28,207).
+Mann-Whitney on per-series open volume: **U = 28,065, z = 8.28, p ≈ 2e-16**
+(tie-corrected; the zero-volume ties are numerous and shrink the standard
+deviation to 1,034). The same test on open interest agrees: U = 28,207,
+z = 8.42. Ratio of means 109× on volume, **157× on open interest**.
 
 The rank statistic is the one to remember. Of the 430 surveyed series ordered by
 open volume — a pool that is 30% maker-fee by construction, and 1.0% maker-fee in
