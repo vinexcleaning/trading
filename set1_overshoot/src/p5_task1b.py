@@ -42,9 +42,29 @@ DATA = ROOT / "data"
 # same field reads 'quadratic' on every crypto series; tennis is the first place
 # in this project where maker fees exist at all.
 #
-# The RATE on the two series that do charge is taken from Kalshi's published
-# schedule (0.25c/contract flat) and is NOT verifiable from the read-only API,
-# so it is flagged rather than trusted. It applies to ~9% of matches.
+# ⚠ THE RATE BELOW IS SUPERSEDED — corrected 2026-08-03, kept for reference.
+#
+# This read Kalshi's published schedule as a FLAT 0.25c/contract and said so
+# honestly ("NOT verifiable from the read-only API, so it is flagged rather
+# than trusted"). The schedule itself has now been retrieved (effective
+# 7 Jul 2026, see common/kalshi_fees.py):
+#
+#     maker  roundup(M x 0.0175 x C x P x (1-P))     M defaults to 0
+#
+# It is the SAME QUADRATIC SHAPE as taker at a quarter of the rate — NOT a
+# flat per-contract charge. The two cross: at 95c the true rate is
+# 0.083c/contract against the 0.25c assumed here; at 50c it is 0.4375c.
+# So this arm is wrong in a price-dependent direction, harsher at the tails
+# and softer in the middle.
+#
+# S008's CONCLUSION IS UNAFFECTED: all 15 maker configurations were net
+# negative under both this arm and the pessimistic quarter-of-taker arm, and
+# the quarter-of-taker arm is the one that turned out to be correct. The
+# tour mapping (who pays at all) was right and is confirmed by the API:
+# KXATPMATCH/KXWTAMATCH are `quadratic_with_maker_fees`, Challenger and ITF
+# are `quadratic`. Only the RATE was wrong.
+#
+# Prefer common.kalshi_fees.maker_fee_order_cents() for new work.
 MAKER_FEE_BY_TOUR = {"ATP": 0.25, "WTA": 0.25,
                      "CHALL": 0.0, "ITF-M": 0.0, "ITF-W": 0.0}
 

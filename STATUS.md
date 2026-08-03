@@ -490,3 +490,68 @@ It also records the machine split: **the desktop `C:\Users\vinig` is now
 primary; the laptop is a recording box only.** The "this laptop" rows in the
 running-processes table above are that box.
 
+---
+
+## Fee consolidation + stale-claim sweep (2026-08-03)
+
+Full write-up: [common/HANDOFF.md](common/HANDOFF.md). Commits `214ad96`,
+`a92ef01`, `aeb26b9`.
+
+**The Kalshi fee formula existed 15 times across five codebases, not the 9 the
+desktop inventory recorded.** Nine of the fifteen carried the float-dust bug
+(`0.07*100*0.5*0.5*100 == 175.00000000000003`, which `ceil()` bills as 176c);
+each overcharged on **115 of 1,881 price/size cells, always by exactly 1c,
+never under**. Two were in the live-money path.
+
+`common/kalshi_fees.py` is now the single implementation — exact Decimal, 47
+tests, self-verifying at import. All 14 other sites delegate to it. 210 tests
+pass across common, kalshi-market-scan, crypto, set1_overshoot and
+wallet-copy-study.
+
+**Live bot: the fee call changed and nothing else.** Verified over 49,500
+price/size cells (189 changed, all strictly cheaper by 1c, none dearer) and 760
+`evaluate()` snapshots (entry, size, target, exit identical in every one).
+Note the overcharged sizes cluster near the 50c fee peak — **the three legs of
+the 28 Jul martingale do not hit the bug.** It was real, but it is not what
+made that day expensive.
+
+**`fee_type` re-verified against the live API** (full pagination, 12,396
+series): 12,266 `quadratic`, **130** `quadratic_with_maker_fees`, 14 with
+`fee_multiplier` 0. The 130 reproduces exactly; the total grew 12,368 → 12,396.
+
+Three **hardcoded maker fees** found and fixed. The most consequential:
+`crypto/src/fees.py` asserted "ZERO are crypto" and set the crypto maker rate
+to 0 — **`KXBTCMAX150` and `KXBTCMAX125` are crypto and do charge makers.** The
+ladder series this project trades are all `quadratic`, so the ladder results
+stand; the generalisation was the defect.
+
+**The maker RATE is now settled.** It was not API-verifiable (the series object
+carries no maker-rate field) and two incompatible readings were live in the
+repo. The sibling `signal-github` session then retrieved Kalshi's own schedule
+(effective 7 Jul 2026): `maker = roundup(M × 0.0175 × C × P × (1−P))`, M
+defaulting to 0. The quadratic quarter-of-taker reading is **correct**; the
+flat 0.25c/contract reading in `set1_overshoot/src/p5_task1b.py` is
+**superseded** and marked. S008's verdict survives either way.
+
+> ⚠ **107 of the 130 maker-fee series are Sports, and `KXATPMATCH` /
+> `KXWTAMATCH` are among them.** Kalshi charges makers precisely on the tennis
+> series this repo trades. Whether they also hold most of the liquidity is
+> **unmeasured**.
+
+**Eight retracted claims were still stated as fact and are now marked inline**
+— four in `kalshi-market-scan/docs/` (the 40× depth collapse, the 8,090-market
+weather n, the "seven families clear the capacity bar" framing, and the
+bucket-by-bucket calibration claim), and four found by sweeping the rest of the
+repo against LEDGER.md (S013/S012 in `depth_analysis.md`, S012 doing
+load-bearing work in `PREREGISTRATION_PARTB.md`, W006 in three unmarked places
+in `COPY_TRADING_VERDICT.md`, C015 as a ticked item in `crypto/PROGRESS.md`).
+Nothing was deleted — deleting is how a retracted number gets re-derived.
+
+**No verdict anywhere changed.** Every affected conclusion was already NO-GO or
+already negative, and each still is on evidence that holds.
+
+> ⚠ **`kalshi-market-scan` has no rows in [LEDGER.md](LEDGER.md) at all.** Its
+> claims were invisible to the ledger cross-check and were found only because
+> the brief named them. It keeps a separate `docs/HYPOTHESIS_LEDGER.md` that
+> nothing links to. **Ledger it, or link it.**
+

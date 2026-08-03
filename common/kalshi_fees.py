@@ -59,32 +59,43 @@ TAKER_RATE = Decimal("0.07")
 # Applies ONLY on fee_type == "quadratic_with_maker_fees". Never apply it
 # without checking fee_type first.
 #
-# ⚠ THE MAKER *RATE* IS NOT API-VERIFIABLE. The series object exposes exactly
-# two fee fields — `fee_type` and `fee_multiplier` — and no maker rate
-# (confirmed against /series/{ticker} for KXATPMATCH, KXNBA, KXBTCMAX150 on
-# 2026-08-03; full key list has no maker field). WHICH series charge makers is
-# a hard API fact. HOW MUCH is taken from Kalshi's published schedule.
+# RESOLVED 2026-08-03 from Kalshi's own published fee schedule, effective
+# 7 July 2026 (retrieved by the sibling signal-github session, commit e3b87d7;
+# re-verifiable via signal-github/src/kalshi_fees_census.py):
 #
-# Two incompatible readings of that schedule exist in this repo and they are
-# not reconcilable from data:
+#     taker  roundup(M x 0.07   x C x P x (1-P))     M defaults to 1
+#     maker  roundup(M x 0.0175 x C x P x (1-P))     M defaults to 0
 #
-#   (a) 25% of taker, same quadratic shape  -> 0.0175 * C * P * (1-P)
-#       used by crypto/, kalshi-market-scan/, kalshi-inplay-bot/
-#   (b) a FLAT 0.25c per contract           -> 0.25 * C
-#       used by set1_overshoot/ (p5_task1b.py), which flags it as
-#       "NOT verifiable from the read-only API" and tests both arms
+# So the maker fee is the SAME QUADRATIC SHAPE at one quarter of the taker
+# rate, and its multiplier defaults to zero — which is exactly what
+# `fee_type == "quadratic"` means in the API. The two sources agree.
 #
-# They cross: at 95c, (a) is 0.083c/contract while (b) is 0.25c; at 50c (a) is
-# 0.4375c while (b) is 0.25c. Neither dominates, so the choice changes results
-# in a price-dependent direction. (a) is the default here because it matches
-# the `quadratic_with_maker_fees` name and three of the four codebases, but it
-# is a CONVENTION, not a measurement. If a maker result ever matters, run both
-# arms — see set1_overshoot/src/p5_task1b.py for the pattern.
+# This settles a disagreement that was live in this repo until today. Two
+# readings existed:
+#
+#   (a) 25% of taker, same quadratic shape  -> 0.0175 * C * P * (1-P)   ✔ CORRECT
+#   (b) a FLAT 0.25c per contract           -> 0.25 * C                 ✘ WRONG
+#
+# (b) is used by set1_overshoot/src/p5_task1b.py, which flagged it honestly as
+# "NOT verifiable from the read-only API" and tested both arms. It is now
+# superseded: the schedule is quadratic, not flat. The two cross — at 95c (a)
+# is 0.083c/contract against (b)'s 0.25c, at 50c (a) is 0.4375c against 0.25c —
+# so anything that used (b) is wrong in a price-dependent direction. S008's
+# conclusion survives regardless: all 15 maker configurations were net-negative
+# under both arms.
+#
+# WHICH series charge makers remains the API's answer (`fee_type`), and that is
+# the part that matters most: 107 of the 130 maker-fee series are Sports,
+# including KXATPMATCH and KXWTAMATCH. Kalshi charges makers precisely on the
+# tennis series this repo trades.
 MAKER_RATE_WHERE_CHARGED = Decimal("0.0175")
-MAKER_RATE_IS_VERIFIED = False
+MAKER_RATE_IS_VERIFIED = True
+MAKER_RATE_SOURCE = "Kalshi published fee schedule, effective 2026-07-07"
 
-#: The competing flat-rate reading, in cents per contract. Not used by default.
-MAKER_FLAT_CENTS_ALTERNATIVE = Decimal("0.25")
+#: The superseded flat-rate reading, in cents per contract. WRONG — retained
+#: only so code that referenced it fails loudly rather than silently.
+MAKER_FLAT_CENTS_SUPERSEDED = Decimal("0.25")
+MAKER_FLAT_CENTS_ALTERNATIVE = MAKER_FLAT_CENTS_SUPERSEDED  # back-compat
 
 FEE_TYPE_TAKER_ONLY = "quadratic"
 FEE_TYPE_WITH_MAKER = "quadratic_with_maker_fees"
