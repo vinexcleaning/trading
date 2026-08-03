@@ -1,0 +1,85 @@
+{
+  "d0_interpretation": {
+    "n_positions": 3741,
+    "frac_d0_is_wallet_own_price": 0.5552,
+    "median_lag_s": 0,
+    "note": "where this fraction is high, the d0 row is the WALLET'S price, not a price a copier could reach, and must not be quoted as an opportunity"
+  },
+  "units": {
+    "edge_pp": "percentage points of $1 contract face value",
+    "roc_pct": "return on capital actually deployed = edge / entry price",
+    "spread_pp_applied": 1.0
+  },
+  "by_delay": {
+    "0": {
+      "mean_entry_price": 0.6259,
+      "edge_pp": 4.6508,
+      "net_pp": 3.6508,
+      "roc_gross_pct": 30.8672,
+      "roc_net_pct": 5.8328,
+      "ci95_pp": [
+        3.3191,
+        5.9202
+      ],
+      "p": 0.000833,
+      "n_events": 2330,
+      "n_eff": 1470.5
+    },
+    "10": {
+      "mean_entry_price": 0.6541,
+      "edge_pp": 2.0138,
+      "net_pp": 1.0138,
+      "roc_gross_pct": 22.628,
+      "roc_net_pct": 1.55,
+      "ci95_pp": [
+        0.7935,
+        3.2869
+      ],
+      "p": 0.003333,
+      "n_events": 2330,
+      "n_eff": 1470.5
+    },
+    "60": {
+      "mean_entry_price": 0.6617,
+      "edge_pp": 1.3565,
+      "net_pp": 0.3565,
+      "roc_gross_pct": 18.6834,
+      "roc_net_pct": 0.5388,
+      "ci95_pp": [
+        0.176,
+        2.574
+      ],
+      "p": 0.023333,
+      "n_events": 2330,
+      "n_eff": 1470.5
+    },
+    "300": {
+      "mean_entry_price": 0.6693,
+      "edge_pp": 0.7212,
+      "net_pp": -0.2788,
+      "roc_gross_pct": 24.7092,
+      "roc_net_pct": -0.4166,
+      "ci95_pp": [
+        -0.4332,
+        1.8665
+      ],
+      "p": 0.228333,
+      "n_events": 2330,
+      "n_eff": 1470.5
+    },
+    "1800": {
+      "mean_entry_price": 0.6816,
+      "edge_pp": -0.1254,
+      "net_pp": -1.1254,
+      "roc_gross_pct": -3.419,
+      "roc_net_pct": -1.651,
+      "ci95_pp": [
+        -1.1213,
+        0.8945
+      ],
+      "p": 0.786667,
+      "n_events": 2330,
+      "n_eff": 1470.5
+    }
+  }
+}
