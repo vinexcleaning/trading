@@ -209,16 +209,32 @@ def main():
         fh.write("**The middle row was a sampling artifact, not a discovery.** It is what the "
                  "star-enriched head of the queue looked like before the tail arrived.\n\n")
         if band_lines:
-            fh.write("Correlating **within** prescreen bands controls for that selection:\n\n")
+            fh.write("Correlating **within** prescreen bands, which was done to control for "
+                     "that selection:\n\n")
             fh.write("| prescreen band | n | stars vs S_strict | p |\n|---|---|---|---|\n")
             fh.write("\n".join(band_lines) + "\n\n")
-            fh.write(f"**n-weighted mean within-band rho = {wsum/tot:+.3f}** (n={tot}). "
-                     "Signs alternate and no band is convincingly non-zero. This is the "
-                     "robust estimate and it says the same thing as the raw figure at full "
-                     f"n: **stars carry no usable signal about substance.**\n\n")
-        fh.write("> Anyone re-running this should recompute rather than cite any single "
-                 "number here, and should prefer the within-band figure until the sample is "
-                 "either complete or randomised.\n\n")
+            fh.write(f"**n-weighted mean within-band rho = {wsum/tot:+.3f}** (n={tot}), "
+                     "predominantly negative, several bands individually significant.\n\n")
+            fh.write("### That within-band figure is contaminated — do not use it\n\n")
+            fh.write("It is tempting to read a consistent negative as *more stars, worse code*. "
+                     "**It is an artifact, and of a specific kind: conditioning on a collider.**\n\n")
+            fh.write("`prescreen` is not a confounder here, it is a *consequence*: "
+                     "`prescreen = f(stars, size, recency, language, keywords)`. Holding it "
+                     "fixed forces its inputs to trade off against each other — within a band, "
+                     "a repo with more stars must have less of everything else. And one of "
+                     "those other inputs, size, is strongly related to the score "
+                     "(`tree_files vs S_strict` is the largest correlation in this project). "
+                     "So high stars implies small repo implies low S, purely by construction. "
+                     "That is Berkson's paradox, not a finding about stars.\n\n")
+            fh.write("**The raw figure at near-complete coverage is the trustworthy one.** The "
+                     "reason the control was introduced — that the fetched sample was a "
+                     "star-enriched head of the queue — no longer applies once coverage "
+                     f"reaches {100*len(rows)/2562:.0f}% of the gated corpus. The band table is "
+                     "kept because it shows how the earlier n=105 artifact arose, not because "
+                     "its number should be quoted.\n\n")
+        fh.write("> Cite the raw figure at full n. Both the n=105 positive and the within-band "
+                 "negative are selection artifacts pointing in opposite directions, which is "
+                 "itself the clearest evidence that neither is measuring anything real.\n\n")
 
         # Concrete counter-examples are more persuasive than rho.
         top_s = [r for r in ranked if (r["s_strict"] or 0) >= 6]

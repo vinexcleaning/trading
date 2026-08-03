@@ -193,6 +193,15 @@ def main():
         con.execute("UPDATE repos SET s_strict=?, evidence_strict=? WHERE full_name=?",
                     (total, json.dumps(evs), fn))
         changed += 1
+        # Commit in batches rather than once at the end. At 2,472 repos this
+        # pass is I/O-bound on reading cached archives and takes long enough
+        # that a single trailing commit means (a) a crash or an interrupt loses
+        # every row, and (b) there is no way to see whether it is progressing —
+        # `s_strict` sits at its old value until the very last moment, which
+        # looks identical to a hang.
+        if changed % 100 == 0:
+            con.commit()
+            print(f"  rescored {changed}/{len(rows)}", flush=True)
     con.commit()
 
     rows = con.execute("SELECT * FROM repos WHERE fetched>=1 AND s_strict IS NOT NULL").fetchall()
