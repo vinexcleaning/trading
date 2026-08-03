@@ -167,24 +167,47 @@ illiquid half, which is strongly negative.**
 
 ### What happens as coverage rises
 
+**CONFIRMED at 91.2% coverage.** The missing-token pull completed (13,150 of
+16,033 tokens, +25.2M fills, 11.4 GB). Every reading held:
+
 | Panel | Coverage | **10s net** | p | 60s net | 300s net |
 |---|---|---|---|---|---|
 | balanced incl. 1800s *(old headline)* | 16.1% | **+0.300** | 0.029 | −0.214 | −0.670 |
-| balanced through 300s | **31.1%** | **−1.165** | 0.676 | −1.653 | −1.947 |
-| per-delay, max coverage | **47.3%** | **−1.957** | **0.0027** | **−2.299** | **−1.932** |
+| balanced incl. 1800s | 20.3% | **+0.156** | 0.037 | −0.281 | −0.803 |
+| balanced through 300s | **51.7%** | **−1.003** | 0.983 | −1.591 | −2.061 |
+| **per-delay, max coverage** | **91.2%** | **−1.661** | **0.0053** | **−2.200** | **−2.055** |
 
-At 47.3% coverage the 10-second net return is **−1.957pp, significantly
-negative** (p=0.0027). So are 60s (−2.299pp, p=0.0007) and 300s (−1.932pp,
-p=0.0053).
+At **91.2% coverage** the 10-second net return is **−1.661pp** (p=0.0053); 60s is
+−2.200pp (p=0.0007) and 300s −2.055pp (p=0.0007). Even the unreachable 0s row is
+now negative (−0.798pp).
 
-**Third time more coverage has killed a Task 5 number (0.9% → 11.2% → 16.1% →
-47.3%), third time in the same direction. I predicted this in the last handoff.**
+Note the artifact **shrinking as coverage rises within the balanced panel too**:
++0.300 at 16.1% → +0.156 at 20.3%. It is decaying toward the negative values the
+wide panels show.
+
+The liquidity control still fires at full coverage: **+1.103pp** with a 1800s
+print vs **−1.228pp** without, difference 2.331pp, CIs disjoint.
+
+**Fourth time more coverage has killed a Task 5 number (0.9% → 11.2% → 16.1% →
+47.3% → 91.2%), fourth time in the same direction. I predicted this twice.**
 
 *Caveat that cuts both ways:* effective sample size collapses in the wider panels
-— n_eff 2,079 at 16.1%, but **268** at 31.1% and **196** at 47.3%, because the
-added positions cluster into few events. The wider panels rest on ~200 effective
-observations, not 15,857 independent draws. The direction is consistent and
-significant; the precision is weaker than the nominal n suggests.
+— n_eff 2,516 at 20.3% but only **~250** at 51.7% and 91.2%, because the added
+positions cluster into events. The wide panels rest on ~250 effective
+observations, not 30,559 independent draws.
+
+**So I ran leave-one-out on the negative result — the same test used to defend
+the positive politics finding.** Applying that test only to results one likes is
+how a project fools itself.
+
+| Delay | Baseline net | Largest single event | Max shift dropping any of the 15 biggest | Still negative after every drop |
+|---|---|---|---|---|
+| 10s | −1.661pp | 1.5% of obs | **+0.071pp** | **Yes** |
+| 60s | −2.200pp | 1.6% | −0.077pp | **Yes** |
+| 300s | −2.055pp | 1.8% | +0.080pp | **Yes** |
+
+**No single event drives it.** The low n_eff comes from broad moderate
+clustering, not one dominant event. The retraction stands.
 
 ### Per-wallet, at the wider panel
 
