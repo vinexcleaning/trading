@@ -78,7 +78,23 @@ continue each other's work.**
 (The brief said 105 deep-fetched at 4.1% coverage; the previous `HANDOFF.md`
 ended at 146 at 6%, because a background pass was still running when the
 `STATUS.md` figure was written. Both are superseded — this session reached
-**862**.)
+**2,260**.)
+
+> ⚠ **Two different coverage numbers now exist in this repo's history, and both
+> are correct.** Commit `3a2f36a` reports *"2472 repos scored (96%)"*; commit
+> `19d5dba` (this handoff) reports **2,260 scored, 69.5%**. They are measurements
+> of **two different databases on two different machines** — `data/github.db` is
+> gitignored, so the laptop and the desktop each built their own corpus from the
+> shared code. The denominators differ too: 2,472/2,562 gated on the other
+> machine, 2,260/**3,252** gated here, because this machine's retrieval included
+> the GitHub code-search axis that added 916 repos the other corpus does not
+> contain.
+>
+> **Neither number is wrong; they are not comparable.** Any future session must
+> state which machine a coverage figure came from, or the two will keep
+> overwriting each other. The structural fix is to make the corpus shareable —
+> either commit a compressed export of `repos` (no judgement columns, so it stays
+> publishable) or agree that one machine owns this project.
 
 ---
 
