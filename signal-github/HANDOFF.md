@@ -597,6 +597,52 @@ repo: `common/kalshi_fees.py::maker_fee_order_cents()` takes no default for the
 series and raises rather than guess. Two repos in the wild demonstrate exactly
 the failure that refusal prevents.
 
+## 2k. Credibility at n=822 — and it is orthogonal to substance, measured
+
+The previous session had credibility metrics for **40** repos and could not
+settle anything with them: commits-vs-substance was +0.147 (p 0.36) and the sign
+had flipped between n=30 and n=40, so it was recorded as noise. The token made
+this tier cheap; it now covers **822**.
+
+**`trust_me_bro` fires on 182 of 822 — 22.2%**, against **3 of 40 (7.5%)** last
+session. That is the previous handoff's own warning about sampling bias, turned
+into a number: *the top-40 slice was three times more honest than the corpus.*
+Roughly **one repo in five** makes a results claim in its README with fewer than
+10 commits and no artifact behind it. A further **44 repos were retroactively
+dropped for having ≤1 commit.**
+
+### The finding that justifies the combined shortlist
+
+| pair | rho | p | |
+|---|---|---|---|
+| `trust_me_bro` vs `s_adj` | **+0.029** | **0.408** | **not significant** |
+| `commits` vs `s_strict` | +0.305 | <0.001 | significant |
+| `commits` vs `s_adj` | +0.077 | 0.027 | weak |
+| `contributors` vs `s_adj` | −0.067 | 0.054 | not significant |
+| `span_days` vs `s_adj` | −0.024 | 0.50 | not significant |
+| `stars` vs `s_adj` | **−0.094** | **0.007** | significant, **negative** |
+
+**Flagged repos score the same on substance as clean ones** — median `s_adj`
++0.21 flagged versus +0.16 clean. The "trust me bro" shape carries **no
+information about substance**, and substance carries none about honesty. They
+are genuinely independent axes. That is why §3c's shortlist has to combine them,
+and it is now measured rather than argued.
+
+**Two cautions on the other rows.** First, `commits` vs `s_strict` looks strong
+at +0.305 but collapses to +0.077 against `s_adj` — so most of that association
+is the **size bias again**, not commits predicting quality: more commits means
+more files, and more files mechanically raises the raw score. Second,
+`stars` vs `s_adj` is now significantly **negative**, but rho −0.094 explains
+under 1% of variance. The honest statement is: after removing size, popularity
+is very slightly *anti*-correlated with substance — statistically real,
+practically negligible, and consistent with §2f and §2g.
+
+**One number that must not be misread.** Flagged repos average 26 stars each and
+clean ones 239, which looks like a strong effect and is not: it is driven by a
+few huge clean repos (`ccxt` alone has 43,522). The **medians are 2 and 3**, and
+the rank test gives rho −0.057, p 0.101 — **no significant difference**. Reported
+because the mean here is misleading and someone will otherwise quote it.
+
 ---
 
 ## 3. The no-README false-negative channel is closed
