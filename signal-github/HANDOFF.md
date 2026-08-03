@@ -6,6 +6,41 @@ Nothing here is a plan; everything is either a measurement or a stated gap.
 
 ---
 
+## 0a. TWO SESSIONS, TWO DATABASES — read before trusting any count
+
+Discovered 2026-08-03 while rebasing. **`signal-github` has been worked on by two
+Claude sessions in parallel.** Code and markdown are shared through git; the
+SQLite database is **not** — it is gitignored, so each machine has its own.
+
+- The committed HANDOFF sections below describe a database with **862 repos
+  scored**, plus `kalshi_fees_census.py` and `kalshi_liquidity_survey.py`.
+- The database on **this laptop** (`C:\Users\gianf\trading\signal-github\data\github.db`) has **501**, and its `runlog`
+  table contains **no entries** from the 862-repo run.
+
+Neither number is wrong; they are different machines. **Do not read the counts in
+this file as describing the database in front of you — re-query it.** The
+`runlog` table is the authority for what actually ran locally.
+
+What was merged in from the other session, and is now live here:
+
+- `gh.archive()` — pulls a whole repo (every path *and* the text of every text
+  file) from codeload in **one unmetered request**. It replaces the git-tree core
+  call that rationed this project to 60 repos/hour. Verified working on this
+  machine: `warproxxx/poly-maker` gave 67 paths, 66 file contents, **0 core calls**.
+- Correction **C1** (`CORRECTIONS.md`): Kalshi does not charge makers and takers
+  the same rate. This corrects a claim in `reports/step5_answers.md` that this
+  session published; both that file and `PLAIN_ENGLISH.md` have been fixed.
+- `commits_atom()` — free degradation for credibility when core is exhausted.
+
+**Transient-failure note for whoever runs the archive pass next.** `_fetch_bytes`
+has no retry, and a network blip makes `archive()` return zero paths, which looks
+exactly like an empty repo. It is caught — `fetch_repo` writes `fetched=-2`
+(retryable) rather than poisoning the row — but a run during a bad network
+stretch will under-report and simply need re-running. Observed live: the same
+repo returned 0 paths, then 67 a minute later.
+
+---
+
 ## 0. Read this first — two things about the starting state
 
 **1. There was no token.** The instruction was to set a GitHub personal access
