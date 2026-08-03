@@ -20,11 +20,11 @@ asserts a number and no artifact backs it, the row says `NONE` and the status is
 | Status | Count |
 |---|---|
 | **RETRACTED** | **44** |
-| SETTLED | 123 |
+| SETTLED | 124 |
 | SUGGESTIVE | 30 |
 | UNVERIFIED | 29 |
 | BROKEN | 6 |
-| **Total** | **232** |
+| **Total** | **233** |
 
 **Updated 2026-08-03**: +16 rows from **Section 6 — kalshi-market-scan**, which
 had no rows in this ledger until then. Three of its retractions (K003, K005,
@@ -103,6 +103,7 @@ Unit of observation is **the match**. Kalshi data **2026-05-25 → 2026-08-01**,
 | S021 | The tennis strategy line cannot be resolved with the sample available. | set1_overshoot | power calc in `HANDOFF.md` §9 | 3,436 events, sd 45¢ | — | needs n≈3,970 for a 2¢ edge; accrues ~1,900 matches/week | n/a | n/a | **SETTLED** |
 | S022 | Retirement add-back costs −0.004¢. | set1_overshoot | `reports/p2_scalar.txt` | scalar settlements | 05-25→07-xx | −0.004¢ | — | — | **BROKEN** (computed on the void event set; needs re-run) |
 | S023 | The fade side loses in all 6 configurations. | set1_overshoot | `reports/p2_fade.md` | 6 configs | 05-25→07-xx | all negative | — | — | **BROKEN** (edge term void; cost arithmetic likely carries the conclusion — needs re-run) |
+| S025 | **The two maker-fee tennis series hold 34.4% of tennis volume on 5.8% of the markets** — 5.9× concentration. S010's "91% of the book" is a *count*; by volume the taker-only series are 65.6%. | set1_overshoot | `common/measure_tennis_maker_liquidity.py` → `common/TENNIS_MAKER_LIQUIDITY.md` | 42 series, 66,694 markets, 9.63bn volume | 2026-08-03 | maker-fee 3,864 mkts / 3.31bn vol; taker-only 62,830 / 6.32bn. `KXATPMATCH` alone is **21.9%** of volume | n/a | n/a | **SETTLED** (structural fact from the API) — answers the question `signal-github` `e3b87d7` left open. Does **not** revive the maker case: S008/S009 and the 08-03 `high_sweep` re-run all stand |
 | S024 | `plausible` duration filter (25–330 min) is immaterial to θ. | set1_overshoot | `src/audit_plausible.py` → `reports/audit_plausible.md` | 16,258 kept / 682 dropped | 05-25→08-01 | +0.02pp; residual z=−2.59 (borderline, below \|z\|=4) | n/a | n/a | **SUGGESTIVE** (measured on the contaminated universe; re-test pending) |
 
 ---
