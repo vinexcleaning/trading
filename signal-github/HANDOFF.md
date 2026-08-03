@@ -40,6 +40,11 @@ anything. **This is a structural fact about the project worth planning around:
 the code is shared through git and the corpus is not, so the two machines cannot
 continue each other's work.**
 
+(The brief said 105 deep-fetched at 4.1% coverage; the previous `HANDOFF.md`
+ended at 146 at 6%, because a background pass was still running when the
+`STATUS.md` figure was written. Both are superseded — this session reached
+**862**.)
+
 ---
 
 ## 1. The finding that changes the project's economics
@@ -275,6 +280,135 @@ three different ways in one file.
 
 ---
 
+## 2f. The stars-vs-substance *correction* does not survive the larger sample
+
+This is the most consequential number of the session, and it un-does something
+the previous handoff had already corrected once.
+
+The history: at **n=40** the correlation between stars and strict score was
+−0.019 (p 0.91) and the project reported *"stars carry no information about
+whether a repo has substance"*. At **n=105** it measured **+0.241 (p 0.013)**,
+and the previous session **withdrew the strong claim**, writing that it "was
+wrong and is withdrawn" and that stars are a *"weak but statistically
+significant"* signal.
+
+At **n=862** it is gone. Measured over nested prescreen-ordered subsamples of
+the same corpus, so the trajectory is visible rather than asserted:
+
+| n (top by prescreen) | rho(stars, S_strict) | p |
+|---|---|---|
+| 40 | −0.004 | 0.980 |
+| **105** | **+0.189** | **0.051** |
+| 200 | +0.036 | 0.611 |
+| 400 | +0.034 | 0.496 |
+| 600 | +0.017 | 0.677 |
+| **862** | **−0.004** | **0.898** |
+
+The n=105 bump reproduces (this session gets +0.189 where the last got +0.241,
+both borderline) and then **decays monotonically to zero as n grows**. It was a
+small-sample artifact. **The original claim is reinstated: stars carry no usable
+information about substance, and the withdrawal of that claim was itself the
+error.**
+
+Concretely, in the 862: **58 repos with 50+ stars score ≤3 strict**, and **86
+repos with ≤2 stars score ≥8 strict.**
+
+### A scorer bias this exposed, which matters more than stars
+
+| pair | rho | p |
+|---|---|---|
+| **`tree_files` vs S_strict** | **+0.593** | **<0.0001** |
+| stars vs S_strict | −0.004 | 0.898 |
+| forks vs S_strict | −0.009 | 0.790 |
+
+**File count is by far the strongest predictor of the strict score** — and it is
+largely mechanical, because more files means more chances for any component to
+find its pattern. That is a property of the instrument, not of the repos. It is
+also gameable and partly noise: §2e's repo has **42 of its 104 files as committed
+`__pycache__/*.pyc`**, all of which `tree_files` counts. **Any future ranking
+should normalise for repository size before anything else.**
+
+### Score distribution at n=862
+
+Literal ≥9 fires on **248 of 862 (28.8%)**; strict on **64 of 862 (7.4%)**. The
+strict rate replicates the previous session's 3-of-40 (7.5%) almost exactly at
+21× the sample, which is the best evidence so far that the strict scorer is
+measuring something stable.
+
+---
+
+## 2g. The corpus-wide fee audit — and the sharpest result of the session
+
+C1 gave a published ground truth for a constant that hundreds of repos hardcode.
+`src/fee_audit.py` asks every deep-fetched repo what it believes, which is only
+possible because whole-repo source is now free, and is a question no keyword
+score can answer: **the answer depends on the value of a constant, not its
+presence.**
+
+Over the 862 scored repos:
+
+| | repos |
+|---|---|
+| mentions a fee anywhere | 728 (84%) |
+| **models no fee at all** | **132 (15%)** |
+| sets some fee to zero | 309 (36%) |
+| Kalshi taker rate = 0.07 (correct) | 70 |
+| Kalshi taker rate = something else | 28 |
+| **Kalshi maker rate = 0.0175 (correct)** | **19** |
+| **Kalshi maker hardcoded to 0** | **15** |
+| **Kalshi maker set equal to taker (the C1 error)** | **4** |
+
+### The result
+
+**The 19 repos that get Kalshi's maker fee right have 65 stars between them. The
+15 that hardcode it to zero have 1,493 — 23× more.**
+
+| | n | star counts | median | total |
+|---|---|---|---|---|
+| **correct (0.0175)** | 19 | 26, 20, 8, 6, 2, 1, 1, 1, then **eleven zeros** | **0** | **65** |
+| **hardcoded zero** | 15 | **1098**, 225, 118, 11, 11, 9, 7, 6, 5, 2, 1, 0×4 | 6 | **1,493** |
+| set equal to taker | 4 | 4, 1, 0, 0 | 0.5 | 5 |
+
+16 repos name **both** Kalshi rates correctly. The most-starred has **26 stars**;
+**nine of the sixteen have zero**. Several are better than correct — they know
+the fee is *per series*:
+
+- `hbere/kalshi-transport` (1★): `MAKER_FEE_RATE = 0.0175` … *"Returns 0.0 when
+  the series carries no maker fee — pass `fee_type`"*
+- `RohitDayanand/PolyKalshi_Client` (20★): *"Maker fees for specific tickers:
+  0.0175 × C × P × (1−P) rounded up to next cent"*
+- `utkarshp845/Kalshi-Trading-Bot` (1★): *"maker fee coefficient **where maker
+  fees apply**"*
+
+Meanwhile **`rodlaf/KalshiMarketMaker` (225★) — a Kalshi *market maker* —
+hardcodes the maker fee to zero**, which is wrong on exactly the 130 liquid
+series a market maker would want to quote.
+
+This is the most concrete version of the stars finding the project has produced.
+On an objectively checkable fact with a published ground truth, popularity is not
+merely uninformative — **it points the wrong way.**
+
+**The honest alternative explanation**, which this does not rule out: the
+high-star repos here are general-purpose multi-venue frameworks (hummingbot,
+`evan-kolberg`) that treat Kalshi as one venue among many and simplify, while the
+zero-star repos are single-purpose Kalshi bots whose whole reason to exist is
+that venue. That would produce the same pattern without popularity being
+*anti*-informative. Either way the practical rule is the same: **for a venue
+constant, do not take the popular repo's word for it — read the venue's
+document.**
+
+### Detector precision, stated because the last session's was not
+
+The exact-value buckets (0.0175 / 0 / 0.07) were spot-checked by reading the
+matched lines: **12 of 12 inspected are genuine**. The
+`kalshi_*_other_value` buckets (28 and 40) are **not trustworthy** — they are
+dominated by SQL column names like `maker_asset_id` and `taker_amount`
+(`Jon-Becker/prediction-market-analysis` is matched this way). Only the
+exact-value buckets are quoted above, and `reports/fee_audit.json` carries
+`path:line` for every hit so any of it can be checked.
+
+---
+
 ## 3. The no-README false-negative channel is closed
 
 77 repos were dropped last session purely for having no fetchable README, and it
@@ -286,6 +420,51 @@ and no README was invisible to gate G3.
 venue term — and gates on that. A README is a convenience, not a requirement.
 The report prints the outcome as a table: rescued / genuinely off topic / over
 the size cap, so the residual leak is counted rather than hidden.
+
+---
+
+## 3b. The numbers, including the bad ones
+
+Corpus rebuilt from zero on this machine, then taken further than the previous
+session reached.
+
+| stage | this session | previous |
+|---|---|---|
+| unique repos retrieved | **2,806** | 3,133 |
+| — F1 beginner / F2 insider | 1,009 / 959 | 964 / 1,147 |
+| — in both / **Jaccard** | 68 / **0.036** | 67 / 0.033 |
+| — TOPIC / LIB_FORK / SEED | 390 / 317 / 187 | 785 / 317 / 188 |
+| — F2_CODE (Sourcegraph) | **15** | 37 |
+| gate PASS / STALE / DROP | 2,221 / 126 / 459 | 2,441 / 121 / 571 |
+| **deep-fetched and scored** | **862** | 146 |
+| **coverage of the gated set** | **36.7%** | 6.0% |
+| repos read in full this session | 2 | 12 |
+| literal S ≥ 9 | 248 of 862 (28.8%) | 19 of 40 (47.5%) |
+| **strict S ≥ 9** | **64 of 862 (7.4%)** | 3 of 40 (7.5%) |
+| core API calls spent on the deep fetch | **0** | ~146 |
+
+Jaccard 0.036 against YouTube's 0.037 over 446 videos and the previous 0.033 —
+the beginner/insider disjointness result now has three independent measurements
+that agree.
+
+**The corpus is smaller than last session's and that is a loss, not a
+rounding.** Two causes, both external: the Sourcegraph code-search axis returned
+15 repos where it returned 37, with several queries returning literally zero; and
+unauthenticated search dropped whole pages to 403s, including both attempts at
+`topic:kalshi`. See §5.1–5.2.
+
+**The fetch was stopped at 862 of a planned 1,200, deliberately.** The scoring
+loop slows on very large repos (one monorepo in the queue has 13,526 files), and
+finishing the remaining ~340 was worth less than running the strict rescore, the
+ranking and the fee audit cleanly. The selector is `fetched IN (0,-2)`, so
+re-running `python src/fetch_repo.py tree 1500` resumes exactly where it stopped;
+every archive already pulled is a cache hit.
+
+**Credibility metrics were not fetched for any repo this session.** `commits`,
+`contributors` and `span_days` are all NULL, so `trust_me_bro` is undecided
+corpus-wide and the commits-vs-substance correlation could not be computed at
+all. That tier needs core calls (or the free atom feed, which gives recency but
+no total count). It is the largest single gap in this session's output.
 
 ---
 
@@ -326,16 +505,38 @@ the size cap, so the residual leak is counted rather than hidden.
 5. **Reading over-samples honesty.** Repos are selected for reading by the strict
    score, and rigorous repos score well *because* they are rigorous. The corpus
    as a whole is almost certainly less honest than the repos read.
+6. **The strict score is 59% explained by file count** (rho +0.593). Until that
+   is normalised, the ranking is substantially a size ranking. This is the
+   highest-value single fix to the instrument and it is not done.
+7. **Only 2 repos were read in full this session** against 12 last session. The
+   session spent its time rebuilding a corpus that did not exist on this machine
+   and on the fee work. The ratio the previous handoff flagged — defects come
+   from reading, not scoring — held completely: **2 repos read produced 5
+   defects** (1 in `evan-kolberg`, 4 in `aulekator`), none visible to any
+   computed component, in repos scoring 10 and 9.
+8. **No credibility metrics at all** — see §3b. `trust_me_bro` is undecided for
+   all 862.
 
 ---
 
-## 6. The single next thing to do
+## 6. The next three things, in order
 
-**Put the token in `signal-github/.env`.** It is no longer needed for depth —
-that is now free — but it is what unblocks GitHub code search and stops
-unauthenticated search dropping pages. `gh.py` reads the file at import; nothing
-else changes.
+1. **Normalise the strict score for repository size.** `rho(tree_files,
+   S_strict) = +0.593` against `rho(stars, S_strict) = −0.004`. The ranking is
+   currently more a size ranking than a substance ranking, and everything built
+   on top of it inherits that. This costs no API budget and is pure local work.
 
-Second: **read the Kalshi member agreement and the Polymarket terms of use in a
-browser.** Both still defeat automated retrieval, and they are the one input that
-could invalidate the venue recommendation.
+2. **Finish the fetch and add the credibility tier.**
+   `python src/fetch_repo.py tree 1500` resumes at repo 863 with every existing
+   archive a cache hit. Then `full` for the credibility axis — which is the one
+   thing that still wants core budget, and therefore the token.
+
+3. **Put the token in `signal-github/.env`.** No longer needed for depth, but it
+   is what unblocks GitHub code search (replacing a Sourcegraph axis that has
+   degraded from 37 repos to 15) and stops unauthenticated search silently
+   dropping pages. `gh.py` reads the file at import; nothing else changes.
+
+And still, unchanged from last session because no machine could do it: **read the
+Kalshi member agreement and the Polymarket terms of use in a browser.** The fee
+schedule turned out to be reachable after all (§2c) — the other two are not, and
+they are the one input that could invalidate the venue recommendation.

@@ -52,6 +52,31 @@ DECISION RULE, fixed in advance:
                                           detectable effect so the null is
                                           interpretable instead of merely empty.
 
+--- AMENDMENT, added after 4 of 60 videos were read, BEFORE any group was full
+--- and before any between-group comparison had been computed.
+
+A confound was found in the read_set itself, not in this script. Two declared
+sensitivity analyses are added now rather than after the primary result, because
+adding them afterwards would be fishing and adding them now is just honesty.
+
+  CHANNEL CLUSTERING. select_read_set.py's ANCHOR rule admits every passing
+  video from one channel (Nates Tokens). All three of them landed in F2_only,
+  i.e. entirely inside the INSIDER arm, placed there by a rule that has nothing
+  to do with which query family found them. Three videos from one creator share
+  a house style, an honesty profile and a tooling stack, so they are not three
+  independent observations. Untreated, this is pseudo-replication that inflates
+  INSIDER's apparent n and can manufacture a difference on its own.
+
+  SENSITIVITY 1 -- drop every video whose selection_rule is not 'stratified',
+  removing the anchor block and the longest-video pick.
+  SENSITIVITY 2 -- collapse each channel to its mean score and test on channel
+  means, so a channel contributes exactly one observation whatever its count.
+
+The PRIMARY test is still the one registered above, reported first and
+unchanged. If the primary and the two sensitivities disagree, the honest
+reading is the most conservative of the three, and this file says so rather
+than letting a reader pick.
+
 POWER IS REPORTED WHETHER OR NOT IT IS FLATTERING. A null at n=12 per group is
 not evidence of no effect, and this script says so in its own output rather than
 leaving the reader to work it out.
@@ -233,7 +258,7 @@ def part_b(con):
     print("=" * 74)
 
     rows = con.execute(
-        """SELECT r.video_id, r.family_bucket, r.view_band,
+        """SELECT r.video_id, r.family_bucket, r.view_band, r.selection_rule,
                   s.s_total, s.h_total, COALESCE(s.b_total,0) AS b_total, s.verdict,
                   v.title, v.channel_name, v.view_count
            FROM read_set r
@@ -321,6 +346,76 @@ def part_b(con):
             else:
                 print("  Minimum detectable effect exceeds the 10-point scale: this "
                       "design\n  has essentially no power. Read more videos.")
+
+    # ---- declared sensitivity analyses (see AMENDMENT in the module docstring)
+    prim_fn = outcomes["max(S,B) [PRIMARY]"]
+    out["sensitivity"] = {}
+
+    def run_sens(label, a_rows, b_rows, note):
+        a = [prim_fn(r) for r in a_rows]
+        b = [prim_fn(r) for r in b_rows]
+        if len(a) < 3 or len(b) < 3:
+            print(f"    {label:<26} NOT RUN (n={len(a)}/{len(b)}, need >=3 each)")
+            out["sensitivity"][label] = {"status": "NOT_RUN",
+                                         "n_insider": len(a), "n_beginner": len(b)}
+            return
+        t = perm_test(a, b)
+        e = rank_biserial(a, b)
+        out["sensitivity"][label] = {
+            "n_insider": len(a), "n_beginner": len(b),
+            "insider_mean": round(mean(a), 3), "beginner_mean": round(mean(b), 3),
+            "diff": round(t["diff"], 3), "p": round(t["p"], 5),
+            "rank_biserial": round(e, 3), "note": note,
+        }
+        print(f"    {label:<26} n={len(a):>2}/{len(b):<2} "
+              f"insider {mean(a):>5.2f}  beginner {mean(b):>5.2f}  "
+              f"diff {t['diff']:>+5.2f}  p={t['p']:.4f}")
+
+    print("\n  DECLARED SENSITIVITY ANALYSES (primary above is unchanged):")
+
+    # 1 -- stratified only: removes the anchor block and the longest-video pick,
+    #      both of which entered the read set by a rule unrelated to family.
+    run_sens("1. stratified only",
+             [r for r in A if r["selection_rule"] == "stratified"],
+             [r for r in B if r["selection_rule"] == "stratified"],
+             "anchor and longest rows dropped")
+
+    # 2 -- one observation per channel. Three videos by one creator share a house
+    #      style and an honesty profile; they are not three independent draws.
+    def by_channel(rows_):
+        acc = {}
+        for r in rows_:
+            acc.setdefault(r["channel_name"], []).append(prim_fn(r))
+        return [{"channel_name": c, "s_total": mean(v), "b_total": 0,
+                 "h_total": 0, "verdict": "", "selection_rule": "stratified"}
+                for c, v in acc.items()]
+
+    ca, cb = by_channel(A), by_channel(B)
+    if len(ca) >= 3 and len(cb) >= 3:
+        a = [r["s_total"] for r in ca]
+        b = [r["s_total"] for r in cb]
+        t = perm_test(a, b)
+        out["sensitivity"]["2. one row per channel"] = {
+            "n_insider_channels": len(a), "n_beginner_channels": len(b),
+            "insider_mean": round(mean(a), 3), "beginner_mean": round(mean(b), 3),
+            "diff": round(t["diff"], 3), "p": round(t["p"], 5),
+        }
+        print(f"    {'2. one row per channel':<26} n={len(a):>2}/{len(b):<2} "
+              f"insider {mean(a):>5.2f}  beginner {mean(b):>5.2f}  "
+              f"diff {t['diff']:>+5.2f}  p={t['p']:.4f}")
+    else:
+        print(f"    {'2. one row per channel':<26} NOT RUN "
+              f"(channels {len(ca)}/{len(cb)}, need >=3 each)")
+        out["sensitivity"]["2. one row per channel"] = {
+            "status": "NOT_RUN", "n_insider_channels": len(ca),
+            "n_beginner_channels": len(cb)}
+
+    ps = [v.get("p") for v in out["sensitivity"].values() if v.get("p") is not None]
+    if ps and out.get("status") == "CASHED_OUT" and any(p >= 0.05 for p in ps):
+        out["status"] = "CASHED_OUT_BUT_NOT_ROBUST"
+        print("\n  *** The primary test cleared 0.05 and at least one declared "
+              "sensitivity did not.\n      Per the amendment, the conservative "
+              "reading governs: NOT ROBUST.")
 
     # descriptive, always printed -- MULTI included
     print("\n  descriptive means by bucket (no test, MULTI included):")
