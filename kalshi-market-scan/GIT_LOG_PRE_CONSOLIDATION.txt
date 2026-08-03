@@ -1,0 +1,28 @@
+﻿Git log of `C:\Users\vinig\kalshi markets` preserved before its inner .git was
+removed and the tree was folded into the `trading` monorepo as `kalshi-market-scan`.
+
+Original repo: 21 commits, branch `master`, clean working tree, NO REMOTE.
+This log is the only surviving record of that history.
+Preserved 2026-08-03. Author emails redacted.
+
+752f90f  2026-07-30 13:26:19 -0400  Claude  Fix verdict inconsistency: remove the bucket-by-bucket calibration claim I walked back
+40d317f  2026-07-30 13:25:58 -0400  Claude  Longshot v3: the power fix failed, and I should say so plainly
+75e46e0  2026-07-30 12:59:39 -0400  Claude  Refresh report header
+5527fbf  2026-07-30 12:59:20 -0400  Claude  Weather resolved: 1 viable family of 11, after counting settlements not markets
+2ea5985  2026-07-30 12:55:05 -0400  Claude  Update verdict and ledger to 116 hypotheses; zero tradeable Kalshi edges
+1efdf8f  2026-07-30 12:54:27 -0400  Claude  Flow following on Kalshi: no signal, on 1,376 settled markets
+9c204b9  2026-07-30 12:51:28 -0400  Claude  Update report header and blocked-cell note; stop arb scanner
+d5a8877  2026-07-30 12:50:36 -0400  Claude  Headline test answered: no KXBTC15M edge. Plus a retraction.
+cfbdeb9  2026-07-30 11:19:53 -0400  Claude  DECISIVE: no favourite-longshot bias on Kalshi; the Polymarket transfer fails
+6a13e9b  2026-07-30 05:24:07 -0400  Claude  Refresh manifest and gaps report
+e9cc803  2026-07-30 05:23:51 -0400  Claude  Measure hourly weather ladder depth: recurrence and liquidity do not coincide
+a149cbd  2026-07-30 05:18:25 -0400  Claude  Measure the cost bar from live books: depth collapses as the model sharpens
+3359afd  2026-07-30 05:08:53 -0400  Claude  Live-session flow following: combo premise settled, efficiency signal
+5713b2f  2026-07-30 05:08:11 -0400  Claude  Fix recorder orderbook parse bug; answer the weather capacity question
+5acba9c  2026-07-30 04:25:58 -0400  Claude  Weather ground-truth model, scored on real settled outcomes
+651217d  2026-07-30 04:23:01 -0400  Claude  Phase 6 Kalshi flow following
+6396800  2026-07-30 04:21:16 -0400  Claude  Verify the load-bearing copy-trading assumption; revise Phase 6
+d2c1bd2  2026-07-30 04:16:55 -0400  Claude  Phase 6 copy trading + all deliverable docs
+71931ac  2026-07-30 04:01:12 -0400  Claude  Phase 5 BTC deep dive + Phase 1 screen
+11781c9  2026-07-30 03:53:13 -0400  Claude  Phase 2 arb detector + Phase 4 leak audit and synthetic control
+35fc0d6  2026-07-30 03:42:16 -0400  Claude  Phase 0 ground truth + Phase 3 recorders live

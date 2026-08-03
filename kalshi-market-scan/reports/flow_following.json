@@ -1,0 +1,8 @@
+{
+ "n_trades_recorded": 1725147,
+ "n_markets_traded": 68580,
+ "total_notional": 71853064.03890002,
+ "n_whale_prints": 20709,
+ "n_one_sided_candidates": 1594,
+ "note": "Kalshi's trade feed is anonymous -- no account identifier exists in the schema -- so this is flow following, not copy trading. Combo markets are excluded via mve_collection_ticker."
+}

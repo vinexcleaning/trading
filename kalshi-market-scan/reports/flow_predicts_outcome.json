@@ -1,0 +1,10 @@
+{
+ "n_markets": 1376,
+ "cutoff_s": 120,
+ "flow_side_win_rate": 0.5123546511627907,
+ "corr_flow_residual": -0.05220030421459139,
+ "p_value": 0.052879587154357297,
+ "corr_whales": -0.06424774317309616,
+ "p_value_whales": 0.4540688213293649,
+ "verdict": "NO SIGNAL \u2014 flow adds nothing over price"
+}

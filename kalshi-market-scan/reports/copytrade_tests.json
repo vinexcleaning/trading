@@ -1,0 +1,140 @@
+{
+ "n_bets": 1641207,
+ "n_wallets": 38117,
+ "population_edge_pp": 0.027983210058377794,
+ "test1_persistence": {
+  "period_split_ts": 1781008980.0,
+  "n_wallets_both_periods": 878,
+  "min_bets_per_period": 20,
+  "spearman_rho": 0.10705356056841682,
+  "spearman_p": 0.0014894815327800332,
+  "pearson_r": 0.03910440602676303,
+  "pearson_p": 0.24706927974808598,
+  "top_decile_n": 87,
+  "top_decile_edge_p1": 0.18566704601288794,
+  "top_decile_edge_p2": 0.006413385763148727,
+  "bottom_decile_edge_p1": -0.19835547496305267,
+  "bottom_decile_edge_p2": 0.0004387455512043181,
+  "all_wallets_edge_p2": -0.002973084734898256,
+  "top_vs_all_p2_tstat": 0.6170528470549121,
+  "top_vs_all_p2_p": 0.5386510656104708,
+  "top_decile_beats_cost_bar_p2": false,
+  "verdict": "NOT PERSISTENT"
+ },
+ "test2_skill_vs_luck": {
+  "n_wallets": 5351,
+  "grand_mean_edge": 0.00027983210058377795,
+  "observed_edge_variance": 0.015544506085483325,
+  "mean_sampling_variance": 0.0028540721322609266,
+  "true_skill_variance_tau2": 0.012690433953222398,
+  "skill_variance_share": 0.8163935144310386,
+  "median_shrink_weight": 0.8661326360310355,
+  "n_significant_raw_p05": 2086,
+  "n_significant_after_fdr": 1684,
+  "best_raw_edge": 0.95,
+  "best_shrunk_edge": 0.95,
+  "median_n_bets": 48.0,
+  "n_bets_to_detect_55_vs_50_at_80pct_power": 784,
+  "median_wallet_has_enough_bets": false,
+  "verdict": "SKILL PRESENT"
+ },
+ "test3_edge_decay": {
+  "n_rows": 45117,
+  "by_delay": [
+   {
+    "delay_seconds": 0.0,
+    "n": 5013,
+    "median_deterioration_c": 0.6875,
+    "mean_deterioration_c": 0.6020079160304009,
+    "pct_moved_against": 78.47596249750649,
+    "median_spread_c": 0.1,
+    "median_follower_pnl": 0.1826898160145115
+   },
+   {
+    "delay_seconds": 2.0,
+    "n": 5013,
+    "median_deterioration_c": 0.7349999964,
+    "mean_deterioration_c": 0.7261219319653202,
+    "pct_moved_against": 78.31637741871134,
+    "median_spread_c": 0.1,
+    "median_follower_pnl": 0.1313628899835796
+   },
+   {
+    "delay_seconds": 5.0,
+    "n": 5013,
+    "median_deterioration_c": 0.765,
+    "mean_deterioration_c": 0.8071795027121412,
+    "pct_moved_against": 77.71793337322961,
+    "median_spread_c": 0.1,
+    "median_follower_pnl": 0.1333303222461982
+   },
+   {
+    "delay_seconds": 10.0,
+    "n": 5013,
+    "median_deterioration_c": 0.8108695652173901,
+    "mean_deterioration_c": 0.9104171952397502,
+    "pct_moved_against": 78.83502892479554,
+    "median_spread_c": 0.1,
+    "median_follower_pnl": 0.1313628899835796
+   },
+   {
+    "delay_seconds": 15.0,
+    "n": 5013,
+    "median_deterioration_c": 0.8400000006,
+    "mean_deterioration_c": 0.966646126919842,
+    "pct_moved_against": 78.79513265509675,
+    "median_spread_c": 0.1,
+    "median_follower_pnl": 0.1313628899835796
+   },
+   {
+    "delay_seconds": 30.0,
+    "n": 5013,
+    "median_deterioration_c": 0.9724999999999999,
+    "mean_deterioration_c": 1.2017362234139695,
+    "pct_moved_against": 80.82984240973468,
+    "median_spread_c": 0.1,
+    "median_follower_pnl": 0.1210579198133082
+   },
+   {
+    "delay_seconds": 60.0,
+    "n": 5013,
+    "median_deterioration_c": 0.9600000113999999,
+    "mean_deterioration_c": 1.3570267425908729,
+    "pct_moved_against": 76.50109714741671,
+    "median_spread_c": 0.1,
+    "median_follower_pnl": 0.1100709277844776
+   },
+   {
+    "delay_seconds": 120.0,
+    "n": 5013,
+    "median_deterioration_c": 0.9299999999999999,
+    "mean_deterioration_c": 1.452327911236745,
+    "pct_moved_against": 73.34929184121285,
+    "median_spread_c": 0.1,
+    "median_follower_pnl": 0.108553524217481
+   },
+   {
+    "delay_seconds": 300.0,
+    "n": 5013,
+    "median_deterioration_c": 0.85249998,
+    "mean_deterioration_c": 1.4456303092458638,
+    "pct_moved_against": 69.33971673648513,
+    "median_spread_c": 0.1,
+    "median_follower_pnl": 0.0784622416332334
+   }
+  ]
+ },
+ "test4_adverse_selection": {
+  "edge_by_size_quintile": {
+   "1": 0.00164,
+   "2": -0.00329,
+   "3": -0.00016,
+   "4": 0.00146,
+   "5": 0.00175
+  },
+  "largest_quintile_edge": 0.0017471330092352355,
+  "smallest_quintile_edge": 0.0016393769450263607,
+  "large_trades_worse": false,
+  "verdict": "NO CLEAR ADVERSE SELECTION"
+ }
+}

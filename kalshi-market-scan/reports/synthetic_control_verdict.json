@@ -1,0 +1,8 @@
+{
+ "verdict": "PASS",
+ "n_hypotheses": 24,
+ "negative_control_false_positives": 0,
+ "positive_control_detections": 2,
+ "requirement": "PASS requires zero detected edges across all negative controls AND at least one detection in the positive control. Negative controls alone would be passed trivially by a pipeline that never detects anything.",
+ "design_note": "An earlier version set the synthetic mid to truth+noise and reported FAIL. That was a mis-specified control, not leakage: unbiased noise raises a forecast's Brier score, so near-optimal models beat it by arithmetic. The mid is now pinned to the exact true probability."
+}

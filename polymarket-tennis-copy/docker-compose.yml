@@ -1,0 +1,55 @@
+name: tennis-copy-trade
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: tennis
+      POSTGRES_PASSWORD: tennis
+      POSTGRES_DB: tennis
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tennis -d tennis"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # Not published by default: nothing outside the compose network needs it.
+    expose:
+      - "5432"
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      APP_ENV: production
+      DATABASE_URL: postgresql+psycopg://tennis:tennis@db:5432/tennis
+      LOG_JSON: "true"
+      API_HOST: 0.0.0.0
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+    # Migrations run before the API starts, so a fresh volume comes up with the
+    # right schema instead of failing on the first query.
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port 8000"
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - api
+    ports:
+      - "5173:80"
+
+volumes:
+  pgdata:

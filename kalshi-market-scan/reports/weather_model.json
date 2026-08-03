@@ -1,0 +1,36 @@
+{
+ "per_city": {
+  "KXTEMPDCH": {
+   "n_train": 3049,
+   "n_test": 2036,
+   "split": "2026-07-21 18:00:00+00:00",
+   "persistence_error_sd_F": 1.957822058227919,
+   "climatology_sd_F": 6.316030695756284,
+   "base_rate": 0.6021611001964636
+  },
+  "KXTEMPLAXH": {
+   "n_train": 3020,
+   "n_test": 2022,
+   "split": "2026-07-21 17:00:00+00:00",
+   "persistence_error_sd_F": 1.37630510329767,
+   "climatology_sd_F": 3.984322707493216,
+   "base_rate": 0.6543026706231454
+  },
+  "KXTEMPCHIH": {
+   "n_train": 3040,
+   "n_test": 2039,
+   "split": "2026-07-21 17:00:00+00:00",
+   "persistence_error_sd_F": 1.8375699856784102,
+   "climatology_sd_F": 6.958000139457228,
+   "base_rate": 0.5909759686120647
+  },
+  "KXTEMPAUSH": {
+   "n_train": 2980,
+   "n_test": 1996,
+   "split": "2026-07-21 21:00:00+00:00",
+   "persistence_error_sd_F": 2.475951220876642,
+   "climatology_sd_F": 6.952463174015848,
+   "base_rate": 0.5871743486973948
+  }
+ }
+}

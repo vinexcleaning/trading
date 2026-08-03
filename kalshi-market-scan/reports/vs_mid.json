@@ -1,0 +1,12 @@
+{
+ "n_markets": 25,
+ "n_snapshots": 2543,
+ "brier_model": 0.17269768886559167,
+ "brier_mid": 0.16877090473849785,
+ "paired_diff": -0.003926784127093825,
+ "ci": [
+  -0.0060662751140114594,
+  -0.0018831680329642754
+ ],
+ "caveat": "snapshots within a market are not independent; effective n = markets"
+}

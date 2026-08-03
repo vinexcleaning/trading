@@ -33,6 +33,13 @@ mm/
 *.db
 *.sqlite
 *.sqlite3
+*.db-wal
+*.db-shm
+*-wal
+*-shm
+*.bak
+*.bak-*
+*.db.bak*
 *.npz
 *.h5
 *.hdf5
@@ -78,6 +85,15 @@ kalshi-key*
 *private_key*
 *privatekey*
 
+# --- node / frontend (polymarket-tennis-copy ships a React dashboard) ---
+node_modules/
+.next/
+.turbo/
+.parcel-cache/
+*.tsbuildinfo
+npm-debug.log*
+yarn-error.log*
+
 # --- python ---
 __pycache__/
 *.py[cod]
@@ -113,6 +129,17 @@ desktop.ini
 # --- exported chat transcripts: personal data, not project work ---
 kalshi-chat-audit/max_convos/
 kalshi-chat-audit/pro_convos/
+
+# --- desktop machine (added 2026-08-03, see DESKTOP_INVENTORY.md) ---
+# Discord server export: names real people and their trading calls. The corpus
+# is kept on disk because it is the only copy and the largest untested item
+# available, but it is personal data and this repo is PUBLIC.
+discord-trades-export/
+# Live-account state: bot_state.json carries real Kalshi order ids.
+bot_state.json
+# Recorder mutex - must never travel between machines.
+*.lock
+.recorder.lock
 
 # --- byte-identical local backup, kept on disk, not in the repo ---
 _archive/
