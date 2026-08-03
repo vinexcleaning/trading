@@ -188,9 +188,24 @@ Two things that survived the checks and are worth keeping:
 **Five tests, five nulls: tennis, crypto, soccer, MLB prediction, MLB
 latency.** Any sixth idea should be judged against that record.
 
-**The pmxt L2 order-book archive (662 files, 63 GB) is still unused.** It
-would answer questions trades cannot — where quotes move without a print. It
-is the only large asset in this project that has never been analysed.
+**The pmxt L2 archive has now been opened.** `common/bookreplay.py`
+reconstructs books from the wire capture. Two findings:
+
+1. **`delta` is the NEW ABSOLUTE SIZE, not a change.** Treating it as a change
+   makes 99.9% of book states crossed and puts 90–97% of trades outside the
+   book. Absolute gives 0% crossed and 42–53% of trades exactly at the touch.
+   Validated against the trade tape, an independent feed.
+2. **The replay is approximate, not exact.** 15–20% of trades still print
+   outside the reconstructed book with a **median miss of 2–3¢**, and ~35%
+   print inside the spread — a slightly stale/lossy book (dropped messages
+   plus capture-receipt vs exchange-time skew).
+
+**Consequence: the archive supports DESCRIPTIVE market structure (depth
+profiles, spread distributions, quote-update rates) but CANNOT support the
+market-making study.** The edge sought is a 2.25¢ cost bar and the
+reconstruction error is 2–3¢ — the error is the size of the thing being
+measured. Queue position and adverse selection are not testable at this
+precision. Do not build a fill simulator on this.
 
 ## Immediate next actions when you resume
 
