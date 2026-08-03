@@ -1,0 +1,45 @@
+﻿24443 regular-season games 2016-04-03 .. 2026-08-02
+built 24443 feature rows (chronological, leak-free by construction)
+  coverage: home_sp_r1=93%, away_sp_r1=93%, home_off=99%, away_off=99%, venue_yrfi=97%, recent_home=100%, recent_away=100%
+
+train <=2024: 20332   test 2025+: 4111
+
+==================================================================
+TEST 1 -- does the model beat the base rate on held-out games?
+==================================================================
+  n=4111   base rate (train) 0.5045
+  base-rate Brier 0.24998
+  model Brier     0.24965
+  improvement     +0.00033
+  model prob: sd 0.0189  range 0.445-0.591
+
+==================================================================
+TEST 2 -- is the model calibrated?
+==================================================================
+  predicted 0.45-0.50: n= 2626 mean p 0.484  actual 0.494
+  predicted 0.50-0.55: n= 1444 mean p 0.514  actual 0.519
+  predicted 0.55-0.60: n=   35 mean p 0.560  actual 0.629
+
+==================================================================
+TEST 3 -- THE GATE: does the model beat KALSHI'S PRICE?
+==================================================================
+  889 priced markets loaded
+  joined to a modelled game: 771   failed: 118
+
+  n=771   outcome rate 0.5175
+  KALSHI Brier 0.24543
+  MODEL  Brier 0.24780
+  model - market +0.00237  [-0.00072, +0.00553]
+  (positive = model WORSE)
+
+  VERDICT: model DOES NOT BEAT the Kalshi price
+
+  |model - market| in cents: median 3.12  p90 6.90  max 34.59
+  markets where the model disagrees by more than the 2.25c cost bar: 491 of 771
+
+==================================================================
+CONTROLS
+==================================================================
+  NULL (shuffled outcomes): model 0.24893 vs market 0.24962 -- both should degrade to ~0.25
+  POSITIVE (peek at outcome): Brier 0.00040 vs market 0.24543, difference -0.24503
+  -> the comparison can detect a real improvement when one exists.
