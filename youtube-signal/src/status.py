@@ -32,7 +32,20 @@ def main():
     try:
         n_rs = q("SELECT COUNT(*) FROM read_set")
         n_sc = q("SELECT COUNT(*) FROM scores")
-        print(f"READ SET    {n_rs} selected, {n_sc} scored, {n_rs - n_sc} remaining")
+        # These two are NOT the same number and conflating them overstates
+        # progress. Videos can be scored without being in the read set -- the 19
+        # merged from the laptop mostly are, because that machine read top-down
+        # by proxy score rather than from its own sample. Only the read_set
+        # intersection counts as progress through the read set, and only it
+        # feeds the retrieval test.
+        n_rs_sc = q("SELECT COUNT(*) FROM scores s"
+                    " WHERE s.video_id IN (SELECT video_id FROM read_set)")
+        print(f"SCORES      {n_sc} videos scored in total")
+        print(f"READ SET    {n_rs} selected, {n_rs_sc} of them scored, "
+              f"{n_rs - n_rs_sc} remaining")
+        if n_sc != n_rs_sc:
+            print(f"            ({n_sc - n_rs_sc} scored videos are OUTSIDE the "
+                  f"read set and do not enter the retrieval test)")
         if n_rs:
             print("            by family bucket (read / total):")
             for r in con.execute(
