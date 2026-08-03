@@ -32,12 +32,12 @@ def load(path):
     for axis, comp, why in rejects:
         print(f"  REJECTED {axis} {comp}: {why}")
 
-    s, h = RV.totals(clean)
+    s, h, b = RV.totals(clean)
     dur = con.execute("SELECT duration_s FROM videos WHERE video_id=?",
                       (vid,)).fetchone()
     dur = dur["duration_s"] if dur else None
     verdict = RV.verdict(s, h, bool(clean.get("visual_dependent")),
-                         duration_s=dur, teaching_quality=doc.get("teaching_quality"))
+                         duration_s=dur, teaching_quality=doc.get("teaching_quality"), b=b)
 
     con.execute("DELETE FROM score_evidence WHERE video_id=?", (vid,))
     con.execute("DELETE FROM claims WHERE video_id=?", (vid,))
@@ -56,7 +56,8 @@ def load(path):
          doc.get("model", "claude-opus-5 (in-session, no API)"), 0, 0, 0.0, _db.now()))
 
     for axis, key, weights in (("S", "s_components", RV.S_WEIGHTS),
-                               ("H", "h_components", RV.H_WEIGHTS)):
+                               ("H", "h_components", RV.H_WEIGHTS),
+                               ("B", "b_components", RV.B_WEIGHTS)):
         for c in clean.get(key, []):
             con.execute(
                 "INSERT OR REPLACE INTO score_evidence (video_id, axis, component,"

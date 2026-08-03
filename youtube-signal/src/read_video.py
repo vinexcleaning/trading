@@ -35,6 +35,18 @@ MODEL = "claude-sonnet-5"
 MAX_QUOTE_WORDS = 15
 
 S_WEIGHTS = {"S1": 3, "S2": 2, "S3": 2, "S4": 2, "S5": 1}
+
+# B -- BUILD (0-10). Added 2026-08-03 because S structurally under-scored
+# engineering content and it was throwing away exactly the videos the user wanted.
+#
+# Three of the five S components (S1 cost side, S2 backtest vs live, S3 sample
+# size) require a TRADING CLAIM. A pure API tutorial makes no trading claim, so it
+# could score at most S4+S5 = 3 and was auto-classified SKIP no matter how good the
+# code was. That is how a Kalshi build with 100 lines of working code, a public
+# repo and an honest itemised account (H=9) came out as SKIP.
+#
+# B asks the different question: does this teach you to build a thing that works?
+B_WEIGHTS = {"B1": 3, "B2": 2, "B3": 2, "B4": 2, "B5": 1}
 H_WEIGHTS = {"H1": 3, "H1b": 1, "H2": 3, "H3": 2, "H4": 1, "H5": 2,
              "H6": -4, "H7": -2, "H8": -1, "H9": -2, "H10": -4}
 
@@ -122,7 +134,8 @@ def validate_response(doc):
     """
     rejects = []
     for axis, key, weights in (("S", "s_components", S_WEIGHTS),
-                               ("H", "h_components", H_WEIGHTS)):
+                               ("H", "h_components", H_WEIGHTS),
+                               ("B", "b_components", B_WEIGHTS)):
         kept = []
         for c in doc.get(key) or []:
             comp = c.get("component")
@@ -151,8 +164,9 @@ def validate_response(doc):
 def totals(doc):
     s = sum(S_WEIGHTS[c["component"]] for c in doc.get("s_components", []))
     h = sum(H_WEIGHTS[c["component"]] for c in doc.get("h_components", []))
+    b = sum(B_WEIGHTS[c["component"]] for c in doc.get("b_components", []))
     # H6 is capped at -4 in aggregate, not per occurrence.
-    return min(s, 10), max(-10, min(11, h))
+    return min(s, 10), max(-10, min(11, h)), min(b, 10)
 
 
 # Two different jobs, which the old single verdict conflated.
@@ -186,9 +200,22 @@ def is_educational(s, h, duration_s, teaching_quality):
     return teaching_quality in ("good", "excellent")
 
 
-def verdict(s, h, visual, duration_s=None, teaching_quality=None):
-    info = is_informative(s)
-    edu = is_educational(s, h, duration_s, teaching_quality)
+def verdict(s, h, visual, duration_s=None, teaching_quality=None, b=0):
+    """A video earns its place on EITHER axis.
+
+    A coding tutorial with no trading claim is not a low-value video, it is a
+    different kind of video. Substance and Build are separate routes in.
+    """
+    info = is_informative(s) or b >= 4
+    edu = is_educational(s, h, duration_s, teaching_quality) or (
+        b >= 6 and h >= 0 and (not duration_s or duration_s <= 45 * 60)
+        and teaching_quality in ("good", "excellent"))
+    buildable = b >= 6
+
+    if buildable and info and edu:
+        return "BUILD_AND_RECOMMEND"
+    if buildable:
+        return "BUILD"          # follow the steps; it produces working code
     if info and edu:
         return "ABSORB_AND_RECOMMEND"
     if edu:

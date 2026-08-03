@@ -63,8 +63,8 @@ def expiry_flag(c):
 def main():
     con = db_phase2.connect()
     scored = con.execute(
-        """SELECT s.*, v.title, v.channel_name, v.view_count, v.duration_s,
-                  v.upload_date, v.age_months
+        """SELECT s.*, COALESCE(s.b_total,0) AS b_total, v.title, v.channel_name,
+                  v.view_count, v.duration_s, v.upload_date, v.age_months
            FROM scores s JOIN videos v ON v.video_id = s.video_id
            ORDER BY s.s_total DESC"""
     ).fetchall()
@@ -210,12 +210,27 @@ def main():
         L += [""]
 
     # ---------- per-video index ----------
+    # BUILD section: the videos that produce working code, which the S axis alone
+    # would have buried. Listed before the index because "how do I actually build
+    # this" is the question the user asks most.
+    builds = [r for r in scored if (r["b_total"] or 0) >= 6]
+    if builds:
+        L += ["## Follow these to BUILD something", "",
+              "Scored on the Build axis: working code on screen, named endpoints, a",
+              "complete path from auth to order, the gotchas, and a resolvable repo.", ""]
+        for r in builds:
+            L += [f"- **{r['title']}** — {r['channel_name']} · "
+                  f"B={r['b_total']}/10, S={r['s_total']}, H={r['h_total']} · "
+                  f"{fmt_date(r['upload_date'])}  ",
+                  f"  <https://www.youtube.com/watch?v={r['video_id']}>"]
+        L += [""]
+
     L += ["---", "", "## Videos read in full", "",
-          "| S | H | verdict | uploaded | age | views | video |",
-          "|---|---|---|---|---|---|---|"]
+          "| S | B | H | verdict | uploaded | age | views | video |",
+          "|---|---|---|---|---|---|---|---|"]
     for r in scored:
         age = f"{r['age_months']:.0f} mo" if r["age_months"] is not None else "?"
-        L.append(f"| {r['s_total']} | {r['h_total']} | {r['verdict']} | "
+        L.append(f"| {r['s_total']} | {r['b_total'] or 0} | {r['h_total']} | {r['verdict']} | "
                  f"{fmt_date(r['upload_date'])} | {age} | {r['view_count']:,} | "
                  f"[{r['title']}](https://www.youtube.com/watch?v={r['video_id']}) |")
     L += [""]
