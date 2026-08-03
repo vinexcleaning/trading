@@ -166,9 +166,18 @@ def verdict(s, h, visual):
 
 
 def run_ncheck_on_claims(doc, breakeven=0.50):
+    """Break-even is PER CLAIM, not a constant.
+
+    A 50% default is right for a coin-flip bet and wrong for almost every
+    prediction-market claim, where break-even is the price paid: a contract
+    bought at 5 cents needs a 5% hit rate, not 50%. Comparing 4.18% against 0.50
+    produces a technically-true REFUTED for entirely the wrong reason. Claims
+    carry their own `breakeven` where the price is known.
+    """
     for c in doc.get("claims", []):
         if c.get("claim_type") == "result" and c.get("stated_win_rate") and c.get("stated_n"):
-            r = ncheck.n_check(c["stated_win_rate"], c["stated_n"], breakeven)
+            be = c.get("breakeven", breakeven)
+            r = ncheck.n_check(c["stated_win_rate"], c["stated_n"], be)
             c["n_check_verdict"] = r["verdict"]
             c["n_check_detail"] = json.dumps(r)
         c["expires_after_months"] = db_phase2.EXPIRY_MONTHS.get(c.get("claim_type"), 12)
