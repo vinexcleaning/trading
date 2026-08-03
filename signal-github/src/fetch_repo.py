@@ -29,6 +29,7 @@ import json
 import os
 import re
 import sys
+import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import db  # noqa: E402
@@ -345,6 +346,34 @@ def main():
                WHERE r.fetched IN (0,-2) AND r.gate IN ('PASS','STALE')
                ORDER BY COALESCE(p.score,-99) DESC, r.stars DESC LIMIT ?""", (limit,)).fetchall()
     print(f"deep-fetching {len(rows)} repos at level={level}", flush=True)
+
+    # The cheap level is now network-bound rather than budget-bound, so warm the
+    # archive cache in parallel first. Scoring afterwards is pure CPU over files
+    # already on disk, and the database writes stay single-threaded.
+    if level != "full" and len(rows) > 1:
+        import concurrent.futures as cf
+
+        def warm(r):
+            try:
+                br = tuple(dict.fromkeys(
+                    [b for b in (r["default_branch"] or "", "main", "master") if b])) or ("main",)
+                a = gh.archive(r["full_name"], branches=br)
+                return r["full_name"], a.get("status"), a.get("n_paths") or 0
+            except Exception as e:  # noqa: BLE001
+                return r["full_name"], f"ERR {type(e).__name__}", 0
+
+        t0 = time.time()
+        ok = 0
+        with cf.ThreadPoolExecutor(max_workers=8) as ex:
+            for i, (fn, st, n) in enumerate(ex.map(warm, rows), 1):
+                if st == 200:
+                    ok += 1
+                if i % 50 == 0:
+                    print(f"  warmed {i}/{len(rows)} archives, {ok} ok, "
+                          f"{time.time()-t0:.0f}s", flush=True)
+        print(f"  archive prefetch: {ok}/{len(rows)} in {time.time()-t0:.0f}s, "
+              f"0 core calls", flush=True)
+
     for row in rows:
         try:
             fetch_one(con, row, level=level)

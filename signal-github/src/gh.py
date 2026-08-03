@@ -195,6 +195,26 @@ def core_remaining():
     return _core_remaining
 
 
+def core_budget():
+    """Ask GitHub how much core budget is left, without spending any.
+
+    `/rate_limit` is explicitly not counted against the limit, and it is not
+    cached here — the whole point is a live answer. Returns the remaining count,
+    or None if the probe itself failed.
+    """
+    global _core_remaining, _core_reset
+    status, headers, body = _fetch("https://api.github.com/rate_limit")
+    if status != 200:
+        return None
+    try:
+        core_res = json.loads(body)["resources"]["core"]
+    except (json.JSONDecodeError, KeyError, TypeError):
+        return None
+    _core_remaining = core_res.get("remaining")
+    _core_reset = float(core_res.get("reset") or 0)
+    return _core_remaining
+
+
 def search(kind: str, query: str, per_page: int = 100, page: int = 1, sort: str = ""):
     """kind is 'repositories' or 'users'. 10 req/minute unauthenticated."""
     global _last_search

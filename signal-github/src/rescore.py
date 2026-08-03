@@ -148,23 +148,42 @@ def main():
         except json.JSONDecodeError:
             ev0 = {}
         branch = (ev0.get("branch") or ["main"])[0]
-        tr = gh.core(f"/repos/{fn}/git/trees/{branch}?recursive=1", cache_only=True)
-        if not tr or not tr.get("data"):
-            continue
-        paths = [t["path"] for t in tr["data"].get("tree", []) if t.get("type") == "blob"]
-        corpus = []
-        for p in paths:
-            if not p.lower().endswith((".py", ".ts", ".tsx", ".js", ".rs", ".go", ".ipynb")):
+
+        # The archive is already on disk from the deep fetch, so this is a cache
+        # read and costs nothing. It replaced the cached git-tree call, and it
+        # carries file CONTENTS — so the strict scorer now sees every source
+        # file in the repo instead of the 30 largest that the per-file raw
+        # fetches could afford. S1 and S2 are exactly the components that were
+        # being decided on that truncated window.
+        arch = gh.archive(fn, branches=tuple(dict.fromkeys(
+            [b for b in (branch, r["default_branch"] or "", "main", "master") if b])))
+        if arch.get("paths"):
+            branch = arch.get("branch") or branch
+            paths = arch["paths"]
+            files = arch.get("files") or {}
+            corpus = [(p, t) for p, t in files.items()
+                      if p.lower().endswith((".py", ".ts", ".tsx", ".js", ".rs", ".go", ".ipynb"))]
+            readme = next((t for p, t in files.items()
+                           if "/" not in p and os.path.splitext(p)[0].lower() == "readme"), "")
+        else:
+            # Fall back to whatever the old raw-fetch cache holds.
+            tr = gh.core(f"/repos/{fn}/git/trees/{branch}?recursive=1", cache_only=True)
+            if not tr or not tr.get("data"):
                 continue
-            t = cache_read(fn, branch, p)
-            if t:
-                corpus.append((p, t))
-        readme = ""
-        for nm in ("README.md", "readme.md", "README.rst"):
-            t = cache_read(fn, branch, nm)
-            if t:
-                readme = t
-                break
+            paths = [t["path"] for t in tr["data"].get("tree", []) if t.get("type") == "blob"]
+            corpus = []
+            for p in paths:
+                if not p.lower().endswith((".py", ".ts", ".tsx", ".js", ".rs", ".go", ".ipynb")):
+                    continue
+                t = cache_read(fn, branch, p)
+                if t:
+                    corpus.append((p, t))
+            readme = ""
+            for nm in ("README.md", "readme.md", "README.rst"):
+                t = cache_read(fn, branch, nm)
+                if t:
+                    readme = t
+                    break
 
         s1, s2, s3, s4, evs = strict_score(fn, branch, paths, corpus, readme)
         s5 = r["s5"] or 0

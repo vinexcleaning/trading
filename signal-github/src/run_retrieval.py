@@ -130,7 +130,15 @@ def hydrate_code_hits(pending: dict[str, str]):
 
 
 def forks_of(full_name: str, family: str, max_pages: int = 3):
-    """Costs core calls. The seed repo's forks are worth them."""
+    """Costs core calls. The seed repo's forks are worth them.
+
+    Skipped outright when core is exhausted and there is no token: one hour of
+    sleeping per page is not worth a fork list, and the free axes have already
+    been written to the database by the time this runs.
+    """
+    if not gh.TOKEN and (gh.core_remaining() or 0) <= 1:
+        print(f"  [{family}] SKIPPED {full_name} — no core budget, no token", flush=True)
+        return 0
     total = 0
     for page in range(1, max_pages + 1):
         r = gh.core(f"/repos/{full_name}/forks?per_page=100&page={page}&sort=stargazers")
@@ -144,6 +152,27 @@ def forks_of(full_name: str, family: str, max_pages: int = 3):
         if len(items) < 100:
             break
     return total
+
+
+def write(con):
+    """Upsert everything found so far. Idempotent, so it is safe to call more
+    than once in a run — which is the point: the free axes are persisted before
+    the core-spending ones get a chance to stall."""
+    for fn, r in FOUND.items():
+        con.execute(
+            """INSERT INTO repos (full_name,url,description,stars,forks,size_kb,language,
+                 license,created_at,pushed_at,open_issues,is_fork,is_archived,topics,
+                 default_branch,families,queries)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+               ON CONFLICT(full_name) DO UPDATE SET
+                 families=excluded.families, queries=excluded.queries,
+                 stars=excluded.stars, pushed_at=excluded.pushed_at""",
+            (r["full_name"], r["url"], r["description"], r["stars"], r["forks"], r["size_kb"],
+             r["language"], r["license"], r["created_at"], r["pushed_at"], r["open_issues"],
+             r["is_fork"], r["is_archived"], r["topics"], r["default_branch"],
+             ",".join(sorted(r["families"])), " | ".join(sorted(r["queries"]))[:2000]),
+        )
+    con.commit()
 
 
 def main():
@@ -171,11 +200,22 @@ def main():
     hydrate_code_hits(code_hits)
     code_names = set(code_hits)
 
+    # Everything above this line is free (search + sourcegraph). Everything
+    # below spends core. Write what we have BEFORE touching core, so that a
+    # core stall or an interrupted fork pass cannot discard an entire retrieval
+    # run — the previous version wrote only at the very end.
+    write(con)
+    print(f"-- wrote {len(FOUND)} repos from the free axes --", flush=True)
+
+    left = gh.core_budget()
+    print(f"== core budget before the fork axes: {left} ==", flush=True)
+
     print("== SEED forks ==", flush=True)
     for r in Q.SEED_REPOS:
-        _seed = gh.core(f"/repos/{r}")
-        if _seed and _seed.get("data"):
-            _record(_seed["data"], "SEED", "seed")
+        if gh.TOKEN or (left or 0) > 1:
+            _seed = gh.core(f"/repos/{r}")
+            if _seed and _seed.get("data"):
+                _record(_seed["data"], "SEED", "seed")
         forks_of(r, "SEED", max_pages=2)
 
     print("== CLIENT LIB forks ==", flush=True)
@@ -183,21 +223,7 @@ def main():
         forks_of(lib, "LIB_FORK", max_pages=1)
 
     # ---- write ----
-    for fn, r in FOUND.items():
-        con.execute(
-            """INSERT INTO repos (full_name,url,description,stars,forks,size_kb,language,
-                 license,created_at,pushed_at,open_issues,is_fork,is_archived,topics,
-                 default_branch,families,queries)
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-               ON CONFLICT(full_name) DO UPDATE SET
-                 families=excluded.families, queries=excluded.queries,
-                 stars=excluded.stars, pushed_at=excluded.pushed_at""",
-            (r["full_name"], r["url"], r["description"], r["stars"], r["forks"], r["size_kb"],
-             r["language"], r["license"], r["created_at"], r["pushed_at"], r["open_issues"],
-             r["is_fork"], r["is_archived"], r["topics"], r["default_branch"],
-             ",".join(sorted(r["families"])), " | ".join(sorted(r["queries"]))[:2000]),
-        )
-    con.commit()
+    write(con)
 
     # ---- the disjointness measurement ----
     inter = len(f1_names & f2_names)
