@@ -78,6 +78,53 @@ def queue(con):
     return order
 
 
+def duration_balance(con):
+    """Are the two arms being read at COMPARABLE LENGTHS?
+
+    This exists because the first session got it wrong. Reading is bounded by
+    context, long transcripts are expensive, and the path of least resistance is
+    to skip the long ones. That is harmless only if it happens equally in both
+    arms. It did not: four BEGINNER videos (1323, 38, 33 and 25 minutes) were
+    passed over for length while NO insider video was, leaving BEGINNER
+    truncated at 10 minutes and INSIDER running to 16.
+
+    Runtime plausibly correlates with substance -- more minutes is more room to
+    name a cost, cite a sample size, explain a mechanism. So skipping long
+    videos in one arm only biases that arm's score DOWNWARD, and here that arm
+    is the control. It pushes the result toward the hypothesis, which is the
+    worst direction for a bias to run.
+
+    Nothing here corrects it; a skipped video is simply unread. This prints the
+    imbalance so it cannot be forgotten, and so the next session reads the long
+    control videos FIRST rather than repeating the same convenient shortcut.
+    """
+    rows = con.execute(
+        """SELECT r.family_bucket b, v.duration_s d
+           FROM read_set r JOIN videos v ON v.video_id=r.video_id
+           JOIN scores s ON s.video_id=r.video_id
+           WHERE v.duration_s IS NOT NULL""").fetchall()
+    if not rows:
+        return
+    arms = {}
+    for r in rows:
+        arms.setdefault(GROUP_OF.get(r["b"], "MULTI"), []).append(r["d"] / 60)
+    print("\n  DURATION BALANCE of what has been READ (minutes):")
+    print(f"    {'arm':<10}{'n':>4}{'mean':>8}{'max':>8}")
+    for g in ("INSIDER", "BEGINNER"):
+        d = arms.get(g, [])
+        if d:
+            print(f"    {g:<10}{len(d):>4}{sum(d)/len(d):>8.1f}{max(d):>8.1f}")
+    a, b = arms.get("INSIDER", []), arms.get("BEGINNER", [])
+    if a and b:
+        ma, mb = sum(a) / len(a), sum(b) / len(b)
+        if max(ma, mb) > 1.5 * min(ma, mb) or abs(max(a) - max(b)) > 10:
+            short = "BEGINNER" if mb < ma else "INSIDER"
+            print(f"    *** IMBALANCED. The {short} arm is being read at shorter "
+                  f"lengths.\n        Runtime correlates with substance, so this "
+                  f"biases that arm downward.\n        Read the LONGEST unread "
+                  f"{short} videos next, before any more short ones.")
+
+
 def main():
     n = int(sys.argv[1]) if len(sys.argv) > 1 else 10
     con = db_phase2.connect()
@@ -100,6 +147,7 @@ def main():
               f"{(r['duration_s'] or 0)/60:>5.0f}  {(r['title'] or '')[:44]}")
     print("\nids:")
     print(" ".join(r["video_id"] for _, r in order[:n]))
+    duration_balance(con)
     con.close()
 
 
