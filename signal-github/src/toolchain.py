@@ -11,7 +11,7 @@ Every row carries a `repo:path:line`. This is the toolchain as it is used, not
 as it is marketed.
 
 It also measures one specific thing: how much of the corpus is still on
-`py_clob_client` v1, which Polymarket archived on 2026-05-25.
+`py_clob_client` v1, which Polymarket has archived.
 """
 from __future__ import annotations
 
@@ -31,14 +31,14 @@ NOW = datetime.datetime.now(datetime.timezone.utc)
 # name -> (regex, kind, what it is)
 LIBS = {
     "py_clob_client": (r"\bpy_clob_client\b|['\"]py-clob-client", "polymarket client",
-                       "Polymarket Python CLOB client v1 — ARCHIVED by Polymarket 2026-05-25"),
+                       "Polymarket Python CLOB client v1 — ARCHIVED (last push 2026-05-25)"),
     "py_clob_client_v2": (r"py[-_]clob[-_]client[-_-]?v2|clob_client_v2", "polymarket client",
                           "Polymarket Python CLOB client v2 — the live successor"),
     "polymarket py-sdk": (r"^\s*(from|import)\s+polymarket\b|['\"]polymarket-sdk['\"]|"
                           r"['\"]@polymarket/sdk['\"]",
                           "polymarket client", "Polymarket unified Python SDK"),
     "@polymarket/clob-client": (r"@polymarket/clob-client", "polymarket client",
-                                "Polymarket TypeScript CLOB client — ARCHIVED 2026-05-25"),
+                                "Polymarket TypeScript CLOB client — ARCHIVED (last push 2026-05-25)"),
     "@polymarket/order-utils": (r"@polymarket/order-utils", "polymarket signing",
                                 "EIP-712 order signing for the CLOB"),
     "python-order-utils": (r"\bpoly_order_utils\b|python-order-utils", "polymarket signing",
@@ -189,14 +189,17 @@ def main():
                  "only files already in the cache. Every row carries `repo:path:line`.\n\n")
 
         fh.write("## The finding that matters most\n\n")
-        fh.write("**Polymarket archived its entire v1 client family on 2026-05-25 / 2026-05-11.** "
-                 "Verified against the GitHub API on 2026-08-03:\n\n")
+        fh.write("**Polymarket's entire v1 client family is archived.** Read from the GitHub "
+                 "API on 2026-08-03. The dates below are each repo's LAST PUSH, not its "
+                 "archive date — GitHub does not expose the latter. A parallel YouTube "
+                 "session in this repo independently dates Polymarket CLOB V2 go-live to "
+                 "28 Apr 2026, which is consistent.\n\n")
         fh.write("| repo | stars | state | last push |\n|---|---|---|---|\n")
-        fh.write("| `Polymarket/py-clob-client` | 1,234 | **ARCHIVED** | 2026-05-25 |\n")
-        fh.write("| `Polymarket/clob-client` (TS) | 513 | **ARCHIVED** | 2026-05-25 |\n")
-        fh.write("| `Polymarket/rs-clob-client` | 691 | **ARCHIVED** | 2026-05-11 |\n")
-        fh.write("| `Polymarket/ctf-exchange` | 356 | **ARCHIVED** | 2026-05-11 |\n")
-        fh.write("| `Polymarket/agents` (most-starred in the org) | 3,758 | **ARCHIVED** | 2024-11-05 |\n")
+        fh.write("| `Polymarket/py-clob-client` | 1,234 | **ARCHIVED** | last push 2026-05-25 |\n")
+        fh.write("| `Polymarket/clob-client` (TS) | 513 | **ARCHIVED** | last push 2026-05-25 |\n")
+        fh.write("| `Polymarket/rs-clob-client` | 691 | **ARCHIVED** | last push 2026-05-11 |\n")
+        fh.write("| `Polymarket/ctf-exchange` | 356 | **ARCHIVED** | last push 2026-05-11 |\n")
+        fh.write("| `Polymarket/agents` (most-starred in the org) | 3,758 | **ARCHIVED** | last push 2024-11-05 |\n")
         fh.write("| `Polymarket/py-clob-client-v2` | 163 | live | 2026-07-17 |\n")
         fh.write("| `Polymarket/py-sdk` (unified) | 82 | live | 2026-07-31 |\n")
         fh.write("| `Polymarket/clob-client-v2` (TS) | 76 | live | 2026-07-17 |\n\n")

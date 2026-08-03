@@ -164,3 +164,90 @@ Code committed: `load_extraction.py` tools-upsert fix (`ON CONFLICT` targeted
 `(name, url)` while the unique index is on `(name, COALESCE(url,''))` — trap #4
 `NULL != NULL` surviving in a second place); `tool_reputation.py` +7 verdicts.
 Judgments and transcripts stay local — `reports/` and `KNOWLEDGE.md` gitignored.
+
+---
+
+## signal-github — GitHub as a signal source (2026-08-03)
+
+`signal-github/` · code committed · `data/`, `reports/`, `cache/`,
+`GITHUB_KNOWLEDGE.md` gitignored · full write-up in `signal-github/HANDOFF.md`
+
+**Rate limits, measured from headers, unauthenticated (`reports/step0.md`):**
+core **60/hour** (the binding constraint) · search **600/hour** ·
+raw.githubusercontent **unmetered** · **code search 401** although `/rate_limit`
+advertises 60/min for it · dependents graph renders client-side, unscrapeable.
+Substitutes: Sourcegraph public index for code search (labelled `F2_CODE`, never
+as GitHub code search); forks of the client libraries for dependents.
+
+| | |
+|---|---|
+| repos retrieved | **3,133** across 6 axes |
+| gate PASS / STALE / DROP | 2,441 / 121 / 571 |
+| deep-fetched and scored | **40** (1.6% of gated) |
+| read in full | **2** |
+| **F1 vs F2 Jaccard** | **0.033** (YouTube: 0.037 over 446 videos) |
+| code-search hits found by neither family | 41 of 47 |
+| **stars vs S_strict** | **rho −0.019, p 0.91** — no relationship |
+| S rubric ported literally | **19 of 40 scored 9–10** — saturated |
+| same repos, strict rescore | **3 of 40** |
+| S2 backtest-vs-live fire rate | 68% literal → **20% strict** |
+| repos with a backtest module AND separate order-submission code | **8 of 40** |
+| repos publishing a backtest artifact behind their own profit claim | **0 of 40** |
+
+**Toolchain finding — Polymarket's v1 client family is archived.**
+`py-clob-client` 1,234★, `clob-client` 513★, `rs-clob-client` 691★,
+`ctf-exchange` 356★, and `Polymarket/agents` 3,758★ (the org's most-starred repo,
+last push 2024-11-05) are all archived. Live successors `py-clob-client-v2` 163★,
+`py-sdk` 82★, `clob-client-v2` 76★. **The stars are on the dead libraries.**
+9 repos in the corpus import v1, 3 import v2. Independently corroborated by the
+parallel `youtube-signal` session, which dates CLOB V2 go-live to 28 Apr 2026.
+
+**Venue asymmetry that decides the market-making question.** Both venues price
+fees on expected earnings, `rate × qty × p × (1−p)`, peaking at p=0.50. Kalshi:
+`ceil_to_cent(0.07 × qty × p × (1−p))`, **same rate for makers and takers**
+(source: `evan-kolberg/prediction-market-backtesting`
+→ `adapters/kalshi/fee_model.py:908`, modified 2026-03-11). Polymarket: **makers
+pay zero**, plus a 20–25% rebate share of taker fees, plus a daily liquidity-
+rewards pool. Kalshi's only official client is 17 months stale; Polymarket ships
+eight maintained repos. Kalshi's edge is the API docs — published rate-limit
+tiers (Basic 200/100 tokens/s → Prestige 6,000/8,000) and FIX.
+
+**You cannot properly backtest Kalshi.** `evan-kolberg/prediction-market-
+backtesting` (1,094★, 254 files, NautilusTrader-based, working Polymarket L2
+replay) states Kalshi support depends on L2 historical book data it could not
+get; Kalshi backtests there are trade-tick replay only. Free Polymarket L2:
+**PMXT hourly archive** (`r2v2.pmxt.dev`) from 2026-02-21 onward.
+
+**Copy trading, measured rather than argued.** The same repo replays a real
+public wallet's filled-trade ledger against historical L2: **72 of 153 orders
+filled (47%)**, ledger cash PnL **−223.88 USDC**. Four structural reasons, none
+fixable by better wallet screening: the original trades are already inside the
+replayed book; a public timestamp is a fill observation, not a decision time;
+maker fills cannot be reconstructed from fill rows; thin books make IOC fills
+contingent on queue position. **This contradicts the copy-trading method in
+`youtube-signal/KNOWLEDGE.md`, which argues only about which wallet to pick.**
+
+**The one strategy whose income is not required to overcome a fee first:**
+maker-only two-sided quoting on Polymarket, in fee-free or low-fee categories.
+Reference implementation `warproxxx/poly-maker` (1,427★, MIT, 83 tests, mypy
+strict, 37 commits over 465 days, migrated to v2). Post BUY-YES at `r−δ` and
+BUY-NO at `(1−r)−δ`; both legs are bids, so a filled pair merges to 1 USDC at
+locked edge `1−p−q` — **the exit is also a maker action**. It makes no
+performance claim and **has no backtest**; its own README says the replay
+backtester is "not yet built". Maker realism needs L3/MBO data that does not
+exist publicly, so the best strategy found and the best data found do not
+compose.
+
+**Wrong or untrusted (full list in HANDOFF §5):** the venue **legal terms were
+never read** — `kalshi.com` returned HTTP 429 to every request including its own
+fee-schedule PDF, and `polymarket.com/tos` renders client-side; every automation
+statement rests on developer docs, not agreements. Coverage is 1.6%. Credibility
+metrics (commits, span, contributors) exist for 2 of 40 repos, so `trust_me_bro`
+is NULL for 38 and no repo has been confirmed or cleared. 77 repos were dropped
+for having no fetchable README — a real false-negative channel. Both repos read
+were selected by the strict score and were unusually honest; the corpus is
+almost certainly less honest than they are.
+
+**Next:** put a free `GITHUB_TOKEN` in the environment. Core goes 60/hour →
+5,000/hour and code search unblocks, with no code change — `gh.py` already reads
+it. Both constraints on this session are fixed by one environment variable.
