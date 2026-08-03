@@ -10,6 +10,78 @@ reading the transcript directly. That remains correct.
 
 ---
 
+## UPDATE — the laptop's data has since been hand-carried across
+
+Done by USB after the sections below were written. **Where they disagree with
+this block, this block wins.**
+
+| | |
+|---|---|
+| transferred | `signal.db` (27.4 MB), `KNOWLEDGE.md`, **19 extractions** — 21 files, byte counts identical both ends |
+| lives in | `youtube-signal/_from_laptop/` — verified ignored by git, nothing reaches the public repo |
+| merged by | `src/merge_laptop.py` |
+
+**Three results, two of them load-bearing.**
+
+**1. The scoring pipeline is deterministic across machines.** Re-loading all 19
+laptop extractions through *this* machine's `load_extraction.py` reproduced the
+laptop's S, B, H and verdict on **19 of 19, exactly**. First cross-machine check
+this project has ever had. It passed clean, which is what makes the corpus
+rebuild trustworthy rather than merely plausible.
+
+**2. The family bucket is RELIABLE — the independent variable of the whole
+retrieval test, never previously validated.** Two independent full retrieval runs
+now exist, so 638 videos carry two independent labels. `src/bucket_stability.py`:
+
+| | |
+|---|---|
+| paired videos | **638** |
+| raw agreement | 80.1% |
+| Cohen's kappa | **0.716** — substantial |
+| insider-exclusive stays insider-exclusive | **431/434 = 99%** |
+| beginner-exclusive stays beginner-exclusive | **35/37 = 95%** |
+| `multi` | **167 → 49** — nearly all the churn is here |
+
+The two test arms are near-perfectly stable; `multi` is the unstable category and
+the primary test excludes it by design. **I had flagged this as a serious threat
+after seeing 2 of 3 labels flip. On 638 it is not one, and both flips were `multi`
+videos. That alarm was wrong and is retracted here.**
+
+**3. The starting premise was wrong twice.** "19 of the 60-video read set are
+done" — **only 5 of the laptop's 19 came from its `read_set` at all.** The other
+14 were picked top-down by `rank_substance.py`'s proxy score, which is built from
+the same surface features the S axis rewards, so those 14 are *selected on a
+correlate of the outcome*. They enrich `KNOWLEDGE.md` and are deliberately **not**
+pooled into the test, beyond the 3 that happen to sit in this machine's read set.
+
+Deliberately **not** merged: the laptop's `retrieval_hits` (family attribution
+must describe one retrieval run) and its `read_set`. The 4 videos this machine
+never retrieved are inserted as `source='laptop_import'`, never `'search'`, so
+every retrieval statistic still counts only what was retrieved here.
+
+### Current state after the merge
+
+| | |
+|---|---|
+| videos scored in total | **26** |
+| of those, **in the read set** | **10** of 60 — the only ones that feed the test |
+| `KNOWLEDGE.md` | **167,750 chars** · 301 claims · 77 tools · 24 methods · 22 watch segments |
+| verdicts | ABSORB 10 · BUILD_AND_RECOMMEND 6 · ABSORB_AND_RECOMMEND 6 · ABSORB_RESULTS_DISCOUNTED 4 · **SKIP 0** |
+| n-check | **now fires** — the laptop's videos state win rates *with* sample sizes |
+
+`status.py` was misreporting these two as one number (printing 26 as progress
+through a 60-item list when the true figure was 10). Fixed. Silent overstatement
+of progress — the same class of bug as the other five.
+
+**Retrieval test, now at n=7 insider / 3 beginner:** still `NOT DEMONSTRATED`,
+p=0.41 on the primary, minimum detectable effect **3.75 points**. Both declared
+sensitivities now run and agree in direction (+0.60, +0.83), neither significant.
+S alone shows +2.71, p=0.075 — suggestive, secondary, not to be reported as a
+result. **The binding constraint is now beginner-only reads at n=3.** Read those
+next; `next_reads.py` already alternates toward them.
+
+---
+
 ## 0. READ THIS FIRST — this machine is not the machine the last handoff describes
 
 The previous handoff was written on the laptop (`C:\Users\gianf\trading`). **That
