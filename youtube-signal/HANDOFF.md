@@ -135,8 +135,35 @@ Also: neither video read in this block mentions fees, spread or slippage. **S1
 did not fire on either.** Two consecutive "how to build a trading bot" videos
 with no cost side at all.
 
-**State:** `KNOWLEDGE.md` 180,736 chars · 28 videos · 330 claims · 81 tools · 26
-methods · read set **12 of 60** · still **zero SKIPs**.
+#### ✅ The duration bias was then CORRECTED, and it was doing real damage
+
+`86AlV6174KI` (33 min, beginner arm) — the exact video skipped for length — was
+read. It scored **S=10/10, B=10/10, H=5 → BUILD_AND_RECOMMEND**, the first
+perfect score on both axes in the corpus. Adding that one video:
+
+| | before | after |
+|---|---|---|
+| primary gap | +1.40, p=0.158 | **+0.83, p=0.429** |
+| S (secondary) | +2.31, **p=0.0492** | +1.55, p=0.242 |
+| B | +0.71 | **−0.45 (sign flipped)** |
+| BEGINNER mean duration | 7.3 min | 11.6 min |
+
+**One skipped video was carrying roughly half the apparent effect, and the
+secondary outcome that had crossed 0.05 evaporated to 0.242.** A session that had
+stopped one video earlier and quoted the raw p=0.0492 would have reported a
+retrieval win that does not exist at this sample size.
+
+Three safeguards each did their job, and all three were needed: the
+pre-registration stopped S being promoted to primary, Holm-Bonferroni took
+p=0.0492 to 0.1970 before the correction, and the duration check identified the
+bias and named the arm to fix. **Verdict unchanged throughout: NOT DEMONSTRATED.**
+
+The balance warning now points the other way — INSIDER max 19.1 min vs BEGINNER
+33.3 — so the next long read should be an **insider** video, and `next_reads.py`
+says so on every invocation.
+
+**State:** `KNOWLEDGE.md` **189,545 chars** · **29 videos** · **350 claims** ·
+**87 tools** · **27 methods** · read set **13 of 60** · still **zero SKIPs**.
 
 ---
 
