@@ -164,19 +164,33 @@ markets are soft" is true at all.
 **Now on OPTION 2 (user-chosen): the in-play / latency question.** Not "can we
 forecast" but "when news breaks, who knows first?"
 
-First result, **NOT YET TRUSTWORTHY**: median lag of **+56s** from MLB's
-scoring-play timestamp to the first trade at a moved price, 0 of 54 events
-where the market moved first. **Do not report this as a finding.** Three
-problems, being checked by `mlb/src/latency_sanity.py`:
-1. max lag was **86,294s** (24 h) — garbage polluting the tail
-2. only **56 of 233** games joined — likely a UTC/ET date mismatch
-3. **the confound that matters**: a trade print shows when someone DID trade.
-   If RFI prints once a minute anyway, "56s to react" is just illiquidity.
-   The check compares the lag to the baseline inter-trade gap.
+**RESOLVED — it is dead too.** The apparent +51s window was my own clock
+error. I timed from MLB's `about.startTime`, which marks when the AT-BAT
+began, not when the run scored; at-bats last a median **72.6s**. Measured from
+`endTime`, n=51:
 
-**If the ratio is under ~2×, the window is an artefact and must be reported as
-one.** The right instrument would then be the pmxt L2 book (quotes move
-without trades), which is mirrored and unused.
+| threshold | +3¢ | +5¢ | +10¢ | +25¢ |
+|---|---|---|---|---|
+| median lag from end of play | +2.3s | **+2.2s** | +2.2s | +2.3s |
+
+Identical at every threshold ⇒ the price **gaps to fully repriced in one move
+~2.2s after the play ends**. Within 1s on 16 of 51. Zero events where the
+market moved before the play ended. **2 seconds is unreachable from a public
+JSON feed on a retail connection. Dead.**
+
+Two things that survived the checks and are worth keeping:
+- these markets trade every **0.5s** normally (26,918 gaps measured), and ~60
+  trades print in the 60s after a run — liquidity is genuinely there
+- the illiquidity confound was ruled out properly before the clock error was
+  found; the sequence of checks is in
+  `mlb/src/latency_sanity.py` → `latency_refine.py`
+
+**Five tests, five nulls: tennis, crypto, soccer, MLB prediction, MLB
+latency.** Any sixth idea should be judged against that record.
+
+**The pmxt L2 order-book archive (662 files, 63 GB) is still unused.** It
+would answer questions trades cannot — where quotes move without a print. It
+is the only large asset in this project that has never been analysed.
 
 ## Immediate next actions when you resume
 
