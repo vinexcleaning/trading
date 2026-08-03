@@ -101,17 +101,24 @@ websocket client — while that repo's own README says a backtester is not built
 
 **No.** (`reports/step3_rank.md`, n=40)
 
-| pair | Spearman rho | p |
-|---|---|---|
-| stars vs S_literal | +0.104 | 0.52 |
-| **stars vs S_strict** | **−0.019** | **0.91** |
-| forks vs S_strict | −0.052 | 0.75 |
+| pair | Spearman rho | p | n |
+|---|---|---|---|
+| stars vs S_literal | +0.104 | 0.52 | 40 |
+| **stars vs S_strict** | **−0.019** | **0.91** | 40 |
+| forks vs S_strict | −0.052 | 0.75 | 40 |
+| commits vs S_strict | −0.117 | 0.53 | 30 |
+| stars vs commits | −0.014 | 0.94 | 30 |
+
+**The stronger result: no free proxy predicts substance.** Not stars, not forks,
+not commit count. Every rho is within noise of zero. There is no shortcut that
+lets you rank by a cheap number and skip looking at the code — which is the whole
+argument for a pipeline that ranks everything free and then actually reads.
 
 Eight repos with 50+ stars score ≤3 on the strict scale. And the cleanest
 demonstration is not statistical at all: **`Polymarket/py-clob-client` has 1,234
-stars and was archived on 2026-05-25; its live successor `py-clob-client-v2` has
-163.** Stars measure accumulated history, so any popularity-ranked recommendation
-points at the dead library.
+stars and is archived (last push 2026-05-25); its live successor
+`py-clob-client-v2` has 163.** Stars measure accumulated history, so any
+popularity-ranked recommendation points at the dead library.
 
 Same result as YouTube, where views did not track substance either.
 
@@ -142,11 +149,12 @@ family**.
 | — G3 generic terms only, no venue named | 410 (flagged, not dropped) |
 | — G1 empty repo, 0 KB | 99 |
 | **deep-fetched and scored** | **40** |
-| of which credibility metrics fetched | 2 at time of writing, running |
+| of which credibility metrics fetched | **30** |
 | **read in full** | **2** |
 | repos scoring 9–10 strict | 3 |
 | repos with a backtest module AND separate order-submission code | **8 of 40 (20%)** |
 | repos publishing a backtest artifact behind their own profit claim | **0 of 40** |
+| **"trust me bro"** — a results claim, <10 commits, no artifact | **3 of 40** |
 | API spend | 8 core + 58 search for retrieval; ~60 core for the tree tier; 861 raw; 13 sourcegraph |
 
 The bad numbers, stated plainly:
@@ -220,10 +228,26 @@ unanswered (see §5).
    is no reason to think it was the only one. S4 in particular cannot work by
    keyword and should be treated as noise.
 
-4. **Credibility metrics are missing for 38 of 40 repos.** Commit count, span,
-   contributor count and last-commit-substantiveness are all NULL. The
-   `trust_me_bro` flag depends on commit count and is therefore NULL for those
-   38 — **no repo has been confirmed as trust-me-bro or cleared of it.**
+4. **Credibility metrics are missing for 10 of 40 repos** (30 were completed
+   after a rate-limiter bug was fixed — see below). `trust_me_bro` is NULL for
+   those 10, so they are neither confirmed nor cleared.
+
+   Three of the 30 are flagged: `aulekator/Polymarket-BTC-15-Minute-Trading-Bot`
+   (558 stars, **4 commits over 6 days**), `taetaehoho/poly-kalshi-arb` (445
+   stars, **5 commits over 5 days**, claims "Profit: 2¢ per contract" with no
+   artifact), and `kachence/polymm` (70 stars, **2 commits over 2 days**, whose
+   README opens *"Most 'I built a Polymarket bot' repos are a README and a dream.
+   This one traded real money"* — and which is itself a README and a dream by
+   this measure). The claim-extraction regex still picks up some markdown badge
+   text; the flag itself is sound but the quoted claim string is noisy.
+
+4b. **A rate-limiter bug cost most of this session's depth.** `gh.core` slept
+   until a *recorded* reset timestamp without checking whether that timestamp had
+   already passed, so after a long stretch of free work it would sleep a full
+   hour with 42 core calls actually available. Fixed in `src/gh.py`; the fix
+   immediately took the credibility pass from 2 repos to 30. Anyone re-running
+   this should expect roughly 15 repos/hour at level `full`, not the ~2 the
+   session appeared to get.
 
 5. **`Polymarket/agents`, 3,758 stars, archived since 2024-11-05, has not been
    examined.** It is the most-starred prediction-market bot repository in

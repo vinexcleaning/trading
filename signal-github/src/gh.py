@@ -107,10 +107,15 @@ def core(path: str, allow_404: bool = True, cache_only: bool = False):
 
     global _core_remaining
     if _core_remaining is not None and _core_remaining <= 1:
-        wait = max(0.0, _core_reset - time.time()) + 5
-        if wait > 0:
+        wait = _core_reset - time.time() + 5
+        if wait <= 0:
+            # The recorded reset has already passed — the window rolled over
+            # while we were doing free work. Do not sleep on a stale timestamp;
+            # just try again and let the response headers correct us.
+            _core_remaining = None
+        else:
             print(f"[core] budget exhausted, sleeping {wait:.0f}s until reset", flush=True)
-            time.sleep(wait)
+            time.sleep(min(wait, 3900))
             _core_remaining = None
 
     status, headers, body = _fetch(url)

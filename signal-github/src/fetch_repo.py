@@ -205,9 +205,16 @@ def fetch_one(con, row, level: str = "tree"):
 
     # A README that shows results with almost no history is the GitHub
     # equivalent of "trust me bro". Detect the shape, do not judge it.
-    claim_rx = re.compile(r"\b(\d{2,3}(\.\d+)?\s?%|\bROI\b|\bP&?L\b|\bsharpe\b|"
-                          r"win\s?rate|profit(?:able)?|returns?)\b", re.I)
-    claims = grep_lines(readme, claim_rx, "README", limit=5) if readme else []
+    claim_rx = re.compile(r"(\d{1,3}(\.\d+)?\s?%|\bROI\b|\bP&?L\b|\bsharpe\b|"
+                          r"win\s?rate|profit(?:able|s)?|\breturns?\b|\bPnL\b)", re.I)
+    # Shield badges are markdown images whose URLs are full of digits and
+    # percent-encoding, so they match every claim pattern. They are decoration,
+    # not a claim; drop them before grepping.
+    badge_rx = re.compile(r"!\[[^\]]*\]\([^)]*\)|<img\s|img\.shields\.io|badge/|"
+                          r"^\s*\[!\[|star-history|<a\s+href", re.I)
+    readme_claims = "\n".join(
+        ln if not badge_rx.search(ln) else "" for ln in (readme or "").splitlines())
+    claims = grep_lines(readme_claims, claim_rx, "README", limit=5) if readme else []
     artifact = bool(result_paths) or bool([p for p in paths if p.lower().endswith(
         (".csv", ".parquet")) and re.search(r"result|backtest|trade|pnl|equity", p, re.I)])
     # Only decidable once the commit count is known, so it stays NULL at the
