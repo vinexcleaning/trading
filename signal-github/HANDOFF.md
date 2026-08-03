@@ -187,6 +187,44 @@ family**.
 | **"trust me bro"** — a results claim, <10 commits, no artifact | **3 of 40** |
 | API spend | 8 core + 58 search for retrieval; ~60 core for the tree tier; 861 raw; 13 sourcegraph |
 
+## 3b. Two defects in THIS pipeline, found late and both corrected
+
+Recorded here rather than quietly patched, because reports were already written
+against the wrong numbers.
+
+**1. Silent data corruption in `fetch_repo.py`.** `fetch_one` wrote `fetched=1`
+even when the git-tree call returned nothing, and the tree selector picked rows
+`WHERE fetched=0` — so a failed row was excluded from retry *forever* and still
+counted in the scored total, with every S component NULL. When the 60/hour core
+budget ran out mid-run this poisoned **266 rows**: the database reported **358
+repos scored when only 92 had a real file tree**, a 74% overstatement. The
+affected repos were not empty — several are 5–80 MB with a valid
+`default_branch`, and re-querying one by hand returns HTTP 200 with a full tree.
+
+Fixed: an empty tree for a repo with `size_kb > 0` is now stored as `fetched=-2`
+(retryable) with no scores written, and the selector accepts `fetched IN (0,-2)`
+so an interrupted run resumes instead of losing rows. All 266 were reset and
+re-queued. **A silent failure that inflates a denominator is worse than a crash,
+because every rate computed over it still looks fine.** It was caught only by
+noticing that 358 was implausibly fast for a 60/hour budget.
+
+**2. `rank.py` asserted its conclusion instead of deriving it.** The premise-3
+verdict — "stars carry no information about whether a repo has substance" — was
+a hardcoded string. It was true at n=40 and became false at n=105, and a string
+literal cannot notice that. It now derives the verdict from rho and p, and
+prints the n=40 → n=105 movement alongside it so the instability is visible
+rather than hidden. See the corrected Premise 3 above.
+
+Two further pipeline defects are in `reports/repo_defects.json`: gate G3 admits
+large off-topic repos on one incidental README mention (both large README-only
+passes were false positives), and the `artifact_behind_claim` detector runs about
+40% precision — 3 of 5 flagged artifacts are a markdown write-up, an alert log
+and charts of quoted odds, none of them a backtest.
+
+The headline "not one repo proves its own strategy makes money" survives all of
+this **because the five flagged repos were read**, not because the detector said
+so. That is the whole argument for the read step, stated once more.
+
 The bad numbers, stated plainly:
 
 - **40 of 2,562 gated repos were deep-fetched. That is 1.6% coverage.** The
