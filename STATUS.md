@@ -184,12 +184,13 @@ as GitHub code search); forks of the client libraries for dependents.
 | repos retrieved | **3,133** across 6 axes |
 | gate PASS / STALE / DROP | 2,441 / 121 / 571 |
 | deep-fetched and scored | **40** (1.6% of gated), credibility for all 40 |
-| read in full | **2** |
+| read in full | **4** (poly-maker, prediction-market-backtesting, CloddsBot, polymarket-mcp-server) |
 | **F1 vs F2 Jaccard** | **0.033** (YouTube: 0.037 over 446 videos) |
 | code-search hits found by neither family | 41 of 47 |
 | **stars vs S_strict** | **rho −0.019, p 0.91** |
 | forks vs S_strict / commits vs S_strict | −0.052 (p .75) / +0.147 (p .36) |
 | | **no free proxy predicts substance** |
+| two repos both scoring 10/10 strict | one is 67 files/1 venue/no backtest and says so; the other 797 files/17 venues with a documented backtest API and no result. **The scorer cannot separate them; reading can.** |
 | S rubric ported literally | **19 of 40 scored 9–10** — saturated |
 | same repos, strict rescore | **3 of 40** |
 | S2 backtest-vs-live fire rate | 68% literal → **20% strict** |

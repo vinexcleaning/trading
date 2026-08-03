@@ -58,8 +58,13 @@ def main():
          datetime.date.today().isoformat(), fn))
 
     for s in x.get("strategies", []):
-        ev = s.get("backtest_evidence") or s.get("file_path") or ""
-        if not has_evidence(ev):
+        # Check BOTH fields, not `a or b`. A strategy whose backtest_evidence is
+        # prose explaining that no backtest exists ("NONE, and here is why") is
+        # still fully evidenced by its file_path — but `or` short-circuits on the
+        # non-empty prose and never looks at the path, silently dropping the row.
+        ev = s.get("backtest_evidence") or ""
+        fp = s.get("file_path") or ""
+        if not (has_evidence(ev) or has_evidence(fp)):
             rejected.append(f"strategy {s.get('name')!r}: no file path or SHA — NOT STORED")
             continue
         con.execute(

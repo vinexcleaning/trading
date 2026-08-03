@@ -97,6 +97,36 @@ websocket client — while that repo's own README says a backtester is not built
 **The repo was right and the detector was wrong.** The loop heuristic was removed
 (`src/rescore.py`).
 
+### Premise 2b — can the strict scorer replace reading? No, and here is the proof
+
+`alsk1992/CloddsBot` and `warproxxx/poly-maker` **both score 10/10 on the strict
+scale.** Both genuinely have a backtest-shaped module, a test directory, pinned
+dependencies and a mechanism-bearing README, so every computed component fires
+for both. Reading them takes ten minutes and they are opposites:
+
+| | poly-maker | CloddsBot |
+|---|---|---|
+| files / venues / strategies | 67 · 1 · 1 | 797 · 17 · "118+" |
+| built over | 465-day commit span | 12 days, for a hackathon |
+| backtest | none — **and the README says so** | a fully documented API, **no result from it anywhere in 797 files** |
+| performance claim | none; README opens with a loss warning | none, but "10.7k clones in 14 days" sits where evidence would go |
+| fee defaults | reads live per-market fee bps from Gamma | **`maker: 0, taker: 0`** — wrong on both venues |
+
+The scorer cannot see any of that. It counts artefacts; it cannot tell a
+specification from a result, and "documents the correct methodology" and "applied
+the correct methodology" leave identical traces on disk. **That gap is the
+argument for the read step**, and it is why `reports/repo_defects.json` exists as
+a separate output: three defects in two well-scoring repos, none of them visible
+to any computed component.
+
+The most costly one is worth stating on its own. CloddsBot's default backtest
+config is `fees: {maker: 0, taker: 0}` with the comment "0% taker fee (Polymarket
+most markets)". As of 2026-08-03 Polymarket taker fees are 0.04–0.07 by category
+and only geopolitics is free; Kalshi is `ceil_to_cent(0.07·qty·p·(1−p))`, not the
+flat 1.2% the same file suggests. **Anyone running that backtest out of the box
+gets a strategy that pays no fees at all** — the exact trap the other 1,000-star
+repo in this corpus documents in `docs/execution-modeling.md`.
+
 ### Premise 3 — do stars correlate with substance?
 
 **No.** (`reports/step3_rank.md`, n=40)
@@ -158,10 +188,11 @@ family**.
 | — G1 empty repo, 0 KB | 99 |
 | **deep-fetched and scored** | **40** |
 | of which credibility metrics fetched | **40 (all of them)** |
-| **read in full** | **2** |
+| **read in full** | **4** |
 | repos scoring 9–10 strict | 3 |
 | repos with a backtest module AND separate order-submission code | **8 of 40 (20%)** |
 | repos publishing a backtest artifact behind their own profit claim | **0 of 40** |
+| defects found only by reading (3 in 2 well-scoring repos) | `reports/repo_defects.json` |
 | **"trust me bro"** — a results claim, <10 commits, no artifact | **3 of 40** |
 | API spend | 8 core + 58 search for retrieval; ~60 core for the tree tier; 861 raw; 13 sourcegraph |
 
@@ -169,8 +200,10 @@ The bad numbers, stated plainly:
 
 - **40 of 2,562 gated repos were deep-fetched. That is 1.6% coverage.** The
   ranking below the top 40 is prescreen-ordered, not scored.
-- **2 repos were read in full.** The prompt's own rule is one per turn, and
-  60 core calls/hour rationed how many could be prepared.
+- **4 repos were read in full**, out of 40 scored and 2,562 gated. The prompt's
+  own rule is one per turn, and 60 core calls/hour rationed how many could be
+  prepared. Reading is where every defect in `reports/repo_defects.json` came
+  from, so this is the number most worth increasing next.
 - **77 repos were dropped because no README could be fetched** at `README.md` or
   `README.rst` on the default/main/master branch. A repo with an on-topic
   codebase and no README is invisible to G3. Real false-negative channel.

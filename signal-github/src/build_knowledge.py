@@ -128,13 +128,21 @@ def main():
     # ---------------- repos read ----------------
     a("## Repos read in full\n")
     if read:
-        a("| S | verdict | stars | commits | span | contrib | last push | repo | what it does |")
-        a("|---|---|---|---|---|---|---|---|---|")
+        a("`S` is strict/literal. Where they disagree, the strict score is the one to trust — "
+          "the literal rubric saturates (see `reports/step3b_rescore.md`).\n")
+        a("| S strict/lit | verdict | stars | commits | span | contrib | last push | repo |")
+        a("|---|---|---|---|---|---|---|---|")
         for r in read:
-            a(f"| {r['s_total']} | {r['verdict'] or ''} | {r['stars']} | {r['commits']} "
+            # The verdict field is a tag plus a sentence; the table takes the tag.
+            tag = (r["verdict"] or "").split(" - ")[0].split(" — ")[0].strip()
+            a(f"| **{r['s_strict']}**/{r['s_total']} | {tag} | {r['stars']} | {r['commits']} "
               f"| {r['span_days']}d | {r['contributors']} | {(r['pushed_at'] or '')[:10]} "
-              f"| [{r['full_name']}]({r['url']}) | {(r['what_it_does'] or '')[:120]} |")
+              f"| [{r['full_name']}]({r['url']}) |")
         a("")
+        a("### What each one is, and the verdict in full\n")
+        for r in read:
+            a(f"**[{r['full_name']}]({r['url']})** — {r['what_it_does'] or ''}\n")
+            a(f"> {r['verdict'] or ''}\n")
         a("### Claims, and whether anything backs them\n")
         for r in read:
             if r["claimed_results"]:
@@ -176,6 +184,22 @@ def main():
                 a(f"- **Why it matters:** {c['why_it_matters']}\n")
     else:
         a("_`reports/claim_conflicts.json` not found._\n")
+
+    # ---------------- defects found by reading ----------------
+    rd_path = os.path.join(gh.ROOT, "reports", "repo_defects.json")
+    if os.path.exists(rd_path):
+        a("## Defects found by reading the code\n")
+        a("Errors the computed scores could not see. Every one of these repos scores well "
+          "on the strict scale; each was found only by opening the file. **This is the "
+          "argument against automating the read step away.**\n")
+        with open(rd_path, encoding="utf-8") as fh:
+            for d in json.load(fh):
+                a(f"### `{d['repo']}` ({d['stars']} stars) — {d['severity']}\n")
+                a(f"**{d['defect']}**\n")
+                a(f"- *The repo says:* {d['what_the_repo_says']}")
+                a(f"- *Actually true:* {d['what_is_actually_true']}")
+                a(f"- *Evidence:* `{d['evidence']}`")
+                a(f"- *Why it matters:* {d['why_it_matters']}\n")
 
     # ---------------- repo-level conflicts ----------------
     conflicts = [x for x in xref if x["verdict"] in ("CONFLICT", "WATCH")]
