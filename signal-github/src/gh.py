@@ -1,21 +1,36 @@
 """HTTP layer for signal-github.
 
-Four transports, three of them free:
+Six transports, five of them free:
 
   core        api.github.com REST      60 req/hour unauthenticated. SCARCE.
   search      api.github.com/search    10 req/minute unauthenticated. Plentiful.
   raw         raw.githubusercontent    no documented API limit. Free.
+  archive     codeload.github.com      NOT metered against core. Free. See below.
+  atom        github.com/*/commits.atom  free; last 20 commits with dates.
   sourcegraph sourcegraph.com/.api     free, unauthenticated, public code only.
 
-Everything is cached on disk by URL hash so a re-run costs nothing. The core
-budget is the binding constraint on the whole project: spend it only on the
-tree/commits/contributors calls that have no free substitute.
+Everything is cached on disk by URL hash so a re-run costs nothing.
+
+**`archive` is the transport that changes the economics of this project.**
+Measured 2026-08-03: `codeload.github.com/<repo>/tar.gz/<branch>` returns the
+complete file tree AND the contents of every file in one request, carries no
+`X-RateLimit-*` headers, and spends **zero** of the 60/hour core budget (checked
+by reading /rate_limit either side of a download). One request replaces the
+git-tree core call and makes file *contents* available, which path-name
+heuristics never had. Use `archive` for depth; spend `core` only on what has no
+free substitute.
+
+Note the URL form: the documented `/tar.gz/refs/heads/<branch>` path times out
+from this network (WinError 10060), while the legacy `/tar.gz/<branch>` form
+returns in ~0.3s. Do not "modernise" it.
 """
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import os
+import tarfile
 import time
 import urllib.error
 import urllib.parse
@@ -25,10 +40,38 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(ROOT, "cache")
 os.makedirs(CACHE, exist_ok=True)
 
-UA = "signal-github/0.1 (research; unauthenticated)"
+UA = "signal-github/0.2 (research)"
 
-# A token is used if the environment happens to provide one. We never create an
-# account and never prompt for one.
+
+def _load_dotenv():
+    """Read signal-github/.env into the environment if present.
+
+    A GitHub token is worth 60/hour -> 5,000/hour on `core` and unblocks code
+    search. Shell environment variables do not survive between tool calls on
+    Windows, so a gitignored `.env` beside the project is the durable place to
+    put one. Never overrides a variable already set in the real environment.
+    """
+    path = os.path.join(ROOT, ".env")
+    if not os.path.exists(path):
+        return
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                k, v = line.split("=", 1)
+                k, v = k.strip(), v.strip().strip("'\"")
+                if k and v and k not in os.environ:
+                    os.environ[k] = v
+    except OSError:
+        pass
+
+
+_load_dotenv()
+
+# A token is used if the environment (or .env) happens to provide one. We never
+# create an account and never prompt for one.
 TOKEN = (
     os.environ.get("GITHUB_TOKEN")
     or os.environ.get("GH_TOKEN")
@@ -40,7 +83,8 @@ _last_search = 0.0
 _core_remaining = None
 _core_reset = 0.0
 
-STATS = {"core_calls": 0, "search_calls": 0, "raw_calls": 0, "sg_calls": 0, "cache_hits": 0}
+STATS = {"core_calls": 0, "search_calls": 0, "raw_calls": 0, "sg_calls": 0,
+         "archive_calls": 0, "atom_calls": 0, "cache_hits": 0}
 
 
 def _key(url: str) -> str:
@@ -213,6 +257,133 @@ def raw(full_name: str, path: str, branches=("main", "master")):
             with open(cp, "w", encoding="utf-8") as fh:
                 fh.write("\x00MISSING")
     return None, None
+
+
+# --- archive: the whole repo, free ------------------------------------------
+# Extensions worth keeping as text. Everything else (images, wheels, model
+# weights, vendored binaries) is counted in the file list but not stored.
+TEXT_EXT = {
+    ".py", ".ipynb", ".js", ".ts", ".tsx", ".jsx", ".rs", ".go", ".java", ".kt",
+    ".c", ".h", ".cpp", ".hpp", ".cs", ".rb", ".php", ".sh", ".ps1", ".bat",
+    ".sql", ".md", ".rst", ".txt", ".toml", ".yaml", ".yml", ".json", ".cfg",
+    ".ini", ".env", ".example", ".lock", ".csv", ".tsv", ".html", ".css",
+}
+MAX_FILE_BYTES = 512 * 1024        # one file
+MAX_TEXT_BYTES = 8 * 1024 * 1024   # all text kept for one repo
+MAX_DOWNLOAD = 80 * 1024 * 1024    # refuse to pull a monster
+
+
+def _fetch_bytes(url: str, timeout: int = 120):
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return resp.status, dict(resp.headers), resp.read()
+    except urllib.error.HTTPError as e:
+        return e.code, dict(e.headers), e.read()[:2000]
+    except Exception as e:  # noqa: BLE001
+        return 0, {}, f"{type(e).__name__}: {e}".encode()
+
+
+def archive(full_name: str, branches=("main", "master"), timeout: int = 120):
+    """The whole repository — every path, and the text of every text file — in
+    one request that costs **nothing** from the core budget.
+
+    Returns a dict:
+        {"status": 200, "branch": "main", "paths": [...all paths...],
+         "files": {path: text}, "n_paths": int, "bytes": int, "truncated": bool}
+    or {"status": <code>, ...} on failure. Cached as one JSON per repo, so a
+    re-run and every later analysis pass are free.
+
+    Why this exists: the git-tree REST call costs 1 of 60 core calls/hour and
+    returns *paths only*. This returns paths **and contents** for free. Every
+    scoring component that had to guess from a filename can now read the code.
+    """
+    for br in branches:
+        url = f"https://codeload.github.com/{full_name}/tar.gz/{br}"
+        cp = _cache_path(url, "arch.json")
+        hit = _read_cache(cp)
+        if hit is not None:
+            try:
+                out = json.loads(hit)
+            except json.JSONDecodeError:
+                continue
+            if out.get("status") == 200:
+                return out
+            continue
+
+        status, headers, body = _fetch_bytes(url, timeout=timeout)
+        STATS["archive_calls"] += 1
+        if status != 200 or not isinstance(body, bytes):
+            # A missing branch is a real answer and worth caching; a network
+            # blip is not.
+            if status == 404:
+                with open(cp, "w", encoding="utf-8") as fh:
+                    json.dump({"status": 404, "_url": url}, fh)
+            continue
+        if len(body) > MAX_DOWNLOAD:
+            out = {"status": 200, "branch": br, "paths": [], "files": {},
+                   "n_paths": 0, "bytes": len(body), "truncated": True,
+                   "skipped": "archive larger than MAX_DOWNLOAD"}
+            with open(cp, "w", encoding="utf-8") as fh:
+                json.dump(out, fh)
+            return out
+
+        paths, files, kept = [], {}, 0
+        truncated = False
+        try:
+            tf = tarfile.open(fileobj=io.BytesIO(body), mode="r:gz")
+            for m in tf.getmembers():
+                if not m.isfile():
+                    continue
+                # strip the "<repo>-<sha>/" prefix codeload adds
+                rel = m.name.split("/", 1)[1] if "/" in m.name else m.name
+                paths.append(rel)
+                ext = os.path.splitext(rel)[1].lower()
+                if ext not in TEXT_EXT or m.size > MAX_FILE_BYTES:
+                    continue
+                if kept + m.size > MAX_TEXT_BYTES:
+                    truncated = True
+                    continue
+                fh = tf.extractfile(m)
+                if fh is None:
+                    continue
+                files[rel] = fh.read().decode("utf-8", "replace")
+                kept += m.size
+        except Exception as e:  # noqa: BLE001 - a corrupt tarball is a real answer
+            return {"status": -1, "error": f"{type(e).__name__}: {e}", "_url": url}
+
+        out = {"status": 200, "branch": br, "paths": paths, "files": files,
+               "n_paths": len(paths), "bytes": len(body), "truncated": truncated}
+        with open(cp, "w", encoding="utf-8") as fh:
+            json.dump(out, fh)
+        return out
+    return {"status": 404, "paths": [], "files": {}, "n_paths": 0}
+
+
+def commits_atom(full_name: str, branches=("main", "master")):
+    """Last ~20 commits with dates and messages, free, no core spend.
+
+    A partial substitute for the /commits credibility call: it cannot give a
+    total commit count, but it gives recency, cadence and whether the most
+    recent commit was substantive — which is what the credibility axis actually
+    used the call for.
+    """
+    for br in branches:
+        url = f"https://github.com/{full_name}/commits/{br}.atom"
+        cp = _cache_path(url, "xml")
+        body = _read_cache(cp)
+        if body is None:
+            status, _h, body = _fetch(url, accept="application/atom+xml", timeout=30)
+            STATS["atom_calls"] += 1
+            if status != 200:
+                continue
+            with open(cp, "w", encoding="utf-8") as fh:
+                fh.write(body)
+        import re
+        dates = re.findall(r"<updated>([^<]+)</updated>", body)
+        titles = re.findall(r"<title>([^<]*)</title>", body)
+        return {"status": 200, "branch": br, "dates": dates[1:], "titles": titles[1:]}
+    return {"status": 404, "dates": [], "titles": []}
 
 
 def sourcegraph(query: str, count: int = 30, timeout: int = 60):
