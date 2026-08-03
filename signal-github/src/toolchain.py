@@ -151,6 +151,14 @@ def main():
                         unknown_hosts[h] += 1
 
     # ---- write dependencies ----
+    # Clear this scanner's own previous rows first. Without it, a library that
+    # matched under an older, looser regex keeps its stale count forever because
+    # the loop below only touches names that hit THIS run. Hand-loaded rows from
+    # load_extraction.py are not in LIBS/HOSTS and are left alone.
+    con.executemany("DELETE FROM dependencies WHERE name=?", [(k,) for k in LIBS])
+    con.executemany("DELETE FROM data_sources WHERE name=?", [(k,) for k in HOSTS])
+    con.commit()
+
     for name, hits in lib_hits.items():
         rx, kind, what = LIBS[name]
         repos = sorted({h.split(":")[0] for h in hits})
