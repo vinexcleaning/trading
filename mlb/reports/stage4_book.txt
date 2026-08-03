@@ -1,0 +1,82 @@
+loading 2026-06-01T12 ...
+  11,839,385 rows
+  73,786 distinct tickers
+  30,160 tickers have >=1 snapshot (replayable)
+
+  busiest replayable markets this hour:
+    KXBTCD-26JUN0109-T72099.99                          197,651 msgs    1 snapshots
+    KXBTC15M-26JUN010845-45                             125,599 msgs    1 snapshots
+    KXITFWMATCH-26JUN01KOVRIC-RIC                       109,907 msgs    1 snapshots
+    KXITFWMATCH-26JUN01KOVRIC-KOV                       109,733 msgs    1 snapshots
+    KXCS2GAME-26JUN010700DCPHA-DC                        98,410 msgs    1 snapshots
+    KXATPGSPREAD-26JUN01COBSVA-COB8                      91,476 msgs    1 snapshots
+    KXBTC15M-26JUN010830-30                              82,479 msgs    1 snapshots
+    KXBTC15M-26JUN010815-15                              81,646 msgs    1 snapshots
+    KXITFMATCH-26JUN01CARVAR-CAR                         75,159 msgs    1 snapshots
+    KXWNBASPREAD-26JUN01MINPHX-PHX2                      73,770 msgs    1 snapshots
+
+======================================================================
+1. REPLAY: KXBTCD-26JUN0109-T72099.99
+======================================================================
+  190,846 book states reconstructed
+  final book: 1 snapshots + 190,845 deltas applied
+  validity: False (crossed book: bid 99.0 > ask 22.0)
+
+  TOUCH: yes_bid 99.0c   yes_ask 22.0c   spread -77.0c
+  levels: 68 on the YES ladder, 47 on the NO ladder
+
+  top of the YES bid ladder (buy YES here):
+      99.0c  x     22,056
+      98.0c  x        200
+      97.0c  x          1
+      96.0c  x          0
+      95.0c  x        200
+      94.0c  x        155
+  top of the NO bid ladder (buy NO here; YES ask = 100 - price):
+      78.0c  x          0   (= YES ask 22.0c)
+      76.0c  x          0   (= YES ask 24.0c)
+      75.0c  x         48   (= YES ask 25.0c)
+      72.0c  x          0   (= YES ask 28.0c)
+      71.0c  x          0   (= YES ask 29.0c)
+      67.0c  x          0   (= YES ask 33.0c)
+
+======================================================================
+2. VALIDATION across the busiest 40 replayable markets
+======================================================================
+  validated 40 markets; problems: {'crossed book': 1972}
+  two-sided at the end of the hour: 9 of 40
+  spread : median -4.0c  p90 24.0c
+  depth within 5c: median 22,660  max 134,395 contracts
+
+  ticker                                             msgs    lv    bid    ask   spr    depth5c
+  KXBTCD-26JUN0109-T72099.99                      197,651   115   99.0   22.0 -77.0     22,660
+  KXBTC15M-26JUN010845-45                         125,599     0   None   None  None          0
+  KXITFWMATCH-26JUN01KOVRIC-RIC                   109,907     0   None   None  None          0
+  KXITFWMATCH-26JUN01KOVRIC-KOV                   109,733     0   None   None  None          0
+  KXCS2GAME-26JUN010700DCPHA-DC                    98,410    85   88.0   50.0 -38.0        154
+  KXATPGSPREAD-26JUN01COBSVA-COB8                  91,476     0   None   None  None          0
+  KXBTC15M-26JUN010830-30                          82,479     0   None   None  None          0
+  KXBTC15M-26JUN010815-15                          81,646     0   None   None  None          0
+  KXITFMATCH-26JUN01CARVAR-CAR                     75,159     0   None   None  None          0
+  KXWNBASPREAD-26JUN01MINPHX-PHX2                  73,770    64   37.0   39.0   2.0      3,979
+  KXATPCHALLENGERMATCH-26JUN01KRAWIS-WIS           73,022     0   None   None  None          0
+  KXATPCHALLENGERMATCH-26JUN01KRAWIS-KRA           72,369     0   None   None  None          0
+  KXITFMATCH-26JUN01CARVAR-VAR                     64,044     0   None   None  None          0
+  KXETH15M-26JUN010815-15                          61,948     0   None   None  None          0
+  KXATPCHALLENGERMATCH-26MAY31NAGKES-KES           58,184     0   None   None  None          0
+  KXATPCHALLENGERMATCH-26MAY31NAGKES-NAG           57,789     0   None   None  None          0
+  KXATPCHALLENGERMATCH-26JUN01GENKAR-KAR           56,996     0   None   None  None          0
+  KXATPCHALLENGERMATCH-26JUN01GENKAR-GEN           52,686     0   None   None  None          0
+
+======================================================================
+3. WHAT ONLY THE BOOK SHOWS
+======================================================================
+  KXBTCD-26JUN0109-T72099.99
+  two-sided states: 190,846 of 190,846
+  touch CHANGED 561 times in 56.4 minutes = one quote change every 6.03s
+  spread over the hour: median -39.0c  min -77.0  max 1.0
+  size AT the touch: median 0  min 0  max 22,056
+
+  This is the thing trades cannot tell you: the quote moves
+  constantly whether or not anyone trades, and the size at the
+  touch swings by orders of magnitude within the hour.

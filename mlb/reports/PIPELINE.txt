@@ -7,3 +7,6 @@
 [2026-08-03 06:27:14] START stage3_gate_v2: model_rfi_v2.py
 [2026-08-03 06:27:22] END   stage3_gate_v2: exit=0  -> reports/stage3_gate_v2.txt
 [2026-08-03 06:27:22] START stage4_book: ../../market-selection/src/book_first_look.py
+[2026-08-03 06:28:30] END   stage4_book: exit=0  -> reports/stage4_book.txt
+[2026-08-03 06:28:30] pipeline complete
+[2026-08-03 06:28:30] ============================================================
