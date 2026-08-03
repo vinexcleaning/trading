@@ -1,5 +1,19 @@
 # Phase 1 — Shortlist and kill list
 
+> ## ⚠️ TWO RETRACTED CLAIMS ARE MARKED INLINE BELOW
+>
+> Both were corrected in [`../MORNING_REPORT.md`](../MORNING_REPORT.md), which
+> is the authoritative document. They are struck through here rather than
+> deleted so nobody re-derives them from the raw counts.
+>
+> | Claim as stated here | Status |
+> |---|---|
+> | weather model validated across **8,090 test markets** | **RETRACTED** — a ladder is one reading; effective n ≈ 800 settlement hours, CIs were ~3× too tight. **Conclusion survives.** |
+> | **seven** daily families clear the capacity bar by 7–49×, so weather is not capacity-limited | **RETRACTED framing** — they clear on depth, but have 66 settlements against the 481 needed. Depth without recurrence decides nothing. |
+>
+> Net effect: the weather model is **still real**, but the tradeable universe
+> is **one family (`KXTEMPDCH`), not eight.**
+
 Full scores: `docs/market_screen.csv` (3,133 series with ≥1 open market, 8 dimensions).
 **1,112 killed on structure alone.** The screen is for elimination, so what follows
 leads with the kill reasons.
@@ -85,7 +99,9 @@ observation is partially visible before settlement.
 Everything about the structure checks out:
 
 - `KXTEMPDCH`, `KXTEMPLAXH`, `KXTEMPCHIH`, `KXTEMPAUSH` — **hourly** nested
-  thresholds at 1 °F steps, ~5,200 settled markets each
+  thresholds at 1 °F steps, ~5,200 settled *markets* each — but only **512
+  independent settlements**, because the ~10 strikes on one ladder are one
+  temperature reading counted ten times. Never use the market count as n.
 - `KXHIGH*` and `KXHIGHT*` daily families across ~15 cities
 - Ground truth is free and immediate: `api.weather.gov` returned KDCA at **73.4 °F**
   against live strikes of 67.99–76.99 °F
@@ -110,23 +126,56 @@ approached as "trade the liquid quarter", not written off.
 
 **The model was built and works** (`scripts/weather_model.py`): persistence plus an
 hour-of-day change profile reaches Brier **0.058–0.093** out-of-sample against
-climatology's 0.163–0.294, across 8,090 test markets in four cities, all surviving FDR.
+climatology's 0.163–0.294, ~~across 8,090 test markets in four cities~~, all surviving FDR.
 The persistence error is 1.84–2.48 °F against a 6.95–7.00 °F climatological spread. But
 beating climatology is table stakes — the market can read the same observation — so this
 establishes model soundness, not edge.
 
+> **⚠️ RETRACTED n — "8,090 test markets" is pseudo-replication.**
+> Corrected in [`../MORNING_REPORT.md`](../MORNING_REPORT.md). A ladder is
+> **one temperature reading**, not 10 independent markets: the 10 strikes on a
+> single settlement are the same observation counted ten times. Effective n is
+> **~800 settlement hours**, so the original CIs were roughly **3× too tight**.
+>
+> Re-scored with a bootstrap over whole settlement hours, **the conclusion
+> survives comfortably** — this retraction costs the model nothing:
+>
+> | City | Settlements | Persistence Brier | Climatology Brier | Clustered diff CI |
+> |---|---|---|---|---|
+> | `KXTEMPDCH` | 204 | 0.1021 | 0.2357 | [+0.111, +0.156] |
+> | `KXTEMPLAXH` | 204 | 0.0761 | 0.2162 | [+0.120, +0.160] |
+> | `KXTEMPCHIH` | 204 | 0.0979 | 0.2543 | [+0.136, +0.176] |
+> | `KXTEMPAUSH` | 200 | 0.1355 | 0.3146 | [+0.149, +0.207] |
+>
+> All four still beat climatology decisively. Quote the settlement counts, not
+> the market counts. The same error inflates the "5,200 settlements per family"
+> figure below to its true **512** (hourly) and **66** (daily).
+
 **Capacity question: ANSWERED after the 09:00:42 UTC reopen.** Median depth at the touch,
 from live recorded books:
 
-| Family | Median touch depth | vs the 50-contract bar |
-|---|---|---|
-| `KXHIGHLAX` | 2,434 | passes 49× |
-| `KXHIGHNY` | 1,114 | passes 22× |
-| `KXHIGHMIA` | 738 | passes 15× |
-| `KXHIGHDEN` | 509 | passes 10× |
-| `KXHIGHPHIL` | 490 | passes 10× |
-| `KXHIGHAUS` | 487 | passes 10× |
-| `KXHIGHCHI` | 371 | passes 7× |
+| Family | Median touch depth | vs the 50-contract bar | Independent settlements |
+|---|---|---|---|
+| `KXHIGHLAX` | 2,434 | passes 49× | **66 — fails the power bar** |
+| `KXHIGHNY` | 1,114 | passes 22× | **66 — fails** |
+| `KXHIGHMIA` | 738 | passes 15× | **66 — fails** |
+| `KXHIGHDEN` | 509 | passes 10× | **66 — fails** |
+| `KXHIGHPHIL` | 490 | passes 10× | **66 — fails** |
+| `KXHIGHAUS` | 487 | passes 10× | **66 — fails** |
+| `KXHIGHCHI` | 371 | passes 7× | **66 — fails** |
+
+> **⚠️ RETRACTED framing — "seven daily families clear the capacity bar by
+> 7–49×, so weather is not capacity-limited."**
+> Corrected in [`../MORNING_REPORT.md`](../MORNING_REPORT.md) §7g. The depth
+> numbers are right. The **inference from them is not.** All seven daily
+> families have **66 independent settlements** against the **481** needed to
+> detect a 5pp edge at 80% power. They cannot validate an edge at any power,
+> so **their depth is irrelevant** — capacity to trade a signal you cannot
+> establish is worth nothing. The original framing celebrated the wrong axis.
+>
+> Cross-tabbing both bars — ≥481 settlements **and** ≥50 contracts at the
+> touch — **kills 10 of 11 families.** `KXTEMPDCH` alone clears both, and by
+> **512 vs 481**, a margin of 6%.
 
 **Hourly ladders measured separately, and they split sharply:**
 
@@ -136,10 +185,12 @@ from live recorded books:
 | `KXTEMPLAXH` / `KXTEMPCHIH` / `KXTEMPAUSH` | 1 | untradeable |
 
 > **Not killed, two of three gates cleared, but the family is narrower than it looked.**
-> Recurrence and liquidity coincide only for `KXTEMPDCH`: the hourly families carry 5,200
-> settlements each but three of four are one contract deep, while the daily `KXHIGH*`
-> families have real depth and only ~396 settlements. So the tradeable universe is
-> `KXTEMPDCH` plus the daily families, not all of weather.
+> Recurrence and liquidity coincide only for `KXTEMPDCH`: the hourly families carry
+> ~~5,200~~ **512** settlements each but three of four are one contract deep, while the
+> daily `KXHIGH*` families have real depth and only ~~~396~~ **66** settlements.
+> **Corrected conclusion:** the tradeable universe is `KXTEMPDCH` **alone** — not
+> "`KXTEMPDCH` plus the daily families", because 66 settlements cannot validate an
+> edge. One family of eleven.
 >
 > The remaining gate is whether the model beats the mid, which needs days of recorded
 > books. Depth samples are 11-17 snapshots per family at one point in the session, and

@@ -1,5 +1,23 @@
 # GO / NO-GO
 
+> ## ⚠️ THIS FILE IS SHORTER AND MORE QUOTABLE THAN THE EVIDENCE BEHIND IT
+>
+> Four claims below were **retracted in [`../MORNING_REPORT.md`](../MORNING_REPORT.md)**
+> and are marked inline where they appear. They are left in place, struck
+> through, rather than deleted — deleting them is how they get re-derived.
+> `MORNING_REPORT.md` is the corrected document; where the two disagree, it wins.
+>
+> | # | Claim as stated here | Status |
+> |---|---|---|
+> | 1 | depth at the touch collapses **40×** toward expiry, edge and liquidity anti-correlated | **RETRACTED** — one market, three minutes. Truth: 2.7×, and never thin |
+> | 2 | ~5,200 settlements per weather family | **RETRACTED** — a ladder is one reading, not 10 markets. 512 hourly, 66 daily |
+> | 3 | **seven** daily families clear the capacity bar | **RETRACTED framing** — they clear on depth but have 66 settlements, so depth is irrelevant |
+> | 4 | Kalshi pre-match prices are calibrated **bucket by bucket** | **OVERSTATED** — failure to reject on n=19–52/bucket, CIs ±11–29pp |
+>
+> The **verdicts are unaffected** — every one of them was NO-GO already, and
+> each still is on evidence that holds. What changed is the reasoning, and in
+> two cases the direction of the argument.
+
 ## The bar, defined before looking at results
 
 | Criterion | Threshold |
@@ -37,12 +55,12 @@ cannot support any claim at all.
 
 | Criterion | Arb scanner | Weather ladders | `KXBTC15M` | Copy trading |
 |---|---|---|---|---|
-| Trades / settlements available | 144 scans, **0 violations** | ~5,200 per family | 6,262 | 264,074 positions |
+| Trades / settlements available | 144 scans, **0 violations** | ~~~5,200 per family~~ **RETRACTED (2): 512 hourly / 66 daily** | 6,262 | 264,074 positions |
 | Edge CI excludes cost bar | no events | **not measured** (needs mid) | **no** | **yes**, +7.23pp CI [+4.61, +9.73] |
 | Two disjoint periods consistent | n/a | not measured | n/a (no edge) | **yes**, rho 0.351 |
 | Time-of-day consistency | n/a | not measured | n/a | not measured |
 | Calibration gap < 0.03 | n/a | not measured | borderline (0.026–0.035) | n/a |
-| Depth ≥ 50 at touch | **not measured** | **YES — 371–2,434 median, 7 families** | yes, 21,942 | n/a (Polymarket) |
+| Depth ≥ 50 at touch | **not measured** | ~~**YES — 371–2,434 median, 7 families**~~ **RETRACTED framing (3)** — true on depth, but those 7 have 66 settlements each, so it decides nothing | yes, 21,942 | n/a (Polymarket) |
 | Leak tests passed | n/a | n/a | **yes** | partial |
 | Mechanism | needs none | plausible | **none found** | **yes** — favourite-longshot bias |
 | **VERDICT** | **NO-GO — no evidence yet** | **NO-GO — only the mid comparison left** | **NO-GO — refuted** | **NO-GO — Kalshi transfer refuted** |
@@ -62,10 +80,37 @@ than that.
 | ETH→BTC lead | 0.037 vs 0.845 contemporaneous | — | no lead exists |
 
 **Measured from live books, the bar is worse than 3.50¢: 4.1–4.5¢**, because the
-1¢ spread adds to the fee. And depth at the touch collapses 40× toward expiry (158
-contracts at 10–15 min to 4 contracts inside 5 min) exactly as the model sharpens
-(Brier 0.224 at 780 s to 0.036 at 60 s) — so the edge and the liquidity are
-anti-correlated, which is an independent reason to stop regardless of the fee argument.
+1¢ spread adds to the fee.
+
+> ### ⚠️ RETRACTED (1) — the "40× depth collapse" was an artifact
+>
+> The sentence that stood here read: *"depth at the touch collapses 40× toward
+> expiry (158 contracts at 10–15 min to 4 contracts inside 5 min) exactly as
+> the model sharpens (Brier 0.224 at 780 s to 0.036 at 60 s) — so the edge and
+> the liquidity are anti-correlated, which is an independent reason to stop
+> regardless of the fee argument."*
+>
+> **It was measured from one market over three minutes.** Re-measured on 25
+> markets over seven hours (`MORNING_REPORT.md` §7g), the truth is close to
+> the opposite:
+>
+> | Time to expiry | Median spread | Median touch depth | Total breakeven |
+> |---|---|---|---|
+> | 10–15 min | 1.0¢ | **821** | 4.46¢ |
+> | 5–10 min | 1.0¢ | **574** | 4.49¢ |
+> | 2–5 min | 0.3¢ | **373** | 3.58¢ |
+> | 60–120 s | 0.1¢ | **193** | 3.36¢ |
+> | 0–60 s | 0.1¢ | **307** | **3.50¢** |
+>
+> Depth declines **2.7×, not 40×**, and never becomes thin — **307** contracts
+> at the touch inside the final minute, not 4. The spread *tightens* 10×, from
+> 1.0¢ to 0.1¢. So the total cost of trading **falls** toward expiry, 4.46¢ →
+> 3.50¢: the contract is **cheaper** to trade late, not more expensive.
+>
+> The "anti-correlated edge and liquidity" argument is therefore **withdrawn
+> entirely**. The NO-GO verdict is unchanged but no longer rests on it — it
+> rests on the at-the-money fee structure, the direction effects below the
+> bar, and the vs-mid null.
 
 No further BTC direction work is justified until someone finds an effect above 4.2
 points. The vol work stands on its own merits and is reported, but volatility is not
@@ -85,14 +130,29 @@ The edge is real and persistent, but **it is not wallet skill** (see
    (0.2% of tennis capital, bound [+17.00%, +17.16%]).
 2. ~~Establish that the bias exists on Kalshi, not only Polymarket.~~ **DONE — it does
    not.** 490,464 taker fills across 762 settled Kalshi sports matches: aggregate edge
-   −0.67pp against a 2.72% overround, and pre-match prices calibrated bucket by bucket
-   (0.846→0.846, 0.755→0.761; every binomial p ≥ 0.499). Polymarket's +8.57pp at 0.6–0.7
-   becomes −2.12pp on Kalshi. **This breaks the Polymarket→Kalshi transfer the strategy
-   depends on.** Caveat, and it survived a dedicated attempt to remove it: a properly
-   targeted re-run over 12 series and 2,258 markets still yielded only 726 usable
-   pre-match observations, with bucket CIs of ±11–29pp and 0 of 7 Polymarket values
-   formally excluded. Sports simply are not traded much hours before the event, so
-   historical mining cannot close this. Only forward recording can.
+   −0.67pp against a 2.72% overround. Polymarket's +8.57pp at 0.6–0.7 becomes −2.12pp on
+   Kalshi. **This breaks the Polymarket→Kalshi transfer the strategy depends on.**
+
+   > **⚠️ OVERSTATED (4) — "calibrated bucket by bucket" is not established.**
+   > The struck phrase was: *"and pre-match prices calibrated bucket by bucket
+   > (0.846→0.846, 0.755→0.761; every binomial p ≥ 0.499)"*. Those buckets hold
+   > **n = 19, 28, 46 and 52** markets. "Every binomial p ≥ 0.499" is a **failure
+   > to reject**, not a demonstration of calibration — at that n the test cannot
+   > reject anything, and a high p-value on a tiny sample is the weakest possible
+   > evidence. The properly targeted re-run over 12 series and 2,258 markets
+   > yielded only **726 usable pre-match observations**, with bucket CIs of
+   > **±11–29pp** and **0 of 7 Polymarket values formally excluded** — i.e. the
+   > Polymarket effect sizes sit *inside* the Kalshi confidence intervals. The
+   > correct statement is that Kalshi shows **no detectable** favourite-longshot
+   > bias at this sample size, which is not the same as being calibrated. The
+   > aggregate −0.67pp on 762 matches is the part that carries weight.
+   >
+   > This does not rescue the strategy: the transfer needed a *positive* Kalshi
+   > bias and there is no evidence of one. But the file must not be quoted as
+   > having proven Kalshi calibrated.
+
+   Sports simply are not traded much hours before the event, so historical mining
+   cannot close this. Only forward recording can.
 3. **Measure it at posted prices, not filled prices.** The tape records fills that
    happened; a strategy must trade against quotes that were actually available.
 4. **Filter to `behaviour = 'directional'`.** 36% of positions are hedges, so a third of
