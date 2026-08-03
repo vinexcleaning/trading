@@ -1,0 +1,658 @@
+{
+  "meta": {
+    "filters": {
+      "min_trades": 20,
+      "min_events": 10,
+      "recent_within_days": 30,
+      "max_gap_days": 30
+    },
+    "cuts": [
+      "2025-01-01",
+      "2025-07-01",
+      "2026-01-08_fee_era"
+    ]
+  },
+  "concentration": {
+    "2025-01-01": {
+      "n_positions": 7141,
+      "n_events": 5566,
+      "n_wallets": 8,
+      "top_event_share": 0.0479,
+      "top5_event_share": 0.1493,
+      "top_wallet_share": 0.767,
+      "top_month_share": 0.1252,
+      "band_shares": {
+        "0.90-1.00": 0.3258,
+        "0.75-0.90": 0.2265,
+        "0.60-0.75": 0.1933,
+        "0.40-0.60": 0.113,
+        "0.25-0.40": 0.0671,
+        "0.10-0.25": 0.0564,
+        "0.00-0.10": 0.0177
+      },
+      "top_events": [
+        [
+          "slug:will-zohran-mamdani-win-the-nyc-mayoral-ele",
+          0.0479
+        ],
+        [
+          "slug:will-trump-nominate-judy-shelton-as-the-nex",
+          0.0284
+        ],
+        [
+          "slug:will-lee-jae-myung-be-elected-the-next-pres",
+          0.0279
+        ],
+        [
+          "slug:will-lee-jun-seok-be-elected-the-next-presi",
+          0.0227
+        ],
+        [
+          "slug:will-mark-carney-be-the-next-canadian-prime",
+          0.0224
+        ]
+      ],
+      "top_months": [
+        [
+          "2025-06",
+          0.1252
+        ],
+        [
+          "2025-05",
+          0.1161
+        ],
+        [
+          "2026-01",
+          0.0971
+        ],
+        [
+          "2025-03",
+          0.0848
+        ]
+      ]
+    },
+    "2025-07-01": {
+      "n_positions": 4119,
+      "n_events": 3360,
+      "n_wallets": 8,
+      "top_event_share": 0.0412,
+      "top5_event_share": 0.1674,
+      "top_wallet_share": 0.8622,
+      "top_month_share": 0.2384,
+      "band_shares": {
+        "0.75-0.90": 0.3038,
+        "0.90-1.00": 0.2293,
+        "0.40-0.60": 0.1928,
+        "0.60-0.75": 0.1181,
+        "0.10-0.25": 0.0787,
+        "0.25-0.40": 0.0549,
+        "0.00-0.10": 0.0223
+      },
+      "top_events": [
+        [
+          "slug:will-donald-trump-be-the-1-searched-person-",
+          0.0412
+        ],
+        [
+          "slug:will-nasry-juan-asfura-zablah-win-the-hondu",
+          0.0354
+        ],
+        [
+          "slug:will-the-party-for-freedom-win-the-most-sea",
+          0.0349
+        ],
+        [
+          "slug:will-andrnico-rodrguez-win-the-bolivia-pres",
+          0.0304
+        ],
+        [
+          "slug:fed-decreases-interest-rates-by-25-bps-afte",
+          0.0254
+        ]
+      ],
+      "top_months": [
+        [
+          "2025-08",
+          0.2384
+        ],
+        [
+          "2025-09",
+          0.2228
+        ],
+        [
+          "2025-11",
+          0.1595
+        ],
+        [
+          "2025-10",
+          0.139
+        ]
+      ]
+    },
+    "2026-01-08_fee_era": {
+      "n_positions": 1329,
+      "n_events": 1190,
+      "n_wallets": 6,
+      "top_event_share": 0.0816,
+      "top5_event_share": 0.2977,
+      "top_wallet_share": 0.484,
+      "top_month_share": 0.3667,
+      "band_shares": {
+        "0.90-1.00": 0.3158,
+        "0.75-0.90": 0.2533,
+        "0.40-0.60": 0.154,
+        "0.60-0.75": 0.1532,
+        "0.25-0.40": 0.056,
+        "0.10-0.25": 0.052,
+        "0.00-0.10": 0.0156
+      },
+      "top_events": [
+        [
+          "slug:netanyahu-out-by-march-31-854",
+          0.0816
+        ],
+        [
+          "slug:another-us-government-shutdown-by-february-",
+          0.0733
+        ],
+        [
+          "slug:will-andr-ventura-win-the-portugal-presiden",
+          0.0717
+        ],
+        [
+          "slug:strait-of-hormuz-traffic-returns-to-normal-",
+          0.0371
+        ],
+        [
+          "slug:khamenei-out-as-supreme-leader-of-iran-by-f",
+          0.034
+        ]
+      ],
+      "top_months": [
+        [
+          "2026-02",
+          0.3667
+        ],
+        [
+          "2026-01",
+          0.3262
+        ],
+        [
+          "2026-03",
+          0.1628
+        ],
+        [
+          "2026-04",
+          0.1443
+        ]
+      ]
+    }
+  },
+  "leave_one_out": {
+    "2025-01-01": {
+      "base": {
+        "excess_pp": 1.9893,
+        "ci95": [
+          1.3437,
+          2.613
+        ],
+        "p": 0.0005,
+        "n_events": 5566,
+        "n_selected_obs": 7141,
+        "n_eff": 2881.2,
+        "bands": [
+          "0.00-0.10",
+          "0.10-0.25",
+          "0.25-0.40",
+          "0.40-0.60",
+          "0.60-0.75",
+          "0.75-0.90",
+          "0.90-1.00"
+        ]
+      },
+      "variants": {
+        "drop_largest_event": {
+          "excess_pp": 1.9901,
+          "ci95": [
+            1.345,
+            2.6462
+          ],
+          "p": 0.0005,
+          "n_events": 5565,
+          "n_eff": 2880.6,
+          "delta_vs_base": 0.0008
+        },
+        "drop_top5_events": {
+          "excess_pp": 1.9907,
+          "ci95": [
+            1.3573,
+            2.6367
+          ],
+          "p": 0.0005,
+          "n_events": 5561,
+          "n_eff": 2876.7,
+          "delta_vs_base": 0.0014
+        },
+        "drop_largest_wallet": {
+          "excess_pp": 2.0494,
+          "ci95": [
+            1.3717,
+            2.7103
+          ],
+          "p": 0.0005,
+          "n_events": 5157,
+          "n_eff": 2581.7,
+          "delta_vs_base": 0.0601
+        },
+        "drop_largest_month": {
+          "excess_pp": 1.7712,
+          "ci95": [
+            1.116,
+            2.4469
+          ],
+          "p": 0.0005,
+          "n_events": 5242,
+          "n_eff": 2779.3,
+          "delta_vs_base": -0.2181
+        },
+        "drop_top_band": {
+          "excess_pp": 2.1618,
+          "ci95": [
+            1.4879,
+            2.821
+          ],
+          "p": 0.0005,
+          "n_events": 5233,
+          "n_eff": 2689.5,
+          "delta_vs_base": 0.1725
+        }
+      }
+    },
+    "2025-07-01": {
+      "base": {
+        "excess_pp": 1.1801,
+        "ci95": [
+          0.3675,
+          1.9983
+        ],
+        "p": 0.006,
+        "n_events": 3360,
+        "n_selected_obs": 4119,
+        "n_eff": 2336.6,
+        "bands": [
+          "0.00-0.10",
+          "0.10-0.25",
+          "0.25-0.40",
+          "0.40-0.60",
+          "0.60-0.75",
+          "0.75-0.90",
+          "0.90-1.00"
+        ]
+      },
+      "variants": {
+        "drop_largest_event": {
+          "excess_pp": 1.1757,
+          "ci95": [
+            0.353,
+            2.0613
+          ],
+          "p": 0.004,
+          "n_events": 3359,
+          "n_eff": 2335.8,
+          "delta_vs_base": -0.0044
+        },
+        "drop_top5_events": {
+          "excess_pp": 1.1765,
+          "ci95": [
+            0.3303,
+            1.9902
+          ],
+          "p": 0.004,
+          "n_events": 3355,
+          "n_eff": 2331.9,
+          "delta_vs_base": -0.0036
+        },
+        "drop_largest_wallet": {
+          "excess_pp": 1.1483,
+          "ci95": [
+            0.2567,
+            1.9952
+          ],
+          "p": 0.011,
+          "n_events": 3225,
+          "n_eff": 2253.7,
+          "delta_vs_base": -0.0318
+        },
+        "drop_largest_month": {
+          "excess_pp": 1.123,
+          "ci95": [
+            0.2825,
+            2.021
+          ],
+          "p": 0.015,
+          "n_events": 3030,
+          "n_eff": 2319.2,
+          "delta_vs_base": -0.0571
+        },
+        "drop_top_band": {
+          "excess_pp": 0.5451,
+          "ci95": [
+            -0.3032,
+            1.438
+          ],
+          "p": 0.217,
+          "n_events": 3107,
+          "n_eff": 2170.8,
+          "delta_vs_base": -0.635
+        }
+      }
+    },
+    "2026-01-08_fee_era": {
+      "base": {
+        "excess_pp": 1.1538,
+        "ci95": [
+          -0.1232,
+          2.5675
+        ],
+        "p": 0.073,
+        "n_events": 1190,
+        "n_selected_obs": 1329,
+        "n_eff": 1076.3,
+        "bands": [
+          "0.00-0.10",
+          "0.10-0.25",
+          "0.25-0.40",
+          "0.40-0.60",
+          "0.60-0.75",
+          "0.75-0.90",
+          "0.90-1.00"
+        ]
+      },
+      "variants": {
+        "drop_largest_event": {
+          "excess_pp": 1.1527,
+          "ci95": [
+            -0.1232,
+            2.447
+          ],
+          "p": 0.076,
+          "n_events": 1189,
+          "n_eff": 1075.4,
+          "delta_vs_base": -0.0011
+        },
+        "drop_top5_events": {
+          "excess_pp": 1.1565,
+          "ci95": [
+            -0.1461,
+            2.4361
+          ],
+          "p": 0.077,
+          "n_events": 1185,
+          "n_eff": 1082.0,
+          "delta_vs_base": 0.0027
+        },
+        "drop_largest_wallet": {
+          "excess_pp": 1.2117,
+          "ci95": [
+            -0.1046,
+            2.5899
+          ],
+          "p": 0.071,
+          "n_events": 1129,
+          "n_eff": 1049.7,
+          "delta_vs_base": 0.0579
+        },
+        "drop_largest_month": {
+          "excess_pp": 0.8402,
+          "ci95": [
+            -0.6091,
+            2.3628
+          ],
+          "p": 0.271,
+          "n_events": 865,
+          "n_eff": 791.4,
+          "delta_vs_base": -0.3136
+        },
+        "drop_top_band": {
+          "excess_pp": 1.2778,
+          "ci95": [
+            -0.1488,
+            2.7516
+          ],
+          "p": 0.08,
+          "n_events": 1016,
+          "n_eff": 921.3,
+          "delta_vs_base": 0.124
+        }
+      }
+    }
+  },
+  "other_residual": {
+    "n_markets": 52961,
+    "top_slug_prefixes_by_volume": [
+      [
+        "will-zelenskyy-wear",
+        0.0272,
+        88
+      ],
+      [
+        "will-elon-tweet",
+        0.0078,
+        4137
+      ],
+      [
+        "will-avatar-fire",
+        0.007,
+        317
+      ],
+      [
+        "will-eleven-die",
+        0.0067,
+        27
+      ],
+      [
+        "mlb-sea-bal",
+        0.0057,
+        44
+      ],
+      [
+        "will-mike-tyson",
+        0.0054,
+        75
+      ],
+      [
+        "mlb-det-sea",
+        0.0051,
+        63
+      ],
+      [
+        "mlb-chc-mil",
+        0.0051,
+        117
+      ],
+      [
+        "will-tesla-launch",
+        0.0047,
+        99
+      ],
+      [
+        "cfb-ore-ind",
+        0.0041,
+        58
+      ],
+      [
+        "will-jake-paul",
+        0.0041,
+        280
+      ],
+      [
+        "tiktok-sale-announced",
+        0.0041,
+        112
+      ],
+      [
+        "mlb-laa-hou",
+        0.0039,
+        57
+      ],
+      [
+        "mlb-mia-nym",
+        0.0037,
+        45
+      ],
+      [
+        "mlb-laa-sea",
+        0.0037,
+        41
+      ],
+      [
+        "mlb-phi-mia",
+        0.0036,
+        100
+      ],
+      [
+        "microphones-muted-during",
+        0.0036,
+        18
+      ],
+      [
+        "mlb-laa-mil",
+        0.0036,
+        40
+      ],
+      [
+        "mlb-det-cle",
+        0.0033,
+        186
+      ],
+      [
+        "mlb-atl-det",
+        0.0033,
+        38
+      ],
+      [
+        "mlb-stl-sd",
+        0.0033,
+        30
+      ],
+      [
+        "mlb-phi-wsh",
+        0.0032,
+        39
+      ],
+      [
+        "mlb-lad-col",
+        0.0032,
+        118
+      ],
+      [
+        "mlb-det-nyy",
+        0.0031,
+        64
+      ],
+      [
+        "will-fed-cut",
+        0.003,
+        277
+      ]
+    ],
+    "note": "'residual' is not a tradeable description; these prefixes are what it actually contains"
+  },
+  "bh_fdr": {
+    "n_tests": 18,
+    "alpha": 0.05,
+    "n_significant": 11,
+    "detail": {
+      "pol|2025-01-01|base": {
+        "p": 0.0005,
+        "bh_threshold": 0.002778,
+        "significant": true
+      },
+      "pol|2025-01-01|drop_largest_event": {
+        "p": 0.0005,
+        "bh_threshold": 0.005556,
+        "significant": true
+      },
+      "pol|2025-01-01|drop_largest_month": {
+        "p": 0.0005,
+        "bh_threshold": 0.008333,
+        "significant": true
+      },
+      "pol|2025-01-01|drop_largest_wallet": {
+        "p": 0.0005,
+        "bh_threshold": 0.011111,
+        "significant": true
+      },
+      "pol|2025-01-01|drop_top5_events": {
+        "p": 0.0005,
+        "bh_threshold": 0.013889,
+        "significant": true
+      },
+      "pol|2025-01-01|drop_top_band": {
+        "p": 0.0005,
+        "bh_threshold": 0.016667,
+        "significant": true
+      },
+      "pol|2025-07-01|drop_largest_event": {
+        "p": 0.004,
+        "bh_threshold": 0.019444,
+        "significant": true
+      },
+      "pol|2025-07-01|drop_top5_events": {
+        "p": 0.004,
+        "bh_threshold": 0.022222,
+        "significant": true
+      },
+      "pol|2025-07-01|base": {
+        "p": 0.006,
+        "bh_threshold": 0.025,
+        "significant": true
+      },
+      "pol|2025-07-01|drop_largest_wallet": {
+        "p": 0.011,
+        "bh_threshold": 0.027778,
+        "significant": true
+      },
+      "pol|2025-07-01|drop_largest_month": {
+        "p": 0.015,
+        "bh_threshold": 0.030556,
+        "significant": true
+      },
+      "pol|2026-01-08_fee_era|drop_largest_wallet": {
+        "p": 0.071,
+        "bh_threshold": 0.033333,
+        "significant": false
+      },
+      "pol|2026-01-08_fee_era|base": {
+        "p": 0.073,
+        "bh_threshold": 0.036111,
+        "significant": false
+      },
+      "pol|2026-01-08_fee_era|drop_largest_event": {
+        "p": 0.076,
+        "bh_threshold": 0.038889,
+        "significant": false
+      },
+      "pol|2026-01-08_fee_era|drop_top5_events": {
+        "p": 0.077,
+        "bh_threshold": 0.041667,
+        "significant": false
+      },
+      "pol|2026-01-08_fee_era|drop_top_band": {
+        "p": 0.08,
+        "bh_threshold": 0.044444,
+        "significant": false
+      },
+      "pol|2025-07-01|drop_top_band": {
+        "p": 0.217,
+        "bh_threshold": 0.047222,
+        "significant": false
+      },
+      "pol|2026-01-08_fee_era|drop_largest_month": {
+        "p": 0.271,
+        "bh_threshold": 0.05,
+        "significant": false
+      }
+    }
+  }
+}

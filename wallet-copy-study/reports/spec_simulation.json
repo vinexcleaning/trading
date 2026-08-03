@@ -1,0 +1,76 @@
+{
+  "meta": {
+    "bankroll": 10000.0,
+    "stake": 200.0,
+    "stake_frac": 0.02,
+    "delay_s": 60,
+    "measured_cost_pp": 0.675,
+    "category": "politics",
+    "filters": {
+      "min_trades": 20,
+      "min_events": 10,
+      "recent_within_days": 30,
+      "max_gap_days": 30
+    },
+    "rules": "entry at +60s traded price from recorded books; fixed stake off STARTING bankroll; capital locked until resolution; signals with no free cash are skipped and counted"
+  },
+  "runs": {
+    "2025-01-01": {
+      "n_signals": 7141,
+      "n_taken": 600,
+      "skipped_no_book": 6369,
+      "skipped_no_cash": 172,
+      "n_distinct_events": 490,
+      "final_bankroll": 39494.17,
+      "pnl": 29494.17,
+      "return_on_bankroll_pct": 294.942,
+      "capital_deployed": 120000.0,
+      "return_on_deployed_pct": 24.578,
+      "win_rate": 0.4333,
+      "peak_concurrent_exposure": 22000.0,
+      "max_drawdown_pct": 30.181,
+      "mean_pnl_per_trade": 49.157,
+      "best_event_pnl": 19880.75,
+      "worst_event_pnl": -861.63,
+      "top_event_share_of_pnl": 0.674
+    },
+    "2025-07-01": {
+      "n_signals": 4119,
+      "n_taken": 350,
+      "skipped_no_book": 3512,
+      "skipped_no_cash": 257,
+      "n_distinct_events": 309,
+      "final_bankroll": 3989.08,
+      "pnl": -6010.92,
+      "return_on_bankroll_pct": -60.109,
+      "capital_deployed": 70000.0,
+      "return_on_deployed_pct": -8.587,
+      "win_rate": 0.4886,
+      "peak_concurrent_exposure": 11600.0,
+      "max_drawdown_pct": 75.076,
+      "mean_pnl_per_trade": -17.174,
+      "best_event_pnl": 2385.86,
+      "worst_event_pnl": -440.0,
+      "top_event_share_of_pnl": null
+    },
+    "2026-01-08_fee_era": {
+      "n_signals": 1329,
+      "n_taken": 199,
+      "skipped_no_book": 936,
+      "skipped_no_cash": 194,
+      "n_distinct_events": 177,
+      "final_bankroll": 28469.51,
+      "pnl": 18469.51,
+      "return_on_bankroll_pct": 184.695,
+      "capital_deployed": 39800.0,
+      "return_on_deployed_pct": 46.406,
+      "win_rate": 0.5025,
+      "peak_concurrent_exposure": 15000.0,
+      "max_drawdown_pct": 20.241,
+      "mean_pnl_per_trade": 92.812,
+      "best_event_pnl": 9829.97,
+      "worst_event_pnl": -440.0,
+      "top_event_share_of_pnl": 0.532
+    }
+  }
+}

@@ -129,28 +129,17 @@ repo in this corpus documents in `docs/execution-modeling.md`.
 
 ### Premise 3 — do stars correlate with substance?
 
-**No.** (`reports/step3_rank.md`, n=40)
+**Corrected. The earlier answer of a flat No came from too small a sample.**
+(`reports/step3_rank.md`)
 
-| pair | Spearman rho | p | n |
-|---|---|---|---|
-| stars vs S_literal | +0.104 | 0.52 | 40 |
-| **stars vs S_strict** | **−0.019** | **0.91** | 40 |
-| forks vs S_strict | −0.052 | 0.75 | 40 |
-| commits vs S_strict | +0.147 | 0.36 | 40 |
-| stars vs commits | +0.116 | 0.47 | 40 |
+| n | stars vs S_strict | p |
+|---|---|---|
+| 40 | −0.019 | 0.91 |
+| 105 | **+0.241** | **0.013** |
 
-**The stronger result: no free proxy predicts substance.** Not stars, not forks,
-not commit count. Every rho is within noise of zero and every p is above 0.35.
-There is no shortcut that lets you rank by a cheap number and skip looking at the
-code — which is the whole argument for a pipeline that ranks everything free and
-then actually reads.
+At 40 repos the correlation was indistinguishable from zero and I reported that stars carry no information. At 105 it is a **weak but statistically significant positive** relationship. The practical advice is unchanged — rho 0.24 explains about **6% of the variance**, so sorting by stars still tells you almost nothing about which repo has substance — but the strong claim was wrong and is withdrawn.
 
-One caution on these numbers, since it is exactly the kind of thing this project
-exists to catch: **the commits correlation was −0.117 at n=30 and +0.147 at
-n=40.** It changed sign when the last ten repos landed. At n=40 with rho this
-small, the sign is noise. The correct reading is "no relationship detected", not
-"a weak positive one" — and anyone re-running with a token and a larger n should
-recompute rather than quote these.
+The report now DERIVES this verdict from the numbers instead of asserting it. The old text was a hardcoded string that could not notice it had stopped being true.
 
 Eight repos with 50+ stars score ≤3 on the strict scale. And the cleanest
 demonstration is not statistical at all: **`Polymarket/py-clob-client` has 1,234
@@ -186,7 +175,7 @@ family**.
 | — G3 off topic | 472 |
 | — G3 generic terms only, no venue named | 410 (flagged, not dropped) |
 | — G1 empty repo, 0 KB | 99 |
-| **deep-fetched and scored** | **40** |
+| **deep-fetched and scored** | **105** |
 | of which credibility metrics fetched | **40 (all of them)** |
 | **read in full** | **9 — the entire top 10 by strict score, bar one** |
 | repos scoring 9–10 strict | 3 |

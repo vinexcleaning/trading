@@ -1,0 +1,465 @@
+{
+  "meta": {
+    "n_snapshots": 1797426,
+    "n_tokens": 4480,
+    "files": 8,
+    "sizes_usd": [
+      50,
+      200,
+      500,
+      1000,
+      5000
+    ],
+    "assumed_haircut_pp_previously": 1.0,
+    "note": "cost is measured ABOVE MID because traded prices sit near mid; the copier pays the ask"
+  },
+  "by_category": {
+    "politics": {
+      "n_snapshots": 586760,
+      "full_spread_pp": {
+        "p25": 1.0,
+        "median": 1.0,
+        "p75": 2.0,
+        "p90": 4.0
+      },
+      "half_spread_pp": {
+        "median": 0.5,
+        "p75": 1.0
+      },
+      "effective_cost_pp": {
+        "50": {
+          "median": 0.6,
+          "p75": 1.4581,
+          "n": 583803,
+          "unfillable": 2957
+        },
+        "200": {
+          "median": 1.0,
+          "p75": 1.9251,
+          "n": 549196,
+          "unfillable": 37564
+        },
+        "500": {
+          "median": 1.1628,
+          "p75": 2.6074,
+          "n": 484880,
+          "unfillable": 101880
+        },
+        "1000": {
+          "median": 1.5766,
+          "p75": 4.8731,
+          "n": 426901,
+          "unfillable": 159859
+        },
+        "5000": {
+          "median": 2.1603,
+          "p75": 12.3161,
+          "n": 232202,
+          "unfillable": 354558
+        }
+      }
+    },
+    "crypto": {
+      "n_snapshots": 292928,
+      "full_spread_pp": {
+        "p25": 1.0,
+        "median": 2.3,
+        "p75": 6.0,
+        "p90": 16.0
+      },
+      "half_spread_pp": {
+        "median": 1.15,
+        "p75": 3.0
+      },
+      "effective_cost_pp": {
+        "50": {
+          "median": 1.8705,
+          "p75": 6.2676,
+          "n": 284470,
+          "unfillable": 8458
+        },
+        "200": {
+          "median": 2.5,
+          "p75": 9.9622,
+          "n": 238035,
+          "unfillable": 54893
+        },
+        "500": {
+          "median": 2.8607,
+          "p75": 10.0563,
+          "n": 197462,
+          "unfillable": 95466
+        },
+        "1000": {
+          "median": 3.1173,
+          "p75": 10.1885,
+          "n": 167572,
+          "unfillable": 125356
+        },
+        "5000": {
+          "median": 4.6072,
+          "p75": 13.1044,
+          "n": 74976,
+          "unfillable": 217952
+        }
+      }
+    },
+    "other": {
+      "n_snapshots": 289758,
+      "full_spread_pp": {
+        "p25": 1.0,
+        "median": 2.0,
+        "p75": 6.0,
+        "p90": 23.0
+      },
+      "half_spread_pp": {
+        "median": 1.0,
+        "p75": 3.0
+      },
+      "effective_cost_pp": {
+        "50": {
+          "median": 1.3324,
+          "p75": 5.8333,
+          "n": 285642,
+          "unfillable": 4116
+        },
+        "200": {
+          "median": 1.7633,
+          "p75": 9.021,
+          "n": 247161,
+          "unfillable": 42597
+        },
+        "500": {
+          "median": 1.7474,
+          "p75": 6.7763,
+          "n": 190356,
+          "unfillable": 99402
+        },
+        "1000": {
+          "median": 1.6336,
+          "p75": 5.9078,
+          "n": 137500,
+          "unfillable": 152258
+        },
+        "5000": {
+          "median": 2.3038,
+          "p75": 5.0882,
+          "n": 53350,
+          "unfillable": 236408
+        }
+      }
+    },
+    "soccer": {
+      "n_snapshots": 191744,
+      "full_spread_pp": {
+        "p25": 1.3,
+        "median": 27.7,
+        "p75": 71.0,
+        "p90": 79.0
+      },
+      "half_spread_pp": {
+        "median": 13.85,
+        "p75": 35.5
+      },
+      "effective_cost_pp": {
+        "50": {
+          "median": 7.7837,
+          "p75": 37.85,
+          "n": 158953,
+          "unfillable": 32791
+        },
+        "200": {
+          "median": 3.0,
+          "p75": 28.35,
+          "n": 119366,
+          "unfillable": 72378
+        },
+        "500": {
+          "median": 1.4895,
+          "p75": 12.4454,
+          "n": 84834,
+          "unfillable": 106910
+        },
+        "1000": {
+          "median": 1.1999,
+          "p75": 4.3921,
+          "n": 65646,
+          "unfillable": 126098
+        },
+        "5000": {
+          "median": 1.2224,
+          "p75": 2.514,
+          "n": 39064,
+          "unfillable": 152680
+        }
+      }
+    },
+    "nba": {
+      "n_snapshots": 133010,
+      "full_spread_pp": {
+        "p25": 2.0,
+        "median": 5.0,
+        "p75": 32.0,
+        "p90": 83.0
+      },
+      "half_spread_pp": {
+        "median": 2.5,
+        "p75": 16.0
+      },
+      "effective_cost_pp": {
+        "50": {
+          "median": 2.4897,
+          "p75": 15.8258,
+          "n": 118919,
+          "unfillable": 14091
+        },
+        "200": {
+          "median": 2.5,
+          "p75": 18.0771,
+          "n": 107797,
+          "unfillable": 25213
+        },
+        "500": {
+          "median": 2.8077,
+          "p75": 21.7452,
+          "n": 93592,
+          "unfillable": 39418
+        },
+        "1000": {
+          "median": 2.9264,
+          "p75": 19.5578,
+          "n": 73772,
+          "unfillable": 59238
+        },
+        "5000": {
+          "median": 4.7953,
+          "p75": 22.4514,
+          "n": 38978,
+          "unfillable": 94032
+        }
+      }
+    },
+    "nfl": {
+      "n_snapshots": 123260,
+      "full_spread_pp": {
+        "p25": 1.0,
+        "median": 2.0,
+        "p75": 5.0,
+        "p90": 42.0
+      },
+      "half_spread_pp": {
+        "median": 1.0,
+        "p75": 2.5
+      },
+      "effective_cost_pp": {
+        "50": {
+          "median": 1.0,
+          "p75": 3.0204,
+          "n": 121117,
+          "unfillable": 2143
+        },
+        "200": {
+          "median": 1.2609,
+          "p75": 4.0604,
+          "n": 115238,
+          "unfillable": 8022
+        },
+        "500": {
+          "median": 1.6274,
+          "p75": 4.6312,
+          "n": 105299,
+          "unfillable": 17961
+        },
+        "1000": {
+          "median": 2.0939,
+          "p75": 4.6481,
+          "n": 94897,
+          "unfillable": 28363
+        },
+        "5000": {
+          "median": 2.6238,
+          "p75": 6.3819,
+          "n": 52604,
+          "unfillable": 70656
+        }
+      }
+    },
+    "esports": {
+      "n_snapshots": 96090,
+      "full_spread_pp": {
+        "p25": 4.0,
+        "median": 8.0,
+        "p75": 9.0,
+        "p90": 45.1
+      },
+      "half_spread_pp": {
+        "median": 4.0,
+        "p75": 4.5
+      },
+      "effective_cost_pp": {
+        "50": {
+          "median": 4.4104,
+          "p75": 43.144,
+          "n": 83623,
+          "unfillable": 12467
+        },
+        "200": {
+          "median": 4.216,
+          "p75": 20.1529,
+          "n": 47439,
+          "unfillable": 48651
+        },
+        "500": {
+          "median": 2.4366,
+          "p75": 12.5105,
+          "n": 29485,
+          "unfillable": 66605
+        },
+        "1000": {
+          "median": 2.1935,
+          "p75": 8.5502,
+          "n": 20489,
+          "unfillable": 75601
+        },
+        "5000": {
+          "median": 2.1035,
+          "p75": 4.3854,
+          "n": 8168,
+          "unfillable": 87922
+        }
+      }
+    },
+    "weather": {
+      "n_snapshots": 83876,
+      "full_spread_pp": {
+        "p25": 2.0,
+        "median": 5.0,
+        "p75": 25.0,
+        "p90": 59.0
+      },
+      "half_spread_pp": {
+        "median": 2.5,
+        "p75": 12.5
+      },
+      "effective_cost_pp": {
+        "50": {
+          "median": 4.5,
+          "p75": 22.3337,
+          "n": 82367,
+          "unfillable": 1509
+        },
+        "200": {
+          "median": 7.318,
+          "p75": 31.1816,
+          "n": 68863,
+          "unfillable": 15013
+        },
+        "500": {
+          "median": 3.9618,
+          "p75": 12.1611,
+          "n": 40988,
+          "unfillable": 42888
+        },
+        "1000": {
+          "median": 3.4674,
+          "p75": 7.3839,
+          "n": 26065,
+          "unfillable": 57811
+        },
+        "5000": {
+          "median": 1.8879,
+          "p75": 4.6856,
+          "n": 7147,
+          "unfillable": 76729
+        }
+      }
+    }
+  },
+  "repricing": {
+    "top_of_book_half_spread": {
+      "haircut_pp": 0.5,
+      "task5_net": {
+        "0": 4.151,
+        "10": 1.514,
+        "60": 0.857,
+        "300": 0.221,
+        "1800": -0.625
+      },
+      "headline_net": {
+        "politics_2025-07-01": 2.887,
+        "politics_fee_era": 4.446,
+        "soccer_fee_era": 3.082,
+        "crypto_fee_era": 0.933,
+        "other_2025-07-01": 0.407
+      }
+    },
+    "size_200": {
+      "haircut_pp": 1.0,
+      "task5_net": {
+        "0": 3.651,
+        "10": 1.014,
+        "60": 0.357,
+        "300": -0.279,
+        "1800": -1.125
+      },
+      "headline_net": {
+        "politics_2025-07-01": 2.387,
+        "politics_fee_era": 3.946,
+        "soccer_fee_era": 2.582,
+        "crypto_fee_era": 0.433,
+        "other_2025-07-01": -0.093
+      }
+    },
+    "size_500": {
+      "haircut_pp": 1.1628,
+      "task5_net": {
+        "0": 3.4882,
+        "10": 0.8512,
+        "60": 0.1942,
+        "300": -0.4418,
+        "1800": -1.2878
+      },
+      "headline_net": {
+        "politics_2025-07-01": 2.2242,
+        "politics_fee_era": 3.7832,
+        "soccer_fee_era": 2.4192,
+        "crypto_fee_era": 0.2702,
+        "other_2025-07-01": -0.2558
+      }
+    },
+    "size_1000": {
+      "haircut_pp": 1.5766,
+      "task5_net": {
+        "0": 3.0744,
+        "10": 0.4374,
+        "60": -0.2196,
+        "300": -0.8556,
+        "1800": -1.7016
+      },
+      "headline_net": {
+        "politics_2025-07-01": 1.8104,
+        "politics_fee_era": 3.3694,
+        "soccer_fee_era": 2.0054,
+        "crypto_fee_era": -0.1436,
+        "other_2025-07-01": -0.6696
+      }
+    },
+    "old_assumption_1pp": {
+      "haircut_pp": 1.0,
+      "task5_net": {
+        "0": 3.651,
+        "10": 1.014,
+        "60": 0.357,
+        "300": -0.279,
+        "1800": -1.125
+      },
+      "headline_net": {
+        "politics_2025-07-01": 2.387,
+        "politics_fee_era": 3.946,
+        "soccer_fee_era": 2.582,
+        "crypto_fee_era": 0.433,
+        "other_2025-07-01": -0.093
+      }
+    }
+  }
+}

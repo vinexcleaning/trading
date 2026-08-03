@@ -1,0 +1,846 @@
+{
+  "meta": {
+    "window_days": 60,
+    "n_cuts": 16,
+    "filters": {
+      "min_trades": 20,
+      "min_events": 10,
+      "recent_within_days": 30,
+      "max_gap_days": 30
+    },
+    "seed": 20260801,
+    "null": "wallet labels permuted within event"
+  },
+  "real": {
+    "politics": {
+      "n_windows": 16,
+      "mean_pp": 2.117,
+      "median_pp": 1.7106,
+      "sd": 1.4844,
+      "frac_positive": 0.9375,
+      "n_sig_p05": 8,
+      "min": -0.2225,
+      "max": 5.3163,
+      "windows": [
+        {
+          "cut": "2024-12",
+          "excess_pp": -0.2225,
+          "p": 0.841,
+          "n_events": 340
+        },
+        {
+          "cut": "2025-01",
+          "excess_pp": 3.4704,
+          "p": 0.001,
+          "n_events": 540
+        },
+        {
+          "cut": "2025-02",
+          "excess_pp": 3.6944,
+          "p": 0.0005,
+          "n_events": 603
+        },
+        {
+          "cut": "2025-03",
+          "excess_pp": 3.2423,
+          "p": 0.037,
+          "n_events": 439
+        },
+        {
+          "cut": "2025-04",
+          "excess_pp": 2.672,
+          "p": 0.002,
+          "n_events": 1013
+        },
+        {
+          "cut": "2025-05",
+          "excess_pp": 5.3163,
+          "p": 0.0005,
+          "n_events": 842
+        },
+        {
+          "cut": "2025-06",
+          "excess_pp": 4.0144,
+          "p": 0.0005,
+          "n_events": 697
+        },
+        {
+          "cut": "2025-07",
+          "excess_pp": 1.0893,
+          "p": 0.248,
+          "n_events": 709
+        },
+        {
+          "cut": "2025-08",
+          "excess_pp": 0.6702,
+          "p": 0.558,
+          "n_events": 604
+        },
+        {
+          "cut": "2025-09",
+          "excess_pp": 1.4006,
+          "p": 0.146,
+          "n_events": 666
+        },
+        {
+          "cut": "2025-10",
+          "excess_pp": 0.9771,
+          "p": 0.335,
+          "n_events": 623
+        },
+        {
+          "cut": "2025-11",
+          "excess_pp": 2.0974,
+          "p": 0.026,
+          "n_events": 658
+        },
+        {
+          "cut": "2025-12",
+          "excess_pp": 2.0205,
+          "p": 0.026,
+          "n_events": 748
+        },
+        {
+          "cut": "2026-01",
+          "excess_pp": 1.0023,
+          "p": 0.274,
+          "n_events": 679
+        },
+        {
+          "cut": "2026-02",
+          "excess_pp": 1.2221,
+          "p": 0.141,
+          "n_events": 697
+        },
+        {
+          "cut": "2026-03",
+          "excess_pp": 1.2047,
+          "p": 0.146,
+          "n_events": 596
+        }
+      ]
+    },
+    "crypto": {
+      "n_windows": 15,
+      "mean_pp": 1.0203,
+      "median_pp": 0.7005,
+      "sd": 4.6479,
+      "frac_positive": 0.7333,
+      "n_sig_p05": 4,
+      "min": -10.0661,
+      "max": 8.4763,
+      "windows": [
+        {
+          "cut": "2025-01",
+          "excess_pp": -10.0661,
+          "p": 0.035,
+          "n_events": 53
+        },
+        {
+          "cut": "2025-02",
+          "excess_pp": 8.4763,
+          "p": 0.042,
+          "n_events": 49
+        },
+        {
+          "cut": "2025-03",
+          "excess_pp": 7.5972,
+          "p": 0.287,
+          "n_events": 15
+        },
+        {
+          "cut": "2025-04",
+          "excess_pp": -3.0933,
+          "p": 0.419,
+          "n_events": 83
+        },
+        {
+          "cut": "2025-05",
+          "excess_pp": 3.8853,
+          "p": 0.402,
+          "n_events": 43
+        },
+        {
+          "cut": "2025-06",
+          "excess_pp": 0.9316,
+          "p": 0.923,
+          "n_events": 36
+        },
+        {
+          "cut": "2025-07",
+          "excess_pp": 0.7939,
+          "p": 0.412,
+          "n_events": 442
+        },
+        {
+          "cut": "2025-08",
+          "excess_pp": 7.2065,
+          "p": 0.006,
+          "n_events": 245
+        },
+        {
+          "cut": "2025-09",
+          "excess_pp": 0.0907,
+          "p": 0.885,
+          "n_events": 391
+        },
+        {
+          "cut": "2025-10",
+          "excess_pp": -2.5549,
+          "p": 0.047,
+          "n_events": 361
+        },
+        {
+          "cut": "2025-11",
+          "excess_pp": 0.6378,
+          "p": 0.387,
+          "n_events": 450
+        },
+        {
+          "cut": "2025-12",
+          "excess_pp": 0.837,
+          "p": 0.491,
+          "n_events": 1546
+        },
+        {
+          "cut": "2026-01",
+          "excess_pp": 0.6141,
+          "p": 0.592,
+          "n_events": 1683
+        },
+        {
+          "cut": "2026-02",
+          "excess_pp": 0.7005,
+          "p": 0.356,
+          "n_events": 286
+        },
+        {
+          "cut": "2026-03",
+          "excess_pp": -0.7517,
+          "p": 0.628,
+          "n_events": 190
+        }
+      ]
+    },
+    "nba": {
+      "n_windows": 11,
+      "mean_pp": 0.7382,
+      "median_pp": 0.6565,
+      "sd": 3.3926,
+      "frac_positive": 0.7273,
+      "n_sig_p05": 5,
+      "min": -7.0722,
+      "max": 3.9823,
+      "windows": [
+        {
+          "cut": "2025-01",
+          "excess_pp": 3.9342,
+          "p": 0.002,
+          "n_events": 375
+        },
+        {
+          "cut": "2025-02",
+          "excess_pp": 3.9823,
+          "p": 0.0005,
+          "n_events": 405
+        },
+        {
+          "cut": "2025-03",
+          "excess_pp": 0.0451,
+          "p": 0.963,
+          "n_events": 119
+        },
+        {
+          "cut": "2025-04",
+          "excess_pp": 3.5184,
+          "p": 0.015,
+          "n_events": 209
+        },
+        {
+          "cut": "2025-05",
+          "excess_pp": 2.2572,
+          "p": 0.245,
+          "n_events": 214
+        },
+        {
+          "cut": "2025-06",
+          "excess_pp": 0.5161,
+          "p": 0.832,
+          "n_events": 112
+        },
+        {
+          "cut": "2025-07",
+          "excess_pp": 3.866,
+          "p": 0.154,
+          "n_events": 81
+        },
+        {
+          "cut": "2025-12",
+          "excess_pp": -7.0722,
+          "p": 0.028,
+          "n_events": 167
+        },
+        {
+          "cut": "2026-01",
+          "excess_pp": -2.1066,
+          "p": 0.49,
+          "n_events": 191
+        },
+        {
+          "cut": "2026-02",
+          "excess_pp": 0.6565,
+          "p": 0.0005,
+          "n_events": 2449
+        },
+        {
+          "cut": "2026-03",
+          "excess_pp": -1.4769,
+          "p": 0.775,
+          "n_events": 55
+        }
+      ]
+    },
+    "soccer": {
+      "n_windows": 9,
+      "mean_pp": 1.2433,
+      "median_pp": 0.9019,
+      "sd": 2.9165,
+      "frac_positive": 0.6667,
+      "n_sig_p05": 3,
+      "min": -2.6915,
+      "max": 5.2694,
+      "windows": [
+        {
+          "cut": "2025-01",
+          "excess_pp": 0.8075,
+          "p": 0.95,
+          "n_events": 21
+        },
+        {
+          "cut": "2025-02",
+          "excess_pp": 5.2694,
+          "p": 0.075,
+          "n_events": 163
+        },
+        {
+          "cut": "2025-03",
+          "excess_pp": 0.9019,
+          "p": 0.772,
+          "n_events": 126
+        },
+        {
+          "cut": "2025-04",
+          "excess_pp": -2.0228,
+          "p": 0.506,
+          "n_events": 149
+        },
+        {
+          "cut": "2025-11",
+          "excess_pp": -1.5771,
+          "p": 0.71,
+          "n_events": 87
+        },
+        {
+          "cut": "2025-12",
+          "excess_pp": -2.6915,
+          "p": 0.012,
+          "n_events": 690
+        },
+        {
+          "cut": "2026-01",
+          "excess_pp": 2.4308,
+          "p": 0.058,
+          "n_events": 480
+        },
+        {
+          "cut": "2026-02",
+          "excess_pp": 3.5777,
+          "p": 0.001,
+          "n_events": 512
+        },
+        {
+          "cut": "2026-03",
+          "excess_pp": 4.4941,
+          "p": 0.001,
+          "n_events": 549
+        }
+      ]
+    },
+    "other": {
+      "n_windows": 16,
+      "mean_pp": 0.8989,
+      "median_pp": 0.7285,
+      "sd": 1.0854,
+      "frac_positive": 0.75,
+      "n_sig_p05": 0,
+      "min": -0.9184,
+      "max": 2.8824,
+      "windows": [
+        {
+          "cut": "2024-12",
+          "excess_pp": 2.8824,
+          "p": 0.053,
+          "n_events": 478
+        },
+        {
+          "cut": "2025-01",
+          "excess_pp": 0.3602,
+          "p": 0.574,
+          "n_events": 999
+        },
+        {
+          "cut": "2025-02",
+          "excess_pp": 0.0886,
+          "p": 0.933,
+          "n_events": 491
+        },
+        {
+          "cut": "2025-03",
+          "excess_pp": -0.9184,
+          "p": 0.537,
+          "n_events": 349
+        },
+        {
+          "cut": "2025-04",
+          "excess_pp": 0.7268,
+          "p": 0.665,
+          "n_events": 234
+        },
+        {
+          "cut": "2025-05",
+          "excess_pp": -0.0402,
+          "p": 0.965,
+          "n_events": 626
+        },
+        {
+          "cut": "2025-06",
+          "excess_pp": 1.1735,
+          "p": 0.109,
+          "n_events": 1447
+        },
+        {
+          "cut": "2025-07",
+          "excess_pp": 1.1872,
+          "p": 0.141,
+          "n_events": 1388
+        },
+        {
+          "cut": "2025-08",
+          "excess_pp": -0.1703,
+          "p": 0.87,
+          "n_events": 609
+        },
+        {
+          "cut": "2025-09",
+          "excess_pp": 1.2921,
+          "p": 0.318,
+          "n_events": 377
+        },
+        {
+          "cut": "2025-10",
+          "excess_pp": 0.7301,
+          "p": 0.676,
+          "n_events": 389
+        },
+        {
+          "cut": "2025-11",
+          "excess_pp": 2.6699,
+          "p": 0.069,
+          "n_events": 378
+        },
+        {
+          "cut": "2025-12",
+          "excess_pp": 1.9645,
+          "p": 0.13,
+          "n_events": 388
+        },
+        {
+          "cut": "2026-01",
+          "excess_pp": -0.1411,
+          "p": 0.933,
+          "n_events": 170
+        },
+        {
+          "cut": "2026-02",
+          "excess_pp": 2.1358,
+          "p": 0.474,
+          "n_events": 157
+        },
+        {
+          "cut": "2026-03",
+          "excess_pp": 0.4421,
+          "p": 0.671,
+          "n_events": 692
+        }
+      ]
+    }
+  },
+  "null": {
+    "politics": {
+      "n_windows": 8,
+      "mean_pp": -0.6961,
+      "median_pp": 0.5792,
+      "sd": 3.6761,
+      "frac_positive": 0.5,
+      "n_sig_p05": 0,
+      "min": -7.5815,
+      "max": 2.3886,
+      "windows": [
+        {
+          "cut": "2024-12",
+          "excess_pp": 2.3221,
+          "p": 0.251,
+          "n_events": 213
+        },
+        {
+          "cut": "2025-01",
+          "excess_pp": -0.3639,
+          "p": 0.846,
+          "n_events": 174
+        },
+        {
+          "cut": "2025-02",
+          "excess_pp": -1.0053,
+          "p": 0.737,
+          "n_events": 132
+        },
+        {
+          "cut": "2025-03",
+          "excess_pp": 1.5222,
+          "p": 0.532,
+          "n_events": 130
+        },
+        {
+          "cut": "2025-04",
+          "excess_pp": 2.3886,
+          "p": 0.606,
+          "n_events": 45
+        },
+        {
+          "cut": "2025-05",
+          "excess_pp": 1.9191,
+          "p": 0.433,
+          "n_events": 104
+        },
+        {
+          "cut": "2025-06",
+          "excess_pp": -4.7697,
+          "p": 0.125,
+          "n_events": 72
+        },
+        {
+          "cut": "2025-07",
+          "excess_pp": -7.5815,
+          "p": 0.42,
+          "n_events": 7
+        }
+      ]
+    },
+    "crypto": {
+      "n_windows": 13,
+      "mean_pp": 2.4614,
+      "median_pp": -0.0786,
+      "sd": 8.3234,
+      "frac_positive": 0.4615,
+      "n_sig_p05": 2,
+      "min": -5.7219,
+      "max": 19.13,
+      "windows": [
+        {
+          "cut": "2025-02",
+          "excess_pp": 18.8577,
+          "p": 0.128,
+          "n_events": 12
+        },
+        {
+          "cut": "2025-03",
+          "excess_pp": 19.13,
+          "p": 0.003,
+          "n_events": 7
+        },
+        {
+          "cut": "2025-04",
+          "excess_pp": -5.7219,
+          "p": 0.391,
+          "n_events": 10
+        },
+        {
+          "cut": "2025-05",
+          "excess_pp": -2.4641,
+          "p": 0.71,
+          "n_events": 14
+        },
+        {
+          "cut": "2025-06",
+          "excess_pp": -4.7767,
+          "p": 0.619,
+          "n_events": 6
+        },
+        {
+          "cut": "2025-08",
+          "excess_pp": 0.9601,
+          "p": 0.85,
+          "n_events": 27
+        },
+        {
+          "cut": "2025-09",
+          "excess_pp": 9.8016,
+          "p": 0.001,
+          "n_events": 29
+        },
+        {
+          "cut": "2025-10",
+          "excess_pp": -0.0786,
+          "p": 0.941,
+          "n_events": 344
+        },
+        {
+          "cut": "2025-11",
+          "excess_pp": 2.1488,
+          "p": 0.499,
+          "n_events": 60
+        },
+        {
+          "cut": "2025-12",
+          "excess_pp": -0.8041,
+          "p": 0.624,
+          "n_events": 142
+        },
+        {
+          "cut": "2026-01",
+          "excess_pp": -4.7411,
+          "p": 0.075,
+          "n_events": 141
+        },
+        {
+          "cut": "2026-02",
+          "excess_pp": -1.1886,
+          "p": 0.508,
+          "n_events": 120
+        },
+        {
+          "cut": "2026-03",
+          "excess_pp": 0.8754,
+          "p": 0.396,
+          "n_events": 708
+        }
+      ]
+    },
+    "nba": {
+      "n_windows": 6,
+      "mean_pp": 2.0701,
+      "median_pp": 0.0772,
+      "sd": 7.778,
+      "frac_positive": 0.5,
+      "n_sig_p05": 1,
+      "min": -5.3811,
+      "max": 17.19,
+      "windows": [
+        {
+          "cut": "2025-01",
+          "excess_pp": 17.19,
+          "p": 0.002,
+          "n_events": 31
+        },
+        {
+          "cut": "2025-05",
+          "excess_pp": -5.3811,
+          "p": 0.7,
+          "n_events": 8
+        },
+        {
+          "cut": "2025-12",
+          "excess_pp": -0.9262,
+          "p": 0.822,
+          "n_events": 83
+        },
+        {
+          "cut": "2026-01",
+          "excess_pp": -0.6169,
+          "p": 0.851,
+          "n_events": 164
+        },
+        {
+          "cut": "2026-02",
+          "excess_pp": 0.7714,
+          "p": 0.642,
+          "n_events": 277
+        },
+        {
+          "cut": "2026-03",
+          "excess_pp": 1.3835,
+          "p": 0.129,
+          "n_events": 389
+        }
+      ]
+    },
+    "soccer": {
+      "n_windows": 8,
+      "mean_pp": -6.8518,
+      "median_pp": -1.3916,
+      "sd": 10.882,
+      "frac_positive": 0.5,
+      "n_sig_p05": 0,
+      "min": -23.6646,
+      "max": 3.1961,
+      "windows": [
+        {
+          "cut": "2025-01",
+          "excess_pp": -11.3439,
+          "p": 0.241,
+          "n_events": 20
+        },
+        {
+          "cut": "2025-02",
+          "excess_pp": -23.6646,
+          "p": 0.1,
+          "n_events": 9
+        },
+        {
+          "cut": "2025-03",
+          "excess_pp": -22.1897,
+          "p": 0.084,
+          "n_events": 9
+        },
+        {
+          "cut": "2025-04",
+          "excess_pp": -3.2792,
+          "p": 0.652,
+          "n_events": 23
+        },
+        {
+          "cut": "2025-12",
+          "excess_pp": 0.6166,
+          "p": 0.75,
+          "n_events": 317
+        },
+        {
+          "cut": "2026-01",
+          "excess_pp": 3.1961,
+          "p": 0.413,
+          "n_events": 89
+        },
+        {
+          "cut": "2026-02",
+          "excess_pp": 0.4959,
+          "p": 0.952,
+          "n_events": 41
+        },
+        {
+          "cut": "2026-03",
+          "excess_pp": 1.3543,
+          "p": 0.847,
+          "n_events": 26
+        }
+      ]
+    },
+    "other": {
+      "n_windows": 16,
+      "mean_pp": 0.239,
+      "median_pp": -0.1638,
+      "sd": 4.5436,
+      "frac_positive": 0.4375,
+      "n_sig_p05": 0,
+      "min": -8.1022,
+      "max": 10.254,
+      "windows": [
+        {
+          "cut": "2024-12",
+          "excess_pp": -4.9119,
+          "p": 0.076,
+          "n_events": 107
+        },
+        {
+          "cut": "2025-01",
+          "excess_pp": -2.1255,
+          "p": 0.309,
+          "n_events": 132
+        },
+        {
+          "cut": "2025-02",
+          "excess_pp": -0.7973,
+          "p": 0.92,
+          "n_events": 7
+        },
+        {
+          "cut": "2025-03",
+          "excess_pp": -0.0734,
+          "p": 0.95,
+          "n_events": 206
+        },
+        {
+          "cut": "2025-04",
+          "excess_pp": -4.0039,
+          "p": 0.483,
+          "n_events": 46
+        },
+        {
+          "cut": "2025-05",
+          "excess_pp": -3.0372,
+          "p": 0.53,
+          "n_events": 22
+        },
+        {
+          "cut": "2025-06",
+          "excess_pp": 0.6175,
+          "p": 0.885,
+          "n_events": 19
+        },
+        {
+          "cut": "2025-07",
+          "excess_pp": 6.2057,
+          "p": 0.312,
+          "n_events": 33
+        },
+        {
+          "cut": "2025-08",
+          "excess_pp": 10.254,
+          "p": 0.219,
+          "n_events": 22
+        },
+        {
+          "cut": "2025-09",
+          "excess_pp": 5.5198,
+          "p": 0.389,
+          "n_events": 35
+        },
+        {
+          "cut": "2025-10",
+          "excess_pp": 3.7817,
+          "p": 0.251,
+          "n_events": 151
+        },
+        {
+          "cut": "2025-11",
+          "excess_pp": 1.0953,
+          "p": 0.79,
+          "n_events": 121
+        },
+        {
+          "cut": "2025-12",
+          "excess_pp": -8.1022,
+          "p": 0.212,
+          "n_events": 51
+        },
+        {
+          "cut": "2026-01",
+          "excess_pp": -0.2542,
+          "p": 0.902,
+          "n_events": 322
+        },
+        {
+          "cut": "2026-02",
+          "excess_pp": 0.1903,
+          "p": 0.985,
+          "n_events": 19
+        },
+        {
+          "cut": "2026-03",
+          "excess_pp": -0.5349,
+          "p": 0.768,
+          "n_events": 119
+        }
+      ]
+    }
+  }
+}

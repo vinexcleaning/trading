@@ -1,0 +1,232 @@
+{
+  "live_tokens": {
+    "ok": true,
+    "n": 12000,
+    "sample": [
+      {
+        "token_id": "43187333641922996188398060383389814287787647811837308994701068387397271207198",
+        "condition_id": "0x0e7b7cc2649466ce6dfed9cf49611630fe986b31fba84ec01107e0a50f1534bb",
+        "slug": "extended-fdv-above-3b-one-day-after-launch-437-271-658",
+        "outcome": "Yes",
+        "tags": [
+          "Crypto",
+          "FDV",
+          "Pre-Market",
+          "Extended"
+        ],
+        "min_tick": 0.001
+      },
+      {
+        "token_id": "45797567544727845868096962085578145112741840964454883912056387967717974214967",
+        "condition_id": "0x0e7b7cc2649466ce6dfed9cf49611630fe986b31fba84ec01107e0a50f1534bb",
+        "slug": "extended-fdv-above-3b-one-day-after-launch-437-271-658",
+        "outcome": "No",
+        "tags": [
+          "Crypto",
+          "FDV",
+          "Pre-Market",
+          "Extended"
+        ],
+        "min_tick": 0.001
+      }
+    ],
+    "note": "12000 order-book-enabled tokens on accepting markets"
+  },
+  "book_single": {
+    "ok": true,
+    "ms": 159,
+    "keys": [
+      "asks",
+      "asset_id",
+      "bids",
+      "hash",
+      "last_trade_price",
+      "market",
+      "min_order_size",
+      "neg_risk",
+      "tick_size",
+      "timestamp"
+    ],
+    "n_bids": 9,
+    "n_asks": 38,
+    "best_bid": {
+      "price": "0.013",
+      "size": "12.9"
+    },
+    "best_ask": {
+      "price": "0.02",
+      "size": "13"
+    },
+    "note": "9 bids / 38 asks"
+  },
+  "POST/books": {
+    "ok": true,
+    "http": 200,
+    "ms": 195,
+    "type": "list",
+    "n": 5,
+    "sample": [
+      {
+        "market": "0x7018d32e315a69c0537fc42f8e574ee4a24b3babaae302cda79fb0c355e0df1a",
+        "asset_id": "84371186359433032934344934234365568331165136826770723604045723165294252654116",
+        "timestamp": "1785737548216",
+        "hash": "d8381ea7b75094c3d0fc1608f037d7ba9174ee2d",
+        "bids": [
+          {
+            "price": "0.01",
+            "size": "20.27"
+          },
+          {
+            "price": "0.02",
+            "size": "5"
+          },
+          {
+            "price": "0.05",
+            "size": "3819"
+          },
+          {
+            "price": "0.06",
+            "size": "9.68"
+          },
+          {
+            "price": "0.53",
+            "size": "10"
+          },
+          {
+            "price": "0.71",
+            "size": "1560"
+          },
+          {
+            "price": "0.72",
+            "size": "824.12"
+          },
+          {
+            "price": "0.73",
+            "size": "524.9"
+          }
+        ],
+        "asks": [
+          {
+            "price": "0.99",
+            "size": "36.89"
+          },
+          {
+            "price": "0.95",
+            "size": "1696"
+          },
+          {
+            "price": "0.93",
+            "size": "17.84"
+          },
+          {
+            "price": "0.92",
+            "size": "625"
+          },
+          {
+            "price": "0.77",
+            "size": "321.08"
+          },
+          {
+            "price": "0.76",
+            "size": "1578.04"
+          },
+          {
+            "price": "0.75",
+            "size": "643.59"
+          }
+        ],
+        "min_order_size": "5",
+        "tick_size": "0.01",
+        "neg_risk": true,
+        "last_trade_price": "0.750"
+      }
+    ],
+    "body": null,
+    "note": "batched 5 tokens"
+  },
+  "POST/prices": {
+    "ok": true,
+    "http": 200,
+    "ms": 203,
+    "type": "dict",
+    "n": 5,
+    "sample": {
+      "102259996226771440320077466984289476786532881900581701629601873185791982116225": {
+        "BUY": "0.25"
+      },
+      "43187333641922996188398060383389814287787647811837308994701068387397271207198": {
+        "BUY": "0.013"
+      }
+    },
+    "body": null,
+    "note": "batched 5 tokens"
+  },
+  "POST/midpoints": {
+    "ok": true,
+    "http": 200,
+    "ms": 150,
+    "type": "dict",
+    "n": 5,
+    "sample": {
+      "102259996226771440320077466984289476786532881900581701629601873185791982116225": "0.26",
+      "43187333641922996188398060383389814287787647811837308994701068387397271207198": "0.0165"
+    },
+    "body": null,
+    "note": "batched 5 tokens"
+  },
+  "POST/spreads": {
+    "ok": true,
+    "http": 200,
+    "ms": 152,
+    "type": "dict",
+    "n": 5,
+    "sample": {
+      "102259996226771440320077466984289476786532881900581701629601873185791982116225": "0.02",
+      "43187333641922996188398060383389814287787647811837308994701068387397271207198": "0.007"
+    },
+    "body": null,
+    "note": "batched 5 tokens"
+  },
+  "GET/midpoint": {
+    "ok": true,
+    "http": 200,
+    "ms": 142,
+    "body": "{\"mid\":\"0.0165\"}\n",
+    "note": "single token"
+  },
+  "GET/spread": {
+    "ok": true,
+    "http": 200,
+    "ms": 137,
+    "body": "{\"spread\":\"0.007\"}\n",
+    "note": "single token"
+  },
+  "books_batch_50": {
+    "ok": true,
+    "http": 200,
+    "ms": 267,
+    "returned": 50,
+    "note": "asked 50, got 50"
+  },
+  "books_batch_100": {
+    "ok": true,
+    "http": 200,
+    "ms": 326,
+    "returned": 100,
+    "note": "asked 100, got 100"
+  },
+  "books_batch_200": {
+    "ok": true,
+    "http": 200,
+    "ms": 430,
+    "returned": 200,
+    "note": "asked 200, got 200"
+  },
+  "books_batch_500": {
+    "ok": true,
+    "http": 200,
+    "ms": 729,
+    "returned": 500,
+    "note": "asked 500, got 500"
+  }
+}

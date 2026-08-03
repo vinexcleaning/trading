@@ -105,6 +105,21 @@ def fetch_one(con, row, level: str = "tree"):
 
     # --- core: tree. The one call the cheap level spends. ---
     tree, used_branch = tree_of(fn, branch)
+
+    # A repo with real bytes on disk MUST have a tree. Getting none back means
+    # the call failed — almost always core-budget exhaustion mid-run — not that
+    # the repo is empty. Marking it fetched anyway used to poison the row: it
+    # was excluded from retry forever AND counted in the "scored" total with a
+    # NULL score. 266 rows were corrupted this way before it was caught.
+    # -2 means "retryable failure", and the tree selector picks those up again.
+    if not tree and (row["size_kb"] or 0) > 0:
+        con.execute("UPDATE repos SET fetched=-2, notes=? WHERE full_name=?",
+                    (f"tree fetch returned nothing for a {row['size_kb']} KB repo "
+                     f"(branch {branch!r}) — retryable", fn))
+        con.commit()
+        print(f"  [{level}] {fn:48s} TREE FAILED, will retry  core_left={gh.core_remaining()}",
+              flush=True)
+        return
     paths = [t["path"] for t in tree if t.get("type") == "blob"]
     sizes = {t["path"]: t.get("size", 0) for t in tree if t.get("type") == "blob"}
 
@@ -261,9 +276,11 @@ def main():
             """SELECT r.* FROM repos r WHERE r.fetched>=1 AND r.gate IN ('PASS','STALE')
                ORDER BY r.s_total DESC, r.stars DESC LIMIT ?""", (limit,)).fetchall()
     else:
+        # fetched=0 is "never tried"; -2 is "tried and the tree call failed".
+        # Both are eligible, so a rate-limited run is resumed rather than lost.
         rows = con.execute(
             """SELECT r.* FROM repos r LEFT JOIN prescreen p ON p.full_name=r.full_name
-               WHERE r.fetched=0 AND r.gate IN ('PASS','STALE')
+               WHERE r.fetched IN (0,-2) AND r.gate IN ('PASS','STALE')
                ORDER BY COALESCE(p.score,-99) DESC, r.stars DESC LIMIT ?""", (limit,)).fetchall()
     print(f"deep-fetching {len(rows)} repos at level={level}", flush=True)
     for row in rows:

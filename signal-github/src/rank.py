@@ -131,9 +131,35 @@ def main():
                                  ("stars vs commits", rho_sc, p_sc, len(cred))):
             fh.write(f"| {label} | {rho:+.3f} | {p:.4f} | {n} |\n"
                      if rho is not None else f"| {label} | — | — | {n} |\n")
-        fh.write("\nA rho near zero with a large p is the answer, not a missing result: "
-                 "**stars carry no information about whether a repo has substance.** "
-                 "Views did not on YouTube either.\n\n")
+        # The verdict is DERIVED from the numbers, never asserted. An earlier
+        # version hardcoded "stars carry no information", which was true at
+        # n=40 (rho -0.019, p 0.91) and became wrong at n=97 (rho +0.191,
+        # p 0.058). A conclusion baked into a print statement cannot notice
+        # that it has stopped being true.
+        if rho_x is None:
+            verdict = "Not enough data to say."
+        elif p_x < 0.05 and abs(rho_x) >= 0.3:
+            verdict = (f"**Stars do carry real signal here** (rho {rho_x:+.3f}, p {p_x:.3f}). "
+                       "That is a change from the YouTube result, where views did not.")
+        elif p_x < 0.10:
+            var = rho_x * rho_x * 100
+            verdict = (
+                f"**A weak positive relationship, at the edge of significance** "
+                f"(rho {rho_x:+.3f}, p {p_x:.3f}, n={len(rows)}). Stars are not noise — but "
+                f"rho {rho_x:.3f} explains only about {var:.0f}% of the variance in rank, so "
+                f"sorting by stars still tells you very little about which repo has substance. "
+                f"The practical conclusion survives; the strong claim that stars carry NO "
+                f"information does not.")
+        else:
+            verdict = (f"**No relationship detected** (rho {rho_x:+.3f}, p {p_x:.3f}, "
+                       f"n={len(rows)}). Stars carry no usable signal about substance, the "
+                       "same as views on YouTube.")
+        fh.write("\n" + verdict + "\n\n")
+        fh.write("> **This figure moved with sample size and should be re-read, not quoted.** "
+                 f"At n=40 stars vs S_strict was −0.019 (p 0.91); at n={len(rows)} it is "
+                 f"{rho_x:+.3f} (p {p_x:.3f}). The early reading was drawn from too small a "
+                 "sample. Anyone re-running with a token and a larger n should recompute "
+                 "rather than cite either number.\n\n")
 
         # Concrete counter-examples are more persuasive than rho.
         top_s = [r for r in ranked if (r["s_strict"] or 0) >= 6]

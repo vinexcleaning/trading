@@ -183,13 +183,13 @@ as GitHub code search); forks of the client libraries for dependents.
 |---|---|
 | repos retrieved | **3,133** across 6 axes |
 | gate PASS / STALE / DROP | 2,441 / 121 / 571 |
-| deep-fetched and scored | **40** (1.6% of gated), credibility for all 40 |
+| deep-fetched and scored | **105** (4.1% of gated); credibility for 40 |
 | read in full | **9** — the top 10 by strict score bar one |
 | **F1 vs F2 Jaccard** | **0.033** (YouTube: 0.037 over 446 videos) |
 | code-search hits found by neither family | 41 of 47 |
-| **stars vs S_strict** | **rho −0.019, p 0.91** |
-| forks vs S_strict / commits vs S_strict | −0.052 (p .75) / +0.147 (p .36) |
-| | **no free proxy predicts substance** |
+| **stars vs S_strict** | **rho +0.241, p 0.013 at n=105** (was −0.019 at n=40 — corrected) |
+| forks vs S_strict / commits vs S_strict | +0.126 (p .20) / +0.147 (p .36) |
+| | **stars explain ~6% of rank variance — weak, real, still useless for sorting** |
 | two repos both scoring 10/10 strict | one is 67 files/1 venue/no backtest and says so; the other 797 files/17 venues with a documented backtest API and no result. **The scorer cannot separate them; reading can.** |
 | repos committing a backtest artifact behind their own strategy | **1 of 40** (`YichengYang-Ethan/oracle3`) |
 | does that artifact support the strategy? | **no.** Headline reads +0.49%; the `performance` block in the same file reports total_pnl −8.80, Sharpe −1.5749, profit factor 0.9526, and the equity curve ends below its start. Zero mentions of fee, slippage or commission in 126 KB. |

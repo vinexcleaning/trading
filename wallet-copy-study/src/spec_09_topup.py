@@ -38,13 +38,13 @@ S.headers.update({"User-Agent": "copy-trading-feasibility-study/0.1"})
 
 CUT = 1767830400
 SEED = 20260801
-TARGET_EVENTS = 120          # per-wallet ambition, well above the 30 floor
-MAX_TOKENS = 3000            # hard budget so the job terminates
+TARGET_EVENTS = 500          # overnight run: push coverage much higher
+MAX_TOKENS = 9000            # overnight budget
 BATCH = 25
 PAGE = 1000
 MAX_PAGES = 40
 USDC = 1_000_000.0
-TIME_BUDGET_S = 4200
+TIME_BUDGET_S = 18000        # 5h, leaves room before the recorder ends
 
 Q = """
 query($toks:[BigInt!],$skip:Int!){

@@ -1,0 +1,81 @@
+{
+  "meta": {
+    "bankroll": 10000.0,
+    "stake": 200.0,
+    "cost_pp": 0.675,
+    "n_boot": 5000,
+    "resample_unit": "event",
+    "delay_s": 60
+  },
+  "runs": {
+    "2025-01-01": {
+      "n_taken_positions": 776,
+      "n_events": 615,
+      "actual_total_pnl": 26534.16,
+      "actual_return_on_bankroll_pct": 265.34,
+      "concentration": {
+        "top1_share_of_gross_profit": 0.1787,
+        "top5_share": 0.4069,
+        "top10_share": 0.5128,
+        "events_for_half_the_profit": 10,
+        "n_profitable_events": 275,
+        "n_losing_events": 340
+      },
+      "bootstrap_pnl": {
+        "p05": -13770.64,
+        "p25": 6058.75,
+        "median": 23793.56,
+        "p75": 42506.52,
+        "p95": 74530.57,
+        "prob_loss": 0.179,
+        "prob_lose_half_bankroll": 0.1226
+      }
+    },
+    "2025-07-01": {
+      "n_taken_positions": 611,
+      "n_events": 540,
+      "actual_total_pnl": 3629.02,
+      "actual_return_on_bankroll_pct": 36.29,
+      "concentration": {
+        "top1_share_of_gross_profit": 0.1067,
+        "top5_share": 0.2617,
+        "top10_share": 0.3853,
+        "events_for_half_the_profit": 18,
+        "n_profitable_events": 244,
+        "n_losing_events": 296
+      },
+      "bootstrap_pnl": {
+        "p05": -13813.16,
+        "p25": -4264.28,
+        "median": 3142.17,
+        "p75": 11255.01,
+        "p95": 23942.49,
+        "prob_loss": 0.3918,
+        "prob_lose_half_bankroll": 0.2302
+      }
+    },
+    "2026-01-08_fee_era": {
+      "n_taken_positions": 394,
+      "n_events": 343,
+      "actual_total_pnl": 14997.29,
+      "actual_return_on_bankroll_pct": 149.97,
+      "concentration": {
+        "top1_share_of_gross_profit": 0.1807,
+        "top5_share": 0.39,
+        "top10_share": 0.5784,
+        "events_for_half_the_profit": 8,
+        "n_profitable_events": 163,
+        "n_losing_events": 180
+      },
+      "bootstrap_pnl": {
+        "p05": -4424.84,
+        "p25": 5515.55,
+        "median": 13782.28,
+        "p75": 23176.64,
+        "p95": 38524.01,
+        "prob_loss": 0.1134,
+        "prob_lose_half_bankroll": 0.044
+      }
+    }
+  }
+}

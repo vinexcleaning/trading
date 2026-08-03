@@ -1,27 +1,27 @@
 {
-  "n_new_tokens": 1715,
-  "n_tokens_total": 6340,
-  "n_new_fills": 4584464,
-  "seconds": 2423,
+  "n_new_tokens": 5305,
+  "n_tokens_total": 11645,
+  "n_new_fills": 13269121,
+  "seconds": 8205,
   "seed": 20260801,
-  "target_events_per_wallet": 120,
+  "target_events_per_wallet": 500,
   "sampling": "uniform random over each under-covered wallet's uncovered tokens; no performance criterion",
   "plan": {
     "0x013bb6734d0b47b3f810bcae2f7cef2847f5c3dd": {
       "events_covered": 41,
-      "shortfall": 79,
+      "shortfall": 459,
       "uncovered_tokens": 0,
       "requested": 0
     },
     "0x01567edbbc8576605553cab94f5240580fd62ddc": {
       "events_covered": 110,
-      "shortfall": 10,
+      "shortfall": 390,
       "uncovered_tokens": 0,
       "requested": 0
     },
     "0x086f5e1b4644cfe0afb78c6f915a6bd14e848bc3": {
       "events_covered": 108,
-      "shortfall": 12,
+      "shortfall": 392,
       "uncovered_tokens": 0,
       "requested": 0
     },
@@ -33,163 +33,163 @@
     },
     "0x27db6ea9051c6e2d68a8ff1fc2984e764c73e863": {
       "events_covered": 279,
-      "shortfall": 0,
+      "shortfall": 221,
       "uncovered_tokens": 0,
       "requested": 0
     },
     "0x2ed1772ec178a75849bfa3404b3305941ebf1b89": {
       "events_covered": 7,
-      "shortfall": 113,
+      "shortfall": 493,
       "uncovered_tokens": 0,
       "requested": 0
     },
     "0x306ed9fb65c966dc7d5bbf7797e77e3df99242e7": {
-      "events_covered": 58,
-      "shortfall": 62,
-      "uncovered_tokens": 4745,
-      "requested": 62
+      "events_covered": 128,
+      "shortfall": 372,
+      "uncovered_tokens": 4656,
+      "requested": 372
     },
     "0x3424bbddc04cf9eacec975a82c5f4121a48a3907": {
-      "events_covered": 14,
-      "shortfall": 106,
-      "uncovered_tokens": 300,
-      "requested": 106
+      "events_covered": 36,
+      "shortfall": 464,
+      "uncovered_tokens": 180,
+      "requested": 180
     },
     "0x374b0a2feca5837b9cac84eef03c576d31ca2f45": {
-      "events_covered": 25,
-      "shortfall": 95,
-      "uncovered_tokens": 1021,
-      "requested": 95
+      "events_covered": 82,
+      "shortfall": 418,
+      "uncovered_tokens": 894,
+      "requested": 418
     },
     "0x3c593aeb73ebdadbc9ce76d4264a6a2af4011766": {
-      "events_covered": 29,
-      "shortfall": 91,
-      "uncovered_tokens": 139,
-      "requested": 91
+      "events_covered": 107,
+      "shortfall": 393,
+      "uncovered_tokens": 50,
+      "requested": 50
     },
     "0x42157c2942394a7853a444298b2c7bbe818bf03a": {
-      "events_covered": 107,
-      "shortfall": 13,
-      "uncovered_tokens": 1398,
-      "requested": 13
+      "events_covered": 124,
+      "shortfall": 376,
+      "uncovered_tokens": 1375,
+      "requested": 376
     },
     "0x53295fbe13e69e40690eb14b6dcaf702673b7eb0": {
-      "events_covered": 16,
-      "shortfall": 104,
-      "uncovered_tokens": 3263,
-      "requested": 104
+      "events_covered": 38,
+      "shortfall": 462,
+      "uncovered_tokens": 3052,
+      "requested": 462
     },
     "0x611a3c595144e0c55908dce459d81890ee57e63e": {
-      "events_covered": 12,
-      "shortfall": 108,
-      "uncovered_tokens": 401,
-      "requested": 108
+      "events_covered": 100,
+      "shortfall": 400,
+      "uncovered_tokens": 286,
+      "requested": 286
     },
     "0x77a395dd28a96570ba25e539ebb77b884de10e3f": {
-      "events_covered": 6,
-      "shortfall": 114,
-      "uncovered_tokens": 172,
-      "requested": 114
+      "events_covered": 95,
+      "shortfall": 405,
+      "uncovered_tokens": 62,
+      "requested": 62
     },
     "0x807987325747bb0f4acf3f4b5803a0ba4ea02cc5": {
-      "events_covered": 3,
-      "shortfall": 117,
-      "uncovered_tokens": 2198,
-      "requested": 117
+      "events_covered": 27,
+      "shortfall": 473,
+      "uncovered_tokens": 2075,
+      "requested": 473
     },
     "0x8795bcb2fe129d1ea3e3d73bc13a3d8078047544": {
-      "events_covered": 2,
-      "shortfall": 118,
-      "uncovered_tokens": 2,
-      "requested": 2
+      "events_covered": 4,
+      "shortfall": 496,
+      "uncovered_tokens": 0,
+      "requested": 0
     },
     "0x916999a6ef28248a60f9c800bb4adb34ca615dbb": {
-      "events_covered": 0,
-      "shortfall": 120,
-      "uncovered_tokens": 296,
-      "requested": 120
+      "events_covered": 14,
+      "shortfall": 486,
+      "uncovered_tokens": 179,
+      "requested": 179
     },
     "0xb108aeb1f84201076b6d65454f8d2d977aadcec5": {
-      "events_covered": 2,
-      "shortfall": 118,
-      "uncovered_tokens": 113,
-      "requested": 113
+      "events_covered": 98,
+      "shortfall": 402,
+      "uncovered_tokens": 14,
+      "requested": 14
     },
     "0xb456586204523ac40abef1a611b9e2ef82011774": {
-      "events_covered": 20,
-      "shortfall": 100,
-      "uncovered_tokens": 216,
-      "requested": 100
+      "events_covered": 123,
+      "shortfall": 377,
+      "uncovered_tokens": 111,
+      "requested": 111
     },
     "0xb82b450081330242ceff6f6f905283b52dad3a09": {
-      "events_covered": 3,
-      "shortfall": 117,
-      "uncovered_tokens": 78,
-      "requested": 78
+      "events_covered": 44,
+      "shortfall": 456,
+      "uncovered_tokens": 0,
+      "requested": 0
     },
     "0xbd42f62eb820e7793b64ac7d266bf16fcc977028": {
-      "events_covered": 0,
-      "shortfall": 120,
-      "uncovered_tokens": 12,
-      "requested": 12
+      "events_covered": 12,
+      "shortfall": 488,
+      "uncovered_tokens": 0,
+      "requested": 0
     },
     "0xbd70eebd1374580d4fbbf0291f4b6fba44fdd270": {
-      "events_covered": 26,
-      "shortfall": 94,
-      "uncovered_tokens": 125,
-      "requested": 94
+      "events_covered": 115,
+      "shortfall": 385,
+      "uncovered_tokens": 31,
+      "requested": 31
     },
     "0xc468b3b8564017fcf2bf9ede2608a0ea24b1009d": {
-      "events_covered": 168,
-      "shortfall": 0,
-      "uncovered_tokens": 922,
-      "requested": 0
+      "events_covered": 172,
+      "shortfall": 328,
+      "uncovered_tokens": 918,
+      "requested": 328
     },
     "0xc65ca4755436f82d8eb461e65781584b8cadea39": {
-      "events_covered": 36,
-      "shortfall": 84,
-      "uncovered_tokens": 833,
-      "requested": 84
+      "events_covered": 126,
+      "shortfall": 374,
+      "uncovered_tokens": 739,
+      "requested": 374
     },
     "0xe02c5438dfb907d5ac4cbf3967b45d14e4ed5d08": {
-      "events_covered": 67,
-      "shortfall": 53,
-      "uncovered_tokens": 341,
-      "requested": 53
+      "events_covered": 123,
+      "shortfall": 377,
+      "uncovered_tokens": 279,
+      "requested": 279
     },
     "0xe606a2995cbb347dcb4fb819d3e87d7506b0f282": {
-      "events_covered": 28,
-      "shortfall": 92,
-      "uncovered_tokens": 5933,
-      "requested": 92
+      "events_covered": 57,
+      "shortfall": 443,
+      "uncovered_tokens": 5561,
+      "requested": 443
     },
     "0xe7f7e2d3d4d0e164239f3cc30a7928f4209de73b": {
-      "events_covered": 59,
-      "shortfall": 61,
-      "uncovered_tokens": 438,
-      "requested": 61
+      "events_covered": 124,
+      "shortfall": 376,
+      "uncovered_tokens": 373,
+      "requested": 373
     },
     "0xed2c371514045d7292b8cbc5234ed2317a709597": {
-      "events_covered": 137,
-      "shortfall": 0,
-      "uncovered_tokens": 2904,
-      "requested": 0
+      "events_covered": 191,
+      "shortfall": 309,
+      "uncovered_tokens": 2840,
+      "requested": 309
     },
     "0xf1bb558012e22b1b580deac2399cf54642b21953": {
-      "events_covered": 11,
-      "shortfall": 109,
-      "uncovered_tokens": 1685,
-      "requested": 109
+      "events_covered": 18,
+      "shortfall": 482,
+      "uncovered_tokens": 1475,
+      "requested": 482
     },
     "0xf8f9873792351cbfdc19d684486a639da55ba2cb": {
       "events_covered": 0,
-      "shortfall": 120,
+      "shortfall": 500,
       "uncovered_tokens": 0,
       "requested": 0
     }
   },
   "counters": {
-    "batch_truncated": 81,
-    "batches_done": 69
+    "batch_truncated": 243,
+    "batches_done": 213
   }
 }
