@@ -1,182 +1,274 @@
 # HANDOFF — youtube-signal
 
-Phase 2 (extraction) **BLOCKED AT STEP 0**. 2026-08-02. Laptop `gianf`.
+**Phase 2 is unblocked and running. 2026-08-03.** Laptop `gianf`.
 Repo `github.com/vinexcleaning/trading`, project `youtube-signal/`.
-Numbers and evidence: `reports/phase2_2026-08-02.md` (gitignored, local only).
 
-YouTube Data API quota consumed to date: **0 units.**
-LLM cost incurred: **$0.00.** The read never ran.
+The blocker in the previous version of this file — "no `ANTHROPIC_API_KEY`, the
+read never ran, buy $5 of credit" — **is obsolete and was the wrong instruction.**
+The read is done in-session by the model reading the transcript itself.
+
+**Cost to date: $0.00. YouTube Data API quota consumed: 0 units.**
+`read_video.py` still has never executed and is still unvalidated; the free path
+(`dump_transcripts.py` → hand-written JSON → `load_extraction.py`) has now run
+19 times and is the working path. Do not spend money to unblock a thing that is
+not blocked.
 
 ---
 
-## 1. Step 0 outcome: **FAIL. No LLM access. Cost incurred $0.**
+## 1. How many videos, and which
 
-`ANTHROPIC_API_KEY` is absent from the process environment, from user and machine
-scope, and from every `.env` candidate.
+**13 read this session** (6 were already read, 19 total). One video per turn,
+transcript never carried forward. Chosen deliberately against the coverage gaps
+and against what the brief said the user actually wants.
 
-What *is* present is `CLAUDE_CODE_OAUTH_SCOPES` and `ANTHROPIC_BASE_URL`: this
-session authenticates through Claude Code's subscription OAuth. **That is exactly
-the credential that does not carry API credit.** A Pro/Max subscription and
-Anthropic API billing are separate products with separate balances. The
-subscription grants no API key and no API credit, and the session's OAuth token is
-not a substitute for one.
+| video_id | S | H | verdict | min | what it is |
+|---|---|---|---|---|---|
+| `btG5YpvPkwE` | 10 | **11** | ABSORB_AND_RECOMMEND | 18 | Live bot post-mortem: $50→$500→**$0**, 814 trades, fees −$115. Then Karpathy's auto-research loop pointed at trading. |
+| `RxE2oE1g1FY` | 10 | 2 | ABSORB | 23 | Polymarket copy-trading bot: 9 components, paper-first, autonomy gate. |
+| `rrLnJO5x_Po` | 10 | 1 | ABSORB | 12 | Live Polymarket stink-bid bot, 34 trades, **break-even**. P&L-by-keyword tool. |
+| `YknxNkTgNWk` | 10 | 0 | ABSORB | 17 | "+1,560% ROI" — **paper**. The one live account did −70% in a day. |
+| `lVqF8oLzVAU` | 8 | 3 | ABSORB_AND_RECOMMEND | 17 | Polymarket CLOB API end to end, real order placed and cancelled. |
+| `W722Ca8tS7g` | 7 | −2 | ABSORB_RESULTS_DISCOUNTED | 11 | The four backtest robustness tests. Sound method, unsupported 18%/mo claim. |
+| `yYjo1lzNoGI` | 6 | 6 | ABSORB_AND_RECOMMEND | 19 | Kalshi API in Python, live order placed. **Never mentions fees.** |
+| `pZKnS-AlW-s` | 6 | 3 | ABSORB_AND_RECOMMEND | 7 | True cost of a market order: fee + half-spread + impact + adverse selection. |
+| `rDkVmkrzpbI` | 6 | 1 | ABSORB_AND_RECOMMEND | 13 | Polymarket WebSockets; how to keep a local order book. |
+| `sQZbxKXbk9g` | 6 | −1 | ABSORB_RESULTS_DISCOUNTED | 28 | Cross-venue Kalshi↔Polymarket arb demo. Claims risk-free; ignores fees. |
+| `73R8zkMd034` | 4 | 1 | ABSORB | 22 | Expectation arithmetic + the "30 trades" rule, which our own n-check refutes. |
+| `Ib0BEFKAvn0` | 3 | **9** | SKIP | 27 | Kalshi + Perplexity Sonar assistant in 100 lines. **See §3 — this verdict is a rubric bug, not a judgment on the video.** |
+| `MyCjPs0pRy4` | 1 | 4 | SKIP | 40 | Flailing 41-minute screencast that nonetheless names the free Polymarket subgraph. |
 
-No lexicon was substituted for the read.
+Skipped deliberately: the 681-minute Moon Dev video (does not fit a context
+window, chunking not built).
 
-**Cost of the read that did not happen**, measured from the actual cached
-transcripts of the actual 60 selected videos rather than an assumed average:
-611,687 input + 120,000 output tokens → **$3.64 on Sonnet** (range $2.91–4.36),
-$1.21 on Haiku 4.5, $18.18 on Opus. Mean 10,195 input tokens per video, which
-matches the brief's ~10k guess almost exactly.
+---
 
-To unblock: `console.anthropic.com` → **Billing, add credit (this is separate from
-any subscription; $5 covers it)** → **API keys → Create key** → paste into
-`youtube-signal/.env` as `ANTHROPIC_API_KEY=sk-ant-...`. Then
-`python src\read_video.py --dry-run` to inspect the assembled prompt for free,
-then run two videos, check the JSON, then the rest.
+## 2. What is now actionable that was not before
 
-## 2. Premises tested
+Before this batch the knowledge base could explain *why* prediction markets are
+hard. It could not tell you how to place an order. That has changed.
 
-| # | Premise | Verdict |
+**Building a Kalshi bot — now complete end to end.**
+Free unauthenticated market data (no key needed to read events or odds). ~30,000
+events, `with_nested_markets`, cursor pagination, ~193 s for a full pull, cache
+it. Auth is Account → Security → Create key, scope **read-and-write** for
+trading, giving an API key ID plus a downloaded RSA `.pem`. Recurring markets
+(BTC 15-minute) must be resolved at runtime through series → events → ticker;
+you cannot hardcode. And the fact that reorganises everything: **Kalshi has no
+market orders.** Fill-or-kill with an aggressive price is the only way to take.
+Sizing is in contracts, not dollars.
+
+**Building a Polymarket bot — complete, and one large caveat (§5).**
+Credentials (private key + proxy wallet), chain ID 137, API keys *derived* from
+the wallet rather than issued, the four-call trading surface, separate YES/NO
+order books with asymmetric depth, WebSocket market channel (public, no auth) vs
+user channel (authed, with a MINED/CONFIRMED/RETRYING/**FAILED** lifecycle — a
+fill is not final on first message), and how to maintain a local order book from
+`book` messages instead of polling into a rate limit.
+
+**Where to get free historical data.**
+Polymarket: `get_price_history` (token ID + start/end + interval), and a public
+GraphQL **subgraph hosted on Goldsky** with conditions, orders, positions,
+question IDs and resolutions — joined to the CLOB by `condition_id`. Explicitly
+do **not** self-host it; someone already burned an hour proving that. `get_trades`
+did not work for trade-level history. Kalshi: the events/markets endpoints are
+free and unauthenticated.
+
+**Backtesting that models costs.**
+A four-component cost model with real numbers: fee + half-spread + square-root
+impact (σ·√(Q/V)) + adverse selection (~10% of the half-spread in crypto). For a
+$10k BTC order the true cost is $13.33 against a $10 quoted fee. Doubling size
+raises impact by √2, which is why slicing works and why slicing small orders does
+not. And a four-test robustness battery — parameter-sensitivity plateaus not
+cliffs, walk-forward (degradation is fine, *inversion* is disqualifying),
+stress tests that double commissions and triple slippage, and Monte Carlo on
+trade *sequence* read as a position-sizing instruction rather than pass/fail.
+
+**Is a strategy worth testing — three answers, all negative, all useful.**
+Copy trading: −70% in a day live against +1,560% on paper. Stink-bidding
+Polymarket BTC markets: break-even over 34 trades. Polymarket arbitrage: one
+creator finds ~40 live signals, another tried it and concluded the markets are
+too efficient — and the first one's own demo shows profit decaying to nothing as
+size rises. The reconciliation is that the arbs live in illiquid pop-culture
+markets where slippage and Kalshi's mid-price-peaking fee eat them.
+
+**Automation ceiling, and where a human must click.** Everything except the
+initial API-key creation (a web UI on both venues) and funding. What actually
+stops autonomy is not capability: 20–30% agent failure rates, hung API calls that
+stall a loop silently, and LLM non-determinism — the same prompt on the same
+market flipped a verdict between two runs.
+
+---
+
+## 3. The numbers, including the bad ones
+
+**Component fire rates across all 19 videos. Nothing never fired.**
+
+| | fired | of 19 | | | fired | of 19 |
+|---|---|---|---|---|---|---|
+| S1 cost side | 16 | 84% | | H1 failure, no fix sold | 5 | 26% |
+| S2 backtest vs live | 13 | 68% | | H1b failure sets up sale | 5 | 26% |
+| S3 sample size | 9 | 47% | | H2 verifiable artifact | 8 | 42% |
+| S4 mechanism | 17 | 89% | | H3 n + period + capital | 10 | 53% |
+| S5 names tools | 17 | 89% | | H4 names own weakness | **17** | 89% |
+| | | | | H5 discloses own product | 11 | 58% |
+| | | | | H6 no denominator | 6 | 32% (−24) |
+| | | | | H7 sells w/o mechanism | 2 | 11% |
+| | | | | H8 urgency | 4 | 21% |
+
+Verdicts: ABSORB 8 · ABSORB_AND_RECOMMEND 7 · ABSORB_RESULTS_DISCOUNTED 2 · SKIP 2.
+Claims 205 (mechanism 67, procedure 40, result 39, spec 35, math 12, concept 11,
+tool_rec 1). Methods 18. Tools 58.
+n-check: 4 SUPPORTED, 1 REFUTED, 1 INDISTINGUISHABLE FROM NOISE.
+Watch segments 17 across 19 videos: **6.1 hours of runtime → 15 minutes to
+watch, 24× compression**, and 4 videos needed zero minutes.
+
+### The rubric bug this batch exposed — read this before scoring more videos
+
+**S structurally under-scores engineering content, and the two SKIPs prove it.**
+
+S1 (cost), S2 (backtest vs live) and S3 (sample size) are all *trading-claim*
+components. A pure API tutorial makes no trading claim, so it can score at most
+S4+S5 = 3 and is auto-classified SKIP however useful it is.
+
+- `Ib0BEFKAvn0` — Part Time Larry, the highest-honesty creator in the corpus
+  (H=9), 100 lines of working Kalshi + LLM code, a public repo, a real itemised
+  account, and a documented loss on a settlement-rules technicality. **S=3 →
+  SKIP.**
+- `MyCjPs0pRy4` — S=1 → SKIP, and it is the only source in the corpus for the
+  free Polymarket subgraph.
+
+The claims still land in `KNOWLEDGE.md` (`build_knowledge.py` filters only the
+"worth watching" section by verdict), so nothing was lost. But SKIP now means two
+different things and cannot be trusted as a filter. **Fix by adding a build axis**
+— S6 runnable artifact / S7 credentials-and-auth path / S8 named endpoints — or
+by scoring INFORMATIVE-for-building separately. Do not paper over it by loosening
+S1; the strict reading is what surfaced the pattern.
+
+**H4 firing 89% of the time is close to useless as a discriminator.** Almost
+everyone hedges somewhere. It is worth only +1, so it distorts little, but it is
+not measuring what it claims to.
+
+**H1 vs H1b is the judgment call that moves scores most** (+3 vs +1) and it has
+no mechanical test. I resolved it by asking whether the failure bridges into a
+pitch. That is defensible and it is not reproducible.
+
+---
+
+## 4. Built vs actually run on real data
+
+| | built | ran on real data |
 |---|---|---|
-| 1 | An LLM is reachable from this machine | **FAIL** — no key. Everything below it is untested. |
-| 2 | Substance can be scored from a transcript at all | **UNTESTED** |
-| 3 | Extraction beats watching | **UNTESTED** |
-| 4 | **S separates F2 content from F1 content** | **UNTESTED** |
+| `dump_transcripts.py` → hand-read → `load_extraction.py` | yes | **yes — 19 videos, $0** |
+| `load_extraction.py` evidence validator | yes | **yes — rejected 3 quotes at 15 words.** Works. Do not fight it. |
+| `ncheck.py` Wilson n-check | yes | **yes — on 6 real extracted claims.** No longer synthetic-only. |
+| `build_knowledge.py` | yes | **yes — 131,898 chars, 205 claims** |
+| `verify_tools.py` | yes | **yes — 56 tools: 30 resolved, 22 not_checked, 3 unreachable, 1 dead** |
+| `tool_reputation.py` | yes | **yes — 7 new verdicts.** 27 of 58 tools now judged, 31 unchecked. |
+| `read_video.py` (the paid API path) | yes | **NO. STILL NEVER EXECUTED.** And no longer needed. |
+| Chunking for the 681-minute video | **not built** | — |
+| A build/plumbing scoring axis | **not built** | — see §3 |
 
-**Premise 4 is the one that matters and it is untested.** Phase 1 proved F2
-retrieves *different* videos from F1 (Jaccard 0.037) and more low-view ones
-(2.25×). Whether they are *better* videos is exactly what S was supposed to
-answer, and no S component has ever fired on real data. The retrieval win has not
-been cashed out. Do not let the Phase 1 result stand in for it.
+---
 
-## 3. The Step 5 numbers
+## 5. What is wrong, unfinished or untrusted — **the section that matters**
 
-**5a, 5b, 5c: cannot be reported.** All three are computed from Step 2 scores.
-No S or H component has fired even once. Component fire rates are unknown, S is
-unmeasured against family, and compression is unmeasured.
+1. **THE POLYMARKET V1 CLOB CLIENTS ARE DEAD, AND TWO VIDEOS IN THIS KNOWLEDGE
+   BASE TEACH THEM.** Verified 2026-08-03 against the GitHub API. CLOB **V2 went
+   live 28 Apr 2026**; V1 SDKs and V1-signed orders are no longer supported on
+   production. `Polymarket/py-clob-client` (1,234★) was archived 11 May 2026;
+   `Polymarket/clob-client` (TypeScript, 513★) the same month. Both are
+   non-functional for new *and existing* integrations.
+   `lVqF8oLzVAU` (4 Feb 2026, S=8 H=3, marked RECOMMEND) and `MyCjPs0pRy4` are
+   both V1 tutorials. Nothing in either video is *wrong*; following either one
+   today produces a bot that cannot sign an order.
+   **Migrate to `Polymarket/py-sdk`** — alive, 82★, last push 31 Jul 2026,
+   unified Gamma + Data + CLOB, recommended for new projects — or the interim
+   `py-clob-client-v2` / `clob-client-v2`. Guide: `docs.polymarket.com/v2-migration`.
+   The non-library content of those videos still holds: wide spreads, separate
+   YES/NO books, chain ID 137, the dry-run and throwaway-wallet patterns.
+   *This is the finding the whole system exists to produce, and it fell out of a
+   routine `verify_tools.py` run, not out of the reading.*
 
-**5d, the LLM-free parts:**
+2. **A guessed URL nearly produced a false DEAD.** Moon Dev's repo is garbled in
+   the captions as "AI agents Mundev". My first guess
+   (`moondevonyt/moon-dev-ai-agents`) 404s. The *account* is live — 26 repos,
+   2,719 followers — but the specific repo he points viewers at,
+   `moon-dev-ai-agents-for-trading`, now 404s while dozens of forks survive. So
+   the claim was true and the artifact is gone. **Second time the name-variant
+   rule has paid for itself after Creo→Kreo. A 404 on a guessed URL is evidence
+   about the guess before it is evidence about the tool.**
 
-| | Phase 1 end | now |
-|---|---|---|
-| search-retrieved, gated | 470 | **718** |
-| PASS | 263 | **369** |
-| STALE_G2 | 117 | 184 |
-| DROP_G3 off topic | 52 | 84 |
-| DROP_G3 discretionary (new) | — | 19 |
-| DROP_G1 no transcript / empty | 27 / 7 | 41 / 14 |
-| cached transcripts | 439 | **683** |
-| total known videos | 5,212 | 11,277 |
+3. **Three unresolved conflicts, written down rather than averaged away.**
+   - *Which categories carry the edge.* Part Time Larry's 72M trades say
+     emotional categories (sports, crypto, entertainment) are least efficient and
+     therefore where edge lives. Moon Dev's rule is "stay away from crypto and
+     sports, too emotional". Same premise, opposite trade. No evidence either way
+     in the newer video.
+   - *Whether Polymarket arbitrage exists.* ~40 live cross-venue signals in one
+     demo; "the markets are so efficient" from someone who tried it. Probable
+     reconciliation in §2, unresolved.
+   - *Whether 30 trades proves anything.* A whole video calls 30 "the universally
+     accepted baseline"; our own Wilson interval puts 55%-over-33 at
+     INDISTINGUISHABLE FROM NOISE and demands n=389. **Our arithmetic wins.**
 
-**G3 reclassification under the new boundary:** 3 previously-passing videos moved
-out of scope as discretionary; the recall retune recovered 7 from off-topic. 13
-more were reclassified from off-topic or stale into discretionary.
+4. **Fees are missing from the API tutorials, systematically.** 19 minutes of
+   end-to-end Kalshi automation never mentions the fee once — on a venue whose
+   fee is proportional to C·P·(1−P) and *peaks at 50c*, exactly where the
+   up/down crypto markets it demos sit. The cross-venue arb demo prices a Kalshi
+   NO leg at 54c and calls the result "guaranteed". Any P&L built from these
+   tutorials is systematically optimistic and worst on coin-flips.
 
-**G3 after the retune**, scored against all 64 hand-judged videos:
+5. **Specs from this batch are already expiring.** Video dates span Jan 2025 to
+   Apr 2026 against a 3-month shelf life for specs. `MyCjPs0pRy4` (Jan 2025) and
+   `Ib0BEFKAvn0` (Feb 2025) are 18 months old; `KNOWLEDGE.md` flags them
+   automatically. The V1→V2 change is exactly the rot that expiry rule predicts.
 
-| classifier | sample | agreement | precision | recall |
-|---|---|---|---|---|
-| v2 (Phase 1) | holdout, n=24 | 79.2% | 0.833 | 0.769 |
-| **v3 (Phase 2)** | holdout, n=24 | **83.3%** | 0.765 | **1.000** |
-| v3 | combined, n=64 | 85.9% | 0.809 | **1.000** |
+6. **`load_extraction.py` had a real bug and it is fixed** (committed). The tools
+   upsert used `ON CONFLICT(name, url)` while the unique index is on
+   `(name, COALESCE(url,''))`, so re-loading any extraction containing a
+   null-URL tool raised `IntegrityError`. This is trap #4 from `SKILL.md`
+   (`NULL != NULL`) surviving in a second place. Re-loading now double-counts
+   `mention_count`; cosmetic, not fixed.
 
-The retune bought what it was meant to: **zero false negatives across all 64**,
-precision traded down as intended, agreement up anyway. Both samples have now
-informed the lexicon's design, so these are **upper bounds, not a clean holdout**.
+7. **`Ib0BEFKAvn0` and `MyCjPs0pRy4` are marked SKIP and should not be.** See §3.
+   Anyone reading verdicts without reading §3 will discard the best free-data
+   pointer in the corpus.
 
-**F2B — 12 new insider terms:** 304 videos, 248 new to the corpus, **88.5%
-exclusive**, Jaccard **0.041** vs F2 and 0.046 vs F1, run-to-run 0.803. A second
-batch of insider terms is nearly as disjoint from the first batch as the first was
-from beginner vocabulary. Corpus size scales with insider term count. Two terms
-returned fewer than the 25 requested — `kalshi websocket feed` (11) and
-`negative risk polymarket negrisk` (6) — meaning YouTube has almost no content
-that insider. Whether that is the terms or the platform is a judgment for you.
+8. **31 of 58 tools are still reputation-unchecked**, including `Tubbit`,
+   `polymarket-market-maker`, the Better Traders indicators and every paid course.
+   `Prediction Quant` is recorded `NO_FOOTPRINT` — unreleased, waitlist only.
+   That is not a clean bill of health.
 
-**Read set:** 60 videos by a seeded, stored, re-runnable rule. 13 F1-only, 16
-F2-only, 14 F2B-only, 17 multi; 14/15/17/14 across the four view bands; 48% under
-5,000 views; 38.0 hours across 58 distinct channels.
+9. **The "mega rebate" / liquidity-reward lead is now mentioned by three
+   independent creators and nobody has a number.** Polymarket pays for resting
+   orders. Nobody in this corpus reports whether it clears inventory risk. It is
+   the largest unexamined claim in the knowledge base.
 
-**n-check:** verified against the brief's worked example. 55% over n=33 →
-`INDISTINGUISHABLE FROM NOISE`, normal SE 8.66 pp against the brief's ~8.7 pp.
-Added `n_needed` beyond spec: that claim would need **n = 389** to clear 50%.
+10. **H1/H1b remains a judgment call** (§3), and **the S rubric's build blindness
+    is unfixed** (§3).
 
-## 4. Built vs. actually run on real data
+11. Untouched from the previous handoff and still true: G3's precision/recall
+    numbers are upper bounds on contaminated samples; channel expansion by ratio
+    does not work and should revert to the Phase 1 state; `reports/` from before
+    the gitignore decision remain in public history.
 
-| module | built | ran on real data |
-|---|---|---|
-| `gates.py` v3 — boundary + recall retune | yes | **yes** — 718 videos |
-| `reclassify.py` — re-gate from cache | yes | **yes** — 466 videos, seconds, no network |
-| `run_f2b.py` — F2B retrieval | yes | **yes** — 36 searches, 304 videos |
-| `score_g3_v3.py` — validation | yes | **yes** — 64 hand-judged videos |
-| `select_read_set.py` — the 60 | yes | **yes** |
-| `ncheck.py` — Wilson n-check | yes | **yes**, against the brief's example — but **never on a real extracted claim**, because there are none |
-| `cost_estimate.py` | yes | **yes** — real transcripts |
-| `make_worksheet.py` | yes | **yes** — 15 videos |
-| `expansion_v2.py` | yes | **yes** — and it does not work, see §5 |
-| `db_phase2.py` — scores/tools/claims/methods/watch_segments | yes | **schema only. Every one of those tables is EMPTY.** |
-| `read_video.py` — the Step 2 read | yes | **NO. NEVER EXECUTED. Unvalidated below the API call.** |
-| Step 4 artifact resolution | **not built** | — (nothing to resolve) |
-
-## 5. What is wrong, unfinished or untrusted
-
-1. **The whole point of Phase 2 did not happen.** No scores, no tools, no claims,
-   no methods, no watch segments. Five tables exist and all are empty.
-2. **`read_video.py` has never run.** The prompt, the JSON schema, the evidence
-   validator, the totals and the verdict function are all written and none has
-   ever seen a model response. Treat it as a draft. The first real run should be
-   two videos, inspected by hand, before the other 58.
-3. **The specified channel-expansion rule does not work, and I applied it anyway
-   because it was a decision, not a suggestion.** The ≥50%-of-retrieved bar pruned
-   **0** channels and admitted **46** more, taking the expansion corpus from 4,494
-   to **10,559** rows — it added Fireship, freeCodeCamp.org, a16z crypto and
-   Pinnacle. The denominator is wrong: it measures the on-topic share of the two
-   videos we happened to retrieve, not of the 200-upload catalogue expansion pulls
-   in. Bloomberg scores 100% because both its retrieved videos genuinely were
-   about prediction markets.
-   The obvious alternative is **worse**: catalogue specialisation prunes **Nates
-   Tokens**, whose catalogue is 12% on topic and whose 12% is the entire reason he
-   is the anchor case. A ratio cannot distinguish "narrow specialist" from "broad
-   channel with a valuable seam". **Recommend reverting expansion to the Phase 1
-   state and deferring the question until the LLM can score catalogue titles.**
-   The rows are un-gated candidates and never enter the read set, so the noise
-   costs nothing yet.
-4. **The 22-hour video breaks the one-call-per-video design.** ~273,520 estimated
-   tokens against a 200k context window. It is the only video over — next largest
-   is 19,550 — and it is the video Step 5c was going to use for the compression
-   test. Chunk it, or fall back to the 91-minute second-longest.
-5. **G3's numbers are upper bounds.** Both hand-judged samples have now shaped the
-   lexicon. A third disjoint sample is needed for an honest figure. Recall 1.000 on
-   contaminated data is not recall 1.000.
-6. **A concurrent session in this same clone committed and pushed my staged work.**
-   All 28 Phase 2 files landed in `c3a0a21`, whose message describes an unrelated
-   mlb latency study. Nothing was lost; `2ff63a2` records what happened. Two
-   sessions in one clone will keep doing this to each other unless both stage
-   explicit paths instead of `git add -A`.
-7. **That push also published Phase 0 and Phase 1 commits I had deliberately held
-   back**, and those commits contain `reports/` from before it was gitignored. The
-   reports are gone from the tip but remain in public history. They hold topic
-   classifications and mild channel characterisations only — **no honesty scores
-   exist, because Step 2 never ran** — but the exact mechanism the gitignore
-   decision was meant to prevent has already fired once. If that history matters,
-   it needs a rewrite and force-push on a public repo, which is your call and not
-   something I will do unasked.
-8. **The n-check has never seen a real claim.** It is verified against the brief's
-   example and synthetic cases only.
-9. **13 F1-only videos is thin** for the 5b comparison. It will give a mean, not a
-   confident one.
+---
 
 ## 6. The single next thing to do
 
-**Buy $5 of Anthropic API credit, add the key, and run the read on two videos.**
+**Verify against `Polymarket/py-sdk` that the V2 order path actually works, then
+re-read `lVqF8oLzVAU`'s procedure against it and rewrite the method.**
 
-Everything else in this project is now waiting on that one input. The corpus is
-built (718 gated, 369 passing, 683 transcripts cached locally), the read set is
-selected and stored, the prompt is written, the n-check works, the cost is known
-to be $3.64. Nothing further can be learned about premises 2, 3 or 4 — including
-whether the entire Phase 1 retrieval win produces better videos and not merely
-different ones — without a model reading a transcript.
+Everything else in this project is now downstream of one question: is the
+Polymarket build path in `KNOWLEDGE.md` executable today? Kalshi's is — that
+tutorial is three months old and its venue has not changed under it. Polymarket's
+is not, and the file currently marks the obsolete tutorial RECOMMEND.
 
-Two videos first, not sixty: `read_video.py` has never executed, and the fastest
-way to find out that the JSON schema or the evidence rule is wrong is to look at
-two responses by hand before spending the other $3.50.
+It costs nothing to check: clone `py-sdk`, place and cancel one order from a
+$10 throwaway wallet exactly as the Feb 2026 video does, and record which of the
+eleven steps changed. That converts the single most actionable method in the
+knowledge base from *probably broken* to *verified*, and it is the only thing
+here that a person actually needs before writing code.
+
+Second, and cheap: add the build axis from §3 and re-score the two SKIPs. A
+verdict that discards the best engineering content is worse than no verdict.

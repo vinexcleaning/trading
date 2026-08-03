@@ -69,7 +69,7 @@ def load(path):
             """INSERT INTO tools (name, url, claimed_purpose, is_creators_own,
                    is_referral_link, first_seen_video, mention_count, resolution)
                VALUES (?,?,?,?,?,?,?, 'not_checked')
-               ON CONFLICT(name, url) DO UPDATE SET
+               ON CONFLICT(name, COALESCE(url,'')) DO UPDATE SET
                    mention_count = tools.mention_count + 1""",
             (t["name"], t.get("url"), t.get("claimed_purpose"),
              t.get("is_creators_own", "no"), 1 if t.get("is_referral_link") else 0,

@@ -40,6 +40,158 @@ ALTER TABLE tools ADD COLUMN reputation_utc TEXT;
 # Researched by web search on 2026-08-03. Sources recorded so a later session can
 # re-check rather than trust this.
 FINDINGS = {
+    # ------------------------------------------------------------------
+    # Batch 2, researched 2026-08-03 alongside the 13-video read.
+    # The first two entries are the reason this layer exists: both are the
+    # library a recent, well-taught tutorial tells you to build on, and both
+    # were killed by the venue months after that tutorial was published.
+    # ------------------------------------------------------------------
+    "Polymarket CLOB API + py-clob-client": {
+        "reputation": "NEGATIVE",
+        "detail": (
+            "DEAD LIBRARY, LIVE API. Polymarket/py-clob-client (1,234 stars) was "
+            "ARCHIVED 11 May 2026 and Polymarket/clob-client, the TypeScript one "
+            "(513 stars), the same month, last push 25 May 2026. CLOB V2 went live "
+            "28 Apr 2026 and V1 SDKs and V1-signed orders are no longer supported "
+            "on production -- these clients are non-functional for new AND existing "
+            "integrations, not merely unmaintained. Two tutorials in this knowledge "
+            "base teach them: wangr's Polymarket CLOB walkthrough (4 Feb 2026, "
+            "scored S=8 H=3) and JunkieAI's data pull (20 Jan 2025). Both were "
+            "correct when filmed. Neither is now. Migrate to Polymarket/py-sdk "
+            "(alive, 82 stars, last push 31 Jul 2026, unified Gamma+Data+CLOB, "
+            "recommended for new projects) or the interim py-clob-client-v2 / "
+            "clob-client-v2. Guide: docs.polymarket.com/v2-migration. "
+            "The NON-library content of those videos still holds: wide spreads, "
+            "separate YES/NO books, chain ID 137, the dry-run and throwaway-wallet "
+            "patterns."
+        ),
+        "sources": [
+            "https://api.github.com/repos/Polymarket/py-clob-client",
+            "https://api.github.com/repos/Polymarket/clob-client",
+            "https://api.github.com/repos/Polymarket/py-sdk",
+            "https://docs.polymarket.com/v2-migration",
+        ],
+        "note": (
+            "THIS IS THE FINDING THE SYSTEM EXISTS TO PRODUCE. A six-month-old "
+            "tutorial with a good honesty score, teaching a library the venue "
+            "archived three months after filming. Nothing in the video is wrong "
+            "and following it today produces a bot that cannot sign an order."
+        ),
+    },
+    "Polymarket CLOB client (TypeScript and Python)": {
+        "reputation": "NEGATIVE",
+        "detail": (
+            "Same finding as the entry above, recorded against the JunkieAI "
+            "extraction's naming. Polymarket/clob-client is ARCHIVED (513 stars, "
+            "last push 25 May 2026). Its shipped example scripts -- create/get/"
+            "delete API key, get_market, get_order_book, get_price_history, "
+            "market buy/sell -- are V1 and will not sign a valid order against "
+            "CLOB V2. Use Polymarket/py-sdk."
+        ),
+        "sources": [
+            "https://api.github.com/repos/Polymarket/clob-client",
+            "https://github.com/Polymarket/py-clob-client-v2",
+        ],
+    },
+    "moondevonyt GitHub account (the '20+ agents' repo is GONE)": {
+        "reputation": "MIXED",
+        "detail": (
+            "NAME-VARIANT CHECK CHANGED THE VERDICT. The transcript garbles the "
+            "repo as 'AI agents Mundev'; the first guessed URL "
+            "(moondevonyt/moon-dev-ai-agents) 404s, which would have been recorded "
+            "as DEAD. Searching variants shows the ACCOUNT is live -- 26 public "
+            "repos, 2,719 followers -- but the specific repo he points viewers at, "
+            "moon-dev-ai-agents-for-trading, now 404s while dozens of third-party "
+            "forks survive. So the '20+ agents, 100% open source' claim was true "
+            "and the artifact is gone. What IS live and relevant: "
+            "Polymarket-Trading-Bot-Examples-By-Moon-Dev (25 stars, pushed "
+            "2026-07-18), Hyperliquid-Data-Layer-API (107 stars, 2026-07-20), "
+            "Limitless-Prediction-Market-Bots (60 stars), Moon-Dev-AI-Trading-"
+            "Battles. He also states in the video that the stink-bid bot and the "
+            "P&L tool shown are in NO repo -- the screen is the only source."
+        ),
+        "sources": [
+            "https://api.github.com/users/moondevonyt",
+            "https://api.github.com/users/moondevonyt/repos?sort=updated",
+        ],
+        "note": (
+            "Second time the garbled-name rule has paid for itself, after "
+            "Creo->Kreo. A 404 on a guessed URL is evidence about the guess "
+            "before it is evidence about the tool."
+        ),
+    },
+    "OpenClaw": {
+        "reputation": "MIXED",
+        "detail": (
+            "REAL AND WIDELY COVERED, WITH A FAILURE RATE THE VIDEOS DO NOT "
+            "MENTION. Self-hosted AI agent runtime: a persistent Node.js process "
+            "on your own box (Mac Mini, VPS, Raspberry Pi) with cron scheduling, "
+            "cross-session memory, and shell/filesystem/email/calendar access "
+            "driven by Claude or GPT APIs. Independent reviews are consistent in "
+            "both directions: genuinely powerful for technical users, and "
+            "'reliability works if you can tolerate 20-30% failure rates and "
+            "iteration cycles measuring weeks, not hours', explicitly 'not ready "
+            "for mainstream adoption'. Self-hosting moves the security liability "
+            "to you: the agent can run git commands, rewrite files and send mail "
+            "from your account. Directly relevant to the two videos here that run "
+            "trading strategies on it -- a 20-30% failure rate is the same order "
+            "as the 'silent crash' and hung-API-call failures both creators hit."
+        ),
+        "sources": [
+            "https://www.vellum.ai/blog/best-openclaw-alternatives",
+            "https://hackceleration.com/openclaw-review",
+            "https://duet.so/blog/openclaw-vs-managed-ai-agent-platforms",
+            "https://techradar.com/pro/how-to-self-host-your-openclaw-environment-on-a-vps-server",
+        ],
+    },
+    "Hermes Agent": {
+        "reputation": "MIXED",
+        "detail": (
+            "REAL OPEN-SOURCE PROJECT, NO CORROBORATED TRADING RESULTS. Open-source "
+            "agent framework with persistent memory, ~70 tools across 28 toolsets, "
+            "MCP support, a delegate_task tool spawning child agents with isolated "
+            "context, cron scheduling (`hermes cron create`), and gateways to ~24 "
+            "chat platforms including Telegram and Discord. The framework itself is "
+            "well attested. The TRADING corroboration is not: it is individual "
+            "Medium/DEV writeups building ETF and IBKR bots, none of which report a "
+            "result, plus vendor sites (hermes-agent.org, hermesagents.net) and a "
+            "review on a competitor's blog. Rate the runtime, not the returns -- "
+            "the video using it here produced paper trading only."
+        ),
+        "sources": [
+            "https://dev.to/hopebestworld/building-a-local-ai-market-trader-with-hermes-agent-41pf",
+            "https://medium.com/@miketonny/building-an-ai-powered-quantitative-trading-system-with-hermes-agent-and-ibkr-0dff7a513265",
+            "https://hermes-agent.org/",
+        ],
+    },
+    "karpathy/autoresearch (auto research loop)": {
+        "reputation": "POSITIVE",
+        "detail": (
+            "VERIFIED LIVE AND LARGE. 92,851 stars, 530KB, last push 2026-03-26. "
+            "Not a README-only repo. This is the one claimed artifact in the "
+            "13-video batch that resolved cleanly on the first check, and it is "
+            "the reason btG5YpvPkwE scores H=11. Note what it does and does not "
+            "prove: the harness is real and public; the trading adaptation built "
+            "on it in that video is backtest-only and was never run live."
+        ),
+        "sources": ["https://api.github.com/repos/karpathy/autoresearch"],
+    },
+    "Prediction Quant": {
+        "reputation": "NO_FOOTPRINT",
+        "detail": (
+            "Unreleased at filming (3 Apr 2026) -- waitlist only, founder pricing "
+            "promised, no public URL given in the video and none recorded here. "
+            "NO_FOOTPRINT IS NOT A CLEAN BILL OF HEALTH: there is simply nothing "
+            "to check. Everything absorbed from that video is the ARITHMETIC and "
+            "the screen behaviour (cross-venue arb sizing, slippage decay on thin "
+            "markets, Kelly tiers), none of which depends on the product existing. "
+            "Its central 'arbitrage is risk-free' claim is contradicted inside "
+            "this same knowledge base by Kalshi's C x P x (1-P) fee formula and by "
+            "a second creator who tried Polymarket arb and concluded the markets "
+            "were too efficient."
+        ),
+        "sources": [],
+    },
     "Kreo (Telegram copy-trading bot)": {
         "reputation": "MIXED",
         "detail": (

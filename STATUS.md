@@ -120,3 +120,47 @@ Not one ever revealed a larger effect.**
 That asymmetry is what no edge looks like from the inside. A real edge survives
 scrutiny and often grows under it. The durable output of this work is not a
 strategy — it is [GUARDS.md](GUARDS.md).
+
+---
+
+## youtube-signal — Phase 2 read, batch 1 (2026-08-03)
+
+**13 videos read in-session, 19 total. Cost $0.00. YouTube API quota 0 units.**
+The previous handoff's blocker ("buy $5 of Anthropic API credit") was wrong: the
+transcripts are read by the session model directly. `read_video.py` remains
+unexecuted and unneeded.
+
+| artifact | value |
+|---|---|
+| videos scored | 19 |
+| claims | 205 (mechanism 67, procedure 40, result 39, spec 35, math 12, concept 11) |
+| methods | 18 |
+| tools | 58 — 30 URL-resolved, 1 dead, 27 reputation-judged, 31 unchecked |
+| watch segments | 17 — **6.1 h runtime → 15 min to watch, 24×**; 4 videos needed zero |
+| verdicts | ABSORB 8 · ABSORB_AND_RECOMMEND 7 · RESULTS_DISCOUNTED 2 · SKIP 2 |
+| n-check on real claims | 4 SUPPORTED · 1 REFUTED · 1 INDISTINGUISHABLE FROM NOISE |
+| S/H components that never fired | **none** (14 of 14 fired at least once) |
+| `KNOWLEDGE.md` | 131,898 chars (gitignored) |
+
+**Live prediction-market bot results found, all three negative or flat:**
+$50 → $500 → **$0** over 814 trades with −$115 of that in fees; a Polymarket
+stink-bid bot **break-even** over 34 trades; a "+1,560% ROI" headline that is
+paper, against the same creator's one live account doing **−70% in a day**.
+
+**The finding from `verify_tools.py`, not from the reading:** Polymarket CLOB
+**V2 went live 28 Apr 2026** and both V1 clients are archived —
+`py-clob-client` (1,234★, archived 11 May 2026) and `clob-client` (513★). V1
+SDKs and V1-signed orders are unsupported on production. Two tutorials absorbed
+this session teach V1; one is marked RECOMMEND. Current path is
+`Polymarket/py-sdk` (alive, last push 31 Jul 2026).
+
+**Rubric bug recorded, not patched:** S1/S2/S3 are trading-claim components, so a
+pure API tutorial caps at S=3 and is auto-SKIP. Part Time Larry's Kalshi + LLM
+build scored **S=3 H=9 → SKIP** with working code, a public repo and a real
+itemised account. Claims still reach `KNOWLEDGE.md`; the verdict is unreliable.
+Needs a build axis before more engineering videos are scored.
+
+Code committed: `load_extraction.py` tools-upsert fix (`ON CONFLICT` targeted
+`(name, url)` while the unique index is on `(name, COALESCE(url,''))` — trap #4
+`NULL != NULL` surviving in a second place); `tool_reputation.py` +7 verdicts.
+Judgments and transcripts stay local — `reports/` and `KNOWLEDGE.md` gitignored.
