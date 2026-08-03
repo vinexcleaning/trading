@@ -134,9 +134,28 @@ pooled maker net (−0.205 ¢) were known; no bucketed number was.
 The gate exists to stop slicing a **null** into subgroups until one looks
 positive. θ is not null: −2.42 pp, p = 0.0009, replicating on holdout. The
 question "is the effect uniform or concentrated?" is a real hypothesis with a
-real mechanism — spreads and depth demonstrably vary by tier (ATP median 30 lots
-at 3 ¢; Challenger 1,822 lots at 1 ¢) — and a concentrated effect could clear a
+real mechanism — spreads and depth demonstrably vary by tier (~~ATP median 30 lots
+at 3 ¢~~; Challenger 1,822 lots at 1 ¢) — and a concentrated effect could clear a
 bar that the pooled effect does not. Gate lifted **for this test only**.
+
+> **⚠ THE JUSTIFICATION ABOVE RESTS ON A RETRACTED FACT (LEDGER S012).**
+>
+> "ATP median 30 lots at 3 ¢" came from a **65-minute window at market open**
+> (`reports/depth_analysis.md`). Measured over the full day it is **1.0 ¢ and
+> 312 lots** — a third of Challenger's depth at the *same* spread, not a tenth
+> of it at triple the spread. The tier contrast that made "the effect may be
+> concentrated by tier" a mechanism-backed hypothesis is **much weaker than
+> stated**, and ATP is not the thinnest book.
+>
+> This matters because the fact was **load-bearing**: it is the stated reason
+> the Phase 3 anti-slicing gate was lifted. A weaker mechanism is a weaker
+> warrant for lifting it, which makes the tier-bucket tests below closer to
+> ordinary subgroup slicing than the pre-registration claims.
+>
+> **The outcome is unaffected** — S005 found **0 of 25** time/tier buckets clear
+> the cost bar, so the lifted gate produced nothing to over-fit to. Recorded
+> here so the *reasoning* is not reused: do not cite tier depth variation as a
+> mechanism without re-measuring it over a full session.
 
 ### The methodological requirement that makes it honest
 

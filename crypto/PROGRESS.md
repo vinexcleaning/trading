@@ -11,7 +11,7 @@ Timestamped log. All times UTC. Session started 2026-07-31 ~23:35 UTC.
 - [x] `23:52` **Settlement resolved.** 60-second average of CF Benchmarks, for both strike and settle. Not a point sample.
 - [x] `23:55` Tick structure: `tapered_deci_cent` (0.1¢ tails) on `*15M`; flat `linear_cent` on hourly ladders.
 - [x] `00:02` Polymarket fee probe #1 — **wrong** (closed 2023 sports markets).
-- [x] `00:05` **Polymarket fees resolved.** Crypto taker `0.07·p·(1−p)` — identical to Kalshi. **Maker 0**, plus rebate.
+- [x] `00:05` ~~**Polymarket fees resolved.** Crypto taker `0.07·p·(1−p)` — identical to Kalshi.~~ **RETRACTED (LEDGER C015)** — this was read from published documentation, which matched **0.0% of 4,310 real on-chain fills**. The true fee is a different *shape* and a higher rate: **`0.10 · min(p, 1−p)`**, verified at median relative error 0.000000 and reproduced independently on 5,362 fills (W015). Polymarket is **2.86× Kalshi at 50¢**, not at parity. Corrected in `MORNING_REPORT.md` §00. **Maker 0**, plus rebate — maker exemption remains UNVERIFIED.
 - [x] `00:08` `src/fees.py` + 15 passing tests; all three reference points reproduced in exact decimal.
 - [x] `00:30` `docs/venue_spec.md`, `docs/venue_comparison.md`.
 - [x] `00:45` `PREREGISTRATION.md`, `HYPOTHESIS_LEDGER.md`.

@@ -1,7 +1,30 @@
 # Depth and fill realism — live tennis order books
 
+> ## ⚠ RETRACTED MEDIANS — this is a 65-minute window at market open
+>
+> **LEDGER S013.** The window below is 06:58–08:04 UTC, i.e. the first hour of
+> the trading day. Depth at the touch builds through the session, so every
+> median on this page is measured at its daily minimum. Re-measured over the
+> **full day** (64,898 snapshots, 06:58–18:15):
+>
+> | Statistic | Stated here | Full day | Status |
+> |---|---|---|---|
+> | Median size at the touch | **106 contracts** | **564** | **RETRACTED (S013)** |
+> | ATP spread / depth | 3¢ / 30 lots | **1.0¢ / 312 lots** | **RETRACTED (S012)** |
+>
+> **The reading below is unaffected in direction — it gets stronger.** The
+> conclusion "the touch is not thin, so the maker result is limited by adverse
+> selection rather than by depth" holds *a fortiori* at 564. What must not be
+> reused is any **number** on this page, and in particular the ATP-is-thinnest
+> claim, which reversed: ATP is not the thinnest book, and the tier contrast
+> this window appeared to show is largely an artefact of when it was sampled.
+>
+> Anything that cites these medians as evidence of tier variation is citing a
+> retracted fact — see `PREREGISTRATION_PARTB.md`, which used them to justify
+> lifting the Phase 3 gate.
+
 - snapshots: **6,344**, markets: **121**
-- window: 06:58:08 to 08:03:56 UTC on 2026-08-01
+- window: 06:58:08 to 08:03:56 UTC on 2026-08-01 — **65 minutes, at the open**
 - empty books: 4
 
 **Scope limit:** these are markets open today; the backtest is on markets settled

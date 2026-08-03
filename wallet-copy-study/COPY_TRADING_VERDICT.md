@@ -16,7 +16,10 @@ The three findings that produce that verdict:
    benchmark into an untouched period 2, CI95 **[2.19, 2.96]**.
 2. **The edge does not decay with latency.** The copy return is flat from 0s to
    1800s. A bot buys you essentially nothing over a human refreshing a page.
-3. **But 72% of the edge lives in exits, and the remaining 28% is eaten by the
+3. ~~**But 72% of the edge lives in exits**~~ **— RETRACTED, see the amendment
+   immediately below (LEDGER W006). It was a fee artifact; the genuine exit
+   component is −0.106pp, i.e. −4.3%, not +72%.** The rest of this point stands
+   and is what carries the verdict: **the copyable edge is eaten by the
    spread.** Copying entries and holding to settlement returns **+0.937pp** net
    of fee (CI95 [0.53, 1.38]). The median same-block trade-price dispersion —
    itself a *lower bound* on the quoted spread — is **1.0pp**. That leaves
@@ -219,9 +222,16 @@ always on period 1 only:
 
 Three things to take from this:
 
-1. **The gap is the study's most stable finding: 2.33 / 2.38 / 2.61pp.** The
+1. **The gap is the study's most stable finding: 2.33 / 2.38 / 2.61pp.** ~~The
    claim that roughly 72% of a good wallet's edge lives in its exits holds at
-   every split point tested.
+   every split point tested.~~
+   > **⚠ RETRACTED (LEDGER W006).** The *gap* is stable — that part is right.
+   > What is wrong is reading the gap as exit skill. `gap` compared a **gross**
+   > wallet edge against a **net** copier return, and ~80% of positions settle,
+   > so the whole gap is the **fee**. Stability across split points is exactly
+   > what a fee would produce. The genuine exit component is **−0.106pp =
+   > −4.3%**, measured in the exit study below. A number being reproducible is
+   > not evidence it measures what you named it.
 2. **Wallet excess is positive with a zero-excluding interval at all three
    cuts.** Persistence is not an artifact of where the split was drawn.
 3. **The copier return declines monotonically: +1.98 → +0.94 → −0.14.** At the
@@ -356,9 +366,15 @@ the cost change.
   spread for a patient limit order is materially below 1.0pp, +0.937pp becomes
   a real if thin edge. This is the single highest-value follow-up: record the
   CLOB book prospectively and measure the actual ask.
-- **Copying exits as well as entries.** 72% of the edge is in exits and this
+- ~~**Copying exits as well as entries.** 72% of the edge is in exits and this
   study only tested copying entries. Exits arrive with the same delay, so the
-  prior is poor — but it is untested, and it is where the money is.
+  prior is poor — but it is untested, and it is where the money is.~~
+  > **⚠ DONE, AND IT FAILED (LEDGER W006/W007).** This was named the
+  > highest-value follow-up on the strength of the 72% figure. The follow-up
+  > ran: the 72% was a fee artifact, and copying exits **destroys** value at
+  > every delay — −0.505pp [−0.643, −0.373], p=0.0005, with 18 of 20 tests
+  > surviving BH-FDR. It is not "where the money is"; it is where more of it
+  > goes. Do not re-propose this.
 - **Restricting to a price band or market type.** All figures here pool across
   market types that behave very differently (30% of eligible markets are
   5-minute crypto up/down). A band-restricted strategy was not tested.
