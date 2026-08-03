@@ -103,9 +103,15 @@ def load(path):
 
     con.commit()
 
+    # b_total lives on scores; the INSERT above predates the B axis so it is set
+    # here rather than silently defaulting to 0 (which is what happened first time
+    # and left the BUILD section of KNOWLEDGE.md empty).
+    con.execute("UPDATE scores SET b_total=? WHERE video_id=?", (b, vid))
+    con.commit()
+
     dur = dur or 0
     watch = sum(w["ts_end"] - w["ts_start"] for w in doc.get("watch_segments", []))
-    print(f"\n{vid}  S={s}/10  H={h}  ->  {verdict}")
+    print(f"\n{vid}  S={s}/10  B={b}/10  H={h}  ->  {verdict}")
     print(f"  tools {len(doc.get('tools', []))}  claims {len(clean.get('claims', []))}"
           f"  methods {len(doc.get('methods', []))}"
           f"  watch_segments {len(doc.get('watch_segments', []))}")
