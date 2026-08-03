@@ -1,0 +1,40 @@
+﻿commit 2da3b87ae0422df8222c8b697a84b55c843ca19a
+Author: gianf <vinigian2022@gmail.com>
+Date:   Sun Aug 2 21:29:29 2026 -0400
+
+    youtube-signal Phase 0: transcripts PASS 6/6, no API key, 3 of 4 creator names wrong
+    
+    New sibling project. Premise verification only -- nothing downstream built.
+    
+    Transcripts fetch from this machine on both paths (youtube-transcript-api 6/6,
+    yt-dlp 6/6), no IpBlocked/PoTokenRequired. The gating premise holds.
+    
+    YOUTUBE_API_KEY is absent everywhere. But yt-dlp searches YouTube and enumerates
+    channel uploads keylessly and quota-free, so the planned 3,200-unit search budget
+    may be replaceable with 0. Open: whether keyless search does order=date, which
+    one query family needs. That decides whether the key is needed at all.
+    
+    Name-based channel resolution returns confident wrong answers: "Nate Tokens"
+    resolves to a different human (Nate B Jones, 309k subs) at rank 0. Real channel
+    is "Nates Tokens" UCEFnH0KShNRHb-NMeurBxQQ, 30.2k subs, median 1,400 views;
+    all five @natetokens handle variants 404. Caught only because a stated subscriber
+    count failed to reconcile. Corrected channel IDs pinned in HANDOFF.md.
+    
+    quota.py hard-halts at 9,500/10,000 and is verified against a scratch DB, but has
+    never guarded a real call. Quota consumed to date: 0 units.
+    
+    Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+
+ youtube-signal/.gitignore                   |   8 +
+ youtube-signal/HANDOFF.md                   | 124 ++++++++++++
+ youtube-signal/README.md                    |  42 ++++
+ youtube-signal/reports/phase0_2026-08-02.md | 129 ++++++++++++
+ youtube-signal/reports/phase0_findings.json | 296 ++++++++++++++++++++++++++++
+ youtube-signal/src/channels.py              | 103 ++++++++++
+ youtube-signal/src/phase0.py                | 193 ++++++++++++++++++
+ youtube-signal/src/probe_nate.py            |  37 ++++
+ youtube-signal/src/probe_nate2.py           |  55 ++++++
+ youtube-signal/src/quota.py                 | 119 +++++++++++
+ youtube-signal/src/test_quota.py            |  38 ++++
+ youtube-signal/src/transcripts.py           | 170 ++++++++++++++++
+ 12 files changed, 1314 insertions(+)

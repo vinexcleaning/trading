@@ -1,0 +1,8 @@
+# Recorded data and the SQLite DB stay local.
+data/
+.venv/
+__pycache__/
+*.pyc
+
+# Never commit the key.
+.env
