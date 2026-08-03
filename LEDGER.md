@@ -19,10 +19,10 @@ asserts a number and no artifact backs it, the row says `NONE` and the status is
 
 | Status | Count |
 |---|---|
-| **RETRACTED** | **44** |
+| **RETRACTED** | **45** |
 | SETTLED | 124 |
 | SUGGESTIVE | 30 |
-| UNVERIFIED | 29 |
+| UNVERIFIED | 28 |
 | BROKEN | 6 |
 | **Total** | **233** |
 
@@ -66,6 +66,7 @@ These were stated as findings and are wrong. Anything built on them is void.
 | **K006** | **Depth at the touch collapses 40× toward expiry**, so edge and liquidity are anti-correlated | kalshi-market-scan | Measured from **one market over three minutes**. On 25 markets: depth falls **2.7×** and never goes thin (**307** contracts in the final minute, not 4), the spread *tightens* 10×, and total cost **falls** 4.46¢→3.50¢. The argument is withdrawn entirely. |
 | **K003** | The weather model was validated on **8,090 test markets** | kalshi-market-scan | A ladder is **one** temperature reading, not 10 markets. Effective n ≈ **800 settlement hours**; the CIs were ~**3× too tight**. The model itself survives re-scoring. |
 | **K005** | "**Seven daily families clear the capacity bar**, so weather is not capacity-limited" | kalshi-market-scan | Depth right, inference wrong. All seven have **66** settlements against the **481** needed, so their depth decides nothing. Cross-tabbing both bars kills **10 of 11** families. |
+| **K015** | "Buying everything priced 0.60–0.95 earns **+7.05pp ± 0.22** on n=98,766" — named the finding that reframes the whole copy-trading block | kalshi-market-scan | **Is the same claim as W011**, which had already recomputed it from scratch at **+2.09pp [−1.37,+5.35] gross, −0.29pp net**. Two projects, two rows, two different statuses, one dead number. See "the duplicate-claim trap" in Section 6. |
 
 ---
 
@@ -285,18 +286,42 @@ disagree with `MORNING_REPORT.md`, **the morning report wins**.
 | K012 | **Economics series are killed on recurrence**, not on edge. | kalshi-market-scan | `docs/market_screen.csv`, `MORNING_REPORT.md` | `KXCPI`/`KXFED`/`KXGDP`: **22–48 settlements** | — | against **481** needed to detect a 5pp edge at 80% power | n/a | n/a | **SETTLED** (structural) |
 | K013 | `KXBTC15M` is minted **at-the-money every 15 minutes**, pinning entry to the peak of the fee curve. | kalshi-market-scan | `docs/contract_spec.md` | `floor_strike` = prior window's `expiration_value` on **99.86% of 6,261 markets** | — | round trip pinned at **3.50¢**; measured from live books **4.1–4.5¢** | n/a | n/a | **SETTLED** — structural kill, matches the crypto section |
 | K014 | The power bar is **481 settlements** for a 5pp edge, **2,084** to clear the 2.4¢ tennis cost bar. | kalshi-market-scan | `docs/GO_NO_GO.md` power calc | per-market P&L sd **0.391** measured on the real tape | — | this single number kills most of the exchange | n/a | n/a | **SETTLED** (arithmetic) |
-| K015 | "Buying everything priced 0.60–0.95 with no wallet selection earns **+7.05pp ± 0.22** on n=98,766." | kalshi-market-scan | **none findable** — `docs/HYPOTHESIS_LEDGER.md` records the location as literally `inline` | claimed 98,766 positions from ~1,872 markets | — | no script, no CSV, no JSON anywhere; a ±0.22pp interval on ~1,872 independent settlements is **~7× too tight** | — | — | **UNVERIFIED** — see `kalshi-inplay-bot/audit/LEDGER.md` C042/R2. **This is the claim that reframes the whole copy-trading block and it is the least supported one in the corpus** |
+| K015 | "Buying everything priced 0.60–0.95 with no wallet selection earns **+7.05pp ± 0.22** on n=98,766." | kalshi-market-scan | **none findable** — `docs/HYPOTHESIS_LEDGER.md` records the location as literally `inline` | claimed 98,766 positions from ~1,872 markets | — | **recomputed from scratch at +2.09pp, CI [−1.37,+5.35] gross, −0.29pp NET** | — | — | **RETRACTED — this is the same claim as [W011](#section-3--wallet-copy-study-polymarket-copy-trading)**, which already recomputed and killed it. Same effect, same n, same price band, two projects, two rows, and until 2026-08-03 two different statuses. See "the duplicate-claim trap" below |
 | K016 | Deflated Sharpe was **deliberately not computed**. | kalshi-market-scan | `docs/HYPOTHESIS_LEDGER.md` | — | — | no Phase 7 sweep ran because nothing cleared Phase 1 + Phase 4, so there was no candidate. Computing it on a null "would be theatre" | n/a | n/a | **SETTLED** (a decision, and the right one) |
 
 ### What this section changes
 
-**Nothing was overturned by ledgering it** — every verdict in the project was
+**No verdict was overturned by ledgering it** — every verdict in the project was
 already NO-GO and still is. What it buys is that K003, K005, K006 and K010 are
 now visible to the same cross-check that governs every other project, instead
 of living only in whichever document happened to be read.
 
-**K015 is the open item.** It is the single most actionable claim in the
-project and no artifact for it exists anywhere on disk.
+### ⚠ The duplicate-claim trap — K015 is W011
+
+Ledgering the project immediately produced a result that ledgering it was
+supposed to produce, and it is worth stating on its own.
+
+**K015 and [W011](#section-3--wallet-copy-study-polymarket-copy-trading) are the
+same claim.** Same effect (**+7.05pp**), same sample (**n=98,766**), same price
+band, described in two projects' documents in slightly different words:
+
+| | K015, as written in `kalshi-market-scan` | W011, as written in `wallet-copy-study` |
+|---|---|---|
+| Claim | "buying everything priced 0.60–0.95 … +7.05pp ± 0.22" | "naive favourite-band buying earns +7.05pp" |
+| n | 98,766 positions | 98,766 |
+| Status **before** 08-03 | **UNVERIFIED** — "no artifact anywhere" | **RETRACTED** — recomputed at **+2.09pp [−1.37,+5.35] gross, −0.29pp net** |
+
+`wallet-copy-study` had **already recomputed it from scratch and killed it.**
+`kalshi-market-scan` went on describing it as the finding that reframes its
+whole copy-trading block, and `kalshi-inplay-bot/audit/LEDGER.md` C042/R2
+flagged it as the corpus's least-supported claim — none of them aware the
+answer already existed one section away.
+
+**The lesson is about the ledger, not the number.** A claim that travels between
+projects gets a fresh row and a fresh status each time, and the weakest status
+is the one that survives in whichever document a reader happens to open. Cross-
+reference by *number and n*, not by project. It was found here only because the
+two rows finally sat in the same file.
 
 ---
 

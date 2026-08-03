@@ -597,3 +597,47 @@ which settled automatically ~6 days earlier. **No open exposure.**
 > kalshi.com and deleting both old copies remains worth doing, and is the
 > user's call.
 
+## Repo integrity work (2026-08-03, autonomous continuation)
+
+Commits `69a52de`, `f49aa0a`, `4710163`. Detail in
+[common/HANDOFF.md](common/HANDOFF.md) Part 2.
+
+**A guard now stops the fee formula being reimplemented again.**
+[`common/tests/test_no_fee_reimplementation.py`](common/tests/test_no_fee_reimplementation.py)
+walks every `.py` in the repo; anything with a fee fingerprint must import the
+shared module or sit in an allowlist **with a written reason**. GUARDS #6
+already said "one shared, tested `fees.py`" — and the count went from 3 to
+**17 after that instruction**. A convention did not work; a failing test does.
+It immediately found two more copies the manual sweep missed (`probe_01_depth`,
+`probe_02_fees`), both now repointed. **True count was 17, not 15.**
+
+**`kalshi-market-scan` is ledgered** — 16 rows, K001–K016, `LEDGER.md`
+Section 6. Tally 216 → 233 rows, RETRACTED 41 → 45.
+
+> ### ⚠ It paid immediately: **K015 is W011**
+> The same claim — **+7.05pp on n=98,766** — had a row in *two* projects with
+> *two different statuses*. `wallet-copy-study` had **already recomputed and
+> retracted it** (+2.09pp [−1.37,+5.35] gross, **−0.29pp net**), while
+> `kalshi-market-scan` still called it the finding that reframes its whole
+> copy-trading block and the bot audit called it the corpus's least-supported
+> claim. None of them knew the answer sat one section away.
+>
+> **A claim that travels between projects gets a fresh row and a fresh status
+> each time, and the weakest status is the one a reader happens to find.**
+> Cross-reference by number and n, not by project. Worth sweeping the other
+> three projects the same way.
+
+**Maker-fee tennis series hold 34.4% of volume on 5.8% of markets** — 5.9×
+concentration, `KXATPMATCH` alone 21.9%. Answers the question `signal-github`
+`e3b87d7` left open. S010's "91% of the book" is a *count* and is correct
+(94.2%); by *volume* the taker-only series are 65.6%. Does **not** revive the
+maker case. See [common/TENNIS_MAKER_LIQUIDITY.md](common/TENNIS_MAKER_LIQUIDITY.md)
+and LEDGER S025.
+
+> Two traps hit and fixed while measuring it, both already in this repo's
+> record: volume is **`volume_fp`** (the old name returns `None` and sums
+> silently to **zero** — C024's renamed-field trap, and the first run reported
+> a clean fake result), and tennis series must be matched by **prefix, not
+> substring** (`WTAX` "Wealth tax" and `KXLOWTAUS` "Lowest temperature in
+> Austin" both contain `WTA` — T017 is a retraction caused by exactly that).
+

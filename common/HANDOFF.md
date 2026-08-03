@@ -202,13 +202,128 @@ top-level one.
 - **Did not measure** whether the maker-fee tennis series hold most of the
   liquidity. That is the open question the sibling session flagged.
 
-## Next actions, in order
+## Next actions — ALL FOUR NOW DONE (2026-08-03, later session)
 
-1. **Decide whether the live bot trades at all.** Unchanged by this work and
-   still the biggest open item: its own 14,162-market backtest says −9¢/trade.
-2. **Re-run `high_sweep.py`.** Its maker arm previously charged a fee on 90.4%
-   of markets that do not pay one, so every maker result it produced was
-   pessimistic. This is the one stored result the fee fixes actually move.
-3. **Ledger `kalshi-market-scan`,** or link its `HYPOTHESIS_LEDGER.md` from
-   `LEDGER.md`. Right now a whole project's claims escape the cross-check.
-4. **Measure liquidity on the 130 maker-fee series**, tennis first.
+1. ~~Decide whether the live bot trades at all.~~ **DONE — it is OFF.**
+2. ~~Re-run `high_sweep.py`.~~ **DONE — no conclusion changed.**
+3. ~~Ledger `kalshi-market-scan`.~~ **DONE — 16 rows, and it immediately paid.**
+4. ~~Measure liquidity on the maker-fee series.~~ **DONE — 34.4% of volume.**
+
+---
+
+# PART 2 — autonomous continuation (2026-08-03)
+
+| Commit | What |
+|---|---|
+| `a1f5df8` | Re-run `high_sweep` after the maker-fee fix: no conclusion changes |
+| `005f9a7` | Turn the live bot off: fail-closed kill switch |
+| `69a52de` | Guard against a future fee reimplementation; repoint two more copies |
+| `f49aa0a` | Ledger `kalshi-market-scan`: 16 rows, closing the cross-check gap |
+| `4710163` | Measure whether the maker-fee tennis series hold the liquidity |
+
+## 4. The live bot is OFF
+
+`kalshi-inplay-bot/TRADING_DISABLED` blocks all order placement. The check sits
+in `_check_writable()` **before** the `read_only` flag, so it fails closed and
+cannot be bypassed by constructing the client differently. Verified: bid and
+ask both blocked with `read_only=False`; guard releases when the file is
+removed. **To trade again, delete that one file.**
+
+It was **already off** before anything changed — no process, no autostart
+shortcut, no scheduled task, and `bot_state.json` six days stale listing five
+positions on matches that settled ~6 days earlier. No open exposure. The commit
+made "off" durable rather than incidental.
+
+## 5. `high_sweep` re-run — the fee fix changed nothing that matters
+
+All 8 maker rows improved (mean **+0.13¢/contract**), all 4 taker rows came
+back **byte-identical** as the control. **No configuration flipped sign.** The
+two positive rows are both the optimistic fill model the file's own header
+calls "the single easiest way to fake a profitable backtest"; the honest
+`maker-strict` arm stays at **−1.30 to −2.42¢**. Fees were never the binding
+constraint. Full table: `kalshi-inplay-bot/backtest/HIGH_SWEEP_RERUN.md`.
+
+## 6. The guard that stops a 16th copy — and found a 16th and 17th
+
+`common/tests/test_no_fee_reimplementation.py` walks every `.py` in the repo
+and flags a fee fingerprint. Each hit must import the shared module or sit in
+an `ALLOWED` map **with a written reason**.
+
+> GUARDS #6 already said "one shared, tested `fees.py`". The count went from 3
+> to 17 *after* that instruction. **Telling people to share a module does not
+> make them share it.** A test that fails is what stops the next one.
+
+Three sub-tests keep the allowlist honest: dead entries fail (this fired on
+first run and caught a stale entry of mine), empty reasons fail, and the
+detector is proven to bite on the canonical bug and *not* on an unrelated
+`0.07`. A fifth test imports each shim from a neutral cwd.
+
+It immediately found two copies the manual sweep missed —
+`probe_01_depth.py:238` and `probe_02_fees.py:175`, both computing the Kalshi
+side of the Polymarket cost ratio. Neither used `ceil`, so neither carried the
+dust bug. Repointed; outputs byte-identical at all five price points.
+
+**True count: 17, not 15.**
+
+## 7. `kalshi-market-scan` is ledgered — and it paid immediately
+
+16 rows, K001–K016, in `LEDGER.md` Section 6. Tally 216 → 233, RETRACTED
+41 → 45.
+
+### ⚠ The finding: K015 *is* W011
+
+**The same claim had two rows in two projects with two different statuses.**
+
+| | K015 (`kalshi-market-scan`) | W011 (`wallet-copy-study`) |
+|---|---|---|
+| Claim | "0.60–0.95 … **+7.05pp ± 0.22**" | "naive favourite-band … **+7.05pp**" |
+| n | **98,766** | **98,766** |
+| Status before 08-03 | **UNVERIFIED** | **RETRACTED** — recomputed **+2.09pp [−1.37,+5.35] gross, −0.29pp net** |
+
+`wallet-copy-study` had **already killed it**. `kalshi-market-scan` went on
+calling it the finding that reframes its whole copy-trading block, and
+`kalshi-inplay-bot/audit/LEDGER.md` C042/R2 called it the corpus's
+least-supported claim — none of them aware the answer sat one section away.
+
+**A claim that travels between projects gets a fresh row and a fresh status
+each time, and the weakest status is the one a reader happens to find.**
+Cross-reference by number and n, not by project name. K015 is now RETRACTED.
+
+## 8. Do the maker-fee tennis series hold the liquidity? No — but 6×
+
+Answers the question `signal-github` `e3b87d7` left explicitly open.
+
+| | Series | Markets | % count | Volume | % volume |
+|---|---|---|---|---|---|
+| **Charges makers** | 2 | 3,864 | **5.8%** | 3.31bn | **34.4%** |
+| Taker-only | 40 | 62,830 | 94.2% | 6.32bn | 65.6% |
+
+**5.9× more traded per market.** `KXATPMATCH` alone is **21.9%** of tennis
+volume on 2.8% of markets. S010's "91% of the book" is a *count* and is right
+(measured 94.2%); by *volume* the taker-only series are 65.6%.
+
+Two thirds of tennis volume sits where makers pay nothing — but the single
+deepest series charges, so choosing on fee alone pushes you toward the thinner
+book. It does **not** revive the maker case (S008, S009, and the `high_sweep`
+re-run all stand).
+
+**Two method traps hit and fixed, both already recorded in this repo:**
+
+- **Volume is `volume_fp`, not `volume`.** The old name returns `None` and sums
+  silently to **zero** — the first run reported a clean, completely fake result
+  across all 42 series. That is C024's renamed-field trap. The script now
+  raises if the field is absent and aborts if the total is zero.
+- **Series selection is by prefix, not substring.** `ATP|WTA|ITF` as a
+  substring pulls in twelve non-tennis series — `KXNEWTAYLOR` ("Taylor Swift
+  album"), `WTAX` ("Wealth tax"), `KXLOWTAUS` ("Lowest temperature in Austin").
+  **T017 is a retraction caused by exactly this.** Headline robust either way.
+
+## What remains
+
+1. **Rotate `kalshi_private_key.pem`** — still in the bot folder *and* a
+   OneDrive-synced Desktop folder. User's call, unaffected by trading being off.
+2. **`high_sweep.py` maker rows are still optimistic-fill.** The corrected
+   numbers are honest about fees but not about fills. Nothing depends on them
+   now that the bot is off.
+3. **Sweep the other three projects for duplicate claims** the way K015/W011
+   was found — by number and n across sections, not by project.
