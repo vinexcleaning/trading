@@ -234,7 +234,10 @@ def search(kind: str, query: str, per_page: int = 100, page: int = 1, sort: str 
         except json.JSONDecodeError:
             return {"_status": 0, "items": []}
 
-    gap = 6.5 - (time.time() - _last_search)  # 10/min -> one every 6s, +margin
+    # Unauthenticated search is 10/min; authenticated is 30/min. Pacing for the
+    # unauthenticated rate when a token is present wastes two thirds of the
+    # budget in sleep - it made the credibility pass a 90-minute job.
+    gap = (2.2 if TOKEN else 6.5) - (time.time() - _last_search)
     if gap > 0:
         time.sleep(gap)
     status, headers, body = _fetch(url)
