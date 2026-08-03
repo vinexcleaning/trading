@@ -4,6 +4,8 @@ As of **2026-08-02** for the laptop, **2026-08-03** for the desktop. The laptop
 inventory recomputed nothing and touched no process. The desktop pass moved
 directories and patched the live bot — see the dated section at the end.
 Claims: [LEDGER.md](LEDGER.md). Reusable checks: [GUARDS.md](GUARDS.md).
+How the repos and sessions fit together: [HOW_THIS_WORKS.md](HOW_THIS_WORKS.md).
+New ideas go in [INBOX.md](INBOX.md) first, before deciding where they belong.
 
 ---
 
@@ -448,4 +450,25 @@ it profitable.
 > **These fixes live in `C:\Users\vinig\kalshi`, which is NOT in this repo**
 > (see above). They are unversioned and exist on one machine only until that
 > folder is moved.
+
+---
+
+## Two root files added (2026-08-03)
+
+Both exist at the repo root and are tracked.
+
+- **[INBOX.md](INBOX.md)** — idea capture. Every new idea goes here first: one
+  line, dated, no thinking. Routing to a repo is a separate pass. It is a queue,
+  not an archive — routed ideas are moved out or deleted.
+- **[HOW_THIS_WORKS.md](HOW_THIS_WORKS.md)** — the operating manual. The four
+  repos and what belongs in each (**trading** public, **nexus** private/
+  ChatGPT-led, **Vinex-OS** private, **weather-market-bot** private — never
+  mixed); STATUS.md as the shared brain, pulled at the start of every session
+  and merged and pushed at the end; one session per folder; HANDOFF.md written
+  and pushed at every session end; and why pushing is mandatory — the
+  coordinating chat reads this repo over the public web and cannot see disk.
+
+It also records the machine split: **the desktop `C:\Users\vinig` is now
+primary; the laptop is a recording box only.** The "this laptop" rows in the
+running-processes table above are that box.
 
