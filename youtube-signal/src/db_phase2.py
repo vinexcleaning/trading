@@ -26,7 +26,10 @@ CREATE TABLE IF NOT EXISTS scores (
     video_id     TEXT PRIMARY KEY,
     s_total      INTEGER,
     h_total      INTEGER,
-    verdict      TEXT,              -- WATCH | EXTRACT | EXTRACT_RESULTS_DISCOUNTED | SKIP
+    b_total      INTEGER,
+    verdict      TEXT,              -- BUILD | BUILD_AND_RECOMMEND | ABSORB |
+                                    -- ABSORB_AND_RECOMMEND |
+                                    -- ABSORB_RESULTS_DISCOUNTED | RECOMMEND | SKIP
     visual_dependent INTEGER,
     model        TEXT,
     input_tokens INTEGER,
@@ -118,9 +121,28 @@ EXPIRY_MONTHS = {
 }
 
 
+# Columns added after a DB already existed in the wild. CREATE TABLE IF NOT
+# EXISTS does nothing to a table that is already there, so a column added only to
+# SCHEMA reaches new databases and never reaches old ones.
+#
+# b_total is the case that proved it. It was added to the laptop's DB by hand
+# when the B axis landed, so load_extraction.py:109 and build_knowledge.py both
+# worked there -- and on any fresh DB the UPDATE raised "no such column: b_total"
+# and every extraction load failed. Silent-schema bug #4 in this project; the
+# other three are listed in HANDOFF section 5.
+MIGRATIONS = (
+    "ALTER TABLE scores ADD COLUMN b_total INTEGER",
+)
+
+
 def connect(path=db.DB_PATH):
     con = db.connect(path)
     con.executescript(SCHEMA)
+    for stmt in MIGRATIONS:
+        try:
+            con.execute(stmt)
+        except Exception:
+            pass  # already present
     con.commit()
     return con
 
