@@ -155,6 +155,61 @@ was reachable all along.
 > Shelf life: **fees expire in 3 months.** Re-verify after **2026-11-03**.
 > Reproduce with `src/kalshi_fees_census.py`.
 
+---
+
+### C2 — Polymarket's side, measured the same way (and it restores the original conclusion)
+
+The Polymarket half of this project's fee claims had never had the treatment C1
+gave Kalshi: it came from a repo's documentation. Measured directly from Gamma,
+**2,100 open markets** (`src/polymarket_fees_census.py`):
+
+| `feeSchedule` | markets | share |
+|---|---|---|
+| `rate 0.04, rebate 0.25, takerOnly true` | 1,371 | 65.3% |
+| `rate 0.07, rebate 0.20, takerOnly true` | 317 | 15.1% |
+| `rate 0.05, rebate 0.25, takerOnly true` | 163 | 7.8% |
+| `rate 0.05, rebate 0.15, takerOnly true` | 126 | 6.0% |
+| *(no schedule)* | 123 | 5.9% |
+
+**Makers pay zero on every one of the 1,977 markets that has a schedule** —
+`takerOnly: true`, 100%, no exceptions. Taker rates are 0.04 / 0.05 / 0.07 by
+category (`politics_fees` 0.04, `crypto_fees_v2` 0.07, `sports_fees_v2` 0.05).
+
+The standing claim is **confirmed**, with one refinement: the maker rebate share
+is **15–25%**, not 20–25% — `sports_fees_v2` rebates 0.15.
+
+**A field trap worth recording, because it nearly produced a wrong claim here.**
+Gamma exposes `makerBaseFee` and `takerBaseFee`, both **`1000` on 94% of
+markets**. They are *not* the operative fee — the CLOB API returns
+`maker_base_fee: 0` and `taker_base_fee: 0` for the same markets, and
+`feeSchedule` is what decides what an order pays. Reading `makerBaseFee` and
+concluding "Polymarket charges makers" is a one-line mistake with a plausible
+number attached, which is the same shape as C1a.
+
+**This restores the original venue conclusion, and corrects my own correction.**
+C1 argued the report's "maker-only quoting on Polymarket" rested on a false
+premise about Kalshi, and that the rule needed a second clause. With both venues
+now on primary evidence, the original recommendation is simply right, for
+stronger reasons than it gave:
+
+| | Kalshi | Polymarket |
+|---|---|---|
+| maker fee | **0.0175 on the 130 liquid series**, 0 on the rest | **zero, everywhere, 100%** |
+| taker fee | 0.07 flat | 0.04–0.07 by category |
+| maker rebate | none, unless designated | **15–25% of taker fees** |
+| liquidity rewards | opaque, designated programme | **published per market** — `rewardsMaxSpread`, `rewardsMinSize`, `rewardsDailyRate` on the market object |
+| stated MM advantage over you | *"may give market makers a trading advantage"* (member agreement, clause T) | none stated |
+
+**Polymarket is the venue for maker-only quoting.** Not because Kalshi charges
+makers everywhere — it does not — but because Kalshi charges them *precisely
+where the liquidity is*, offers no rebate, and tells you in the agreement you
+sign that designated makers get advantages you will not have.
+
+> Shelf life: **fees expire in 3 months.** Re-verify after **2026-11-03** with
+> `src/polymarket_fees_census.py` and `src/kalshi_fees_census.py`.
+
+---
+
 **Also closes part of HANDOFF §5.1.** That section recorded that `kalshi.com`
 returned HTTP 429 to every request including its own fee-schedule PDF, so the fee
 schedule was never read. It is reachable with a browser User-Agent and a retry —
