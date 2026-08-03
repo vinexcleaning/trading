@@ -19,16 +19,10 @@ import transcripts  # noqa: E402
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "reports" / "phase0_findings.json"
 
-# (name as given in the prompt, search query that actually resolves it).
-# Three of the four names were wrong. Searching the bare prompt name for
-# 'Nate Tokens' resolves to the wrong person entirely (Nate B Jones, 309k subs),
-# so that one needs topic context in the query to disambiguate.
-CREATORS = [
-    ("Nate Tokens", "Nates Tokens polymarket"),
-    ("MindMathMoney", "MindMathMoney"),
-    ("Trading with DavidTech", "Trading with DaviddTech"),
-    ("Patrick Dang", "Patrick Dang"),
-]
+# Seed creators now live in channels.json, pinned by channel ID. Three of the four
+# names in the original prompt were wrong, and name-based resolution returned a
+# confident wrong human for 'Nate Tokens', so the resolver was deleted in Phase 1
+# Step 2. See src/channels.py.
 
 # Three arbitrary on-topic videos, discovered keylessly so the test uses real
 # material rather than a hand-picked video known to have captions.
@@ -119,46 +113,41 @@ def check_transcripts():
 
 
 def check_channels():
-    hr("PREMISE 3 -- the four creator names resolve to real channels")
+    """Verify the pinned seeds still resolve and their stats have not drifted.
+
+    Phase 1 Step 2 deleted the name-search resolver this function used to call --
+    it returned a confident wrong human for 'Nate Tokens'. Identity now comes only
+    from channels.json, and a >5x stat move is flagged rather than written over.
+    """
+    hr("PREMISE 3/5 -- the pinned seed channels still resolve, stats unchanged")
     out = []
-    for prompt_name, query in CREATORS:
-        note = "" if query == prompt_name else f"  (prompt name corrected to {query!r})"
-        print(f"\n  --- {prompt_name!r}{note}")
+    for seed in channels.load_seeds():
+        matches = seed["name"].strip().lower() == seed["prompt_name_was"].strip().lower()
+        flag = "" if matches else "   <-- ORIGINAL PROMPT NAME WAS WRONG"
+        print(f"\n  --- {seed['name']!r}{flag}")
+        print(f"      channel_id : {seed['channel_id']}")
         try:
-            res = channels.resolve_by_search(query)
+            st = channels.channel_stats(seed["channel_id"])
         except Exception as exc:  # noqa: BLE001
-            print(f"      RESOLVE FAILED {type(exc).__name__}: {str(exc)[:120]}")
-            out.append({"prompt_name": prompt_name, "query": query,
-                        "resolved": False, "error": str(exc)[:200]})
+            print(f"      RESOLVE/STATS FAILED {type(exc).__name__}: {str(exc)[:120]}")
+            out.append({**seed, "resolved": False, "error": str(exc)[:200]})
             continue
-        if not res:
-            print("      NOT RESOLVED -- no channel in the top hits")
-            out.append({"prompt_name": prompt_name, "query": query, "resolved": False})
-            continue
-        res["prompt_name"] = prompt_name
-        res["name_matches_prompt"] = (
-            res["resolved_name"].strip().lower() == prompt_name.strip().lower()
-        )
-        flag = "" if res["name_matches_prompt"] else "   <-- NAME DIFFERS FROM PROMPT"
-        print(f"      channel_id : {res['channel_id']}")
-        print(f"      actual name: {res['resolved_name']!r}{flag}")
-        print(f"      confidence : {res['hits_in_top']}/{res['probe_size']} top hits, "
-              f"best rank {res['best_rank']}")
-        try:
-            st = channels.channel_stats(res["channel_id"])
-        except Exception as exc:  # noqa: BLE001
-            print(f"      STATS FAILED {type(exc).__name__}: {str(exc)[:120]}")
-            out.append({**res, "resolved": True, "stats_error": str(exc)[:200]})
-            continue
+        drift = channels.drift_check(seed, st)
         floor = "+" if st["upload_count_is_floor"] else ""
-        print(f"      subscribers: {st['subscribers']:,}" if st["subscribers"] is not None
-              else "      subscribers: unknown")
+        print(f"      name now   : {st['channel']!r}")
+        print(f"      subscribers: {st['subscribers']:,} (pinned {seed['subscribers']:,})"
+              if st["subscribers"] is not None else "      subscribers: unknown")
         print(f"      uploads    : {st['upload_count']}{floor}")
-        print(f"      views      : median {st['median_views']:,} "
-              f"(min {st['min_views']:,} / max {st['max_views']:,}, "
-              f"n={st['videos_with_view_data']})" if st["median_views"] is not None
-              else "      views      : unknown")
-        out.append({**res, "resolved": True, "stats": st})
+        print(f"      med. views : {st['median_views']:,} (pinned {seed['median_views']:,})"
+              if st["median_views"] is not None else "      med. views : unknown")
+        if drift:
+            print(f"      *** DRIFT FLAG: {drift} -- NOT overwritten")
+        else:
+            print("      drift      : within 5x, stats consistent")
+        out.append({**seed, "resolved": True, "fresh": {
+            k: st[k] for k in ("channel", "subscribers", "median_views",
+                               "upload_count", "upload_count_is_floor")},
+            "drift_flag": drift})
     return out
 
 

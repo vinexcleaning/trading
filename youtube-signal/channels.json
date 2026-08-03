@@ -1,0 +1,44 @@
+{
+  "_comment": [
+    "Seed channels. Resolved once in Phase 0 and VERIFIED against a stated",
+    "subscriber count. Never re-resolve these by name: searching the string",
+    "'Nate Tokens' returns a different human (Nate B Jones, 309k subs) at rank 0.",
+    "New channels enter the system only video -> channel_id, never name -> channel.",
+    "stats_asof values are the Phase 0 measurements the 5x drift guard compares to."
+  ],
+  "seeds": [
+    {
+      "name": "Nates Tokens",
+      "channel_id": "UCEFnH0KShNRHb-NMeurBxQQ",
+      "prompt_name_was": "Nate Tokens",
+      "subscribers": 30200,
+      "median_views": 1400,
+      "stats_asof": "2026-08-02",
+      "note": "The critical recall case: 30k subs, 1.4k median views, confirmed on topic."
+    },
+    {
+      "name": "Mind Math Money",
+      "channel_id": "UCTdlDD6JgJeplt4axozFmSQ",
+      "prompt_name_was": "MindMathMoney",
+      "subscribers": 473000,
+      "median_views": 8200,
+      "stats_asof": "2026-08-02"
+    },
+    {
+      "name": "Trading with DaviddTech",
+      "channel_id": "UC7NJLsf6IonOy8QI8gt5BeA",
+      "prompt_name_was": "Trading with DavidTech",
+      "subscribers": 1440000,
+      "median_views": 27000,
+      "stats_asof": "2026-08-02"
+    },
+    {
+      "name": "Patrick Dang",
+      "channel_id": "UCLOzkJ9W9fntCGyYfUwMPew",
+      "prompt_name_was": "Patrick Dang",
+      "subscribers": 405000,
+      "median_views": 10000,
+      "stats_asof": "2026-08-02"
+    }
+  ]
+}

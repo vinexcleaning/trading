@@ -1,15 +1,33 @@
-"""Resolve creator names to channel IDs and pull per-channel stats.
+"""Channel identity and stats.
 
-Deliberately keyless (yt-dlp). The names in the prompt were given from memory, so
-resolution is search-based rather than handle-based -- a wrong handle 404s, but a
-search still finds a misspelled name and reports the correction.
+THERE IS DELIBERATELY NO NAME-SEARCH RESOLVER IN THIS MODULE.
+
+Phase 0 had one. It resolved the string "Nate Tokens" to a different human
+(Nate B Jones, 309k subs) at rank 0 with 6/12 agreement -- confidently, and
+wrongly. It was caught only because an externally stated subscriber count failed
+to reconcile. If you are about to add `resolve_by_search`, that is the bug this
+module exists to prevent.
+
+Channel identity comes from exactly two places:
+  1. channels.json  -- the four seeds, pinned and verified.
+  2. a retrieved video's own channel_id -- video -> channel, never name -> channel.
 """
 
+import json
 import statistics
+import urllib.parse
+from pathlib import Path
 
 from yt_dlp import YoutubeDL
 
+ROOT = Path(__file__).resolve().parent.parent
+CHANNELS_JSON = ROOT / "channels.json"
+
 _FLAT = {"quiet": True, "skip_download": True, "extract_flat": True, "no_warnings": True}
+
+# A refresh that moves a stat by more than this factor means the wrong channel was
+# resolved, not that the channel grew. Flag, never overwrite.
+DRIFT_FACTOR = 5.0
 
 
 def _ydl(opts=None):
@@ -18,11 +36,24 @@ def _ydl(opts=None):
     return YoutubeDL(o)
 
 
-def search_videos(query, n=25):
-    """Keyless video search. Returns flat entries (id/title/channel/channel_id/
-    view_count/duration). Costs zero API quota."""
-    with _ydl() as ydl:
-        info = ydl.extract_info(f"ytsearch{n}:{query}", download=False)
+def load_seeds():
+    doc = json.loads(CHANNELS_JSON.read_text(encoding="utf-8"))
+    return doc["seeds"]
+
+
+def search_videos(query, n=25, sp=None):
+    """Keyless video search. Kept here only for ad-hoc probing; the pipeline goes
+    through retrieval.Retriever.search so pacing and logging are enforced."""
+    if sp is None:
+        url, opts = f"ytsearch{n}:{query}", {}
+    else:
+        url = (
+            f"https://www.youtube.com/results?"
+            f"search_query={urllib.parse.quote_plus(query)}&sp={sp}"
+        )
+        opts = {"playlistend": n}
+    with _ydl(opts) as ydl:
+        info = ydl.extract_info(url, download=False)
     out = []
     for e in info.get("entries") or []:
         if not e or not e.get("id"):
@@ -40,41 +71,11 @@ def search_videos(query, n=25):
     return out
 
 
-def resolve_by_search(name, probe=12):
-    """Find the channel that best matches a creator name typed from memory.
-
-    Strategy: search the name as a query, then take the channel that appears most
-    often among the top hits. Ties break toward the higher-ranked hit.
-    """
-    hits = search_videos(name, n=probe)
-    tally = {}
-    for rank, h in enumerate(hits):
-        cid = h.get("channel_id")
-        if not cid:
-            continue
-        rec = tally.setdefault(cid, {"channel": h["channel"], "count": 0, "best_rank": rank})
-        rec["count"] += 1
-        rec["best_rank"] = min(rec["best_rank"], rank)
-    if not tally:
-        return None
-    cid, rec = max(tally.items(), key=lambda kv: (kv[1]["count"], -kv[1]["best_rank"]))
-    return {
-        "query": name,
-        "channel_id": cid,
-        "resolved_name": rec["channel"],
-        "name_matches_prompt": rec["channel"].strip().lower() == name.strip().lower(),
-        "hits_in_top": rec["count"],
-        "probe_size": len(hits),
-        "best_rank": rec["best_rank"],
-    }
-
-
 def channel_stats(channel_id, cap=200):
-    """Subscriber count, upload count, and median views, from the uploads tab.
+    """Subscriber count, upload count, median views, from the uploads tab.
 
-    `cap` bounds how many uploads are enumerated. upload_count is reported as an
-    exact number only when the tab was exhausted below the cap; otherwise it is
-    a floor, flagged via `upload_count_is_floor`.
+    upload_count is exact only when the tab was exhausted below `cap`; otherwise
+    it is a floor, flagged by upload_count_is_floor.
     """
     url = f"https://www.youtube.com/channel/{channel_id}/videos"
     with _ydl({"playlistend": cap}) as ydl:
@@ -91,13 +92,22 @@ def channel_stats(channel_id, cap=200):
         "median_views": int(statistics.median(views)) if views else None,
         "min_views": min(views) if views else None,
         "max_views": max(views) if views else None,
-        "sample": [
-            {
-                "video_id": e["id"],
-                "title": e.get("title"),
-                "view_count": e.get("view_count"),
-                "duration_s": e.get("duration"),
-            }
-            for e in entries[:5]
-        ],
+        "entries": entries,
     }
+
+
+def drift_check(stored, fresh):
+    """Compare a refresh against stored stats. Returns a flag string, or None.
+
+    A >5x move in subscribers or median views is the signature of having resolved
+    a different person -- so it is reported, never written over the stored value.
+    """
+    flags = []
+    for key in ("subscribers", "median_views"):
+        old, new = stored.get(key), fresh.get(key)
+        if not old or not new:
+            continue
+        ratio = max(old, new) / min(old, new)
+        if ratio > DRIFT_FACTOR:
+            flags.append(f"{key} moved {old:,} -> {new:,} ({ratio:.1f}x)")
+    return "; ".join(flags) if flags else None
