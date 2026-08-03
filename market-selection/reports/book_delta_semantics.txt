@@ -1,0 +1,26 @@
+loading 2026-06-01T12 ...
+  11,839,385 rows
+
+KXBTCD-26JUN0109-T72099.99
+  197,651 msgs  {'orderbook_delta': 197650, 'orderbook_snapshot': 1}
+    mode=add  crossed 190,709 of 190,846 states ( 99.9%)  neg-size events    438  first cross at row 6942
+    mode=set  crossed       0 of 190,534 states (  0.0%)  neg-size events 96,338  first cross at row None
+
+KXITFWMATCH-26JUN01KOVRIC-RIC
+  109,907 msgs  {'orderbook_delta': 109906, 'orderbook_snapshot': 1}
+    mode=add  crossed       0 of       0 states (  0.0%)  neg-size events      0  first cross at row None
+    mode=set  crossed       0 of       0 states (  0.0%)  neg-size events      0  first cross at row None
+
+KXCS2GAME-26JUN010700DCPHA-DC
+  98,410 msgs  {'orderbook_delta': 98409, 'orderbook_snapshot': 1}
+    mode=add  crossed  88,370 of  91,606 states ( 96.5%)  neg-size events    492  first cross at row 8527
+    mode=set  crossed       0 of  91,293 states (  0.0%)  neg-size events 46,302  first cross at row None
+
+====================================================================
+INTERPRETATION
+====================================================================
+  The mode with ~0% crossed states is the correct semantics.
+  If BOTH cross heavily, the capture is dropping messages and the
+  book can only be trusted for a short window after each snapshot
+  -- which would make this archive far less useful than hoped, and
+  that is a finding worth reporting rather than working around.

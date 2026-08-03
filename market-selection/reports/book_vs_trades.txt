@@ -1,0 +1,42 @@
+loading book 2026-06-01T12 ...
+loading trades ...
+  KXBTCD-26JUN0109-T72099.99                    3,842 trades in the day
+  KXCS2GAME-26JUN010700DCPHA-DC                 2,349 trades in the day
+
+====================================================================
+KXBTCD-26JUN0109-T72099.99
+====================================================================
+  book covers 12:03:37..12:59:59, 3,733 trades inside it
+
+  mode=add: 3,733 trades matched to a two-sided book (0 had no book)
+    AT the touch          367 (  9.8%)
+    inside the spread       0 (  0.0%)
+    OUTSIDE the book    3,366 ( 90.2%)   median miss 11.0c
+
+  mode=set: 3,670 trades matched to a two-sided book (63 had no book)
+    AT the touch        1,542 ( 42.0%)
+    inside the spread   1,411 ( 38.4%)
+    OUTSIDE the book      717 ( 19.5%)   median miss 2.0c
+
+====================================================================
+KXCS2GAME-26JUN010700DCPHA-DC
+====================================================================
+  book covers 12:03:37..12:59:58, 722 trades inside it
+
+  mode=add: 722 trades matched to a two-sided book (0 had no book)
+    AT the touch           21 (  2.9%)
+    inside the spread       0 (  0.0%)
+    OUTSIDE the book      701 ( 97.1%)   median miss 6.0c
+
+  mode=set: 719 trades matched to a two-sided book (3 had no book)
+    AT the touch          381 ( 53.0%)
+    inside the spread     227 ( 31.6%)
+    OUTSIDE the book      111 ( 15.4%)   median miss 3.0c
+
+====================================================================
+VERDICT
+====================================================================
+  A correct reconstruction puts most trades AT the touch and almost
+  none outside the book. Whichever mode does that is right.
+  If BOTH leave many trades outside, the capture is lossy and the
+  archive cannot support continuous book reconstruction.

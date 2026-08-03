@@ -42,7 +42,7 @@ CUT = 1767830400
 DELAYS = [0, 10, 60, 300, 1800]
 SPREAD_PP = 1.0
 MIN_EVENTS = 30            # below this a per-wallet number is not reportable
-MAX_LOOKAHEAD = 6 * 3600
+MAX_LOOKAHEAD = 3600      # MUST match the pull window in spec_07b
 N_BOOT = 1500
 
 cfg = json.loads(TARGETS.read_text(encoding="utf-8"))
