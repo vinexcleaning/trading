@@ -1,0 +1,463 @@
+{
+  "meta": {
+    "n_real_results": 262,
+    "n_synthetic_results": 249,
+    "spread_pp_applied": 1.0,
+    "spread_note": "median same-block trade-price dispersion; a LOWER bound on the quoted spread, so net figures are optimistic",
+    "generalist_reference": {
+      "2025-07-01": 0.9374,
+      "2026-01-08_fee_era": -0.1348
+    },
+    "unit_of_observation": "event (a game, or a recurring series-day)"
+  },
+  "control_discrimination": {
+    "real": {
+      "n": 262,
+      "median_pp": 1.0139,
+      "frac_positive": 0.66,
+      "n_significant_bh": 71
+    },
+    "synthetic": {
+      "n": 249,
+      "median_pp": 0.0519,
+      "frac_positive": 0.53,
+      "n_significant_bh": 0
+    }
+  },
+  "consistency_by_category": {
+    "crypto|2025-07-01": {
+      "n_specifications": 21,
+      "n_positive": 9,
+      "n_significant": 1,
+      "median_excess_pp": -0.1861,
+      "min_excess_pp": -3.6647,
+      "max_excess_pp": 3.9536,
+      "frac_positive": 0.429
+    },
+    "crypto|2026-01-08_fee_era": {
+      "n_specifications": 21,
+      "n_positive": 16,
+      "n_significant": 8,
+      "median_excess_pp": 1.507,
+      "min_excess_pp": -1.656,
+      "max_excess_pp": 4.0249,
+      "frac_positive": 0.762
+    },
+    "esports|2025-07-01": {
+      "n_specifications": 3,
+      "n_positive": 3,
+      "n_significant": 0,
+      "median_excess_pp": 5.8664,
+      "min_excess_pp": 5.8664,
+      "max_excess_pp": 6.468,
+      "frac_positive": 1.0
+    },
+    "esports|2026-01-08_fee_era": {
+      "n_specifications": 18,
+      "n_positive": 5,
+      "n_significant": 0,
+      "median_excess_pp": -0.3013,
+      "min_excess_pp": -1.4027,
+      "max_excess_pp": 0.7794,
+      "frac_positive": 0.278
+    },
+    "nba|2025-07-01": {
+      "n_specifications": 18,
+      "n_positive": 3,
+      "n_significant": 0,
+      "median_excess_pp": -1.1465,
+      "min_excess_pp": -1.9483,
+      "max_excess_pp": 2.4387,
+      "frac_positive": 0.167
+    },
+    "nba|2026-01-08_fee_era": {
+      "n_specifications": 21,
+      "n_positive": 14,
+      "n_significant": 0,
+      "median_excess_pp": 0.6806,
+      "min_excess_pp": -4.2036,
+      "max_excess_pp": 6.6923,
+      "frac_positive": 0.667
+    },
+    "nfl|2025-07-01": {
+      "n_specifications": 12,
+      "n_positive": 12,
+      "n_significant": 0,
+      "median_excess_pp": 0.8541,
+      "min_excess_pp": 0.2837,
+      "max_excess_pp": 4.2503,
+      "frac_positive": 1.0
+    },
+    "nfl|2026-01-08_fee_era": {
+      "n_specifications": 17,
+      "n_positive": 16,
+      "n_significant": 3,
+      "median_excess_pp": 4.2418,
+      "min_excess_pp": -1.951,
+      "max_excess_pp": 13.2081,
+      "frac_positive": 0.941
+    },
+    "other|2025-07-01": {
+      "n_specifications": 21,
+      "n_positive": 21,
+      "n_significant": 16,
+      "median_excess_pp": 1.1821,
+      "min_excess_pp": 0.6918,
+      "max_excess_pp": 1.5147,
+      "frac_positive": 1.0
+    },
+    "other|2026-01-08_fee_era": {
+      "n_specifications": 21,
+      "n_positive": 5,
+      "n_significant": 0,
+      "median_excess_pp": -1.114,
+      "min_excess_pp": -1.9179,
+      "max_excess_pp": 2.4387,
+      "frac_positive": 0.238
+    },
+    "politics|2025-07-01": {
+      "n_specifications": 21,
+      "n_positive": 21,
+      "n_significant": 21,
+      "median_excess_pp": 1.2706,
+      "min_excess_pp": 1.0958,
+      "max_excess_pp": 1.5349,
+      "frac_positive": 1.0
+    },
+    "politics|2026-01-08_fee_era": {
+      "n_specifications": 21,
+      "n_positive": 21,
+      "n_significant": 3,
+      "median_excess_pp": 0.8246,
+      "min_excess_pp": 0.2811,
+      "max_excess_pp": 1.5006,
+      "frac_positive": 1.0
+    },
+    "soccer|2025-07-01": {
+      "n_specifications": 15,
+      "n_positive": 0,
+      "n_significant": 4,
+      "median_excess_pp": -3.3361,
+      "min_excess_pp": -8.1685,
+      "max_excess_pp": -0.9518,
+      "frac_positive": 0.0
+    },
+    "soccer|2026-01-08_fee_era": {
+      "n_specifications": 21,
+      "n_positive": 21,
+      "n_significant": 11,
+      "median_excess_pp": 2.2053,
+      "min_excess_pp": 1.127,
+      "max_excess_pp": 3.5613,
+      "frac_positive": 1.0
+    },
+    "weather|2025-07-01": {
+      "n_specifications": 3,
+      "n_positive": 3,
+      "n_significant": 0,
+      "median_excess_pp": 1.1888,
+      "min_excess_pp": 0.1383,
+      "max_excess_pp": 1.1888,
+      "frac_positive": 1.0
+    },
+    "weather|2026-01-08_fee_era": {
+      "n_specifications": 8,
+      "n_positive": 3,
+      "n_significant": 4,
+      "median_excess_pp": -3.3178,
+      "min_excess_pp": -6.6184,
+      "max_excess_pp": 1.7453,
+      "frac_positive": 0.375
+    }
+  },
+  "filters_report": {
+    "F0_min10": {
+      "n_specifications": 48,
+      "n_significant": 12,
+      "median_excess_pp": 0.6461,
+      "median_n_eff": 483.0,
+      "median_wallets_ranked": 387
+    },
+    "F1_min20": {
+      "n_specifications": 42,
+      "n_significant": 8,
+      "median_excess_pp": 0.8541,
+      "median_n_eff": 548.3,
+      "median_wallets_ranked": 243
+    },
+    "F2_min50": {
+      "n_specifications": 39,
+      "n_significant": 9,
+      "median_excess_pp": 0.9548,
+      "median_n_eff": 569.0,
+      "median_wallets_ranked": 135
+    },
+    "F3_min20_recent": {
+      "n_specifications": 36,
+      "n_significant": 9,
+      "median_excess_pp": 1.1212,
+      "median_n_eff": 597.5,
+      "median_wallets_ranked": 128
+    },
+    "F4_min20_cadence": {
+      "n_specifications": 32,
+      "n_significant": 12,
+      "median_excess_pp": 1.3455,
+      "median_n_eff": 392.0,
+      "median_wallets_ranked": 61
+    },
+    "F5_min20_nonMM": {
+      "n_specifications": 41,
+      "n_significant": 11,
+      "median_excess_pp": 0.8541,
+      "median_n_eff": 466.3,
+      "median_wallets_ranked": 185
+    },
+    "F6_min20_all": {
+      "n_specifications": 24,
+      "n_significant": 10,
+      "median_excess_pp": 1.2684,
+      "median_n_eff": 742.6,
+      "median_wallets_ranked": 76
+    }
+  },
+  "weighting_report": {
+    "hl30d": {
+      "n_specifications": 88,
+      "n_significant": 23,
+      "median_excess_pp": 1.1212
+    },
+    "hl90d": {
+      "n_specifications": 88,
+      "n_significant": 26,
+      "median_excess_pp": 1.0139
+    },
+    "unweighted": {
+      "n_specifications": 86,
+      "n_significant": 22,
+      "median_excess_pp": 0.9401
+    }
+  },
+  "task3_table": [
+    {
+      "cut": "2025-07-01",
+      "category": "politics",
+      "copier_gross_pp": 3.3874,
+      "copier_net_of_spread_pp": 2.3874,
+      "copier_ci95": [
+        2.318,
+        4.551
+      ],
+      "naive_pp": -0.428,
+      "excess_over_naive_pp": 1.1801,
+      "excess_ci95": [
+        0.3675,
+        1.9983
+      ],
+      "p": 0.006,
+      "significant_bh": true,
+      "n_events": 3360,
+      "n_eff": 2336.6,
+      "n_selected_obs": 4119,
+      "generalist_copier_pp": 0.9374,
+      "specialist_minus_generalist_pp": 2.45
+    },
+    {
+      "cut": "2025-07-01",
+      "category": "crypto",
+      "copier_gross_pp": -2.3515,
+      "copier_net_of_spread_pp": -3.3515,
+      "copier_ci95": [
+        -4.0984,
+        -0.5031
+      ],
+      "naive_pp": -2.3604,
+      "excess_over_naive_pp": -0.9701,
+      "excess_ci95": [
+        -2.608,
+        0.6954
+      ],
+      "p": 0.256,
+      "significant_bh": false,
+      "n_events": 744,
+      "n_eff": 636.1,
+      "n_selected_obs": 1108,
+      "generalist_copier_pp": 0.9374,
+      "specialist_minus_generalist_pp": -3.2889
+    },
+    {
+      "cut": "2025-07-01",
+      "category": "other",
+      "copier_gross_pp": 0.9068,
+      "copier_net_of_spread_pp": -0.0932,
+      "copier_ci95": [
+        -0.0186,
+        1.8199
+      ],
+      "naive_pp": -1.6495,
+      "excess_over_naive_pp": 1.342,
+      "excess_ci95": [
+        0.4663,
+        2.2582
+      ],
+      "p": 0.005,
+      "significant_bh": true,
+      "n_events": 3644,
+      "n_eff": 2926.8,
+      "n_selected_obs": 4986,
+      "generalist_copier_pp": 0.9374,
+      "specialist_minus_generalist_pp": -0.0306
+    },
+    {
+      "cut": "2026-01-08_fee_era",
+      "category": "politics",
+      "copier_gross_pp": 4.9455,
+      "copier_net_of_spread_pp": 3.9455,
+      "copier_ci95": [
+        3.0659,
+        6.986
+      ],
+      "naive_pp": -0.2995,
+      "excess_over_naive_pp": 1.1538,
+      "excess_ci95": [
+        -0.1232,
+        2.5675
+      ],
+      "p": 0.073,
+      "significant_bh": false,
+      "n_events": 1190,
+      "n_eff": 1076.3,
+      "n_selected_obs": 1329,
+      "generalist_copier_pp": -0.1348,
+      "specialist_minus_generalist_pp": 5.0803
+    },
+    {
+      "cut": "2026-01-08_fee_era",
+      "category": "crypto",
+      "copier_gross_pp": 1.4335,
+      "copier_net_of_spread_pp": 0.4335,
+      "copier_ci95": [
+        0.7588,
+        2.0564
+      ],
+      "naive_pp": -2.2216,
+      "excess_over_naive_pp": 2.0516,
+      "excess_ci95": [
+        0.4796,
+        3.6034
+      ],
+      "p": 0.01,
+      "significant_bh": true,
+      "n_events": 818,
+      "n_eff": 131.0,
+      "n_selected_obs": 21150,
+      "generalist_copier_pp": -0.1348,
+      "specialist_minus_generalist_pp": 1.5683
+    },
+    {
+      "cut": "2026-01-08_fee_era",
+      "category": "nba",
+      "copier_gross_pp": -4.1128,
+      "copier_net_of_spread_pp": -5.1128,
+      "copier_ci95": [
+        -10.4127,
+        1.6653
+      ],
+      "naive_pp": -1.3847,
+      "excess_over_naive_pp": -2.4275,
+      "excess_ci95": [
+        -9.5103,
+        4.4661
+      ],
+      "p": 0.483,
+      "significant_bh": false,
+      "n_events": 134,
+      "n_eff": 94.9,
+      "n_selected_obs": 178,
+      "generalist_copier_pp": -0.1348,
+      "specialist_minus_generalist_pp": -3.978
+    },
+    {
+      "cut": "2026-01-08_fee_era",
+      "category": "soccer",
+      "copier_gross_pp": 3.5816,
+      "copier_net_of_spread_pp": 2.5816,
+      "copier_ci95": [
+        1.7161,
+        5.4811
+      ],
+      "naive_pp": -1.7673,
+      "excess_over_naive_pp": 3.4637,
+      "excess_ci95": [
+        1.6622,
+        5.2494
+      ],
+      "p": 0.001,
+      "significant_bh": true,
+      "n_events": 928,
+      "n_eff": 742.6,
+      "n_selected_obs": 1284,
+      "generalist_copier_pp": -0.1348,
+      "specialist_minus_generalist_pp": 3.7164
+    },
+    {
+      "cut": "2026-01-08_fee_era",
+      "category": "other",
+      "copier_gross_pp": -0.43,
+      "copier_net_of_spread_pp": -1.43,
+      "copier_ci95": [
+        -3.8121,
+        2.9622
+      ],
+      "naive_pp": -1.3556,
+      "excess_over_naive_pp": 0.078,
+      "excess_ci95": [
+        -3.1219,
+        3.3413
+      ],
+      "p": 0.971,
+      "significant_bh": false,
+      "n_events": 462,
+      "n_eff": 370.2,
+      "n_selected_obs": 666,
+      "generalist_copier_pp": -0.1348,
+      "specialist_minus_generalist_pp": -0.2952
+    }
+  ],
+  "pooled_real": {
+    "2025-07-01": {
+      "n_categories": 3,
+      "n_obs": 10213,
+      "n_eff": 5899.5,
+      "volume_weighted_copier_pp": 1.5538,
+      "volume_weighted_naive_pp": -1.234,
+      "excess_over_naive_pp": 2.7877
+    },
+    "2026-01-08_fee_era": {
+      "n_categories": 5,
+      "n_obs": 24607,
+      "n_eff": 2415.0,
+      "volume_weighted_copier_pp": 1.6447,
+      "volume_weighted_naive_pp": -2.0646,
+      "excess_over_naive_pp": 3.7093
+    }
+  },
+  "pooled_synthetic": {
+    "2025-07-01": {
+      "n_categories": 2,
+      "n_obs": 94,
+      "n_eff": 74.9,
+      "volume_weighted_copier_pp": -0.1787,
+      "volume_weighted_naive_pp": -1.5149,
+      "excess_over_naive_pp": 1.3362
+    },
+    "2026-01-08_fee_era": {
+      "n_categories": 4,
+      "n_obs": 18965,
+      "n_eff": 553.7,
+      "volume_weighted_copier_pp": -2.7707,
+      "volume_weighted_naive_pp": -2.161,
+      "excess_over_naive_pp": -0.6097
+    }
+  }
+}

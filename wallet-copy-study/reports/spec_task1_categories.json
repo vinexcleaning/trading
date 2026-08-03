@@ -1,0 +1,98 @@
+{
+  "n_positions_scanned": 1746750,
+  "n_traded_markets": 453372,
+  "n_markets_classified": 453372,
+  "market_map_coverage": 1.0,
+  "classification_source": {
+    "slug": 23786,
+    "tag": 398769,
+    "question": 647,
+    "unmatched": 30170
+  },
+  "markets_by_category": {
+    "crypto": 214140,
+    "other": 52961,
+    "esports": 51917,
+    "nba": 49463,
+    "soccer": 38420,
+    "politics": 25487,
+    "weather": 16208,
+    "nfl": 4776
+  },
+  "volume": {
+    "total_usd": 1021913847.77,
+    "unmapped_usd": 0.0,
+    "unmapped_share": 0.0,
+    "other_usd": 205388574.46,
+    "other_share": 0.201,
+    "classified_into_a_named_category_share": 0.799,
+    "by_category_usd": {
+      "politics": 316116780.11,
+      "other": 205388574.46,
+      "crypto": 201058328.62,
+      "nba": 131604591.29,
+      "soccer": 62923029.32,
+      "nfl": 50467267.64,
+      "esports": 37170219.84,
+      "weather": 17185056.49
+    },
+    "by_category_share": {
+      "politics": 0.3093,
+      "other": 0.201,
+      "crypto": 0.1967,
+      "nba": 0.1288,
+      "soccer": 0.0616,
+      "nfl": 0.0494,
+      "esports": 0.0364,
+      "weather": 0.0168
+    }
+  },
+  "positions_by_category": {
+    "crypto": 1015349,
+    "other": 170873,
+    "nba": 131669,
+    "politics": 130596,
+    "soccer": 115867,
+    "esports": 89602,
+    "weather": 26959,
+    "nfl": 21299
+  },
+  "n_wallets": 2498,
+  "specialists_by_threshold": {
+    "50%": {
+      "politics": 758,
+      "crypto": 478,
+      "other": 199,
+      "nba": 170,
+      "soccer": 122,
+      "nfl": 40,
+      "weather": 16,
+      "esports": 16
+    },
+    "70%": {
+      "politics": 526,
+      "crypto": 394,
+      "other": 109,
+      "nba": 105,
+      "soccer": 63,
+      "weather": 10,
+      "nfl": 10,
+      "esports": 7
+    },
+    "90%": {
+      "crypto": 314,
+      "politics": 256,
+      "nba": 59,
+      "soccer": 39,
+      "other": 38,
+      "weather": 7,
+      "nfl": 5,
+      "esports": 5
+    }
+  },
+  "specialist_totals": {
+    "50%": 1799,
+    "70%": 1224,
+    "90%": 723
+  }
+}

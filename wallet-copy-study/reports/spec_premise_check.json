@@ -1,0 +1,103 @@
+{
+  "P1_data_location": {
+    "claim": "Data is on disk in the wallet-copy-study session",
+    "verdict": "AMENDED",
+    "evidence": {
+      "actual_path": "C:\\Users\\gianf\\trading\\wallet-copy-study",
+      "own_git_repo_present": false
+    },
+    "note": "Data is intact but the project MOVED to C:\\Users\\gianf\\trading\\wallet-copy-study. Its standalone git repo is gone -- the directory now sits inside the 'trading' repo, so the 16 commits of provenance from the earlier sessions are not reachable here."
+  },
+  "P2_generalist_numbers": {
+    "claim": "Generalist copier return +0.937pp, -0.135pp in the fee era",
+    "verdict": "CONFIRMED",
+    "evidence": {
+      "cut_2025_07_01": {
+        "copier": 0.9374,
+        "ci": [
+          0.5268,
+          1.3841,
+          "subsampled_clusters"
+        ],
+        "excess": 2.5669
+      },
+      "cut_2026_01_08": {
+        "copier": -0.1348,
+        "ci": [
+          -0.9302,
+          0.6304
+        ]
+      }
+    },
+    "note": "copier 0.9374pp at the 2025-07 cut and -0.1348pp at the fee-era cut. Both match."
+  },
+  "P3_sizing": {
+    "claim": "The earlier study may not have sized proportionally; copying is scale-invariant so you copy the fraction of bankroll",
+    "verdict": "PARTLY FALSE",
+    "evidence": {
+      "per_share_returns": true,
+      "equal_weight_per_position": true,
+      "notional_weighted": false
+    },
+    "note": "The generalist result already averaged a PER-SHARE return with EQUAL WEIGHT per (wallet, market) position -- which is exactly 'a fixed fraction of bankroll per signal'. It is already scale-invariant. What it does NOT do is mirror the wallet's own dollar sizes or their conviction (their fraction of their bankroll). Those are the variants worth adding, not 'proportional sizing' in general."
+  },
+  "P4_latency_flat": {
+    "claim": "Edge does not decay with latency, flat 0s-1800s; so 30 minutes late costs nothing and price impact may not be eating the copier",
+    "verdict": "FALSE AS STATED",
+    "evidence": {
+      "unconditional_copy_return_by_delay": {
+        "0": -2.4125,
+        "1": -1.5794,
+        "10": -1.6363,
+        "60": -1.5444,
+        "300": -1.4367,
+        "1800": -1.7023
+      },
+      "selected_wallet_buy_and_hold_by_delay": {
+        "0": 3.4362,
+        "10": 0.7813,
+        "60": 0.6857,
+        "300": 0.4275
+      }
+    },
+    "note": "Flat only UNCONDITIONALLY. Conditioned on selected wallets -- the only population a copier cares about -- buy-and-hold falls 3.4362pp at 0s to 0.4275pp at 300s on a balanced panel, i.e. ~3pp of decay inside five minutes, most of it in the first ten seconds. This was already corrected at the end of the exit study. The inference 'if 30 minutes is free, impact is free too' therefore does not follow, though the whale exclusion is still worth testing empirically."
+  },
+  "P5_fee_era_disjoint": {
+    "claim": "Fee-era top decile nearly disjoint from fee-free, 7 of 36 overlapping",
+    "verdict": "CONFIRMED",
+    "evidence": {
+      "fee_era_top_decile_n": 36,
+      "legacy_top_decile_n": 47,
+      "overlap_n": 7,
+      "overlap_frac_of_fee_era_top": 0.1944,
+      "jaccard": 0.0921,
+      "fee_era_top_that_were_legacy_eligible": 13,
+      "fee_era_top_not_even_eligible_before": 23
+    },
+    "note": "overlap 7 of 36, Jaccard 0.0921. Exactly as stated -- this one is ours."
+  },
+  "P6_project_ledger": {
+    "claim": "~47 corrections, every one shrinking the edge, and 8 apparent positives that died",
+    "verdict": "UNTESTABLE HERE",
+    "evidence": {
+      "reason": "no such ledger exists in this project directory"
+    },
+    "note": "This project's own records (PROGRESS.md, DECISIONS.md, the verdict) document far fewer than 47 corrections. The figure likely aggregates sibling projects. Adopted as a PRIOR (treat positives as presumptively wrong), which is sound regardless, but not as a verified count."
+  },
+  "P7_effective_series": {
+    "claim": "A prior session found four crypto assets were 1.81 effective series out of 4",
+    "verdict": "UNTESTABLE HERE",
+    "evidence": {
+      "reason": "belongs to a different project; no artefact in this directory"
+    },
+    "note": "Cannot verify. The underlying METHOD -- report effective sample size, not nominal -- is adopted because it is correct, not because the number is."
+  },
+  "P8_lookahead_anecdote": {
+    "claim": "A video ranked on 7-day P&L and backtested over the same 7 days, gains came from the selection window",
+    "verdict": "NOT VERIFIABLE, BUT THE RULE IS RIGHT",
+    "evidence": {
+      "rule": "selection window and measurement window must not overlap"
+    },
+    "note": "The anecdote cannot be checked. The rule it illustrates is already how this project works and is enforced again here by explicit look-ahead assertions."
+  }
+}

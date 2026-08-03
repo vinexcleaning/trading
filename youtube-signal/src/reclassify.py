@@ -45,6 +45,7 @@ for r in rows:
                                         f"(<{gates.MIN_REAL_WORDS}); caption track is "
                                         f"almost all sound tags",
             "DROP_G3_OFF_TOPIC": f"g3 rule: {detail.get('g3', {}).get('rule')}",
+            "DROP_G3_DISCRETIONARY": f"out of Phase 2 scope: {detail.get('g3', {}).get('rule')}",
             "DROP_G2_NO_DATE": "no upload_date available",
             "STALE_G2": f"age {detail.get('age_months')} mo > {gates.STALE_MONTHS}",
         }.get(status, status)

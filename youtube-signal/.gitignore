@@ -6,3 +6,7 @@ __pycache__/
 
 # Never commit the key.
 .env
+
+# Phase 2 onward: reports attach honesty judgments to named real people, and this
+# repo is PUBLIC. Code is committed; judgments stay local.
+reports/

@@ -137,6 +137,17 @@ def main():
         print(f"block events: {r.block_events}")
 
     # ---------- channel expansion ----------
+    # Phase 2 replaced this count rule with src/expansion_v2.py. Skip it here so
+    # the two rules never both run.
+    if "--no-expansion" in sys.argv:
+        print("\n(skipping legacy count-based expansion; use expansion_v2.py)")
+        (ROOT / "reports" / "step6_gates.json").write_text(
+            json.dumps({"gate_census": counts, "blocked": blocked,
+                        "throttle": r.throttle_report()}, indent=2, default=str),
+            encoding="utf-8")
+        con.close()
+        return
+
     print("\n===== CHANNEL EXPANSION =====")
     qualifying = con.execute(
         """SELECT channel_id, channel_name, COUNT(*) n FROM videos

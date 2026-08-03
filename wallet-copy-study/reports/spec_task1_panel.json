@@ -1,0 +1,16 @@
+{
+  "n_positions_scanned": 1746750,
+  "n_panel_rows": 1702214,
+  "n_tokens": 677721,
+  "by_category": {
+    "crypto": 1015349,
+    "other": 170873,
+    "nba": 131669,
+    "politics": 130596,
+    "soccer": 115867,
+    "esports": 89602,
+    "weather": 26959,
+    "nfl": 21299
+  },
+  "n_mm_excluded_wallets": 721
+}

@@ -1,0 +1,7 @@
+31 completed ESPN matches in the tape window
+  by league: {'mex.1': 1, 'arg.1': 1, 'bra.1': 16, 'col.1': 3, 'usa.1': 10}
+
+31 matches, 104 goal/red events with a wallclock
+  goals: 91
+  reds:  13
+wrote data/window_goals.json

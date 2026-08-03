@@ -42,6 +42,12 @@ CORE = [
     # practitioner technique, and 4 of 5 G3 false negatives were walk-forward
     # trading education that fired no core term.
     "walk forward", "walkforward",
+    # Added Phase 2. The holdout dropped "How To Build A Self-Improving AI Trading
+    # Agent" as off-topic because the vocabulary moved to "agent" and the lexicon
+    # did not follow.
+    "trading agent", "ai agent", "ai trading", "autonomous agent",
+    "systematic trading", "quantitative trading", "statistical arbitrage",
+    "paper trading", "order flow", "market microstructure", "clob",
 ]
 
 # Trading/markets context -- necessary but not sufficient on its own.
@@ -60,11 +66,52 @@ METHOD = [
     "profit", "roi", "pnl", "p&l",
 ]
 
-# Strong off-topic markers: these subjects share vocabulary but are not the topic.
+# Strong off-topic markers: different subjects that share vocabulary.
+#
+# "recipe" was REMOVED in Phase 2. It fired on the idiom "a recipe for disaster"
+# in a quantitative-trading video and suppressed a correct classification. Any
+# marker that is also a common English idiom is a liability here.
 NEGATIVE = [
-    "grocery", "recipe", "cooking", "workout", "makeup", "skincare",
-    "minecraft", "fortnite", "roblox", "gta ", "league of legends",
+    "grocery", "cooking recipe", "workout", "makeup", "skincare",
+    "minecraft", "fortnite", "roblox", "league of legends",
     "real estate agent", "dropshipping course", "affiliate marketing",
+]
+
+# ---------------------------------------------------------------------------
+# PHASE 2 BOUNDARY (decided 2026-08-02)
+#
+# IN SCOPE : prediction markets, trading bots, algorithmic and systematic method,
+#            and the tooling and data around them.
+# OUT      : discretionary / manual trading education -- chart reading, technical
+#            analysis instruction, trading psychology, "my setup" content.
+#
+# Rationale: the extraction target is tools, sites and procedures with verifiable
+# artifacts. Discretionary content has none of those and carries the platform's
+# highest marketing density.
+#
+# The exclusion is deliberately CONDITIONAL, not absolute. It only fires when
+# discretionary markers are present AND no systematic/prediction-market core term
+# is. A video can teach chart patterns and still be about building a bot.
+# ---------------------------------------------------------------------------
+DISCRETIONARY = [
+    "candlestick", "candle stick", "chart pattern", "head and shoulders",
+    "support and resistance", "supply and demand zone", "entry zone",
+    "fibonacci", "elliott wave", "ict", "smart money concept", "order block",
+    "fair value gap", "price action", "trading psychology", "discipline",
+    "my setup", "trade with me", "day trading strategy", "scalping strategy",
+    "swing trading strategy", "technical analysis", "rsi", "macd",
+    "moving average crossover", "trendline",
+]
+
+# Core terms that establish SYSTEMATIC intent specifically. A hit here overrides
+# the discretionary exclusion.
+SYSTEMATIC_CORE = [
+    "prediction market", "kalshi", "polymarket", "manifold market", "betfair",
+    "trading bot", "algorithmic trading", "algo trading", "quant trading",
+    "market making", "market maker", "order book", "orderbook",
+    "limit order book", "adverse selection", "event contract",
+    "copy trading", "copytrading", "arbitrage bot", "api", "backtest",
+    "back test", "walk forward", "trading agent", "ai agent",
 ]
 
 
@@ -84,19 +131,37 @@ def _hits(text, terms):
 
 
 def g3_on_topic(title, transcript_head):
-    """Title + first 500 transcript words -> (bool, evidence dict)."""
+    """Title + first 500 transcript words -> (bool, evidence dict).
+
+    PHASE 2 RETUNE -- recall over precision, deliberately.
+
+    The asymmetry was wrong before. A false positive costs one transcript read;
+    a false negative loses a video permanently, because nothing downstream ever
+    reconsiders a dropped video. So this gate is now permissive and the real topic
+    call belongs to the LLM read in Step 2.
+
+    Changes from Phase 1:
+      * the context+method bar dropped from >=2 method terms to >=1
+      * a negative marker no longer overrides a core term, it only blocks the
+        weaker context+method route
+      * the boundary exclusion (discretionary trading) fires only when NO
+        systematic core term is present
+    """
     text = f"{title or ''} \n {transcript_head or ''}".lower()
     core = _hits(text, CORE)
     ctx = _hits(text, CONTEXT)
     meth = _hits(text, METHOD)
     neg = _hits(text, NEGATIVE)
+    disc = _hits(text, DISCRETIONARY)
+    sysc = _hits(text, SYSTEMATIC_CORE)
 
-    # A core term is decisive unless a strong off-topic marker also fires and no
-    # second core term backs it up.
-    if core and not (neg and len(core) < 2):
+    # Boundary: discretionary content with no systematic signal is out of scope.
+    if disc and not sysc:
+        decision, why = False, f"out of scope: discretionary ({len(disc)} markers), no systematic core"
+    elif core:
         decision, why = True, "core term"
-    elif len(ctx) >= 1 and len(meth) >= 2 and not neg:
-        decision, why = True, "context + >=2 method terms"
+    elif ctx and meth and not neg:
+        decision, why = True, "context + method term (recall-tuned)"
     else:
         decision, why = False, "no core term and insufficient context+method"
 
@@ -107,9 +172,12 @@ def g3_on_topic(title, transcript_head):
         "context": ctx[:6],
         "method": meth[:6],
         "negative": neg[:4],
+        "discretionary": disc[:6],
+        "systematic": sysc[:6],
         "n_core": len(core),
         "n_context": len(ctx),
         "n_method": len(meth),
+        "n_discretionary": len(disc),
     }
 
 
@@ -149,6 +217,10 @@ def classify(video, snippets):
     detail["g3"] = ev
 
     if not on_topic:
+        # Distinguish "different subject" from "in the trading world but out of
+        # the Phase 2 scope boundary" -- they are different census lines.
+        if ev.get("n_discretionary"):
+            return "DROP_G3_DISCRETIONARY", detail
         return "DROP_G3_OFF_TOPIC", detail
     if age is None:
         return "DROP_G2_NO_DATE", detail

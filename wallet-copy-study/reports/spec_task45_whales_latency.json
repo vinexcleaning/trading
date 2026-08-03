@@ -1,0 +1,707 @@
+{
+  "meta": {
+    "cut": 1767830400,
+    "n_mm": 682,
+    "n_whales": 41,
+    "filters": {
+      "min_trades": 20,
+      "min_events": 10,
+      "recent_within_days": 30,
+      "max_gap_days": 30
+    },
+    "delays_s": [
+      0,
+      10,
+      60,
+      300,
+      1800
+    ]
+  },
+  "task4a_price_impact": {
+    "0-100": {
+      "d0_pp": -0.3709,
+      "d10_pp": -0.1951,
+      "d60_pp": -0.133,
+      "d300_pp": 0.1233,
+      "d1800_pp": 0.4475,
+      "n": 12170124
+    },
+    "100-1000": {
+      "d0_pp": -0.3462,
+      "d10_pp": -0.0557,
+      "d60_pp": -0.0444,
+      "d300_pp": -0.0327,
+      "d1800_pp": 0.176,
+      "n": 1159982
+    },
+    "1000-10000": {
+      "d0_pp": -0.3777,
+      "d10_pp": -0.0563,
+      "d60_pp": -0.035,
+      "d300_pp": -0.0104,
+      "d1800_pp": 0.0893,
+      "n": 189817
+    },
+    "10000-inf": {
+      "d0_pp": -0.297,
+      "d10_pp": -0.1377,
+      "d60_pp": -0.1033,
+      "d300_pp": -0.0286,
+      "d1800_pp": 0.0494,
+      "n": 14213
+    }
+  },
+  "task4b_whale_variants": [
+    {
+      "variant": "whales_excluded",
+      "category": "politics",
+      "n_wallets_ranked": 66,
+      "n_top": 6,
+      "n_whales_in_top_decile": 0,
+      "copier_pp": 4.9455,
+      "copier_ci95": [
+        3.0659,
+        6.986
+      ],
+      "excess_pp": 1.1538,
+      "excess_ci95": [
+        -0.1232,
+        2.5675
+      ],
+      "p": 0.073,
+      "n_events": 1190,
+      "n_eff": 1076.3
+    },
+    {
+      "variant": "whales_excluded",
+      "category": "crypto",
+      "n_wallets_ranked": 126,
+      "n_top": 12,
+      "n_whales_in_top_decile": 0,
+      "copier_pp": 1.4335,
+      "copier_ci95": [
+        0.7588,
+        2.0564
+      ],
+      "excess_pp": 2.0516,
+      "excess_ci95": [
+        0.4796,
+        3.6034
+      ],
+      "p": 0.01,
+      "n_events": 818,
+      "n_eff": 131.0
+    },
+    {
+      "variant": "whales_excluded",
+      "category": "soccer",
+      "n_wallets_ranked": 41,
+      "n_top": 4,
+      "n_whales_in_top_decile": 0,
+      "copier_pp": 3.5816,
+      "copier_ci95": [
+        1.7161,
+        5.4811
+      ],
+      "excess_pp": 3.4637,
+      "excess_ci95": [
+        1.6622,
+        5.2494
+      ],
+      "p": 0.001,
+      "n_events": 928,
+      "n_eff": 742.6
+    },
+    {
+      "variant": "whales_excluded",
+      "category": "nba",
+      "n_wallets_ranked": 47,
+      "n_top": 4,
+      "n_whales_in_top_decile": 0,
+      "copier_pp": -4.1128,
+      "copier_ci95": [
+        -10.4127,
+        1.6653
+      ],
+      "excess_pp": -2.4275,
+      "excess_ci95": [
+        -9.5103,
+        4.4661
+      ],
+      "p": 0.483,
+      "n_events": 134,
+      "n_eff": 94.9
+    },
+    {
+      "variant": "whales_excluded",
+      "category": "other",
+      "n_wallets_ranked": 76,
+      "n_top": 7,
+      "n_whales_in_top_decile": 0,
+      "copier_pp": -0.43,
+      "copier_ci95": [
+        -3.8121,
+        2.9622
+      ],
+      "excess_pp": 0.078,
+      "excess_ci95": [
+        -3.1219,
+        3.3413
+      ],
+      "p": 0.971,
+      "n_events": 462,
+      "n_eff": 370.2
+    },
+    {
+      "variant": "whales_included",
+      "category": "politics",
+      "n_wallets_ranked": 66,
+      "n_top": 6,
+      "n_whales_in_top_decile": 0,
+      "copier_pp": 4.9455,
+      "copier_ci95": [
+        3.0659,
+        6.986
+      ],
+      "excess_pp": 1.1538,
+      "excess_ci95": [
+        -0.1232,
+        2.5675
+      ],
+      "p": 0.073,
+      "n_events": 1190,
+      "n_eff": 1076.3
+    },
+    {
+      "variant": "whales_included",
+      "category": "crypto",
+      "n_wallets_ranked": 127,
+      "n_top": 12,
+      "n_whales_in_top_decile": 0,
+      "copier_pp": 1.4335,
+      "copier_ci95": [
+        0.7588,
+        2.0564
+      ],
+      "excess_pp": 2.0516,
+      "excess_ci95": [
+        0.4796,
+        3.6034
+      ],
+      "p": 0.01,
+      "n_events": 818,
+      "n_eff": 131.0
+    },
+    {
+      "variant": "whales_included",
+      "category": "soccer",
+      "n_wallets_ranked": 43,
+      "n_top": 4,
+      "n_whales_in_top_decile": 0,
+      "copier_pp": 3.5816,
+      "copier_ci95": [
+        1.7161,
+        5.4811
+      ],
+      "excess_pp": 3.4637,
+      "excess_ci95": [
+        1.6622,
+        5.2494
+      ],
+      "p": 0.001,
+      "n_events": 928,
+      "n_eff": 742.6
+    },
+    {
+      "variant": "whales_included",
+      "category": "nba",
+      "n_wallets_ranked": 50,
+      "n_top": 5,
+      "n_whales_in_top_decile": 0,
+      "copier_pp": -4.2338,
+      "copier_ci95": [
+        -9.1808,
+        0.5569
+      ],
+      "excess_pp": -2.679,
+      "excess_ci95": [
+        -8.2038,
+        2.6074
+      ],
+      "p": 0.307,
+      "n_events": 211,
+      "n_eff": 158.2
+    },
+    {
+      "variant": "whales_included",
+      "category": "other",
+      "n_wallets_ranked": 81,
+      "n_top": 8,
+      "n_whales_in_top_decile": 0,
+      "copier_pp": -0.43,
+      "copier_ci95": [
+        -3.8121,
+        2.9622
+      ],
+      "excess_pp": 0.078,
+      "excess_ci95": [
+        -3.1219,
+        3.3413
+      ],
+      "p": 0.971,
+      "n_events": 462,
+      "n_eff": 370.2
+    }
+  ],
+  "task5_latency": {
+    "book_coverage_frac": 0.009,
+    "n_survivors": 30,
+    "n_with_enough_book": 6,
+    "wallets": [
+      {
+        "wallet": "0x3c593aeb73ebdadbc9ce76d4264a6a2af4011766",
+        "categories": [
+          "politics",
+          "other"
+        ],
+        "d0": {
+          "mean_pp": 28.72,
+          "ci95": [
+            -11.68,
+            70.52
+          ],
+          "p": 0.13,
+          "n_obs": 8,
+          "n_events": 8,
+          "n_eff": 8.0
+        },
+        "d10": {
+          "mean_pp": 27.745,
+          "ci95": [
+            -12.425,
+            69.47
+          ],
+          "p": 0.15,
+          "n_obs": 8,
+          "n_events": 8,
+          "n_eff": 8.0
+        },
+        "d60": {
+          "mean_pp": 27.5575,
+          "ci95": [
+            -12.155,
+            68.845
+          ],
+          "p": 0.15,
+          "n_obs": 8,
+          "n_events": 8,
+          "n_eff": 8.0
+        },
+        "d300": {
+          "mean_pp": 27.8025,
+          "ci95": [
+            -10.4,
+            67.88
+          ],
+          "p": 0.1275,
+          "n_obs": 8,
+          "n_events": 8,
+          "n_eff": 8.0
+        },
+        "d1800": {
+          "mean_pp": 23.2575,
+          "ci95": [
+            -12.1625,
+            61.195
+          ],
+          "p": 0.22,
+          "n_obs": 8,
+          "n_events": 8,
+          "n_eff": 8.0
+        },
+        "n_events": 8,
+        "decay_0_to_1800_pp": -5.4625,
+        "followable_slowly": false
+      },
+      {
+        "wallet": "0xc468b3b8564017fcf2bf9ede2608a0ea24b1009d",
+        "categories": [
+          "politics",
+          "other"
+        ],
+        "d0": {
+          "mean_pp": 4.8724,
+          "ci95": [
+            -1.8711,
+            12.9719
+          ],
+          "p": 0.1925,
+          "n_obs": 139,
+          "n_events": 137,
+          "n_eff": 135.1
+        },
+        "d10": {
+          "mean_pp": -2.7032,
+          "ci95": [
+            -10.5767,
+            5.4932
+          ],
+          "p": 0.53,
+          "n_obs": 121,
+          "n_events": 120,
+          "n_eff": 119.0
+        },
+        "d60": {
+          "mean_pp": -2.007,
+          "ci95": [
+            -9.3227,
+            5.9287
+          ],
+          "p": 0.6175,
+          "n_obs": 121,
+          "n_events": 120,
+          "n_eff": 119.0
+        },
+        "d300": {
+          "mean_pp": -2.1596,
+          "ci95": [
+            -9.8025,
+            5.949
+          ],
+          "p": 0.6175,
+          "n_obs": 120,
+          "n_events": 119,
+          "n_eff": 118.0
+        },
+        "d1800": {
+          "mean_pp": -1.8643,
+          "ci95": [
+            -9.1916,
+            5.7958
+          ],
+          "p": 0.6475,
+          "n_obs": 119,
+          "n_events": 118,
+          "n_eff": 117.0
+        },
+        "n_events": 137,
+        "decay_0_to_1800_pp": -6.7367,
+        "followable_slowly": false
+      },
+      {
+        "wallet": "0xed2c371514045d7292b8cbc5234ed2317a709597",
+        "categories": [
+          "other"
+        ],
+        "d0": {
+          "mean_pp": -2.4417,
+          "ci95": [
+            -31.1273,
+            19.9133
+          ],
+          "p": 0.8225,
+          "n_obs": 12,
+          "n_events": 10,
+          "n_eff": 9.0
+        },
+        "d10": {
+          "mean_pp": -2.7333,
+          "ci95": [
+            -31.0909,
+            20.2583
+          ],
+          "p": 0.79,
+          "n_obs": 12,
+          "n_events": 10,
+          "n_eff": 9.0
+        },
+        "d60": {
+          "mean_pp": -2.95,
+          "ci95": [
+            -31.0,
+            19.8
+          ],
+          "p": 0.775,
+          "n_obs": 12,
+          "n_events": 10,
+          "n_eff": 9.0
+        },
+        "d300": {
+          "mean_pp": -0.0781,
+          "ci95": [
+            -28.9034,
+            22.9429
+          ],
+          "p": 1.0,
+          "n_obs": 12,
+          "n_events": 10,
+          "n_eff": 9.0
+        },
+        "d1800": {
+          "mean_pp": -2.1925,
+          "ci95": [
+            -20.37,
+            13.5908
+          ],
+          "p": 0.78,
+          "n_obs": 12,
+          "n_events": 10,
+          "n_eff": 9.0
+        },
+        "n_events": 10,
+        "decay_0_to_1800_pp": 0.2492,
+        "followable_slowly": false
+      },
+      {
+        "wallet": "0xe7f7e2d3d4d0e164239f3cc30a7928f4209de73b",
+        "categories": [
+          "crypto"
+        ],
+        "d0": {
+          "mean_pp": -5.981,
+          "ci95": [
+            -31.016,
+            15.641
+          ],
+          "p": 0.6525,
+          "n_obs": 10,
+          "n_events": 10,
+          "n_eff": 10.0
+        },
+        "d10": {
+          "mean_pp": -6.5906,
+          "ci95": [
+            -33.7456,
+            14.9217
+          ],
+          "p": 0.61,
+          "n_obs": 9,
+          "n_events": 9,
+          "n_eff": 9.0
+        },
+        "d60": {
+          "mean_pp": -6.5111,
+          "ci95": [
+            -33.4456,
+            14.8911
+          ],
+          "p": 0.615,
+          "n_obs": 9,
+          "n_events": 9,
+          "n_eff": 9.0
+        },
+        "d300": {
+          "mean_pp": -6.6922,
+          "ci95": [
+            -33.6556,
+            14.81
+          ],
+          "p": 0.5975,
+          "n_obs": 9,
+          "n_events": 9,
+          "n_eff": 9.0
+        },
+        "d1800": {
+          "mean_pp": -5.8633,
+          "ci95": [
+            -32.3078,
+            15.6489
+          ],
+          "p": 0.6575,
+          "n_obs": 9,
+          "n_events": 9,
+          "n_eff": 9.0
+        },
+        "n_events": 10,
+        "decay_0_to_1800_pp": 0.1177,
+        "followable_slowly": false
+      },
+      {
+        "wallet": "0xe02c5438dfb907d5ac4cbf3967b45d14e4ed5d08",
+        "categories": [
+          "nba"
+        ],
+        "d0": {
+          "mean_pp": -7.2557,
+          "ci95": [
+            -24.3908,
+            8.8363
+          ],
+          "p": 0.3975,
+          "n_obs": 19,
+          "n_events": 19,
+          "n_eff": 19.0
+        },
+        "d10": {
+          "mean_pp": -7.7911,
+          "ci95": [
+            -24.9979,
+            8.2468
+          ],
+          "p": 0.35,
+          "n_obs": 19,
+          "n_events": 19,
+          "n_eff": 19.0
+        },
+        "d60": {
+          "mean_pp": -7.5858,
+          "ci95": [
+            -24.98,
+            8.6068
+          ],
+          "p": 0.37,
+          "n_obs": 19,
+          "n_events": 19,
+          "n_eff": 19.0
+        },
+        "d300": {
+          "mean_pp": -7.5916,
+          "ci95": [
+            -25.1389,
+            8.5763
+          ],
+          "p": 0.3825,
+          "n_obs": 19,
+          "n_events": 19,
+          "n_eff": 19.0
+        },
+        "d1800": {
+          "mean_pp": -8.2595,
+          "ci95": [
+            -25.5547,
+            8.2516
+          ],
+          "p": 0.34,
+          "n_obs": 19,
+          "n_events": 19,
+          "n_eff": 19.0
+        },
+        "n_events": 19,
+        "decay_0_to_1800_pp": -1.0038,
+        "followable_slowly": false
+      },
+      {
+        "wallet": "0x27db6ea9051c6e2d68a8ff1fc2984e764c73e863",
+        "categories": [
+          "politics"
+        ],
+        "d0": {
+          "mean_pp": -7.5736,
+          "ci95": [
+            -29.1993,
+            11.2643
+          ],
+          "p": 0.48,
+          "n_obs": 14,
+          "n_events": 13,
+          "n_eff": 12.2
+        },
+        "d10": {
+          "mean_pp": -8.0636,
+          "ci95": [
+            -29.68,
+            11.2007
+          ],
+          "p": 0.4525,
+          "n_obs": 14,
+          "n_events": 13,
+          "n_eff": 12.2
+        },
+        "d60": {
+          "mean_pp": -8.9063,
+          "ci95": [
+            -29.3568,
+            9.3787
+          ],
+          "p": 0.395,
+          "n_obs": 14,
+          "n_events": 13,
+          "n_eff": 12.2
+        },
+        "d300": {
+          "mean_pp": -8.9899,
+          "ci95": [
+            -29.0691,
+            8.5765
+          ],
+          "p": 0.3825,
+          "n_obs": 14,
+          "n_events": 13,
+          "n_eff": 12.2
+        },
+        "d1800": {
+          "mean_pp": -8.9957,
+          "ci95": [
+            -29.6593,
+            9.6043
+          ],
+          "p": 0.4025,
+          "n_obs": 14,
+          "n_events": 13,
+          "n_eff": 12.2
+        },
+        "n_events": 13,
+        "decay_0_to_1800_pp": -1.4221,
+        "followable_slowly": false
+      }
+    ]
+  },
+  "task5_n_followable_slowly": 0,
+  "bh_fdr_task4": {
+    "n_tests": 10,
+    "alpha": 0.05,
+    "n_significant": 4,
+    "detail": {
+      "t4|whales_excluded|soccer": {
+        "p": 0.001,
+        "bh_threshold": 0.005,
+        "significant": true
+      },
+      "t4|whales_included|soccer": {
+        "p": 0.001,
+        "bh_threshold": 0.01,
+        "significant": true
+      },
+      "t4|whales_excluded|crypto": {
+        "p": 0.01,
+        "bh_threshold": 0.015,
+        "significant": true
+      },
+      "t4|whales_included|crypto": {
+        "p": 0.01,
+        "bh_threshold": 0.02,
+        "significant": true
+      },
+      "t4|whales_excluded|politics": {
+        "p": 0.073,
+        "bh_threshold": 0.025,
+        "significant": false
+      },
+      "t4|whales_included|politics": {
+        "p": 0.073,
+        "bh_threshold": 0.03,
+        "significant": false
+      },
+      "t4|whales_included|nba": {
+        "p": 0.307,
+        "bh_threshold": 0.035,
+        "significant": false
+      },
+      "t4|whales_excluded|nba": {
+        "p": 0.483,
+        "bh_threshold": 0.04,
+        "significant": false
+      },
+      "t4|whales_excluded|other": {
+        "p": 0.971,
+        "bh_threshold": 0.045,
+        "significant": false
+      },
+      "t4|whales_included|other": {
+        "p": 0.971,
+        "bh_threshold": 0.05,
+        "significant": false
+      }
+    }
+  }
+}

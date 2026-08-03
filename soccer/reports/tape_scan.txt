@@ -1,0 +1,56 @@
+18 tape day-files
+  2026-05-25:  86,529 soccer trades
+  2026-05-26:   7,333 soccer trades
+  2026-05-27:   3,813 soccer trades
+  2026-05-28:  21,425 soccer trades
+  2026-05-29:  44,629 soccer trades
+  2026-05-30:  58,551 soccer trades
+  2026-05-31: 171,880 soccer trades
+  2026-06-01:  95,313 soccer trades
+  2026-06-02:  94,538 soccer trades
+  2026-06-03:  73,586 soccer trades
+  2026-06-04: 121,147 soccer trades
+  2026-06-05: 122,458 soccer trades
+  2026-06-06: 192,065 soccer trades
+  2026-06-07: 129,649 soccer trades
+  2026-06-08:  65,616 soccer trades
+  2026-06-09: 119,553 soccer trades
+  2026-06-10:  48,087 soccer trades
+  2026-06-11:  17,429 soccer trades
+
+=== soccer trades in the window: 1,473,601 ===
+  KXINTLFRIENDLYGAME       1,130,792
+  KXURYPDGAME                 66,090
+  KXPERLIGA1GAME              46,900
+  KXUSLGAME                   43,876
+  KXECULPGAME                 41,985
+  KXLIGAMXGAME                38,418
+  KXCHLLDPGAME                34,545
+  KXMLSGAME                   31,486
+  KXNWSLGAME                  23,792
+  KXDIMAYORGAME               15,717
+
+distinct soccer markets traded: 708
+busiest markets:
+  KXINTLFRIENDLYGAME-26MAY31USASEN-USA                   19,972
+  KXLIGAMXGAME-26MAY24PUMCRA-PUM                         14,902
+  KXLIGAMXGAME-26MAY24PUMCRA-CRA                         14,597
+  KXINTLFRIENDLYGAME-26JUN06USAGER-GER                   14,113
+  KXINTLFRIENDLYGAME-26JUN08NEDUZB-NED                   13,602
+  KXINTLFRIENDLYGAME-26JUN10PORNGR-POR                   11,882
+  KXINTLFRIENDLYGAME-26MAY30MEXAUS-MEX                   11,748
+  KXINTLFRIENDLYGAME-26JUN06USAGER-USA                   11,458
+  KXINTLFRIENDLYGAME-26JUN01CANUZB-CAN                   10,972
+  KXINTLFRIENDLYGAME-26MAY31USASEN-SEN                   10,206
+  KXINTLFRIENDLYGAME-26JUN06BRAEGY-BRA                    9,989
+  KXINTLFRIENDLYGAME-26JUN04FRACIV-FRA                    9,960
+  KXINTLFRIENDLYGAME-26JUN04MEXSRB-MEX                    9,892
+  KXINTLFRIENDLYGAME-26JUN02CROBEL-BEL                    9,476
+  KXINTLFRIENDLYGAME-26JUN08NEDUZB-TIE                    9,208
+
+distinct fixtures (events): 240
+fixtures per date: {'JUN01': 13, 'JUN02': 6, 'JUN03': 11, 'JUN04': 12, 'JUN05': 21, 'JUN06': 25, 'JUN07': 15, 'JUN08': 6, 'JUN09': 23, 'JUN10': 7, 'JUN11': 1, 'JUN12': 1, 'JUN13': 15, 'JUN14': 2, 'MAY21': 1, 'MAY24': 6, 'MAY25': 2, 'MAY26': 2, 'MAY27': 2, 'MAY28': 2, 'MAY29': 10, 'MAY30': 30, 'MAY31': 27}
+
+fixtures with >=200 trades (usable for an event study): 220
+
+wrote reports/tape_soccer_scan.json
