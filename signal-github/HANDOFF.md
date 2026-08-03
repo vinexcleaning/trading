@@ -3,6 +3,29 @@
 Session of **2026-08-03**. Ran unattended start to finish. Nothing here is a
 plan; everything is either a measurement or a stated gap.
 
+## 0. Session state (for the coordinator)
+
+| | |
+|---|---|
+| Working directory | `C:\Users\gianf\trading\signal-github` |
+| Inside `C:\Users\gianf\trading`? | **Yes** — a subdirectory of the repo, fully tracked |
+| Git remote | `https://github.com/vinexcleaning/trading.git` |
+| Local HEAD == origin/main | **Yes**, `d130db73`, verified with `git ls-remote`. Nothing unpushed. |
+| Working tree | clean; `git add -A && git commit` returns "nothing to commit" |
+| Machine | this laptop (`gianf`). Nothing here touches `C:\Users\gianf\kalshi` or any desktop path. |
+| Live process | PID **17996** (child 17308 is its venv-to-base interpreter pair; one logical process) |
+| What it does | `src/fetch_repo.py tree 400` — expands coverage, 1 GitHub API call per repo at 60/hour |
+| Writes to | `data/github.db` and `cache/`, both gitignored |
+| Safe to kill? | **Yes, entirely.** Every API response is cached to disk; the pass is resumable and idempotent. Killing it loses at most one in-flight repo. |
+
+**Progress right now:** 146 repos genuinely scored (real file tree), 12 read in
+full, 2416 still queued for the tree pass.
+
+**Nothing in this project records live market data.** There is no recorder, no
+open market-data handle, no time-sensitive collection. It only reads the public
+GitHub API. This directory can be stopped, moved or archived at any time without
+loss.
+
 ---
 
 ## 1. Reachability, and the real rate limits
