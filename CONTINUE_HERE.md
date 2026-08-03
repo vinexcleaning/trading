@@ -147,6 +147,37 @@ markets are soft" is true at all.
 
 ---
 
+## STATUS AS OF 2026-08-03 ~01:00 UTC — four gates failed, now testing latency
+
+**Prediction is dead in four markets.** Tennis (T006), crypto (C010), soccer
+(+0.02170 Brier vs the book, n=2,875), and now **MLB first innings**:
+
+- Kalshi's RFI price on **889 settled markets**: median 49.5¢ vs a 51.5% base
+  rate, 1¢ spread, well calibrated (46.2¢→48.1%, 53.1¢→54.2%), **no
+  significant lean** (+2.05¢ ± 3.25).
+- My model on 24,443 games, tested against **771 real Kalshi prices**:
+  model Brier 0.24780 vs Kalshi 0.24543, diff **+0.00237 [−0.00072, +0.00553]**
+  — does not beat. Controls passed (peek detects −0.245).
+- Diagnostic: the model's probabilities vary by **1.9pp**, Kalshi's by
+  **~6.5pp**. The market differentiates games *more* than the model does.
+
+**Now on OPTION 2 (user-chosen): the in-play / latency question.** Not "can we
+forecast" but "when news breaks, who knows first?"
+
+First result, **NOT YET TRUSTWORTHY**: median lag of **+56s** from MLB's
+scoring-play timestamp to the first trade at a moved price, 0 of 54 events
+where the market moved first. **Do not report this as a finding.** Three
+problems, being checked by `mlb/src/latency_sanity.py`:
+1. max lag was **86,294s** (24 h) — garbage polluting the tail
+2. only **56 of 233** games joined — likely a UTC/ET date mismatch
+3. **the confound that matters**: a trade print shows when someone DID trade.
+   If RFI prints once a minute anyway, "56s to react" is just illiquidity.
+   The check compares the lag to the baseline inter-trade gap.
+
+**If the ratio is under ~2×, the window is an artefact and must be reported as
+one.** The right instrument would then be the pmxt L2 book (quotes move
+without trades), which is mirrored and unused.
+
 ## Immediate next actions when you resume
 
 1. Verify the running processes above are still alive.

@@ -1,3 +1,10 @@
 233 final MLB games in 2026-05-25..2026-06-11
   50/233 games, 338 scoring plays (42 in the 1st)
   100/233 games, 744 scoring plays (92 in the 1st)
+  150/233 games, 1103 scoring plays (133 in the 1st)
+  200/233 games, 1459 scoring plays (175 in the 1st)
+
+233 games written
+  scoring plays: 1686
+  first-inning scoring plays: 197
+wrote C:\Users\gianf\trading\mlb\src\..\data\window_plays.jsonl

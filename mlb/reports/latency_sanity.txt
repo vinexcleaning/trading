@@ -1,0 +1,7 @@
+56 events from the latency run
+
+lags: n=54, within 0..900s: 51 (94%)
+  discarded as nonsense (>900s): [86028, 86029, 86294]
+  SANE-ONLY lag: median +51.2s  p25 +27.0  p75 +103.5  max +174.5
+
+re-scanning 18 tape files for 56 tickers ...

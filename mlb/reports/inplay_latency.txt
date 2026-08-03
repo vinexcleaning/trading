@@ -5,3 +5,48 @@ scanning 18 tape files for KXMLBRFI ...
   2026-05-27: 21,258
   2026-05-28: 14,456
   2026-05-29: 10,802
+  2026-05-30: 15,480
+  2026-05-31: 20,360
+  2026-06-01:  9,634
+  2026-06-02: 15,623
+  2026-06-03: 19,264
+  2026-06-04: 16,044
+  2026-06-05: 16,218
+  2026-06-06: 20,028
+  2026-06-07: 20,649
+  2026-06-08: 10,586
+  2026-06-09: 16,008
+  2026-06-10: 21,994
+  2026-06-11: 17,110
+  294,102 RFI trades across 248 markets
+
+joined events: 56   with a detectable move: 54   tickers not joined: 177
+
+==================================================================
+LAG: feed timestamp -> first trade at a clearly-moved price
+==================================================================
+  n=54
+  median +56.0s   mean +4844.9s
+  p5    +4.3s
+  p10   +17.6s
+  p25   +27.4s
+  p75   +112.0s
+  p90   +157.1s
+  p95   +86027.6s
+  min +1.0s   max +86294.5s
+
+  events where the MARKET MOVED BEFORE THE FEED: 0 of 54 (0%)
+  market moved within N seconds of the feed: {1: 0, 2: 1, 5: 3, 10: 4, 30: 15, 60: 29}
+
+==================================================================
+WAS THE OLD PRICE STILL AVAILABLE AFTER THE FEED?
+==================================================================
+  events with a trade at (near) the pre-event price AFTER the feed stamp: 52 of 54
+    that window lasted: median 45.3s  p90 142.5s  max 86292.1s
+    size traded in it: median 26 contracts  max 2040
+
+==================================================================
+VERDICT
+==================================================================
+  Median lag +56.0s -- a real window exists. Size it
+  against the depth available before concluding anything.
