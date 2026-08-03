@@ -27,7 +27,7 @@ touched. Claims: [LEDGER.md](LEDGER.md). Reusable checks: [GUARDS.md](GUARDS.md)
 | **Live bot position-sizing bug** | 64 contracts placed against an intended 9, on a $125 bankroll, with `max_daily_loss_pct = 0 (OFF)`. Cause never identified. | Diagnose or disable the bot. **Top standing financial risk.** |
 | **Score-staleness (already fixed)** | `fetched_at` was stamped at cache read, so the 30 s guard never rejected anything. | Nothing to fix — but **no live entry result predating the fix is a valid test of the entry logic.** Treat the 4-for-10 as void. |
 | **Label coverage (tennis)** | Blocked. Apify at a monthly hard limit; Flashscore's `dayOffsets` is −7..+7 against a −68 need. | Restore quota, then label day-by-day via `crawlstone/tennis-scraper` or `tennisexplorer` (~$20, not $3.44). Only path above 13.9% coverage. |
-| **youtube-signal** (new, moved in 08-02) | Phase 1 retrieval done. 470 videos gated, 263 pass, 439 transcripts cached, 43 channels expanded. **0 API units — no key needed.** Insider-vocabulary hypothesis **supported at 2.25×**; F1∩F2 Jaccard **0.037**. | **Define the on-topic boundary, then re-validate G3.** It disagrees with a careful human on ~1 video in 5, and the biggest cause is an undecided spec question, not a bug. Blocks Phase 2 scoring. |
+| **youtube-signal** | **Phase 2 BLOCKED at Step 0: no `ANTHROPIC_API_KEY`, so the LLM read never ran and no S or H component has ever fired.** All LLM-free work done: corpus 718 gated / 369 passing / 683 transcripts cached, G3 retuned to recall 1.000, F3 cut, F2B's 12 new insider terms added (88.5% exclusive, Jaccard 0.041 vs F2), 60-video read set selected, Wilson n-check verified. Retrieval win (F1∩F2 Jaccard 0.037, 2.25× low-view yield) is **still not cashed out** — different videos, not yet demonstrably better ones. | **Buy $5 of Anthropic API credit, add the key, run the read on 2 videos.** Measured cost for all 60 is $3.64 on Sonnet. Everything else waits on this one input. |
 
 ---
 
@@ -53,7 +53,8 @@ endpoint.
 | Crypto recordings, panel, spot, Deribit, Polymarket books | `C:\Users\gianf\crypto\data\` | **3.6 GB** | Partly. Recorded Kalshi books: **no**. |
 | Tennis depth + candles | `C:\Users\gianf\kalshi\set1_overshoot\data\` | **384 MB** | Recorded depth: **no**. Candles: yes, for ~69 days. |
 | Byte-identical backup of `kalshi-tennis/src` + `reports` | `trading\_archive\` | 296 KB | Redundant — safe to delete |
-| youtube-signal DB: 470 gated videos, 439 cached transcripts, 4,964 known videos | `trading\youtube-signal\data\signal.db` | ~25 MB | **Yes**, but slowly — ~35 min of paced fetching to rebuild. Gitignored. |
+| youtube-signal DB: 718 gated videos, 683 cached transcripts, 11,277 known videos | `trading\youtube-signal\data\signal.db` | ~40 MB | **Yes**, but slowly — ~45 min of paced fetching to rebuild. Gitignored. |
+| youtube-signal reports (gitignored from Phase 2 — they name real creators) | `trading\youtube-signal\reports\` | ~2 MB | Yes, regenerable from the DB. **Phase 0/1 copies remain in public git history**, see HANDOFF §5.7. |
 
 **Kalshi's API is a ~69-day window.** Closed markets 404 and are gone. Never
 re-pull to "replace" a local archive.
