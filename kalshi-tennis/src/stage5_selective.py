@@ -34,10 +34,17 @@ EDGE_GRID = (0.02, 0.05, 0.10)
 MIN_SEGMENT = 40
 
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "common"))
+from kalshi_fees import fee_dollars_from_price_vec  # noqa: E402
+
+
 def fee(price, contracts=1.0):
-    """Kalshi taker fee, rounded up to the cent."""
-    raw = FEE_RATE * contracts * price * (1.0 - price)
-    return np.ceil(raw * 100.0) / 100.0
+    """Kalshi taker fee in dollars, rounded up to the cent. price in dollars.
+
+    Exact Decimal — see common/kalshi_fees.py. The previous float form
+    overcharged a cent on ~6% of price/size cells.
+    """
+    return fee_dollars_from_price_vec(price, contracts)
 
 
 def entry_price(side_yes, bid, ask, mid, executable=True):

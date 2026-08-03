@@ -20,6 +20,7 @@ import argparse
 import json
 import math
 import os
+import sys
 import time
 from collections import defaultdict
 from dataclasses import dataclass, field, asdict
@@ -80,9 +81,15 @@ class View:
         return bool(self.set_scores) and self.set_scores[-1][0] > self.set_scores[-1][1]
 
 
+_COMMON = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "common")
+if _COMMON not in sys.path:
+    sys.path.insert(0, _COMMON)
+from kalshi_fees import fee_order_dollars as _fee_order_dollars  # noqa: E402
+
+
 def fee(n: int, price_cents: int) -> float:
-    p = price_cents / 100
-    return math.ceil(0.07 * n * p * (1 - p) * 100) / 100
+    """Kalshi taker fee in dollars. Exact Decimal — see common/kalshi_fees.py."""
+    return _fee_order_dollars(price_cents, n)
 
 
 # ----------------------------------------------------------------------

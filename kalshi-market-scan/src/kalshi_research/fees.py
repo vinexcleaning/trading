@@ -7,8 +7,16 @@ and `fee_multiplier` in {0, 1}. See docs/contract_spec.md.
 
 from __future__ import annotations
 
+import os
+import sys
 from dataclasses import dataclass
-from decimal import ROUND_CEILING, Decimal, localcontext
+from decimal import Decimal
+
+# The quadratic fee itself is not reimplemented here — it lives in
+# common/kalshi_fees.py, the single implementation for the whole repo.
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                "..", "..", "..", "common"))
+from kalshi_fees import fee_order_from_price as _shared_order_cents  # noqa: E402
 
 TAKER_RATE = 0.07
 MAKER_RATE = 0.0175  # one quarter of taker, only on quadratic_with_maker_fees series
@@ -17,7 +25,7 @@ MAKER_RATE = 0.0175  # one quarter of taker, only on quadratic_with_maker_fees s
 def _quadratic_fee_dollars(rate: float, contracts: int, price: float) -> float:
     """ceil-to-the-cent quadratic fee. price is in dollars (0..1).
 
-    Uses Decimal rather than float: 0.07*100*0.5*0.5 evaluates to
+    Exact Decimal via common/kalshi_fees.py: 0.07*100*0.5*0.5 evaluates to
     1.7500000000000002 in binary floating point, and a naive ceil turns the
     correct $1.75 fee into $1.76. Money gets exact arithmetic.
     """
@@ -25,17 +33,7 @@ def _quadratic_fee_dollars(rate: float, contracts: int, price: float) -> float:
         raise ValueError(f"price must be in [0,1] dollars, got {price}")
     if contracts < 0:
         raise ValueError(f"contracts must be non-negative, got {contracts}")
-    with localcontext() as ctx:
-        ctx.prec = 28
-        raw_cents = (
-            Decimal(str(rate))
-            * Decimal(contracts)
-            * Decimal(str(price))
-            * (Decimal(1) - Decimal(str(price)))
-            * Decimal(100)
-        )
-        cents = raw_cents.quantize(Decimal(1), rounding=ROUND_CEILING)
-    return float(cents) / 100.0
+    return float(_shared_order_cents(price, contracts, Decimal(str(rate)))) / 100.0
 
 
 def taker_fee_dollars(contracts: int, price: float, multiplier: float = 1.0) -> float:

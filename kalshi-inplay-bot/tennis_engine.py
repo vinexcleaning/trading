@@ -14,9 +14,22 @@ from __future__ import annotations
 
 import argparse
 import math
+import os
+import sys
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
+
+# Fee arithmetic lives in exactly one place: common/kalshi_fees.py, in exact
+# Decimal. The float form this file used until 2026-08-03 overcharged by a
+# cent on ~6% of price/size cells (0.07*100*0.5*0.5*100 == 175.00000000000003,
+# and ceil() takes that to 176). If the import or its self-check fails, this
+# module must not load — trading on unverified fee arithmetic is worse than
+# not trading.
+_COMMON = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "common")
+if _COMMON not in sys.path:
+    sys.path.insert(0, _COMMON)
+from kalshi_fees import fee_order_dollars as _fee_order_dollars  # noqa: E402
 
 
 # ----------------------------------------------------------------------
@@ -287,8 +300,7 @@ class Decision:
 # ----------------------------------------------------------------------
 
 def fee(cfg: Config, contracts: int, price_cents: int) -> float:
-    p = price_cents / 100
-    return math.ceil(cfg.fee_rate * contracts * p * (1 - p) * 100) / 100
+    return _fee_order_dollars(price_cents, contracts, rate=cfg.fee_rate)
 
 
 def target_for_profit(cfg: Config, contracts: int, entry: int, goal: float) -> int:

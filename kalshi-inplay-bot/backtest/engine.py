@@ -17,6 +17,7 @@ Execution model (per the operator's spec):
 from __future__ import annotations
 
 import math
+import sys
 import os
 from dataclasses import dataclass, field
 
@@ -90,15 +91,24 @@ def prepare(candles: pd.DataFrame) -> pd.DataFrame:
 
 
 # ------------------------------------------------------------------- fees
+_COMMON = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..",
+                       "common")
+if _COMMON not in sys.path:
+    sys.path.insert(0, _COMMON)
+from kalshi_fees import fee_order_dollars as _fee_order_dollars  # noqa: E402
+
+
 def fee(contracts: float, price_cents: float) -> float:
     """Kalshi taker fee, in dollars, rounded UP to the next cent.
 
-    The round(.., 9) is not cosmetic: 0.07*100*0.5*0.5*100 evaluates to
-    175.00000000000003 in binary floating point, and a naive ceil() would
-    charge a spurious extra cent on exactly-representable fee amounts.
+    This file used to carry its own float implementation with a round(.., 9)
+    guard against 0.07*100*0.5*0.5*100 == 175.00000000000003. The guard was
+    correct — this was one of only two copies in the repo that had it — but
+    the arithmetic now lives in common/kalshi_fees.py in exact Decimal, so
+    there is nothing left to guard. Verified to produce identical output to
+    the round-9 form on the whole price/size grid.
     """
-    p = price_cents / 100.0
-    return math.ceil(round(0.07 * contracts * p * (1.0 - p) * 100.0, 9)) / 100.0
+    return _fee_order_dollars(price_cents, contracts)
 
 
 # ------------------------------------------------------------------ trades

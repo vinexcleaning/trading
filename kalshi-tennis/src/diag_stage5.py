@@ -71,8 +71,13 @@ print("4. THE ACTUAL P&L QUESTION -- mid vs executable price")
 print("=" * 78)
 
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "common"))
+from kalshi_fees import fee_dollars_from_price_vec  # noqa: E402
+
+
 def fee(p):
-    return np.ceil(0.07 * p * (1 - p) * 100) / 100
+    """Kalshi taker fee, dollars per contract. Exact — common/kalshi_fees.py."""
+    return fee_dollars_from_price_vec(p, 1)
 
 
 for thresh in (0.02, 0.05, 0.10):

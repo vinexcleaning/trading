@@ -22,24 +22,24 @@ The cost bar is what an edge must beat. It is NOT a kill switch: a large enough
 edge beats any cost. What it tells you is the SIZE of edge required, and
 therefore how rare the edge would have to be.
 """
-from decimal import ROUND_CEILING, Decimal
+import os
+import sys
+from decimal import Decimal
 
-CENT = Decimal("1")
-KALSHI_RATE = Decimal("0.07")
+# The Kalshi side is not reimplemented here — it lives in kalshi_fees.py, the
+# single implementation for the whole repo. These are aliases, kept so every
+# existing caller of costbar keeps working. The path insert makes costbar
+# importable from anywhere without the caller knowing where common/ lives.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from kalshi_fees import (  # noqa: F401,E402
+    CENT,
+    TAKER_RATE as KALSHI_RATE,
+    fee_order_cents as kalshi_fee_order_cents,
+    fee_rate_cents as kalshi_fee_cents,
+)
+
 POLY_RATE = Decimal("0.10")
-
-
-# ----------------------------------------------------------------- Kalshi
-def kalshi_fee_cents(price_cents):
-    """Unrounded per-contract fee in cents. For expectancy arithmetic."""
-    p = Decimal(str(price_cents))
-    return KALSHI_RATE * p * (Decimal(100) - p) / Decimal(100)
-
-
-def kalshi_fee_order_cents(price_cents, contracts):
-    """What an actual order is charged, in whole cents, rounded UP per order."""
-    return (kalshi_fee_cents(price_cents) * Decimal(int(contracts))
-            ).quantize(CENT, rounding=ROUND_CEILING)
 
 
 # ------------------------------------------------------------- Polymarket

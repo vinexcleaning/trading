@@ -11,35 +11,54 @@ Both venues use the SAME functional form for crypto taker fees:
     fee_per_contract = rate * p * (1 - p)
 with rate = 0.07. They differ in (a) rounding and (b) the maker side.
 """
+import os
+import sys
 from decimal import Decimal, ROUND_CEILING, ROUND_HALF_UP
 
 # ---------------------------------------------------------------- constants
 KALSHI_TAKER_RATE = Decimal("0.07")
 
-# --- Kalshi MAKER fee, RESOLVED 2026-08-01 from the API + docs ---
+# --- Kalshi MAKER fee ---
 # Kalshi has TWO fee types, exposed per series as `fee_type`:
 #   `quadratic`                  -> TAKER FEES ONLY. No maker fee.
-#   `quadratic_with_maker_fees`  -> makers also pay, at 25% of taker.
-# Across ALL 12,368 Kalshi series: 12,224 are `quadratic`, 130 are
-# `quadratic_with_maker_fees`, 14 are `quadratic` with fee_multiplier 0.
-# The 130 maker-fee series are Sports / Entertainment / Economics /
-# Financials -- championships, awards, unemployment prints. **ZERO are
-# crypto.** Kalshi's own docs corroborate: maker fees apply to "some markets
-# ... often due to special events".
+#   `quadratic_with_maker_fees`  -> makers also pay.
 #
-# => On every crypto series in this project the MAKER FEE IS ZERO.
+# ⚠ CORRECTED 2026-08-03. The 2026-08-01 note here read "**ZERO are crypto**
+# => On every crypto series in this project the MAKER FEE IS ZERO", and set
+# KALSHI_MAKER_RATE = 0 on that basis. **That is wrong.** Re-verified against
+# the live API (full pagination of /trade-api/v2/series, 12,396 series):
 #
-# This corrects venue_spec.md, which recorded ~0.25x taker at confidence B
-# from documentation alone. The documentation describes the rate that applies
-# WHERE a maker fee exists; it does not apply to crypto.
+#     quadratic                    12,266   (14 of them fee_multiplier 0)
+#     quadratic_with_maker_fees       130
+#
+# The 130 breaks down Sports 107, Economics 10, Entertainment 7, Financials 3,
+# **Crypto 2**, Science and Technology 1. The two crypto series are
+# KXBTCMAX150 and KXBTCMAX125 ("When will bitcoin hit 150k/125k"), both
+# fee_type `quadratic_with_maker_fees`, fee_multiplier 1.
+#
+# The 130 count itself was right and is unchanged; the "none are crypto"
+# gloss on it was not. The series total grew 12,368 -> 12,396 since 08-01.
+#
+# => DO NOT use a blanket crypto maker rate. Read `fee_type` per series.
+#    common.kalshi_fees.SeriesFees.from_api() does exactly this.
+#
+# The hourly/daily ladder series this project actually trades (KXBTCD, KXBTC,
+# KXETH...) are all plain `quadratic`, so results computed for THOSE series
+# are unaffected. The defect is the generalisation, not the ladder numbers.
 KALSHI_MAKER_RATE_WHERE_CHARGED = Decimal("0.0175")   # 0.25 x taker
-KALSHI_MAKER_RATE_CRYPTO = Decimal("0")               # verified: no maker fee
+KALSHI_MAKER_RATE_CRYPTO_LADDERS = Decimal("0")       # KXBTCD etc: quadratic
 
-# Back-compat name used by earlier code paths. Now correctly zero for crypto.
-KALSHI_MAKER_RATE = KALSHI_MAKER_RATE_CRYPTO
+# Back-compat name. Retained as zero because every series this project trades
+# is plain `quadratic` — but it is NOT a fact about crypto in general.
+KALSHI_MAKER_RATE = KALSHI_MAKER_RATE_CRYPTO_LADDERS
 
-MAKER_FEE_SERIES_COUNT = 130          # of 12,368, none crypto
-TOTAL_SERIES_COUNT = 12368
+# Deprecated alias for the old, misleadingly-named constant.
+KALSHI_MAKER_RATE_CRYPTO = KALSHI_MAKER_RATE_CRYPTO_LADDERS
+
+MAKER_FEE_SERIES_COUNT = 130          # of 12,396; 2 of them ARE crypto
+CRYPTO_MAKER_FEE_SERIES = ("KXBTCMAX150", "KXBTCMAX125")
+TOTAL_SERIES_COUNT = 12396
+SERIES_CENSUS_DATE = "2026-08-03"
 
 # --- Polymarket, RESOLVED EMPIRICALLY from on-chain fills (2026-08-01) ---
 # The published schedule implies 0.07 * p * (1-p). On-chain reality is a
@@ -81,22 +100,29 @@ def _d(x) -> Decimal:
 
 
 # ------------------------------------------------------------------ Kalshi
+# Not reimplemented here. The single implementation for the whole repo is
+# common/kalshi_fees.py; these wrappers only convert its cents to the dollars
+# this module's callers expect.
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                "..", "..", "common"))
+from kalshi_fees import (  # noqa: E402
+    fee_order_from_price as _shared_order_cents,
+    fee_rate_from_price as _shared_rate_cents,
+)
+
+
 def kalshi_fee(price, contracts, rate=KALSHI_TAKER_RATE) -> Decimal:
     """Kalshi trading fee in DOLLARS for `contracts` at `price` dollars/contract.
 
     Kalshi: fee = ceil_to_cent(rate * C * P * (1 - P)).
     The round-UP is per order and is punitive on small orders.
     """
-    p = _d(price)
-    c = _d(contracts)
-    raw = _d(rate) * c * p * (Decimal(1) - p)
-    return raw.quantize(CENT, rounding=ROUND_CEILING)
+    return _shared_order_cents(price, contracts, rate) / Decimal(100)
 
 
 def kalshi_fee_per_contract_unrounded(price, rate=KALSHI_TAKER_RATE) -> Decimal:
     """Un-rounded per-contract fee in dollars — the shape of the curve."""
-    p = _d(price)
-    return _d(rate) * p * (Decimal(1) - p)
+    return _shared_rate_cents(price, rate) / Decimal(100)
 
 
 # -------------------------------------------------------------- Polymarket

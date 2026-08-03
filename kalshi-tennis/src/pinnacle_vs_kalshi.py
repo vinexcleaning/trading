@@ -38,8 +38,18 @@ MAX_SPREAD = 0.10          # wider than this is not a tradeable quote
 ANCHOR = "h6"
 
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "common"))
+from kalshi_fees import fee_dollars_from_price_vec  # noqa: E402
+
+
 def fee(p):
-    return np.ceil(0.07 * p * (1.0 - p) * 100.0) / 100.0
+    """Kalshi taker fee in dollars per contract, p in dollars.
+
+    Exact Decimal — see common/kalshi_fees.py. The previous
+    `np.ceil(0.07*p*(1-p)*100)/100` overcharged a cent wherever the float
+    product landed just above an exact cent.
+    """
+    return fee_dollars_from_price_vec(p, 1)
 
 
 def devig(o1, o2):

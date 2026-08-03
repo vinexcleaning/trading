@@ -17,6 +17,8 @@ Costs: real ask + 1c slip in, real bid - 1c slip out, fee both sides.
 from __future__ import annotations
 
 import math
+import os
+import sys
 import pickle
 
 import numpy as np
@@ -26,9 +28,16 @@ SLIP = 1.0
 STAKE = 1.00          # dollars per trade
 
 
+_COMMON = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..",
+                       "common")
+if _COMMON not in sys.path:
+    sys.path.insert(0, _COMMON)
+from kalshi_fees import fee_order_dollars as _fee_order_dollars  # noqa: E402
+
+
 def fee_d(contracts: int, price_c: float) -> float:
-    p = price_c / 100.0
-    return math.ceil(0.07 * contracts * p * (1 - p) * 100) / 100.0
+    """Kalshi taker fee in dollars. Exact Decimal — see common/kalshi_fees.py."""
+    return _fee_order_dollars(price_c, contracts)
 
 
 def run(views, lo, hi, *, take=None, stop=None, max_spread=3,

@@ -23,6 +23,8 @@ NOT TESTABLE HERE
 from __future__ import annotations
 
 import math
+import os
+import sys
 import pickle
 
 import numpy as np
@@ -32,9 +34,43 @@ SLIP = 1.0
 CONTRACTS = 8
 
 
+_COMMON = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..",
+                       "common")
+if _COMMON not in sys.path:
+    sys.path.insert(0, _COMMON)
+from kalshi_fees import fee_order_dollars as _fee_order_dollars  # noqa: E402
+
+
 def fee_d(contracts: int, price_c: float) -> float:
-    p = price_c / 100.0
-    return math.ceil(0.07 * contracts * p * (1 - p) * 100) / 100.0
+    """Kalshi taker fee in dollars. Exact Decimal — see common/kalshi_fees.py."""
+    return _fee_order_dollars(price_c, contracts)
+
+
+# Which tennis series actually charge makers, read from GET /series/{ticker}
+# .fee_type (verified 2026-08-01, re-verified 2026-08-03):
+#   KXATPMATCH, KXWTAMATCH        -> quadratic_with_maker_fees
+#   KXATPCHALLENGERMATCH, KXITF*  -> quadratic  (maker fee ZERO)
+# In this dataset that is 1,362 ATP/WTA markets against 12,800 ITF/Challenger,
+# so the maker fee is zero on 90.4% of it.
+#
+# The RATE where it applies (0.25x taker) is Kalshi's published schedule and
+# is NOT verifiable from the read-only API — the series object carries no
+# maker-rate field. See common/kalshi_fees.py for the competing flat-0.25c
+# reading. Treat any maker number this produces as convention-dependent.
+_MAKER_MULTIPLIER_BY_TOUR = {
+    "ATP": 0.25, "WTA": 0.25,
+    "Challenger": 0.0, "ITF-M": 0.0, "ITF-W": 0.0,
+}
+
+
+def _maker_multiplier(tournament: str) -> float:
+    """Fraction of the taker fee a maker pays on this series.
+
+    Unknown tournaments default to 0.25 — the conservative side, since
+    assuming a fee you do not pay understates the strategy rather than
+    flattering it.
+    """
+    return _MAKER_MULTIPLIER_BY_TOUR.get(tournament, 0.25)
 
 
 def simulate(views, lo, hi, *, maker=False, strict=False, patience=5, fav_min=None,
@@ -106,7 +142,14 @@ def simulate(views, lo, hi, *, maker=False, strict=False, patience=5, fav_min=No
                 missed += 1
                 continue
             entry = want
-            fee_mult = 0.25                        # maker fee is 25% of taker
+            # Maker fee is a PER-SERIES fact, not a constant. This line used
+            # to be an unconditional `fee_mult = 0.25`, which charged a maker
+            # fee on ITF and Challenger — verified `quadratic` (taker-only,
+            # maker fee ZERO) and ~91% of the tennis book (LEDGER S010).
+            # Only KXATPMATCH and KXWTAMATCH are
+            # `quadratic_with_maker_fees`. Charging 0.25x taker on the other
+            # 91% overstated maker cost and understated the maker case.
+            fee_mult = _maker_multiplier(v.tournament)
         else:
             entry = v.ask_close[i0] + SLIP
             fee_mult = 1.0

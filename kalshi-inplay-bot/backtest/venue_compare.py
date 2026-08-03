@@ -1,26 +1,45 @@
 """
 venue_compare.py — would these strategies do better on Polymarket?
 
-FEE FACTS (from each venue's own docs)
-    Kalshi      taker  ceil(0.07 * C * p * (1-p))      maker 0.0175 (25% of taker)
-    Polymarket  taker       0.05 * C * p * (1-p)       maker 0.00  (+0.2% US rebate)
+⚠ RETRACTED 2026-08-03 — THIS COMPARISON'S FEE INPUTS WERE BOTH WRONG.
+    Do not quote any number this file produces. It is kept, corrected, so the
+    error is not re-derived. Two independent defects:
 
-    Same formula shape. Two differences that matter: Polymarket's taker rate is
-    lower, and Polymarket's MAKER FEE IS ZERO where Kalshi still charges a
-    quarter of taker.
+    1. The Polymarket taker rate was written as `0.05 * C * p * (1-p)`, taken
+       from documentation. Polymarket's real fee is a DIFFERENT SHAPE and a
+       HIGHER rate: `0.10 * min(p, 1-p)`, established on 4,310 on-chain fills
+       at median relative error 0.000000 (LEDGER C004) and independently
+       reproduced on 5,362 fills (W015). The documented quadratic form matched
+       0.0% of real fills. At 50c the truth is 5.00c/share against Kalshi's
+       1.75c — Polymarket is 2.86x MORE expensive, not cheaper. LEDGER C015,
+       "Polymarket taker cost is identical to Kalshi", is itself RETRACTED for
+       the same reason: it trusted docs over the venue's own API.
+
+    2. The Kalshi maker rate 0.0175 was applied unconditionally. Maker fees
+       apply only where the series' `fee_type` is `quadratic_with_maker_fees`
+       — 130 of 12,396 series, verified against the live API 2026-08-03. On
+       plain `quadratic` series the maker fee is ZERO. This file never read
+       `fee_type`, so every "maker" number it produced was wrong on ~99% of
+       series and, for tennis, wrong in the direction that flattered Kalshi's
+       maker side on ITF/Challenger (where the fee is zero) while charging it.
+
+    The conclusion this file was written to support — "would these strategies
+    do better on Polymarket?" — reversed sign once (1) was corrected. It is
+    now answered by the shared cost bar in common/costbar.py, which uses the
+    empirically-resolved formula for both venues.
 
 WHAT THIS CAN AND CANNOT TELL YOU
-    The fee arithmetic is exact — both formulas are published.
     The PRICES are Kalshi's, reused as a stand-in for Polymarket's. That is an
     assumption, not a measurement. It is defensible for the same match at the
     same moment, but Polymarket tennis volume is thin (median event volume
-    ~$450) so real fills could differ. Treat the fee delta as solid and the
-    rest as indicative.
+    ~$450) so real fills could differ.
 """
 
 from __future__ import annotations
 
 import math
+import os
+import sys
 import pickle
 
 import numpy as np
@@ -29,14 +48,40 @@ import pandas as pd
 SLIP = 1.0
 
 
-def fee(venue: str, side: str, contracts: int, price_c: float) -> float:
-    p = price_c / 100.0
-    base = contracts * p * (1 - p)
+_COMMON = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..",
+                       "common")
+if _COMMON not in sys.path:
+    sys.path.insert(0, _COMMON)
+from kalshi_fees import (  # noqa: E402
+    SeriesFees, fee_order_dollars, maker_fee_order_cents,
+)
+
+
+def fee(venue: str, side: str, contracts: int, price_c: float,
+        series: SeriesFees | None = None) -> float:
+    """Fee in dollars for one leg.
+
+    `series` is REQUIRED for the Kalshi maker side, because whether a maker
+    fee exists at all is a per-series fact (`fee_type`). Passing None on the
+    maker side raises rather than silently assuming 0.0175 — that assumption
+    is the defect recorded at the top of this file.
+    """
     if venue == "kalshi":
-        rate = 0.07 if side == "taker" else 0.0175
-        return math.ceil(rate * base * 100) / 100.0
-    rate = 0.05 if side == "taker" else 0.0
-    return rate * base
+        if side == "taker":
+            return fee_order_dollars(price_c, contracts)
+        if series is None:
+            raise ValueError(
+                "Kalshi maker fee depends on the series' fee_type "
+                "(quadratic_with_maker_fees on 130 of 12,396 series). "
+                "Pass a SeriesFees read from the API; do not assume 0.0175.")
+        return float(maker_fee_order_cents(price_c, contracts, series)) / 100.0
+
+    # Polymarket: 0.10 * min(p, 1-p) per share, verified on-chain (C004/W015).
+    # Makers are exempt. NOT the documented quadratic — see the header.
+    p = price_c / 100.0
+    if side != "taker":
+        return 0.0
+    return 0.10 * min(p, 1 - p) * contracts
 
 
 def run(views, lo, hi, venue, side, stake=None, contracts_fixed=8,
