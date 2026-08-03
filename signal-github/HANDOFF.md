@@ -237,6 +237,42 @@ module, order submission in separate files, a test directory, pinned deps and a
 mechanism-bearing README; it scores well. The defect is a disagreement between
 two constants in different files, which is what reading is for.
 
+## 2e. Second read — `aulekator/Polymarket-BTC-15-Minute-Trading-Bot`
+
+557★, 164 forks, 4 commits over 13 days, no backtest. Flagged `trust_me_bro`
+last session on the metrics alone; read this session. Directly adjacent to a
+thread `STATUS.md` closed as **structurally dead** (BTC 15-minute), so it is
+worth knowing whether it has something the structural argument missed. **It does
+not.** Four defects, none visible to any computed component — it scores
+**S_literal = 9**.
+
+1. **The instrument's fees are invented, and in the wrong functional form.**
+   `core/nautilus_core/instruments/btc_instruments.py:42-43` sets
+   `maker_fee=0.001  # 0.1%` and `taker_fee=0.002  # 0.2%`. Those are ordinary
+   crypto-exchange percentage-of-notional fees. Polymarket charges makers
+   **zero** and takers a fee on **expected earnings**, which is a different
+   formula, not a different constant. Two other instruments in the same file use
+   0.005/0.005 and 0.001/0.001 — three different fee schedules for one venue.
+2. **The live order path sends no fee at all.**
+   `execution/polymarket_client.py:284` → `fee_rate_bps=0,  # Fee in basis points`.
+3. **The README advertises a feature its own file tree calls a placeholder.**
+   The feature table promises *"Self-Learning — Automatically optimizes signal
+   weights based on performance"*; `README.md:211-212` describes the same
+   component as *"Phase 7: Future learning / optimization"* and
+   *"Placeholder for ML feedback loop"*. The README contradicts itself.
+4. **An MIT badge with no licence.** The README carries
+   `[![License: MIT]]`, there is **no `LICENSE` file** anywhere in the 104-file
+   tree, and GitHub's own licence field is empty — so the repository is "all
+   rights reserved" and the badge is the only permission anyone has.
+
+Also worth noting as a hygiene signal the scorer counts as *content*: **42 of the
+104 files are committed `__pycache__/*.pyc`**. `tree_files` counts them, and the
+prescreen rewards size.
+
+**Zero occurrences of `backtest` in the repository.** A "production-grade" bot
+with 557 stars, no backtest, no results artifact, and a fee model that is wrong
+three different ways in one file.
+
 ---
 
 ## 3. The no-README false-negative channel is closed

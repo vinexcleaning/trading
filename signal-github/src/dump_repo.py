@@ -46,7 +46,10 @@ def main():
         print(f"{fn} not in db")
         return
     ev = json.loads(r["evidence"] or "{}")
-    evs = json.loads(r["evidence_strict"] or "{}")
+    # evidence_strict is added by rescore.py and may not exist yet.
+    cols = {c[1] for c in con.execute("PRAGMA table_info(repos)")}
+    evs = json.loads((r["evidence_strict"] if "evidence_strict" in cols else None) or "{}")
+    strict = r["s_strict"] if "s_strict" in cols else None
     branch = (ev.get("branch") or ["main"])[0]
 
     print(f"=== {fn} ===")
@@ -56,7 +59,7 @@ def main():
     print(f"commits={r['commits']}  contributors={r['contributors']}  span={r['span_days']}d "
           f"open_issues={r['open_issues']}  closed={r['closed_issues']}")
     print(f"families={r['families']}  gate={r['gate']} {r['drop_reason']}")
-    print(f"S_literal={r['s_total']}  S_strict={r['s_strict']}")
+    print(f"S_literal={r['s_total']}  S_strict={strict}")
     print(f"evidence_strict={json.dumps(evs, indent=1)[:2000]}")
     print(f"description: {r['description']}\n")
 
