@@ -73,12 +73,70 @@ every retrieval statistic still counts only what was retrieved here.
 through a 60-item list when the true figure was 10). Fixed. Silent overstatement
 of progress — the same class of bug as the other five.
 
-**Retrieval test, now at n=7 insider / 3 beginner:** still `NOT DEMONSTRATED`,
-p=0.41 on the primary, minimum detectable effect **3.75 points**. Both declared
-sensitivities now run and agree in direction (+0.60, +0.83), neither significant.
-S alone shows +2.71, p=0.075 — suggestive, secondary, not to be reported as a
-result. **The binding constraint is now beginner-only reads at n=3.** Read those
-next; `next_reads.py` already alternates toward them.
+### Autonomous block — 2 more beginner reads, and two limits found in this project's own tools
+
+Read `0jlJ9mqny5E` (AlphaInsider, S=7 B=4 H=7) and `mweTliZfEcY` (Findoc, S=5 B=2
+H=4), both beginner-arm, which was the binding constraint. **Now n=7 insider / 5
+beginner.**
+
+**Test still `NOT DEMONSTRATED`:** primary p=0.158, observed **+1.40** points,
+MDE 3.25. Sensitivities agree in direction (+1.00, +1.23), neither significant.
+
+**Holm-Bonferroni is now applied automatically to the four secondary outcomes,
+and it was added the moment it mattered.** At n=7/5, S crossed **p=0.0492** for
+the first time. Five outcomes are tested, so the chance at least one crosses by
+luck is 1 − 0.95⁵ = **23%**. S is a *secondary* outcome, argued against as
+primary on purpose because it structurally cannot score a build video. Declaring
+a win on it is exactly the error the pre-registration exists to prevent.
+**S: raw 0.0492 → Holm 0.1970, does NOT survive.** Nobody can now quote the raw
+figure without the adjusted one beside it.
+
+#### Limit 1 — the n-check cannot detect a faked denominator
+
+AlphaInsider shows a backtest claiming **998.36% in a year over 258 trades at 75%
+profitable**, presenting it as the archetype of a worthless result. Loaded here,
+the n-check returns **SUPPORTED** — because 75% over n=258 clears break-even
+easily. The check tests whether the sample is big enough to distinguish a rate
+from break-even. **It cannot test whether the data generating process was
+honest.** A curve-fitted, repainting backtest passes it. Sample size and
+provenance are independent failure modes and only the first is measured.
+
+#### Limit 2 — the clearest low-view gem so far cuts AGAINST the hypothesis
+
+`mweTliZfEcY` has **12 views**, was uploaded the day it was read, is
+machine-translated, comes from a broker's own channel — and scores
+ABSORB_AND_RECOMMEND. It tells beginners not to use its own product yet, and
+carries a real regulatory gotcha (>10 orders/second must be registered with the
+exchange in India). **It sits in the BEGINNER arm.** The insider-vocabulary
+thesis predicts obscure gems come from insider queries. This one did not.
+
+#### ⚠ A bias introduced by this session, running toward the hypothesis
+
+Long transcripts are expensive in context and the path of least resistance is to
+skip them. That is harmless only if it happens equally in both arms. **It did
+not:** four BEGINNER videos were skipped for length (1323, 38, 33, 25 min) and
+**not one INSIDER video was skipped for any reason.**
+
+| arm | n | mean min | max min |
+|---|---|---|---|
+| INSIDER | 7 | **11.3** | 19.1 |
+| BEGINNER | 5 | **7.3** | 9.9 |
+
+Runtime plausibly correlates with substance — more minutes is more room to name a
+cost, cite a sample size, explain a mechanism. Truncating the **control** arm at
+10 minutes biases it downward, which pushes the result *toward* the hypothesis.
+**The +1.40 observed gap is therefore an overstatement and must not be quoted
+without this note.** `next_reads.py` now measures this on every invocation and
+names the arm to correct. **Next session: read the LONGEST unread BEGINNER
+videos first** — `86AlV6174KI` (33 min), `J3VEniAKg5A` (38 min), `w1eAY73FLr8`
+(25 min), `mkzcntzznMc` (50 min) — before any more short ones.
+
+Also: neither video read in this block mentions fees, spread or slippage. **S1
+did not fire on either.** Two consecutive "how to build a trading bot" videos
+with no cost side at all.
+
+**State:** `KNOWLEDGE.md` 180,736 chars · 28 videos · 330 claims · 81 tools · 26
+methods · read set **12 of 60** · still **zero SKIPs**.
 
 ---
 
