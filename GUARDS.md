@@ -17,7 +17,8 @@ coverage table.
 | 3. Synthetic null | ✅ | ✅ | ✅ | ❌ | ❌ |
 | 4. Positive control (planted effect) | ✅ | ✅ (15% and 5%) | ➖ implicit | ✅ (Stage 3 traits) | ❌ |
 | 5. Deliberate-leak diagnostic | ✅ | ✅ | ❌ | ✅ (anchor sweep) | ❌ |
-| 6. Exact-decimal fee arithmetic | ✅ | ✅ | ✅ (empirical) | ❌ **float** | ❌ **float — known bug** |
+| 6. Exact-decimal fee arithmetic | ✅ | ✅ | ✅ (empirical) | ✅ **fixed 08-03** | ✅ **fixed 08-03** |
+| 6b. **Anti-reimplementation guard** (repo-wide) | ✅ enforced repo-wide by [`common/tests/test_no_fee_reimplementation.py`](common/tests/test_no_fee_reimplementation.py) — one test covers every project | | | | |
 | 7. Per-market P&L decomposition | ✅ exact identity | ✅ | ✅ | ❌ | ❌ |
 | 8. Effective sample size | ✅ (day-clustered) | ✅ (event-clustered) | ✅ (market/series-day) | ➖ partial | ❌ |
 | 9. Guard-rot test | ✅ | ❌ | ❌ | ❌ | ❌ |
@@ -225,8 +226,9 @@ Distinct from the positive control: here you plant a *leak* rather than an
 
 ## 6. Exact-decimal fee arithmetic
 
-**Source:** [`set1_overshoot/src/fees.py`](set1_overshoot/src/fees.py),
-[`crypto/src/fees.py`](crypto/src/fees.py), tests in `crypto/tests/test_fees.py`
+**Source:** [`common/kalshi_fees.py`](common/kalshi_fees.py) — **the single
+implementation**. Tests in [`common/tests/`](common/tests/). Every other module
+in the repo imports it; none reimplements it.
 
 ### The bug this exists to prevent
 
@@ -236,6 +238,41 @@ Distinct from the positive control: here you plant a *leak* rather than an
 
 `ceil` then adds a spurious cent, inflating every fee. **This recurred in three
 separate codebases.** The instruction issued was: one shared, tested `fees.py`.
+
+### What actually happened, and the lesson (2026-08-03)
+
+The instruction was not enough. By 08-03 the formula existed **seventeen times
+across five projects.** Nine copies carried the bug; **two of those were in the
+live-money path** (`tennis_engine.py`, `paper_bot.py`). Measured against exact
+Decimal over the integer-cent × order-size grid, each unguarded copy
+overcharged on **115 of 1,881 cells (6.1%)**, always by exactly 1¢.
+
+> **Telling people to share a module does not make them share it.** The count
+> went from 3 to 17 *after* the instruction was issued. What stops the 18th
+> copy is a test that fails when one appears — not a convention.
+
+### The guard that enforces it
+
+[`common/tests/test_no_fee_reimplementation.py`](common/tests/test_no_fee_reimplementation.py)
+walks every `.py` file in the repo and flags anything carrying a fee
+fingerprint (a `0.07`/`0.0175` literal together with a quadratic term or a
+`ceil`). Each hit must **either** import the shared module **or** appear in an
+explicit `ALLOWED` map with a written reason.
+
+The allowlist is the mechanism, not an escape hatch. Three sub-tests keep it
+honest:
+
+- **dead entries fail.** An allowlisted file that stops matching must be
+  removed, so the list cannot silently become a blanket exemption. *(This fired
+  on its first run and caught a stale entry.)*
+- **empty reasons fail.** Every entry states why.
+- **the detector is proven to bite** on the canonical bug — guard-rot
+  protection, GUARDS #9. A check that cannot fail is not a check.
+
+Legitimate allowlist entries are Polymarket code (where `0.07` is the
+*documented* rate retained specifically to prove it wrong — it matched 0.0% of
+4,310 real fills), prose inside generated reports, and the sibling project's
+audit of published fee claims.
 
 ### The implementation
 

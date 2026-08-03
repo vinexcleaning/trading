@@ -18,6 +18,7 @@ Candidate forms tested head-to-head rather than assumed:
 Also: when did fees switch on at all? 2022 fills carry fee = 0.
 """
 import json
+import sys
 import time
 from collections import Counter
 from pathlib import Path
@@ -25,6 +26,10 @@ from pathlib import Path
 import requests
 
 ROOT = Path(__file__).resolve().parents[1]
+
+# Kalshi fee arithmetic has exactly one implementation in this repo.
+sys.path.insert(0, str(ROOT.parent / "common"))
+from kalshi_fees import fee_rate_cents as kalshi_fee_rate_cents  # noqa: E402
 OUT = ROOT / "data" / "probe_02_fees.json"
 S = requests.Session()
 S.headers.update({"User-Agent": "copy-trading-feasibility-study/0.1"})
@@ -172,7 +177,7 @@ bar = {}
 for pc in (10, 25, 50, 75, 90):
     p = pc / 100
     poly = 0.10 * min(p, 1 - p)
-    kal = 0.07 * p * (1 - p)
+    kal = float(kalshi_fee_rate_cents(pc)) / 100.0
     bar[f"{pc}c"] = {
         "poly_cents_per_share_one_way": round(poly * 100, 4),
         "poly_cents_round_trip": round(poly * 200, 4),

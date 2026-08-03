@@ -8,6 +8,7 @@ Answers the questions probe_00 left open:
   - does the fee formula hold on fills I pulled myself?
 """
 import json
+import sys
 import time
 from collections import Counter
 from pathlib import Path
@@ -15,6 +16,10 @@ from pathlib import Path
 import requests
 
 ROOT = Path(__file__).resolve().parents[1]
+
+# Kalshi fee arithmetic has exactly one implementation in this repo.
+sys.path.insert(0, str(ROOT.parent / "common"))
+from kalshi_fees import fee_rate_cents as kalshi_fee_rate_cents  # noqa: E402
 OUT = ROOT / "data" / "probe_01.json"
 S = requests.Session()
 S.headers.update({"User-Agent": "copy-trading-feasibility-study/0.1"})
@@ -233,10 +238,11 @@ else:
 bar = {}
 for pc in (10, 25, 50, 75, 90):
     p = pc / 100
+    kalshi_c = float(kalshi_fee_rate_cents(pc))
     bar[f"{pc}c"] = {
         "poly_fee_cents_per_share": round(0.10 * min(p, 1 - p) * 100, 4),
-        "kalshi_fee_cents_per_contract": round(0.07 * p * (1 - p) * 100, 4),
-        "ratio_poly_over_kalshi": round((0.10 * min(p, 1 - p)) / (0.07 * p * (1 - p)), 3),
+        "kalshi_fee_cents_per_contract": round(kalshi_c, 4),
+        "ratio_poly_over_kalshi": round((0.10 * min(p, 1 - p) * 100) / kalshi_c, 3),
     }
 rec("economic_bar", bar=bar, note="one-way taker fee, cents per share")
 
