@@ -1,5 +1,15 @@
 # Hypothesis ledger
 
+> **This file counts hypotheses. It does not track claim status.**
+> For that, this project now has rows in the repo-wide ledger:
+> **[`LEDGER.md` — Section 6, K001–K016](../../LEDGER.md)**, added 2026-08-03.
+>
+> Until then this project had **no rows there at all**, which is why three
+> retracted results and one overstatement survived in the shorter, more
+> quotable `GO_NO_GO.md` and `shortlist.md`. Anything asserting a status —
+> SETTLED, RETRACTED, UNVERIFIED — belongs in the repo-wide ledger so it is
+> visible to the same cross-check as every other project.
+
 Every distinct model/parameter/market combination evaluated tonight. FDR control is
 applied **across this whole ledger**, not per family.
 

@@ -19,12 +19,17 @@ asserts a number and no artifact backs it, the row says `NONE` and the status is
 
 | Status | Count |
 |---|---|
-| **RETRACTED** | **41** |
-| SETTLED | 112 |
+| **RETRACTED** | **44** |
+| SETTLED | 123 |
 | SUGGESTIVE | 30 |
-| UNVERIFIED | 27 |
+| UNVERIFIED | 29 |
 | BROKEN | 6 |
-| **Total** | **216** |
+| **Total** | **232** |
+
+**Updated 2026-08-03**: +16 rows from **Section 6 — kalshi-market-scan**, which
+had no rows in this ledger until then. Three of its retractions (K003, K005,
+K006) and one overstatement (K010) were live in `docs/GO_NO_GO.md` and
+`docs/shortlist.md` and were invisible to any ledger-based check.
 
 ## The directional prior, and it is the single most informative number here
 
@@ -58,6 +63,9 @@ These were stated as findings and are wrong. Anything built on them is void.
 | **T007** | Market beats model once wide quotes are excluded (+0.03711) | kalshi-tennis | The spread filter **read the leaking anchor**. Feature leak *and* a selection leak. The *direction* is separately confirmed by T012; this particular number is void. |
 | **T017** | Stage 0 coverage is 74.5%; there is no ITF tier on Kalshi | kalshi-tennis | Hand-written regex missed "ITF Men's Match". ITF is **31,894 markets ≈ 76% of Kalshi's tennis book**. Corrected coverage **36.9%**. Caught by the user from their own fill history. |
 | CH001–CH020 | 20 further retractions from the chat archive | various | Full detail in [kalshi-chat-audit/LEDGER_CHATS.md](kalshi-chat-audit/LEDGER_CHATS.md). Carried below. |
+| **K006** | **Depth at the touch collapses 40× toward expiry**, so edge and liquidity are anti-correlated | kalshi-market-scan | Measured from **one market over three minutes**. On 25 markets: depth falls **2.7×** and never goes thin (**307** contracts in the final minute, not 4), the spread *tightens* 10×, and total cost **falls** 4.46¢→3.50¢. The argument is withdrawn entirely. |
+| **K003** | The weather model was validated on **8,090 test markets** | kalshi-market-scan | A ladder is **one** temperature reading, not 10 markets. Effective n ≈ **800 settlement hours**; the CIs were ~**3× too tight**. The model itself survives re-scoring. |
+| **K005** | "**Seven daily families clear the capacity bar**, so weather is not capacity-limited" | kalshi-market-scan | Depth right, inference wrong. All seven have **66** settlements against the **481** needed, so their depth decides nothing. Cross-tabbing both bars kills **10 of 11** families. |
 
 ---
 
@@ -244,6 +252,50 @@ carries them in this exact schema. What matters for this ledger:
 | **CH022** | Three irreconcilable P&L figures for one session (+$0.60 / +$2.51 / −$3.55) | **BROKEN** | The fee ceiling proves −$3.55 is impossible; true net is in **[−$0.68, +$2.51]**. CH021 and CH029 are unusable until this is resolved. |
 | **CH035** | Every negative result in the project is a **taker** result | **UNVERIFIED** | No resting-order strategy was ever tested on any market — until S008 above, which tested it on tennis and found all 15 configurations negative. |
 | **CH044** | A position-sizing blowout produced 64 contracts against an intended 9 | **SETTLED** (bug exists) / cause **UNVERIFIED** | Combined with `max_daily_loss_pct = 0 (OFF)` on a live bot, this is the top standing financial risk. Never diagnosed, never fixed. |
+
+---
+
+# SECTION 6 — kalshi-market-scan (exchange-wide screen, weather, flow, sports)
+
+**Added 2026-08-03.** This project had **no rows in this ledger at all** until
+now — its claims were invisible to every ledger-based cross-check, which is
+exactly why four retracted results survived in `docs/GO_NO_GO.md` and
+`docs/shortlist.md` and were caught only because a brief named them.
+
+Artifacts: `kalshi-market-scan/`. Corrected headline: `MORNING_REPORT.md`.
+Own hypothesis count: `docs/HYPOTHESIS_LEDGER.md` — **116 hypotheses across 13
+blocks**, BH-FDR corrected within block. The shorter files (`GO_NO_GO.md`,
+`shortlist.md`) are more quotable than the evidence behind them; where they
+disagree with `MORNING_REPORT.md`, **the morning report wins**.
+
+| ID | Claim in plain English | Project | Artifact (script + output) | n + unit | Date range | Effect + CI | FDR? | Holdout? | STATUS |
+|---|---|---|---|---|---|---|---|---|---|
+| K001 | **No model beats the Kalshi mid on `KXBTC15M` direction.** | kalshi-market-scan | `reports/vs_mid_clustered.csv`, `MORNING_REPORT.md` §7g | **25 markets** with recorded books, 7 offsets | 08-02→08-03 | 0 of 7 offsets beat the mid; **all CIs span 0**; ours 0.0020@60s vs mid 0.0075@60s | market-clustered bootstrap | measured forward, not back-filled | **SETTLED** (null) |
+| K002 | **The weather model genuinely beats climatology** in all four cities. | kalshi-market-scan | `scripts/weather_model.py` → `reports/weather_model.csv` | **812 independent settlements** (~204/city) | to 08-03 | persistence Brier 0.076–0.136 vs climatology 0.216–0.315; clustered diff CIs all exclude 0 | **yes**, across 4 cities jointly | bootstrap over whole settlement hours | **SETTLED** |
+| K003 | The weather model was validated on **8,090 test markets**. | kalshi-market-scan | `docs/shortlist.md` (pre-correction) | claimed 8,090 markets | — | a ladder is **one** temperature reading, not 10 markets; effective n ≈ **800 settlement hours**, CIs ~**3× too tight** | — | — | **RETRACTED** — pseudo-replication. K002 is the corrected version and **survives** |
+| K004 | **Only `KXTEMPDCH` clears both the power bar and the capacity bar.** 1 of 11 families. | kalshi-market-scan | `MORNING_REPORT.md` §7g cross-tab | 11 families | 08-03 | requires ≥481 settlements **and** ≥50 contracts at the touch; `KXTEMPDCH` clears at **512 vs 481** — a 6% margin | n/a | n/a | **SETTLED** |
+| K005 | "**Seven daily families clear the capacity bar by 7–49×**, so weather is not capacity-limited." | kalshi-market-scan | `docs/shortlist.md`, `docs/GO_NO_GO.md` (pre-correction) | 7 families, 371–2,434 median depth | 08-03 | depth figures are **correct**; the inference is not. All seven have **66** independent settlements against the **481** needed, so their depth decides nothing | — | — | **RETRACTED** (framing) — "celebrating the wrong axis" |
+| K006 | **Depth at the touch collapses 40× toward expiry** (158→4 contracts) as the model sharpens, so edge and liquidity are anti-correlated. | kalshi-market-scan | `docs/GO_NO_GO.md` (pre-correction) | **1 market, 3 minutes** | — | on 25 markets over 7 h: depth declines **2.7×**, never thin (**307** contracts inside the final minute, not 4); spread **tightens 10×**; total cost **falls** 4.46¢→3.50¢ | — | — | **RETRACTED** — the argument is **withdrawn entirely**; the contract is *cheaper* to trade late |
+| K007 | **No-arb violations are real but the size is dust.** | kalshi-market-scan | 1,083 scans, `MORNING_REPORT.md` | 1,083 scans / 26 families / ~9 h | 08-02→08-03 | **52 genuine violations, 0 with tradeable size** | n/a | n/a | **SETTLED** (null) — corroborates C001/C002 |
+| K008 | Copying Polymarket tennis wallets earns **+7.23pp**. | kalshi-market-scan | `reports/copytrade_tests_v2.json` | 264,074 positions | — | +7.23pp CI [+4.61, +9.73] against a 2.4¢ bar | **yes** | price-matched | **SETTLED** (the number) — but **not skill**; the edge lives in the price band, §7 |
+| K009 | **The favourite-longshot bias does not exist on Kalshi**, so the Polymarket→Kalshi transfer fails. | kalshi-market-scan | `reports/kalshi_longshot_v3.json` | **762 settled matches**, 490,464 fills; re-run 12 series / 2,258 markets | to 08-03 | aggregate **−0.67pp** against a 2.72% overround; Polymarket's +8.57pp at 0.6–0.7 becomes **−2.12pp** | binomial per bucket | n/a | **SETTLED** (aggregate) — this is the load-bearing kill for the copy-trading thread |
+| K010 | Kalshi pre-match prices are **calibrated bucket by bucket** ("every binomial p ≥ 0.499"). | kalshi-market-scan | same | buckets of **n=19–52**; re-run gave only **726** usable pre-match observations | to 08-03 | a **failure to reject**, not a demonstration. Bucket CIs **±11–29pp**; **0 of 7** Polymarket values formally excluded — they sit *inside* the intervals | 0 of 30 survive | n/a | **UNVERIFIED / OVERSTATED** — correct statement is "no *detectable* bias at this n". K009's aggregate is the part that carries weight |
+| K011 | **Flow following on Kalshi has no signal** — price absorbs the flow. | kalshi-market-scan | `reports/flow_predicts_outcome.json` | **1,376 settled markets**, 1.77M trades | to 08-03 | corr(flow, outcome−price) = **−0.052, p=0.053**; the residual, not the raw direction, is the right test | no survivors | n/a | **SETTLED** (null) |
+| K012 | **Economics series are killed on recurrence**, not on edge. | kalshi-market-scan | `docs/market_screen.csv`, `MORNING_REPORT.md` | `KXCPI`/`KXFED`/`KXGDP`: **22–48 settlements** | — | against **481** needed to detect a 5pp edge at 80% power | n/a | n/a | **SETTLED** (structural) |
+| K013 | `KXBTC15M` is minted **at-the-money every 15 minutes**, pinning entry to the peak of the fee curve. | kalshi-market-scan | `docs/contract_spec.md` | `floor_strike` = prior window's `expiration_value` on **99.86% of 6,261 markets** | — | round trip pinned at **3.50¢**; measured from live books **4.1–4.5¢** | n/a | n/a | **SETTLED** — structural kill, matches the crypto section |
+| K014 | The power bar is **481 settlements** for a 5pp edge, **2,084** to clear the 2.4¢ tennis cost bar. | kalshi-market-scan | `docs/GO_NO_GO.md` power calc | per-market P&L sd **0.391** measured on the real tape | — | this single number kills most of the exchange | n/a | n/a | **SETTLED** (arithmetic) |
+| K015 | "Buying everything priced 0.60–0.95 with no wallet selection earns **+7.05pp ± 0.22** on n=98,766." | kalshi-market-scan | **none findable** — `docs/HYPOTHESIS_LEDGER.md` records the location as literally `inline` | claimed 98,766 positions from ~1,872 markets | — | no script, no CSV, no JSON anywhere; a ±0.22pp interval on ~1,872 independent settlements is **~7× too tight** | — | — | **UNVERIFIED** — see `kalshi-inplay-bot/audit/LEDGER.md` C042/R2. **This is the claim that reframes the whole copy-trading block and it is the least supported one in the corpus** |
+| K016 | Deflated Sharpe was **deliberately not computed**. | kalshi-market-scan | `docs/HYPOTHESIS_LEDGER.md` | — | — | no Phase 7 sweep ran because nothing cleared Phase 1 + Phase 4, so there was no candidate. Computing it on a null "would be theatre" | n/a | n/a | **SETTLED** (a decision, and the right one) |
+
+### What this section changes
+
+**Nothing was overturned by ledgering it** — every verdict in the project was
+already NO-GO and still is. What it buys is that K003, K005, K006 and K010 are
+now visible to the same cross-check that governs every other project, instead
+of living only in whichever document happened to be read.
+
+**K015 is the open item.** It is the single most actionable claim in the
+project and no artifact for it exists anywhere on disk.
 
 ---
 
