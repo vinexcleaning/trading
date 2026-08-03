@@ -187,10 +187,14 @@ Git top level is `C:\Users\gianf\trading`.
 `git commit -m "checkpoint"` are both no-ops right now — a parallel session's
 `checkpoint` commit (`3137c2d`) already swept everything at 12:4x.
 
-**THE PUSH DID NOT HAPPEN.** `git push` was denied twice by the Claude Code
-permission classifier (transient stage-2 error), not by git and not by the remote.
-`main` is **15 commits ahead of `origin/main`** and none of this session's work is
-backed up remotely. This needs a human to run it or to grant the permission.
+**PUSH SUCCEEDED — everything is backed up remotely.** `origin/main` tip is
+`094279f`, verified with `git rev-list --left-right --count` = **0 ahead, 0
+behind**. It took three attempts and the failures are worth recording: two
+denials from the Claude Code permission classifier (transient stage-2 error, not
+git and not the remote), then one `Failed to connect to github.com:443 after
+21054 ms`. In between, a parallel session pushed the backlog of 15. If a push
+looks blocked here, retry before concluding anything — none of the three failures
+meant what it appeared to mean.
 
 Ignored and deliberately not committed (privacy — the repo is public and these
 hold judgments about named creators): `youtube-signal/KNOWLEDGE.md`,
