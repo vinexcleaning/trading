@@ -28,7 +28,7 @@ New ideas go in [INBOX.md](INBOX.md) first, before deciding where they belong.
 | **15m opens recorder (crypto)** | Running since 08-01 13:42, `--hours 168`. | Leave it. |
 | ~~v3 structural-event backtest~~ | **RESOLVED 08-03 — CLEAN, the result stands.** See "Desktop, 2026-08-03" below. | None. |
 | ~~Desktop recorder integrity~~ | **RESOLVED 08-03 — no bug. The desktop already reads `*_dollars`/`*_fp`.** Tier B is unblocked. | None. |
-| ~~Live bot position-sizing bug~~ | **DIAGNOSED AND FIXED 08-03.** Not a sizing bug — a martingale. See below. | Decide whether it trades at all: its own backtest says −9¢/trade. |
+| ~~Live bot position-sizing bug~~ | **DIAGNOSED AND FIXED 08-03.** Not a sizing bug — a martingale. See below. | ~~Decide whether it trades at all~~ **DECIDED 08-03: it does not. Trading is OFF** — see "Live bot turned off" below. |
 | **Score-staleness (already fixed)** | `fetched_at` was stamped at cache read, so the 30 s guard never rejected anything. | Nothing to fix — but **no live entry result predating the fix is a valid test of the entry logic.** Treat the 4-for-10 as void. |
 | **Label coverage (tennis)** | Blocked. Apify at a monthly hard limit; Flashscore's `dayOffsets` is −7..+7 against a −68 need. | Restore quota, then label day-by-day via `crawlstone/tennis-scraper` or `tennisexplorer` (~$20, not $3.44). Only path above 13.9% coverage. |
 | **youtube-signal** | **Phase 2 BLOCKED at Step 0: no `ANTHROPIC_API_KEY`, so the LLM read never ran and no S or H component has ever fired.** All LLM-free work done: corpus 718 gated / 369 passing / 683 transcripts cached, G3 retuned to recall 1.000, F3 cut, F2B's 12 new insider terms added (88.5% exclusive, Jaccard 0.041 vs F2), 60-video read set selected, Wilson n-check verified. Retrieval win (F1∩F2 Jaccard 0.037, 2.25× low-view yield) is **still not cashed out** — different videos, not yet demonstrably better ones. | **Buy $5 of Anthropic API credit, add the key, run the read on 2 videos.** Measured cost for all 60 is $3.64 on Sonnet. Everything else waits on this one input. |
@@ -557,4 +557,43 @@ already negative, and each still is on evidence that holds.
 > claims were invisible to the ledger cross-check and were found only because
 > the brief named them. It keeps a separate `docs/HYPOTHESIS_LEDGER.md` that
 > nothing links to. **Ledger it, or link it.**
+
+### `high_sweep.py` re-run after the maker fix
+
+Full table: [kalshi-inplay-bot/backtest/HIGH_SWEEP_RERUN.md](kalshi-inplay-bot/backtest/HIGH_SWEEP_RERUN.md).
+All 8 maker rows improved (mean **+0.13¢/contract**), all 4 taker rows came
+back **byte-identical** as the control. **No configuration flipped sign** — 2 of
+12 rows positive before, 2 after. The two positive rows are both the
+*optimistic* fill model this file's own header calls "the single easiest way to
+fake a profitable backtest"; the honest `maker-strict` arm is still **−1.30 to
+−2.42¢/contract** in every band. Consistent with S008/S009.
+
+## ⛔ Live bot turned OFF (2026-08-03) — user decision
+
+**The tennis in-play bot will not place orders.** A kill switch is now in
+`kalshi-inplay-bot/kalshi_client.py`: while the file
+`kalshi-inplay-bot/TRADING_DISABLED` exists, `_check_writable()` raises before
+anything reaches the order endpoint. It **fails closed** and is checked *before*
+the `read_only` flag, so it cannot be bypassed by constructing the client
+differently. Verified: buy and sell both blocked with `read_only=False`, and
+the guard releases cleanly when the file is removed.
+
+**To trade again: delete `TRADING_DISABLED`. Nothing else needs changing.**
+
+**Why:** the strategy's own 13,658-market backtest returns **≈ −9¢/trade**, and
+the maker variants clear their cost bar only under an unrealistic fill model.
+This is a decision about whether the edge exists, not a bug.
+
+**State at shutdown, verified three ways:** no bot process was running (the only
+Python process on the machine belonged to the concurrent `signal-github`
+session); **no autostart shortcut was installed** and no scheduled task existed,
+so it was not going to restart on its own; `bot_state.json` was last written
+**2026-07-28 13:59** and lists 5 positions, all on matches dated 27–28 July,
+which settled automatically ~6 days earlier. **No open exposure.**
+
+> ⚠ **Still open and unrelated:** `kalshi_private_key.pem`, the live
+> order-signing key, exists both in the bot folder **and** in a OneDrive-synced
+> Desktop folder. Turning trading off does not address that. Rotating it on
+> kalshi.com and deleting both old copies remains worth doing, and is the
+> user's call.
 

@@ -325,7 +325,23 @@ class KalshiClient:
     #   * side   -> "bid" to BUY yes, "ask" to SELL yes. No more action/side pair.
     #   * price  -> a dollar STRING ("0.7400"), not an int of cents (74).
     # count is a string too. time_in_force must be given explicitly.
+    #: Presence of this file in the bot directory blocks ALL order placement.
+    #: Created 2026-08-03 when the user decided to stop trading this strategy.
+    #: To trade again, delete the file — nothing else needs changing.
+    KILL_SWITCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                               "TRADING_DISABLED")
+
     def _check_writable(self) -> None:
+        # Checked before read_only, so it cannot be bypassed by constructing
+        # the client differently. Fail closed: if the file is there, no order
+        # goes out, whatever the caller intended.
+        if os.path.exists(self.KILL_SWITCH):
+            raise PermissionError(
+                "TRADING IS DISABLED. "
+                f"Delete {self.KILL_SWITCH} to re-enable order placement. "
+                "Turned off 2026-08-03: the strategy's own backtest returns "
+                "-9c/trade and no maker configuration clears its cost bar "
+                "under a realistic fill model.")
         if self.read_only:
             raise PermissionError("watch mode — this client cannot place orders")
 

@@ -1,0 +1,36 @@
+TRADING DISABLED — 2026-08-03
+
+While this file exists, kalshi_client.py refuses to place any order.
+It fails closed: the check runs before the read_only flag and cannot be
+bypassed by constructing the client differently.
+
+WHY
+    The strategy's own backtest, over 13,658 markets, returns about
+    -9 cents per trade. The maker variants look positive only under an
+    optimistic fill model that assumes you always get the price you ask
+    for; requiring a real seller to come to your price puts every band
+    back to roughly -1.3 to -2.4 cents per contract.
+
+    This was the user's decision, taken 2026-08-03 after the fee
+    consolidation and the high_sweep re-run. It is a decision about
+    whether the edge exists, not a bug.
+
+TO TRADE AGAIN
+    Delete this file. Nothing else needs changing.
+
+    But do not delete it just to see what happens. The reason to turn
+    this back on is a NEW result showing a positive edge under a
+    realistic fill model — not the passage of time.
+
+STATE AT SHUTDOWN
+    No bot process was running. No autostart shortcut was installed and
+    no scheduled task existed, so it was not going to restart on its own.
+    bot_state.json was last written 2026-07-28 13:59 and lists 5
+    positions, all on matches dated 27-28 July, which settled
+    automatically about six days earlier. No open exposure.
+
+STILL OPEN, UNRELATED TO THIS
+    kalshi_private_key.pem — the live order-signing key — exists both in
+    this folder and in a OneDrive-synced Desktop folder. Rotating it on
+    kalshi.com and removing both old copies is still worth doing, and is
+    the user's call. See STATUS.md.
