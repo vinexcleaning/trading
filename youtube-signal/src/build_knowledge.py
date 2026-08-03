@@ -23,11 +23,48 @@ ROOT = Path(__file__).resolve().parent.parent
 TODAY = dt.date(2026, 8, 3)
 
 
+def fmt_date(upload_date):
+    """YYYYMMDD -> 'Jan 2026'. Undated content is stated as undated, never blank."""
+    if not upload_date:
+        return "date unknown"
+    try:
+        d = dt.datetime.strptime(str(upload_date)[:10].replace("-", ""), "%Y%m%d").date()
+        return d.strftime("%d %b %Y")
+    except Exception:  # noqa: BLE001
+        return str(upload_date)
+
+
+def src_line(c):
+    """Provenance with the DATE on it.
+
+    A fee formula from two years ago and one from last month look identical once
+    the sentence is extracted. The upload date is what stops a future session
+    quoting a stale number as current, so it goes on every single claim.
+    """
+    age = c["age_months"]
+    age_s = f", {age:.0f} mo old" if age is not None else ""
+    return (f"{c['channel_name']} — *{c['title']}* · "
+            f"**{fmt_date(c['upload_date'])}**{age_s} · @{int(c['timestamp_s'] or 0)}s")
+
+
+def expiry_flag(c):
+    """Has this claim outlived its shelf life, given the video's own age?"""
+    months, age = c["expires_after_months"], c["age_months"]
+    if not months:
+        return ""
+    if age is None:
+        return f"*(expires {months}mo after upload; upload date unknown)*"
+    if age > months:
+        return (f"**⚠ EXPIRED — {age:.0f} months old, shelf life {months} months. "
+                f"Re-verify before use.**")
+    return f"*(valid — {age:.0f} of {months} months elapsed)*"
+
+
 def main():
     con = db_phase2.connect()
     scored = con.execute(
         """SELECT s.*, v.title, v.channel_name, v.view_count, v.duration_s,
-                  v.upload_date
+                  v.upload_date, v.age_months
            FROM scores s JOIN videos v ON v.video_id = s.video_id
            ORDER BY s.s_total DESC"""
     ).fetchall()
@@ -78,7 +115,7 @@ def main():
 
     # ---------- claims that survived arithmetic ----------
     checked = con.execute(
-        "SELECT c.*, v.title, v.channel_name FROM claims c "
+        "SELECT c.*, v.title, v.channel_name, v.upload_date, v.age_months FROM claims c "
         "JOIN videos v ON v.video_id=c.video_id "
         "WHERE c.n_check_verdict IS NOT NULL"
     ).fetchall()
@@ -93,35 +130,37 @@ def main():
                   f"  - rate {100*(c['stated_win_rate'] or 0):.2f}% vs break-even "
                   f"{100*d.get('breakeven', 0.5):.0f}%, n={d.get('n', 0):,}, "
                   f"Wilson [{100*d.get('wilson_lo',0):.2f}%, {100*d.get('wilson_hi',0):.2f}%]",
-                  f"  - source: {c['channel_name']} — *{c['title']}* @{int(c['timestamp_s'] or 0)}s"]
+                  f"  - source: {src_line(c)}"]
         L += [""]
 
     # ---------- mechanisms and concepts (never expire) ----------
     mech = con.execute(
-        "SELECT c.*, v.title, v.channel_name FROM claims c "
+        "SELECT c.*, v.title, v.channel_name, v.upload_date, v.age_months FROM claims c "
         "JOIN videos v ON v.video_id=c.video_id "
         "WHERE c.claim_type IN ('mechanism','concept','math') ORDER BY c.video_id"
     ).fetchall()
     if mech:
-        L += ["## Mechanisms and concepts (no expiry)", ""]
+        L += ["## Mechanisms and concepts — no expiry", "",
+              "Still dated, because a mechanism can be superseded even if it does not "
+              "rot.", ""]
         for c in mech:
             L += [f"- {c['claim_text']}",
-                  f"  - {c['channel_name']} — *{c['title']}* @{int(c['timestamp_s'] or 0)}s"]
+                  f"  - {src_line(c)}"]
         L += [""]
 
     # ---------- specs (expire fast) ----------
     specs = con.execute(
-        "SELECT c.*, v.title, v.channel_name FROM claims c "
+        "SELECT c.*, v.title, v.channel_name, v.upload_date, v.age_months FROM claims c "
         "JOIN videos v ON v.video_id=c.video_id "
-        "WHERE c.claim_type IN ('spec','tool_rec') ORDER BY c.video_id"
+        "WHERE c.claim_type IN ('spec','tool_rec','procedure') ORDER BY c.video_id"
     ).fetchall()
     if specs:
-        L += ["## Specs and tool recommendations — SHORT SHELF LIFE", "",
-              "Verify before relying on any of these.", ""]
+        L += ["## Specs, fees and procedures — SHORT SHELF LIFE", "",
+              "**Check the age before repeating any number here.** A fee formula or "
+              "API detail from a two-year-old video is a lead, not a fact.", ""]
         for c in specs:
-            L += [f"- {c['claim_text']}  *(expires {c['expires_after_months']}mo "
-                  f"from upload)*",
-                  f"  - {c['channel_name']} — *{c['title']}* @{int(c['timestamp_s'] or 0)}s"]
+            L += [f"- {c['claim_text']}",
+                  f"  - {src_line(c)}  {expiry_flag(c)}"]
         L += [""]
 
     # ---------- methods ----------
@@ -172,11 +211,13 @@ def main():
 
     # ---------- per-video index ----------
     L += ["---", "", "## Videos read in full", "",
-          "| S | H | verdict | views | video |", "|---|---|---|---|---|"]
+          "| S | H | verdict | uploaded | age | views | video |",
+          "|---|---|---|---|---|---|---|"]
     for r in scored:
+        age = f"{r['age_months']:.0f} mo" if r["age_months"] is not None else "?"
         L.append(f"| {r['s_total']} | {r['h_total']} | {r['verdict']} | "
-                 f"{r['view_count']:,} | [{r['title']}]"
-                 f"(https://www.youtube.com/watch?v={r['video_id']}) |")
+                 f"{fmt_date(r['upload_date'])} | {age} | {r['view_count']:,} | "
+                 f"[{r['title']}](https://www.youtube.com/watch?v={r['video_id']}) |")
     L += [""]
 
     out = ROOT / "KNOWLEDGE.md"
