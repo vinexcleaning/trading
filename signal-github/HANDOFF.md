@@ -198,16 +198,16 @@ family**.
 | — G3 off topic | 472 |
 | — G3 generic terms only, no venue named | 410 (flagged, not dropped) |
 | — G1 empty repo, 0 KB | 99 |
-| **deep-fetched and scored** | **105** |
+| **deep-fetched and scored** | **146** and still climbing |
 | of which credibility metrics fetched | **40 (all of them)** |
-| **read in full** | **9 — the entire top 10 by strict score, bar one** |
+| **read in full** | **12** — the entire top 10 by strict score, plus ccxt and gloomberb |
 | repos scoring 9–10 strict | 3 |
-| repos with a backtest module AND separate order-submission code | **8 of 40 (20%)** |
-| repos committing a backtest artifact behind their own strategy | **1 of 40** (`oracle3`) |
+| repos with a backtest module AND separate order-submission code | **8 of the first 40 (20%)** |
+| repos committing a genuine backtest artifact behind their own strategy | **2** (`oracle3`, `evan-kolberg`); 92 of 108 make a results-shaped claim |
 | ...and whether that artifact supports the strategy | **no — its own performance block reports Sharpe −1.57, profit factor 0.95** |
 | strategies extracted that model costs at all | **5 of 14** |
 | defects found only by reading (3 in 2 well-scoring repos) | `reports/repo_defects.json` |
-| **"trust me bro"** — a results claim, <10 commits, no artifact | **3 of 40** |
+| **"trust me bro"** — a results claim, <10 commits, no artifact | **3 of the 40 with credibility metrics** |
 | API spend | 8 core + 58 search for retrieval; ~60 core for the tree tier; 861 raw; 13 sourcegraph |
 
 ## 3b. Two defects in THIS pipeline, found late and both corrected
@@ -250,10 +250,11 @@ so. That is the whole argument for the read step, stated once more.
 
 The bad numbers, stated plainly:
 
-- **40 of 2,562 gated repos were deep-fetched. That is 1.6% coverage.** The
-  ranking below the top 40 is prescreen-ordered, not scored.
-- **9 repos were read in full**, out of 40 scored and 2,562 gated. That covers
-  the whole top 10 by strict score except `almanak-co/sdk`. Reading is where
+- **146 of 2,562 gated repos are deep-fetched. That is 6% coverage.** The
+  ranking below that is prescreen-ordered, not scored. A background pass is still
+  running and this number rises.
+- **12 repos were read in full**, out of 146 scored and 2,562 gated. That covers
+  the whole top 10 by strict score plus `ccxt/ccxt` and `vincelwt/gloomberb`. Reading is where
   every one of the five entries in `reports/repo_defects.json` came from, and
   where the single most important finding of the project came from — see below.
 - **77 repos were dropped because no README could be fetched** at `README.md` or
@@ -279,22 +280,22 @@ The bad numbers, stated plainly:
 | `src/run_retrieval.py` | 3,133 repos across 6 axes; measured Jaccard 0.033 |
 | `src/run_gates.py` | gated all 3,133; 627 needed a README, fetched free |
 | `src/prescreen.py` | ordered 2,562 gated repos for the core budget |
-| `src/fetch_repo.py` | 40 repos at tree level, 2 at full level |
-| `src/rescore.py` | strict rescore of all 40, cache-only, zero API spend |
+| `src/fetch_repo.py` | 146 repos at tree level, 40 at full level |
+| `src/rescore.py` | strict rescore of all 146, cache-only, zero API spend |
 | `src/rank.py` | Spearman correlations, the premise-3 answer |
 | `src/toolchain.py` | library and API-host extraction with `repo:path:line` |
 | `src/crossref.py` | 56 YouTube tools checked against live repo state |
-| `src/dump_repo.py` | prepared 2 repos for reading |
-| `src/load_extraction.py` | loaded 2 extractions; **rejected 1 item for missing evidence** |
+| `src/dump_repo.py` | prepared 12 repos for reading |
+| `src/load_extraction.py` | loaded 12 extractions; **rejects any item lacking a path or SHA** |
 | `src/build_knowledge.py` | generated `GITHUB_KNOWLEDGE.md` |
 
-**Built but never exercised at scale:** `fetch_repo.py --level full`. Two repos
-have credibility metrics. The commits-vs-substance correlation therefore has
-n=2 and is reported as unavailable rather than computed.
+**Built but never exercised at scale:** `fetch_repo.py --level full`. Forty repos
+have credibility metrics, so the commits-vs-substance correlation runs at n=40
+(+0.147, p 0.36 — not significant) while the stars correlations run at the full n.
 
 **Not built:** nothing from the prompt's output list was skipped, but Step 4's
-`repos` table is only 40 rows deep and Step 5's liquidity comparison is
-unanswered (see §5).
+`repos` table is 146 rows deep out of 2,562, and Step 5's liquidity comparison
+is unanswered (see §5).
 
 ---
 
@@ -310,8 +311,8 @@ unanswered (see §5).
    anything.** Secondary sources asserting "bots are explicitly permitted" were
    found and deliberately not used: every one was an SEO page for a bot vendor.
 
-2. **Coverage is 1.6%.** 40 of 2,562. There is no basis for claiming the best
-   repo has been found — only that the best repo *among the top 40 by a free
+2. **Coverage is 6%.** 146 of 2,562. There is no basis for claiming the best
+   repo has been found — only that the best repo *among the top 146 by a free
    prescreen* has been found. The prescreen is a heuristic over stars, size,
    language, recency and name keywords, and it is exactly the kind of proxy this
    project just proved unreliable for stars.
@@ -359,11 +360,12 @@ unanswered (see §5).
    real gain, but the population it indexes is unknown and it excludes forks by
    default. The code-search axis is the weakest-provenance axis in the project.
 
-9. **Two extractions is not a sample.** Both were chosen by the strict score.
-   Both happened to be unusually honest repos. That is very likely selection
-   bias: rigorous repos score well *because* they are rigorous, so reading the
-   top of the list systematically over-samples honesty. **The corpus as a whole
-   is almost certainly less honest than the two repos read.**
+9. **12 extractions is a small sample, and a biased one.** All were chosen by the
+   strict score. Rigorous repos score well *because* they are rigorous, so reading
+   the top of the list systematically over-samples honesty. **The corpus as a whole
+   is almost certainly less honest than the repos read.** The three fee/backtest
+   defects found all came from this supposedly-honest top slice, which suggests the
+   tail is worse, not better.
 
 ---
 
