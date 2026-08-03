@@ -126,3 +126,8 @@ crypto/docs/strikes_raw.txt
 # --- logs ---
 *.log
 *.err
+
+# --- signal-github: recorded API responses and judgments about named repos ---
+signal-github/cache/
+signal-github/reports/
+signal-github/GITHUB_KNOWLEDGE.md
