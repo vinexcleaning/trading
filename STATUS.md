@@ -183,12 +183,12 @@ as GitHub code search); forks of the client libraries for dependents.
 |---|---|
 | repos retrieved | **3,133** across 6 axes |
 | gate PASS / STALE / DROP | 2,441 / 121 / 571 |
-| deep-fetched and scored | **40** (1.6% of gated); credibility for 30 |
+| deep-fetched and scored | **40** (1.6% of gated), credibility for all 40 |
 | read in full | **2** |
 | **F1 vs F2 Jaccard** | **0.033** (YouTube: 0.037 over 446 videos) |
 | code-search hits found by neither family | 41 of 47 |
 | **stars vs S_strict** | **rho −0.019, p 0.91** |
-| forks vs S_strict / commits vs S_strict | −0.052 (p .75) / −0.117 (p .53) |
+| forks vs S_strict / commits vs S_strict | −0.052 (p .75) / +0.147 (p .36) |
 | | **no free proxy predicts substance** |
 | S rubric ported literally | **19 of 40 scored 9–10** — saturated |
 | same repos, strict rescore | **3 of 40** |
@@ -245,10 +245,10 @@ compose.
 never read** — `kalshi.com` returned HTTP 429 to every request including its own
 fee-schedule PDF, and `polymarket.com/tos` renders client-side; every automation
 statement rests on developer docs, not agreements. Coverage is 1.6%. Credibility
-metrics exist for 30 of 40 repos, so `trust_me_bro` is NULL for the other 10.
-A rate-limiter bug in `gh.core` slept on an already-expired reset timestamp and
-cost most of this session's depth; fixed, and the credibility pass went from 2
-repos to 30 immediately. 77 repos were dropped
+metrics are complete for all 40 — but 40 of 2,562. A rate-limiter bug in
+`gh.core` slept on an already-expired reset timestamp and cost most of this
+session's depth; fixed. The commits-vs-substance rho changed sign between n=30
+and n=40, so at this sample size its sign is noise, not a weak signal. 77 repos were dropped
 for having no fetchable README — a real false-negative channel. Both repos read
 were selected by the strict score and were unusually honest; the corpus is
 almost certainly less honest than they are.

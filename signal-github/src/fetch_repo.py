@@ -253,8 +253,12 @@ def main():
     con = db.connect()
     if level == "full":
         # Credibility pass: only repos the cheap pass already scored well.
+        # `fetched>=1`, not `=1`, so the pass is idempotent: re-running after a
+        # scorer or extractor fix revisits repos already at level 2 instead of
+        # leaving them frozen with values from an older version of the code.
+        # Every core call is cached, so a re-run costs nothing.
         rows = con.execute(
-            """SELECT r.* FROM repos r WHERE r.fetched=1 AND r.gate IN ('PASS','STALE')
+            """SELECT r.* FROM repos r WHERE r.fetched>=1 AND r.gate IN ('PASS','STALE')
                ORDER BY r.s_total DESC, r.stars DESC LIMIT ?""", (limit,)).fetchall()
     else:
         rows = con.execute(

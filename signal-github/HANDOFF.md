@@ -106,13 +106,21 @@ websocket client — while that repo's own README says a backtester is not built
 | stars vs S_literal | +0.104 | 0.52 | 40 |
 | **stars vs S_strict** | **−0.019** | **0.91** | 40 |
 | forks vs S_strict | −0.052 | 0.75 | 40 |
-| commits vs S_strict | −0.117 | 0.53 | 30 |
-| stars vs commits | −0.014 | 0.94 | 30 |
+| commits vs S_strict | +0.147 | 0.36 | 40 |
+| stars vs commits | +0.116 | 0.47 | 40 |
 
 **The stronger result: no free proxy predicts substance.** Not stars, not forks,
-not commit count. Every rho is within noise of zero. There is no shortcut that
-lets you rank by a cheap number and skip looking at the code — which is the whole
-argument for a pipeline that ranks everything free and then actually reads.
+not commit count. Every rho is within noise of zero and every p is above 0.35.
+There is no shortcut that lets you rank by a cheap number and skip looking at the
+code — which is the whole argument for a pipeline that ranks everything free and
+then actually reads.
+
+One caution on these numbers, since it is exactly the kind of thing this project
+exists to catch: **the commits correlation was −0.117 at n=30 and +0.147 at
+n=40.** It changed sign when the last ten repos landed. At n=40 with rho this
+small, the sign is noise. The correct reading is "no relationship detected", not
+"a weak positive one" — and anyone re-running with a token and a larger n should
+recompute rather than quote these.
 
 Eight repos with 50+ stars score ≤3 on the strict scale. And the cleanest
 demonstration is not statistical at all: **`Polymarket/py-clob-client` has 1,234
@@ -149,7 +157,7 @@ family**.
 | — G3 generic terms only, no venue named | 410 (flagged, not dropped) |
 | — G1 empty repo, 0 KB | 99 |
 | **deep-fetched and scored** | **40** |
-| of which credibility metrics fetched | **30** |
+| of which credibility metrics fetched | **40 (all of them)** |
 | **read in full** | **2** |
 | repos scoring 9–10 strict | 3 |
 | repos with a backtest module AND separate order-submission code | **8 of 40 (20%)** |
@@ -228,11 +236,11 @@ unanswered (see §5).
    is no reason to think it was the only one. S4 in particular cannot work by
    keyword and should be treated as noise.
 
-4. **Credibility metrics are missing for 10 of 40 repos** (30 were completed
-   after a rate-limiter bug was fixed — see below). `trust_me_bro` is NULL for
-   those 10, so they are neither confirmed nor cleared.
+4. **Credibility metrics are complete for all 40 deep-fetched repos** after a
+   rate-limiter bug was fixed (see 4b). `trust_me_bro` is therefore decided for
+   all 40 — but only 40, out of 2,562 gated.
 
-   Three of the 30 are flagged: `aulekator/Polymarket-BTC-15-Minute-Trading-Bot`
+   Three of the 40 are flagged: `aulekator/Polymarket-BTC-15-Minute-Trading-Bot`
    (558 stars, **4 commits over 6 days**), `taetaehoho/poly-kalshi-arb` (445
    stars, **5 commits over 5 days**, claims "Profit: 2¢ per contract" with no
    artifact), and `kachence/polymm` (70 stars, **2 commits over 2 days**, whose
