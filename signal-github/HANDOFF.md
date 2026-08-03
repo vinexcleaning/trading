@@ -345,6 +345,10 @@ small-sample artifact. **The original claim is reinstated: stars carry no usable
 information about substance, and the withdrawal of that claim was itself the
 error.**
 
+**Settled at the end of the session at n=2,260: rho = −0.007, p = 0.73.** Twenty-one
+times the sample that produced the false positive, and the correlation is
+indistinguishable from zero.
+
 Concretely, in the 862: **58 repos with 50+ stars score ≤3 strict**, and **86
 repos with ≤2 stars score ≥8 strict.**
 
@@ -394,6 +398,13 @@ Over the 862 scored repos:
 | **Kalshi maker set equal to taker (the C1 error)** | **4** |
 
 ### The result
+
+*(Numbers below are from the n=862 pass. Re-run at the final **n=2,260** the
+finding holds and strengthens: **49 repos correct, 79 stars between them, median
+0, max 26** — against **41 hardcoding zero with 2,387 stars, max 1,098**. Nearly
+the same number of repos, **30× the stars on the wrong side**. Note the medians
+are 0 and 1, so this is not a general shift: it is specifically the **popular**
+repos that get it wrong, and the correct ones that are invisible.)*
 
 **The 19 repos that get Kalshi's maker fee right have 65 stars between them. The
 15 that hardcode it to zero have 1,493 — 23× more.**
@@ -664,20 +675,38 @@ the size cap, so the residual leak is counted rather than hidden.
 Corpus rebuilt from zero on this machine, then taken further than the previous
 session reached.
 
-| stage | this session | previous |
-|---|---|---|
-| unique repos retrieved | **2,806** | 3,133 |
-| — F1 beginner / F2 insider | 1,009 / 959 | 964 / 1,147 |
-| — in both / **Jaccard** | 68 / **0.036** | 67 / 0.033 |
-| — TOPIC / LIB_FORK / SEED | 390 / 317 / 187 | 785 / 317 / 188 |
-| — F2_CODE (Sourcegraph) | **15** | 37 |
-| gate PASS / STALE / DROP | 2,221 / 126 / 459 | 2,441 / 121 / 571 |
-| **deep-fetched and scored** | **862** | 146 |
-| **coverage of the gated set** | **36.7%** | 6.0% |
-| repos read in full this session | 2 | 12 |
-| literal S ≥ 9 | 248 of 862 (28.8%) | 19 of 40 (47.5%) |
-| **strict S ≥ 9** | **64 of 862 (7.4%)** | 3 of 40 (7.5%) |
-| core API calls spent on the deep fetch | **0** | ~146 |
+| stage | **final, this session** | mid-session (no token) | previous session |
+|---|---|---|---|
+| unique repos retrieved | **4,007** | 2,806 | 3,133 |
+| — F1 beginner / F2 insider | 1,009 / 1,152 | 1,009 / 959 | 964 / 1,147 |
+| — in both / **Jaccard** | 68 / **0.032** | 68 / 0.036 | 67 / 0.033 |
+| — **code search** hits / **exclusive** | **1,141 / 916** | 15 / 15 | 47 / 41 |
+| gate PASS / STALE / DROP | 3,091 / 161 / 765 | 2,221 / 126 / 459 | 2,441 / 121 / 571 |
+| **deep-fetched and scored** | **2,260** | 862 | 146 |
+| **coverage of the gated set** | **69.5%** | 36.7% | 6.0% |
+| repos read in full this session | **4** | 2 | 12 |
+| literal S ≥ 9 | 562 of 2,260 (24.9%) | 28.8% | 19 of 40 (47.5%) |
+| **strict S ≥ 9** | **151 of 2,260 (6.7%)** | 7.4% | 3 of 40 (7.5%) |
+| credibility metrics | **822** | 0 | 40 |
+| core API calls on the deep fetch | **0** | 0 | ~146 |
+
+**Coverage went 4.1% → 69.5% in one session, and the deep fetch spent zero core
+API calls throughout.** 1,397 of 1,400 archives in the final tranche took 367
+seconds; the same work at the old 60 tree-calls/hour is 23 hours.
+
+**The code-search axis is the single biggest retrieval gain the project has had.**
+GitHub's own index returned **1,141 repos of which 916 were found by neither the
+beginner nor the insider family** — against 41 exclusive finds last session and
+15 this session before the token. That is a **22× increase in exclusive finds**,
+and it is why the corpus grew from 2,806 to 4,007 without adding a single query.
+
+**The strict-score rate is stable across a 56× change in sample size:** 7.5% at
+n=40, 7.4% at n=862, **6.7% at n=2,260**. That is the strongest evidence the
+project has that the strict scorer measures something real rather than an
+artifact of who was sampled.
+
+**Jaccard has now been measured four times** — 0.033, 0.036, 0.032 here and 0.037
+on YouTube over 446 videos. The beginner/insider disjointness result is settled.
 
 Jaccard 0.036 against YouTube's 0.037 over 446 videos and the previous 0.033 —
 the beginner/insider disjointness result now has three independent measurements
@@ -757,22 +786,31 @@ no total count). It is the largest single gap in this session's output.
 
 ## 6. The next three things, in order
 
-1. **Normalise the strict score for repository size.** `rho(tree_files,
-   S_strict) = +0.593` against `rho(stars, S_strict) = −0.004`. The ranking is
-   currently more a size ranking than a substance ranking, and everything built
-   on top of it inherits that. This costs no API budget and is pure local work.
+*(The three items this section previously listed — normalise for size, finish the
+fetch and credibility tier, add the token — were all completed this session.)*
 
-2. **Finish the fetch and add the credibility tier.**
-   `python src/fetch_repo.py tree 1500` resumes at repo 863 with every existing
-   archive a cache hit. Then `full` for the credibility axis — which is the one
-   thing that still wants core budget, and therefore the token.
+1. **Read the KalshiEX Rulebook.** It is now the single most valuable unread
+   document. The member agreement is **silent on automation** and states that in
+   any conflict *"the Kalshi Rulebook will govern"* — so the Rulebook is the
+   operative text for whether bots are permitted, and nothing in this project has
+   ever read it. `kalshi.com/regulatory/rulebook` returns 145 KB of HTML yielding
+   581 characters and renders an empty body in a real browser, so it needs
+   either a different retrieval path or a human with a normal browser session.
+   **This is the one open item that could still invalidate the venue
+   recommendation.**
 
-3. **Put the token in `signal-github/.env`.** No longer needed for depth, but it
-   is what unblocks GitHub code search (replacing a Sourcegraph axis that has
-   degraded from 37 repos to 15) and stops unauthenticated search silently
-   dropping pages. `gh.py` reads the file at import; nothing else changes.
+2. **Regenerate `GITHUB_KNOWLEDGE.md`.** It has not been rebuilt since the corpus
+   went from 146 to 2,260 scored repos, so the knowledge file is describing a
+   corpus 6% the size of the current one. `python src/build_knowledge.py` — it
+   now splices `CORRECTIONS.md` in verbatim, so C1, C1a and C2 travel with it.
 
-And still, unchanged from last session because no machine could do it: **read the
-Kalshi member agreement and the Polymarket terms of use in a browser.** The fee
-schedule turned out to be reachable after all (§2c) — the other two are not, and
-they are the one input that could invalidate the venue recommendation.
+3. **Finish the last 30% of coverage and extend the credibility tier.**
+   `python src/fetch_repo.py tree 1200` resumes at repo 2,261 of 3,252 gated;
+   `full 2400` extends credibility beyond the current 822. Both are cheap now —
+   the first spends no core budget at all, the second runs at 5,000/hour.
+
+**Two things that are now closed and should not be re-attempted:** the Kalshi fee
+schedule and member agreement are both read (§2c, §2h), and Polymarket's terms of
+use are **not retrievable** — `/tos` returns 200, sets the correct page title, and
+renders the homepage body, in a real browser, after client-side routing, with the
+footer link clicked. The previous advice to "read it in a browser" is withdrawn.
