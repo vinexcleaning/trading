@@ -1,208 +1,375 @@
 # HANDOFF — youtube-signal
 
-**Updated 2026-08-03 12:46.** Laptop `gianf`.
-Working directory: `C:\Users\gianf\trading\youtube-signal` — **inside the repo**,
-tracked and pushed. Repo `github.com/vinexcleaning/trading`.
+**Updated 2026-08-03 ~16:10. Machine `vinig` (the DESKTOP), not `gianf` (the laptop).**
+Working directory: `C:\Users\vinig\trading\youtube-signal` — inside the repo, tracked, pushed.
+Repo `github.com/vinexcleaning/trading`.
 
-**Cost to date: $0.00. YouTube API quota: 0 units. No API key exists or is needed.**
-The read is done in-session by the model reading the transcript itself
-(`dump_transcripts.py` → hand-written JSON → `load_extraction.py`), which has now
-run 20 times. `read_video.py` (the API path) has still **never executed** and is
-unvalidated. Do not spend money to unblock something that is not blocked.
+**Cost this session: $0.00. YouTube Data API quota used: 0 units. No API key exists or is needed.**
+`read_video.py` has still never executed. The read is done in-session by the model
+reading the transcript directly. That remains correct.
 
 ---
 
-## 0. What this project is
+## 0. READ THIS FIRST — this machine is not the machine the last handoff describes
 
-Finds genuinely informative YouTube videos on a topic, reads the transcripts, and
-extracts the substance — tools, methods, specific claims — into `KNOWLEDGE.md` so
-they never have to be watched. `CLAUDE.md` at the repo root points every future
-session at that file.
+The previous handoff was written on the laptop (`C:\Users\gianf\trading`). **That
+profile does not exist on this machine.** `C:\Users\gianf` is absent; the only
+user profiles here are `vinig`, `Public` and `WsiAccount`.
 
-Corpus: **11,277 videos known, 683 transcripts cached, 553 gated and ranked, 20
-read in full.** 205 claims, 18 methods, 63 tools.
+`data/`, `reports/` and `KNOWLEDGE.md` are **gitignored** — deliberately, because
+they hold honesty judgments about named real people and the repo is public. So
+they never travelled with the repo. On this machine, at session start:
 
----
-
-## 1. State: what runs, and in what order
-
-```
-src/run_retrieval.py      searches YouTube (yt-dlp, no key), 3 runs, union
-src/run_gates.py          G1 transcript / G2 age / G3 on-topic, + descriptions
-src/rank_substance.py     free keyword ranking of all 553 — decides reading order
-src/dump_transcripts.py   prints ONE transcript for reading
-src/load_extraction.py    validates evidence, runs n-check, writes to DB
-src/build_knowledge.py    regenerates KNOWLEDGE.md
-src/verify_tools.py       do the claimed URLs/repos exist and have commits
-src/tool_reputation.py    what does the internet say that the vendor did not write
-src/coverage.py           what is covered, what is unread — the steering wheel
-```
-
-**One video per turn.** Holding transcripts in context is quadratic: 15 videos in
-one session costs ~2.7M tokens against ~244k done singly.
-
-## 2. Scoring — three axes, never averaged
-
-**S substance /10** · S1 cost side +3 · S2 backtest vs live +2 · S3 sample size +2
-· S4 mechanism +2 · S5 names tools +1
-
-**B build /10** (added this session) · B1 working code +3 · B2 named endpoints +2 ·
-B3 complete auth→order path +2 · B4 the gotcha +2 · B5 resolvable artifact +1
-
-**H honesty −10..+11** · H1 failure not sold +3 · H1b failure sets up sale +1 ·
-H2 verifiable artifact +3 · H3 n+period+capital +2 · H4 own weakness +1 ·
-H5 discloses own product +2 · **H6 no denominator −4** · H7 sells w/o mechanism −2
-· H8 urgency −1
-
-**Every component needs a timestamp and a verbatim quote under 15 words.**
-`load_extraction.py` enforces it and rejects anything else. This is the rule that
-makes the output auditable — do not relax it.
-
-Verdicts: `BUILD` · `BUILD_AND_RECOMMEND` · `ABSORB` · `ABSORB_AND_RECOMMEND` ·
-`ABSORB_RESULTS_DISCOUNTED` · `SKIP`. Current spread: ABSORB 9,
-BUILD_AND_RECOMMEND 4, ABSORB_AND_RECOMMEND 4, ABSORB_RESULTS_DISCOUNTED 2,
-**SKIP 0**.
-
-## 3. What changed this session
-
-**Video descriptions are now captured.** They were not, and that was a real gap.
-The transcript is auto-captioned *speech*; the description is *typed* and holds the
-literal URLs. Backfilled all 19 read videos → 54 URLs recovered, including:
-- `t.me/KreoPolyBot?start=ref-begin` — the correct spelling *and* proof of a
-  referral. Two web searches had been spent deriving "Creo" → "Kreo".
-- `github.com/jon-becker/prediction-market-analysis` — the 72M-trade repo,
-  previously stored as the bare string `"github.com"`, which had granted a false
-  H2 (+3) that had to be revoked.
-- **Five referral links in one video that the audio never disclosed** (odinbot,
-  gmgn, axiom, photon, Kreo). That video had scored H5 +2 for disclosing its own
-  product; it disclosed one and stayed quiet about five. Descriptions are where
-  undisclosed monetisation lives. Tools 58 → 63, referral-flagged 9 → 14.
-
-**The B axis, and why.** S1/S2/S3 all require a *trading claim*, so a pure API
-tutorial capped at S=3 and auto-classified SKIP however good the code was. That is
-how a Kalshi build with 100 lines of working code and a public repo (H=9) came out
-as SKIP. B asks the different question. Rescored all 19 from verbatim transcript
-evidence via `src/b_candidates.py` (greps candidate quotes; judgment stays human).
-
-Build shortlist now findable as a group:
-| B | video | |
+| | laptop | this desktop, at start |
 |---|---|---|
-| 10 | Part Time Larry — Kalshi + Perplexity in 100 lines | *was SKIP* |
-| 8 | Robot Traders — Kalshi API in Python, live order placed |
-| 7 | wangr — Polymarket CLOB API, order placed and cancelled |
-| 6 | Emil Nielsen — Polymarket WebSockets, local order book |
+| `data/signal.db` | 11,277 known videos, 683 transcripts | **did not exist** |
+| the 60-video read set | selected | **did not exist** |
+| the 19 read extractions | present | **did not exist** |
+| `.venv` | present | **did not exist** |
+| `src/*.py` | present | present (all 46 files) |
 
-11 of 19 score B=0 — correct, not a gap: they are explanation videos, which is
-what S measures. All five B components fired.
+**The instruction that started this session said "19 of the 60-video read set are
+done". That is true of the laptop and was not true here.** Nothing was lost — the
+laptop still has its 19 — but none of it was reachable from this machine, and the
+work could not be "continued" in the literal sense. The corpus was rebuilt from
+zero instead.
 
-**Three deliberate withholdings** (each looks like a B point and is not):
-JunkieAI says *"sadly I remove the GitHub"* — artifact gone, B5 does not fire
-(B=5, rescued SKIP→ABSORB, correctly short of BUILD). Moon Dev is titled "Full
-Code" but says *"this one's not on my GitHub"* — same call. Emil Nielsen says
-*"too much into the actual code"* — declining to show code, so B1 does not fire.
-B5 is the most gameable component on the axis; withholding matters more than
-awarding.
+### The two corpora are NOT interchangeable
 
-## 4. The single most important finding in the knowledge base
+Retrieval was re-run, so this machine has **its own** union of videos and **its
+own** seeded read set. Overlap with the laptop's set is partial and unmeasured.
+**Do not pool the laptop's 19 extractions with this machine's 6 and call it 25.**
+They are different samples from different retrieval runs, and the pre-registered
+retrieval test depends on the read set's sampling design being intact.
 
-**Polymarket CLOB V2 went live 28 Apr 2026 and both V1 clients are ARCHIVED**
-(`py-clob-client` 1,234★ archived 11 May; `clob-client` 513★). V1-signed orders
-are unsupported on production. **Two tutorials in this knowledge base teach V1**,
-one of them scored RECOMMEND. Nothing in them is wrong; following them today
-produces a bot that cannot sign an order. Migrate to `Polymarket/py-sdk`.
-
-That is the finding the whole system exists to produce: a good, honest, recent
-tutorial silently expired.
-
-## 5. What is wrong, unfinished or untrusted
-
-1. **`read_video.py` has never run.** Draft, unvalidated below the API call.
-2. **Both G3 validation samples have informed the lexicon's design**, so its
-   85.9% / precision 0.809 / recall 1.000 are **upper bounds, not a clean holdout**.
-3. **`expansion_v2.py` does not work** and was applied anyway because it was a
-   decision, not a suggestion. The ≥50%-of-retrieved bar pruned 0 channels and
-   admitted 46 more (Fireship, freeCodeCamp, a16z). Recommend reverting to the
-   Phase 1 rule and deferring until an LLM can score catalogue titles.
-4. **The 681-minute video is unread** — does not fit a context window, chunking
-   not built.
-5. **Three silent-default bugs have now been found in this project** (UNIQUE
-   ignoring NULL urls; a bare `github.com` URL granting a false H2; `b_total`
-   never persisting so the BUILD section rendered empty). All three passed
-   inspection and were only caught by reading the actual output afterwards.
-   **Do not trust a green commit message from an unattended session.**
-
-## 6. The single next thing to do
-
-Clone `Polymarket/py-sdk`, place and cancel one order from a **$10 throwaway
-wallet**, and record which of the eleven documented steps changed. Costs nothing
-and converts the most actionable method in the file from *probably broken* to
-*verified*.
+If you want them merged, the honest route is to copy the laptop's
+`reports/extractions/*.json` here and re-run `load_extraction.py` on any whose
+`video_id` is also in this machine's `read_set`. Everything else is a different
+population.
 
 ---
 
-## 7. Infrastructure — findings outside this project, 2026-08-03 12:46
+## 1. What was actually done this session
 
-**Not backed up anywhere:**
-- `C:\Users\gianf\kalshi\set1_overshoot` — is a git repo, clean, last commit
-  `f9a1e88 checkpoint`, but has **ZERO remotes**. One disk failure from gone.
-- `C:\Users\gianf\crypto` — **not a git repo at all.** No backup of any kind.
+1. Built `.venv` (Python 3.13.14), installed `requirements.txt`.
+2. **Found and fixed two schema bugs that made the pipeline non-reproducible on
+   any second machine** (§2). One of them meant `run_gates.py` could not gate a
+   single video on a fresh database.
+3. Rebuilt the corpus end to end: retrieval → gates → ranking → read-set selection.
+4. Read and extracted **6 videos**.
+5. Pre-registered, then amended, the retrieval-payoff test (§4).
+6. Regenerated `KNOWLEDGE.md` (32,147 chars).
 
-**Both recorders named in the root STATUS.md were dead. BOTH ARE NOW BACK UP** —
-re-verified 12:48:48, two minutes after the lines above were written.
+### Corpus, rebuilt
 
-- `record_depth.py` (tennis depth) — **RUNNING again as PID 14072, started
-  12:46:47.** Confirmed live: `set1_overshoot\data\depth\2026-08-03\16\depth.jsonl`
-  written at **12:48:07**, 41 s before the check. **Gap is 09:59:12 → 12:48:07 =
-  ~2h49m and is permanently lost** — Kalshi has no historical order-book endpoint,
-  so this cannot be backfilled by anyone, ever.
-- `record_15m_opens_v2.py` (crypto) — **RUNNING as PID 22260**, restarted 12:46:33
-  with `--hours 168`. Its log and err files were written at start. **Caveat: the
-  data file `crypto\data\btc15m_opens\opens_all_2026-08-03.jsonl` has not been
-  appended to since 08:30:58.** Two minutes in that is expected — it waits for the
-  next 15-minute boundary — but if it is still 08:30 an hour from now the process
-  is up and not collecting. **Check that file's mtime, not the process list.**
-  Gap so far 08:30 → 12:46, ~4h16m.
+| | this machine | laptop, for comparison |
+|---|---|---|
+| unique videos retrieved | **746** | ~718 gated |
+| PASS | **370** | 369 |
+| transcripts cached | **688** | 683 |
+| searches, failures | 84, **0 failed** | — |
+| throttle verdict | **no degradation detected** | — |
 
-**Machine sleep:** `powercfg SUB_SLEEP STANDBYIDLE` AC index = `0x00000000` —
-never sleeps on mains. On battery it is not covered by that setting; both
-recorders die on sleep and neither gap is recoverable. Keep it plugged in.
+Gate census: PASS 370 · STALE_G2 190 · DROP_G3_OFF_TOPIC 98 ·
+DROP_G1_NO_TRANSCRIPT 49 · DROP_G3_DISCRETIONARY 18 · DROP_G1_EMPTY_TRANSCRIPT 12
+· DROP_META 9.
 
-**Processes running, NONE of them mine** (this session started no background job):
-| PID | what | writes to | dies on sleep |
-|---|---|---|---|
-| 14072 | `record_depth.py` — tennis order-book depth | `kalshi\set1_overshoot\data\depth\<date>\<hr>\depth.jsonl` | **yes, unrecoverable** |
-| 22260 | `record_15m_opens_v2.py --hours 168` — crypto 15m opens | `crypto\data\btc15m_opens\opens_all_<date>.jsonl` | **yes, unrecoverable** |
-| 21208 | `wallet-copy-study\src\spec_20_pull_missing.py`, running since 10:29 | `wallet-copy-study\reports\` | re-runnable |
-| 17996 | `src/fetch_repo.py tree 400` (signal-github) — **borrowing this project's venv** | signal-github | re-runnable |
-| 17308 | `src/fetch_repo.py tree 400` (signal-github, second copy) | signal-github | re-runnable |
+That the rebuild landed within ~1% of the laptop's PASS and transcript counts is
+the strongest available evidence that retrieval is stable and the pipeline is
+deterministic enough to trust.
 
-The two recorders are the only irreplaceable things in that list.
+Channel expansion was **skipped** (`--no-expansion`). Expanded videos carry no
+query-family attribution, so they are unusable both for `select_read_set.py`
+(which requires `source='search'`) and for the retrieval test. This also sidesteps
+`expansion_v2.py`, which the previous handoff records as not working.
 
-## 8. Checkpoint status, 2026-08-03 12:48
+---
 
-**Working directory `C:\Users\gianf\trading\youtube-signal` — inside the repo.**
-Git top level is `C:\Users\gianf\trading`.
+## 2. Two silent-schema bugs — the pipeline was not reproducible at all
 
-**Working tree is CLEAN. Nothing untracked.** `git add -A` and
-`git commit -m "checkpoint"` are both no-ops right now — a parallel session's
-`checkpoint` commit (`3137c2d`) already swept everything at 12:4x.
+Both are the same shape as the three already recorded, and both were invisible on
+the machine where the code was written, because that machine's DB had been
+patched by hand.
 
-**PUSH SUCCEEDED — everything is backed up remotely.** `origin/main` tip is
-`094279f`, verified with `git rev-list --left-right --count` = **0 ahead, 0
-behind**. It took three attempts and the failures are worth recording: two
-denials from the Claude Code permission classifier (transient stage-2 error, not
-git and not the remote), then one `Failed to connect to github.com:443 after
-21054 ms`. In between, a parallel session pushed the backlog of 15. If a push
-looks blocked here, retry before concluding anything — none of the three failures
-meant what it appeared to mean.
+**Bug #4 — `scores.b_total`.** Written by `load_extraction.py:109`, read by
+`build_knowledge.py` in three places, **created by no file**. It existed only as an
+ad-hoc `ALTER` on the laptop's DB. Every extraction load on a fresh DB would have
+raised `no such column: b_total`.
 
-Ignored and deliberately not committed (privacy — the repo is public and these
-hold judgments about named creators): `youtube-signal/KNOWLEDGE.md`,
-`youtube-signal/reports/`, `youtube-signal/data/`.
+**Bug #5 — `videos.description`.** Written by `run_gates.py:96-103` on *every*
+video it gates; created only by `backfill_descriptions.py`'s `ALTER`. Reproduced
+against the committed pre-fix code before fixing:
 
-**One thing to look at in `3137c2d` before pushing:** that `git add -A` swept 13
-new `wallet-copy-study/reports/*.json` files into history, two of which carry
-wallet addresses (`rec_probe.json` 2, `spec_latency_panels.json` 22). That
-directory was *already* tracked and public — 39 such files are on `origin/main`
-already — so this is not a new class of exposure, but it is the exact mechanism
-`CLAUDE.md` forbids `git add -A` for, firing for the fourth time.
+```
+PRE-FIX run_gates.py FAILS as predicted -> no such column: description
+```
+
+**This one is the serious one: gating could not process a single video on a fresh
+database.** The project was, in practice, un-runnable anywhere except the one
+laptop.
+
+The general rule, now written into both DB modules: `CREATE TABLE IF NOT EXISTS`
+is a no-op against a table that already exists, so **a column added to `SCHEMA`
+alone reaches new databases and never old ones, and a column added by `ALTER`
+alone reaches old databases and never new ones. Both halves are always required.**
+Both modules now carry a `MIGRATIONS` tuple applied idempotently at `connect()`.
+
+That is five silent-default bugs in this project. The previous handoff's warning
+stands and should be strengthened: **do not trust a green run on the machine where
+the code was written.**
+
+---
+
+## 3. Issue 1 — the S1/S2/S3 rubric bug. ALREADY FIXED, and now demonstrated.
+
+The instruction asked for a build axis to be added before scoring more
+engineering videos. **It was already added on the laptop** (commits `d559fcb`,
+`01825f2`, `1af7610`) and that code is in this repo: `read_video.py` carries
+`B_WEIGHTS`, `validate_response` and `totals` handle `b_components`, and
+`verdict()` routes on `b`. Nothing needed building.
+
+What was missing was a demonstration on a video the axis had never seen. It now
+has one:
+
+> **`6MShnMgA9JY` — Jonjo Wadwa, "Alpaca Python Algorithmic Trading Tutorial"
+> — S=3/10, B=9/10, H=0 → BUILD_AND_RECOMMEND.**
+
+S=3 is the bug exactly as documented: S1 (cost side), S2 (backtest vs live) and
+S3 (sample size) all require a *trading claim*, and a pure API tutorial makes
+none, so it caps at 3 and would have been auto-`SKIP`. The video contains working
+code, a complete key→client→order path, and a genuine gotcha — Alpaca returns
+`equity` and `last_equity` as **strings**, so day return needs a `float()` cast.
+None of that is visible to S. All of it is visible to B.
+
+The rubric bug is closed. `SKIP` count across all 6 videos read here: **0**.
+
+### One new judgment call, flagged because it extends the axis
+
+`UQk6Mze5F3Q` fired **B1 (working code) on a prompt**, not on code — the video
+drives Claude Code with verbatim, reproducible prompts, and in an agentic
+workflow the prompt *is* the executable artifact. That is the first time B1 has
+fired on something that is not source code. It is defensible and it is also a
+widening of what B1 means. **Worth an explicit ruling before it becomes precedent
+by accident.**
+
+---
+
+## 4. Issue 2 — the retrieval win. Part A replicates. Part B cannot be settled by this read set.
+
+### Part A — the retrieval facts replicate, on a freshly retrieved corpus
+
+| | Phase 1 (laptop) | this rebuild |
+|---|---|---|
+| F1 ∩ F2 Jaccard | 0.037 | **0.0463** |
+| low-view yield ratio F2 / F1 | 2.25× | **2.21×** |
+
+F1 vs F2B 0.0462, F2 vs F2B 0.0428. The families are near-disjoint and that is
+now an **independent replication**, not a single measurement.
+
+New numbers the laptop did not have:
+
+| family | found | exclusive | PASS rate | <5k views, as % of PASS |
+|---|---|---|---|---|
+| F1 (beginner) | 123 | 74.8% | **77.2%** | 24.2% |
+| F2 (insider) | 352 | 88.9% | 46.3% | 53.4% |
+| F2B (insider, Phase 2) | 330 | 88.5% | 48.5% | **71.2%** |
+
+Two things follow. **F2B is the best low-view finder in the project** — 2.94× F1,
+better than the original F2, so the 12 added insider terms earned their place.
+And **the insider families pay for it at the gate**: they pass at 46–48% against
+F1's 77.2%. Insider vocabulary finds more obscure videos and more junk. That is
+precisely the "different, not better" risk, and Part A cannot resolve it.
+
+### Part B — pre-registered, amended, and currently unanswerable
+
+`src/retrieval_payoff.py` fixes hypothesis, groups, primary outcome
+(**max(S,B)**, because testing a retrieval family on an axis that cannot score
+half its output would measure the rubric and not the retrieval), a two-sided
+permutation test, and the decision rule — all written before any score existed.
+
+**Amendment, committed after 4 videos and before any group was full:** the
+read set clusters. `select_read_set.py`'s ANCHOR rule admits every passing video
+from one channel (Nates Tokens); **all three landed in `F2_only`, entirely inside
+the INSIDER arm**, placed there by a rule unrelated to retrieval family. Across
+the whole read set: TC Trading 3, Nates Tokens 3, Unbiased Trading 2, Moon Dev 2,
+IN THE MONEY 2. Two sensitivity analyses were declared — stratified-only, and one
+row per channel — and the script downgrades its own verdict to
+`CASHED_OUT_BUT_NOT_ROBUST` if they disagree with the primary.
+
+Result at n=3 per arm:
+
+```
+  outcome               insider  beginner    diff        p   effect
+  max(S,B) [PRIMARY]       8.00      7.00   +1.00   0.7000    +0.33
+  S                        8.00      5.00   +3.00   0.3000    +0.78
+  B                        5.00      3.00   +2.00   0.6000    +0.33
+  H                        2.67     -1.33   +4.00   0.2000    +0.89
+  === NOT DEMONSTRATED. Minimum detectable effect exceeds the 10-point scale.
+```
+
+Every outcome points the same way and **not one of them means anything** at this
+n. Both declared sensitivities refused to run — and sensitivity 2 refused
+*because of the confound it exists to control*: INSIDER's 3 videos come from only
+2 channels.
+
+### The finding that actually matters: the read set may be structurally too small
+
+`F1_only` contains **17** videos. That is a hard ceiling on the BEGINNER arm — so
+**n=17 per arm is the most a complete read of all 60 can ever produce.** Power at
+that ceiling, simulated by resampling the observed score pool:
+
+| true effect | power at n=17/17 |
+|---|---|
+| +1.0 points | **0.34** |
+| +1.5 points | 0.72 |
+| +2.0 points | 0.94 |
+| +2.5 points | ~1.00 |
+
+**So: finishing the read set settles the question if the true effect is ≥1.5
+points, and cannot settle it if the effect is around 1 point** — which is exactly
+the size observed so far on the primary outcome. To resolve a +1.0 effect at 80%
+power needs roughly **45 per arm**, which means enlarging the read set beyond 60.
+The corpus can support it (95 F1 / 163 F2 / 160 F2B passing).
+
+This is a real possibility that the question is not answerable at the planned
+scale, and it is better known now than after 54 more reads.
+
+---
+
+## 5. What was read (6 of 60)
+
+| video | channel | bucket | S | B | H | verdict |
+|---|---|---|---|---|---|---|
+| `UQk6Mze5F3Q` Use Claude to find Polymarket wallets | Nates Tokens | F2_only | 10 | 8 | 6 | BUILD_AND_RECOMMEND |
+| `6MShnMgA9JY` Alpaca Python trading tutorial | Jonjo Wadwa | F1_only | 3 | 9 | 0 | BUILD_AND_RECOMMEND |
+| `BbRop6eZHB4` How to copytrade on Polymarket | Nates Tokens | F2_only | 8 | 5 | 2 | ABSORB_AND_RECOMMEND |
+| `7rfzAgvBHxU` BloFin trading fees explained | Crypto Trading Guides | F2B_only | 6 | 2 | 0 | ABSORB |
+| `e0QRge6-bKU` Five things to know, Polymarket/Kalshi | WagerTalk TV | F1_only | 6 | 0 | −1 | ABSORB_RESULTS_DISCOUNTED |
+| `PeutA_HKxew` "I found the best Polymarket bot" | Rolink Craft | F1_only | 6 | 0 | −3 | ABSORB_RESULTS_DISCOUNTED |
+
+**79 claims** (spec 19, mechanism 18, result 12, procedure 11, concept 10, math 7,
+tool_rec 2) · **17 tools**, 4 referral-flagged, 2 undisclosed ownership ·
+**5 methods** · **3 watch segments**.
+
+**40 minutes of runtime → 1.6 minutes that need eyes. 25× compression.** Three of
+six needed zero watching.
+
+**All 14 S/H components that have ever fired fired again, plus all 5 B components.**
+
+### The n-check fired zero times, and that is itself the finding
+
+Not one video stated a win rate *and* a sample size together. The closest:
+`PeutA_HKxew` claims "a 70 to 80% win rate" with no n, no period and no capital —
+which is why H6 (−4, performance claim with no denominator) fired on it. **The
+arithmetic check cannot run because the denominator is exactly what this genre
+omits.** That is not a gap in the tooling; it is the measurement.
+
+### Substantive findings from the reading
+
+- **`PeutA_HKxew` is a sales funnel and is scored as one** (H=−3). Its own numbers
+  refute it, and the extraction records the arithmetic: $300 → $15,000 in a week
+  is 50×, which at its claimed 75% win rate needs ~10 consecutive full-bankroll
+  wins (log 50 / log 1.5 = 9.6), and 0.75¹⁰ = **5.6%**. It presents a 1-in-18
+  outcome as the expected one.
+- **`7rfzAgvBHxU` is a video entirely about fees that then tells you fees don't
+  matter** — "these percentages don't really matter too much" because Bitcoin
+  moves a few percent a day. That compares a deterministic cost with a stochastic
+  move. Five taker round trips a day is 0.6% of notional *per day*, paid whatever
+  the price does. Recorded as a correction, not as a claim.
+- **`e0QRge6-bKU` contradicts itself across two of its own five points.** Point 2:
+  fade the crowd, it is "a collated opinion from a bunch of people who regularly
+  lose money". Point 5: the crowd is "a good sample size on what will happen".
+  Its best claim is sound and worth keeping: break-even is 110/210 = **52.38%** at
+  a sportsbook against ~51% on a prediction market, verified independently here.
+- The BloFin fee numbers (0.02% maker / 0.06% taker) are from **April 2025** and
+  `spec` claims expire in **3 months**. They are ~15 months stale. Do not repeat
+  them without rechecking.
+
+---
+
+## 6. What is wrong, unfinished or untrusted
+
+1. **A parallel session's `git add -A` swept this project's file into a
+   `signal-github` commit** (`d0e10c0`). `retrieval_payoff.py`'s content is intact
+   and verified in HEAD, but **the commit message documenting that the
+   pre-registration amendment preceded the result was lost.** The file
+   self-documents its own timing, so the audit trail survives in the source. This
+   is the mechanism `CLAUDE.md` forbids `git add -A` for, firing for the **fifth**
+   time — and the first time in this direction, with another project absorbing
+   this one's work. Stage explicit paths.
+2. **The 22-hour video (`b9EXshJM94g`, 1,323 min) is still unread.** It is the
+   `longest` anchor and the deliberate compression test. It does not fit a context
+   window and chunking is still not built. It sits at position 2 in the read order
+   and was skipped, not forgotten.
+3. **H can reward disclosure but cannot penalise concealment.** `7rfzAgvBHxU`
+   promotes a referral link twice, never discloses any interest, and scores
+   **H=0** — H5 (+2) simply fails to fire. A video that discloses nothing and a
+   video with nothing to disclose are indistinguishable. Both score 0. **This is
+   a genuine rubric gap and it is the same blind spot the laptop session found in
+   descriptions.** A negative component for undisclosed monetisation is the
+   obvious fix and was NOT added here, because changing the rubric mid-read would
+   invalidate the comparison between videos scored before and after.
+4. **H is meaningless for videos that make no claims.** `6MShnMgA9JY` scores H=0
+   not because it is neutral but because there is nothing to be honest *about*.
+   H=0 currently means three different things.
+5. **B1 has now fired on a prompt** rather than on code (§3). Unruled precedent.
+6. Both G3 validation samples still informed the lexicon's design, so its
+   85.9% / precision 0.809 / recall 1.000 remain **upper bounds, not a holdout**.
+   Unchanged this session.
+7. `read_video.py` has still never run and is unvalidated below the API call.
+8. The read set's ANCHOR rule injects a non-random single-channel block into one
+   arm of the test (§4). Handled by declared sensitivity analyses, not fixed.
+
+---
+
+## 7. The single next thing to do
+
+**Read `next_reads.py`'s order and keep going — but decide first whether the
+retrieval test is worth finishing at all.**
+
+```bash
+C:\Users\vinig\trading\youtube-signal\.venv\Scripts\python.exe C:\Users\vinig\trading\youtube-signal\src\next_reads.py 10
+```
+
+The decision that governs everything else: at the read set's structural ceiling of
+17 per arm, the test resolves a ≥1.5-point effect and cannot resolve a 1-point
+one. Either accept that ceiling and read the remaining 54, or enlarge the read set
+to ~45 per arm first — cheap, since selection is deterministic and seeded and the
+corpus already holds 370 passing videos.
+
+Reading is worth doing regardless for `KNOWLEDGE.md`. Only the *test* depends on
+this choice.
+
+Then re-run, in this order:
+
+```bash
+C:\Users\vinig\trading\youtube-signal\.venv\Scripts\python.exe C:\Users\vinig\trading\youtube-signal\src\retrieval_payoff.py
+```
+
+```bash
+C:\Users\vinig\trading\youtube-signal\.venv\Scripts\python.exe C:\Users\vinig\trading\youtube-signal\src\build_knowledge.py
+```
+
+---
+
+## 8. Checkpoint status
+
+Working tree **clean**. All code committed and pushed; `origin/main` verified
+**0 ahead, 0 behind** at the last push. Commits from this session:
+
+| commit | what |
+|---|---|
+| `e4dff71` | schema bug #4 (`b_total`) + the pre-registered payoff test |
+| `dc36ef2` | schema bug #5 (`videos.description`) — `run_gates` was dead on any fresh DB |
+| `b256dcd` | bucket-balanced read order (`next_reads.py`) + `status.py` |
+| `d0e10c0` | **not mine** — swept the payoff-test amendment in under a signal-github message |
+
+One push failed with `Failed to connect to github.com port 443 after 21115 ms`
+and succeeded on immediate retry. As the previous handoff says: **retry before
+concluding anything.**
+
+Gitignored and deliberately not committed — they hold judgments about named
+creators and the repo is public: `KNOWLEDGE.md`, `reports/` (including
+`reports/extractions/*.json`, the 6 extractions), `data/`, `.venv/`.
+
+**Those 6 extractions exist on this machine only and are not backed up anywhere.**
