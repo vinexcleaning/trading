@@ -39,6 +39,10 @@ import urllib.request
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(ROOT, "cache")
 os.makedirs(CACHE, exist_ok=True)
+# `reports/` is gitignored, so it does not exist on a fresh clone. Every step
+# writes a report at the end; a whole retrieval run was lost to this at the last
+# line of the script, after all the work was done.
+os.makedirs(os.path.join(ROOT, "reports"), exist_ok=True)
 
 UA = "signal-github/0.2 (research)"
 
