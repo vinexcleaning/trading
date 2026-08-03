@@ -235,7 +235,7 @@ The structural-event trigger is **not** worthless. Buying an upward 12c/60s step
   net                           -2.29c
 ```
 
-To make this work you would need the edge to roughly triple, or costs to fall by ~60%. Maker-only entries (the spec's §4 resting limit, at 25% of taker fees) recover ~1.2c of the 1.62c fee. That closes less than a third of the gap and still leaves the strategy negative.
+To make this work you would need the edge to roughly triple, or costs to fall by ~60%. ~~Maker-only entries (the spec's §4 resting limit, at 25% of taker fees) recover ~1.2c of the 1.62c fee.~~ **Corrected 2026-08-03: ~1.58c, not ~1.2c.** The 25%-of-taker maker rate applies only on series whose `fee_type` is `quadratic_with_maker_fees` — that is **ATP and WTA only**. Challenger and ITF are plain `quadratic` and pay **no maker fee at all**, and they are **90.3%** of this dataset (12,339 of 13,658 markets). So maker entries recover the *full* fee on 90.3% of markets and 75% of it on the rest: `0.903 x 1.62 + 0.097 x 1.215 = 1.58c`. **That closes about a sixth of the gap and still leaves the strategy negative** — the strategy loses 9.36c/trade, so an extra 0.38c of recovered fee changes nothing about the verdict.
 
 ### On the exits specifically
 Your Step 5 framing was: *"If Strategy 1 can't beat this, its exits are destroying value."* Answer: **S1 −9.36c vs S2 −2.29c. The exits destroy 7.07c per trade.** The scale-out, the structural stop and the −24c floor together take a signal with a small positive drift and produce a raw edge of −1.31c before costs, plus an extra 2.5c of round-trip friction that holding to settlement never pays.
