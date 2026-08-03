@@ -18,6 +18,19 @@ import re
 
 STALE_MONTHS = 18
 
+# A caption track that is almost entirely [Music]/[Applause] is not a transcript.
+# Measured: the four "Backtesting Walk Forward Optimization Global N Futures"
+# uploads carry 13-92 real words; genuine videos in this set carry 2,786-7,517.
+# 100 separates them with room to spare.
+MIN_REAL_WORDS = 100
+_TAG = re.compile(r"\[[^\]]*\]|\([^)]*\)")
+
+
+def real_words(snippets):
+    """Word count excluding bracketed sound tags."""
+    full = " ".join(s["text"] for s in snippets or [])
+    return len(_TAG.sub(" ", full).split())
+
 # Terms that alone establish the topic.
 CORE = [
     "prediction market", "predictions market", "kalshi", "polymarket", "manifold market",
@@ -25,6 +38,10 @@ CORE = [
     "quant trading", "market making", "market maker", "order book", "orderbook",
     "backtest", "back test", "limit order book", "adverse selection",
     "binary option", "event contract", "copy trading", "copytrading", "arbitrage bot",
+    # Promoted from METHOD after validation: walk-forward analysis is a specific
+    # practitioner technique, and 4 of 5 G3 false negatives were walk-forward
+    # trading education that fired no core term.
+    "walk forward", "walkforward",
 ]
 
 # Trading/markets context -- necessary but not sufficient on its own.
@@ -52,9 +69,16 @@ NEGATIVE = [
 
 
 def _hits(text, terms):
+    """Match a term, allowing an optional trailing plural 's'.
+
+    Without the 's?' the core term "prediction market" fails to match the phrase
+    "prediction markets" -- which is how a video titled "Prediction Markets Are Now
+    Live on tastytrade" was classified off-topic. That was a real false negative
+    found in validation, not a hypothetical.
+    """
     found = []
     for t in terms:
-        if re.search(r"(?<![a-z])" + re.escape(t) + r"(?![a-z])", text):
+        if re.search(r"(?<![a-z])" + re.escape(t) + r"s?(?![a-z])", text):
             found.append(t)
     return found
 
@@ -106,10 +130,13 @@ def classify(video, snippets):
     """
     detail = {}
 
-    # G1 -- transcript retrievable.
+    # G1 -- transcript retrievable AND usable.
     detail["g1_transcript"] = bool(snippets)
     if not snippets:
         return "DROP_G1_NO_TRANSCRIPT", detail
+    detail["real_words"] = real_words(snippets)
+    if detail["real_words"] < MIN_REAL_WORDS:
+        return "DROP_G1_EMPTY_TRANSCRIPT", detail
 
     # G2 -- within 18 months. STALE is set aside, not deleted.
     age = video.get("age_months")

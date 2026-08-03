@@ -1,0 +1,609 @@
+[
+  {
+    "video_id": "y9jlHmSbjGo",
+    "stratum": "classified_on_topic",
+    "classifier_says_on_topic": true,
+    "classifier_rule": "core term",
+    "terms_fired": {
+      "core": [
+        "polymarket"
+      ],
+      "context": [
+        "trade",
+        "position"
+      ],
+      "method": [],
+      "negative": []
+    },
+    "title": "HOW TO FIND AND COPY TRADE WALLETS IN POLYMARKET",
+    "views": 410,
+    "head_500_words": "Oh, I just wanted maybe to break down something. I was trying to have a look at it. So, let's navigate to climate. Once we are in weather, once we have weather pulled up here, we need like to check. Last time I shared a video on how to make a boat using How to create a B for weather and climate exactly and also how to fit the exactly weather for the areas for you to make correct predictions. But now today uh I it's something different. I want to show you how you can copy trade or I have the code. Let me pull out the the code. So here is a folder I made with all the code. Okay, let me zoom a little bit so that I can explain. So most of these are things that I have discussed here the imports. Then first let's start uh okay let's just then we load the env. So if you check if you check out this variables you can see most of them like we are going to use the dry run we are not spending money but we can change this to false and you can save but in our case we want to run true or then amount you are going to bet is like $2. Then signature type is usually wallet. Then here is your private key. How you can get your private key. Most of the time you can get your private key directly on your profile. Let me show you. So you can just once you are logged into your profile you will just get to navigate to I will just leave the link on the link below but you can navigate to your wallet then you can check everything but for your funding is like your p your your wallet the wallet that's usually you are given here. So once you fill this all parts it is easier for you to to do the rest. Okay. Now let me show you how to so once you fill all this which is easy I've explained on the previous videos you can check on you can check to load this target wallets which we are going to have them here uh some of the wallets we are just going to save the I'll show you in a minute then next we are going to get the profile we are going to fade the profile of the target wallet. Then we are going to fade the position in a JSON format for that exactly wallet that we have placed it here. Once we have that, we are going to get the latest bet from that wallet. Then uh we are going to do something we call uh to check if the wallet has a position or not. If the wallet has this position on coin, you can check that. Then also we are going to make sure we check the globe client. This is whereby",
+    "llm_says_on_topic": true,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "BrcugNqRwUs",
+    "stratum": "classified_on_topic",
+    "classifier_says_on_topic": true,
+    "classifier_rule": "core term",
+    "terms_fired": {
+      "core": [
+        "algo trading"
+      ],
+      "context": [
+        "trading",
+        "trade",
+        "market",
+        "broker",
+        "stocks"
+      ],
+      "method": [
+        "api",
+        "strategy",
+        "commission"
+      ],
+      "negative": []
+    },
+    "title": "How to buy Stocks with JavaScript // Algo Trading Tutorial for Dummies",
+    "views": 261659,
+    "head_500_words": "i've always wanted to make money with stonks but every time i listen to advice from guys on tv like jim cramer i lose a ton of money like a few months ago he told me to buy this technology stock called peloton but failed to mention it's just an exercise bike with an ipad strap to it lost 80 on that trade then last week he tipped me off to a stock called netflix that one's not going too well either and it's gone now i've got a second mortgage on my horse but thankfully i've learned the perfect investment strategy listen to jim then do the exact opposite of what he says so in this video we're going to build an algo trading app with javascript that can make real trades in the stock market based on an iron-clad ai-powered algorithm quick disclaimer this video does contain investment advice as long as your strategy is to be poor all i ask in return is that you hit the like button and subscribe the inverse kramer strategy is not unique but the problem is that i don't think there's a public api that provides jim cramer picks i had to sell my tv so i can't watch a show anymore which means we need to go with plan b we'll use the world's premier ai model gpt3 and ask it if jim cramer would buy or sell whatever stocks we're interested in gpt3 writes pretty much all my code these days with github copilot so it should really have no problem figuring out stock picks let's first take a look at the architecture and tech stack of this application first we'll need a backend server and for that i'm using firebase cloud functions i was going to use cloudflare because i felt bad about how far their stock has fallen after it was recommended by jim cramer but i think firebase is the best fit for this project we'll have a function running on a cron job during market hours that when invoked we'll make a call to the gpt3 api generative pre-trained transformer 3 is one of the most sophisticated and terrifying algorithms out there we can take a list of stocks and simply ask it if jim cramer would buy them or not and it will respond with a simple yes or no and we could even provide it more context like kramer's recent tweets and articles to nudge it in the right direction if the answer is sell then we'll buy if the answer is buy then we'll short sell now to trade a stock we'll need a broker and for that i'm using the alpaca api which is basically robinhood for developers also i'm deeply saddened and dismayed to report that the robin hood guys are no longer billionaires their stonk also tanked big time after being recommended by jim kramer alpaca is really cool because it's commission free trading and it also provides real-time",
+    "llm_says_on_topic": true,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "kKOzvqkP4UM",
+    "stratum": "classified_off_topic",
+    "classifier_says_on_topic": false,
+    "classifier_rule": "no core term and insufficient context+method",
+    "terms_fired": {
+      "core": [],
+      "context": [],
+      "method": [
+        "websocket"
+      ],
+      "negative": []
+    },
+    "title": "Build, Break, and Hack WebSockets",
+    "views": 21845,
+    "head_500_words": "right welcome back to another video now I'm really excited to share today's topic on websockets because really it's not something that I've spent much time researching in the past but given that my recent Focus has been on attacking internal web apps and web exploitation for red teamers and adversary emulation it's definitely an exciting topic if I can attack users by exploiting websockets and in particular privileged users like it help desk through things like live chats and ticketing systems then we're going to be making steps towards owning the entire network and of course don't get me wrong this isn't a dig at all anyone who's working on the help desk but often I find that they have access to a lot of sensitive information or simply they might have domain admin privileges so this makes them a prime target as usual we're going to do a bit of a primer on websockets first I'll talk you through a simple application that I built and then we'll look at how we go about actually attacking them the second lab we're going to over was particularly fun because we essentially reused the code that I wrote to learn about websockets it's not often that you get to copy and post your application code to be used as an exploit as always if you enjoyed the video don't forget to like And subscribe and of course don't hesitate to share the video if you think that others would get some value out of it let's dive in so when I started to look at web sockets I thought to myself I don't really know what's happening under the hood and of course I've seen websockets in use before but I've never actually had to build or troubleshoot a web app that's using them and in my opinion there's a lot of value to doing that so my first stop was web dev simplified now this is a great resource if you want to get up to speed on a lot of topics very quickly even if you're not a developer if you're just interested in appsec it's definitely worth your time unfortunately this time around there was only a video on sockets.io which of course is similar but not exactly what I was after next up I looked at the mdn web docs and as usual this gave me a really good starting point on how to create websocket objects send data and some practical examples like how to send Json Etc I also looked at a few of the posts while Googling I read through some example code and of course Paul swigger had some information and Labs on websockets as well all in all a pretty productive morning but why is this important to share well I thought it would be useful for me to just give you a brief overview of how I approach learning new topics in a lot of situations it's too easy to",
+    "llm_says_on_topic": false,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "1l7xWU-BU3w",
+    "stratum": "classified_on_topic",
+    "classifier_says_on_topic": true,
+    "classifier_rule": "core term",
+    "terms_fired": {
+      "core": [
+        "algo trading"
+      ],
+      "context": [
+        "trading",
+        "trader",
+        "trade"
+      ],
+      "method": [
+        "python",
+        "profit"
+      ],
+      "negative": []
+    },
+    "title": "If I Started Algo Trading in 2026, This Is What I'd do",
+    "views": 73858,
+    "head_500_words": "I've been ago trading for over a decade, but let's imagine that I would start again from scratch without any previous experience. Today, I will show you exactly how I would do it if I started algo trading in 2026, saving you months of headaches, headaches that I had when I started. Let me show you what we are trying to achieve. So, this is what algo trading looks like in action. So, right now behind me, I have an algo that is trading for me. It's trading for me automatically. It's going into trades. is going out of trades, it's managing risk, it's taking the profits, it's trading the stop loss, etc. All without me lifting a finger. And this Algo consists of only 12 lines of code. It runs on an online platform completely in the cloud, which means that I don't even have to have my computer running. So my bet is that you have already thought about algo trading before. You have probably even tried it. And uh now you're stuck. And there are three things that people usually do wrong. And those three things makes it too hard to get going. And the first thing is that a lot of traders start by trying to learn a new programming language like Python. Or they try to hunt down data sources, data sources to build their algorithms on. or they try to set up the infrastructure that's needed to run the algorithms. Did you get stuck on any of these three things or anything else? Let me know in the comments what you have been having most trouble with. So, looking at this list, it's uh not a surprise to me that people get stuck because all of these three things are enormous tasks. But there's actually another way to do it. So, this is what you have done before. And if I were to start from scratch in 2026, I would instead do this. I would pick the simplest available trading platform that includes the tech setup, that natively includes the data, and that doesn't require any advanced programming. I will show you the trading platform that I use that includes all of this from start. My second step would be to start 10 different algos on a paper account. So a paper account is an account where you trade with demo money so that you're not risking your capital. And I will tell you why in a minute. Only as the third and last step would I start coding my own algos. Why would I start algos that I haven't coded before starting to code myself? Well, because it will give you a sense of what you're trying to achieve. You will immediately see what an ara looks like, how it behaves and you will see executed trades already from day one and that will clear away so many big mental barriers and it will get you from nothing to an algo trader in",
+    "llm_says_on_topic": true,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "mRttt6c4is8",
+    "stratum": "classified_on_topic",
+    "classifier_says_on_topic": true,
+    "classifier_rule": "core term",
+    "terms_fired": {
+      "core": [
+        "prediction market",
+        "kalshi",
+        "polymarket"
+      ],
+      "context": [
+        "trading",
+        "trade",
+        "market",
+        "markets",
+        "betting",
+        "odds"
+      ],
+      "method": [],
+      "negative": []
+    },
+    "title": "Prediction Markets for Dummies | 101 Tutorial on How to use Kalshi & Polymarket",
+    "views": 15931,
+    "head_500_words": "Most people still don't know what prediction markets are, but in 2026, they are quietly becoming the most important way people bet, trade, and predict the future. And if you are one of those people that don't know what they are or how they work, don't worry, you are still early. Today, I want to explain prediction markets in the easiest way possible. What they are, how platforms like Koshi and Poly Market work, and even how to find some value when you're trying to sports bet on these platforms. First off, what is a prediction market? Well, it's simply where you can trade on any real world outcome. I mean, literally anything. Will interest rates go up? Will Elon Musk sell X before 2028? Will the Patriots win the Super Bowl? I sure hope so. But as of right now, Koshi is giving the Patriots a 14% chance to win the Super Bowl. And that right there is probably the number one thing that confuses most people when they're trying to learn about these prediction platforms like Kouchy and Poly Market is how they display their odds with these cents or percentages. If you're used to American sports betting odds, there's an easy fix on these platforms where you can just simply toggle a sports better mode and it will show everything in odds. But I do want you guys to understand what these percentages and cents mean. That way you have a better understanding of how these platforms are working as trading platforms. Each contract has a price between 1 cent and 99 cents. If something is trading at 65 cents a contract, that means that the market is telling you this has about a 65% chance to happen. Using that example, you are basically buying a dollar at 65 if you were right. So essentially, you're making 35 per contract that you had purchased on that trade. You can also use a betting odds converter like here on OddJam if you wanted to to find out the American odds of this probability. So if something has a 65% probability or chance to happen, then this is equal to minus 185 American odds. And on the opposite side, if it has a 35% chance of happening, this is equal to plus 185 odds. If the prices and percentages are too much or too confusing for you, no worries. As I mentioned earlier, there's an easy fix to help you get into sports fan mode that actually projects these as American odds than uh the prices and percentages that you are seeing normally. You just click into a market, the three dots at the very top here on the app. You will see sports fan mode there in the middle. Click that and now you will see everything has translated into American odds both in that actual game and then here on the main page with all these other games. Talking to many people that are used to betting",
+    "llm_says_on_topic": true,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "Di293ifipJI",
+    "stratum": "classified_off_topic",
+    "classifier_says_on_topic": false,
+    "classifier_rule": "no core term and insufficient context+method",
+    "terms_fired": {
+      "core": [],
+      "context": [
+        "exchange"
+      ],
+      "method": [
+        "websocket"
+      ],
+      "negative": []
+    },
+    "title": "Using WebSocket for Real-Time Communication in Java Platform, Enterpise Edition 7",
+    "views": 2333,
+    "head_500_words": "hi we are Eduardo moranchel and Edgar Martinez we had a chance to play with the new features of java E7 to test the new features we developed a very simple application a sticker book this book allows kids to collaboratively build a Story draging stickers to a board that updates in real time on everyone's machines to build the page we used JSF 2.2 new features for HTML 5 in combination with JavaScript we exchange data between the server and the browser using the increasingly popular Json and to TI all together we use web sockets keep reading to see how we did this using Java E7 thank you we hope it helps you to get started with these new exciting Technologies coming in E7 happy coding",
+    "llm_says_on_topic": false,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "DqLHmXf25JY",
+    "stratum": "classified_off_topic",
+    "classifier_says_on_topic": false,
+    "classifier_rule": "no core term and insufficient context+method",
+    "terms_fired": {
+      "core": [],
+      "context": [
+        "trading",
+        "trader",
+        "trade",
+        "market",
+        "markets"
+      ],
+      "method": [
+        "strategy"
+      ],
+      "negative": []
+    },
+    "title": "Trading Strategies: Binary and Zero Cost | Trading the Markets with Plus500",
+    "views": 857,
+    "head_500_words": "hi everybody and welcome back um I'm going to start a series of sessions here talking about trading strategies and and the importance of them uh to our trading and one of the key things I I want to emphasize is how different we can trade um and not to be falling into what I often call one-dimensional trading which in itself is a valid trading strategy but um just to help showcase that there are lots of other things that we can be doing in markets so really what are trading strategies their tools that Traders can use to manage risk levels and expectations for any given trade idea that we want to put into the marketplace every market and every trade has its own unique circumstances when we get up in the morning we feel something's going to happen there'll be different levels of volatility markets will be reaching different points on our charts which may change the way we want to trade um whether it be more passively aggressively all those kind of things so that's why we look at maybe taking an individual approach to our execution and implementing some of these different trading strategies now what can this helpers do in terms of you know appropriately applying different strategies well it can certainly fine-tune our trade execution as we go a little bit further around this wheel here um there are varying levels of complexity in the trading and and that requires more planning and you know very often as we plan our trades and we plan the execution uh we're certainly looking at specific levels you know for me once I feel I'm going into a trade knowing you know what the outcomes can be and they're clearly defined then I feel a lot more comfortable uh in what I'm doing it helps me manage my emotions a lot more I tend to know what's coming and if things do come around the corner that maybe surprises I have a strategy um against that as part of my overall trading strategy so it will help us keep on a more even kill and it will certainly help improve our trading discipline because we know literally what we should be doing at each level as part of this pre-planned strategy so on the left hand side very briefly there I won't go through them all these are just names that we've applied to various trading strategies they're not from a textbook hopefully they simplify and explain what we're trying to achieve out of any of these given trading strategies and tonight I'm going to focus on the two in yellow binary trading and zero cost Trading so what do we mean um by binary trading well effectively this is the most simplistic form of trading and yeah right from the outset a less experienced Trader would certainly trade in this manner and you know it is a very very valid trading strategy what is the",
+    "llm_says_on_topic": false,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "6njREUQAFdg",
+    "stratum": "classified_off_topic",
+    "classifier_says_on_topic": false,
+    "classifier_rule": "no core term and insufficient context+method",
+    "terms_fired": {
+      "core": [],
+      "context": [
+        "trading"
+      ],
+      "method": [
+        "strategy"
+      ],
+      "negative": []
+    },
+    "title": "How To Build A Self-Improving AI Trading Agent (Insanely Cool)",
+    "views": 226272,
+    "head_500_words": "The holy grail for AI trading agents is having an agent that's able to learn from its mistakes and make improvements on the strategy or with the vision of becoming more profitable. The thing is is that most AIs that you interact with, they are very simple. You give [music] a prompt, they give an output. But what we're going to do today is use an extremely powerful AI that automatically learns from all the engagements that you have with it and I want to see if I can apply that self-learning behavior to a trading strategy. So instead of it being prompt outcome, instead, we're going to produce a prompt that creates a strategy that creates an outcome it can learn from and therefore creates a new prompt to build into the strategy again. What we have is a self-improving trading agent. You're going to have it running 24/7 and I've even made it so you can just simply copy and paste one single prompt, put it into your AI and it will set this whole thing up for you. And the AI itself that we're using today is completely free. It does this self-teaching process, this self-improvement process for free. So right after you subscribe, let's get into it. Now I've been doing this a little while and I know that whenever you want to create a self-learning or a self-improving process with Claude, for example, you have to describe how it's supposed to improve itself. And so it's it can get a little bit laborious. It's very boring and it's very frustrating because the AI doesn't quite understand it. However, there's a new tool that has come out over the last couple of months that's been really lingering in the background and today I've just seen the massive use case for it in trading and it's called Hermes agent. have heard of like open Claude, this fully autonomous thing that's just took the world by storm. Well, Hermes in the background is being touted as even better than open Claude because of this self-learning process. But Hermes agent on its own isn't going to do all the work. We actually have to put some smarts into this and this is what I do. I architect agents to do exactly the thing I want them to do. And so there were four criteria that I came up with with regards to what makes a good trading agent. And I came up with these four. So, number one, it has to be accurate. Number two, it has to be reliable. Number three, it needs to have a very well-defined goal. And number four, it needs to be self-improving. It needs to learn from its mistakes. >> [music] >> Now, let's first talk about the accuracy element because when I say accurate, I mean is the data that's coming in accurate in the first place? Are we able to take that information in reliably and consistently over time? And when",
+    "llm_says_on_topic": true,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "Xrx9fwe87Iw",
+    "stratum": "classified_on_topic",
+    "classifier_says_on_topic": true,
+    "classifier_rule": "core term",
+    "terms_fired": {
+      "core": [
+        "kalshi",
+        "trading bot",
+        "order book"
+      ],
+      "context": [
+        "trading",
+        "market",
+        "bitcoin",
+        "betting"
+      ],
+      "method": [
+        "bot",
+        "strategy",
+        "indicator",
+        "spread",
+        "profit"
+      ],
+      "negative": []
+    },
+    "title": "24 Hour Challenge to $100: Build a Trading Bot on Kalshi",
+    "views": 7204,
+    "head_500_words": "Right now my balance has increased from $30 to $97. Like very very close to $100. >> [sighs] >> I'm starting a 24-hour challenge to see if I can turn $38.79 in Kashi to $100 by the same time tomorrow. So what is Kashi? Kashi is a betting market that allows you to bet on the outcome of almost any event. For example, you can bet on the coin price, on the climate, on the gas prices. You get the idea. So the market that I choose that fits these four criteria are this one. Bitcoin up or down 15 minutes. The price of a Bitcoin within a short time interval is governed by momentum and mean reversion. I can apply statistics methods to predict the price of Bitcoin. After grinding a couple of hours, I finally succeeded in integrating the Bitcoin price from Coinbase and the Kashi market order book into the trading bot. Now we have access to data such as the the spread between bid and ask on the market, which are good indicators for the liquidities of the market. Another key aspect of the data is the the latencies for those data sources. Ideally, we want the latencies to be as low as possible because the the trading bot needed to act promptly to any new pieces of information. >> A few moments later. >> The bot is has just created an order. You can see that it's a one contract for 57 cents for yes. Oh, it's not looking great. It's basically predicting that the coin is going to end at the above $20,000. Right now it's approaching really really close and then in fact is actually getting below. So it might turn out that I'm losing money on this one. You can see that the bot is actually dynamically making decisions on whether to create an order or not, and on what side of the order. Bot has been running for 10 hours without me supervising. It has made a couple of orders. It started with four winning orders, and then followed by consecutive orders. Right now, the balance has actually reduced from $38 and cents to $36.93. You see, momentum strategy is really straightforward. You bet on yes when you detected the price of Bitcoin start to go up. Here's where it's a little nuanced. Because momentum can shift at any moment, you want it to place the bet only when the price has certain safety margin. For example, when the price is above the strike price in the upward trajectory. This is how I profit from the winning bids, and the exact contrary happens when I had a loss. In those losses, I played the bet under the strike price, and the momentum faded. The price ended below strike price. >> A few moments later. >> I have some good news to share. I've made a lot of progress in training on machine learning models to predict the outcomes of the market.",
+    "llm_says_on_topic": true,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "HTBfMK7PVQU",
+    "stratum": "classified_off_topic",
+    "classifier_says_on_topic": false,
+    "classifier_rule": "no core term and insufficient context+method",
+    "terms_fired": {
+      "core": [],
+      "context": [],
+      "method": [
+        "sample size"
+      ],
+      "negative": []
+    },
+    "title": "Sample size in Reliability Testing Part-1 (One-shot Devices)",
+    "views": 15198,
+    "head_500_words": "sample size in reliability part 1 welcome to Institute of poverty and Alavi hi this is Haven in case yours are not familiar with binomial distribution we recommend that you please watch our video on binomial distribution before watching this video one of the most frequent questions asked in my reliability training programs is what sample size should we use in testing that's a good question the first option that we have to determine the sample size in reliability testing is using successor on theorem or sometimes called success testing attribute data tests can be used to estimate minimum reliability and given confidence level for voice short devices so this success testing or successor theorem is most commonly used for one shot devices like missiles firing of guns are other one-shot devices this can be considered as success testing minimum reliability are seen at specified confidence levels C can be estimated using the following formula what is the formula our C equals 1 minus confidence level C raised to the power of 1 upon n where n is the sample size and the sample says to demonstrate minimum reliability our C at specified confidence level can be estimated using the following Fermin now we look at a sample size n and that equals natural logarithm of 1 minus C that is ln 1 minus c upon l in our c 1 minus confidence level c is sometimes called the alpha risk or type 1 error so we can also write this equation as Ln alpha upon L in our C note that 1 minus confidence level c equals alpha consider an example of an airbag used in automobiles in case of an accidental crash the airbag must deploy or inflate within few milliseconds so that it provides a cushion between the driver and a steering wheel what is the minimum reliability demonstrated at 90 percent confidence level if an airbag manufacturer has tested 20 samples successfully so all 20 samples have successfully completed the functional test of deployment our formula is RC equals 1 - confidence level C raised to the power 1 upon n n is 20 here and confidence level is 90 percent of 0.9 so we write the equation 1 - point 9 raised to the power 1 upon 20 and that equals point 8 9 1 in the same example of airbag what sample size is required to demonstrate minimum reliability of 95 percent at 90 percent confidence level now V is the formula for sample size M and that equals Ln 1 minus C upon L and RC and that will be Ln of 1 minus 0.9 upon Ln point 95 which can be easily calculated as 44 point eight nine we must round up to the next integer to get a sample size of 45 you can also use template from Institute of quality and reliability I will show you how to download this template and how to use the template this is the",
+    "llm_says_on_topic": false,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "FKtz2ThAosE",
+    "stratum": "classified_on_topic",
+    "classifier_says_on_topic": true,
+    "classifier_rule": "core term",
+    "terms_fired": {
+      "core": [
+        "order book"
+      ],
+      "context": [
+        "trading",
+        "trade",
+        "market",
+        "markets",
+        "position",
+        "bitcoin"
+      ],
+      "method": [
+        "strategy"
+      ],
+      "negative": []
+    },
+    "title": "\ud83e\udd16 Can You Trust Order Book Imbalance? My Data Says...",
+    "views": 717,
+    "head_500_words": "Hey there. What's going on everybody? Welcome back. Wanted to give another update on what's been going on. I know I've been uh MIA here for a little over a week, but been making some updates to the software and uh plus I was sick last week. So, um got quite a bit of reading done, but not a ton of work. But I did get a new version up and running out there along with some some more um studies that I did regarding uh order book imbalance. So I kind of wanted to share what I found there um as far as that goes. So uh just looking at where the markets are right now. We're comfortably off the April lows of 76,000. Bitcoin is at least uh hit about 112 just shy of that the other day and is down a little bit from there. So, how has the trading been going? It's actually been going pretty well for the most part. Um, I've rolled out actually I think two versions since the last update that we had or I had just rolled out version 2.4 uh the last update and um now we're on uh version 2.5 which I had rolled out just a couple of days ago. And so these are today's uh current results here in real time. So just a little bit about Oh, and my head's in the way to blocking the uh total row for the 2.5 version, but here's what we got going on for changes uh to the strategy over the last few weeks. Um the current versions that are running out there are 23,24 and 25. So 2 three we uh basically cut the position sizes in half. We're also basing it on a fixed dollar amount rather than on a just a fixed position size. So as the asset goes up and down in value, we'll just adjust our position sizes accordingly so they stay roughly equal in dollar terms. Um there was a memory issue with the Binance uh trade flow monitor. This is monitoring all the trades that are coming in through Binance trying to figure out if there's a heavy buy or sell imbalance and uh in periods of very high volume uh the the application was running out of memory and so that that was the day that the Fed crashed the ALGO basically uh when they announced the rate decision and and there was just a trading frenzy and then the uh software could not keep up with that and uh ran out of memory then. Anyway, 2.4 introduced session open guard rails meaning uh the strategy backs off uh about an hour before each market opens. So an hour before the Asian market opens, before the European open, and before the US open, it doesn't um expand its inventory for an hour before that happens and then about 15 minutes after that happens, after the markets open and before it resumes",
+    "llm_says_on_topic": true,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "-obxtuOlR4E",
+    "stratum": "classified_off_topic",
+    "classifier_says_on_topic": false,
+    "classifier_rule": "no core term and insufficient context+method",
+    "terms_fired": {
+      "core": [],
+      "context": [
+        "trading",
+        "trade",
+        "market",
+        "markets",
+        "exchange",
+        "position"
+      ],
+      "method": [
+        "strategy"
+      ],
+      "negative": []
+    },
+    "title": "Funding Rate Arbitrage Is a Trap? The Hidden Costs Nobody Talks About",
+    "views": 104,
+    "head_500_words": "All right, so you want to start trading funding rate arbitrage in the crypto markets. Is it really a viable strategy? The returns look super juicy and then the fact that you're delta neutral also seems very appealing. Delta neutral meaning you don't care about which way the price is going to go. If it goes up, if it goes down, it doesn't matter because you're long on one exchange and short on another exchange. So it almost seems too good to be true. You're basically able to vacuum up all these nickels for free and collect the funding rate difference between these two exchanges. But there are a number of hidden risks with funding rate arbitrage. So any trade has risks no matter what. Um you know, when you're taking a directional bet on either a you know, the futures markets or in options or in stocks or whatever, the the risk there is [clears throat] very well defined in funding rate arbitrage, you have a different set of risks to deal with. Now, one of those risks is one of your positions gets closed out on one exchange and not the other, in which case you're left with a directional bet on that remaining exchange where your position remains open. And that can happen for a number of reasons. First of all, you could get ADL'd, which means automatic deleverage in the case of when the market makes some extreme moves. Sometimes the exchange will close out positions, profitable profitable positions where you have plenty of margin, but there's so many people on the other end that are getting liquidated that there's nobody to take the other side of your trade anymore. So they need to close out your position, in which case it might have been super profitable on that particular leg, but they're closing you out and now that position is unhedged. Another risk is your balance on the exchanges might become unbalanced, meaning as if you're short on one exchange and the price is going up, the exchange you're long on, your balance is going to increase while the exchange you're short on the price your balance is going to decrease. Now, if you don't have a way to if you're not sitting at your screen and you haven't moved funds over from the exchange with the higher balance to the exchange with the lower balance, you run the risk of getting liquidated. And so, that's another thing to keep in mind unless you're going to be sitting at your screen 24/7 or you're using a very, very small amount of leverage or no leverage at all, then you might be okay. But, that is the tempting thing to do with these strategies is to use a lot of leverage. I have read about a lot of people doing that and then getting liquidated in the end. I personally have experienced getting ADL'd on HyperLiquid back in October when um things just went crazy. I",
+    "llm_says_on_topic": true,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "7Ds9djcEKB4",
+    "stratum": "classified_on_topic",
+    "classifier_says_on_topic": true,
+    "classifier_rule": "core term",
+    "terms_fired": {
+      "core": [
+        "back test"
+      ],
+      "context": [
+        "trading",
+        "trader",
+        "trade"
+      ],
+      "method": [
+        "strategy",
+        "indicator",
+        "win rate",
+        "profit"
+      ],
+      "negative": []
+    },
+    "title": "BEST Day Trading Strategy for Beginners (with ZERO experience)",
+    "views": 619893,
+    "head_500_words": "hey traders in this video you'll learn the simplest day trading strategy for beginners you literally don't need any experience to be profitable and it's the strategy I wish I would have known when I first started out because it uses Concepts that professional Traders use but simplified so much that anyone can do it and just because the strategy is simple doesn't mean it's not profitable as I've also did a back test of it and it came out with a staggering 65% win rate which is pretty good for just a simple strategy so let's get started the strategy is so simple we only look at one indicator and we don't have to think about anything else and that indicator is the 50 EMA the 50 EMA is the 50-day exponential moving average it is a line on a chart that shows an average price of an asset over the last 50 days but with more weight given to recent prices to apply this strategy all we need to have on the screen is just a price chart and the 50 EMA to do that pick the chart you want to analyze and click indicators here we look for EMA we open it and go to settings and set it to 50 so what we're looking for is a chart where the price is moving below the 50 EMA such as in this chart for example the strategy starts once the price breaks above the 50 EMA and a candle closes above it as you can see in this chart so the first step of this strategy is complete a break above the 50 EMA then we're going to wait for a pullback however we only consider a pullback a real pullback when we have at least two opposite candles coming down so that's two backto back red candles after we broke above the EMA once we see that happening we draw a horizontal line at the swing high point before we see that pullback then after we see the two red candles we're going to wait for the price to break above the horizontal line but remember the body of the candle needs to close above the line and when that happens such as it does here that's when we buy but even when the setup is perfect a trade is not guaranteed to be successful and that's why we need to set a stop- loss to limit our risk to do that we add one more tool to our strategy so on trading view go to indicators again and type chandelier stop and click the one right here by pip Charlie once it is applied we place the stop loss of our entry at the chandelier stop in this example that would be right here we then set a take profit Target at Double the stop loss which is right here now while the setup can look perfect that doesn't always always mean that it's a",
+    "llm_says_on_topic": false,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "AyZyOjgDB9I",
+    "stratum": "classified_off_topic",
+    "classifier_says_on_topic": false,
+    "classifier_rule": "no core term and insufficient context+method",
+    "terms_fired": {
+      "core": [],
+      "context": [],
+      "method": [
+        "confidence interval"
+      ],
+      "negative": []
+    },
+    "title": "Confidence interval of a proportion Statcrunch",
+    "views": 214,
+    "head_500_words": "in the week before and the week after a holiday there are 12,000 total deaths and 5,946 of them occurred in the week before the holiday construct a 90% confidence interval estimate of the proportion of deaths in the week before the holiday to the total deaths in the week before and the week after the holiday so we're supposed to construct a 90% confidence interval now this is going to an interval about a proportion tells us in the problem we're given a total number here 12,000 and then we're given x 5946 n is the number of observations X is the number of observations that have whatever attributed is you're looking for in this case it's the total number that occur before the holiday we could get a sample proportion P hat using the formula X over n which would be 5946 over 12,000 which would give us 4955 now of course proportions are always going to be between zero and one so we're at 4955 right here but that is a sample proportion what we're looking for is a 90% confidence interval estimate of the population proportion so what we're going to do is we're going to subtract some from that and add some to that what we add and subtract will be the margin of error the same amount to the left and to the right and this margin of error would be determined by our confidence level which in this case is 90% we can get stat crunch to do this for us very nicely we'll push stat crunch stat proportions one sample with summary the number of successes and we're told that in the problem is 5946 the number of observations that we told is 12,000 we want to do a confidence interval and we want to have 90% confidence so we'll hit this confidence interval radio button and then at level put 090 and then we'll hit calculate now this will give us a lower limit and an upper limit if we round to three decimal places as described described in the problem we would have 488 to 503 based on the result does there appear to be any indication that people can temporarily postpone their death to survive the holiday now since point5 is inside that interval then we have no reason to believe that the proportion before the week of the holiday is any different from the proportion after the week of the holiday so our appropriate response would be no because the proportion could easily equal 0.5 the interval is not less than 0.5 the week before the holiday",
+    "llm_says_on_topic": false,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "06R-ebyOhDI",
+    "stratum": "classified_off_topic",
+    "classifier_says_on_topic": false,
+    "classifier_rule": "no core term and insufficient context+method",
+    "terms_fired": {
+      "core": [],
+      "context": [
+        "trade",
+        "market",
+        "position"
+      ],
+      "method": [
+        "indicator"
+      ],
+      "negative": []
+    },
+    "title": "How To Find The BEST Entry Zones",
+    "views": 341734,
+    "head_500_words": "In this video, I will show you how I personally refine and identify the areas for the best entry using orderflow. Specifically, we will see one indicator that show you the exact area called delta print. This is not based on some support and resistance or technical indicators is based on actual orderflow data that got executed previously. So don't expect that this area can be seen only from candlesticks. Hello everyone and welcome back to the channel. In this video I'm showing you two execution that I took. One in London session and one in New York session using this orderflow suite of deep charts based on fixed profile volume analysis and deep trades analysis of the momentum of the market. So we need to start with the profile shape. The first thing that I was checking here is that the London session start with clear breakout of the previous level a lot of aggression here and they created a condition of trend scenario. Why? Because they accepted after the breakout below the value area low. So as you can see in this condition we are seeking new balance of price and what we can expect here is direction. So I didn't took the first movement because it was before the opening of the London session but the second movement was so clear. What happened here? You can see that here there is this area. Okay. And this area is based on the profile as you can see of the previous swing point. This is dynamic. Okay. So you can measure how much pressure there was in the market during this wing point using the delta profile and using the big trades as you can see the most important price level and we don't need discretional analysis here because you can see is when the volume got support by these big trades and this is the reason you see there is a lot of delta pressure on this area. Okay. So what we can expect is that if we want to continue to go short, we will reload other aggressive short position from this area. So you can just put an alert here. It's nice to notice also that the value area high it's here. So you have a confluence of value area high, big trades and delta level. This one is a super strong area. What happens? The market tried to approach this level, but as soon as the market approaches this level, you see aggressive sellers really strong here and I will show you how much it's useful to see dynamic data entering. Please take care about this part of the chart and watch as the price develop. Okay, bum. You see all this volume? This is what they did in these big trades. And now we want to check if buyers can break this level or they will continue to be on this one because the pressure of the seller is super strong. So we trace",
+    "llm_says_on_topic": false,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "SYeEpe6Rnic",
+    "stratum": "classified_on_topic",
+    "classifier_says_on_topic": true,
+    "classifier_rule": "core term",
+    "terms_fired": {
+      "core": [
+        "trading bot",
+        "arbitrage bot"
+      ],
+      "context": [
+        "trading",
+        "exchange",
+        "crypto"
+      ],
+      "method": [
+        "bot",
+        "automate",
+        "liquidity",
+        "fee"
+      ],
+      "negative": []
+    },
+    "title": "I Ran a Claude AI Trading Bot for 22 Hours \u2014 Here's What Happened",
+    "views": 55085,
+    "head_500_words": "This is the only AI trading video you need to watch. Hey everyone, Ethan here. In today's video, I'm going to show you the AI trading bot I built with Claude AI back in February. Right here, you can see the bot's real performance after running for 22 hours, including the transaction history and current balance. And honestly, the results are pretty impressive. A few months ago, I started building an AI trading bot with one goal in mind. Creating a system that could fully automate the trading process. I gave Claude AI a clear instruction. Build a secure and gas optimized arbitrage bot for Ethereum decentralized exchanges. And the result exceeded my expectations. Claude AI didn't just create a simple prototype or proof of concept. It generated a fully functional smart contract for the trading bot that was ready for real-world deployment, featuring an efficient architecture and advanced security protections. The trading bot continuously monitors Ethereum-based decentralized exchanges, searching for short-term price differences across different liquidity pools for the same token pairs. When it detects a lower price in one liquidity pool and a higher price in another, it executes an atomic buy and sell transaction, capturing the crypto arbitrage opportunity before the prices equalize again. By executing these operations at scale, the system aims to generate returns from multiple arbitrage opportunities. All right, let's dive in. In today's video, I'll break everything down step by step and show you the bot's real-world performance. First, you'll need to install a Web3 wallet extension in your browser. Almost any wallet that supports Ethereum will work. As you can see, I'm using MetaMask. If you're on a mobile device, you'll need to complete the entire process through the wallet's built-in dapp browser. Next, let's move over to the online compiler platform. Create a new file and give it any name you like. It can be whatever you want. Let's continue. Now, we need to copy the bot's smart contract code into the file we just created and deploy it. The code is open source. If you have any concerns about security, you can review it on any trusted auditing platform. I'll share all the necessary links and resources in the video description below. Check the Solidity version at the top of the code, then select the same version in the compiler tab. Check the auto compile option. Then click the button below to compile the contract. Next, let's deploy the contract. Switch to the deploy tab. Open the drop-down, select the option, and connect your wallet. Once connected, your wallet details should appear here. Now, I'll click here to deploy the contract. I need to pay a small gas fee, which is required for any transaction on the blockchain. Excellent. The bot has been deployed and the control panel features a streamlined and intuitive design. But, before we actually get started, click here to check the contract details and make sure everything is correct so we can safely move on to",
+    "llm_says_on_topic": true,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "xohnwjYKoSo",
+    "stratum": "classified_on_topic",
+    "classifier_says_on_topic": true,
+    "classifier_rule": "context + >=2 method terms",
+    "terms_fired": {
+      "core": [],
+      "context": [
+        "trading",
+        "trader",
+        "trade",
+        "market",
+        "position",
+        "stocks"
+      ],
+      "method": [
+        "win rate",
+        "drawdown"
+      ],
+      "negative": []
+    },
+    "title": "Why Trading With the Trend Raises Win Rate and Rewards | Lance Breitstein",
+    "views": 432,
+    "head_500_words": "And knowing what you all, um, kind of do in your style of trading, it became clear to me this was the most value I could offer and give you actionable insights. Oops. Uh-oh, we're falling apart here. So, why live with the trend? I think part of the beauty of living with the trend is when you're trading with the trend, not only does it increase your win rate because you're no longer fighting and you've got all these market participants on your side, but being with the trend really increases your reward. Like we were hearing in that prior presentation with Chris, so many times you can end up capturing some really surprising epic epic moves when that trend is going in your favor. In fact, you're opening yourself up to all that positive asymmetric skew that traders traditionally love. The other beauty is that trading with the trend tends to minimize the drawdowns and the heat you need to take on a position. No longer do you need to really average down positions against you. No longer do you need to trade with a stop. So often when you're really going with that trend, just by the fact that you were kind of riding that wave, even when trades fail, your losses will be less than they would be otherwise. And I know what you're thinking, can everything even be structured with the trend? And I'm going to show you how the answer is yes. Even mean reversion trades and trades that I like to call with the counter trend can be structured to be with the trend as well. And that's one of the things that really really helped me cuz so much of what I did was mean reversion. So, let's start from scratch. What even is a trend? Have you taken the time to ask yourself this? How do we define it? How do you personally define it? It's so important to ask that question because without doing that, you then can't go to the next step of what the implications are to your trading. So, let's keep it simple. Trending stocks, what I would call being in an uptrend, are moving in a generally upward direction and countering new prices. A downtrend would generally be in a downward direction. Another way to think about that is just going back to basic math and algebra, kind of just the slope of the line. So, if something is sloping upwards, regardless of what it's doing, generally it's in an uptrend, opposite for the downtrend. So, this is in contrast to what I would define as range bound or consolidating stocks. Those who are staying within a band of past prices often have a slope of zero, and really those two groups just Doing that simple categoriza- categorization can have [clears throat] really big implications for how you treat and trade these. I see so many traders churn, churn, churn away and take so many paper",
+    "llm_says_on_topic": false,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "5aF6qJM8aVM",
+    "stratum": "classified_off_topic",
+    "classifier_says_on_topic": false,
+    "classifier_rule": "no core term and insufficient context+method",
+    "terms_fired": {
+      "core": [],
+      "context": [
+        "market",
+        "markets",
+        "stocks"
+      ],
+      "method": [],
+      "negative": []
+    },
+    "title": "Here is The Notorious 70% US Stocks Crash Jeremy Grantham Prediction, Again!",
+    "views": 8653,
+    "head_500_words": "Good day, fellow investors. We discussed Jeremy Grantham's 70% crash prediction, comments around it. There was a barrage of your comments. And just there again, GMO, Jeremy Grantham's, came out with the stock market prediction asset class forecast for the next 7 years. And they are still predicting on average a 47% decline real return for US stocks at this level. 8.1% per year over 7 years, you lose almost half of your money. I want to go through the asset class forecast, discuss a little bit your comments, and combine the investing thesis around can a crash happen, will a crash happen, is Jeremy Grantham just scaring the market versus the bulls who say you would have lost so much in real investing, which is what we do on this channel. Let's start. Great comment here, the starting comment. If you listen to Grantham, you would have missed on an incredible bull market since 2022. Okay, you would have still done okay. We have missed on the incredible S&P 500 bull market, but still be investing emerging markets value around and still did the same as the market. So, that's not the concept Jeremy is discussing. But okay, fair point. Again, Jeremy Grantham looks completely foolish. He was bullish just a few times, but mostly bearish, so you would have sold again. And here I agree, you have to buy a quality company, and that's it. Okay, quality is one way of thinking, but keep in mind quality is Jeremy Grantham's key investment thesis, too. But more importantly, this is a great comment from Dave here. 70 years old, most of his life has been bull markets, severe corrections approximately every 10 years. Since 2009, we have not seen a major recession, any recession, I would argue. Why? Because the Fed dropped rates, printed money, run deficits, which are still going on despite the great times in markets and economy. Although the government would love to continue to do this indefinitely, the bond market will not let them, and the next recession will be worse than recorded, Grantham predicts. That's true. The only problem is as other comment here, in a bubble nobody can see that it's a bubble. If it were different, it wouldn't be a bubble. It depends on passive investors. That's connected with the money coming from the Fed, from the deficits. When they run out of money, when the government cannot borrow, the bubble will burst, and then everyone will say, \"It was obvious.\" But, when it comes to investing, the key factor is, \"Okay, what happens if and what happens if?\" Jeremy Grantham explains the risks. It's up to you what you're going to do about it. Which leads us into the next situation here. Jeremy is a billionaire, very important key factor to understand when you listen to people. He just wants to protect wealth. Versus we need to take more market risk if we are not billionaire. This is a very dangerous",
+    "llm_says_on_topic": false,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "fG4dkrlaZAA",
+    "stratum": "classified_off_topic",
+    "classifier_says_on_topic": false,
+    "classifier_rule": "no core term and insufficient context+method",
+    "terms_fired": {
+      "core": [],
+      "context": [],
+      "method": [
+        "api",
+        "websocket"
+      ],
+      "negative": []
+    },
+    "title": "REST API (HTTP) vs Websockets - Concept Overview With Example",
+    "views": 321181,
+    "head_500_words": "in this video i'll be explaining to you the difference between a rest api and web sockets this is going to be a concept overview video i'm not going to go into any low level details of either option but instead i'm going to give you a high level summary of both of these two ideas so let's just jump right into it and the way i want to do this is describe to you the difference between these two things by using an example and more specifically we're going to be using a real-time chatting application as a toy example for this demonstration so let's assume that we have two users we have john and mary and they both want to communicate with one another so both of them have instances of their chatting application the top instance is from john's perspective and the bottom instance is from mary's perspective and typically in these types of application architectures you usually have a server that's going to orchestrate and facilitate the communication between both parties and then you'll also have a database on the server side that's going to be storing things like event logs and other content related to conversations so let's say both users have loaded up this application and john decides to send a message to mary and he says to her hey mary so in a typical rest-based model how this would usually work is that john's chat room application would send a post request to a message api and this api would contain information such as the room in question which is room 101 it would contain the user id which is john and it would contain the message payload which in this case is hey mary so the server would proceed to store that content into its database so that it could retrieve it later but the question becomes how does mary's application get notified that a chat message was sent by john there's no connection that's been established yet so there's really no line of communication from mary to speak to the backend server now a primitive way to solve this problem is by using something called short polling and short polling is the idea that when mary's application or even john's application initially loads up it'll make an initial request to the backend server asking for new messages so it'll send a get request to the message api asking for any new messages for room 101 and it'll proceed to set a timer that'll say every x number of seconds x can be one second five seconds ten seconds even thirty seconds proceed to make this call again and it'll do this over and over and over again so if we run through this example of what we just spoke about here in this case when john sent his message it would go to the server be stored in the database and then mary's application would proceed to call the get api",
+    "llm_says_on_topic": false,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "gXMr5l0-qrY",
+    "stratum": "classified_on_topic",
+    "classifier_says_on_topic": true,
+    "classifier_rule": "core term",
+    "terms_fired": {
+      "core": [
+        "order book"
+      ],
+      "context": [
+        "market",
+        "stocks"
+      ],
+      "method": [
+        "websocket",
+        "script",
+        "profit"
+      ],
+      "negative": []
+    },
+    "title": "Create Your Own Real-time Stock Market Monitor | WebSocket Implementation Tutorial",
+    "views": 6593,
+    "head_500_words": "hello everyone I'm Mamo nice to meet you all today I would like to introduce a web page I created that lets you view stock prices in real time this page deals with Japan's M stock average which is composed of 225 different Stocks by the way regardless of whether you are interested in Japanese stocks there might be realtime tools provided by Securities Companies in your country so please try looking for them also later in the video I will be introducing a web page where you can view order book information and tick by tick price movements in your browser so please stay tuned until the end now then shall we get started hello I'm here to study again today looking forward to learning with you oh hello Mr oaki let's learn together hey you guys still doing this stuff look at the popular channels if you want to do stock related content videos won't get popular unless they're about simple stuff how to make money or anything related to Quick profits I understand that perfectly well hope I just cannot understand the motivation to keep making those kinds of videos you were complaining about it the other day weren't you how you lost subscribers after posting a complex video following some simple content usually posting videos should increase subscribers I'm going to make videos that Target human psychology you know animals controversy money gambling see y oh she left well let's regroup and move on this diagram shows the data flow that enables real time stop price viewing in the browser when the data update is detected the transmission program sends the data to the server via TCP the server distributes data in real time through websocket to all connected browsers excuse me may I ask a question since we're already collecting the data it seems we could set up a database or something similar in the middle of the process to store it what do you think about that yes that's possible we could even distribute it to D our [Music] containers hey don't try sneaking in a swimsuit during all this Tech talk oh miss SEI I did not notice you were here please make yourself comfortable this is the system architecture diagram which might be easy easier to understand than the previous one if your computer has decent specs there is no particular need to separate the receiving and sending servers once you have got this far all that's left is to think about the design I see so once the program is complete changing the design shouldn't cause any problems though I'm a bit concerned about the beach background again yes well while it's not always the case once the programming part is complete you just need to customize the appearance as long as you can obtain realtime data from Securities Companies you can display order book information and tick by tick price movements in the same way previously I introduced a script",
+    "llm_says_on_topic": true,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "MhqwhUwOv9Q",
+    "stratum": "classified_on_topic",
+    "classifier_says_on_topic": true,
+    "classifier_rule": "core term",
+    "terms_fired": {
+      "core": [
+        "kalshi",
+        "trading bot"
+      ],
+      "context": [
+        "trading",
+        "trader",
+        "trade"
+      ],
+      "method": [
+        "bot",
+        "script",
+        "strategy",
+        "fee",
+        "fees"
+      ],
+      "negative": []
+    },
+    "title": "Kalshi Backtesting: The Missing Piece in Your Bot Strategy",
+    "views": 1421,
+    "head_500_words": "[music] >> All right, guys. I hear you. So, ever since I launched the V4 and R trading bot for KRL C, people are on massive hunt to find the best setting to maximize their profitability. But, there is one problem. There is no way in this world you can troubleshoot and identify what happened during the trading session. We need to know what went wrong and what went right. But, KRL C is literally trash on that. So, it's clear that they don't want traders like us. They just want the degenerate gamblers who trade blindly, and they can collect fees on them. But, anyway, I built this trash board so that not only you can go back and review each session, but also trace the price fat live so that you can optimize your bot settings with better insight. First, I'm going to show you how to set this up with one click, and then guide you how to go through for this V4 and R bot. Okay? So, let's get started. Okay, so this is the website for the videos well. So, you can find all your code source code here, and the link will be in the description. So, this time it's only going to be one code. So, the first thing that we need to do is we going to create a new script on the Night Shark and name it KRL C record data recorder or dashboard. I don't care. You can name it whatever you like. We need create, and then we going to go to the code part, and then here we going to copy this code, and then we going to paste it. So, this code is a little bit heavy. So, if you are on an older machine, you know, just be patient with that copying. It's going to take a little bit of a while if you're on an older machine. So, after that, the setup is done. So, basically what we need to do is we going to go to log phase, and then click record. And then you can see all these logs populating here. So, what it's doing is it's setting up a separate folder inside the Nightshark directory and then, you know, setting up all the necessary files that's going to need it for the data collection, okay? So, give it about like 10-20 seconds for the first time. And after it's done with the setup, what you're going to see is it's going to launch your browser and then you can see the dashboard. So, those lines that you see, it already started plotting the data for this session. And since we started recording this from the beginning like it's somewhere in the middle of the session, so that's why you see the front half is not there. But, that's fine. As we continue running it, it's it's going to transition to a new session. We're going to get the all complete data, okay?",
+    "llm_says_on_topic": true,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "3jUI4pU2RtQ",
+    "stratum": "classified_on_topic",
+    "classifier_says_on_topic": true,
+    "classifier_rule": "core term",
+    "terms_fired": {
+      "core": [
+        "prediction market",
+        "kalshi",
+        "polymarket"
+      ],
+      "context": [
+        "trading",
+        "trader",
+        "trade",
+        "market",
+        "markets",
+        "crypto"
+      ],
+      "method": [
+        "strategy",
+        "edge",
+        "profit"
+      ],
+      "negative": []
+    },
+    "title": "How to ACTUALLY Profit on Polymarket/Kalshi (FULL GUIDE)",
+    "views": 51440,
+    "head_500_words": "Look, the only difference between profitable and unprofitable prediction markets traders is Look, it's borderline mind-boggling the speed with which prediction markets are taking over the world right now. In just the past 7 days, Coinbase, the biggest crypto company in the world, just launched Kalshi markets in all 50 states. My Venmo app started sending me Kalshi notifications. Prediction markets volume hit an all-time high again. Kalshi gave away free groceries to the whole city of New York City before Mondani. And the Baron just published an article that this guy turned a $100 deposit into $70,000 by going outside and betting on the weather. [music] At this point, I'm starting to think we might be early to one of the biggest internet trends of all time, which begs the question, of course, how do we actually make money off of this? Or better yet, can we actually make money off of this? Well, the New York Times seems to think so. And after doing a deep dive into some of the internet's most profitable prediction markets traders, well, I learned there's a lot more to this game than meets the eye. So, after extensive research, in today's video, I'm going to give you a full guide to all of the most profitable and cutting-edge [music] prediction markets strategies we see emerging in 2026. If you're new to this game, you can go watch the video I posted last week, which is a full beginner's guide to prediction markets, cuz in this one, we're focusing entirely on actual profitable strategy. By the way, these markets change all the time, and these strategies probably won't work for long. So, if you're seeing this, I try and set aside a bit of time to watch this video all the way through as soon as you can, cuz today, we're going to be covering eight different [music] trading strategies from betting on Trump's speeches to arbitrage. So, let's get into it. Oh, and before we jump in, guys, I do need to let you know that I am currently running the world's largest and fastest-growing free prediction markets trading community. In less than 2 weeks, thousands of you guys have joined, and we're quickly becoming the number one place in the world for anyone who wants to learn to successfully trade these markets. We're running daily live streams trading multiple markets. were sharing daily picks were rolling out proprietary free tools for the community. Our community is growing and supporting each other in these markets every single day. >> humbled by the amount of support and interest that you guys have shown so far. So if you want to dive in and join that for completely free, you can click the link beneath this video. It'll put you in an onboarding channel with a few links to tools and sites that we recommend you sign up for to get started and then you'll be on your way. With that said, let's get",
+    "llm_says_on_topic": true,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "3MOaUKnQzto",
+    "stratum": "classified_off_topic",
+    "classifier_says_on_topic": false,
+    "classifier_rule": "no core term and insufficient context+method",
+    "terms_fired": {
+      "core": [
+        "backtest"
+      ],
+      "context": [
+        "trading",
+        "trader",
+        "trade",
+        "market",
+        "markets"
+      ],
+      "method": [
+        "strategy",
+        "signal",
+        "indicator",
+        "profit"
+      ],
+      "negative": [
+        "recipe"
+      ]
+    },
+    "title": "How to avoid curve fitting when backtesting?",
+    "views": 18089,
+    "head_500_words": "Today we're diving into the world of quantitative trading, specifically focusing on a common pitfall known as curve fitting. In the world of finance, where trends can shift on a dime, traders are constantly seeking the holy grail, a watertight strategy that consistently generates profits. In this quest, some traders fall prey to a seductive but dangerous practice called curve fitting. What is curve fitting? In essence, curve fitting is the act of manipulating a trading strategy to fit historical market data perfectly. Imagine you're trying to trace a constellation of stars with a flexible line. By bending and twisting the line enough, you can eventually make it connect all the dots. This might seem like a win, but in the context of trading, it's a recipe for disaster. Why? Because markets are inherently stochastic, meaning their movements are most of the time random. Past performance is not a guaranteed indicator of future results. A strategy that appears flawless based on historical data might crumble when confronted with the real-world market. It's like building a house of cards, impressive at first glance, but ultimately destined to collapse under the slightest pressure. The perils of curve fitting. The consequences of curve fitting can be severe. Here's a glimpse of what you might encounter. Failed trades. A strategy optimized for past data might generate losing signals when applied to live markets. Emotional distress. The cycle of initial success followed by inevitable losses can be emotionally draining for traders. Wasted time and resources. The time and effort invested in developing a curve-fitted strategy could be better spent on more robust approaches. How to steer clear of curve fitting. Fortunately, there are ways to steer clear of curve fitting to safeguard yourself from the perils of curve fitting. Here are a few effective methods. Simpler is often better. Complex strategies with numerous parameters are more susceptible to curve fitting. Opt for simpler, more straightforward approaches. In-sample, out-of-sample testing. Divide your historical data into two sets. Develop your strategy on one set, in-sample, and test it on the other, out-of-sample, to assess its generalizability. Backtesting with realistic assumptions. Don't backtest your strategy under unrealistic conditions, such as zero transaction costs. Incorporate realistic factors to simulate real-world trading. By following these steps, you can significantly reduce the risk of falling victim to curve fitting and develop trading strategies with a stronger foundation for success. If you'd like to know more about backtesting, please check out the link to our backtesting course under the article, and don't forget to like and subscribe so we can provide more videos like this.",
+    "llm_says_on_topic": true,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  },
+  {
+    "video_id": "YszLSBiwV_0",
+    "stratum": "classified_off_topic",
+    "classifier_says_on_topic": false,
+    "classifier_rule": "no core term and insufficient context+method",
+    "terms_fired": {
+      "core": [],
+      "context": [
+        "trading",
+        "trade",
+        "market",
+        "forex"
+      ],
+      "method": [
+        "profit"
+      ],
+      "negative": []
+    },
+    "title": "Examples of Profit Using Forex Prediction Formula",
+    "views": 2222,
+    "head_500_words": "[Music] [Applause] [Music] hello and welcome um for the purpose of this video I will show you how I I I have been able to utilize uh to my advantage the prediction formula uh so um we showing you a practical examples and uh for you to see firsthand how powerful on this uh prediction mathematic equation is so let's cut to the chase all right uh first of all we need to open my um my trade uh my trading terminal I already have it down here okay so uh okay as you can see I have my uh as you can see I have my very fine prediction right here already set up this prediction was made uh hours earlier okay uh this fine uptrend right here uh made me so much so much so much profit and um um I'll just go ahead uh my trend line I got it from right here just go ahead and click right here this says trend line and bring it out there is a very powerful tool for helping you uh highlight uh your trend on the charts so if I go ahead and drag this it shows me that I gained that this particular uptrend gained U uh 492 uh points so uh this this this uptrend this very fine uptrend here uh was a prediction that was made by me earlier hours earlier by the help of the prediction formula so this this indicative is showing you how powerful the mathematic equation uh how powerful the mathematic equation uh uh prediction formula is very uh effective okay uh actually uh this this uptrend right here was made I I made it two hours ahead of time I waited patiently down to the time and immediately got to the point it started picking up so all I did was just enter my buy order and it went all the way uh 492 points which I gained okay so imagine gaining 492 points in the period of uh in a period of a a couple of each each in a period of four hours and that's I know it's a lot of time for it to Trend all the way from the bottom to the top but uh it's worth the wait when uh The Profit start rolling in okay and uh this is for the US JPY USD US dollar Japanese uh Yen um uh commodity PIR uh currency pair all right and you can do this for any currency pair of your choice that's how powerful this equation it doesn't it doesn't matter if if it's volatile or whatever uh news affects the market as long as the the mathematic equation holds and that's what it is if you follow it you're going to come out very very successful okay um and uh for another example another prediction I made earlier um two hours approximately two hours ahead of time uh I as you can see I highlighted",
+    "llm_says_on_topic": false,
+    "llm_judge": "claude-opus-5, manual, 2026-08-02, holdout"
+  }
+]

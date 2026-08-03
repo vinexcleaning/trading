@@ -1,0 +1,11 @@
+{
+  "n_judged": 40,
+  "agreement": 35,
+  "agreement_rate": 0.875,
+  "tp": 20,
+  "fp": 0,
+  "fn": 5,
+  "tn": 15,
+  "precision": 1.0,
+  "recall": 0.8
+}

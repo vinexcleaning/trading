@@ -27,6 +27,7 @@ touched. Claims: [LEDGER.md](LEDGER.md). Reusable checks: [GUARDS.md](GUARDS.md)
 | **Live bot position-sizing bug** | 64 contracts placed against an intended 9, on a $125 bankroll, with `max_daily_loss_pct = 0 (OFF)`. Cause never identified. | Diagnose or disable the bot. **Top standing financial risk.** |
 | **Score-staleness (already fixed)** | `fetched_at` was stamped at cache read, so the 30 s guard never rejected anything. | Nothing to fix — but **no live entry result predating the fix is a valid test of the entry logic.** Treat the 4-for-10 as void. |
 | **Label coverage (tennis)** | Blocked. Apify at a monthly hard limit; Flashscore's `dayOffsets` is −7..+7 against a −68 need. | Restore quota, then label day-by-day via `crawlstone/tennis-scraper` or `tennisexplorer` (~$20, not $3.44). Only path above 13.9% coverage. |
+| **youtube-signal** (new, moved in 08-02) | Phase 1 retrieval done. 470 videos gated, 263 pass, 439 transcripts cached, 43 channels expanded. **0 API units — no key needed.** Insider-vocabulary hypothesis **supported at 2.25×**; F1∩F2 Jaccard **0.037**. | **Define the on-topic boundary, then re-validate G3.** It disagrees with a careful human on ~1 video in 5, and the biggest cause is an undecided spec question, not a bug. Blocks Phase 2 scoring. |
 
 ---
 
@@ -52,6 +53,7 @@ endpoint.
 | Crypto recordings, panel, spot, Deribit, Polymarket books | `C:\Users\gianf\crypto\data\` | **3.6 GB** | Partly. Recorded Kalshi books: **no**. |
 | Tennis depth + candles | `C:\Users\gianf\kalshi\set1_overshoot\data\` | **384 MB** | Recorded depth: **no**. Candles: yes, for ~69 days. |
 | Byte-identical backup of `kalshi-tennis/src` + `reports` | `trading\_archive\` | 296 KB | Redundant — safe to delete |
+| youtube-signal DB: 470 gated videos, 439 cached transcripts, 4,964 known videos | `trading\youtube-signal\data\signal.db` | ~25 MB | **Yes**, but slowly — ~35 min of paced fetching to rebuild. Gitignored. |
 
 **Kalshi's API is a ~69-day window.** Closed markets 404 and are gone. Never
 re-pull to "replace" a local archive.

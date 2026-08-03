@@ -70,7 +70,7 @@ def sample():
         print(f"     TITLE: {it['title']}")
         fired = {k: v for k, v in it["terms_fired"].items() if v}
         print(f"     FIRED: {fired}")
-        print(textwrap.fill(it["head_500_words"][:900], width=76,
+        print(textwrap.fill(it["head_500_words"][:420], width=76,
                             initial_indent="     ", subsequent_indent="     "))
 
 
