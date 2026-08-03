@@ -10,3 +10,6 @@ __pycache__/
 # Phase 2 onward: reports attach honesty judgments to named real people, and this
 # repo is PUBLIC. Code is committed; judgments stay local.
 reports/
+
+# The knowledge base names real creators alongside honesty scores. Local only.
+KNOWLEDGE.md

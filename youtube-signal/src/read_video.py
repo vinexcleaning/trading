@@ -155,13 +155,48 @@ def totals(doc):
     return min(s, 10), max(-10, min(11, h))
 
 
-def verdict(s, h, visual):
-    if s >= 6 and visual:
-        return "WATCH"
-    if s >= 4 and h < 0:
-        return "EXTRACT_RESULTS_DISCOUNTED"
-    if s >= 4:
-        return "EXTRACT"
+# Two different jobs, which the old single verdict conflated.
+#
+#   INFORMATIVE  -- the 400-view ones. Claude absorbs them, the user never
+#                   watches. Judged purely on substance.
+#   EDUCATIONAL  -- worth the USER's own time: short, clearly taught, not a
+#                   sales pitch. This is what gets handed back as "watch this".
+#
+# A video can be both, either, or neither. "Visual-dependent" is a separate
+# property (it drives watch_segments) and is not a verdict -- a video can be
+# worth absorbing AND have two minutes that need eyes.
+EDUCATIONAL_MAX_MINUTES = 20
+
+
+def is_informative(s):
+    return s >= 4
+
+
+def is_educational(s, h, duration_s, teaching_quality):
+    """Worth the user's own minutes.
+
+    Requires real substance, non-negative honesty (a sales pitch is never
+    recommended however slick), a runtime a person will actually sit through,
+    and an explicit teaching judgment from the read.
+    """
+    if s < 5 or h < 0:
+        return False
+    if duration_s and duration_s > EDUCATIONAL_MAX_MINUTES * 60:
+        return False
+    return teaching_quality in ("good", "excellent")
+
+
+def verdict(s, h, visual, duration_s=None, teaching_quality=None):
+    info = is_informative(s)
+    edu = is_educational(s, h, duration_s, teaching_quality)
+    if info and edu:
+        return "ABSORB_AND_RECOMMEND"
+    if edu:
+        return "RECOMMEND"
+    if info and h < 0:
+        return "ABSORB_RESULTS_DISCOUNTED"
+    if info:
+        return "ABSORB"
     return "SKIP"
 
 

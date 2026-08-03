@@ -33,7 +33,11 @@ def load(path):
         print(f"  REJECTED {axis} {comp}: {why}")
 
     s, h = RV.totals(clean)
-    verdict = RV.verdict(s, h, bool(clean.get("visual_dependent")))
+    dur = con.execute("SELECT duration_s FROM videos WHERE video_id=?",
+                      (vid,)).fetchone()
+    dur = dur["duration_s"] if dur else None
+    verdict = RV.verdict(s, h, bool(clean.get("visual_dependent")),
+                         duration_s=dur, teaching_quality=doc.get("teaching_quality"))
 
     con.execute("DELETE FROM score_evidence WHERE video_id=?", (vid,))
     con.execute("DELETE FROM claims WHERE video_id=?", (vid,))
@@ -98,8 +102,7 @@ def load(path):
 
     con.commit()
 
-    dur = con.execute("SELECT duration_s FROM videos WHERE video_id=?",
-                      (vid,)).fetchone()["duration_s"] or 0
+    dur = dur or 0
     watch = sum(w["ts_end"] - w["ts_start"] for w in doc.get("watch_segments", []))
     print(f"\n{vid}  S={s}/10  H={h}  ->  {verdict}")
     print(f"  tools {len(doc.get('tools', []))}  claims {len(clean.get('claims', []))}"

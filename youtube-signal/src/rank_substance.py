@@ -93,9 +93,15 @@ def main():
         """SELECT v.video_id, v.title, v.channel_name, v.view_count, v.duration_s,
                   t.snippets_json
            FROM videos v JOIN transcripts t ON t.video_id = v.video_id
-           WHERE v.gate_status = 'PASS'"""
+           WHERE v.gate_status IN ('PASS', 'STALE_G2')"""
     ).fetchall()
-    print(f"ranking {len(rows)} passing videos with cached transcripts\n")
+    # STALE_G2 is included deliberately. Phase 2 decided recency is handled PER
+    # CLAIM -- a mechanism explanation never expires, a price quote expires in 3
+    # months -- which makes a video-level age cutoff the wrong instrument. The
+    # audit (src/audit_filtering.py) found 10 excluded videos out-scoring the
+    # entire passing top 30, including the highest-substance Python course in the
+    # corpus. Excluding them was the single worst filtering error in the project.
+    print(f"ranking {len(rows)} videos (PASS + STALE) with cached transcripts\n")
 
     out = []
     for r in rows:
