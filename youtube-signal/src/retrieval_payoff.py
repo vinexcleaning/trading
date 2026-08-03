@@ -319,6 +319,24 @@ def part_b(con):
             print(f"    {name:<20}{mean(a):>9.2f}{mean(b):>10.2f}{t['diff']:>+8.2f}"
                   f"{t['p']:>9.4f}{e:>+9.2f}")
 
+        # FIVE outcomes are tested. At alpha=0.05 the chance that at least one
+        # crosses by luck alone is 1 - 0.95^5 = 23%. S crossed at p=0.0492 the
+        # first time BEGINNER reached n=5, which is exactly the situation the
+        # pre-registration exists to defuse: S is a SECONDARY outcome, chosen
+        # against as primary on purpose because it cannot score a build video.
+        # Holm-Bonferroni is applied to the secondaries so nobody has to
+        # remember to do it by hand later.
+        secondaries = [(k, v["p"]) for k, v in out["tests"].items()
+                       if "PRIMARY" not in k]
+        m = len(secondaries)
+        print("\n  secondary outcomes, Holm-Bonferroni adjusted "
+              f"(m={m}); secondaries can never override the primary:")
+        for rank, (name, p) in enumerate(sorted(secondaries, key=lambda x: x[1])):
+            adj = min(1.0, p * (m - rank))
+            out["tests"][name]["p_holm"] = round(adj, 4)
+            flag = "survives" if adj < 0.05 else "does NOT survive"
+            print(f"    {name:<14} raw p={p:.4f}  ->  Holm p={adj:.4f}  {flag}")
+
         prim = out["tests"]["max(S,B) [PRIMARY]"]
         a = [outcomes["max(S,B) [PRIMARY]"](r) for r in A]
         b = [outcomes["max(S,B) [PRIMARY]"](r) for r in B]
