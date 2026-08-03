@@ -292,9 +292,26 @@ TEXT_EXT = {
     ".sql", ".md", ".rst", ".txt", ".toml", ".yaml", ".yml", ".json", ".cfg",
     ".ini", ".env", ".example", ".lock", ".csv", ".tsv", ".html", ".css",
 }
+# Files worth keeping that have no extension, or an extension not worth a global
+# rule. Without these the scorer falls back to one network fetch per dependency
+# file — measured at roughly a 4x slowdown of the scoring loop, because S5 looks
+# for exactly these and they are precisely the ones an extension test misses.
+TEXT_NAMES = {
+    "makefile", "dockerfile", "docker-compose", "pipfile", "procfile",
+    "go.mod", "go.sum", "gemfile", "rakefile", "justfile", "cargo.lock",
+    "requirements", "readme", "license", "licence", "notice", "changelog",
+    ".env.example", ".gitignore", ".python-version", ".nvmrc",
+}
 MAX_FILE_BYTES = 512 * 1024        # one file
 MAX_TEXT_BYTES = 8 * 1024 * 1024   # all text kept for one repo
 MAX_DOWNLOAD = 80 * 1024 * 1024    # refuse to pull a monster
+
+
+def _is_text(rel: str) -> bool:
+    base = os.path.basename(rel).lower()
+    if base in TEXT_NAMES or os.path.splitext(base)[0] in TEXT_NAMES:
+        return True
+    return os.path.splitext(rel)[1].lower() in TEXT_EXT
 
 
 def _fetch_bytes(url: str, timeout: int = 120):
@@ -362,8 +379,7 @@ def archive(full_name: str, branches=("main", "master"), timeout: int = 120):
                 # strip the "<repo>-<sha>/" prefix codeload adds
                 rel = m.name.split("/", 1)[1] if "/" in m.name else m.name
                 paths.append(rel)
-                ext = os.path.splitext(rel)[1].lower()
-                if ext not in TEXT_EXT or m.size > MAX_FILE_BYTES:
+                if not _is_text(rel) or m.size > MAX_FILE_BYTES:
                     continue
                 if kept + m.size > MAX_TEXT_BYTES:
                     truncated = True

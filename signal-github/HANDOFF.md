@@ -192,6 +192,53 @@ correctly.
 
 ---
 
+## 2d. Reading the source of the wrong claim — it contradicts itself
+
+`evan-kolberg/prediction-market-backtesting` (1,098★, 254 files, NautilusTrader)
+is the most rigorous backtester in the corpus and was the source of C1's wrong
+fee claim. Read in full this session, on its real default branch `v4.1-alpha`.
+**The previous summary of it was accurate, and the repo is wrong in a more
+interesting way than "it said the same rate".**
+
+Three facts in one repository:
+
+| where | what it says |
+|---|---|
+| `adapters/kalshi/fee_model.py`, `get_commission()` | *"liquidity side is ignored — Kalshi charges the same rate for makers and takers"*. Applies `fee_rate` (default `KALSHI_TAKER_FEE_RATE` = 0.07) to **every fill regardless of side**. |
+| `adapters/kalshi/providers.py:49` | `KALSHI_MAKER_FEE_RATE = decimal.Decimal(0)`, with the comment *"Most markets have zero maker fees; markets that do charge a maker fee are noted in the fee schedule PDF."* |
+| `adapters/kalshi/providers.py:124` | builds the instrument with `maker_fee=KALSHI_MAKER_FEE_RATE, taker_fee=KALSHI_TAKER_FEE_RATE` |
+
+So **the instrument metadata says Kalshi makers pay 0 while the fee model
+charges them 0.07**, in the same repository. Both cannot be right and neither
+matches the published schedule (0.0175, on 130 series, zero on the other
+12,266). The `providers.py` comment is *closer to correct than the fee model* —
+it knows a maker-fee list exists.
+
+Two consequences that a keyword scorer cannot see:
+
+1. **`_fee_rate_for_fill()` only ever consults `instrument.taker_fee`.**
+   `instrument.maker_fee` is never read by the fee model, so the `0` is dead
+   code as far as backtest P&L goes: **every passive fill is charged the full
+   taker rate.**
+2. **`strategies/private/passive_pair_accumulation.py:179-181` *does* read
+   `instrument.maker_fee`**, gated by `include_maker_fees_in_signal: bool = True`.
+   That strategy is a passive/maker strategy. **Its entry signal believes maker
+   fills are free while the backtest charges them 0.07** — the signal and the
+   accounting disagree about the cost of the exact fills the strategy exists to
+   capture, and they disagree in opposite directions (too eager to quote,
+   too pessimistic on the resulting P&L).
+
+The docstring cites `https://kalshi.com/docs/kalshi-fee-schedule.pdf` — the
+document retrieved in §2c, which has a section headed **"Maker Fees"**. The repo
+cites the source that contradicts it.
+
+**None of this is visible to any computed component.** The repo has a backtest
+module, order submission in separate files, a test directory, pinned deps and a
+mechanism-bearing README; it scores well. The defect is a disagreement between
+two constants in different files, which is what reading is for.
+
+---
+
 ## 3. The no-README false-negative channel is closed
 
 77 repos were dropped last session purely for having no fetchable README, and it

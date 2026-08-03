@@ -74,7 +74,10 @@ def main():
         limit = int(sys.argv[sys.argv.index("--limit") + 1])
 
     con = db.connect()
-    q = ("SELECT full_name, default_branch, stars, s_total, s_strict, evidence "
+    # s_strict is added by rescore.py, which may not have run yet.
+    has_strict = any(r[1] == "s_strict" for r in con.execute("PRAGMA table_info(repos)"))
+    strict_col = "s_strict" if has_strict else "NULL AS s_strict"
+    q = (f"SELECT full_name, default_branch, stars, s_total, {strict_col}, evidence "
          "FROM repos WHERE fetched>=1 ORDER BY stars DESC")
     if limit:
         q += f" LIMIT {limit}"
