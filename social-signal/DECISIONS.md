@@ -189,6 +189,34 @@ says `Disallow: /` is a decision with an outside-facing consequence, and it is
 not mine to take by default. The comparison remains available and the question
 stays open in `HANDOFF.md`.
 
+## D14 — The Kalshi archive is tick-level, not hourly. 37 GB not taken unilaterally.
+**2026-08-04.** Retraction first: this project recorded the pmxt archive as
+"hourly snapshots" and wrote the Kalshi half off as substituting "for nothing
+here". **Wrong.** One file was downloaded and opened rather than judged from its
+filename: `kalshi_orderbook_2026-05-17T02.parquet` is **128.7 MB / 20,723,041
+rows for one hour**, of which **18.9 M are `orderbook_delta`**, with microsecond
+timestamps and full `yes_bids`/`no_bids` ladders across **642,054 tickers** —
+including **97 `KXATPMATCH`/`KXWTAMATCH` tickers and 126,704 tennis rows in that
+hour alone**. Hourly is the **batching**, not the resolution. It is finer than
+this repo's own 0.55 s recorder.
+
+**The decision.** The ~12 days Kalshi's own ~69-day window has already dropped
+(≈15–27 May) is ~288 files ≈ **37 GB** pulled from a volunteer-run archive. That
+is a real ask of somebody else's bandwidth, and the obvious use case — tennis —
+is a **closed thread** (`STATUS.md`: *"Stop. n≈3,970 needed for a 2¢ edge; more
+slicing has negative EV"*). Taking 37 GB to feed a thread that is closed is not
+a decision to make by default.
+
+**Conservative option taken:** correct the record now, and **do not pull 37 GB
+unilaterally**. The efficient version, if it is wanted, is to stream each hour,
+filter to the tickers of interest and discard the raw — tennis is 0.6% of rows,
+so 37 GB of transfer becomes **~230 MB of disk**.
+
+**This one has a deadline and that is why it is flagged rather than buried:**
+the recoverable window shrinks by a day for every day that passes, because
+Kalshi's 69-day cut-off moves forward and the archive's Kalshi feed is dead at
+11 June.
+
 ---
 
 ## Open audit items

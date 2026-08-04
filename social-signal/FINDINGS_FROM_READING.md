@@ -287,6 +287,41 @@ The archive announcement's framing is *"charging devs for raw market data is
 basically a scam at this point"* and it is stated as **part 1 of 3**, order books
 only, with trade-level and other exchanges promised.
 
+> ## ⛔ RETRACTED — "hourly snapshots". It is a TICK-LEVEL DELTA FEED.
+>
+> **Everything below this box that calls the archive "hourly" is wrong**, and the
+> error was load-bearing: it is why the Kalshi half was written off as
+> substituting "for nothing here". Left in place rather than deleted, because
+> deleting a wrong number is how somebody re-derives it.
+>
+> One file was finally **downloaded and opened** (2026-08-04) instead of being
+> judged from its filename. `kalshi_orderbook_2026-05-17T02.parquet`:
+>
+> | | |
+> |---|---|
+> | size | **128,739,737 bytes** for ONE hour |
+> | rows | **20,723,041** |
+> | `event_type` | **18,937,521 `orderbook_delta`** + 1,785,520 `orderbook_snapshot` |
+> | columns | `timestamp_received` (ms), `timestamp` (µs), `market_ticker`, `market_id`, `event_type`, `yes_bids`, `no_bids` (full price/size ladders), `price`, `delta`, `side` |
+> | distinct tickers in the hour | **642,054** |
+> | **tennis** | **126,704 rows across 97 distinct `KXATPMATCH`/`KXWTAMATCH` tickers — in one hour** |
+>
+> The hourly cadence is how the files are **batched**, not the resolution of
+> what is inside them. This is a full order-book delta stream at microsecond
+> stamps — **finer than this repo's own 0.55 s depth recorder**, and it covers
+> the exact tennis series `kalshi-inplay-bot` and `set1_overshoot` trade.
+>
+> **What that does to the earlier conclusion:** the ~12-day window Kalshi's own
+> API has already dropped is not a coarse consolation prize. It is tick-level
+> depth on 642k markets that cannot be obtained anywhere else at any price.
+> Cost to take it: ~128 MB/hour × ~288 hours ≈ **37 GB of a volunteer archive's
+> bandwidth**, which is a real ask and is why it has not been done unilaterally
+> — see `DECISIONS.md` D14.
+>
+> **The lesson, and it is one this repo already had:** *verify by fetching, not
+> by finding a link.* I enumerated the index and believed I had verified the
+> archive. I had verified that the **files exist**. I had not opened one.
+
 ### What the archive actually contains — enumerated, not assumed
 
 The landing page is a claim; the directory index is a fact. Fetched 2026-08-04:

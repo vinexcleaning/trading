@@ -954,10 +954,22 @@ settlement path. Same source: *"closed" is not "settled"* — count only
 **4. A free hourly order-book archive, enumerated rather than trusted.**
 `archive.pmxt.dev`, Parquet, CC BY 4.0. **Polymarket v2: 21 Apr – 4 Aug 2026**,
 ~105 days at 412–534 MB/hour — **"recorded order books are not re-pullable at any
-price" is false for that venue.** **Kalshi: 15 May – 11 June 2026 only**, hourly,
+price" is false for that venue.** **Kalshi: 15 May – 11 June 2026 only**, ~~hourly~~,
 feed dead — but Kalshi's own ~69-day window reaches back to about 27 May, so
 **roughly twelve days of Kalshi books sit there that Kalshi no longer serves**,
 and that shrinks daily.
+
+> ⛔ **RETRACTED 2026-08-04 — "hourly" is wrong and it was load-bearing.** A file was
+> finally downloaded and opened instead of judged from its filename: **128.7 MB /
+> 20,723,041 rows for ONE hour**, 18.9 M of them `orderbook_delta`, microsecond
+> stamps, full `yes_bids`/`no_bids` ladders, **642,054 tickers** — including **97
+> `KXATPMATCH`/`KXWTAMATCH` tickers and 126,704 tennis rows in that hour alone**.
+> Hourly is the **batching**, not the resolution: this is finer than this repo's
+> own 0.55 s depth recorder, on the exact series `kalshi-inplay-bot` trades. The
+> ~12 unrecoverable days are ~288 files ≈ **37 GB** from a volunteer archive, and
+> tennis is 0.6%% of rows — filtering while streaming makes it ~230 MB on disk.
+> Not pulled unilaterally; see `social-signal/DECISIONS.md` **D14**. **The window
+> shrinks by a day every day.**
 
 **5. "No edge" and "negative edge" are different objects.** Someone rebuilt a
 400,000-view YouTube strategy over 16 years and 1,700 trades — **−23% against the
