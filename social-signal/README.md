@@ -16,14 +16,24 @@ discipline is `signal-github/src/gh.py`.
 ## Run order
 
 ```bash
-python src/join_corpora.py     # T1  merge YouTube + GitHub, scan whole-repo source
-python src/verify_live.py      # T1b fetch every recorded URL; nothing is trusted on paper
-python src/reddit_fetch.py     # T2  free JSON API, paced, no key
-python src/reddit_score.py     # T2  port of the S/B/H rubric, applied to threads
-python src/discord_measure.py  # T3  the paid server's calls
-python src/feasibility.py      # T4  X / TikTok / Instagram, honest kill reports
-python src/join_corpora.py --decide-only   # recompute verdicts over everything
+python src/join_corpora.py      # T1  YouTube + GitHub, and scan 3k whole-repo sources
+python src/reddit_fetch.py      # T2a collect from the archive (NOT reddit.com — see reddit.py)
+python src/reddit_discover.py   # T2b the join backwards: tools only Reddit knows
+python src/join_corpora.py      # T1  again, so the newly discovered entities get GitHub evidence
+python src/verify_live.py       # T1b fetch every URL; nothing is trusted on paper
+python src/reddit_stance.py     # T2c what a room of critics says about each tool
+python src/reddit_score.py      # T2d the ported rubric over threads; the read queue
+python src/discord_measure.py   # T3  the paid server's calls
+python src/feasibility.py       # T4  X / TikTok / Instagram, honest kill reports
+python src/join_corpora.py --decide-only    # recompute verdicts over everything
+python src/unified_table.py     # T5  the deliverable, plus the fourth bucket
 ```
+
+`join_corpora.py` appears twice on purpose. The first pass builds entities from
+the YouTube corpora; `reddit_discover.py` then adds entities Reddit knows and
+neither sibling does; the second pass gives those new entities their GitHub
+evidence and re-runs the source-archive scan over them. Every step is
+idempotent, so re-running the whole list is safe and cheap.
 
 Every script is stdlib-only. No API key exists for any platform here and none is
 needed.

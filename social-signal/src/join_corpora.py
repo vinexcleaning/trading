@@ -84,15 +84,29 @@ BANNED_NEEDLES = {
     "claudecode", "binance", "quantconnect", "polygon", "fanduel",
 }
 
-STANCES_POSITIVE = {"PROMOTED_WITH_INCENTIVE", "RECOMMENDED", "MENTIONED",
-                    "NEUTRAL_USE", "BUILT_WITH"}
-STANCES_NEGATIVE = {"ARCHIVED", "STALE", "GONE", "TRUST_ME_BRO", "CRITICISED",
-                    "SCAM_ALLEGED", "BROKEN", "PARKED"}
+# Three sets, and the distinction between the first two is what stops the
+# table crying CONTRADICTION at every ordinary fact.
+#
+#   ADVOCACY      someone is telling you to use it
+#   CORROBORATION independent evidence it exists and works — a repo imports it,
+#                 its own artifact answers when fetched, a critic uses it
+#   AGAINST       evidence it is dead, broken, flagged or condemned
+#
+# A CONTRADICTION needs ADVOCACY *and* AGAINST. A stale repo that someone
+# merely mentioned in passing is not a contradiction, it is a stale repo.
+STANCES_ADVOCACY = {"PROMOTED_WITH_INCENTIVE", "RECOMMENDED"}
+STANCES_CORROBORATION = {"BUILT_WITH", "ALIVE", "LIVE", "CORROBORATED",
+                         "NEUTRAL_USE"}
+STANCES_AGAINST = {"ARCHIVED", "STALE", "GONE", "TRUST_ME_BRO", "CRITICISED",
+                   "SCAM_ALLEGED", "BROKEN", "PARKED", "MIXED_REPUTATION"}
 # Neither. UNUSED means a needle found nothing, which for a hosted service is
 # expected and says nothing; QUIET, BLOCKED, THIN, UNKNOWN and API_ROOT_404 are
-# all "we could not tell", and a table that scores them as evidence is lying.
+# all "we could not tell"; POSTED_ON_REDDIT is a count, and a vendor posting
+# nine times produces the same number as nine recommendations. A table that
+# scores any of these as evidence is lying.
 STANCES_NEUTRAL = {"UNUSED", "QUIET", "BLOCKED", "THIN", "UNKNOWN",
-                   "API_ROOT_404", "ALIVE_UNKNOWN"}
+                   "API_ROOT_404", "ALIVE_UNKNOWN", "MENTIONED",
+                   "POSTED_ON_REDDIT", "NO_FOOTPRINT", "VENDOR_TALK"}
 
 
 # --------------------------------------------------------------------------
@@ -437,11 +451,11 @@ def scan_corpus(con, needles: dict[str, int], limit: int | None = None):
 # 4. Verdicts
 # --------------------------------------------------------------------------
 VERDICTS = """
-CONTRADICTION    at least one source promotes it and at least one shows it dead,
-                 broken, flagged or criticised
-AGREE_POSITIVE   promoted somewhere and independently corroborated, nothing against
-AGREE_NEGATIVE   every source that has an opinion is negative
-UNDISCLOSED      promoted with an undisclosed incentive and NOT corroborated anywhere
+CONTRADICTION    someone ADVOCATES it and another source shows it dead, broken,
+                 flagged or condemned. Mere mention is not advocacy.
+AGREE_NEGATIVE   evidence against it, and nobody advocating
+UNDISCLOSED      advocated with an incentive and corroborated by nobody independent
+AGREE_POSITIVE   two or more platforms, independently corroborated, nothing against
 SINGLE_SOURCE    exactly one platform has ever mentioned it
 NOT_SOFTWARE     an exchange, an institution or an idea; not a thing to verify
 """
@@ -454,31 +468,28 @@ def decide(con):
                           (e["entity_id"],)).fetchall()
         plats = {o["platform"] for o in obs}
         stances = [o["stance"] for o in obs]
-        pos = [s for s in stances if s in STANCES_POSITIVE]
-        neg = [s for s in stances if s in STANCES_NEGATIVE]
+        advocacy = [s for s in stances if s in STANCES_ADVOCACY]
+        against = [s for s in stances if s in STANCES_AGAINST]
         # Corroboration means a source with no incentive to sell it says it is
         # there: a repo imports it, or its own artifact answers when fetched.
         # Vendor copy is the vendor talking and is never corroboration.
-        corroborated = any(
-            (o["platform"] == "github_corpus" and o["stance"] == "BUILT_WITH")
-            or (o["platform"] == "github" and o["stance"] in ("ALIVE", "QUIET"))
-            or (o["platform"] == "live" and o["stance"] in ("ALIVE",))
-            for o in obs)
+        corrob = [o for o in obs if o["stance"] in STANCES_CORROBORATION]
+        corroborated = bool(corrob)
         incentive = any("own=undisclosed" in (o["detail"] or "") or
                         "referral=1" in (o["detail"] or "") for o in obs)
 
         if e["key"] in NOT_SOFTWARE_KEYS:
             v, why = "NOT_SOFTWARE", NOT_SOFTWARE_KEYS[e["key"]]
-        elif pos and neg:
+        elif advocacy and against:
             v = "CONTRADICTION"
-            why = f"promoted ({'/'.join(sorted(set(pos)))}) and " \
-                  f"contradicted ({'/'.join(sorted(set(neg)))})"
-        elif neg and not pos:
-            v, why = "AGREE_NEGATIVE", "/".join(sorted(set(neg)))
+            why = (f"advocated ({'/'.join(sorted(set(advocacy)))}) and "
+                   f"contradicted ({'/'.join(sorted(set(against)))})")
+        elif against and not advocacy:
+            v, why = "AGREE_NEGATIVE", "/".join(sorted(set(against)))
         elif incentive and not corroborated:
             v = "UNDISCLOSED"
-            why = ("promoted with an incentive and corroborated by no independent "
-                   "source in any corpus here")
+            why = ("advocated with an incentive and corroborated by no "
+                   "independent source in any corpus here")
         elif len(plats) >= 2 and corroborated:
             v, why = "AGREE_POSITIVE", "+".join(sorted(plats))
         else:
@@ -488,8 +499,8 @@ def decide(con):
             """INSERT INTO verdicts (entity_id, verdict, n_platforms, promo_score,
                                      critic_score, reason, decided_utc)
                VALUES (?,?,?,?,?,?,?)""",
-            (e["entity_id"], v, len(plats), float(len(pos)), float(len(neg)),
-             why, db.now()))
+            (e["entity_id"], v, len(plats), float(len(advocacy)),
+             float(len(against)), why, db.now()))
     con.commit()
 
 
