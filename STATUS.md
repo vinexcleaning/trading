@@ -805,3 +805,181 @@ and LEDGER S025.
 
 
 
+
+---
+
+## social-signal — the cross-platform join, Reddit, the Discord calls (2026-08-04)
+
+`social-signal/` · code, `HANDOFF.md`, `FINDINGS_FROM_READING.md` and
+`PAID_OPTIONS.md` committed · `data/`, `reports/`, `cache/` gitignored ·
+full write-up in [social-signal/HANDOFF.md](social-signal/HANDOFF.md) · the
+readable payoff is
+[social-signal/FINDINGS_FROM_READING.md](social-signal/FINDINGS_FROM_READING.md).
+
+**Cost $0.00. No API key for any platform exists or was needed.** Two sibling
+sessions ran in this same working tree throughout; their databases were read and
+never written, and every commit staged explicit paths.
+
+### Three premises in the brief were wrong, one of them the top-priority platform
+
+| the brief said | measured 2026-08-04 |
+|---|---|
+| Reddit: *"free JSON API, add `.json` to any URL, ~60/min"* | `reddit.com`, `old.reddit.com` and `oauth.reddit.com` **all** return `User-agent: *` / `Disallow: /`; `.json` returns **403** to a bot UA and a browser UA alike |
+| *"Pushshift-style archives for history"* | `api.pushshift.io` → **403 "Not authenticated"**, moderators only |
+| Discord: *"174 owner trade calls"* | 174 owner **messages**; 47 carry a call verb; **folded to one per (date, player) it is 34** |
+
+Collection runs instead against **`arctic-shift.photon-reddit.com`**, the public
+Reddit research archive that replaced Pushshift for non-moderators — `robots.txt`
+`Disallow:` (empty, everything permitted), a documented JSON API, and
+`X-RateLimit-Reset` headers that `src/reddit.py` obeys.
+
+> **The uncomfortable half, stated rather than buried.** With a browser
+> User-Agent, `reddit.com/r/algotrading/.rss` returns **200 and 54 KB** and
+> `x.com/kalshi` returns **200 and 200 KB**. **The constraint is not technical.**
+> The content is one GET away and is not taken, because a site's
+> machine-readable statement of who may crawl it says nobody may, and a
+> User-Agent string is not consent.
+
+### What was built
+
+**231 entities · 924 observations · 39,629 Reddit posts · 6,077 comments ·
+3,165 whole-repo source archives scanned in 50 s · 166 URLs fetched · 13 threads
+read in full.**
+
+Verdicts: **10 CONTRADICTION · 11 AGREE_NEGATIVE · 12 advocated-with-an-
+incentive-and-corroborated-by-nobody** · 16 single-source · 162 agree-positive.
+`ADVOCACY` is kept separate from `CORROBORATION`, so a stale repo somebody
+mentioned in passing is a stale repo, not a contradiction.
+
+> **The needle `clob-client` appears in 1,009 of 3,165 whole-repo source
+> archives — 32% — and `Polymarket/clob-client` was archived by Polymarket
+> itself.** `signal-github` measured v1:v2 = 578:121 from the classifier side;
+> this is a direct count over source text. Two instruments, one conclusion.
+
+> **`polymarket/agents` — Polymarket's own framework, 3,760★ — is ARCHIVED and
+> 636 days cold, while 693 archived repos still reference it.** It sits in
+> `signal-github`'s corpus as a PASS. No computed component in either sibling
+> asks "is this archived?", and neither had joined it to anything.
+
+**Every URL was fetched** — two prior sessions here listed dead links.
+`thebetterers.com`, promoted with a *disclosed* referral link by a video scoring
+**S=10**, no longer resolves. **`api.binance.com` returns HTTP 451, geo-blocked
+from this machine** — `crypto/` treats it as a data source and will fail here for
+a reason that looks like a network error and is not one. And **65 of 231
+entities carry no URL at all**, which is a gap in `youtube-signal`'s extraction,
+not a judgement about the tools.
+
+> ### ⚠ Eight hand-researched verdicts existed in a file nobody imports
+> `youtube-signal/src/tool_reputation.py` holds eight tool verdicts with their
+> sources. **`signal.db`'s `tools` table has no `reputation` column**, so it has
+> never run on this machine. Same shape as **K015 = W011**. It also carried a
+> correction this table needed: the transcript said *"Creo"*, the product is
+> *"Kreo"*, and a search under the wrong name returns `NO_FOOTPRINT`.
+
+### T3 — the paid Discord server, read for the first time
+
+**0 of 174 owner messages state a side and a price**; only 4 state a price at
+all. The calls are prose ("I like *surname*", median 40 characters) and the
+prices are in 83 screenshots whose **85 CDN URLs all carry an `ex=` signature
+that expired 2026-07-31**. Folded n = **34** against ~481 — **14.1× short**.
+
+**UNDERPOWERED is the finding, and it is decidable without ever seeing a price.**
+The seller does post losses (6 to 34, plus 22 hedged calls), so H1 fires — and a
+5.7:1 self-reported ratio is not a track record. **Do not re-export**; only a
+forward record with prices against a pre-declared cost bar changes anything.
+
+*`discord_measure.py` salts pseudonyms per run and does not store the salt. No
+handle, id, server name or message text reaches any report.*
+
+### T4 — X, TikTok and Instagram killed, and the expectation TESTED
+
+X: robots `Disallow: /`, API v2 **401** without a paid key, mirrors are the same
+act with an extra hop. TikTok: the keyless oEmbed endpoint **returns 200** — and
+returns a title, an author and a thumbnail. Instagram: **400** without a Meta
+token.
+
+Short-form was **tested on 1,220 videos `youtube-signal` had already gated**:
+sub-minute clears the substance gate at **31.6% [19.1, 47.5]** against
+**66.3% [61.9, 70.3]** at 10–30 minutes. Non-overlapping — **and non-monotonic**,
+30+ minutes falls back to 43.4%. Both ends are junk for different reasons.
+
+---
+
+## Reddit findings that land on threads this repo has already closed (2026-08-04)
+
+All are other people's claims, verified only where stated. Detail and permalinks
+in [social-signal/FINDINGS_FROM_READING.md](social-signal/FINDINGS_FROM_READING.md).
+
+**1. A 4,604-window Polymarket 5-minute study reaches two of this repo's own
+results independently.** Every price band loses against price+fee (−1.6 to
+−6.5pp); momentum continuation inverts monotonically across 346,094 windows; the
+Chainlink–Binance lag is **−0.4pp on 5,826 entries** and the profitable version
+of that signal was **a measurement artifact**. Two things land here: it
+independently names **break-even arming as "the single biggest source of loss"**
+— the same mechanism as the 28 July martingale diagnosis, `rearm_above = stop+2`
+— and its adverse-selection section supplies **the mechanism the ladder-arbitrage
+null lacked**: rest both legs of a split and the leg in demand fills while the
+worthless one hangs, so rescuing it means crossing as a taker and paying the fee
+you were trying to earn.
+
+**2. Copy trading: the leak may be exit fidelity, not entry latency.**
+*"simulating zero lag barely moved the numbers. all the leak was on the exit
+side."* **`wallet-copy-study` and `polymarket-tennis-copy` both model the
+follower's loss as an entry delay** — `delay_seconds`, follower ROI at
++1s/+10s/+60s, and `follow_through.py`'s entire design. Does not reopen the
+NO-GO — it means the verdict may be right for a reason the instrument does not
+contain. The same post carries **e-values (always-valid sequential tests)** for
+the repeated-peeking problem Holm-Bonferroni does not fix, and every recorder
+here is watched daily. **Worth a [GUARDS.md](GUARDS.md) row.**
+
+**3. Kalshi tennis series settle on who ADVANCES** — a walkover pays out with
+zero play, from a poster tracking 750+ settlements. `kalshi-inplay-bot` and
+`set1_overshoot` trade `KXATPMATCH`/`KXWTAMATCH` and have no model for that
+settlement path. Same source: *"closed" is not "settled"* — count only
+`finalized`.
+
+**4. A free hourly order-book archive, enumerated rather than trusted.**
+`archive.pmxt.dev`, Parquet, CC BY 4.0. **Polymarket v2: 21 Apr – 4 Aug 2026**,
+~105 days at 412–534 MB/hour — **"recorded order books are not re-pullable at any
+price" is false for that venue.** **Kalshi: 15 May – 11 June 2026 only**, hourly,
+feed dead — but Kalshi's own ~69-day window reaches back to about 27 May, so
+**roughly twelve days of Kalshi books sit there that Kalshi no longer serves**,
+and that shrinks daily.
+
+**5. "No edge" and "negative edge" are different objects.** Someone rebuilt a
+400,000-view YouTube strategy over 16 years and 1,700 trades — **−23% against the
+video's +40% on 100 trades** — and *"the exact 100 trades shown in the video do
+appear in the backtest… a short lucky stretch inside a much longer downtrend."*
+Reversing every signal raised the win rate to 61% and left expectancy at −0.01,
+*"because when you reverse a strategy, you aren't reversing the costs."* This
+repo's best-supported result is 480 configs, 0 profitable, **S1 −9.36¢ against
+random-entry S5 −8.28¢** — and whether that 1.08¢ gap is the cost term decides
+which of the two objects it is. The data to check is already here.
+
+**One claim deliberately left unverified:** an r/quant post citing SSRN 6325658
+argues Kalshi's passive LPs are **underwriting, not market making** — a claim
+about the *return profile*, where every argument this programme has made about
+maker-only quoting has been about *costs and privileges*. `papers.ssrn.com`
+returns **403 behind a Cloudflare interstitial** and this project does not solve
+bot challenges.
+
+### Reading found what scoring could not, again — five read, five defects
+
+The proxy rubric scores a **satire post** S=7 ABSORB, because S1 (+3, "names the
+cost side") fires on *"I haven't added fees or slippage yet"* — **it cannot tell
+naming a cost from accounting for one**. A post **warning about** strategy
+sellers scores **H = −6** on the language it quotes in order to condemn. And on
+the best document in the corpus, **H1 — show a failure without pivoting to a
+sale — does not fire on a post that is nothing but failures.**
+
+**Nothing was patched.** Tuning patterns until they fire on five examples you
+happened to read is the overfitting this programme exists to catch, and it would
+swap a known-bad instrument for an unknown one. **No verdict in the reputation
+table rests on the proxy.**
+
+> **One self-inflicted failure, recorded because it cost real work.** An analysis
+> pass of mine held a write lock on `social.db` while the Reddit collector was
+> running; SQLite's default busy timeout is **5 seconds** and the collector died
+> with `database is locked` after 45 minutes. The 39,629 posts already written
+> survived; the tool probe did not. Fixed at the root — 120-second busy timeout,
+> WAL, and phase flags so a resume does not re-pull what is already there.
