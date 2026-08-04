@@ -66,6 +66,24 @@ CASES = [
      "this case and still lands under its own threshold, because B2/B3/B4/B5 "
      "look for a walkthrough and this is an announcement. The B axis fixed the "
      "category error and did not fix the length assumption underneath it."),
+    ("1v56b7h",
+     "**The best document found on any platform this session**, and it has 43 "
+     "points. Ten lessons from building a Hyperliquid copy-trading bot, opening "
+     "with *'Do not ask for the bot. I am not selling anything.'* Every lesson "
+     "carries a number and most are failures. It independently reaches this "
+     "repo's own closed copy-trading verdict from a different venue, and then "
+     "goes past it: the leak is **exit fidelity, not entry latency** — median "
+     "detection lag under a minute, and simulating zero lag *barely moved the "
+     "numbers*.",
+     "**The proxy ranks it top of the corpus (S=10) for partly wrong reasons, "
+     "which is the most useful kind of audit result.** S1 fires on 'bleeding "
+     "daily' rather than on a cost model. **H1 — show a failure and do not "
+     "pivot to a sale, the rubric's strongest single signal — does NOT fire, "
+     "on a post that is nothing but failures**, because its pattern set expects "
+     "'i lost' and this author writes 'went from bleeding daily'. And H5 "
+     "(discloses their own product, +2) fires on the phrase 'my bot' in an "
+     "author who explicitly is not selling one. The ranking is right; two of "
+     "the components under it are wrong in opposite directions."),
 ]
 
 
@@ -76,9 +94,13 @@ def main():
              "Four threads picked by **reading the corpus**, not by the "
              "scorer's own ranking — a scorer validated on cases it selected "
              "is validating its own taste.\n",
-             "**Four read, four defects.** That ratio is the same one both "
-             "sibling projects recorded: defects come from reading, not from "
-             "scoring.\n",
+             "**Five read, five defects — including in the one it ranks "
+             "highest.** That ratio is the same one both sibling projects "
+             "recorded: defects come from reading, not from scoring. The last "
+             "case is deliberately a *positive* control: an audit made only of "
+             "failures tells you nothing about whether the instrument is "
+             "usable, and this one shows it ranks the corpus's best document "
+             "top — for partly wrong reasons.\n",
              "> Nothing here is patched. Adjusting patterns until they fire "
              "correctly on four examples you happened to read is the "
              "overfitting this programme exists to catch, and it would swap a "
