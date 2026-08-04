@@ -167,6 +167,83 @@ says so on every invocation.
 
 ---
 
+## TARGETED CAMPAIGN — Kalshi / Polymarket (2026-08-04)
+
+Second corpus, at the user's direction: the first was built to answer a
+*retrieval* question and is the wrong shape for a *practical* one.
+
+**Run it with `$env:SIGNAL_DB = "kalshi_edge"`.** `db.py` now resolves the corpus
+from that variable. This is not tidiness — retrieval families define the buckets
+`retrieval_payoff.py` tests, so adding query families to the original corpus
+would silently rewrite them mid-analysis.
+
+| | targeted corpus | original corpus |
+|---|---|---|
+| queries | **27** in 4 families (V1 build, V2 strategy, V3 data, V4 validate) | 28 in 3 |
+| unique videos | **470** | 746 |
+| PASS | **328 (70%)** | 370 (50%) |
+| transcripts | 443 | 688 |
+| searches / failures | 81 / **0** | 84 / 0 |
+| within-family Jaccard | **0.86–0.92** | 0.69–0.76 |
+| appeared in all 3 runs | **81.5%** | 63.0% |
+
+**Narrow venue-specific queries are markedly more stable and far more on-topic**
+— 70% PASS against 50%, and Jaccard around 0.9. Worth knowing before designing
+queries for any future topic: specificity buys both precision and reproducibility.
+
+### The saturation rule, encoded
+
+`src/target_rank.py` implements the user's heuristic — many views *and* much age
+means the edge is probably already competed away — as a penalty on the
+**interaction**, `log10(views/5000) × age_years × 2`, capped at 6, zero below 5k
+views. It **reorders, never drops**, and prints the penalty beside the score.
+
+It deliberately does **not** apply to V3 (data) or V4 (validation): a GraphQL
+endpoint does not stop working because people know about it. Saturation is a
+claim about *alpha*, and only V1/V2 make one.
+
+Working as intended — a 740k-view, 18-month options video went from proxy 40.6 to
+priority 34.6, while a 149-view 4-month build video and a 343-view 3-week Kalshi
+strategy rose to the top.
+
+### First targeted read: the most directly useful video found so far
+
+`ANGZMUercB4` — **"Kalshi Strategy: The 3 Numbers That Decide Every Sports Bet"**,
+343 views, 12 min, 3 weeks old. **S=6 B=2 H=−3 → ABSORB_RESULTS_DISCOUNTED.**
+
+The method is excellent and the profit claims are unevidenced, which is exactly
+the split S and H exist to express.
+
+**The method, in one line:** `edge = fair probability − price − cost`, where the
+fair probability is the **de-vigged sharp sportsbook consensus**, not your own
+opinion. Trade only on clearly positive edge, however confident you feel.
+
+Four things in it that matter to this repo specifically:
+
+1. **Price is probability**, and both sides sum above 100¢. That excess is the
+   spread and it goes to the **counterparty, not Kalshi**. Kalshi's fee is
+   separate. Two costs, two pockets.
+2. **Agreeing with the market is a losing strategy** — fair odds minus cost
+   bleeds. You get paid for disagreeing correctly, not for being right.
+3. **Fees hurt cheap contracts disproportionately**: the fee moved the break-even
+   bar ~2% on a 69¢ contract and **~6% on an 18¢ contract**. This is the same
+   structure this repo found independently in KXBTC15M and in the tennis thread's
+   3.61pp cost bar, reached from the ticket side.
+4. **The killer caveat, disclosed by the creator himself**: the mispriced prop he
+   demonstrates had **~$60 of liquidity**. The edge is real *because* nobody is
+   looking, which is precisely why nobody can size into it. Same shape as the
+   copy-trading finding — an edge smaller than the cost of reaching it.
+
+H6 fires (−4) on "I won too much" and "proved over hundreds and thousands of
+tickets" — no count, no period, no capital, no record. Method kept, results
+discounted.
+
+Also flagged: `upside.tools` "Plus EV Sniper" is promoted with a link and a free
+trial and **no disclosure of interest** — another instance of the H-axis gap,
+where concealment scores zero rather than negative.
+
+---
+
 ## 0. READ THIS FIRST — this machine is not the machine the last handoff describes
 
 The previous handoff was written on the laptop (`C:\Users\gianf\trading`). **That
