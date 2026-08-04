@@ -72,6 +72,38 @@ VENDOR_TALK = re.compile(
     r"(ref(erral)?[= /]|discord\.gg/|t\.me/|\bdm me\b|\bpromo code\b|"
     r"use my (link|code)|sign ?up (with|using) my)", re.I)
 
+
+def victim_not_perpetrator(ctx: str, needle: str) -> bool:
+    """Is the entity the thing that was stolen FROM, rather than the thief?
+
+    Found by reading, 2026-08-04. MetaMask scored SCAM_ALLEGED×3 and came out a
+    CONTRADICTION on windows that read *"super scummy to steal from the linked
+    metamask account"* and *"that triggered something for the remaining $1k usdt
+    in my MetaMask to get stolen"*. Every one of those is an accusation against a
+    **third-party site that drained somebody's wallet**, and the wallet is the
+    victim.
+
+    This is a distinct failure from the quoted-accusation defect already
+    recorded: there the speaker is condemning language they quote, here the
+    entity is grammatically the object of the theft. Both produce an accusation
+    pointed at the wrong party, and a reputation table that defames a widely
+    used wallet on this evidence is worse than no table.
+
+    The test is deliberately narrow — possessive or source-marking constructions
+    immediately around the mention. It will miss cases and it will not invent
+    any, which is the right way round for something that suppresses evidence.
+    """
+    n = re.escape(needle)
+    pats = (
+        rf"\bfrom\s+(?:the\s+|my\s+|his\s+|her\s+|their\s+|your\s+|a\s+|an\s+)?"
+        rf"(?:linked\s+)?{n}",          # "steal from the linked metamask"
+        rf"\b(?:my|his|her|their|your)\s+(?:linked\s+)?{n}",   # "my MetaMask"
+        rf"\bin\s+(?:my|his|her|their|your)\s+{n}",            # "in my MetaMask"
+        rf"{n}\s+(?:account|wallet)\s+(?:got|was|were)\s+"
+        rf"(?:drained|stolen|emptied|hacked)",
+    )
+    return any(re.search(p, ctx, re.I) for p in pats)
+
 # A specific technical objection: an argument that names a number or a
 # mechanism, not merely a mood. This is the component the rubric weights
 # highest, so it is detected separately from generic negativity.
@@ -201,6 +233,13 @@ def main():
                         break
                 if stance is None:
                     stance = "NEUTRAL_USE"
+                # An accusation in which this entity is the thing stolen FROM is
+                # not an accusation against it. Recorded separately rather than
+                # dropped, so the count is auditable.
+                if stance in ("SCAM_ALLEGED", "CRITICISED", "BROKEN") \
+                        and victim_not_perpetrator(ctx, needle):
+                    tally["NAMED_AS_VICTIM"] += 1
+                    continue
                 if TECHNICAL.search(ctx) and stance in ("CRITICISED", "BROKEN",
                                                         "SCAM_ALLEGED"):
                     tally["TECHNICAL_OBJECTION"] += 1
@@ -219,7 +258,8 @@ def main():
             continue
 
         for stance, n in tally.items():
-            if stance in ("TECHNICAL_OBJECTION", "VENDOR_TALK"):
+            if stance in ("TECHNICAL_OBJECTION", "VENDOR_TALK",
+                          "NAMED_AS_VICTIM"):
                 continue
             ctx, link = evidence.get(stance, ("", ""))
             db.add_observation(
@@ -250,8 +290,9 @@ def main():
         fh.write("`NO_FOOTPRINT` is **not** `POSITIVE`. Absence of complaints "
                  "about a small tool is absence of evidence.\n\n")
         fh.write("| tool | needle | docs | scam | critical | broken | "
-                 "recommended | neutral | technical objections | vendor talk |\n")
-        fh.write("|---|---|---|---|---|---|---|---|---|---|\n")
+                 "recommended | neutral | technical objections | vendor talk | "
+                 "named as victim |\n")
+        fh.write("|---|---|---|---|---|---|---|---|---|---|---|\n")
         for disp, needle, state, ndocs, tally, amb in sorted(
                 rows, key=lambda r: -(r[4].get("SCAM_ALLEGED", 0) * 100
                                       + r[4].get("CRITICISED", 0) * 10
@@ -262,7 +303,8 @@ def main():
                      f"{tally.get('RECOMMENDED',0)} | "
                      f"{tally.get('NEUTRAL_USE',0)} | "
                      f"{tally.get('TECHNICAL_OBJECTION',0)} | "
-                     f"{tally.get('VENDOR_TALK',0)} |\n")
+                     f"{tally.get('VENDOR_TALK',0)} | "
+                     f"{tally.get('NAMED_AS_VICTIM',0)} |\n")
         fh.write("\n⚠ = a dictionary-common name; only mention windows that "
                  "also contained a venue term were counted, because a stance "
                  "count on an ambiguous name measures the English language. "

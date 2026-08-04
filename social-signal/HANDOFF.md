@@ -42,11 +42,11 @@ everything permitted — it publishes a documented JSON API, and it returns
 
 | | |
 |---|---|
-| entities in the reputation table | **231** |
-| observations behind them | **924** |
-| Reddit corpus | **39,629 posts · 6,077 comments** across 10 subreddits |
+| entities in the reputation table | **240** |
+| observations behind them | **946** |
+| Reddit corpus | **39,629 posts · 12,846 comments** across 10 subreddits, 538 threads |
 | whole-repo source archives scanned | **3,165** (~2.8 GB, one pass, 50 s) |
-| URLs fetched and classified | **166** (65 entities carry no URL at all) |
+| URLs fetched and classified | **176** (64 entities carry no URL at all) |
 | Discord messages read | 176 |
 | threads read in full by a human | **13** |
 
@@ -54,11 +54,11 @@ everything permitted — it publishes a documented JSON API, and it returns
 
 | verdict | n | meaning |
 |---|---|---|
-| **CONTRADICTION** | **10** | someone advocates it, another source shows it dead, broken, flagged or condemned |
+| **CONTRADICTION** | **12** | someone advocates it, another source shows it dead, broken, flagged or condemned |
 | **AGREE_NEGATIVE** | **11** | evidence against, nobody advocating |
 | **UNDISCLOSED** | **12** | advocated with an incentive, corroborated by nobody independent |
-| SINGLE_SOURCE | 16 | one platform has ever mentioned it |
-| AGREE_POSITIVE | 162 | two or more platforms, independently corroborated, nothing against |
+| SINGLE_SOURCE | 15 | one platform has ever mentioned it |
+| AGREE_POSITIVE | 170 | two or more platforms, independently corroborated, nothing against |
 | NOT_SOFTWARE | 20 | an exchange, an institution or an idea |
 
 `ADVOCACY` ("use this") is kept separate from `CORROBORATION` (a repo imports
@@ -179,7 +179,10 @@ returned nothing and been recorded as `NO_FOOTPRINT`.
 `src/reddit.py` · `reddit_fetch.py` · `reddit_discover.py` · `reddit_stance.py`
 · `reddit_score.py`
 
-**39,629 posts and 6,077 comments across 138 threads**, from 10 subreddits.
+**39,629 posts and 12,846 comments across 538 threads**, from 10 subreddits.
+The comment half was collected in two passes; the second ran 400 threads in
+**401 calls with 0 errors and a single HTTP 422** in 21.5 minutes, which is what
+the archive looks like when it is not being hammered.
 
 > ### ⚠ Coverage is dense recently and sparse historically — do not read the
 > ### earliest date as coverage
@@ -195,26 +198,28 @@ returned nothing and been recorded as `NO_FOOTPRINT`.
 
 | bucket | n |
 |---|---|
-| PASS the gate | 4,362 |
-| DROP_G1_THIN (under 200 chars of thread text) | 25,313 |
+| PASS the gate | 4,432 |
+| DROP_G1_THIN (under 200 chars of thread text) | 25,243 |
 | DROP_G3_OFF_TOPIC | 9,954 |
-| ABSORB | 565 |
-| ABSORB_AND_RECOMMEND | 234 |
-| ABSORB_RESULTS_DISCOUNTED | 97 |
-| BUILD_AND_RECOMMEND | 19 |
+| ABSORB | 631 |
+| ABSORB_AND_RECOMMEND | 262 |
+| ABSORB_RESULTS_DISCOUNTED | 124 |
+| BUILD_AND_RECOMMEND | 20 |
 | BUILD | 4 |
-| SKIP | 3,443 |
+| SKIP | 3,391 |
 
 A post is scored on its own text **plus its comment thread**, because on Reddit
 the substance is frequently not in the post — a "how do I build a Kalshi bot"
 question scores nothing and the reply explaining the maker fee is the artifact.
-Only 138 threads have comments, so **most PASS posts were scored without the
-half of the platform that carries the substance.**
+**538 of 39,629 posts now have their comments**, so the great majority are still
+scored on post text alone. Doubling the comment corpus moved PASS 4,362 → 4,432
+and `ABSORB_RESULTS_DISCOUNTED` 97 → 124: comments add substance *and* they add
+the honesty penalties that only appear when somebody replies.
 
 ### The stance pass, and the floor under it
 
-`reddit_stance.py` classifies a 440-character window around each mention. **164
-of 231 entities have a Reddit footprint; 67 have none** — and `NO_FOOTPRINT` is
+`reddit_stance.py` classifies a 440-character window around each mention. **174
+of 240 entities have a Reddit footprint; 66 have none** — and `NO_FOOTPRINT` is
 stored as a distinct value from any positive, because absence of complaints
 about a small tool is absence of evidence.
 
@@ -229,6 +234,31 @@ AND ≥10% of everything said about that entity**. Chosen once, stated in the
 report, **not tuned against the output**. CONTRADICTION fell 25 → 10 and
 AGREE_NEGATIVE 24 → 11, and what survives is defensible. The raw counts stay in
 the table as evidence either way — the floor gates the verdict, not the record.
+
+### A third defect, found by reading the survivors
+
+The floor is necessary and it is not sufficient. After doubling the comment
+corpus, **MetaMask** came out a CONTRADICTION on three `SCAM_ALLEGED` windows
+that clear the floor comfortably — and every one of them reads like
+
+> *"super scummy to steal **from the linked metamask** account"*
+> *"the remaining $1k usdt **in my MetaMask** to get stolen"*
+
+**The accusation is against a third-party site that drained somebody's wallet.
+The wallet is the victim.** This is distinct from the quoted-accusation defect
+already recorded: there the speaker condemns language they quote, here the
+entity is grammatically the *object* of the theft. Both point an accusation at
+the wrong party.
+
+`victim_not_perpetrator()` now tests for possessive and source-marking
+constructions around the mention — *"from the X"*, *"my X"*, *"in my X"*,
+*"X account was drained"* — and records those windows as `NAMED_AS_VICTIM`
+rather than dropping them, so the count stays auditable. Deliberately narrow: it
+will miss cases and will not invent any, which is the right way round for
+something that **suppresses** evidence.
+
+MetaMask → AGREE_POSITIVE. **`predictionhunt.com`, with 8 scam windows out of
+17, survived it** — which is the point. See `FINDINGS_FROM_READING.md` §4b.
 
 ### The join run backwards
 
@@ -424,12 +454,16 @@ swap a known-bad instrument for an unknown one. **No verdict in
    comments offline for free. **Pulling more comment *threads* is a cheap query
    that works; pulling comments by tool name is an expensive one that does
    not.** `python src/reddit_fetch.py --only tools` is now safe to run.
-3. **Only 138 threads have comments.** The stance and scoring passes are
-   therefore running mostly on post text, which is the weaker half.
-   `--only comments --comments-for 400` continues where it stopped.
+3. **538 threads have comments, out of 39,629 posts.** Doubled this session and
+   still a small fraction; the stance and scoring passes run mostly on post
+   text, which is the weaker half. `--only comments --comments-for 400`
+   continues where it stopped and is the cheapest remaining gain.
 4. **The stance lexicon's precision is UNKNOWN and no number is quoted for it.**
-   Five demonstrated defects (§9) and a stated floor (§5) are what stands in for
-   a precision estimate. `youtube-signal` recorded that both its G3 validation
+   Six demonstrated defects (§9, plus the victim/perpetrator confusion in §5), a
+   stated floor and one suppression rule are what stands in for a precision
+   estimate. **Every one of the six was found by reading, and two of them were
+   found by reading the survivors of the previous fix** — which is the honest
+   reason no precision figure is claimed. `youtube-signal` recorded that both its G3 validation
    samples had informed the lexicon's own design, making its 85.9% an upper
    bound rather than a holdout; this project claims nothing.
 5. **`OpenClaw` matched `daidue/OpenClaw` (0★) by name** and is very likely a

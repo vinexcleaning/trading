@@ -362,6 +362,37 @@ Both are the class of risk that never appears in a backtest.
 
 ---
 
+## 4b. The one finding here that could stop money being lost this week
+
+**`predictionhunt.com`** — a live prediction-market site — carries **8
+scam-flavoured mention windows out of 17** in the Reddit corpus, against 4
+neutral and 2 positive. That ratio is why it clears the stated floor while
+`arxiv.org`'s two-in-309 does not.
+
+The windows are specific and consistent, and they are **users' allegations, not
+this project's finding**:
+
+> *"Predictionhunt is a complete pile of crap. They took my money, the site
+> crashed, and [they] won't respond to my emails."*
+> *"I would stay away from predictionhunt.com at all costs."*
+
+A separate thread describes the same shape from the operator's side — support
+saying *"there was some sort of exploit and their wallets got drained"*, then
+asking the user to email a deposit transaction hash and going quiet.
+
+**What is verified here and what is not.** Verified: the domain resolves and
+returns HTTP 200 (so "the site is gone" is not the complaint), and the mention
+counts are reproducible from `data/social.db`. **Not verified:** whether any
+individual account was actually withheld. These are user reports on a public
+forum and nothing here adjudicates them.
+
+**The practical rule needs no adjudication:** this is a site holding customer
+deposits whose users say withdrawals stopped and support went silent. That is
+the one class of risk that never appears in any backtest, and it is the reason
+a reputation table is worth building at all.
+
+---
+
 ## 5. A Polymarket credential-phishing site, described but not named
 
 `/r/Polymarket/comments/1tpu8za/` · 4 points
