@@ -407,11 +407,23 @@ swap a known-bad instrument for an unknown one. **No verdict in
    `db.connect()` now takes a 120-second busy timeout and enables WAL, and
    `reddit_fetch.py` gained `--only` and `--skip-sweep` so phases are
    individually runnable.
-2. **The tool probe never ran.** ~30 product names × 6 subreddits × 3 fields,
-   searching **comments** for each tool — the pass most likely to surface
-   specific criticism of specific products. The archive was returning HTTP 422s
-   and timeouts and comments were the better use of a degrading service.
-   `python src/reddit_fetch.py --only tools` resumes it.
+2. **The tool probe never ran, and one third of it should never be run again.**
+   ~30 product names × 6 subreddits. Diagnosed after the fact: the archive
+   answers `?subreddit=X&body=Y` with **`422 {"error":"Timeout. Maybe slow down
+   a bit"}`** while the equivalent post search returns 200 instantly. That is
+   not a malformed request — the same call without a subreddit returns 400 with
+   a different message — it is the server saying, in words, that a full-text
+   scan over a subreddit's comments is too expensive to serve.
+
+   My transport had been treating 422 as a generic transient failure and
+   retrying at 5/10/15/20 s, which is how something claiming to be polite ends
+   up hammering a volunteer research service. **Fixed:** 422 now backs off in
+   minutes, and the tool probe's comment leg is **off by default**
+   (`--tool-comment-search` to force it). It is close to redundant anyway —
+   `reddit_stance.py` already searches the 39,629 local posts and 6,077 local
+   comments offline for free. **Pulling more comment *threads* is a cheap query
+   that works; pulling comments by tool name is an expensive one that does
+   not.** `python src/reddit_fetch.py --only tools` is now safe to run.
 3. **Only 138 threads have comments.** The stance and scoring passes are
    therefore running mostly on post text, which is the weaker half.
    `--only comments --comments-for 400` continues where it stopped.
@@ -448,9 +460,12 @@ swap a known-bad instrument for an unknown one. **No verdict in
    category** over 2,100 Gamma markets. Both agree makers pay zero; they
    disagree on the functional form, which is exactly what decides whether cheap
    contracts are penalised differently from coin-flips.
-4. **Finish the Reddit collection** — `--only tools`, then
-   `--only comments --comments-for 400`. Both are pure gain and neither needs a
-   decision.
+4. **Finish the Reddit collection, comments first.**
+   `--only comments --comments-for 400` is the one that pays: it is a cheap
+   query the archive serves happily, and comments are the half of the platform
+   that carries the technical objections. Then `--only tools`, which is now
+   post-search only. **Do not pass `--tool-comment-search`** without reading
+   §10.2 first.
 5. **Register a free Reddit script app** (`PAID_OPTIONS.md` §1 — five minutes,
    $0). Adds live scores and on-demand threads. **Do not** point a collector at
    `reddit.com/*.json` while robots.txt says `Disallow: /`.

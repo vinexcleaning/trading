@@ -166,6 +166,12 @@ def main():
                     help="the sweep is the expensive half and it is idempotent "
                          "in the database, not in time — skip it to resume at "
                          "the probe and comment phases")
+    ap.add_argument("--tool-comment-search", action="store_true",
+                    help="also search COMMENT bodies for each tool name. Off by "
+                         "default: the archive answers this query with "
+                         "'422 Timeout. Maybe slow down a bit' while the "
+                         "equivalent post search returns instantly, and the "
+                         "local corpus already answers it offline.")
     ap.add_argument("--only", default="",
                     help="run one phase: sweep | probe | tools | comments. "
                          "The archive degrades under load, so the phases have "
@@ -253,10 +259,24 @@ def main():
     for term, verdict in (tool_terms if "tools" in phases else ()):
         hits = 0
         t0 = time.time()
+        # The comment leg is OFF by default and that is a deliberate reversal.
+        # Measured 2026-08-04: `?subreddit=X&body=Y` returns
+        # `422 {"error":"Timeout. Maybe slow down a bit"}` while post search over
+        # the same subreddit returns 200 instantly. It is the one query this
+        # archive cannot serve cheaply — and it is the one this project wants
+        # most, which is exactly when it is tempting to keep retrying.
+        #
+        # It is also close to redundant: the sweep already holds 39,000+ posts
+        # and every comment thread pulled by `--only comments`, and
+        # `reddit_stance.py` searches all of it offline for free. Pulling more
+        # THREADS is a cheap query that works; pulling comments by tool name is
+        # an expensive one that does not. Prefer the former.
+        legs = [("post", reddit.posts, "title"),
+                ("post", reddit.posts, "selftext")]
+        if args.tool_comment_search:
+            legs.append(("comment", reddit.comments, "body"))
         for name, _ in tool_subs:
-            for kind, fn, field in (("post", reddit.posts, "title"),
-                                    ("post", reddit.posts, "selftext"),
-                                    ("comment", reddit.comments, "body")):
+            for kind, fn, field in legs:
                 try:
                     rows = fn(subreddit=name, limit=100, sort="desc",
                               **{field: term})

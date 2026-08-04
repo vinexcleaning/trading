@@ -25,12 +25,25 @@ non-moderators. Its robots.txt permits crawling, it publishes a documented JSON
 API for exactly this purpose, and it returns `X-RateLimit-Reset` headers which
 this module obeys. We query the archive; we do not touch reddit.com.
 
-One shape constraint that decides the collection design: **text search requires
-a scope.** `?title=`, `?selftext=`, `?body=` and `?query=` all 400 with
-*"requires one of: author, subreddit"*. There is no global text search. So the
-strategy is to pull whole subreddits into local storage and search offline,
-which is faster, reproducible, and costs the archive one pass instead of one
-request per tool name.
+Two shape constraints decide the collection design.
+
+**1. Text search requires a scope.** `?title=`, `?selftext=`, `?body=` and
+`?query=` all 400 with *"requires one of: author, subreddit"*. There is no
+global text search.
+
+**2. Full-text search over COMMENTS is expensive enough to time out.**
+`?subreddit=X&body=Y` is a valid combination — it returns 400 with a different
+message when it is not — but in practice it returns
+
+    422 {"data":null,"error":"Timeout. Maybe slow down a bit"}
+
+Post search over the same subreddit returns 200 immediately. So the comment
+text search is the one query this archive cannot serve cheaply, and it is
+exactly the one a tool-reputation project wants most.
+
+Both constraints point the same way: **pull whole subreddits into local storage
+and search offline.** That is faster, reproducible, and costs the archive one
+pass instead of one expensive request per tool name.
 """
 from __future__ import annotations
 
@@ -105,6 +118,21 @@ def call(path: str, params: dict, retries: int = 4):
                 continue
             if e.code == 400:
                 raise ValueError(f"400 from archive: {body} ({url})")
+            if e.code == 422:
+                # Measured 2026-08-04: the archive returns
+                #   422 {"data":null,"error":"Timeout. Maybe slow down a bit"}
+                # This is NOT a malformed request — `body=` plus `subreddit=` is
+                # a valid combination and returns 400 with a different message
+                # when it is not. 422 means the server timed out running an
+                # expensive full-text scan and is asking, in words, to be given
+                # room. The original 5/10/15/20s backoff treated it as a generic
+                # transient failure and kept pushing, which is how a volunteer
+                # research service gets hammered by something claiming to be
+                # polite. Back off in minutes, not seconds.
+                STATS["422s"] = STATS.get("422s", 0) + 1
+                _sleep_for(60 * (attempt + 1), "HTTP 422 — the server asked to "
+                                               "slow down, in those words")
+                continue
             if attempt < retries:
                 _sleep_for(5 * (attempt + 1), f"HTTP {e.code}")
                 continue
