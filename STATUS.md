@@ -1091,3 +1091,151 @@ negative on that flag alone and are not any more.
 CLOB client, independent of the flag.
 
 Recorded as `social-signal/DECISIONS.md` **D12**.
+
+---
+
+## bot-hunt â€” market-to-strategy pipeline, extractors first (2026-08-04)
+
+`bot-hunt/` Â· `PRIOR_ART.md`, `SHORTLIST.md`, `DATA.md`, `PREREGISTRATION.md`,
+`DECISIONS.md`, `HANDOFF.md` and `src/` committed Â· `data/`, `reports/`
+gitignored Â· full write-up in [bot-hunt/HANDOFF.md](bot-hunt/HANDOFF.md).
+
+**Cost $0.00. Every call public, unauthenticated, read-only. No order endpoint
+exists in that folder's code by construction.**
+
+### âš  `market-selection/` already did Step 2, and nothing in this file said so
+
+A complete market-selection pass dated **2026-08-02** exists in
+[market-selection/](market-selection/) â€” the full 24 h exchange-wide tape
+(**8,867,978 trades, 2,205 series**), a depth recorder, a pre-registered kill
+gate, and four ranked families. **It has no row in the thread tables above**,
+which is why a later brief was written as though no market selection had ever
+been done. It is now referenced; it should get a thread row too.
+
+### Its #1 entry is dead, on an axis it never measured
+
+South American / Mexican soccer was ranked first on **40â€“101 settlements per
+week**. That is a *rate*. Measured today, the **retrievable settled events** are:
+
+| series | events | vs LEDGER K014's 481 |
+|---|---|---|
+| KXMLSGAME | 53 | 0.11Ã— |
+| KXARGPREMDIVGAME | 42 | 0.09Ã— |
+| KXLIGAMXGAME | 28 | 0.06Ã— |
+| KXDIMAYORGAME | 21 | 0.04Ã— |
+| KXCOPADOBRASILGAME | 8 | 0.02Ã— |
+| **all five** | **152** | **0.32Ã—** (and 0.07Ã— the 2.4Â¢ cost bar) |
+
+Its counterparty and cost figures reproduce live and are fine. There is simply
+no sample. **Same shape as its own K005 retraction â€” "celebrating the wrong
+axis" â€” on the dimension its own `killed.md` calls KILL 5.** The irony is exact:
+this is the one family whose sharp reference price *is* backfillable (14 years
+of free Pinnacle closes) and the Kalshi side has 152 matches.
+
+### ðŸ”‘ Pinnacle's guest API is free, and 3 of 3,195 repos use it
+
+`guest.api.arcadia.pinnacle.com` â€” verified by fetching, unauthenticated, no
+account: **27,582** priced soccer markets, **3,728** tennis (including period-1
+handicaps), **1,920** baseball, **643 esports**, each carrying `maxRiskStake`
+limits. Against **129** repos in the `signal-github` corpus that use the *keyed*
+`the-odds-api` and **82** that merely name Pinnacle.
+
+This is the fair-value input for the only strategy in any corpus attached to
+this repo with a **public wallet and a reconciled four-line P&L** â€” Polymarket
+esports, passive-only, de-vig the sharp book and quote it: **+$8,293 arbitrage,
+âˆ’$3,184 unhedged residual, âˆ’$134 cancellations, +$4,973 net** over 3,858 fills
+and $96k volume. **Its author switched it off** as the win rate decayed
+50.2 â†’ 48.3 â†’ 43.4% monthly.
+
+> **The most useful single number found: adverse selection cost that author
+> 38% of gross.** That is the term appearing in no fee model anywhere in this
+> repo. It reconciles the standing tension â€” `signal-github` says maker-only
+> quoting wins on fees, a 20-year professional says be a taker, **both are
+> right, and 38% is the size of the missing term.** It is also the same
+> mechanism S008/S009 measured as fatal on tennis without sizing it.
+
+> âš  **T014 is NOT retracted.** tennis-data.co.uk really did stop carrying
+> Pinnacle in 2026 (coverage 5.1%). That is the *historical CSV*. **Live**
+> Pinnacle is a different object and is free â€” so a route believed closed is
+> open *going forward only*. It cannot be backfilled for tennis.
+
+### Kalshi retention is a fixed calendar boundary, not a rolling window
+
+Four independent queries â€” `status=settled`, `min_close_ts` at âˆ’365 days, no
+status filter, and a window placed entirely before the boundary â€” return the
+same earliest `close_time`, and **13 of 18 unrelated families share the identical
+date 2026-05-25**. The **market listing** and the **trade tape** have the *same*
+boundary, and the listing binds because it supplies the result label.
+
+> âš  **`market-selection/WHAT_IS_LEFT.md` calls the tape "THE DECAYING ITEM"** â€”
+> 69 days, rolling one day per day, overlap gone by **2026-08-19**. It bisected
+> the boundary to **2026-05-25** on 08-02; this session bisects it to
+> **2026-05-25** on 08-04, so the window **grew** 69 â†’ 71 days. **Two points is
+> not enough to overturn the claim â€” it is enough to stop treating the deadline
+> as established. Re-bisect before acting on it.**
+
+### Free-source regressions and one trap, all fetch-verified today
+
+- âš  **`site.api.espn.com` scoreboard: 403 on 7 of 7 leagues.**
+  `market-selection` used that feed on **08-02** to find 3,699 priced DraftKings
+  props, and **that finding killed its own #1 mechanism** and established
+  `KXMLBRFI`'s no-free-reference property. The `sports.core.api.espn.com` v2
+  path still returns 200. **Re-establish it or withdraw the claim.**
+- **Esports domain data confirmed dead**: Oracle's Elixir 404, HLTV 403,
+  vlr.gg 402, PandaScore 403, GRID 404. Liquipedia (475 KB) and bo3.gg alive.
+- **The football-data trap reproduced exactly**, two independent ways â€”
+  `COL.csv` â‰¡ `POL.csv` (sha `b9d1c59553b70628`, its own League column reads
+  **Ekstraklasa**) and `KOR.csv` â‰¡ `NOR.csv` (`aa649e866b03d2ea`,
+  **Eliteserien**). HTTP 200, no error. **Belongs in GUARDS.md as a 13th guard:
+  a 200 is not a correct file â€” hash it and check its own content column.**
+
+### Engine validated on 5 controls; the leak canary reproduced T010/T011
+
+`bot-hunt/src/engine.py` imports `common/kalshi_fees.py` and never
+reimplements it; it deliberately does **not** adopt `evan-kolberg`'s fill model
+(makers pay 0 in its instrument metadata, 0.07 in its fee model, same repo).
+`validate_engine.py` passes a martingale check on the generator, a null control,
+a 5 pp positive control, a 1 pp sensitivity floor, and a deliberate mid-price
+leak that must light up (+0.32Â¢ â€” half the quoted spread, exactly what T008
+recovered by marking at the mid).
+
+**Independent reproduction of T010/T011 on a sport that work never touched:** on
+Kalshi esports at a **âˆ’0h** anchor, **23.62% of quotes are extreme and 100% of
+them are correct**; at **âˆ’60 min** and **âˆ’6 h**, **0% extreme**.
+
+### Step 6 ran and is NOT reportable â€” which is the gate working
+
+271 events (of ~2,867 targeted; the candle pull was still running), 92 cells,
+**0 survive BH-FDR with a CI above zero**, selection canary correctly
+**UNTESTABLE** (MDE 5.95pp > 2.0pp), and the **negative-control gate UNTESTABLE**
+because the control family had no candle panel yet. **No number from that run is
+a finding, and the gate says so itself.**
+
+### Three corrections from this session, recorded not buried
+
+1. **A false kill on the best lead, by my own recorder.** `tag_slug=esports`
+   ordered by 24 h volume returns mostly `acceptingOrders=false` events (96 of
+   156) and read **0% two-sided**. Per-game slugs the same minute: `dota-2`
+   **51 of 60 two-sided**, top market **$51,029/24 h at a 1.0Â¢ spread**.
+   **Third occurrence of this shape in this repo** â€” `market-selection`'s
+   stale-ticker bug produced **19 wrong kills**, and `killed.md` opens with its
+   own correction of the same kind. **A dimension-A probe that samples the wrong
+   markets fails silently and always toward a kill.**
+2. **My validation failed on a bad pass condition, not a bad engine** â€” a fixed
+   0.25Â¢ tolerance against a bootstrap SE of 0.66Â¢. Replaced with a statistical
+   condition.
+3. **My negative-control gate read ABSENT as CLEAN** â€” a control with no data
+   returned 0 survivors and printed "reportable". Fixed to three-valued.
+
+### Recording started 2026-08-04 21:27 UTC and must not be killed
+
+`bot-hunt/src/record.py`, 10-minute cycles. Pinnacle, the Kalshi book and the
+Polymarket touch are **all live-only and none can be backfilled**. 18 Kalshi
+series (re-listed every cycle), 8 Polymarket game slugs, 6 Pinnacle sports.
+Two known-dead weather families ride along as a **negative control on the
+instrument itself** â€” they read 42%/67% two-sided against 100% elsewhere.
+
+**Single next action:** pull `KXMLBGAME` candles so the control gate can be
+decided, then re-run `src/run_grid.py`. Nothing from the test family is
+reportable until it passes.
+
