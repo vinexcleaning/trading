@@ -169,6 +169,97 @@ project's proxy scorer — see `reports/T2_rubric_audit.md`.
 
 ---
 
+## 7. The claim that would reframe this repo's most promising strategy
+
+`/r/quant/comments/1rodanx/` · 137 points · 40 comments
+(cross-posted to `/r/PredictionMarkets/comments/1roaqkl/`)
+
+> **"I pulled 5GB of Kalshi trade data and the liquidity provider economics
+> don't look like market making — they look like underwriting."**
+
+Kalshi's full 2025 NFL moneyline trade data, passive LP exposure reconstructed
+game by game. The poster's summary: *"LPs aren't neutralizing inventory and
+capturing spread. They're accumulating directional outcome exposure that
+persists through settlement, and profitability correlates with managing flow
+imbalance rather than eliminating it. That's not a market making return
+profile — it's closer to how a sportsbook or insurer makes money."*
+
+**Why this is the most consequential unverified claim in the corpus.** This
+programme's single most promising strategy is **maker-only two-sided quoting**,
+and `signal-github` has already narrowed the venue answer twice — first to
+"quote where the maker fee is zero", then to "Polymarket, because Kalshi charges
+makers precisely where the liquidity is and its member agreement says designated
+market makers get fee discounts, rebates, revenue share, cancel-on-disconnect
+and greater throughput."
+
+Every one of those arguments is about **costs and privileges**. This claim is
+about the **return profile itself**: that passive quoting in event contracts
+does not pay you a spread for neutral inventory, it pays you for warehousing
+directional risk to settlement. If that is right, then the strategy is not a
+cheaper or more expensive version of market making — **it is a different
+business**, and it needs to be sized and hedged as underwriting rather than as
+inventory turnover.
+
+> ### ⚠ Unverified, and it stays that way here
+> The poster cites SSRN abstract **6325658**, *"A Microstructure Perspective on
+> Prediction Markets"*. Fetched 2026-08-04: `papers.ssrn.com` returns
+> **HTTP 403 with a Cloudflare "Just a moment..." interstitial** to a
+> non-browser client. **This project does not solve bot challenges**, so the
+> paper's existence, authorship and methodology are all unconfirmed. It is
+> recorded as a claim with a citation, not as a source that was read.
+
+### Two supporting observations from the same subreddit, both first-hand
+
+`/r/quant/comments/1ul6e62/` (50 points) — from someone who says they have made
+markets on both venues:
+
+- *"millions of shares are often parked right at the bid, so if you want the bid
+  price it's time to get in line."* **Queue depth, not fee level, is what stops
+  a retail maker getting filled** — an obstacle neither sibling project has
+  measured and which no fee schedule reveals.
+- *"if your market is 50/50 the fee curve on Kalshi taxes these a lot more than
+  say 80/20 markets."* Independent, first-hand arrival at the `p(1−p)` peak this
+  repo found structurally in KXBTC15M.
+
+### And one claim that conflicts with a measured result here
+
+`/r/PredictionMarkets/comments/1q64dd9/` — *"Fees only apply to 15-minute crypto
+markets rn"* and *"Fees go to the market makers, not to polymarket"*.
+
+`signal-github`'s correction **C2** measured Polymarket's Gamma API over 2,100
+markets and found taker fees of 0.04 / 0.05 / 0.07 **by category**, with makers
+at zero on 100% of markets carrying a schedule. The "makers are paid" half
+agrees. The "only 15-minute crypto" half does not, and the post carries no date
+context in its text.
+
+**Recorded as a conflict to re-measure, not as a correction.** C2 is a primary
+measurement over 2,100 markets; this is one person's write-up for a friend. The
+useful part is that it is cheap to re-run `polymarket_fees_census.py` and settle
+it, and fee claims expire in 3 months anyway.
+
+---
+
+## 8. Wallet persistence, measured by someone else
+
+`/r/Polymarket/comments/1tn51bp/` — six months of Polymarket wallet data:
+*"Most 'top wallets' from any 3-month window revert toward average in the next
+3 months. But there's a small subset (~3–5% of active wallets) that maintains
+edge persistently."*
+
+That is `wallet-copy-study`'s split-sample result reached independently: **wallet
+skill is real and persists in a small minority, and the screen that finds them
+mostly finds noise.** This repo went one step further and asked whether the
+persistent part is *copyable* after costs — it is not, at +0.937pp falling to
+−0.135pp in the fee era against a ≥1.0pp spread. The poster's own open question
+is the same one: *"how to distinguish genuine information edge from structural
+advantages."*
+
+Nothing here changes that verdict. It does mean an unrelated analyst, on
+different data, found the same shape — which is the closest thing to replication
+this programme has for that thread.
+
+---
+
 ## What this section is not
 
 None of the above has been verified against an exchange, a chain or a
