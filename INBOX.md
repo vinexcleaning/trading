@@ -27,3 +27,10 @@ That is the only rule. No categories, no priorities, no status column.
 - 2026-08-03 — Does Kalshi's published rate-limit tier actually bind before the 60/hour GitHub core limit does?
 - 2026-08-03 — Weekly review ritual: 20 minutes, Sunday, empty this file to zero.
 - 2026-08-03 — Try the signal-extraction pipeline on podcasts instead of YouTube — same transcripts, different corpus.
+- 2026-08-04 — e-values / always-valid sequential tests: every recorder here is watched daily and Holm-Bonferroni does not fix repeated peeking.
+- 2026-08-04 — Kalshi tennis series settle on who ADVANCES, so a walkover pays out with zero play — does any strategy here model that?
+- 2026-08-04 — Pull the ~12 days of Kalshi hourly order books from archive.pmxt.dev that Kalshi's own 69-day window has already dropped.
+- 2026-08-04 — Polymarket 5-minute taker fee: quadratic p(1−p) per a 4,604-window study, flat by category per signal-github C2. Re-measure.
+- 2026-08-04 — Is the S1/S5 gap (−9.36¢ vs −8.28¢) the cost term? Decides whether the strategy has no edge or a negative one.
+- 2026-08-04 — Copy-trading loss may be exit fidelity, not entry latency — wallet-copy-study models only the entry delay.
+- 2026-08-04 — Run the signal pipeline over Reddit comments rather than posts: 538 of 39,629 threads have comments and that is where the objections are.
