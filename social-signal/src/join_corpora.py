@@ -109,6 +109,13 @@ STANCES_NEUTRAL = {"UNUSED", "QUIET", "BLOCKED", "THIN", "UNKNOWN",
                    "POSTED_ON_REDDIT", "NO_FOOTPRINT", "VENDOR_TALK",
                    "TLS_UNVERIFIED"}
 
+# The floor a Reddit negative must clear before it counts toward a verdict.
+# Chosen once, stated here, and NOT tuned against the output — the whole point
+# of this repo's guards is that a threshold picked to produce a nicer table is
+# a threshold that means nothing.
+MIN_NEG_N = 3          # three windows, not one
+MIN_NEG_SHARE = 0.10   # and at least a tenth of what is said about it
+
 
 # --------------------------------------------------------------------------
 # 1. YouTube side
@@ -455,6 +462,11 @@ def scan_corpus(con, needles: dict[str, int], limit: int | None = None):
 # 4. Verdicts
 # --------------------------------------------------------------------------
 VERDICTS = """
+A Reddit negative counts toward a verdict only if it appears in at least 3
+mention windows AND at least 10% of everything said about that entity. The raw
+counts stay in the table as evidence regardless: one "scam" in 309 windows is
+noise, and the lexicon has been measured producing exactly that.
+
 CONTRADICTION    someone ADVOCATES it and another source shows it dead, broken,
                  flagged or condemned. Mere mention is not advocacy.
 AGREE_NEGATIVE   evidence against it, and nobody advocating
@@ -471,13 +483,36 @@ def decide(con):
         obs = con.execute("SELECT * FROM observations WHERE entity_id=?",
                           (e["entity_id"],)).fetchall()
         plats = {o["platform"] for o in obs}
-        stances = [o["stance"] for o in obs]
+        # Reddit stances are a lexicon over mention windows and they are noisy
+        # at corpus scale. Measured on the first full run: `arxiv.org` scored
+        # SCAM_ALLEGED twice against 309 neutral windows, and `archive.pmxt.dev`
+        # scored it twice on a promotional post whose own sentence was
+        # "charging devs for raw market data is basically a scam" — an
+        # accusation aimed at other vendors, counted against the speaker.
+        #
+        # So a Reddit negative earns a place in the verdict only if it clears a
+        # stated floor: at least MIN_NEG_N windows AND at least MIN_NEG_SHARE of
+        # that entity's Reddit windows. The raw counts stay in the table as
+        # evidence either way — this gates the *verdict*, not the record.
+        rd = [o for o in obs if o["platform"] == "reddit"]
+        rd_total = sum(o["strength"] or 0 for o in rd) or 1.0
+        keep = []
+        for o in obs:
+            if o["platform"] != "reddit" or o["stance"] not in STANCES_AGAINST:
+                keep.append(o)
+                continue
+            n = o["strength"] or 0
+            if n >= MIN_NEG_N and n / rd_total >= MIN_NEG_SHARE:
+                keep.append(o)
+        obs_v = keep
+
+        stances = [o["stance"] for o in obs_v]
         advocacy = [s for s in stances if s in STANCES_ADVOCACY]
         against = [s for s in stances if s in STANCES_AGAINST]
         # Corroboration means a source with no incentive to sell it says it is
         # there: a repo imports it, or its own artifact answers when fetched.
         # Vendor copy is the vendor talking and is never corroboration.
-        corrob = [o for o in obs if o["stance"] in STANCES_CORROBORATION]
+        corrob = [o for o in obs_v if o["stance"] in STANCES_CORROBORATION]
         corroborated = bool(corrob)
         incentive = any("own=undisclosed" in (o["detail"] or "") or
                         "referral=1" in (o["detail"] or "") for o in obs)
