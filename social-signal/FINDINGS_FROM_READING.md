@@ -1,11 +1,15 @@
 # What reading the Reddit corpus actually found
 
-Six threads read in full. Permalinks only — no usernames, because this repo is
-public and the posters are private individuals. Every claim below is theirs, not
-this project's; where it touches a result this repo already has, that is said
-explicitly.
+Thirteen threads read in full out of a 39,600-post corpus. Permalinks only — no
+usernames, because this repo is public and the posters are private individuals.
+Every claim below is theirs, not this project's; where it touches a result this
+repo already has, that is said explicitly.
 
 Sorted by how much it should change what happens next.
+
+**Read §0 and §0b first.** Between them they contain 4,604 resolved Polymarket
+windows and a 1,700-trade rebuild of a viral YouTube strategy, and they arrive
+independently at two results this programme spent months reaching.
 
 ---
 

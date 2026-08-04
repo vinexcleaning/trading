@@ -166,7 +166,18 @@ def main():
                     help="the sweep is the expensive half and it is idempotent "
                          "in the database, not in time — skip it to resume at "
                          "the probe and comment phases")
+    ap.add_argument("--only", default="",
+                    help="run one phase: sweep | probe | tools | comments. "
+                         "The archive degrades under load, so the phases have "
+                         "to be runnable in priority order rather than as one "
+                         "fixed pipeline — comments carry the technical "
+                         "objections and are worth more per request than "
+                         "anything else here.")
     args = ap.parse_args()
+    phases = ({args.only} if args.only
+              else {"sweep", "probe", "tools", "comments"})
+    if args.skip_sweep:
+        phases.discard("sweep")
 
     floor = datetime.datetime.strptime(args.since, "%Y-%m-%d").replace(
         tzinfo=datetime.timezone.utc).timestamp()
@@ -176,8 +187,8 @@ def main():
     t_start = time.time()
 
     print(f"SWEEP — {len(subs)} subreddits back to {args.since}"
-          + (" [SKIPPED]" if args.skip_sweep else ""))
-    for name, why in (() if args.skip_sweep else subs):
+          + ("" if "sweep" in phases else " [SKIPPED]"))
+    for name, why in (subs if "sweep" in phases else ()):
         t0 = time.time()
         try:
             if args.dry_run:
@@ -209,8 +220,9 @@ def main():
         return
 
     tool_terms = probe_terms_from_entities(con)
-    print(f"\nPROBE — {len(VENUE_TERMS)} venue terms x {len(subs)} subreddits")
-    for name, _ in subs:
+    print(f"\nPROBE — {len(VENUE_TERMS)} venue terms x {len(subs)} subreddits"
+          + ("" if "probe" in phases else " [SKIPPED]"))
+    for name, _ in (subs if "probe" in phases else ()):
         for term in VENUE_TERMS:
             t0 = time.time()
             got = 0
@@ -236,8 +248,9 @@ def main():
     # copy-trading bot.
     tool_subs = [(n, w) for n, w in subs if n.lower() in TOOL_SUBS]
     print(f"\nTOOL PROBE — {len(tool_terms)} names from T1 x "
-          f"{len(tool_subs)} subreddits")
-    for term, verdict in tool_terms:
+          f"{len(tool_subs)} subreddits"
+          + ("" if "tools" in phases else " [SKIPPED]"))
+    for term, verdict in (tool_terms if "tools" in phases else ()):
         hits = 0
         t0 = time.time()
         for name, _ in tool_subs:
@@ -262,8 +275,9 @@ def main():
     # Comments are the point. Pull threads for the most-discussed posts that
     # mention a venue, because that is where the specific technical objection
     # lives — the strongest single signal in the rubric.
-    print(f"\nCOMMENTS — top {args.comments_for} discussed venue posts")
-    targets = con.execute("""
+    print(f"\nCOMMENTS — top {args.comments_for} discussed venue posts"
+          + ("" if "comments" in phases else " [SKIPPED]"))
+    targets = [] if "comments" not in phases else con.execute("""
         SELECT post_id, subreddit, num_comments FROM rd_posts
         WHERE num_comments > 2
           AND (lower(title) LIKE '%kalshi%' OR lower(selftext) LIKE '%kalshi%'
