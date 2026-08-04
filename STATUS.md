@@ -32,6 +32,7 @@ New ideas go in [INBOX.md](INBOX.md) first, before deciding where they belong.
 | **Score-staleness (already fixed)** | `fetched_at` was stamped at cache read, so the 30 s guard never rejected anything. | Nothing to fix — but **no live entry result predating the fix is a valid test of the entry logic.** Treat the 4-for-10 as void. |
 | **Label coverage (tennis)** | Blocked. Apify at a monthly hard limit; Flashscore's `dayOffsets` is −7..+7 against a −68 need. | Restore quota, then label day-by-day via `crawlstone/tennis-scraper` or `tennisexplorer` (~$20, not $3.44). Only path above 13.9% coverage. |
 | **youtube-signal** | **Phase 2 BLOCKED at Step 0: no `ANTHROPIC_API_KEY`, so the LLM read never ran and no S or H component has ever fired.** All LLM-free work done: corpus 718 gated / 369 passing / 683 transcripts cached, G3 retuned to recall 1.000, F3 cut, F2B's 12 new insider terms added (88.5% exclusive, Jaccard 0.041 vs F2), 60-video read set selected, Wilson n-check verified. Retrieval win (F1∩F2 Jaccard 0.037, 2.25× low-view yield) is **still not cashed out** — different videos, not yet demonstrably better ones. | **Buy $5 of Anthropic API credit, add the key, run the read on 2 videos.** Measured cost for all 60 is $3.64 on Sonnet. Everything else waits on this one input. |
+| **signal-github** | **Working, not blocked.** 4,017 retrieved / 3,252 gated / **2,260 scored (69.5%) for ZERO core API calls** via codeload tarballs; 822 credibility; 4 read. Token in signal-github/.env -> 5,000/hr + code search (916 repos no other axis found). Callable as **/github-signal**. Stars settled: rho -0.007 p 0.73 at n=2,260 - the earlier +0.241 correction was itself the error. 	rust_me_bro 22.2% and **uncorrelated with substance**. Fees now primary-sourced on both venues (C1/C1a/C2). | **Read the KalshiEX Rulebook** - the member agreement is silent on automation and says the Rulebook governs, so it is the only open item that could change the venue answer. It defeats HTTP and a real browser. |
 
 ---
 
@@ -180,120 +181,135 @@ Judgments and transcripts stay local — `reports/` and `KNOWLEDGE.md` gitignore
 
 ---
 
-## signal-github — GitHub as a signal source (2026-08-03)
+## signal-github — GitHub as a signal source (2026-08-03 → 08-04)
 
-`signal-github/` · code committed · `data/`, `reports/`, `cache/`,
-`GITHUB_KNOWLEDGE.md` gitignored · full write-up in `signal-github/HANDOFF.md`
+`signal-github/` · code + `CORRECTIONS.md` committed · `data/`, `reports/`,
+`cache/`, `GITHUB_KNOWLEDGE.md` gitignored · full write-up in
+`signal-github/HANDOFF.md` · **callable as `/github-signal`**
+(`.claude/skills/github-signal/SKILL.md`).
 
-**Rate limits, measured from headers, unauthenticated (`reports/step0.md`):**
-core **60/hour** (the binding constraint) · search **600/hour** ·
-raw.githubusercontent **unmetered** · **code search 401** although `/rate_limit`
-advertises 60/min for it · dependents graph renders client-side, unscrapeable.
-Substitutes: Sourcegraph public index for code search (labelled `F2_CODE`, never
-as GitHub code search); forks of the client libraries for dependents.
+**The 60/hour core budget stopped being the constraint.**
+`codeload.github.com/<repo>/tar.gz/<branch>` returns the whole file tree **and
+every file's contents** in one request, carries no `X-RateLimit-*` headers, and
+`/rate_limit` reads identically either side of a download. 1,397 archives in
+**367 seconds** against ~23 hours at 60 tree-calls/hour. Use the legacy URL form;
+the documented `/refs/heads/` form times out. A token is still worth having — it
+is what unblocks code search — but depth no longer waits on it.
 
 | | |
 |---|---|
-| repos retrieved | 3,133 across 6 axes (laptop) · **2,806 rebuilt on the desktop 08-03** |
-| gate PASS / STALE / DROP | 2,441 / 121 / 571 · **desktop: 2,221 / 126 / 459** |
-| deep-fetched and scored | ~~105 (4.1%)~~ → **862 (36.7% of gated), 08-03, for ZERO core API calls** |
-| how | `codeload` tarballs return the whole tree **and every file's contents**, unmetered. 1,197 archives in 266 s vs ~20 h at 60 tree-calls/hour. Depth no longer needs a token. |
-| read in full | 12 (laptop) + **2 (desktop) → 5 more defects**, in repos scoring 10 and 9 |
-| **fee audit, 862 repos** | 19 repos model Kalshi's maker fee correctly and have **65 stars between them**; 15 hardcode it to zero and have **1,493**. On a fact with published ground truth, popularity points the wrong way. |
-| **F1 vs F2 Jaccard** | **0.033** (YouTube: 0.037 over 446 videos) |
-| code-search hits found by neither family | 41 of 47 |
-| **stars vs S_strict** | ~~rho +0.241, p 0.013 at n=105~~ — **RE-CORRECTED 08-03: −0.004, p 0.90 at n=862.** The n=105 bump decayed monotonically to zero (105 → 200 → 400 → 600 → 862). It was a small-sample artifact; **stars carry no usable information after all**, and the earlier withdrawal of that claim was itself the error. |
-| why that artifact appeared | the fetch queue is ordered by prescreen score and `prescreen.py` awards up to +3 for stars, so the early sample was star-enriched: `rho(prescreen, stars) = +0.444`. Correlating *within* prescreen bands cancels it — −0.143 / +0.164 / −0.090 / −0.002, n-weighted mean **−0.068**. Mechanism and outcome agree. |
-| forks vs S_strict / **tree_files vs S_strict** | −0.009 (p .79) / **+0.593 (p<0.0001)** — the ranking is substantially a *size* ranking; normalise for repo size before anything else |
-| | **no free proxy predicts substance** |
-| two repos both scoring 10/10 strict | one is 67 files/1 venue/no backtest and says so; the other 797 files/17 venues with a documented backtest API and no result. **The scorer cannot separate them; reading can.** |
-| repos committing a backtest artifact behind their own strategy | **1 of 40** (`YichengYang-Ethan/oracle3`) |
-| does that artifact support the strategy? | **no.** Headline reads +0.49%; the `performance` block in the same file reports total_pnl −8.80, Sharpe −1.5749, profit factor 0.9526, and the equity curve ends below its start. Zero mentions of fee, slippage or commission in 126 KB. |
-| defects found only by reading | **5**, across 3 repos, all of which score well |
-| S rubric ported literally | **19 of 40 scored 9–10** — saturated |
-| same repos, strict rescore | **3 of 40** |
-| S2 backtest-vs-live fire rate | 68% literal → **20% strict** |
-| repos with a backtest module AND separate order-submission code | **8 of 40** |
-| repos publishing a backtest artifact behind their own profit claim | **0 of 40** |
-| "trust me bro" — results claim, <10 commits, no artifact | **3 of 40** |
+| repos retrieved | **4,017** (laptop corpus separately at 2,562 gated — see the warning below) |
+| gate PASS / STALE / DROP | **3,091 / 161 / 765** |
+| **deep-fetched and scored** | ~~105 (4.1%)~~ → **2,260 = 69.5% of gated, for ZERO core API calls** |
+| credibility metrics | **822** (was 40) |
+| repos read in full | **4 this session**, loaded via `load_extraction.py` with zero rejections |
+| **code search** | GitHub's own index: **1,141 hits, 916 found by no other axis** (Sourcegraph managed 15) |
+| **F1∩F2 Jaccard** | **0.032** — fourth measurement, with 0.033, 0.036 and YouTube's 0.037 |
+| strict S ≥ 9 | 151 of 2,260 (**6.7%**) — 7.5% at n=40, 7.4% at n=862. Stable across a 56× change in sample. |
 
-**Toolchain finding — Polymarket's v1 client family is archived.**
-`py-clob-client` 1,234★, `clob-client` 513★, `rs-clob-client` 691★,
-`ctf-exchange` 356★, and `Polymarket/agents` 3,758★ (the org's most-starred repo,
-last push 2024-11-05) are all archived. Live successors `py-clob-client-v2` 163★,
-`py-sdk` 82★, `clob-client-v2` 76★. **The stars are on the dead libraries.**
-9 repos in the corpus import v1, 3 import v2. Independently corroborated by the
-parallel `youtube-signal` session, which dates CLOB V2 go-live to 28 Apr 2026.
+### ⚠ Two coverage numbers exist in this repo and both are correct
 
-**Venue asymmetry that decides the market-making question.** Both venues price
-fees on expected earnings, `rate × qty × p × (1−p)`, peaking at p=0.50.
+`3a2f36a` says "2472 scored (96%)"; `19d5dba` says 2,260 at 69.5%. They measure
+**two different databases on two machines** — `data/github.db` is gitignored, so
+laptop and desktop each built their own corpus from shared code. Denominators
+differ too: 2,472/2,562 there, 2,260/**3,252** here, because this machine's
+retrieval included the code-search axis that added 916 repos the other corpus
+does not have. **The machine with the lower percentage has the larger corpus.**
+Always state which machine a coverage figure came from.
 
-> **CORRECTED 2026-08-03.** This section previously read *"Kalshi:
-> `ceil_to_cent(0.07 × qty × p × (1−p))`, same rate for makers and takers"*,
-> sourced from a third-party repo's fee model. **That is wrong.** Kalshi's own
-> fee schedule (effective 7 Jul 2026, now retrieved) charges takers
-> `roundup(M × 0.07 × C × P × (1−P))` with `M` defaulting to **1**, and makers
-> `roundup(M × 0.0175 × C × P × (1−P))` — a quarter of the rate — with `M`
-> defaulting to **0**. Confirmed independently against the live API: of 12,396
-> series, **12,266 are taker-only and exactly 130 charge makers**. So Kalshi
-> makers pay nothing on 98.9% of series — but **107 of the 130 are Sports**,
-> including `KXATPMATCH` and `KXWTAMATCH`, the tennis series this repo trades.
-> Full write-up and reproduction: [signal-github/CORRECTIONS.md](signal-github/CORRECTIONS.md),
-> `signal-github/src/kalshi_fees_census.py`. Canonical arithmetic:
-> `common/kalshi_fees.py`.
+### Stars: settled, and the previous correction was the error
 
-Polymarket: **makers pay zero**, plus a 20–25% rebate share of taker fees, plus
-a daily liquidity-rewards pool. Kalshi's only official client is 17 months
-stale; Polymarket ships eight maintained repos. Kalshi's edge is the API docs —
-published rate-limit tiers (Basic 200/100 tokens/s → Prestige 6,000/8,000) and
-FIX.
+`rho(stars, S_strict) = −0.007, p = 0.73` **at n = 2,260**. The n=105 sample gave
++0.241 (p 0.013) and the project withdrew its "stars carry no information" claim
+on it; the bump decays monotonically 105 → 200 → 400 → 600 → 862 → 2,260. It was
+a small-sample artifact. **The original claim stands; the withdrawal was wrong.**
 
-**You cannot properly backtest Kalshi.** `evan-kolberg/prediction-market-
-backtesting` (1,094★, 254 files, NautilusTrader-based, working Polymarket L2
-replay) states Kalshi support depends on L2 historical book data it could not
-get; Kalshi backtests there are trade-tick replay only. Free Polymarket L2:
-**PMXT hourly archive** (`r2v2.pmxt.dev`) from 2026-02-21 onward.
+What replaced it: `rho(tree_files, S_strict) = +0.593` — the score was 59%
+explained by **file count**. `src/size_adjust.py` fits it out (rho → 0.12).
+Validated against an external fact: of 19 repos that provably model Kalshi's
+maker fee correctly, the raw score put **0** in its top 25, the adjusted one **5**.
 
-**Copy trading, measured rather than argued.** The same repo replays a real
-public wallet's filled-trade ledger against historical L2: **72 of 153 orders
-filled (47%)**, ledger cash PnL **−223.88 USDC**. Four structural reasons, none
-fixable by better wallet screening: the original trades are already inside the
-replayed book; a public timestamp is a fill observation, not a decision time;
-maker fills cannot be reconstructed from fill rows; thin books make IOC fills
-contingent on queue position. **This contradicts the copy-trading method in
-`youtube-signal/KNOWLEDGE.md`, which argues only about which wallet to pick.**
+### Three axes, and none of them works alone
 
-**The one strategy whose income is not required to overcome a fee first:**
-maker-only two-sided quoting, in fee-free or low-fee categories. *(Corrected
-2026-08-03: this read "on Polymarket", on the false premise that Kalshi charged
-makers the full taker rate. Kalshi makers pay zero on 12,266 of 12,396 series,
-so the venue is not excluded on fee grounds — but the 130 that do charge makers
-are 107 Sports series, i.e. where Kalshi's liquidity is. The rule that survives
-is **pick a series whose maker multiplier is zero**, on either venue.)*
-Reference implementation `warproxxx/poly-maker` (1,427★, MIT, 83 tests, mypy
-strict, 37 commits over 465 days, migrated to v2). Post BUY-YES at `r−δ` and
-BUY-NO at `(1−r)−δ`; both legs are bids, so a filled pair merges to 1 USDC at
-locked edge `1−p−q` — **the exit is also a maker action**. It makes no
-performance claim and **has no backtest**; its own README says the replay
-backtester is "not yet built". Maker realism needs L3/MBO data that does not
-exist publicly, so the best strategy found and the best data found do not
-compose.
+`trust_me_bro` fires on **182 of 822 (22.2%)** against 3 of 40 (7.5%) last
+session — the sampling-bias warning, quantified. And it is **uncorrelated with
+substance**: rho +0.029, p 0.41. Flagged repos score the same as clean ones.
+`s_adj`'s own top pick had **1 commit** and claimed "Guaranteed profit".
+`src/shortlist.py` combines substance, credibility and fee-correctness.
 
-**Wrong or untrusted (full list in HANDOFF §5):** the venue **legal terms were
-never read** — `kalshi.com` returned HTTP 429 to every request including its own
-fee-schedule PDF, and `polymarket.com/tos` renders client-side; every automation
-statement rests on developer docs, not agreements. Coverage is 1.6%. Credibility
-metrics are complete for all 40 — but 40 of 2,562. A rate-limiter bug in
-`gh.core` slept on an already-expired reset timestamp and cost most of this
-session's depth; fixed. The commits-vs-substance rho changed sign between n=30
-and n=40, so at this sample size its sign is noise, not a weak signal. 77 repos were dropped
-for having no fetchable README — a real false-negative channel. Both repos read
-were selected by the strict score and were unusually honest; the corpus is
-almost certainly less honest than they are.
+### What the corpus actually contains (`src/classify.py`, venue from imports)
 
-**Next:** put a free `GITHUB_TOKEN` in the environment. Core goes 60/hour →
-5,000/hour and code search unblocks, with no code change — `gh.py` already reads
-it. Both constraints on this session are fixed by one environment variable.
+| | |
+|---|---|
+| venue | polymarket 991 · **none 603** · kalshi 358 · both 284 |
+| kind | live_trader 680 · market_maker 449 · data_collector 435 · backtester 221 · arbitrage 151 · copy_trader 103 |
+| places real orders | 1,097 of 2,236 |
+| Polymarket client | **v1-ARCHIVED 578 vs v2 121** — 4.8:1 toward the dead library |
+
+**603 repos (27%) import neither venue.** They passed the README topic gate and
+never touch Kalshi or Polymarket — invisible to the gate, obvious to the
+classifier. Query it: `python src/classify.py --venue kalshi --kind market_maker --alive`.
+
+### Fees — both venues now on primary evidence (`signal-github/CORRECTIONS.md`)
+
+**C1.** Kalshi does **not** charge makers and takers the same rate — see the
+corrected block above. Taker `0.07`, maker `0.0175` with multiplier defaulting to
+**0**; **130 of 12,396 series charge makers and they are the liquid ones**
+(107 Sports, incl. `KXATPMATCH`/`KXWTAMATCH`).
+
+**C1a.** The published maker rate is right; **applying it without checking the
+series' `fee_type` is wrong** — and only repos careful enough to model maker fees
+at all can make this error. Two independent, rigorous repos do
+(`artyomderkach-bit`, `hamad-khawaja`), on 15-minute crypto series where **zero**
+maker fee applies. Both penalise themselves. Invisible to any constant-vs-schedule
+check *because the constant is correct*. This is exactly what
+`common/kalshi_fees.py` refuses to guess.
+
+**C2.** Polymarket measured from Gamma, 2,100 markets: **makers pay zero on 100%**
+of markets with a schedule (`takerOnly: true`); taker 0.04 / 0.05 / 0.07 by
+category; rebate **15–25%** (a refinement — the old claim said 20–25%). Trap:
+`makerBaseFee` reads `1000` on 94% of markets and is **not** the fee — the CLOB
+API returns 0 for the same markets; `feeSchedule` is authoritative.
+
+**Venue verdict, corrected twice and now settled: Polymarket for maker-only
+quoting.** Not because Kalshi charges makers everywhere — it does not — but
+because Kalshi charges them *precisely where the liquidity is*, offers no rebate,
+and its member agreement (clause T) states designated market makers get *"discounts
+on fees, rebates on fees, revenue share from fees"*, cancel-on-disconnect and
+*"greater throughput"*, and that these *"may give market makers a trading
+advantage over members who are not market makers."*
+
+### Legal terms — one closed, one open, one impossible
+
+- **Kalshi fee schedule: READ.** `kalshi.com/docs/kalshi-fee-schedule.pdf`. The
+  429 is intermittent, not a block — browser UA plus a retry.
+- **Kalshi member agreement: READ.** `kalshi.com/docs/kalshi-member-agreement.pdf`.
+  **Silent on automation** — zero occurrences of bot, automated, algorithmic, API,
+  scrape, manipulat*, spoof, wash trade.
+- **KalshiEX Rulebook: NOT READ, and it now matters most.** The agreement says
+  *"the Kalshi Rulebook will govern"* in any conflict, so it is the operative text
+  for whether bots are permitted. `kalshi.com/regulatory/rulebook` yields 581
+  characters from 145 KB of HTML and an empty body in a real browser.
+- **Polymarket terms: NOT RETRIEVABLE.** `/tos` returns 200, sets the correct page
+  title, and renders the **homepage body** — in a real browser, after client-side
+  routing, with the footer link clicked. *"Read it in a browser" is withdrawn.*
+
+### Reading still finds what scoring cannot — 4 repos, 6 defects
+
+All six invisible to every computed component, in repos scoring 9 and 10.
+`evan-kolberg` contradicts itself on maker fees between its instrument and its fee
+model, and a passive strategy reads the one the backtest ignores. `aulekator`
+(557★, 4 commits) invents three fee schedules for one venue, ships `fee_rate_bps=0`
+live, advertises a "self-learning" feature its own README calls a placeholder, and
+carries an MIT badge with no LICENSE. Best repo found: **`artyomderkach-bit/kalshi-15m-market-maker`**
+(0★) — states what it withholds, makes no profit claim, ships in paper mode, and
+imports one fair-value function into both engine and backtest *"so they can never
+drift apart"*. Its README independently corroborates this programme's own finding:
+*"almost every edge that looked real in-sample decayed out-of-sample."*
+
+**Next:** (1) read the KalshiEX Rulebook — the only open item that could change
+the venue answer; (2) finish the last 30% of coverage,
+`python src/fetch_repo.py tree 1200`; (3) extend credibility past 822.
 
 ---
 
