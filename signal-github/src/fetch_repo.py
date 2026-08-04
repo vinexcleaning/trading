@@ -47,6 +47,9 @@ SRC_EXT = (".py", ".ts", ".tsx", ".js", ".rs", ".go", ".java", ".rb", ".ipynb",
 MAX_SRC_FILES = 400
 MAX_SRC_BYTES = 4_000_000
 
+# Set by --skip-issues. See the closed-issues block in fetch_one().
+SKIP_ISSUES = False
+
 COST_RE = re.compile(r"\b(fee|fees|slippage|spread|commission|taker|maker|"
                      r"transaction_cost|trading_cost|gas_cost)\b", re.I)
 BACKTEST_RE = re.compile(r"\b(backtest|back_test|walk[_ -]?forward|simulate|simulation|"
@@ -170,9 +173,18 @@ def fetch_one(con, row, level: str = "tree"):
               f"(archive {arch.get('status')})", flush=True)
         return
 
-    # --- search: closed issues (search budget at 600/hour, not core at 60) ---
+    # --- search: closed issues ---
+    # This one call is the pacing bottleneck of the whole credibility pass:
+    # search is 30/min even authenticated, so it costs ~2.2s per repo against
+    # ~1s for all three core calls combined. Over 2,300 repos that is 3 hours
+    # versus 40 minutes.
+    #
+    # `closed_issues` is NOT used by `trust_me_bro` (claims AND commits<10 AND
+    # no artifact) nor by any correlation reported so far. So it is skippable,
+    # and skipping it is recorded by leaving the column NULL rather than 0 —
+    # "not measured" must not become "measured as none".
     closed_issues = row["closed_issues"]
-    if level == "full":
+    if level == "full" and not SKIP_ISSUES:
         ci = gh.search("issues", f"repo:{fn} is:issue is:closed", per_page=1)
         closed_issues = ci.get("total_count")
 
@@ -327,8 +339,13 @@ def fetch_one(con, row, level: str = "tree"):
 
 
 def main():
+    global SKIP_ISSUES
     level = sys.argv[1] if len(sys.argv) > 1 else "tree"
     limit = int(sys.argv[2]) if len(sys.argv) > 2 else 50
+    SKIP_ISSUES = "--skip-issues" in sys.argv
+    if SKIP_ISSUES:
+        print("skipping the closed-issues search call: ~3x faster, and "
+              "closed_issues stays NULL rather than 0", flush=True)
     con = db.connect()
     if level == "full":
         # Credibility pass: only repos the cheap pass already scored well.

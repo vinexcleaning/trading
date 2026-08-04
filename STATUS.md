@@ -32,7 +32,7 @@ New ideas go in [INBOX.md](INBOX.md) first, before deciding where they belong.
 | **Score-staleness (already fixed)** | `fetched_at` was stamped at cache read, so the 30 s guard never rejected anything. | Nothing to fix â€” but **no live entry result predating the fix is a valid test of the entry logic.** Treat the 4-for-10 as void. |
 | **Label coverage (tennis)** | Blocked. Apify at a monthly hard limit; Flashscore's `dayOffsets` is âˆ’7..+7 against a âˆ’68 need. | Restore quota, then label day-by-day via `crawlstone/tennis-scraper` or `tennisexplorer` (~$20, not $3.44). Only path above 13.9% coverage. |
 | **youtube-signal** | **UNBLOCKED and productive. 38 videos read, $0.00 spent, 0 API units.** The old "buy $5 of API credit" blocker was wrong â€” transcripts are read in-session. Two corpora: broad (746 videos, 370 PASS, 29 read) and a **targeted Kalshi/Polymarket one** (470 videos, 328 PASS, **9 read, 134 claims, 25 tools**). **Nine actionable findings** incl. the three-number check, itemised fees on both venues, 8 backtest-realism rules, the `filtfilt` look-ahead trap, and an adverse-selection result that **contradicts our own maker thesis**. See the dated section below. | **Read more of the targeted corpus.** `$env:SIGNAL_DB="kalshi_edge"` then `src/target_rank.py`. The broad corpus's retrieval test is still NOT DEMONSTRATED and is secondary to the practical hunt. |
-| **signal-github** | **Working, not blocked.** 4,017 retrieved / 3,252 gated / **3,165 scored (97.3%) for ZERO core API calls** via codeload tarballs; 822 credibility; 4 read. Token in signal-github/.env -> 5,000/hr + code search (916 repos no other axis found). Callable as **/github-signal**. Stars settled: rho -0.008 p 0.65 at n=3,165 - the earlier +0.241 correction was itself the error. 	rust_me_bro 22.2% and **uncorrelated with substance**. Fees now primary-sourced on both venues (C1/C1a/C2). | **Read the KalshiEX Rulebook** - the member agreement is silent on automation and says the Rulebook governs, so it is the only open item that could change the venue answer. It defeats HTTP and a real browser. |
+| **signal-github** | **Working, not blocked.** 4,017 retrieved / 3,252 gated / **3,165 scored (97.3%) for ZERO core API calls** via codeload tarballs; **credibility for 3,146**; 4 read. 283 repos then retroactively DROPPED for having <=1 commit (gate G1's second half, applied at last), so the live scored set is **2,882**. Token in signal-github/.env -> 5,000/hr + code search (916 repos no other axis found). Callable as **/github-signal**. Stars settled: rho -0.008 p 0.65 at n=3,165 - the earlier +0.241 correction was itself the error. `trust_me_bro` 19.1% of 2,717 and **weakly POSITIVELY correlated with substance** (+0.064, p 0.0009) - the earlier 'uncorrelated' reading was n=822. Fees now primary-sourced on both venues (C1/C1a/C2). | **Read the KalshiEX Rulebook** - the member agreement is silent on automation and says the Rulebook governs, so it is the only open item that could change the venue answer. It defeats HTTP and a real browser. |
 
 ---
 
@@ -339,7 +339,8 @@ is what unblocks code search â€” but depth no longer waits on it.
 | repos retrieved | **4,017** (laptop corpus separately at 2,562 gated â€” see the warning below) |
 | gate PASS / STALE / DROP | **3,091 / 161 / 765** |
 | **deep-fetched and scored** | ~~105 (4.1%)~~ â†’ **3,165 = 97.3% of gated, for ZERO core API calls** |
-| credibility metrics | **822** (was 40) |
+| credibility metrics | **3,146** (was 40) - complete |
+| retroactively dropped, <=1 commit | **283** - gate G1's second half needs a commit count, so it only fired once credibility was complete. Live scored set is **2,882**. |
 | repos read in full | **4 this session**, loaded via `load_extraction.py` with zero rejections |
 | **code search** | GitHub's own index: **1,141 hits, 916 found by no other axis** (Sourcegraph managed 15) |
 | **F1âˆ©F2 Jaccard** | **0.032** â€” fourth measurement, with 0.033, 0.036 and YouTube's 0.037 |
@@ -373,9 +374,20 @@ an instrument built this session, found by re-running it at full coverage.
 
 ### Three axes, and none of them works alone
 
-`trust_me_bro` fires on **182 of 822 (22.2%)** against 3 of 40 (7.5%) last
-session â€” the sampling-bias warning, quantified. And it is **uncorrelated with
-substance**: rho +0.029, p 0.41. Flagged repos score the same as clean ones.
+`trust_me_bro` fires on **519 of 2,717 (19.1%)** against 3 of 40 (7.5%) last
+session - the sampling-bias warning, quantified.
+
+**Overturned by full coverage, and worth stating plainly:** at n=822 this file
+recorded the flag as **uncorrelated** with substance (rho +0.029, p 0.41). At
+n=2,717 it is **weakly POSITIVE and significant: rho +0.064, p 0.0009** - flagged
+repos score slightly HIGHER on substance (median s_adj +0.19 against -0.20).
+That direction makes sense on reflection: making a results claim at all requires
+having built something. The practical conclusion is unchanged - the two axes
+measure different things and `shortlist.py` must combine them - but *orthogonal*
+was measured at too small an n and is withdrawn.
+
+`stars` vs `s_adj` also weakened, from -0.094 (p 0.007) to **-0.037 (p 0.052),
+no longer significant** - consistent with stars carrying nothing at all.
 `s_adj`'s own top pick had **1 commit** and claimed "Guaranteed profit".
 `src/shortlist.py` combines substance, credibility and fee-correctness.
 
@@ -450,9 +462,9 @@ drift apart"*. Its README independently corroborates this programme's own findin
 *"almost every edge that looked real in-sample decayed out-of-sample."*
 
 **Next:** (1) read the KalshiEX Rulebook â€” the only open item that could change
-the venue answer; (2) **extend credibility past 822** - 1,884 of the shortlist now rank on substance
-alone because `commits` is NULL for them, so `trust_me_bro` is undecided for most
-of the corpus: `python src/fetch_repo.py full 3200`; (3) read further down
+the venue answer; (2) **credibility is now complete** (3,146) - the remaining gap is `closed_issues`,
+left NULL because its search call was 3x the cost of everything else combined and
+no reported result uses it; (3) read further down
 `reports/shortlist.md` - 4 repos read produced 6 defects, every one invisible to
 all computed components.
 
