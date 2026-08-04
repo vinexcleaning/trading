@@ -130,6 +130,61 @@ settle it; this is the highest-value single check on the list.**
 
 ---
 
+## 0b. The cross-platform contradiction, in its purest form
+
+`/r/algotrading/comments/1r92wxr/` · **321 points** · 106 comments
+and the sequel `/r/algotrading/comments/1reh4pa/` · 133 points
+
+This is the thing this whole project was built to find, and it arrived intact.
+
+Someone rebuilt a **400,000-view YouTube trading strategy** rule by rule and
+backtested it properly.
+
+| | the YouTube video | the 16-year rebuild |
+|---|---|---|
+| trades | **100** | **1,700+** |
+| win rate | 56% | **39%** |
+| risk/reward | 1.5 | 1.5 |
+| return | **+40%** | **−23% total, −1.6% annualised** |
+| max drawdown | not shown | **−36%** |
+
+Negative expectancy, negative Sharpe, profit factor below 1.
+
+> **"What's wild is that the exact 100 trades shown in the video do appear in
+> the backtest… but they're just a short lucky stretch inside a much longer
+> downtrend."**
+
+That sentence is the entire thesis of this programme, demonstrated by someone
+else with the receipts. The video was not fabricated. Every trade in it is real.
+**The denominator was 100 and the truth needed 1,700**, and the brief's own
+framing — *"small numbers stated confidently, usually sincerely"* — is exactly
+what happened. The rebuilder says so too: *"I'm not saying the YouTuber was
+lying on purpose."*
+
+### The sequel kills the obvious rescue
+
+The top comment on the first post was *"if it's that consistently bad, why not
+do the exact opposite?"* He tested it: same rules, every signal flipped, same 16
+years, **1,731 trades**.
+
+Win rate jumps to **61%** and the equity curve stops looking like a slide to
+zero. **Expectancy is still −0.01.** He traded a low win rate with good R:R for
+a high win rate with terrible R:R, and:
+
+> **"When you reverse a strategy, you aren't reversing the costs. You're still
+> paying the house."**
+> **"We often assume a losing strategy has a negative edge, but usually it just
+> has no edge at all."**
+
+**Why that belongs in `GUARDS.md`.** This repo's best-supported result is 480
+configurations, 0 profitable, S1 at −9.36¢ against a random-entry control S5 at
+−8.28¢. *"No edge"* and *"negative edge"* look identical on a P&L curve and are
+completely different objects, and the difference is decided by whether the cost
+term explains the gap. That is a one-line check this programme already has the
+data to run and has never framed that way.
+
+---
+
 ## 1. Copy trading: the leak is exit fidelity, not entry latency
 
 `/r/algotrading/comments/1v56b7h/` · 43 points · 24 comments
