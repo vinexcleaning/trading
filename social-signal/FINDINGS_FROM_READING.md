@@ -9,6 +9,127 @@ Sorted by how much it should change what happens next.
 
 ---
 
+## 0. Seven months and 4,604 resolved windows on Polymarket's 5-minute crypto markets
+
+`/r/Polymarket/comments/1un85mg/` · 9 points · 16 comments
+
+**The most directly relevant document found on any platform in this programme,
+and it has 9 points.** Someone tested every angle on Polymarket's 5-minute
+Up/Down crypto markets — ~1.7M candles and **4,604 real resolved windows from
+live-recorded order books** — and published the autopsy. It reaches this repo's
+KXBTC15M structural kill and its ladder-arbitrage null independently, **on the
+other venue**, with denominators on every claim.
+
+It is a MIDDLE-bucket source: it ends with a soft pitch for the author's own
+trading terminal, undisclosed as an interest. The rubric's answer is the right
+one — **keep the method, discount nothing here because there are no profit
+claims to discount, and note the incentive.**
+
+### The results, each with its n
+
+| test | n | result |
+|---|---|---|
+| **Chainlink-vs-Binance lag arbitrage** | 5,826 entries | momentum side resolved **74.8%**; the Poly ask you would pay was **75.3%**. **Gap −0.4pp. Zero fillable lag.** |
+| a "+$456 profit" version of the same signal | — | **a measurement artifact**: ETH carries a structural ~0.12% Binance-to-Chainlink offset, larger than the 0.10% entry gate, so the signal always fired "Up". Corrected → gone. |
+| momentum continuation | 346,094 windows | ~49%, and **it gets worse the bigger the move** — 48.0% at ≥0.10%, **46.5% at ≥0.40%**. Mildly mean-reverting. |
+| sustained-trend continuation | 17,856–168,815 per bucket | **monotonically inverts**: run≥2 48.4% · run≥3 47.6% · run≥4 46.4% · run≥5 46.1% · run≥4 **and** ≥0.8% **44.8%**. |
+| **buy the favoured side at its real ask, hold to resolution** | **4,569 decisions over 4,604 windows** | **every band loses against price+fee**: −4.5pp at 0.50–0.55, −2.1 at 0.55–0.60, −3.7 at 0.60–0.65, **−6.5 at 0.65–0.70**, −1.6 at 0.70–0.80, −3.6 at 0.80–0.95. |
+| "in a bleed, buy the trend side cheap" | 1,262 | **exactly backwards**: 0.00–0.45 wins **30.8%**, 0.70–1.00 wins 84.2%. The price is never a discount; it is the probability, even inside a trend. |
+
+> **"There is no band where paying for direction beats the fee."** The book is
+> calibrated: a side priced 0.65 wins ~60–63%. The strong-favourite band is the
+> *worst*, because by the time a side is bid that high the move is exhausted.
+
+### The exit study, which lands directly on the live bot's martingale
+
+- **58% of eventual *winners* dip to −10% before recovering.** Any stop at a
+  −10%-ish tier kills more winners than losers.
+- Winners' first pullback averaged **~22pp with 97% recovering**; losers'
+  averaged **~38pp with ~32% recovering**. They look identical for the first few
+  seconds, so no stop rule separates them cleanly.
+- **"Break-even arming (move stop to entry after +5%): net negative — the single
+  biggest source of loss in one exit study."**
+
+`STATUS.md`'s 2026-08-03 diagnosis of the live bot's 28 July martingale found
+the same mechanism from the other side: `rearm_above = stop_price + 2` meant a
+2¢ bounce off your own stop re-armed entry, which in a falling market is
+ordinary noise. **An unrelated researcher, different venue, 4,604 windows,
+independently names break-even arming as the largest single loss source.** That
+is the strongest external support any fix in this repo has received.
+
+### Adverse selection, explained mechanically — and it is the ladder-arb null
+
+> *"you rest a bid to buy Up at 0.50. That only gets hit when someone is willing
+> to sell you Up at 0.50 — and a rational seller only does that when Up is
+> becoming less likely … **Being filled is itself bad news.**"*
+
+And the two-legged version, which is precisely why this repo's ladder arbitrage
+was *"unprofitable net"* despite a real gross violation: rest both legs of a
+split as maker, and **they do not fill at the same instant**. The leg in demand
+fills; the leg that is now worthless hangs. *"You just sold the winning leg
+cheap and got left holding the losing leg, naked."* To rescue it you cross the
+spread as a taker and pay the fee you were trying to earn.
+
+**This repo found the null. This post supplies the mechanism.**
+
+### And it lands on the venue recommendation
+
+`signal-github` concluded **Polymarket for maker-only quoting**. This post
+describes what that business actually is at the top of the book, and it is not
+quoting for a spread:
+
+- **split** $1 → 1 Up + 1 Down, **sell both as maker** for ~$1.02. Zero
+  directional opinion, zero taker fee.
+- **buy both and merge** when Up + Down sum below $1.00.
+- **Polymarket's liquidity-rewards programme pays for resting size near mid** —
+  *"a stable, directional-risk-free paycheck that arrives on top of everything
+  else."*
+
+The whales *"are wrong constantly — pages of total losses"*; the losses are a
+cost of inventory for a business earning spread + rebates + merge profit on
+volume. **"Their PnL curve is a straight line up not because they predict well,
+but because they're the casino, not the gambler."**
+
+**Why retail cannot run it, in his words:** the spread income does not cover
+your time at small size, the rewards programme favours size and uptime, and the
+merge windows are taken by bots in milliseconds. Same shape as this repo's
+recurring finding — *a real effect smaller than the cost of reaching it* — and
+it is a **second, independent reason** to be sceptical of maker-only quoting,
+alongside §7's underwriting claim.
+
+### The one thing that showed a pulse, and he refuses to call it a strategy
+
+**Fading** extended moves. After a strong 20-minute run the reversal hits
+**~54–55%**, stable across four years — 2023 53.8%, 2024 51.6%, 2025 54.5%,
+2026 54.6%. As a maker (50% break-even) that is a ~4-point paper edge. He then
+says it wobbled to break-even in 2024, it means buying against the obvious move,
+and **he has not proven it survives real maker fills plus adverse selection**:
+*"Treat it as a hypothesis, not a strategy."*
+
+That is the honesty signal the rubric weights highest, and it is the one number
+in this post worth a real test here.
+
+### ⚠ A conflict with a primary measurement in this repo
+
+He states the Polymarket 5-minute taker fee as
+
+> `fee = shares × 0.072 × price × (1 − price)`, makers zero
+
+— a **quadratic** form, the same shape as Kalshi's `0.07 × C × P × (1−P)`.
+`signal-github`'s correction **C2**, measured from the Gamma API over 2,100
+markets, records Polymarket taker fees as **flat rates of 0.04 / 0.05 / 0.07 by
+category**. Both agree makers pay zero and both agree on roughly 7% somewhere;
+**they disagree about the functional form**, and the functional form is the
+whole reason cheap contracts are penalised differently from coin-flips.
+
+**Not resolved here.** C2 is a primary measurement over 2,100 markets and this
+is one researcher's write-up — but he has 4,604 resolved windows of real book
+data behind his version, and the break-even numbers he quotes (51.8% at 0.50)
+are only consistent with the quadratic. **Re-run `polymarket_fees_census.py` and
+settle it; this is the highest-value single check on the list.**
+
+---
+
 ## 1. Copy trading: the leak is exit fidelity, not entry latency
 
 `/r/algotrading/comments/1v56b7h/` · 43 points · 24 comments

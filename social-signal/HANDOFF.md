@@ -112,6 +112,12 @@ to express.
 has no document at `/` and never did. Recording that as GONE would have been a
 fact about REST conventions.
 
+**`api.binance.com` returns HTTP 451 — unavailable for legal reasons in this
+region.** Not a rate limit and not a bad request: the API is geo-blocked from
+this machine. `crypto/` treats Binance as a data source in places; anything that
+depends on it will fail here for a reason that looks like a network error and
+is not one.
+
 **66 of 104 entities carry no URL at all.** That is a gap in `youtube-signal`'s
 extraction — it records a URL only when one is spoken or shown — and it is
 precisely why the Reddit pass matters: a *name* is searchable even when an
@@ -214,6 +220,40 @@ sample size and a mechanism.
 
 ---
 
+## 5b. What reading found — [`FINDINGS_FROM_READING.md`](FINDINGS_FROM_READING.md)
+
+Committed, permalinks only, no usernames. Eight threads read in full. The four
+that land on this repo's own threads:
+
+1. **Copy trading: the leak may be exit fidelity, not entry latency.** A
+   43-point r/algotrading post from someone who built a Hyperliquid copy bot and
+   opens with *"I am not selling anything"*: *"entry latency is a red herring …
+   simulating zero lag barely moved the numbers. all the leak was on the exit
+   side."* **`wallet-copy-study` and `polymarket-tennis-copy` both model the
+   follower's loss as an entry delay** — `delay_seconds`, follower ROI at
+   +1s/+10s/+60s, and `follow_through.py`'s whole design. Does not reopen the
+   NO-GO; means it may be right for a reason the instrument does not contain.
+   Same post carries **e-values (always-valid sequential tests)** for the
+   repeated-peeking problem Holm-Bonferroni does not fix — a tool this programme
+   does not have, and every recorder here is watched daily. **Worth a GUARDS
+   row.**
+2. **Kalshi tennis series settle on who ADVANCES**, so a walkover pays out with
+   zero play. `kalshi-inplay-bot` and `set1_overshoot` trade
+   `KXATPMATCH`/`KXWTAMATCH` and have no model for that settlement path.
+3. **`archive.pmxt.dev/Polymarket` → HTTP 200**: a free Polymarket historical
+   order-book archive, verified by fetching. `pmxt-dev/pmxt` is 2,055★, alive,
+   and was already the 11th most-starred repo in `signal-github`'s corpus with
+   nothing joined to it. **STATUS's "recorded order books are not re-pullable at
+   any price" is now partly false for that venue.**
+4. **The claim that would reframe maker-only quoting, and it stays unverified.**
+   r/quant on 5 GB of Kalshi NFL data: passive LPs *"aren't neutralizing
+   inventory and capturing spread"* but accumulating directional exposure to
+   settlement — underwriting, not market making. The cited SSRN page returns
+   **403 behind a Cloudflare interstitial**, and this project does not solve bot
+   challenges.
+
+---
+
 ## 6. What is wrong, unfinished or untrusted
 
 1. **The Reddit stance pass is a lexicon, not a read.** `reddit_stance.py`
@@ -225,9 +265,13 @@ sample size and a mechanism.
    bound rather than a holdout; this project starts by claiming nothing.
 2. **`rubric.py` scores are a mechanical proxy.** Same caveat, stated in the
    report header rather than in a footnote.
-3. **The sweep is capped and the cap is stated, not hidden.** Four subreddits
-   hit the 4,000-post cap rather than reaching the 2024-06-01 floor; the
-   coverage table prints each one's oldest post so truncation is visible.
+3. **The sweep is capped and the cap is stated, not hidden.** Eight of ten
+   subreddits hit the 4,000-post cap rather than reaching the 2024-06-01 floor —
+   only r/PredictionMarkets was exhausted. The coverage table prints each
+   subreddit's oldest post, so truncation is visible rather than implied, and
+   the effective window differs per subreddit: about seven months for
+   r/algotrading, six weeks for r/sportsbetting. **Any count compared across
+   subreddits is comparing different time windows.**
 4. **`OpenClaw` matched `daidue/OpenClaw` (0★) by name.** That is very likely a
    different project — OpenClaw is also a well-known game reimplementation.
    Name-matched rows now carry a ⚠ marker, but the row itself has not been

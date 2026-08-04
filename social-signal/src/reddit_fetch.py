@@ -189,9 +189,13 @@ def main():
                      default=0)
         age = (datetime.datetime.fromtimestamp(oldest, datetime.timezone.utc)
                if oldest else None)
-        print(f"  r/{name:<20} {n:>6} posts  oldest "
-              f"{age:%Y-%m-%d}" if age else f"  r/{name:<20} {n:>6} posts",
-              f" {time.time()-t0:.0f}s", flush=True)
+        oldest = f"oldest {age:%Y-%m-%d}" if age else "no posts"
+        # Say so on the line itself. A sweep that stopped at the cap covers a
+        # shorter window than one that reached the floor, and a table of counts
+        # that does not distinguish them invites comparing different periods.
+        capped = "  ← CAPPED, not exhausted" if n >= args.cap else ""
+        print(f"  r/{name:<20} {n:>6} posts  {oldest}  "
+              f"{time.time()-t0:.0f}s{capped}", flush=True)
         logrun(con, "sweep", name, n, time.time() - t0)
 
     if args.dry_run:

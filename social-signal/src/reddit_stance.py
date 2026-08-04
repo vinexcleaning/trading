@@ -82,12 +82,15 @@ TECHNICAL = re.compile(
     r"\bev\b|kelly|break ?even|edge)\b", re.I)
 
 
-def contexts(text: str, needle: str, width: int = 220):
+def contexts(text: str, needle: str, width: int = 220, low: str | None = None):
     """Every window of `text` around `needle`. Windows, not whole comments: a
     900-word thread mentioning a tool once should be scored on the sentence
-    about the tool, not on the mood of the whole post."""
+    about the tool, not on the mood of the whole post.
+
+    `low` is the caller's cached lowercase copy — same length as `text`, so the
+    indices are interchangeable."""
     out = []
-    low = text.lower()
+    low = text.lower() if low is None else low
     n = needle.lower()
     start = 0
     while True:
@@ -112,8 +115,11 @@ def needle_for(display: str) -> str | None:
     if not name:
         return None
     # A multi-word product name is searched on its full string; a one-word one
-    # on the word. Anything under 5 characters is noise in prose.
-    if len(name) < 5:
+    # on the word. Four characters is the floor: `pmxt` is a real 2,055-star
+    # project and dropping it for being short would have lost the single most
+    # discussed tool in the corpus. Anything this short is required to co-occur
+    # with a venue term, below.
+    if len(name) < 4:
         return None
     return name
 
@@ -126,7 +132,13 @@ def main():
     args = ap.parse_args()
 
     con = db.connect()
-    con.execute("DELETE FROM observations WHERE platform='reddit'")
+    # Clear only this pass's own rows. `reddit_discover.py` also writes to
+    # platform='reddit' with stance POSTED_ON_REDDIT, and a blanket delete here
+    # silently destroyed its evidence on every re-run — the kind of ordering
+    # dependency that makes a pipeline give a different answer depending on
+    # which script ran last.
+    con.execute("DELETE FROM observations WHERE platform='reddit' "
+                "AND stance != 'POSTED_ON_REDDIT'")
     con.commit()
 
     ents = con.execute("SELECT * FROM entities").fetchall()
@@ -140,11 +152,15 @@ def main():
     print(f"  corpus: {len(posts)} posts, {len(comments)} comments, "
           f"{len(ents)} entities")
 
-    docs = [("post", p["post_id"], p["subreddit"],
-             f"{p['title']}\n{p['selftext'] or ''}", p["score"],
+    # Lowercase once, not once per entity per document. The naive version is
+    # entities x documents lowercase calls — 100 x 40,000 — and it dominated
+    # the run before the text was cached.
+    docs = [("post", p["post_id"], f"{p['title']}\n{p['selftext'] or ''}",
              p["permalink"]) for p in posts]
-    docs += [("comment", c["comment_id"], "", c["body"] or "", c["score"],
-              c["permalink"]) for c in comments]
+    docs += [("comment", c["comment_id"], c["body"] or "", c["permalink"])
+             for c in comments]
+    docs = [(kind, did, text, (text or "").lower(), permalink)
+            for kind, did, text, permalink in docs if text]
 
     rows = []
     ambiguous_used = []
@@ -152,19 +168,25 @@ def main():
         needle = needle_for(e["display"])
         if not needle:
             continue
-        needs_venue = (len(needle) <= AMBIGUOUS_MAX_LEN
-                       and " " not in needle
-                       and needle in COMMON_WORDS)
+        # Two ways a single-word name is a hypothesis rather than an identity:
+        # it is a dictionary word ("bullpen", "upside"), or it is simply short
+        # enough to appear inside other words and in unrelated prose. Both are
+        # required to co-occur with a venue term in the same window, and the
+        # report says which names needed the crutch.
+        needs_venue = (" " not in needle
+                       and (needle in COMMON_WORDS
+                            or len(needle) < 6)
+                       and len(needle) <= AMBIGUOUS_MAX_LEN)
         if needs_venue:
             ambiguous_used.append(needle)
 
         tally = collections.Counter()
         evidence = {}
         seen_docs = set()
-        for kind, did, sub, text, score, permalink in docs:
-            if not text or needle not in text.lower():
+        for kind, did, text, low, permalink in docs:
+            if needle not in low:
                 continue
-            for ctx in contexts(text, needle):
+            for ctx in contexts(text, needle, low=low):
                 if needs_venue and not VENUE.search(ctx):
                     continue
                 seen_docs.add(did)

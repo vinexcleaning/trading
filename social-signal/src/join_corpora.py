@@ -267,7 +267,10 @@ def load_github(con) -> tuple[int, dict]:
                         f"commits={r['commits']} kind={r['kind']} "
                         f"venue={r['venue_detected']} "
                         f"submits_orders={r['submits_orders']} "
-                        f"pm_client={r['pm_client']} | {note}"),
+                        f"pm_client={r['pm_client']} | {note}"
+                        + ("  ⚠ matched by NAME, not by a URL anyone gave — "
+                           "verify this is the same project before acting on it"
+                           if via == "name" else "")),
                 evidence=(r["description"] or "")[:300])
             if r["trust_me_bro"]:
                 db.add_observation(

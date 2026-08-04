@@ -91,9 +91,9 @@ def main():
     con = db.connect()
     out = os.path.join(db.REPORTS, "T2_rubric_audit.md")
     lines = ["# Auditing the proxy rubric by reading\n",
-             "Four threads picked by **reading the corpus**, not by the "
-             "scorer's own ranking — a scorer validated on cases it selected "
-             "is validating its own taste.\n",
+             f"{len(CASES)} threads picked by **reading the corpus**, not by "
+             "the scorer's own ranking — a scorer validated on cases it "
+             "selected is validating its own taste.\n",
              "**Five read, five defects — including in the one it ranks "
              "highest.** That ratio is the same one both sibling projects "
              "recorded: defects come from reading, not from scoring. The last "
@@ -101,8 +101,8 @@ def main():
              "failures tells you nothing about whether the instrument is "
              "usable, and this one shows it ranks the corpus's best document "
              "top — for partly wrong reasons.\n",
-             "> Nothing here is patched. Adjusting patterns until they fire "
-             "correctly on four examples you happened to read is the "
+             f"> Nothing here is patched. Adjusting patterns until they fire "
+             f"correctly on {len(CASES)} examples you happened to read is the "
              "overfitting this programme exists to catch, and it would swap a "
              "known-bad instrument for an unknown one.\n"]
     found = 0
