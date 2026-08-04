@@ -61,8 +61,10 @@ def main():
 
     con = db.connect()
     docs = []
-    for p in con.execute("SELECT post_id, title, selftext FROM rd_posts"):
+    sub_of = {}
+    for p in con.execute("SELECT post_id, subreddit, title, selftext FROM rd_posts"):
         docs.append((p["post_id"], f"{p['title']}\n{p['selftext'] or ''}"))
+        sub_of[p["post_id"]] = p["subreddit"]
     for c in con.execute("SELECT post_id, body FROM rd_comments"):
         docs.append((c["post_id"], c["body"] or ""))
     print(f"  scanning {len(docs)} documents")
@@ -90,12 +92,19 @@ def main():
     known_hosts = {norm.domain(r["canonical_url"] or "") or ""
                    for r in con.execute("SELECT canonical_url FROM entities")}
 
-    new_repos = [(k, v) for k, v in repo_threads.items()
-                 if len(v) >= args.min_threads and k.lower() not in known_repos]
-    new_hosts = [(k, v) for k, v in host_threads.items()
-                 if len(v) >= args.min_threads and k not in known_hosts]
-    new_repos.sort(key=lambda kv: -len(kv[1]))
-    new_hosts.sort(key=lambda kv: -len(kv[1]))
+    # Everything above the threshold goes in the REPORT; only the ones no
+    # corpus has seen become new entities. Reporting only the new ones made the
+    # file shrink on every re-run — the second pass listed 43 hosts where the
+    # first listed 102, because the first pass had made them known. A report
+    # that is a diff against its own previous run is not a report.
+    all_repos = sorted(((k, v) for k, v in repo_threads.items()
+                        if len(v) >= args.min_threads),
+                       key=lambda kv: -len(kv[1]))
+    all_hosts = sorted(((k, v) for k, v in host_threads.items()
+                        if len(v) >= args.min_threads),
+                       key=lambda kv: -len(kv[1]))
+    new_repos = [(k, v) for k, v in all_repos if k.lower() not in known_repos]
+    new_hosts = [(k, v) for k, v in all_hosts if k not in known_hosts]
 
     added = 0
     for full_name, threads in new_repos[:args.top]:
@@ -133,15 +142,26 @@ def main():
                  "repo nine times produces the same number as nine independent "
                  "recommendations. `reddit_stance.py` reads the windows around "
                  "each mention; this file only says what exists.\n\n")
-        fh.write("## GitHub repos, new to this programme\n\n")
-        fh.write("| repo | threads |\n|---|---|\n")
-        for full_name, threads in new_repos[:args.top]:
+        newr = {k for k, _ in new_repos}
+        newh = {k for k, _ in new_hosts}
+        fh.write("## GitHub repos posted in on-topic threads\n\n")
+        fh.write("`new` = neither sibling corpus had this repo.\n\n")
+        fh.write("| repo | threads | new |\n|---|---|---|\n")
+        for full_name, threads in all_repos[:args.top]:
             fh.write(f"| [{full_name}](https://github.com/{full_name}) | "
-                     f"{len(threads)} |\n")
-        fh.write("\n## Domains, new to this programme\n\n")
-        fh.write("| host | threads |\n|---|---|\n")
-        for host, threads in new_hosts[:args.top]:
-            fh.write(f"| `{host}` | {len(threads)} |\n")
+                     f"{len(threads)} | {'yes' if full_name in newr else ''} |\n")
+        fh.write("\n## Domains linked in on-topic threads\n\n")
+        fh.write("**Read the `subs` column before the `threads` column.** A host "
+                 "in 98 threads that are all one subreddit is that subreddit's "
+                 "own sidebar or daily-thread template, not 98 recommendations. "
+                 "Spread across subreddits is the signal; raw count is not.\n\n")
+        fh.write("| host | threads | subs | where | new |\n|---|---|---|---|---|\n")
+        for host, threads in all_hosts[:args.top]:
+            subs = collections.Counter(sub_of.get(t, "?") for t in threads)
+            flag = " ⚠ single-sub" if len(subs) == 1 and len(threads) >= 10 else ""
+            fh.write(f"| `{host}` | {len(threads)} | {len(subs)}{flag} | "
+                     + ", ".join(f"r/{s}x{n}" for s, n in subs.most_common(3))
+                     + f" | {'yes' if host in newh else ''} |\n")
         fh.write(f"\n## Already known\n\n{len(repo_threads)-len(new_repos)} of "
                  f"{len(repo_threads)} repos and "
                  f"{len(host_threads)-len(new_hosts)} of {len(host_threads)} "

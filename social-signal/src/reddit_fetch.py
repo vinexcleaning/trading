@@ -162,6 +162,10 @@ def main():
                          "that mention a venue term")
     ap.add_argument("--subs", default="",
                     help="comma-separated override of the subreddit list")
+    ap.add_argument("--skip-sweep", action="store_true",
+                    help="the sweep is the expensive half and it is idempotent "
+                         "in the database, not in time — skip it to resume at "
+                         "the probe and comment phases")
     args = ap.parse_args()
 
     floor = datetime.datetime.strptime(args.since, "%Y-%m-%d").replace(
@@ -171,8 +175,9 @@ def main():
     con = db.connect()
     t_start = time.time()
 
-    print(f"SWEEP — {len(subs)} subreddits back to {args.since}")
-    for name, why in subs:
+    print(f"SWEEP — {len(subs)} subreddits back to {args.since}"
+          + (" [SKIPPED]" if args.skip_sweep else ""))
+    for name, why in (() if args.skip_sweep else subs):
         t0 = time.time()
         try:
             if args.dry_run:

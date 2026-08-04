@@ -139,9 +139,28 @@ def now() -> str:
     return datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
 
 
-def connect(path: str = DB) -> sqlite3.Connection:
-    con = sqlite3.connect(path)
+def connect(path: str = DB, timeout: float = 120.0) -> sqlite3.Connection:
+    """One connection, configured to survive a concurrent writer.
+
+    This project runs a long collector in the background while analysis passes
+    run in the foreground, and SQLite's **default busy timeout is 5 seconds**.
+    A 45-minute Reddit collection died with `database is locked` because an
+    analysis pass held a write lock for six seconds — the collector was the
+    long, expensive, irreplaceable job and the cheap one killed it.
+
+    Two changes, both required:
+      * `timeout` raises the busy wait to two minutes, so a writer queues
+        instead of failing.
+      * WAL lets readers proceed while a writer holds the file, which is the
+        normal case here — the analysis passes are overwhelmingly reads.
+    """
+    con = sqlite3.connect(path, timeout=timeout)
     con.row_factory = sqlite3.Row
+    try:
+        con.execute("PRAGMA journal_mode=WAL")
+        con.execute("PRAGMA synchronous=NORMAL")
+    except sqlite3.OperationalError:
+        pass  # a concurrent writer may hold the file; the timeout covers us
     con.executescript(SCHEMA)
     for stmt in MIGRATIONS:
         try:
