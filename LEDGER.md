@@ -33,10 +33,15 @@ K006) and one overstatement (K010) were live in `docs/GO_NO_GO.md` and
 
 ## The directional prior, and it is the single most informative number here
 
-**Across all four projects, ~41 corrections. Every one shrank the edge. Not one
-ever revealed a larger effect.** set1_overshoot logged this explicitly at 28 and
+**Across all projects, 45 corrections. Every one shrank the edge. Not one ever
+revealed a larger effect.** set1_overshoot logged this explicitly at 28 and
 crypto at 25 within their own scopes. That asymmetry is what no-edge looks like
 from the inside; a real edge survives scrutiny and often grows under it.
+
+> This sentence read "~41" until 2026-08-03 and was stale by four. **The Tally
+> table above is the source of truth** — quote the `RETRACTED` row, not this
+> prose, and update both together. `CLAUDE.md` §6 points here for exactly this
+> reason.
 
 ## ⚠ RETRACTED — loudly, first
 

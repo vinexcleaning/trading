@@ -983,3 +983,44 @@ table rests on the proxy.**
 > with `database is locked` after 45 minutes. The 39,629 posts already written
 > survived; the tool probe did not. Fixed at the root — 120-second busy timeout,
 > WAL, and phase flags so a resume does not re-pull what is already there.
+
+---
+
+## CLAUDE.md now holds the standing rules (2026-08-04)
+
+**`CLAUDE.md` is auto-loaded into every Claude Code session in this repo.** The
+rules that previously had to be pasted by hand at the start of each session now
+live there permanently. If you are a session reading this: you have already been
+given them.
+
+Nine sections: how to talk to the user (the mandatory end-of-message block),
+autonomous work mode as the default, doing it yourself vs asking him, how he
+communicates, coordination between parallel sessions, evidence standards, the
+four repos, machines, and repo mechanics.
+
+The three that change session behaviour most:
+
+- **Every message ends with a plain-English block** — what I did / what it means
+  / what I need / next. Under 150 words, no jargon, no acronyms undefined.
+- **Autonomy is the default.** Never ask whether to inspect a file, run tests,
+  fix a clear bug, update docs, commit, or push. Take the conservative option,
+  log it in your folder's `DECISIONS.md`, and keep going. **Do not ask
+  permission to update this file — just update it.**
+- **Verify third-party web UIs before writing click-by-click instructions.**
+  Training data carries outdated Google Cloud / GitHub / Supabase screenshots
+  and has already sent the user to menus that no longer exist.
+
+### Two stale facts fixed while writing it
+
+- **`CLAUDE.md` gave a `C:\Users\gianf\` path** for the youtube-signal knowledge
+  rebuild. That is the **laptop**. Verified: the path does not exist on the
+  desktop, so the documented command has been broken since the machine became
+  primary. Corrected to the desktop venv and both halves confirmed to resolve.
+- **`LEDGER.md`'s "~41 corrections"** prose was stale by four against its own
+  Tally table (**45**). Corrected, and `CLAUDE.md` §6 now points at the Tally as
+  the source of truth rather than freezing a number that goes stale — which it
+  has now done twice.
+
+> The brief for this task said "~47 corrections". The measured figure is **45**
+> retracted (plus 6 broken). Flagged rather than silently adopted, since §6 is
+> the section about not repeating numbers from memory.
