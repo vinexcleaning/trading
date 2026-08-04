@@ -1,0 +1,9 @@
+# This project records judgments about named real people (Reddit accounts,
+# Discord members, YouTube creators). The repo is PUBLIC. Nothing that names
+# an individual is ever tracked.
+data/
+reports/
+KNOWLEDGE.md
+SOCIAL_KNOWLEDGE.md
+.venv/
+cache/
