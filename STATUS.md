@@ -31,7 +31,7 @@ New ideas go in [INBOX.md](INBOX.md) first, before deciding where they belong.
 | ~~Live bot position-sizing bug~~ | **DIAGNOSED AND FIXED 08-03.** Not a sizing bug â€” a martingale. See below. | ~~Decide whether it trades at all~~ **DECIDED 08-03: it does not. Trading is OFF** â€” see "Live bot turned off" below. |
 | **Score-staleness (already fixed)** | `fetched_at` was stamped at cache read, so the 30 s guard never rejected anything. | Nothing to fix â€” but **no live entry result predating the fix is a valid test of the entry logic.** Treat the 4-for-10 as void. |
 | **Label coverage (tennis)** | Blocked. Apify at a monthly hard limit; Flashscore's `dayOffsets` is âˆ’7..+7 against a âˆ’68 need. | Restore quota, then label day-by-day via `crawlstone/tennis-scraper` or `tennisexplorer` (~$20, not $3.44). Only path above 13.9% coverage. |
-| **youtube-signal** | **UNBLOCKED and productive. 35 videos read, $0.00 spent, 0 API units.** The old "buy $5 of API credit" blocker was wrong â€” transcripts are read in-session. Two corpora: broad (746 videos, 370 PASS, 29 read) and a **targeted Kalshi/Polymarket one** (470 videos, 328 PASS, 6 read, 98 claims). Six actionable findings so far incl. the three-number check, itemised fees, 8 backtest-realism rules, and the `filtfilt` look-ahead trap. See `youtube-signal/HANDOFF.md`. | **Read more of the targeted corpus.** `$env:SIGNAL_DB="kalshi_edge"` then `src/target_rank.py`. The broad corpus's retrieval test is still NOT DEMONSTRATED and is secondary to the practical hunt. |
+| **youtube-signal** | **UNBLOCKED and productive. 38 videos read, $0.00 spent, 0 API units.** The old "buy $5 of API credit" blocker was wrong â€” transcripts are read in-session. Two corpora: broad (746 videos, 370 PASS, 29 read) and a **targeted Kalshi/Polymarket one** (470 videos, 328 PASS, **9 read, 134 claims, 25 tools**). **Nine actionable findings** incl. the three-number check, itemised fees on both venues, 8 backtest-realism rules, the `filtfilt` look-ahead trap, and an adverse-selection result that **contradicts our own maker thesis**. See the dated section below. | **Read more of the targeted corpus.** `$env:SIGNAL_DB="kalshi_edge"` then `src/target_rank.py`. The broad corpus's retrieval test is still NOT DEMONSTRATED and is secondary to the practical hunt. |
 | **signal-github** | **Working, not blocked.** 4,017 retrieved / 3,252 gated / **2,260 scored (69.5%) for ZERO core API calls** via codeload tarballs; 822 credibility; 4 read. Token in signal-github/.env -> 5,000/hr + code search (916 repos no other axis found). Callable as **/github-signal**. Stars settled: rho -0.007 p 0.73 at n=2,260 - the earlier +0.241 correction was itself the error. 	rust_me_bro 22.2% and **uncorrelated with substance**. Fees now primary-sourced on both venues (C1/C1a/C2). | **Read the KalshiEX Rulebook** - the member agreement is silent on automation and says the Rulebook governs, so it is the only open item that could change the venue answer. It defeats HTTP and a real browser. |
 
 ---
@@ -183,7 +183,7 @@ Judgments and transcripts stay local â€” `reports/` and `KNOWLEDGE.md` giti
 
 ## youtube-signal â€” targeted Kalshi/Polymarket hunt (2026-08-04)
 
-**35 videos read total. Cost $0.00. YouTube API quota 0 units.** Full detail in
+**38 videos read total. Cost $0.00. YouTube API quota 0 units.** Full detail in
 [youtube-signal/HANDOFF.md](youtube-signal/HANDOFF.md).
 
 Two corpora, deliberately separate (`$env:SIGNAL_DB` selects one):
@@ -193,7 +193,7 @@ Two corpora, deliberately separate (`$env:SIGNAL_DB` selects one):
 | queries | 28 | **27**, in build / strategy / data / validate |
 | videos â†’ PASS | 746 â†’ 370 (50%) | **470 â†’ 328 (70%)** |
 | within-family Jaccard | 0.69â€“0.76 | **0.86â€“0.92** |
-| read | 29 | 6 |
+| read | 29 | 9 |
 
 **Narrow venue-specific queries are both more on-topic and more reproducible.**
 Worth reusing for any future topic.
@@ -256,6 +256,49 @@ most of it itself:** 95% of profits go to bots; you get a 60-second window; the
 Also flagged: its "conservative" projection of $2,500 â†’ $40,000/month is a
 **1,500% monthly return**, and the 96.83% subset's own n is never stated (only
 the 12,272 total; the qualifying subset is plausibly ~1,500).
+
+**7. Polymarket's fee curve and maker rebates, at API level** (`7HXoCMMXr-8`).
+Fees exist **only on 15-minute crypto markets**; everything else is free. The
+taker fee runs 0 → **1.56% and PEAKS AT 50¢** — the same expected-earnings shape
+as Kalshi, independently confirmed. Taker fees fund a **daily USDC maker rebate**
+paid pro-rata on executed maker liquidity. The maker share **fell from 100% to
+20%** in January 2026, so Polymarket keeps 80%. A public wallet (88888) earned
+~$2,000 in rebates and **stopped trading the week fees landed**.
+
+> **API gotcha:** calling the REST endpoint directly requires the **fee rate
+> inside the signed order** (official clients handle it). Per-market rates arrive
+> in the market JSON. Undocumented: how long an order must rest to count as
+> maker, and what the fee curve's `C` parameter is.
+
+**8. Why informed retail still loses** (`LQ3-k8gKw74`, 24 views). Three traps —
+confidence (you were right, but the price moved 68→76 before you entered),
+urgency (**up to 25% of volume is wash trading**, per Columbia), belonging
+(copying a wallet inherits the position but not the entry, context or exit plan).
+Cited: LBS study of 1.72M accounts finding **only 3% drive price discovery**;
+$40M in *guaranteed* arbitrage extracted across 86M transactions 2023–25.
+Its one-sentence test: *does the current price reflect a genuine inefficiency,
+and do I have a specific falsifiable reason to think the true probability differs?*
+
+**9. ⚠ A 20-year professional contradicts our own maker thesis** (`rrKRhjye1sw`).
+**"If you're new, be a market TAKER, not a market maker."** Adverse selection:
+your resting offer is taken *only* when it's good for the other side. Worked
+example — post 40¢ into a 50/50 game; if your team makes a big play nobody takes
+it, if they concede you **get filled at a now-terrible price**. You are filled
+only in the states where you were wrong.
+
+> **This is the most important tension found so far.** `signal-github` concluded
+> maker-only quoting is "the one strategy whose income is not required to
+> overcome a fee first" — reasoning purely from **fee schedules**. Both are right:
+> **maker economics win on fees and lose on adverse selection, a cost that
+> appears nowhere in a fee model.** That is the missing term, and it is exactly
+> why `poly-maker` ships no backtest — maker realism needs L3/MBO data that
+> doesn't exist publicly.
+
+Also note #9 disagrees with #1 on *where* the edge is: #1 hunts low-liquidity
+niche props (nobody watching), #9 says the better prices are on **high-liquidity
+marquee events** where recreational flow dilutes the institutional makers. Two
+different edges — and the liquidity ceiling that kills the first doesn't bind the
+second.
 
 ### Two independent corroborations of this repo's own results
 
@@ -751,6 +794,7 @@ and LEDGER S025.
 > a clean fake result), and tennis series must be matched by **prefix, not
 > substring** (`WTAX` "Wealth tax" and `KXLOWTAUS` "Lowest temperature in
 > Austin" both contain `WTA` â€” T017 is a retraction caused by exactly that).
+
 
 
 
