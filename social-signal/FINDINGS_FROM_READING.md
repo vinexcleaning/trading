@@ -436,6 +436,36 @@ this programme has for that thread.
 
 ---
 
+## 8b. Multi-leg fill drag, quantified — 180 round trips, 45,000 spread observations
+
+`/r/algotrading/comments/1rvk302/` · 26 points
+
+Someone logged, for every order, their own model's theoretical mid, the NBBO mid
+at submission, and the actual fill. 90 days, ~180 round trips, ~45,000 bid-ask
+width observations. The gap between fill and theoretical mid, **by number of
+legs**:
+
+| structure | legs | fill vs theoretical mid |
+|---|---|---|
+| single | 1 | **2–4%** |
+| vertical | 2 | **8–12%** |
+| iron condor | 4 | **15–22%** |
+
+> *"Four legs, four independent fictions stacked together."*
+
+That drag **was the entire gap** between their backtested and realised returns —
+they had spent weeks tuning the model looking for it.
+
+`youtube-signal`'s corpus already carries the qualitative version — *multi-leg
+partial fills turn a risk-neutral position directional*. This is the same
+statement with a denominator, and it is superlinear in leg count. It is directly
+relevant to any two-legged prediction-market structure: the split-sell in §0, the
+Kalshi↔Polymarket synthetic arbitrage in §3, and this repo's own bucket-sum
+ladder check, which found **1 gross violation in 1,135 scans and unprofitable
+net.**
+
+---
+
 ## 9. On the Kalshi automation question — weak evidence, honestly labelled
 
 `signal-github`'s single open item is the **KalshiEX Rulebook**: the member

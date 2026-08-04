@@ -106,7 +106,8 @@ STANCES_AGAINST = {"ARCHIVED", "STALE", "GONE", "TRUST_ME_BRO", "CRITICISED",
 # scores any of these as evidence is lying.
 STANCES_NEUTRAL = {"UNUSED", "QUIET", "BLOCKED", "THIN", "UNKNOWN",
                    "API_ROOT_404", "ALIVE_UNKNOWN", "MENTIONED",
-                   "POSTED_ON_REDDIT", "NO_FOOTPRINT", "VENDOR_TALK"}
+                   "POSTED_ON_REDDIT", "NO_FOOTPRINT", "VENDOR_TALK",
+                   "TLS_UNVERIFIED"}
 
 
 # --------------------------------------------------------------------------

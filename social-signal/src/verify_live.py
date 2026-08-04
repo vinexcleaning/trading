@@ -171,12 +171,25 @@ def check_site(url: str):
 
     r = fetch(url, accept="text/html,application/xhtml+xml")
     s = r["status"]
+    err = r["err"] or ""
     if s == 0:
         # DNS failure is the strongest death signal available: the domain does
         # not resolve at all.
-        if "getaddrinfo" in (r["err"] or ""):
-            return "GONE", f"domain does not resolve ({r['err'][:80]})"
-        return "GONE", f"no response: {r['err'][:120]}"
+        if "getaddrinfo" in err:
+            return "GONE", f"domain does not resolve ({err[:80]})"
+        # A TLS failure needs splitting, because the two halves are facts about
+        # different machines. "unable to get local issuer certificate" is this
+        # box's trust store; reporting cnn.com as GONE on that basis would be a
+        # measurement of our own CA bundle. "certificate has expired" is the
+        # site's own certificate and is a real signal about the site.
+        if "CERTIFICATE_VERIFY_FAILED" in err:
+            if "expired" in err:
+                return "BROKEN", "the site's TLS certificate has expired"
+            return "TLS_UNVERIFIED", (
+                "TLS verification failed for a reason that is about THIS "
+                "machine's certificate store, not the site — not evidence of "
+                "anything about the tool")
+        return "GONE", f"no response: {err[:120]}"
     if s in (404, 410):
         if api_root:
             return "API_ROOT_404", (f"HTTP {s} at the API root — normal for a "
