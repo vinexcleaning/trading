@@ -97,8 +97,24 @@ BANNED_NEEDLES = {
 STANCES_ADVOCACY = {"PROMOTED_WITH_INCENTIVE", "RECOMMENDED"}
 STANCES_CORROBORATION = {"BUILT_WITH", "ALIVE", "LIVE", "CORROBORATED",
                          "NEUTRAL_USE"}
-STANCES_AGAINST = {"ARCHIVED", "STALE", "GONE", "TRUST_ME_BRO", "CRITICISED",
+STANCES_AGAINST = {"ARCHIVED", "STALE", "GONE", "CRITICISED",
                    "SCAM_ALLEGED", "BROKEN", "PARKED", "MIXED_REPUTATION"}
+
+# `TRUST_ME_BRO` was in the set above and is not any more.
+#
+# It fires on "a results claim in the README with <10 commits and no artifact
+# behind it". `signal-github` first measured it as **uncorrelated** with
+# substance at n=822 (rho +0.029, p 0.41) and then, at n=2,717, as **weakly
+# POSITIVE and significant** (rho +0.064, p 0.0009) — flagged repos score
+# slightly *higher*, median s_adj +0.19 against −0.20. Their reading: making a
+# results claim at all requires having built something.
+#
+# So it never belonged in a set called AGAINST. It is an **honesty** signal, and
+# the rubric this project ported is explicit that S and H are never averaged —
+# *discount the results, not the tooling*. A repo that overclaims may still be
+# the best code available. It now discounts a tool's claims without condemning
+# the tool, which is what `ABSORB_RESULTS_DISCOUNTED` does on the video side.
+STANCES_DISCOUNT_CLAIMS = {"TRUST_ME_BRO"}
 # Neither. UNUSED means a needle found nothing, which for a hosted service is
 # expected and says nothing; QUIET, BLOCKED, THIN, UNKNOWN and API_ROOT_404 are
 # all "we could not tell"; POSTED_ON_REDDIT is a count, and a vendor posting
@@ -517,6 +533,8 @@ def decide(con):
         incentive = any("own=undisclosed" in (o["detail"] or "") or
                         "referral=1" in (o["detail"] or "") for o in obs)
 
+        discounted = [o for o in obs_v if o["stance"] in STANCES_DISCOUNT_CLAIMS]
+
         if e["key"] in NOT_SOFTWARE_KEYS:
             v, why = "NOT_SOFTWARE", NOT_SOFTWARE_KEYS[e["key"]]
         elif advocacy and against:
@@ -534,6 +552,12 @@ def decide(con):
         else:
             v, why = "SINGLE_SOURCE", "+".join(sorted(plats)) or "none"
 
+        if discounted and v not in ("NOT_SOFTWARE", "CONTRADICTION",
+                                    "AGREE_NEGATIVE"):
+            why += ("; results claims discounted — a README results claim with "
+                    "<10 commits and no artifact. Discounts the CLAIMS, not "
+                    "the tool: signal-github measured the flag as weakly "
+                    "POSITIVELY correlated with substance at n=2,717")
         con.execute(
             """INSERT INTO verdicts (entity_id, verdict, n_platforms, promo_score,
                                      critic_score, reason, decided_utc)

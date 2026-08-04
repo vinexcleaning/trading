@@ -1053,3 +1053,29 @@ and records it as `NAMED_AS_VICTIM` rather than dropping it. MetaMask →
 AGREE_POSITIVE; predictionhunt.com survived. **Six lexicon defects are now
 documented and every one was found by reading — two of them by reading the
 survivors of the previous fix.** That is why no precision number is claimed.
+
+### ⚠ Cross-session correction: `trust_me_bro` moved my verdicts (2026-08-04)
+
+`social-signal`'s reputation table treated `signal-github`'s **`trust_me_bro`**
+flag as evidence **against** a tool, built on that project's n=822 reading that
+it was *uncorrelated* with substance (rho +0.029, p 0.41).
+
+**That session has since overturned its own number at n=2,717: rho +0.064,
+p 0.0009 — weakly POSITIVE**, flagged repos median `s_adj` +0.19 against
+−0.20.
+
+**I trust theirs**, on the same instrument at 3.3× the sample and with an
+explicable direction — making a results claim at all requires having built
+something. So the flag never belonged in a set called AGAINST. It fires on *"a
+results claim with <10 commits and no artifact"*, which is an **honesty** signal,
+and the ported rubric is explicit that S and H are never averaged: **discount the
+results, not the tooling.**
+
+`TRUST_ME_BRO` now discounts a tool's **claims** without condemning the tool.
+**AGREE_NEGATIVE 11 → 8**: `OpenPoly`, `polymarket-hft-engine`,
+`prediction-market-arbitrage-bot`, `lmsr-pricing-engine` and `QuantConnect` were
+negative on that flag alone and are not any more.
+`polymarket-market-maker` stayed negative — its negative is an archived v1
+CLOB client, independent of the flag.
+
+Recorded as `social-signal/DECISIONS.md` **D12**.

@@ -150,6 +150,45 @@ alternative exists that pays that cost differently.
 > than anything built here. Its X and TikTok legs need keys or cookies; its
 > Reddit leg scrapes.
 
+## D12 — `TRUST_ME_BRO` no longer counts as evidence AGAINST a tool
+**2026-08-04**, forced by a sibling session's measurement, not by mine.
+
+`signal-github` first measured the flag as **uncorrelated** with substance
+(rho +0.029, p 0.41, n=822) — the number this project built on. At **n=2,717**
+they measured it as **weakly POSITIVE and significant**: rho +0.064, p 0.0009,
+flagged repos median `s_adj` **+0.19 against −0.20**. Their reading, which is
+right: making a results claim at all requires having built something.
+
+**So it never belonged in a set called AGAINST.** It fires on "a results claim
+in the README with <10 commits and no artifact" — that is an **honesty** signal,
+and the rubric this project ported is explicit that S and H are never averaged:
+*discount the results, not the tooling*. A repo that overclaims may still be the
+best code available.
+
+`TRUST_ME_BRO` now discounts a tool's **claims** without condemning the tool,
+which is exactly what `ABSORB_RESULTS_DISCOUNTED` does on the video side.
+**Effect: AGREE_NEGATIVE 11 → 8.** `OpenPoly`, `polymarket-hft-engine`,
+`prediction-market-arbitrage-bot`, `lmsr-pricing-engine` and `QuantConnect` were
+negative on that flag **alone** and are not any more.
+`polymarket-market-maker` stayed negative, correctly — its negative is an
+archived v1 CLOB client, independent of the flag.
+
+**Which measurement is trusted and why:** theirs, at n=2,717 over mine at n=822,
+because it is the same instrument on 3.3× the sample and the direction is
+explicable rather than merely different.
+
+## D13 — The unanswered adopt-or-keep question resolved conservatively
+**2026-08-04.** The user was asked to choose between keeping this
+rules-compliant collector, switching to `last30days-skill` (57,240★, which
+scrapes reddit.com), or installing it for a side-by-side comparison. The answer
+was "resume autonomously" rather than a choice.
+
+**Conservative option taken, per `CLAUDE.md` §2:** keep the archive-based
+collector. Adopting a tool whose Reddit leg scrapes a site whose `robots.txt`
+says `Disallow: /` is a decision with an outside-facing consequence, and it is
+not mine to take by default. The comparison remains available and the question
+stays open in `HANDOFF.md`.
+
 ---
 
 ## Open audit items
