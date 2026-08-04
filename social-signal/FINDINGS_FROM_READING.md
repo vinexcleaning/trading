@@ -436,6 +436,31 @@ this programme has for that thread.
 
 ---
 
+## 9. On the Kalshi automation question — weak evidence, honestly labelled
+
+`signal-github`'s single open item is the **KalshiEX Rulebook**: the member
+agreement is silent on automation and says the Rulebook governs, and the
+Rulebook defeats HTTP and a real browser. Reddit cannot answer that, and this
+section exists to say what it *can* answer and how little that is worth.
+
+Searching the whole corpus for Kalshi plus automation, bots, bans and API keys
+returns **no report of anyone being restricted for running a bot**, alongside
+openly published Kalshi automation — a **281-point r/algotrading post shipping
+the source of a Kalshi↔Polymarket arbitrage bot**, an r/Kalshi thread
+recommending a free open-source native client you plug your own API key into,
+and a general "best API stack" thread naming Kalshi's V2 API for *"automated
+prediction market bets"*.
+
+**That is evidence about enforcement, not about permission**, and it is the weak
+kind: absence of complaints in a sample that was never designed to find them.
+It does not move the Rulebook question at all. Recorded so the next session does
+not re-run the same search hoping for more.
+
+Two account-level restrictions **were** found (§4) and neither mentions
+automation.
+
+---
+
 ## What this section is not
 
 None of the above has been verified against an exchange, a chain or a
