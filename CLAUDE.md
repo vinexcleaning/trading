@@ -14,6 +14,8 @@ other tasks.
 **End EVERY message with this block. Under 150 words total.**
 
 ```
+SYNC a3f9c21 · pushed · STATUS.md updated · 2026-08-04 14:32
+
 WHAT I JUST DID — two sentences, plain English, no jargon
 WHAT IT MEANS — did this help, hurt, or change nothing? If a number matters,
   say whether bigger is better and what it would have to be to be worth acting on
@@ -21,6 +23,47 @@ WHAT I NEED FROM YOU — "nothing, continuing", or a specific decision written a
   a question with the options spelled out
 NEXT — one line
 ```
+
+### The sync marker
+
+The block **opens with a sync marker**, in exactly that format. **If you did no
+work this turn, still emit it** with the current `HEAD`.
+
+**Field 1 — the short commit hash of the repo's current `HEAD`:**
+
+```bash
+git rev-parse --short HEAD
+```
+
+**Run the command. Never invent the hash** — the whole point is that he can
+verify it against GitHub.
+
+**Field 2 — the state of your work. Four valid values; pick the honest one:**
+
+| Value | Meaning |
+|---|---|
+| `pushed` | everything you did this turn is committed **and on the remote** |
+| `local only` | you committed and **deliberately** did not push. Say why in one clause — `local only (untested, want a run first)` |
+| `uncommitted` | work in progress, not yet committed. Say why briefly |
+| `push failed` | you tried and it did not land. Give the reason |
+
+**Deciding NOT to push is a legitimate call and is often the right one. Never
+push work you are not confident in just to satisfy this rule.** The marker
+exists to report the truth, not to force a push.
+
+**Field 3 — whether `STATUS.md` was updated.** One of:
+
+- `STATUS.md updated`
+- `STATUS.md unchanged (no material change)`
+- `STATUS.md pending (holding until X verifies)`
+
+**Field 4 — the date and time**, `YYYY-MM-DD HH:MM`.
+
+**Why this exists.** He coordinates several sessions through a **separate chat
+that reads this repo from GitHub over the web**. That chat can **only see pushed
+work**. When your marker says anything other than `pushed`, he knows the
+coordinating chat is looking at an older state — which is fine, as long as
+everyone knows it. **Silence about it is the problem, not the unpushed work.**
 
 Rules for the block:
 
