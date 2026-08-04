@@ -842,12 +842,13 @@ Reddit research archive that replaced Pushshift for non-moderators — `robots.t
 
 ### What was built
 
-**231 entities · 924 observations · 39,629 Reddit posts · 6,077 comments ·
-3,165 whole-repo source archives scanned in 50 s · 166 URLs fetched · 13 threads
+**240 entities · 946 observations · 39,629 Reddit posts · 12,846 comments
+across 538 threads ·
+3,165 whole-repo source archives scanned in 50 s · 176 URLs fetched · 13 threads
 read in full.**
 
-Verdicts: **10 CONTRADICTION · 11 AGREE_NEGATIVE · 12 advocated-with-an-
-incentive-and-corroborated-by-nobody** · 16 single-source · 162 agree-positive.
+Verdicts: **12 CONTRADICTION · 11 AGREE_NEGATIVE · 12 advocated-with-an-
+incentive-and-corroborated-by-nobody** · 15 single-source · 170 agree-positive.
 `ADVOCACY` is kept separate from `CORROBORATION`, so a stale repo somebody
 mentioned in passing is a stale repo, not a contradiction.
 
@@ -865,7 +866,7 @@ mentioned in passing is a stale repo, not a contradiction.
 `thebetterers.com`, promoted with a *disclosed* referral link by a video scoring
 **S=10**, no longer resolves. **`api.binance.com` returns HTTP 451, geo-blocked
 from this machine** — `crypto/` treats it as a data source and will fail here for
-a reason that looks like a network error and is not one. And **65 of 231
+a reason that looks like a network error and is not one. And **64 of 240
 entities carry no URL at all**, which is a gap in `youtube-signal`'s extraction,
 not a judgement about the tools.
 
@@ -1024,3 +1025,19 @@ The three that change session behaviour most:
 > The brief for this task said "~47 corrections". The measured figure is **45**
 > retracted (plus 6 broken). Flagged rather than silently adopted, since §6 is
 > the section about not repeating numbers from memory.
+
+**Added after the section above was written:** comment collection was resumed
+and finished clean — 400 threads, 401 calls, **0 errors, one HTTP 422**, 21.5
+minutes — doubling the comment corpus. Two entities turned CONTRADICTION on the
+new comments and reading them split the pair cleanly. **`predictionhunt.com` is
+real**: 8 scam-flavoured windows out of 17, specific and consistent, on a site
+that still returns HTTP 200 — recorded as users' allegations, not adjudicated
+fact, and it is the one finding here that could stop money being lost this week.
+**MetaMask was a false positive of a new kind**: its three windows read *"steal
+**from the linked** metamask account"* and *"the remaining $1k usdt **in my**
+MetaMask to get stolen"* — the accusation is against a third-party site and the
+wallet is the **victim**. `victim_not_perpetrator()` now suppresses that shape
+and records it as `NAMED_AS_VICTIM` rather than dropping it. MetaMask →
+AGREE_POSITIVE; predictionhunt.com survived. **Six lexicon defects are now
+documented and every one was found by reading — two of them by reading the
+survivors of the previous fix.** That is why no precision number is claimed.
