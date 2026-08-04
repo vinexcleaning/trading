@@ -31,7 +31,7 @@ New ideas go in [INBOX.md](INBOX.md) first, before deciding where they belong.
 | ~~Live bot position-sizing bug~~ | **DIAGNOSED AND FIXED 08-03.** Not a sizing bug — a martingale. See below. | ~~Decide whether it trades at all~~ **DECIDED 08-03: it does not. Trading is OFF** — see "Live bot turned off" below. |
 | **Score-staleness (already fixed)** | `fetched_at` was stamped at cache read, so the 30 s guard never rejected anything. | Nothing to fix — but **no live entry result predating the fix is a valid test of the entry logic.** Treat the 4-for-10 as void. |
 | **Label coverage (tennis)** | Blocked. Apify at a monthly hard limit; Flashscore's `dayOffsets` is −7..+7 against a −68 need. | Restore quota, then label day-by-day via `crawlstone/tennis-scraper` or `tennisexplorer` (~$20, not $3.44). Only path above 13.9% coverage. |
-| **youtube-signal** | **Phase 2 BLOCKED at Step 0: no `ANTHROPIC_API_KEY`, so the LLM read never ran and no S or H component has ever fired.** All LLM-free work done: corpus 718 gated / 369 passing / 683 transcripts cached, G3 retuned to recall 1.000, F3 cut, F2B's 12 new insider terms added (88.5% exclusive, Jaccard 0.041 vs F2), 60-video read set selected, Wilson n-check verified. Retrieval win (F1∩F2 Jaccard 0.037, 2.25× low-view yield) is **still not cashed out** — different videos, not yet demonstrably better ones. | **Buy $5 of Anthropic API credit, add the key, run the read on 2 videos.** Measured cost for all 60 is $3.64 on Sonnet. Everything else waits on this one input. |
+| **youtube-signal** | **UNBLOCKED and productive. 33 videos read, $0.00 spent, 0 API units.** The old "buy $5 of API credit" blocker was wrong — transcripts are read in-session. Two corpora now: the broad one (746 videos, 370 PASS, 29 read) and a **targeted Kalshi/Polymarket one** (470 videos, 328 PASS, 4 read). See `youtube-signal/HANDOFF.md`. | **Read more of the targeted corpus.** `$env:SIGNAL_DB="kalshi_edge"` then `src/target_rank.py`. The broad corpus's retrieval test is still NOT DEMONSTRATED and is secondary to the practical hunt. |
 | **signal-github** | **Working, not blocked.** 4,017 retrieved / 3,252 gated / **2,260 scored (69.5%) for ZERO core API calls** via codeload tarballs; 822 credibility; 4 read. Token in signal-github/.env -> 5,000/hr + code search (916 repos no other axis found). Callable as **/github-signal**. Stars settled: rho -0.007 p 0.73 at n=2,260 - the earlier +0.241 correction was itself the error. 	rust_me_bro 22.2% and **uncorrelated with substance**. Fees now primary-sourced on both venues (C1/C1a/C2). | **Read the KalshiEX Rulebook** - the member agreement is silent on automation and says the Rulebook governs, so it is the only open item that could change the venue answer. It defeats HTTP and a real browser. |
 
 ---
@@ -178,6 +178,70 @@ Code committed: `load_extraction.py` tools-upsert fix (`ON CONFLICT` targeted
 `(name, url)` while the unique index is on `(name, COALESCE(url,''))` — trap #4
 `NULL != NULL` surviving in a second place); `tool_reputation.py` +7 verdicts.
 Judgments and transcripts stay local — `reports/` and `KNOWLEDGE.md` gitignored.
+
+---
+
+## youtube-signal — targeted Kalshi/Polymarket hunt (2026-08-04)
+
+**33 videos read total. Cost $0.00. YouTube API quota 0 units.** Full detail in
+[youtube-signal/HANDOFF.md](youtube-signal/HANDOFF.md).
+
+Two corpora, deliberately separate (`$env:SIGNAL_DB` selects one):
+
+| | broad | **targeted (`kalshi_edge`)** |
+|---|---|---|
+| queries | 28 | **27**, in build / strategy / data / validate |
+| videos → PASS | 746 → 370 (50%) | **470 → 328 (70%)** |
+| within-family Jaccard | 0.69–0.76 | **0.86–0.92** |
+| read | 29 | 4 |
+
+**Narrow venue-specific queries are both more on-topic and more reproducible.**
+Worth reusing for any future topic.
+
+### The four things worth acting on
+
+**1. The three-number check** (`ANGZMUercB4`, 343 views). `edge = fair
+probability − price − cost`, where fair probability is the **de-vigged sharp
+sportsbook consensus**, not your own model. Trade only on clearly positive edge.
+Corollary: *agreeing with the market is a losing strategy* — you pay the spread
+for fair odds.
+
+**2. The fee schedule, itemised** (`eVJHCsZIGg0`, 43 views). Kalshi ≈ **7% of net
+winnings** on resolution, tier dependent. Polymarket **taker fee by category:
+sports 0.75%, politics 1%, crypto 1.8%, geopolitics 0%** — on winnings, not
+stake. Plus Polygon gas, plus the spread. Prediction-market YES+NO sums to 100
+(no vig) against a sportsbook's ~104.7%.
+
+**3. Backtest realism, 8 rules** (`Ea9BeOc_Yiw`, 144 views) — the single most
+useful build finding. Fill model (taker at ask, maker only when ask crosses),
+fees in-engine, **no forward-looking**, **latency 50–150 ms random plus 200 ms on
+taker fills**, book-depth check before entry, plot every fill to verify visually.
+Its headline: **"without latency, most strategies are profitable."** Data source
+named: tick-by-tick Polymarket 5m/15m BTC/ETH — top-of-book ~5 GB per 3–4 months,
+full book ~150 GB.
+
+**4. A validation framework** (`Jd0BHJflnw0`, 53 views). Research ledger written
+*before* any price; three trials (timestamp / common-cause / executability);
+**monotonicity constraint** — P(touch 120k) ≤ P(touch 110k), a violation is an
+inconsistency but not automatically profit. Stress test by **deleting the top
+five trades**. Multi-leg partial fills turn a risk-neutral position directional.
+
+### Two independent corroborations of this repo's own results
+
+- The monotonicity check is **exactly** the ladder-arbitrage test already run
+  here (0 violations in 3,187 scans; 1 gross bucket-sum violation, unprofitable
+  net). An unrelated source reaches the same caveat: inconsistency ≠ profit,
+  because of spread and depth.
+- Fees hurt **cheap** contracts disproportionately — the bar moved ~2% on a 69¢
+  contract and **~6% on an 18¢** one. Same structure as the KXBTC15M fee-curve
+  finding and the tennis 3.61pp cost bar, reached from the ticket side.
+
+### The recurring shape, again
+
+The Kalshi strategy video's own author discloses that his demonstrated mispriced
+prop had **~$60 of liquidity**. The edge is real *because* nobody is looking,
+which is precisely why nobody can size into it. Same shape as the copy-trading
+and tennis threads: **a real effect smaller than the cost of reaching it.**
 
 ---
 

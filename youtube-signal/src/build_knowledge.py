@@ -12,6 +12,7 @@ would destroy.
 
 import datetime as dt
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -20,7 +21,28 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import db_phase2  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
-TODAY = dt.date(2026, 8, 3)
+TODAY = dt.date.today()
+
+
+def out_path():
+    """One knowledge file per corpus.
+
+    This function exists because its absence destroyed data. build_knowledge.py
+    wrote to a fixed KNOWLEDGE.md while db.py had already gained a per-corpus
+    DB_PATH, so running it with SIGNAL_DB set silently overwrote the 189,545-char
+    main knowledge base with a 31,687-char targeted one. Regenerable, so nothing
+    was permanently lost -- but it is the sixth bug in this project of exactly
+    the same shape: one half of a pair was made configurable and the other half
+    was not.
+
+    Whenever a path becomes per-corpus, EVERY writer of that path must follow in
+    the same change.
+    """
+    corpus = os.environ.get("SIGNAL_DB")
+    if not corpus:
+        return ROOT / "KNOWLEDGE.md"
+    stem = Path(corpus).stem.replace("signal_", "") if corpus.endswith(".db") else corpus
+    return ROOT / f"KNOWLEDGE_{stem}.md"
 
 
 def fmt_date(upload_date):
@@ -235,7 +257,7 @@ def main():
                  f"[{r['title']}](https://www.youtube.com/watch?v={r['video_id']}) |")
     L += [""]
 
-    out = ROOT / "KNOWLEDGE.md"
+    out = out_path()
     out.write_text("\n".join(L), encoding="utf-8")
     print(f"wrote {out}  ({len('\n'.join(L)):,} chars)")
     print(f"  videos read : {len(scored)}")

@@ -12,4 +12,11 @@ __pycache__/
 reports/
 
 # The knowledge base names real creators alongside honesty scores. Local only.
+# The glob matters: build_knowledge.py now emits one file PER CORPUS
+# (KNOWLEDGE_kalshi_edge.md and so on), and a bare `KNOWLEDGE.md` line would
+# have left every one of those UNTRACKED-BUT-COMMITTABLE in a public repo.
 KNOWLEDGE.md
+KNOWLEDGE_*.md
+
+# Hand-carried corpora from another machine. Same content, same rule.
+_from_laptop/
