@@ -102,6 +102,54 @@ or silently "fix" another session's text. Edits are byte-level and every
 replacement asserts exactly one occurrence, so a stray match elsewhere aborts
 rather than rewriting a sibling's entry.
 
+## D11 — Checked whether an extractor already exists, and it does. The kills stand, but the trade-off is now explicit and it is the user's call.
+**2026-08-04**, prompted by the user asking whether a scraper already exists
+rather than accepting my own probes. `signal-github`'s corpus was queried first
+(free, cached): **8 hits, all market scrapers, zero social-media extractors** —
+so new retrieval was needed, run from this folder rather than by editing theirs.
+
+**1. TikTok transcripts, free: NO.** Every "tiktok subtitle/transcription" repo
+found *generates* captions for video you are publishing — Whisper-based clip
+tools — rather than *extracting* them from an existing post. The real TikTok
+scrapers do metadata, video files and comments, and the biggest
+(`drawrowfly/tiktok-scraper`, 5,165★) was last pushed **1,173 days ago**. The
+only working path is download-then-Whisper-it-yourself.
+**Does not reopen the kill:** that kill was on **substance**, measured — a
+45-second clip cannot carry a denominator whether or not you transcribe it.
+
+**2. X without the paid API: YES, tools exist and some are alive.**
+`d60/twikit` (4,599★, *"Twitter Internal API | Free"*), `zedeus/nitter`
+(13,394★, alive), `bocchilorenzo/ntscraper` (258★);
+`bisguzar/twitter-scraper` (4,010★) is **archived**.
+**Does not reopen the kill either:** that kill was on **terms**, not capability.
+These work by calling X's *internal* API without a key, which is the
+circumvention route, not an alternative to it. A tool that works does not change
+a rule that says do not.
+
+**3. Reddit: independently confirmed, and here is the uncomfortable part.**
+`mvanhorn/last30days-skill` — **57,240★, MIT, pushed 2 days ago** — states in
+its own README: *"Reddit's public .json API died; the free path came back
+stronger. Keyless RSS + shreddit scraping."*
+
+So the largest, most actively maintained tool in this space reaches the same
+diagnosis this project did **and solves it by scraping reddit.com anyway** —
+the thing declined in D1. It gets live scores and current threads; this project
+gets an archive. **Both work. Only one of them is inside the site's stated
+rules.**
+
+**Decision: unchanged, and flagged as the user's to overturn.** This project
+keeps using the archive. The trade-off is now written down instead of implied:
+declining to scrape costs live scores and current threads, and a widely used
+alternative exists that pays that cost differently.
+
+> **Also found, and it should have been found on day one:**
+> `last30days-skill` covers **Reddit, X, YouTube, TikTok, HN, Polymarket,
+> Threads, Bluesky** in one skill, is MIT licensed, and **is already the
+> highest-starred repo in `signal-github`'s own corpus** — where nobody had
+> looked at it. It is much closer to "the social media extractor" as described
+> than anything built here. Its X and TikTok legs need keys or cookies; its
+> Reddit leg scrapes.
+
 ---
 
 ## Open audit items
