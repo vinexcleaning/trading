@@ -6,10 +6,38 @@ computable), every gate rejection given a reason.
 """
 
 import datetime as dt
+import os
 import sqlite3
 from pathlib import Path
 
-DB_PATH = Path(__file__).resolve().parent.parent / "data" / "signal.db"
+# One corpus per topic, selected by environment variable.
+#
+# Two reasons, and the second one is the load-bearing one:
+#
+#   1. This project is topic-general by design (queries.TOPICS is keyed by
+#      topic) and will be pointed at other subjects. Each needs its own corpus.
+#   2. Retrieval families define the buckets that retrieval_payoff.py tests.
+#      Adding a new query family to an EXISTING corpus silently rewrites those
+#      buckets -- a video previously found only by F2 becomes 'multi' the moment
+#      any new family also returns it -- which would corrupt a pre-registered
+#      analysis already in progress. Separate corpora make that impossible
+#      rather than merely discouraged.
+#
+# Usage:  $env:SIGNAL_DB = "kalshi_edge"    (a bare name, or a full path)
+_DEFAULT = Path(__file__).resolve().parent.parent / "data" / "signal.db"
+
+
+def _resolve_db():
+    v = os.environ.get("SIGNAL_DB")
+    if not v:
+        return _DEFAULT
+    p = Path(v)
+    if p.suffix != ".db":
+        p = _DEFAULT.parent / f"signal_{v}.db"
+    return p
+
+
+DB_PATH = _resolve_db()
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS channels (

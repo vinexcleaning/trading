@@ -90,16 +90,85 @@ TOPICS = {
         ],
         # F4 is deferred to Phase 3, once tools have been extracted.
         "F4": [],
-    }
+    },
+
+    # -----------------------------------------------------------------------
+    # TARGETED CAMPAIGN, added 2026-08-04 at the user's direction.
+    #
+    # The first corpus was built to answer a RETRIEVAL question -- do insider
+    # queries find better videos than beginner ones -- so it was deliberately
+    # broad and deliberately stratified. It is the wrong shape for the question
+    # the user actually wants answered, which is narrow and practical:
+    #
+    #     on KALSHI and POLYMARKET specifically -- bots, strategies, data
+    #     sources, and how to backtest any of it.
+    #
+    # RUN THIS IN ITS OWN CORPUS ($env:SIGNAL_DB = "kalshi_edge"). Adding these
+    # families to the existing DB would rewrite the buckets that the
+    # pre-registered retrieval test depends on.
+    #
+    # Four families, kept separate because they fail differently:
+    #   V1 BUILD    -- venue + language + transport. Returns code, not opinion.
+    #   V2 STRATEGY -- the claimed edge itself. Highest marketing density; this
+    #                  is where H6 and the n-check earn their keep.
+    #   V3 DATA     -- where the numbers come from. The most durable findings in
+    #                  the whole project have come from this kind of query,
+    #                  because a data source either exists or it does not.
+    #   V4 VALIDATE -- backtesting and forward testing for event contracts,
+    #                  which is where every strategy claim goes to die.
+    # -----------------------------------------------------------------------
+    "kalshi_polymarket_edge": {
+        "V1": [
+            "kalshi api python trading bot",
+            "polymarket trading bot python tutorial",
+            "polymarket clob client place order",
+            "kalshi websocket order book python",
+            "polymarket py-sdk order",
+            "kalshi fix api trading",
+            "polymarket agents framework llm",
+            "prediction market bot automation tutorial",
+        ],
+        "V2": [
+            "kalshi trading strategy that works",
+            "polymarket arbitrage strategy",
+            "kalshi sports trading edge",
+            "polymarket market making strategy",
+            "prediction market mispricing edge",
+            "kalshi vs sportsbook arbitrage",
+            "polymarket negative risk arbitrage",
+            "event contract trading strategy profitable",
+        ],
+        "V3": [
+            "kalshi historical data download",
+            "polymarket historical data api",
+            "polymarket subgraph query data",
+            "prediction market data analysis python",
+            "kalshi market data api tutorial",
+            "sports odds api python historical",
+        ],
+        "V4": [
+            "backtest prediction market strategy python",
+            "kalshi backtest python",
+            "polymarket backtesting framework",
+            "event contract backtest walk forward",
+            "prediction market paper trading test",
+        ],
+    },
 }
 
 # Which families carry the date filter. Nothing does, now that F3 is cut.
-FAMILY_SP = {"F1": None, "F2": None, "F2B": None, "F3_RETIRED": SP_PAST_YEAR, "F4": None}
+FAMILY_SP = {"F1": None, "F2": None, "F2B": None, "F3_RETIRED": SP_PAST_YEAR,
+             "F4": None, "V1": None, "V2": None, "V3": None, "V4": None}
 
-# Families that actually run.
-ACTIVE = ("F1", "F2", "F2B")
+# Families that actually run, per topic.
+ACTIVE_BY_TOPIC = {
+    "prediction_markets": ("F1", "F2", "F2B"),
+    "kalshi_polymarket_edge": ("V1", "V2", "V3", "V4"),
+}
+ACTIVE = ACTIVE_BY_TOPIC["prediction_markets"]   # back-compat for callers
 
 
 def families(topic="prediction_markets"):
     t = TOPICS[topic]
-    return {k: v for k, v in t.items() if k in ACTIVE and v}
+    active = ACTIVE_BY_TOPIC.get(topic, ACTIVE)
+    return {k: v for k, v in t.items() if k in active and v}

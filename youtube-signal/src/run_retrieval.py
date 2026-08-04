@@ -30,9 +30,11 @@ TOP_N = 25
 
 def main():
     t_start = time.time()
+    topic = sys.argv[1] if len(sys.argv) > 1 else "prediction_markets"
     con = db.connect()
-    r = retrieval.Retriever(con, today=dt.date(2026, 8, 2))
-    fams = Q.families("prediction_markets")
+    print(f"topic: {topic}\ncorpus: {db.DB_PATH}\n")
+    r = retrieval.Retriever(con, today=dt.date.today())
+    fams = Q.families(topic)
 
     total_q = sum(len(v) for v in fams.values())
     print(f"families: { {k: len(v) for k, v in fams.items()} }  "
@@ -131,10 +133,10 @@ def main():
         "throttle": tr,
         "wall_clock_s": elapsed,
     }
-    (ROOT / "reports" / "step345_retrieval.json").write_text(
-        json.dumps(out, indent=2), encoding="utf-8"
-    )
-    print(f"wrote {ROOT / 'reports' / 'step345_retrieval.json'}")
+    suffix = "" if topic == "prediction_markets" else f"_{topic}"
+    outp = ROOT / "reports" / f"step345_retrieval{suffix}.json"
+    outp.write_text(json.dumps(out, indent=2), encoding="utf-8")
+    print(f"wrote {outp}")
     con.close()
 
 
