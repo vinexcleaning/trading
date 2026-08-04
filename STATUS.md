@@ -32,7 +32,7 @@ New ideas go in [INBOX.md](INBOX.md) first, before deciding where they belong.
 | **Score-staleness (already fixed)** | `fetched_at` was stamped at cache read, so the 30 s guard never rejected anything. | Nothing to fix â€” but **no live entry result predating the fix is a valid test of the entry logic.** Treat the 4-for-10 as void. |
 | **Label coverage (tennis)** | Blocked. Apify at a monthly hard limit; Flashscore's `dayOffsets` is âˆ’7..+7 against a âˆ’68 need. | Restore quota, then label day-by-day via `crawlstone/tennis-scraper` or `tennisexplorer` (~$20, not $3.44). Only path above 13.9% coverage. |
 | **youtube-signal** | **UNBLOCKED and productive. 38 videos read, $0.00 spent, 0 API units.** The old "buy $5 of API credit" blocker was wrong â€” transcripts are read in-session. Two corpora: broad (746 videos, 370 PASS, 29 read) and a **targeted Kalshi/Polymarket one** (470 videos, 328 PASS, **9 read, 134 claims, 25 tools**). **Nine actionable findings** incl. the three-number check, itemised fees on both venues, 8 backtest-realism rules, the `filtfilt` look-ahead trap, and an adverse-selection result that **contradicts our own maker thesis**. See the dated section below. | **Read more of the targeted corpus.** `$env:SIGNAL_DB="kalshi_edge"` then `src/target_rank.py`. The broad corpus's retrieval test is still NOT DEMONSTRATED and is secondary to the practical hunt. |
-| **signal-github** | **Working, not blocked.** 4,017 retrieved / 3,252 gated / **2,260 scored (69.5%) for ZERO core API calls** via codeload tarballs; 822 credibility; 4 read. Token in signal-github/.env -> 5,000/hr + code search (916 repos no other axis found). Callable as **/github-signal**. Stars settled: rho -0.007 p 0.73 at n=2,260 - the earlier +0.241 correction was itself the error. 	rust_me_bro 22.2% and **uncorrelated with substance**. Fees now primary-sourced on both venues (C1/C1a/C2). | **Read the KalshiEX Rulebook** - the member agreement is silent on automation and says the Rulebook governs, so it is the only open item that could change the venue answer. It defeats HTTP and a real browser. |
+| **signal-github** | **Working, not blocked.** 4,017 retrieved / 3,252 gated / **3,165 scored (97.3%) for ZERO core API calls** via codeload tarballs; 822 credibility; 4 read. Token in signal-github/.env -> 5,000/hr + code search (916 repos no other axis found). Callable as **/github-signal**. Stars settled: rho -0.008 p 0.65 at n=3,165 - the earlier +0.241 correction was itself the error. 	rust_me_bro 22.2% and **uncorrelated with substance**. Fees now primary-sourced on both venues (C1/C1a/C2). | **Read the KalshiEX Rulebook** - the member agreement is silent on automation and says the Rulebook governs, so it is the only open item that could change the venue answer. It defeats HTTP and a real browser. |
 
 ---
 
@@ -338,12 +338,12 @@ is what unblocks code search â€” but depth no longer waits on it.
 |---|---|
 | repos retrieved | **4,017** (laptop corpus separately at 2,562 gated â€” see the warning below) |
 | gate PASS / STALE / DROP | **3,091 / 161 / 765** |
-| **deep-fetched and scored** | ~~105 (4.1%)~~ â†’ **2,260 = 69.5% of gated, for ZERO core API calls** |
+| **deep-fetched and scored** | ~~105 (4.1%)~~ â†’ **3,165 = 97.3% of gated, for ZERO core API calls** |
 | credibility metrics | **822** (was 40) |
 | repos read in full | **4 this session**, loaded via `load_extraction.py` with zero rejections |
 | **code search** | GitHub's own index: **1,141 hits, 916 found by no other axis** (Sourcegraph managed 15) |
 | **F1âˆ©F2 Jaccard** | **0.032** â€” fourth measurement, with 0.033, 0.036 and YouTube's 0.037 |
-| strict S â‰¥ 9 | 151 of 2,260 (**6.7%**) â€” 7.5% at n=40, 7.4% at n=862. Stable across a 56Ã— change in sample. |
+| strict S â‰¥ 9 | 154 of 3,165 (**4.9%**) â€” 7.5% at n=40, 7.4% at n=862, 6.7% at n=2,260, and 4.9% at full coverage. It DRIFTS DOWN as the tail is reached, which is what a prescreen that front-loads the best repos should produce - not instability, but not the flat line an earlier reading of 79Ã— change in sample. |
 
 ### âš  Two coverage numbers exist in this repo and both are correct
 
@@ -357,15 +357,19 @@ Always state which machine a coverage figure came from.
 
 ### Stars: settled, and the previous correction was the error
 
-`rho(stars, S_strict) = âˆ’0.007, p = 0.73` **at n = 2,260**. The n=105 sample gave
+`rho(stars, S_strict) = âˆ’0.008, p = 0.65` **at n = 3,165** (full coverage). The n=105 sample gave
 +0.241 (p 0.013) and the project withdrew its "stars carry no information" claim
-on it; the bump decays monotonically 105 â†’ 200 â†’ 400 â†’ 600 â†’ 862 â†’ 2,260. It was
+on it; the bump decays monotonically 105 â†’ 200 â†’ 400 â†’ 600 â†’ 862 â†’ 2,260 and finally 3,165. It was
 a small-sample artifact. **The original claim stands; the withdrawal was wrong.**
 
 What replaced it: `rho(tree_files, S_strict) = +0.593` â€” the score was 59%
 explained by **file count**. `src/size_adjust.py` fits it out (rho â†’ 0.12).
-Validated against an external fact: of 19 repos that provably model Kalshi's
-maker fee correctly, the raw score put **0** in its top 25, the adjusted one **5**.
+Validated against an external fact — of the **49** repos that provably model
+Kalshi's maker fee correctly, the raw score puts **0** in its top 25 and the
+adjusted one **4**; top 50, **0 → 5**; top 100, **4 → 6**. **But at top 200 it is
+now WORSE, 11 → 9.** The adjustment helps where it matters (deciding what to
+read) and slightly hurts in the long tail. Reported because it is a limitation of
+an instrument built this session, found by re-running it at full coverage.
 
 ### Three axes, and none of them works alone
 
@@ -379,12 +383,12 @@ substance**: rho +0.029, p 0.41. Flagged repos score the same as clean ones.
 
 | | |
 |---|---|
-| venue | polymarket 991 Â· **none 603** Â· kalshi 358 Â· both 284 |
-| kind | live_trader 680 Â· market_maker 449 Â· data_collector 435 Â· backtester 221 Â· arbitrage 151 Â· copy_trader 103 |
-| places real orders | 1,097 of 2,236 |
-| Polymarket client | **v1-ARCHIVED 578 vs v2 121** â€” 4.8:1 toward the dead library |
+| venue | polymarket 1,194 Â· **none 1,013** Â· kalshi 472 Â· both 458 |
+| kind | live_trader 883 Â· market_maker 670 Â· data_collector 642 Â· backtester 245 Â· arbitrage 181 Â· copy_trader 113 |
+| places real orders | 1,328 of 3,137 |
+| Polymarket client | **v1-ARCHIVED 749 vs v2 121** â€” **6.2:1** toward the dead library |
 
-**603 repos (27%) import neither venue.** They passed the README topic gate and
+**1,013 repos (32%) import neither venue.** They passed the README topic gate and
 never touch Kalshi or Polymarket â€” invisible to the gate, obvious to the
 classifier. Query it: `python src/classify.py --venue kalshi --kind market_maker --alive`.
 
@@ -446,8 +450,11 @@ drift apart"*. Its README independently corroborates this programme's own findin
 *"almost every edge that looked real in-sample decayed out-of-sample."*
 
 **Next:** (1) read the KalshiEX Rulebook â€” the only open item that could change
-the venue answer; (2) finish the last 30% of coverage,
-`python src/fetch_repo.py tree 1200`; (3) extend credibility past 822.
+the venue answer; (2) **extend credibility past 822** - 1,884 of the shortlist now rank on substance
+alone because `commits` is NULL for them, so `trust_me_bro` is undecided for most
+of the corpus: `python src/fetch_repo.py full 3200`; (3) read further down
+`reports/shortlist.md` - 4 repos read produced 6 defects, every one invisible to
+all computed components.
 
 ---
 

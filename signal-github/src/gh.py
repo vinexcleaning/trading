@@ -30,6 +30,7 @@ import hashlib
 import io
 import json
 import os
+import sys
 import tarfile
 import time
 import urllib.error
@@ -37,6 +38,17 @@ import urllib.parse
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Windows consoles default to cp1252, and this project prints README and source
+# snippets from repos that are full of emoji. A single 🚀 in a matched line
+# killed a completed fee-audit run with UnicodeEncodeError *after* all the work
+# was done. Every script here imports gh, so fixing it once fixes all of them.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):  # not a real stream, or already set
+        pass
+
 CACHE = os.path.join(ROOT, "cache")
 os.makedirs(CACHE, exist_ok=True)
 # `reports/` is gitignored, so it does not exist on a fresh clone. Every step
