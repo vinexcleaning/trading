@@ -295,8 +295,19 @@ The landing page is a claim; the directory index is a fact. Fetched 2026-08-04:
 |---|---|
 | format | **hourly Parquet order-book snapshots**, CC BY 4.0 |
 | venues listed | Polymarket, **Kalshi**, Limitless, Opinion |
-| `/data/Polymarket/v2/` newest | `polymarket_orderbook_2026-08-04T05.parquet` — **today**, ~412–534 MB **per hour** |
-| `/data/Kalshi/` newest | `kalshi_orderbook_2026-06-11T03.parquet` — **11 June 2026**, ~8–90 MB per hour |
+| `/data/Polymarket/v2/` | **21 Apr – 4 Aug 2026**, ~105 days, 412–534 MB **per hour** |
+| `/data/Polymarket/v1/` | separate feed, newest **16 Apr 2026** |
+| `/data/Kalshi/` | **15 May – 11 June 2026**, ~28 days, 8–90 MB per hour |
+
+Ranges established by walking the paginated index (≈3 days per page) until it
+returned empty: Kalshi page 13 held 15–17 May and page 15 was empty; Polymarket
+v2 page 50 held 21–24 Apr and page 60 was empty.
+
+**A detail that corroborates something already in this repo:** the archive's
+Polymarket **v1** feed stops on 16 April and its **v2** feed starts on 21 April.
+Polymarket's CLOB **V2 went live 28 April 2026** — `youtube-signal`'s own
+`tool_reputation.py` finding. An unrelated third party's data pipeline brackets
+the cutover independently.
 
 **Two very different situations, and the difference matters.**
 
@@ -305,21 +316,22 @@ order as the *"top-of-book ~5 GB per 3–4 months, full book ~150 GB"* figure th
 `youtube-signal` corpus recorded for a paid vendor — free, hourly, and under a
 licence that permits commercial use with attribution.
 
-**The Kalshi feed has stopped.** Its newest file is 11 June 2026, roughly eight
-weeks stale. It is not a substitute for this repo's own tennis depth recorder,
-which started 1 August and samples at 0.55 s rather than hourly.
+**The Kalshi feed stopped on 11 June** and covers only ~28 days. It is not a
+substitute for this repo's own tennis depth recorder, which started 1 August and
+samples at 0.55 s rather than hourly.
 
-**Why this matters here anyway.** `STATUS.md` records recorded order books as
-*"not re-pullable at any price"* and Kalshi's API as a ~69-day window in which
-*"closed markets 404 and are gone"*. **For Polymarket that is now false** —
-hourly books are free and current. For Kalshi it stays true in the sense that
-matters (nothing since 11 June, and never at sub-minute resolution), but a
-**hourly** Kalshi book for periods Kalshi's own API has already dropped may
-exist in this archive and nobody here has looked.
+**But there is a real, narrow prize in it.** `STATUS.md` records Kalshi's API as
+a ~69-day window in which *"closed markets 404 and are gone"*, and recorded
+order books as *"not re-pullable at any price"*. On 4 August that window reaches
+back to about **27 May**. This archive holds hourly Kalshi books from **15 May**.
 
-> **Not verified: how far back either feed goes.** Only the newest index page
-> was read. Enumerating the tail is one more fetch and it decides whether the
-> Kalshi half is worth anything at all.
+> **That is roughly twelve days of Kalshi order-book data — 15 to 27 May 2026 —
+> that Kalshi's own API no longer serves and that this programme does not have.**
+> Hourly, not sub-minute, and it will keep shrinking as the 69-day window rolls
+> forward. If it is worth anything, it is worth pulling **now**.
+
+For Polymarket the "not re-pullable at any price" line is simply false: 105 days
+of hourly books, free, CC BY 4.0.
 
 This is the data source the `youtube-signal` corpus recorded as `r2v2.pmxt.dev`
 — which this project's live check returned 404 for, correctly classified as
