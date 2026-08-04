@@ -1,0 +1,14 @@
+# Recorded data and derived reports stay local.
+# data/ holds live recordings; reports/ holds fetched third-party content and
+# named-account judgements. This repo is PUBLIC.
+data/
+reports/
+.venv/
+__pycache__/
+*.db
+*.db-wal
+*.db-shm
+*.jsonl
+*.parquet
+*.log
+*.err
