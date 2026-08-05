@@ -1431,3 +1431,93 @@ only the attribution is wrong. Recorded here so the history reads honestly.
 
 **Single next action:** read the chapter markers out of the 396 descriptions
 already on disk. Free, offline, needs nobody's permission.
+
+### bot-hunt â€” Step 6 complete (2026-08-05)
+
+Full write-up: [bot-hunt/RESULTS.md](bot-hunt/RESULTS.md).
+
+**0 of 260 cells survive BH-FDR with a CI above zero on the test family
+(esports: CS2 + LoL + Valorant, 2,779 events); 0 of 148 on the MLB control.
+Every surviving cell is significantly NEGATIVE. The holdout is untouched â€”
+nothing qualified to face it.** Exactly what the pre-registration predicted, for
+the reasons it gave.
+
+#### The leak gate voided my own anchor, and the fix is AMENDMENT A1
+
+The pre-registered âˆ’60 min anchor **VOIDed**: 13.96% of quotes extreme and
+**99.7% of those correct** â€” the T010/T011 signature, on n = 2,779. My modelling
+error, not a market fact: **`close_time` is when the market SETTLES, not when
+the match starts**, so âˆ’60 min was usually mid-match. `occurrence_datetime` is
+no help â€” LEDGER **T010** already retracted a headline over it (*"at/after match
+end"*).
+
+Anchor re-found by measurement per T011. **The rule is MONOTONE cleanliness, not
+first-clean** â€” v1 of my sweep took the smallest lead labelled clean, and
+`KXVALORANTGAME` reads clean at 30 min on **98.5%** (just under a hard 99%
+cutoff) then VOID at 60/120/180 min. `KXLOLGAME` is the extreme case: still
+**7.76% extreme and 100% correct at âˆ’6 h**, clean only at **âˆ’24 h**.
+
+Primary is now a uniform **âˆ’24 h**; per-series monotone-clean anchors are the
+sensitivity arm, in the same BH denominator. **Amendment committed before the
+re-run, decided on the leak diagnostic alone** â€” no return number at those
+anchors had been seen.
+
+#### âš  The finding that outlives the null: dimension C is measured at a moment you cannot trade
+
+Every cost bar in [bot-hunt/SHORTLIST.md](bot-hunt/SHORTLIST.md) â€” and in
+`market-selection` before it â€” comes from probing **the touch, on the busiest
+markets**. Measured instead over **all** settled markets by lead time:
+
+| series | median 15 min â†’ âˆ’24 h | **p90 15 min â†’ âˆ’24 h** | **mean 15 min â†’ âˆ’24 h** |
+|---|---|---|---|
+| KXCS2GAME | 3.0Â¢ â†’ 4.0Â¢ | **12Â¢ â†’ 69Â¢** | **6.44Â¢ â†’ 18.33Â¢** |
+| KXLOLGAME | 1.0Â¢ â†’ 3.0Â¢ | **4Â¢ â†’ 62Â¢** | **3.19Â¢ â†’ 12.46Â¢** |
+| KXVALORANTGAME | 2.0Â¢ â†’ 3.0Â¢ | 7Â¢ â†’ 10Â¢ | 3.73Â¢ â†’ 6.16Â¢ |
+| **KXMLBGAME** | **1.0Â¢ â†’ 1.0Â¢** | **1Â¢ â†’ 1Â¢** | **1.12Â¢ â†’ 1.08Â¢** |
+
+**The median barely moves; the tail explodes.** A strategy that must trade every
+qualifying event pays the **mean**, not the median â€” which is exactly why the
+naive benchmarks came back at **âˆ’6.8Â¢ (random side)** and **âˆ’8.7Â¢ (buy the kept
+side)** against a "2.2Â¢ cost bar".
+
+> **`market-selection` reported 1.0Â¢ median and 21,236 at the touch on
+> KXCS2GAME. I measure 3.0Â¢ even at 15 minutes.** Both are right and they
+> measure different things â€” its stated convention was *"each family's BEST
+> case"*, mine is the population of settled markets. **Neither file was wrong,
+> and nothing said the two were not comparable.** The strategy pays the
+> population number, so esports' real pre-match cost is **3â€“6Ã— the figure it was
+> ranked on**.
+
+**MLB moneyline is 1.0Â¢ at every lead from 15 minutes to 24 hours, p90
+included** â€” the only family here whose quoted cost a pre-match strategy could
+rely on.
+
+#### The brief's premise is refuted: Kalshi L2 history exists, and covers esports
+
+Following the sibling's retraction (`9ba0682`), I opened one archive file
+(`2026-05-30T17`, 19,310,089 rows): **esports 498,434 rows / 74 tickers
+(2.58%)**, tennis 2,092,158 (10.8%), MLB 70,629, **South American soccer ZERO** â€”
+a third independent confirmation the prior #1 entry has no history. 550 files,
+2026-05-19T06 â†’ 2026-06-11T03.
+
+> âš  **Correction for the sibling's estimate.** Their disk projection uses tennis
+> â‰ˆ 0.6% of rows, measured on `2026-05-17T02` â€” an overnight hour. At
+> `2026-05-30T17` tennis is **10.8%**, an **18Ã—** difference. ~230 MB is low;
+> the window is nearer **4 GB** for tennis and ~1 GB for esports. Not acted on
+> unilaterally â€” it is their pull.
+
+**H10 (passive quoting) is now runnable and is the most informative untested
+cell.** The corpus says nothing adoptable exists: of 3,201 repo archives,
+**queue position fires on 5.2% and trade-through on 3.0%** â€” the two signals
+that decide whether a maker backtest is honest are the two rarest.
+
+#### One more esports datum, and it cuts both ways
+
+The largest esports record in any corpus (public wallet, 211 days, $65M closed
+volume, 5,187 resolved, ~$1M realised): **League of Legends 1,819 positions at a
+49.0% win rate for +$1.47M**, while **"Other" 1,705 positions at a 69.8% win
+rate loses $506K**. The value shape and the leaderboard-farming shape in one
+wallet. **ROI 1.6% on closed volume, profit factor 1.09** â€” thin, against a
+6â€“18Â¢ mean pre-match spread. Third-party analysis of a wallet selected *because*
+it ranks #128, so **W015** applies: a lead, not a result.
+

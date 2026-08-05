@@ -152,7 +152,31 @@ scored when 92 had real data.
 
 ---
 
-## 4. Step 6 status: RUN, NOT REPORTABLE — and that is the correct outcome
+## 3b. ✅ SUPERSEDED — Step 6 is now COMPLETE. Read [RESULTS.md](RESULTS.md).
+
+Everything in §4 and §5 below describes the *first, non-reportable* run and is
+kept because it records how the control gate caught itself. **The finished run
+is in [RESULTS.md](RESULTS.md).** In one line:
+
+**0 of 260 cells survive BH-FDR with a CI above zero (test: 2,779 esports
+events); 0 of 148 on the MLB control; every survivor is significantly negative;
+the holdout is untouched because nothing qualified.**
+
+Two things happened on the way that matter more than the null:
+
+1. **The leak gate voided my pre-registered −60 min anchor** (13.96% extreme,
+   99.7% correct). `close_time` is when the market SETTLES, not when the match
+   starts. Fixed by measurement in **Amendment A1**, committed before re-running.
+2. **Dimension C is measured at a moment a pre-match strategy cannot trade.**
+   Over all settled markets, CS2's p90 spread goes **12¢ → 69¢** between 15
+   minutes and 24 hours and its mean triples. Esports' real pre-match cost is
+   **3–6× the figure the shortlist ranked it on**. MLB is 1.0¢ at every lead.
+
+**The single next thing is now H10**, which is newly runnable — see §5.
+
+---
+
+## 4. Step 6, FIRST RUN (superseded): RUN, NOT REPORTABLE
 
 `src/run_grid.py` executes the pre-registered grid. On the data available at
 session end:
@@ -179,25 +203,50 @@ shortlist entry's cost estimate came from touch measurements.
 
 ---
 
-## 5. The single next thing to do
+## 5. The single next thing to do — H10, passive quoting
 
-**Pull the control family's candles, then re-run the grid.** The gate cannot
-pass until `KXMLBGAME` has a panel, and nothing from the test family is
-reportable until it does.
+**Everything in the candle-based grid is done and null. The one pre-registered
+strategy never run is H10, and it is the one that matters.**
 
-```bash
-C:\Users\vinig\trading\bot-hunt\.venv\Scripts\python.exe C:\Users\vinig\trading\bot-hunt\src\pull_kalshi_soccer.py --series KXMLBGAME --days 80
-```
+Why it matters: the maker-vs-taker tension is the largest unresolved question in
+this programme — `signal-github` says maker-only quoting is the one strategy
+whose income need not overcome a fee first; a 20-year professional says be a
+taker because adverse selection fills you only when you are wrong. **The only
+number anyone has put on it is the 38% of gross it cost the esports arb author.**
 
-Then, in order:
+It is newly runnable because the brief's premise was wrong: **Kalshi L2 history
+exists** at `archive.pmxt.dev`, 550 hourly files, 2026-05-19T06 → 2026-06-11T03,
+and it carries esports (498,434 rows and 74 tickers in one sampled hour, 2.58%).
 
-1. `src/run_grid.py` — train 70% only.
-2. Only if the control gate PASSES and something survives BH-FDR **with a broad
-   plateau**: `src/run_grid.py --holdout`, **once**.
-3. Re-bisect the Kalshi retention boundary (§2c) before anyone acts on the
-   2026-08-19 deadline in `WHAT_IS_LEFT.md`.
-4. Re-establish the ESPN prop feed, or withdraw `KXMLBRFI`'s no-free-reference
-   property, which is the whole basis of shortlist entry #3.
+The build, in order:
+
+1. **Pull a NARROW window filtered to esports prefixes.** Do not pull all 37 GB.
+   Model it on `social-signal/src/pull_kalshi_archive.py`, which streams
+   row-group at a time and discards the raw. Budget ~1 GB of disk for esports
+   across the window; **3–5 days is enough to measure a fill rate.** It is a
+   volunteer-run archive and a sibling is already pulling the same files.
+2. **Replay snapshot + deltas into a point-in-time book.** `market-selection`
+   flagged this as *"the single biggest piece of unbuilt machinery"* and it is
+   still unbuilt.
+3. **Fill model: trade-through only, last in queue, honest partials** — already
+   written in `src/engine.py::maker_fills`. Nothing in the repo corpus is worth
+   adopting: of 3,201 archives, **queue position fires on 5.2% and trade-through
+   on 3.0%**. Most "backtests" fill on a touch.
+4. **Run the touch-counts-as-fill variant as a declared deliberate-leak
+   diagnostic**, per the pre-registration, and report both.
+
+Still open, unchanged:
+
+- **Re-bisect the Kalshi retention boundary** before anyone acts on the
+  2026-08-19 deadline in `WHAT_IS_LEFT.md`.
+- **Re-establish the ESPN prop feed** (403 on 7 of 7 leagues) or withdraw
+  `KXMLBRFI`'s no-free-reference property — the whole basis of shortlist #3.
+- **Tell the sibling their archive disk estimate is low**: tennis is 10.8% of a
+  daytime hour, not the 0.6% measured overnight.
+
+**Do not** start a second heavy Kalshi puller while the recorder runs. C018 puts
+the unauthenticated ceiling at 15 req/s and the recorder is the irreplaceable
+process.
 
 **Do not** start a second heavy puller while the recorder is running. C018
 measured 15 req/s sustained as the unauthenticated ceiling; the recorder plus
