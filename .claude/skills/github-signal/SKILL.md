@@ -48,7 +48,7 @@ what to read. The deliverables are `reports/classified.json` (rows) and
 `GITHUB_KNOWLEDGE.md` (claims with `path:line` provenance).
 
 **Stars are worthless here — measured, not assumed.** `rho(stars, S_strict) =
-−0.007, p = 0.73` at n = 2,260. An earlier n = 105 sample showed +0.241 and the
+−0.008, p = 0.65` at **n = 3,165 (full coverage)**. An earlier n = 105 sample showed +0.241 and the
 project wrongly "corrected" itself; 21× the data killed it. Do not rank by stars
 and do not let a star count into a recommendation.
 
@@ -67,6 +67,7 @@ python src/fetch_repo.py full 900    # commits/contributors.     needs the token
 python src/rescore.py           # strict S score.               free
 python src/size_adjust.py       # remove the size advantage.    free
 python src/classify.py          # venue + kind + liveness.      free
+python src/currency.py          # IS IT STILL ALIVE. a GATE.    free
 python src/fee_audit.py         # does it model fees right.     free
 python src/shortlist.py         # substance AND credibility.    free
 python src/build_knowledge.py   # regenerate GITHUB_KNOWLEDGE.md
@@ -106,13 +107,51 @@ terms in `src/queries.py`. Do not invent repos.
 |---|---|---|
 | `s_strict` | substance from artifacts | 59% explained by file count before adjustment |
 | `s_adj` | substance, size removed | its own #1 pick had **1 commit** and claimed "Guaranteed profit" |
-| `trust_me_bro` | results claim, <10 commits, no artifact | fires on 22% of the corpus; **uncorrelated with substance** (rho +0.03, p 0.41) |
+| `trust_me_bro` | results claim, <10 commits, no artifact | fires on **19.1% of 2,717**; **weakly POSITIVELY correlated with substance — rho +0.064, p 0.0009.** The earlier "uncorrelated" reading was n=822 and is WITHDRAWN. Flagged repos score slightly HIGHER, because making a results claim at all requires having built something. It is an HONESTY signal: **discount the claims, not the tooling.** |
 | fee audit | is a venue constant correct | only decidable for repos that hardcode one |
 
 `shortlist.py` combines them. The weights are a judgement and are printed so
 they can be disputed.
 
 ---
+
+## ⛔ CURRENCY IS A GATE, and it was missing until 2026-08-05
+
+**27.0% of the scored corpus is discontinued by its own owner** — 711 repos
+import the Polymarket v1 CLOB client that *Polymarket archived*, and 28 are
+archived outright. Nothing in `s_adj`, `trust_me_bro` or the fee audit could
+see it, and **the share is worse at the top than in the corpus**:
+
+| slice | discontinued by the owner |
+|---|---|
+| top 25 by `s_adj` | **6 = 24.0%** |
+| top 100 | **35 = 35.0%** |
+| whole corpus | 739 = 27.0% |
+
+> **The trap that makes it invisible to a reader: `pip install py-clob-client`
+> STILL WORKS.** PyPI serves 0.34.6 while the GitHub repo is archived. Nothing
+> errors, nothing warns, and you find out at the order endpoint.
+
+`src/currency.py` is a **gate, not a component**. A rigorous, well-tested
+implementation of a dead API is not 70% as useful as a live one — it is a thing
+you must not build on, however good it is. So it can only LOWER a verdict and it
+always names the evidence. It costs **zero API calls** (every input is already
+in `repos`); `--live` re-verifies the client libraries themselves so the table
+cannot rot silently.
+
+**Gating costs nothing measurable.** Against the external ground truth — repos
+that provably model Kalshi's *maker* fee correctly — the top 100 goes **6 → 9**
+fee-correct and the top 200 goes **10 → 17**, and **zero fee-correct repos in
+the top 200 are lost.** Removing dead weight promotes live repos that were
+underneath it.
+
+**The ranking has also never been graded, and now has been** — see
+`extractor-upgrade/reports/T6_github_validation.md`. On the five repos this
+project read in full, **the ranking agrees with the read on 1 of 5**: it would
+RECOMMEND `hcharper/polyBot-Weather` (rank 3, ONE commit, a README claiming
+"Guaranteed profit", v1 client) and merely ABSORB `aulekator` (557 stars,
+4 commits, `fee_rate_bps=0` live). Five is not a precision estimate. It is five
+demonstrations that `s_adj` alone must never be read as a recommendation.
 
 ## Traps that already cost real work
 
