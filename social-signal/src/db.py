@@ -91,9 +91,11 @@ CREATE TABLE IF NOT EXISTS rd_posts (
     query       TEXT,
     fetched_utc TEXT,
     gate_status TEXT,
-    gate_reason TEXT
+    gate_reason TEXT,
+    platform    TEXT DEFAULT 'reddit'
 );
 CREATE INDEX IF NOT EXISTS ix_rd_posts_sub ON rd_posts(subreddit);
+-- NOTE: the index on `platform` is deliberately NOT here. See MIGRATIONS.
 
 CREATE TABLE IF NOT EXISTS rd_comments (
     comment_id  TEXT PRIMARY KEY,
@@ -132,7 +134,24 @@ CREATE TABLE IF NOT EXISTS rd_log (
 """
 
 # Columns added after first release. Every one must ALSO be in SCHEMA above.
-MIGRATIONS: tuple[str, ...] = ()
+#
+# `platform` was added when the second platform (Mastodon) arrived. The table is
+# still called `rd_posts` — renaming it would break every sibling script for a
+# cosmetic gain. Column mapping for non-Reddit platforms is documented in the
+# fetcher that writes them; for Mastodon: subreddit->"instance/tag",
+# score->favourites_count, num_comments->replies_count, permalink->url.
+# **An index on a migrated column must NOT live in SCHEMA.** `executescript`
+# runs SCHEMA first, and against an existing database `CREATE TABLE IF NOT
+# EXISTS` is a no-op — so the CREATE INDEX fires before the ALTER has added the
+# column and the whole connect() raises `no such column: platform`. This is
+# youtube-signal's recorded bug #4/#5 in a third costume: the column reaches new
+# databases via SCHEMA and old ones via ALTER, but anything DEPENDING on that
+# column has to run after both. Order is: SCHEMA, then MIGRATIONS, in this list.
+MIGRATIONS: tuple[str, ...] = (
+    "ALTER TABLE rd_posts ADD COLUMN platform TEXT DEFAULT 'reddit'",
+    "CREATE INDEX IF NOT EXISTS ix_rd_posts_platform ON rd_posts(platform)",
+    "UPDATE rd_posts SET platform='reddit' WHERE platform IS NULL",
+)
 
 
 def now() -> str:
