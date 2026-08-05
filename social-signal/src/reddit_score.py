@@ -48,10 +48,16 @@ def gate(post, thread_text: str):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--top", type=int, default=40)
+    ap.add_argument("--platform", default="",
+                    help="restrict to one platform; default is all of them")
     args = ap.parse_args()
 
     con = db.connect()
-    posts = con.execute("SELECT * FROM rd_posts").fetchall()
+    if args.platform:
+        posts = con.execute("SELECT * FROM rd_posts WHERE platform=?",
+                            (args.platform,)).fetchall()
+    else:
+        posts = con.execute("SELECT * FROM rd_posts").fetchall()
     by_post = collections.defaultdict(list)
     for c in con.execute("SELECT post_id, body, score FROM rd_comments"):
         by_post[c["post_id"]].append(c)
@@ -85,9 +91,20 @@ def main():
     for k, n in census.most_common():
         print(f"    {k:<28} {n}")
 
+    # Per-platform census, because a rate computed across platforms with wildly
+    # different post shapes is an average of two different things.
+    by_plat = collections.defaultdict(collections.Counter)
+    for r in con.execute("""SELECT p.platform, p.gate_status, s.verdict
+                            FROM rd_posts p
+                            LEFT JOIN rd_scores s ON s.post_id = p.post_id"""):
+        by_plat[r["platform"] or "?"][r["gate_status"] or "?"] += 1
+        if r["verdict"]:
+            by_plat[r["platform"] or "?"][r["verdict"]] += 1
+
     rows = con.execute("""
-        SELECT p.post_id, p.subreddit, p.title, p.score, p.num_comments,
-               p.permalink, s.s_total, s.b_total, s.h_total, s.verdict
+        SELECT p.post_id, p.platform, p.subreddit, p.title, p.score,
+               p.num_comments, p.permalink,
+               s.s_total, s.b_total, s.h_total, s.verdict
         FROM rd_scores s JOIN rd_posts p ON p.post_id = s.post_id
         ORDER BY (CASE WHEN s.s_total > s.b_total THEN s.s_total
                        ELSE s.b_total END) DESC,
@@ -109,13 +126,35 @@ def main():
                  "had informed the lexicon's design, so its 85.9% is an upper "
                  "bound and not a holdout; this project starts by not claiming "
                  "a number at all.\n\n")
-        fh.write("| # | sub | S | B | H | verdict | comments | title |\n")
-        fh.write("|---|---|---|---|---|---|---|---|\n")
+        fh.write("## Per-platform census\n\n")
+        fh.write("A rate computed across platforms is an average of two "
+                 "different things — a Reddit thread and a Mastodon post are "
+                 "not the same object. Split, always.\n\n")
+        keys = ["PASS", "DROP_G1_THIN", "DROP_G3_OFF_TOPIC", "BUILD_AND_RECOMMEND",
+                "ABSORB_AND_RECOMMEND", "ABSORB", "ABSORB_RESULTS_DISCOUNTED",
+                "SKIP"]
+        fh.write("| platform | total | " + " | ".join(keys) + " |\n")
+        fh.write("|---" * (len(keys) + 2) + "|\n")
+        for plat, c in sorted(by_plat.items(),
+                              key=lambda kv: -sum(kv[1][k] for k in
+                                                  ("PASS", "DROP_G1_THIN",
+                                                   "DROP_G3_OFF_TOPIC"))):
+            tot = sum(c[k] for k in ("PASS", "DROP_G1_THIN", "DROP_G3_OFF_TOPIC"))
+            fh.write(f"| **{plat}** | {tot:,} | "
+                     + " | ".join(f"{c[k]:,}" for k in keys) + " |\n")
+        fh.write("\n## The read queue\n\n")
+        fh.write("| # | platform | where | S | B | H | verdict | replies | title |\n")
+        fh.write("|---|---|---|---|---|---|---|---|---|\n")
         for i, r in enumerate(rows, 1):
-            fh.write(f"| {i} | r/{r['subreddit']} | {r['s_total']} | "
+            plat = r["platform"] or "reddit"
+            link = (f"https://reddit.com{r['permalink']}" if plat == "reddit"
+                    else (r["permalink"] or ""))
+            where = (f"r/{r['subreddit']}" if plat == "reddit"
+                     else str(r["subreddit"] or ""))
+            fh.write(f"| {i} | {plat} | {where} | {r['s_total']} | "
                      f"{r['b_total']} | {r['h_total']} | {r['verdict']} | "
                      f"{r['num_comments']} | "
-                     f"[{(r['title'] or '')[:80]}](https://reddit.com{r['permalink']}) |\n")
+                     f"[{(r['title'] or '')[:70]}]({link}) |\n")
         fh.write("\n## Census\n\n| bucket | n |\n|---|---|\n")
         for k, n in census.most_common():
             fh.write(f"| {k} | {n} |\n")
