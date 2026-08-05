@@ -1,10 +1,40 @@
 # TASK 2 — vision: built, validated, and pointed away from YouTube
 
-**Two findings, and the first one decides the second.**
+> # ⛔ RETRACTED IN PART, SAME DAY — see [`reports/T2b_screen_evidence.md`](reports/T2b_screen_evidence.md)
+>
+> **The claim below that "frame acquisition from YouTube is closed" is TOO
+> STRONG and is withdrawn.** What is closed is *arbitrary-timestamp*
+> acquisition, which needs the media stream. **Three full-resolution frames per
+> video are permitted and were missed:**
+>
+> ```
+> https://i.ytimg.com/vi/<id>/maxres1.jpg   1280x720, ~110 KB
+> https://i.ytimg.com/vi/<id>/maxres2.jpg   ~25 / 50 / 75% of runtime
+> https://i.ytimg.com/vi/<id>/maxres3.jpg   AUTO-EXTRACTED VIDEO FRAMES
+> ```
+>
+> `i.ytimg.com/robots.txt` disallows **`/sb/` only**. I read that line, correctly
+> concluded storyboards were forbidden, and **did not then ask what else lived
+> on that host.** `/vi/` is not mentioned. `/sb/` returns 403; `/vi/maxres1.jpg`
+> returns **200 and 114,833 bytes**.
+>
+> The error is the same shape as the false kills recorded in `HANDOFF.md`: **a
+> probe that samples the wrong thing fails toward the conservative answer.** I
+> checked the route I expected to use and stopped when it was closed.
+>
+> **What survives below, unchanged:** the media-stream analysis in §1 (all three
+> `googlevideo.com` hosts return `Disallow: /`, so a third-party downloader is
+> the same act with an extra hop), the `youtube-transcript-api` finding in §1,
+> the whole of §2, and the measurement in §3 — whose "0 of 24" is still true and
+> still biased against vision.
+>
+> **What the frames then found:** 6 videos read, 6 findings, including a
+> **$300,000-a-month projection standing against a $1.79 account balance visible
+> on screen.** One stored verdict is wrong because of it.
 
 ---
 
-## 1. Every route to a YouTube frame is named in a `Disallow` line
+## 1. Every route to a YouTube VIDEO STREAM is named in a `Disallow` line
 
 Fetched 2026-08-04.
 
