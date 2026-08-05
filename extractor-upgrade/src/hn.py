@@ -141,6 +141,51 @@ def item(i):
         return None
 
 
+def collect_comments(pace=0.12, cap=25):
+    """The comment pass, as its OWN walk over stored stories.
+
+    !! IT WAS NOT SEPARATE, AND THAT WAS A BUG. `collect` fetched comments
+    inside the `if sid in have: continue` branch, so once a story was stored,
+    a later run skipped it AND its comments - the comment pass could never
+    collect anything for a corpus that already existed. It looked like it was
+    working: it re-ran every query, printed every story count, and wrote
+    nothing. A silent no-op that reports progress is worse than a crash.
+    """
+    con = connect()
+    have = {r[0] for r in con.execute("SELECT id FROM items")}
+    stories = con.execute(
+        "SELECT id, family, query FROM items WHERE kind='story'").fetchall()
+    n = 0
+    for k, s in enumerate(stories, 1):
+        d = item(s["id"])
+        time.sleep(pace)
+        if not d:
+            continue
+        for kid in (d.get("kids") or [])[:cap]:
+            if kid in have:
+                continue
+            c = item(kid)
+            time.sleep(pace)
+            if not c or c.get("dead") or c.get("deleted") or not c.get("text"):
+                continue
+            con.execute(
+                "INSERT OR REPLACE INTO items VALUES(?,?,?,?,?,?,?,?,?,?,?,?,"
+                "datetime('now'))",
+                (kid, "comment", None, None, c.get("text"), c.get("by"),
+                 None, None, c.get("time"), s["id"], s["family"], s["query"]))
+            have.add(kid)
+            n += 1
+        if k % 20 == 0:
+            con.commit()
+            print(f"  {k}/{len(stories)} stories walked, {n} comments")
+    con.commit()
+    con.execute("INSERT INTO runlog VALUES(datetime('now'),'comments',?)",
+                (str(n),))
+    con.commit()
+    con.close()
+    return n
+
+
 def collect(pace=0.12, comment_cap=25):
     con = connect()
     have = {r[0] for r in con.execute("SELECT id FROM items")}
@@ -332,12 +377,16 @@ def main():
     ap.add_argument("--collect", action="store_true")
     ap.add_argument("--stories-only", action="store_true",
                     help="skip comments; ~25x fewer requests, lands in minutes")
+    ap.add_argument("--comments", action="store_true",
+                    help="the comment pass, as its own walk over stored stories")
     ap.add_argument("--score", action="store_true")
     ap.add_argument("--report", action="store_true")
     a = ap.parse_args()
     if a.collect:
         s, c = collect(comment_cap=0 if a.stories_only else 25)
         print(f"  collected {s} stories, {c} comments")
+    if a.comments:
+        print(f"  collected {collect_comments()} comments")
     if a.score:
         print(f"  scored {score_all()}")
     if a.report or not (a.collect or a.score):
