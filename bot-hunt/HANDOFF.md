@@ -203,7 +203,46 @@ shortlist entry's cost estimate came from touch measurements.
 
 ---
 
-## 5. The single next thing to do — H10, passive quoting
+## 4b. ✅ H10 IS DONE. Read [RESULTS_H10.md](RESULTS_H10.md).
+
+Section 5 below was the build plan and is kept as a record; **it has been
+executed.** 47 hourly files, ~13M L2 rows, 12,959 simulated resting orders,
+81 events.
+
+**One number from H10 is a measurement: the fill rate, 29–36% strict /
+63–69% permissive, corroborated three independent ways.** Fill rate is *not*
+the constraint on maker strategies here — the pre-registered <20% falsification
+fails.
+
+Everything else is noise or worse: net P&L **sign-flips** across nested
+prefixes (−1.48 … +2.55¢), adverse selection **decays toward zero** as data is
+added (−14.04 → −4.03pp — the artifact signature), and the one quantity that
+*strengthens* with n is flagged by **GUARDS #10** as a contamination warning,
+not a finding.
+
+**The next thing is no longer H10.** In priority order:
+
+1. **The contamination check on the "monopoly regime" effect.** It is the only
+   positive-direction result in the project. The hypothesis to kill: "thin far
+   side" is measured at placement, and thin books may also be the ones nearest
+   settlement or most stale — so the split may be selecting on something
+   correlated with the outcome rather than on absent competition. Stratify by
+   time-to-event and by staleness before believing any of it.
+2. **More events, not more hours.** 81 events is the binding constraint, and it
+   is why adverse selection cannot be measured. The archive runs
+   2026-05-19T06 → 2026-06-11T03 — about 23 days, so roughly **10× the events
+   are available** for ~1 GB of filtered disk. `src/pull_l2.py` already reads
+   only 72–77% of each file over HTTP Range; extend `--since/--until`.
+3. **Re-bisect the Kalshi retention boundary** before anyone acts on the
+   2026-08-19 deadline in `market-selection/WHAT_IS_LEFT.md`.
+4. **Re-establish the ESPN prop feed** (403 on 7 of 7 leagues) or withdraw
+   `KXMLBRFI`'s no-free-reference property, which is the basis of shortlist #3.
+5. **Tell the sibling their archive disk estimate is low** — tennis is 10.8% of
+   a daytime hour, not the 0.6% measured overnight.
+
+---
+
+## 5. The build plan for H10 (EXECUTED — see §4b)
 
 **Everything in the candle-based grid is done and null. The one pre-registered
 strategy never run is H10, and it is the one that matters.**
