@@ -26,6 +26,54 @@
 > the sample size against each, because deleting them is how somebody
 > re-derives them. **§4 is the part that holds.**
 
+---
+
+# 0. THE STABILITY CURVE — which of these numbers is a measurement at all
+
+The sign flip above was found by accident. `src/h10_stability.py` then measured
+it on purpose: re-run the whole simulation over **nested prefixes** of the same
+corpus (6, 9, … 28 hourly files) and watch each statistic's trajectory. This is
+the method that killed this repo's own stars-vs-substance false positive —
+ρ went **+0.241 at n=105 to −0.007 at n=3,165**, decaying monotonically, which
+is what a small-sample artifact looks like from the inside.
+
+| statistic | range across prefixes | verdict |
+|---|---|---|
+| **fill rate, strict (JOIN)** | **30.8 – 31.2%**, last-3 drift **0.01** | ✅ **STABLE** |
+| fill rate, permissive (JOIN / IMPROVE) | 55.5–62.3% / 39.8–46.4% | ✅ STABLE |
+| **net P&L per filled contract (JOIN)** | **−1.71¢ … +1.34¢** | ❌ **SIGN-FLIPS — noise** |
+| net P&L per filled contract (IMPROVE) | −3.09¢ … +0.93¢ | ❌ **SIGN-FLIPS — noise** |
+| adverse selection (JOIN) | −13.29 → **−8.52pp**, monotone toward zero | ⚠️ decaying — artifact signature |
+| adverse selection (IMPROVE) | −7.59 → **−5.41pp**, monotone toward zero | ⚠️ decaying — artifact signature |
+| "monopoly regime" thin-far-side edge | +1.47 → **+6.70pp** (JOIN), +2.38 → **+13.32pp** (IMPROVE) | ⚠️ **strengthening — see below** |
+
+### ⚠️ The one result that got better with more data is the one to distrust most
+
+The thin-far-side edge is the only quantity that **strengthened monotonically**
+as the sample grew, and at 28 hours IMPROVE reads **+10.25pp with a CI of
+[+1.35, +19.92] that excludes zero.** It is the most exciting number produced in
+this session.
+
+**This repo pre-registered exactly that pattern as a warning sign.** GUARDS #10:
+
+> *"Monotone strengthening is evidence of contamination until proven otherwise."*
+> The archive's single worst inference was arguing an effect was real *because*
+> it strengthened with detector precision — when precision and bias were the
+> same knob.
+
+So it is recorded as **a lead requiring a contamination check**, not as a
+finding. The obvious candidate: "thin far side" is measured at placement, and
+thin books are also the ones most likely to be stale or near settlement, so the
+split may be selecting on something correlated with the outcome rather than on
+competition. **Untested. Do not trade it.**
+
+### What this section actually establishes
+
+**One number from H10 is a measurement: the fill rate.** Everything about P&L
+is noise at this sample size, and both directional mechanisms — adverse
+selection and the monopoly regime — move with n in the directions that this
+repo's own guards say mean "artifact".
+
 **2026-08-05.** H10 was pre-registered on 2026-08-04 and left unrun because it
 needs the order book, not candles. It became runnable when a sibling session
 refuted the premise that Kalshi has no L2 history.

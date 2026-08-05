@@ -1680,3 +1680,83 @@ recorded here rather than left unexamined. Nothing was stopped or deleted.
 
 **Single next action, unchanged:** read the chapter markers out of the 396
 descriptions already on disk. Free, offline, needs nobody's permission.
+
+### bot-hunt â€” H10 run on real Kalshi L2, and only one number survived (2026-08-05)
+
+Full write-up: [bot-hunt/RESULTS_H10.md](bot-hunt/RESULTS_H10.md).
+
+H10 (rest a passive bid) was pre-registered on 08-04 and left unrun because it
+needs the order book, not candles. It became runnable when a sibling's
+retraction (`9ba0682`) established that **Kalshi L2 history does exist**.
+
+**Built:** a range-request puller that reads **72â€“76% of each file instead of
+100%** (column pruning over HTTP `Range` â€” it is a volunteer archive and a
+sibling is already pulling the same files), a snapshot+delta **book replay** â€”
+which `market-selection` called *"the single biggest piece of unbuilt
+machinery"* â€” and a queue-aware fill model that never lets a touch count as a
+fill. **6.9M L2 rows, 112 esports markets, 5,581 simulated resting orders.**
+
+#### The result: one measurement, and a lot of noise
+
+`src/h10_stability.py` re-runs the whole simulation over **nested prefixes** of
+the corpus and watches each statistic's trajectory â€” the method that killed this
+repo's own stars-vs-substance false positive.
+
+| statistic | across prefixes | verdict |
+|---|---|---|
+| **fill rate, strict** | **30.8â€“31.2%**, last-3 drift **0.01** | âœ… **STABLE â€” the deliverable** |
+| net P&L per filled contract | **âˆ’1.71Â¢ â€¦ +1.34Â¢** | âŒ **SIGN-FLIPS â€” noise** |
+| adverse selection | âˆ’13.29 â†’ âˆ’8.52pp, monotone to zero | âš ï¸ artifact signature |
+| "monopoly regime" thin-book edge | +1.47 â†’ +10.25pp, monotone up | âš ï¸ **GUARDS #10 warning sign** |
+
+> **The 31% is independently corroborated.** The corpora were queried *before*
+> the run: an r/quant bot author diagnosing his own too-good results â€”
+> *"the reason my results are too good is likely the 100% fill rate; when it's
+> 30% it will be way less."* **My strict measure lands at 31.1%.** Two routes,
+> one number. **Fill rate is NOT the constraint on maker strategies here** â€” the
+> pre-registered falsification (<20%) is not met.
+
+> âš ï¸ **The most exciting number is the one to distrust.** The thin-far-side
+> edge is the only quantity that STRENGTHENED with sample size, reaching
+> +10.25pp [+1.35, +19.92]. GUARDS #10 pre-registered that exact pattern:
+> *"monotone strengthening is evidence of contamination until proven
+> otherwise."* Recorded as a lead needing a contamination check, not a finding.
+
+#### âš ï¸ A correction inside the same session
+
+I committed the H10 headline at `5186158` as **"you set out to earn +1.50Â¢ and
+you get âˆ’1.50Â¢"** on 21 hourly files. Seven more hours moved it to **+0.38Â¢**.
+The CI contained zero at both sizes â€” nothing was ever significant â€” but I led
+with a point estimate that was noise. Marked inline, not rewritten.
+
+#### Two of my own bugs, both caught by canaries
+
+1. **The replay never re-synced.** Skipping a snapshot when state already
+   existed let stale levels accumulate; books ended **crossed by 83Â¢**, which is
+   impossible. **The conservation canary passed throughout at 0.047%** â€” stale
+   levels are not negative levels. It took looking at the output. A
+   **crossed-book canary** now exists and would have caught it instantly.
+2. **A fill metric that measured nothing** â€” reported a 99.6% *lower* bound
+   against a 45.8% *upper* bound. Inverted, therefore impossible. Cause: for an
+   order that improves the touch, the market's best bid is below our price by
+   construction, so "traded through" fires on every order.
+
+The crossed-book canary also settled a data question worth carrying: **pre-event
+crossing 5.60% vs post-event 83.65%**, and the alternative price-space reading
+crosses ~100%. So the Kalshi bid/bid convention in `bot-hunt/src/venues.py` is
+right, and **settled books are simply not maintained** â€” any L2 study must
+restrict to pre-event observations.
+
+#### What it says about the standing maker-vs-taker tension
+
+`signal-github` said maker-only quoting is *"the one strategy whose income is not
+required to overcome a fee first"*. **Correct and irrelevant** â€” the maker fee on
+these series is genuinely zero (`fee_type = quadratic`, verified). The
+20-year-professional's free-roll warning is **directionally supported and
+unconfirmed**. **S008/S009's tennis result is not contradicted**; it is also not
+independently reproduced, because at this sample size nothing is.
+
+**Next:** the pull is extending to 48 hours. Re-run `src/h10_stability.py` on the
+full window â€” if net P&L still sign-flips and adverse selection still decays,
+that closes H10 as underpowered rather than negative.
+
