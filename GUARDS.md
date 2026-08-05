@@ -24,6 +24,10 @@ coverage table.
 | 9. Guard-rot test | ✅ | ❌ | ❌ | ❌ | ❌ |
 | 10. Pre-registration before seeing numbers | ✅ | ✅ | ✅ | ❌ | ❌ |
 | 11. BH-FDR across the whole ledger | ✅ 97 rows | ✅ 101 tests | ✅ per family | ✅ 43 segments | ❌ |
+| 13. Content-assert, not call-assert (a 200/exit-0 is not a result) | ✅ `frames.is_flat` | | | | |
+| 14. `robots.txt` `Allow:` implemented (longest match wins) | ✅ `find_sources.robots_allows` | | | | |
+| 15. A 404 never establishes death | ✅ `unify_currency._dead` | | | | |
+| 16. Membership table, so dedup cannot decide an overlap statistic | ✅ `hn.membership` | | | | |
 | 12. Content-level recorder health check | ✅ | ⚠️ specified, status unknown | n/a | n/a | ❌ **check first** |
 
 ✅ present and enforced ➖ present but weaker ⚠️ partial or unverified ❌ absent
@@ -531,6 +535,129 @@ Two conventions worth copying:
 
 ---
 
+---
+
+## 13. A 200 is not a correct file, and a 0 exit code is not a rendered artifact
+
+*Contributed by `extractor-upgrade`, 2026-08-05. Four independent instances in
+two days, in three different projects.*
+
+Every one of these returned **success** and **wrong**:
+
+| what returned success | what was actually true |
+|---|---|
+| `football-data.co.uk` HTTP **200** | `COL.csv` is byte-identical to `POL.csv`; its own League column reads *Ekstraklasa*. `KOR.csv` ≡ `NOR.csv`. |
+| `ffmpeg` exit **0**, empty stderr | a **blank frame**. `%` in `drawtext` renders the whole caption as nothing. Bisected: `"Total 18%"` → 1,002-byte blank, `"Total 18 pct"` → 3,007 bytes with text. `\%` does not help; `textfile=` does not help; `expansion=none` does. |
+| a collector that **printed a running total for every query** | it wrote **zero rows** — the write sat inside an `if already-have: skip` branch. |
+| an earlier repo scorer | *"reported 358 repos scored when 92 had real data."* |
+
+**The check is always the same shape: assert something about the CONTENT, not
+about the call.** Hash the file and read its own identifying column. Measure the
+image's pixel standard deviation (`extractor-upgrade/src/frames.py::is_flat`).
+Assert the row count went **up**, not that the function returned.
+
+> **A silent no-op that reports progress is worse than a crash.** A crash is
+> free to diagnose. This costs a session and then a retraction.
+
+---
+
+## 14. A `robots.txt` check that does not implement `Allow:` is not a check
+
+*Contributed by `extractor-upgrade`, 2026-08-05.*
+
+```
+# hacker-news.firebaseio.com/robots.txt
+User-agent: *
+Allow: /*.json$        <- the API is EXPLICITLY permitted
+Allow: /*.json?*$
+Disallow: /               only the HTML is not
+```
+
+A parser that reads the `Disallow` and ignores the `Allow` calls a **documented,
+explicitly-permitted public API off-limits.** The standard is **longest match
+wins**, with `*` and `$` wildcards. Implementing it flipped two hosts in
+*opposite* directions — Hacker News forbidden → **permitted**, Apple Podcasts
+permitted → **forbidden** (`Disallow: /search*`, which the naive parser had
+missed the other way).
+
+Two corollaries, both learned the expensive way:
+
+- **A host that serves NO `robots.txt` is UNDECIDABLE, not permitted.** Keep the
+  two states apart in the data, not just in your head.
+- **Read the whole file before concluding a host is closed.** `i.ytimg.com`
+  disallows `/sb/` and nothing else. Reading that line, correctly concluding
+  storyboards were forbidden, and stopping there cost a day and produced a
+  published retraction — `/vi/<id>/maxres{1,2,3}.jpg` are permitted 1280×720
+  video frames.
+
+**Refusing something you are permitted to use costs exactly as much as using
+something you are not.**
+
+---
+
+## 15. A 404 never establishes that something is dead
+
+*Contributed by `extractor-upgrade`, 2026-08-05, after getting it wrong twice in
+the same script.*
+
+- **v1** counted every 404 as death and killed `api.elections.kalshi.com`,
+  `api.exchange.coinbase.com` and `r2v2.pmxt.dev` — all live hosts whose **base
+  URL has no handler**.
+- **v2** patched that with a path-segment heuristic and immediately killed
+  `https://api.elections.kalshi.com/trade-api/v2` — a **versioned API base this
+  repo is recording against right now.** A heuristic written to fix a false kill
+  produced another one on its first run.
+
+Only four states establish death, and none of them is an inference:
+
+| state | why it is conclusive |
+|---|---|
+| **NO_DNS** | the name does not resolve; nothing is there to serve anything |
+| **ARCHIVED** | the **owner's own flag**, not a judgment |
+| **HTTP 410 Gone** | the one status that explicitly means permanently removed |
+| **COLD** | no push in >1 year — reported as its own state, never as death |
+
+`401` / `403` / `429` are a door **held shut**, not a door that is **gone**.
+`guest.api.arcadia.pinnacle.com/0.1/sports` returns **401**, while
+`/0.1/sports/29/matchups` returns **200 and 1.7 MB with no header at all.**
+
+> This is the same family as the repo's existing kills-from-bad-probes:
+> `market-selection`'s stale tickers produced **19 wrong kills**, and
+> `bot-hunt`'s `tag_slug=esports` killed its own best lead. **A probe that
+> samples the wrong thing fails silently, and always toward a kill.**
+
+---
+
+## 16. Never let your own dedup decide your headline number
+
+*Contributed by `extractor-upgrade`, 2026-08-05. The near-miss worth reading
+even if you skip the rest.*
+
+A retrieval design here rests on the finding that **beginner-phrasing and
+insider-vocabulary queries return near-disjoint sets** — Jaccard 0.037 on video,
+0.032 / 0.033 / 0.036 on repositories.
+
+A fourth corpus was built to test it. The collector skipped any id it already
+held, so an item found by **both** families was filed under whichever family
+reached it first. **That makes the overlap structurally zero regardless of what
+the corpus contains.**
+
+It returned **Jaccard 0.000**, and was one commit from being published as *the
+fourth independent corroboration*.
+
+> **A self-inflicted number that AGREES with three prior measurements is the
+> least likely number in the world to be questioned.** Nothing about it looks
+> wrong. It has the right sign, the right magnitude, and a story.
+
+**The guard:** for any set-overlap, set-difference or novelty statistic, record
+membership in a table that permits multiple memberships, and compute the
+statistic from *that* — never from a deduplicated collection whose insertion
+order silently defines the answer. And when a new measurement lands **exactly**
+where the old ones did, that is the moment to go looking for the line of your
+own code that put it there.
+
+---
+
 ## The one-page version
 
 If you carry nothing else into the next project:
@@ -548,3 +675,12 @@ If you carry nothing else into the next project:
 8. **Pre-register, and put the gate in code** so it fires before you see a number.
 9. **One FDR denominator for the whole project.** Cancelled hypotheses stay in it.
 10. **Every correction so far has shrunk the edge.** Update on that.
+11. **Assert content, not the call.** A 200 is not a correct file and a 0
+    exit code is not a rendered artifact. A silent no-op that reports
+    progress is worse than a crash.
+12. **A 404 never establishes death, and no-`robots.txt` is not permission.**
+    A probe that samples the wrong thing fails silently, and always toward
+    the conservative answer - a kill, or a refusal.
+13. **Never let your own dedup decide your headline number**, and treat a
+    result that lands exactly on your prior ones as a reason to go looking
+    for the line of code that put it there.
