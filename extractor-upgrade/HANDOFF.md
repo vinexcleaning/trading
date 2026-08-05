@@ -196,7 +196,7 @@ conservative answer.** Two of mine failed toward "dead" and one toward
 | HN permission | `Allow: /*.json$` on Firebase; Algolia serves NO robots.txt and is used for ids only |
 | F1/F2 overlap | 312 / 298, **3 in both, Jaccard 0.005** - direction reproduces, magnitude does not |
 | HN verdicts | **537 of 607 SKIP** - stories only; the substance is in the comments |
-| comment pass | **RUNNING at hand-off** |
+| comment pass | **RUNNING at hand-off** - 60 of 614 stories walked in ~15 min, so ~2.5 h total. It RESUMES CLEANLY: `python src/hn.py --comments` rebuilds its own have-set from the database and re-walks only what is missing. Kill it freely. |
 | **my bugs today** | 4: the frame retraction, AND-matched queries, a dedup that zeroed the overlap, a silent no-op comment pass |
 
 ### The two that would have produced a false result
@@ -216,7 +216,9 @@ that *"reported 358 repos scored when 92 had real data."*
 
 ## Single next action
 
-**Read the chapter markers out of the 396 descriptions already on disk.** Free,
+**Finish the HN comment pass, then `--score` and `--report`.** `python src/hn.py --comments` (resumable, ~2.5 h from cold, already ~10% done). The stories layer is 88.5% SKIP because a story is a headline and a URL; **the substance is in the comments**, which is where `social-signal` found every one of its contradictions on Reddit. The one thread worth reading first is the **Launch HN for Kalshi itself** - 148 points, 165 comments, the venue this programme trades, replied to by people with no reason to be polite.
+
+~~Read the chapter markers out of the 396 descriptions already on disk.** Free,
 offline, no permission needed, 33.1% coverage, and it improves `watch_segments`
 — the number that decides whether extraction beat watching. Everything else on
 the list either needs a decision from the user (the transcript-endpoint
