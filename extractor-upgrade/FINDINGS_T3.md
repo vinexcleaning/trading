@@ -101,8 +101,12 @@ belongs in `GUARDS.md`.
 
 ## 3. Chapter detection needs no new source at all
 
-**396 of 1,197 video descriptions already in the database carry three or more
-chapter markers — 33.1%.**
+**367 of 1,197 video descriptions already in the database satisfy YouTube's own
+chapter rule — 30.7%.**
+
+> Counting any description with >=3 timestamps gives 396. Enforcing the actual
+> rule (first stamp `0:00`, >=3 stamps, >=10 s apart) gives **367**. The
+> earlier figure is corrected here rather than left standing.
 
 YouTube chapters live in the description. The descriptions are already on disk.
 A chapter list is an **author-written table of contents**.
@@ -154,9 +158,10 @@ already run.
 
 ## 5. What would actually be worth building next, ranked
 
-1. **Read chapters out of the descriptions.** Free, offline, 33.1% coverage,
-   already-owned data, and it improves `watch_segments` — the number that
-   decides whether extraction beat watching.
+1. ~~**Read chapters out of the descriptions.**~~ **DONE** — `src/chapters.py`,
+   367 videos, 3,384 chapters. It does NOT improve `watch_segments` (2 of 19,
+   measured); it is a free retrieval index and a label for where the permitted
+   frames landed. See [FINDINGS_T7.md](FINDINGS_T7.md).
 2. **Point `youtube-signal`'s pipeline at podcasts via PodcastIndex.** Same
    rubric, same reader, longer-form material, no visual layer to miss, and
    permitted in writing.
