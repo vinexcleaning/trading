@@ -121,6 +121,58 @@ CREATE TABLE IF NOT EXISTS rd_scores (
     scored_utc   TEXT
 );
 
+-- ---------------- the READ step (T2e) ----------------
+-- The mechanical scorer ranks; reading extracts. youtube-signal's whole value
+-- comes from the second one, and every finding this project has produced came
+-- from reading the top of the queue rather than from the score. These tables
+-- are the same shape as that project's, so extractions are comparable.
+CREATE TABLE IF NOT EXISTS sc_readings (
+    post_id     TEXT PRIMARY KEY,
+    platform    TEXT,
+    s_total     INTEGER,
+    b_total     INTEGER,
+    h_total     INTEGER,
+    verdict     TEXT,
+    summary     TEXT,
+    why_it_matters TEXT,
+    read_utc    TEXT
+);
+
+CREATE TABLE IF NOT EXISTS sc_claims (
+    claim_id    INTEGER PRIMARY KEY AUTOINCREMENT,
+    post_id     TEXT NOT NULL,
+    claim_text  TEXT NOT NULL,
+    claim_type  TEXT,      -- mechanism|concept|math|procedure|tool_rec|spec|result
+    stated_n    INTEGER,   -- the denominator, or NULL. NEVER guess one.
+    stated_period TEXT,
+    stated_capital TEXT,
+    stated_win_rate REAL,
+    n_check_verdict TEXT,
+    expires_after_months INTEGER,
+    quote       TEXT,      -- verbatim, <15 words: a claim you cannot quote did not happen
+    UNIQUE(post_id, claim_text)
+);
+CREATE INDEX IF NOT EXISTS ix_sc_claims_post ON sc_claims(post_id);
+
+CREATE TABLE IF NOT EXISTS sc_tools_seen (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    post_id     TEXT NOT NULL,
+    name        TEXT NOT NULL,
+    url         TEXT,
+    purpose     TEXT,
+    is_authors_own TEXT,   -- no|disclosed|undisclosed
+    UNIQUE(post_id, name)
+);
+CREATE INDEX IF NOT EXISTS ix_sc_tools_post ON sc_tools_seen(post_id);
+
+CREATE TABLE IF NOT EXISTS sc_methods (
+    method_id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    post_id     TEXT NOT NULL,
+    title       TEXT,
+    steps_json  TEXT,
+    UNIQUE(post_id, title)
+);
+
 CREATE TABLE IF NOT EXISTS rd_log (
     id      INTEGER PRIMARY KEY AUTOINCREMENT,
     ts_utc  TEXT,

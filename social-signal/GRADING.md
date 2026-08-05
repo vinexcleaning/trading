@@ -87,9 +87,41 @@ fix:
   a post that is nothing but failures**, because its author writes "went from
   bleeding daily" rather than "I lost".
 
-**Nothing was patched in response.** Tuning patterns until they fire correctly on
-the handful you happened to read is overfitting, and it would swap a *known-bad*
-instrument for an *unknown* one.
+### The worst one, found by reading on 2026-08-05
+
+A post claiming the favourite–longshot bias appears in prediction markets scored
+**S=10 B=4 H=3 → ABSORB_AND_RECOMMEND**, the top of the whole queue. Its comment
+section demolishes it — *"40-50% implied probability is neither a favourite or a
+longshot… most likely an interpretation error, and if not then just spurious"*,
+*"There's no universe where you're getting 20% edge per trade."*
+
+Tracing every component back to the text that earned it:
+
+| component | came from | the span |
+|---|---|---|
+| **S1 +3** names the cost side | **a COMMENT** | *"fees + slippage is like 5% at most?"* |
+| **S4 +2** gives a mechanism | **a COMMENT** | *"you don't need to worry about adverse selection"* |
+| **B4 +2** names a gotcha | **a COMMENT** | *"Most likely an interpretation error… just spurious"* |
+| S2, S3, S5, B3, H1 | the post | — |
+
+**Seven of its ten substance points came from the refutation.** The post scored
+maximum substance *because* it was being demolished, and the better the
+criticism the higher the claim scores.
+
+This one is not a pattern quirk — it is a deliberate architectural choice doing
+something unanticipated. Scoring the post *plus its comment thread* is right for
+**finding** good threads, because on Reddit the substance is frequently in the
+replies. But it means a single score cannot distinguish *"the post is good"*
+from *"the post is wrong and the replies are excellent"* — and for a reputation
+table those are opposite conclusions.
+
+**Recorded, not patched.** The fix is architectural (store a post-only score
+beside the thread score) rather than a pattern tweak, and it is untested.
+
+### Nothing was patched in response
+
+Tuning patterns until they fire correctly on the handful you happened to read is
+overfitting, and it would swap a *known-bad* instrument for an *unknown* one.
 
 **So the score is used for one thing: ranking what to read next.** No verdict in
 `reports/TOOL_REPUTATION.md` rests on it. Every finding this project has produced
