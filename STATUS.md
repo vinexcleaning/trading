@@ -1760,3 +1760,46 @@ independently reproduced, because at this sample size nothing is.
 full window â€” if net P&L still sign-flips and adverse selection still decays,
 that closes H10 as underpowered rather than negative.
 
+
+#### H10 final, on the complete 2-day window (2026-08-05)
+
+47 hourly files, **~13M L2 rows**, 7,182 + 5,777 simulated resting orders across
+**81 events**. `src/h10_stability.py` re-runs the statistics over nested time
+prefixes; the verdicts are its output, not my reading of them.
+
+| statistic (JOIN) | prefix range | 1st half â†’ 2nd | verdict |
+|---|---|---|---|
+| fill rate, permissive | 62.8â€“68.7% | +63.9 â†’ +66.6 | âœ… **STABLE** |
+| **fill rate, strict** | **29.0â€“35.7%** | +31.6 â†’ +34.5 | âœ… **STABLE** |
+| **net P&L per filled contract** | **âˆ’1.48 â€¦ +2.55Â¢** | âˆ’0.35 â†’ +2.35 | âŒ **SIGN-FLIPS â€” noise** |
+| adverse selection | âˆ’14.04 â†’ âˆ’4.03pp | âˆ’10.30 â†’ âˆ’4.52 | âš ï¸ **DECAYING â€” artifact** |
+| "monopoly regime" thin-book edge | +2.05 â†’ +8.83pp | +4.22 â†’ +8.06 | âš ï¸ **STRENGTHENING â€” GUARDS #10** |
+
+**One number from H10 is a measurement: the fill rate.** Everything about P&L
+is noise, and the mechanism I most expected to find â€” adverse selection, the
+free-roll â€” **decays toward zero as data is added**, the same trajectory shape
+as this repo's stars-vs-substance false positive. It is not shown absent; it is
+**unmeasurable at 81 events**.
+
+> **The fill rate is corroborated three independent ways**, and this is the
+> transferable output: my strict measure off the tape (**31â€“35%**), an r/quant
+> bot author's diagnosis of his own too-good results (*"when it's 30% it will be
+> way less"*), and `eshan327/kalshi-arb`'s hardcoded
+> `PAPER_SIM_PASSIVE_BASE_FILL_PROB = 0.35`. **Fill rate is NOT the constraint
+> on maker strategies on Kalshi esports** â€” the pre-registered <20%
+> falsification fails.
+
+**The fill model is validated against the API itself.** `hbere/kalshi-transport`
+wraps `GET /portfolio/orders/{id}/queue_position`, documented as *"shares
+resting ahead of this order under **price-time priority**"* â€” so joining the
+back of a price level is Kalshi's actual discipline, not my assumption. Only
+**5.2% of 3,201 repo archives model queue position at all, and 3.0%
+trade-through**; the two things that decide whether a maker backtest is honest
+are the two rarest.
+
+âš ï¸ **A performance error of mine, recorded.** v1 of the stability script re-ran
+the full replay per prefix â€” O(nÂ²) in files, ~350 parses of 200 MB parquet, and
+it produced nothing in 15 minutes. Replaced by replaying once and slicing orders
+by placement timestamp, which is exactly equivalent because an order placed in
+hour 12 cannot depend on a file from hour 40.
+

@@ -37,15 +37,34 @@ the method that killed this repo's own stars-vs-substance false positive —
 ρ went **+0.241 at n=105 to −0.007 at n=3,165**, decaying monotonically, which
 is what a small-sample artifact looks like from the inside.
 
-| statistic | range across prefixes | verdict |
-|---|---|---|
-| **fill rate, strict (JOIN)** | **30.8 – 31.2%**, last-3 drift **0.01** | ✅ **STABLE** |
-| fill rate, permissive (JOIN / IMPROVE) | 55.5–62.3% / 39.8–46.4% | ✅ STABLE |
-| **net P&L per filled contract (JOIN)** | **−1.71¢ … +1.34¢** | ❌ **SIGN-FLIPS — noise** |
-| net P&L per filled contract (IMPROVE) | −3.09¢ … +0.93¢ | ❌ **SIGN-FLIPS — noise** |
-| adverse selection (JOIN) | −13.29 → **−8.52pp**, monotone toward zero | ⚠️ decaying — artifact signature |
-| adverse selection (IMPROVE) | −7.59 → **−5.41pp**, monotone toward zero | ⚠️ decaying — artifact signature |
-| "monopoly regime" thin-far-side edge | +1.47 → **+6.70pp** (JOIN), +2.38 → **+13.32pp** (IMPROVE) | ⚠️ **strengthening — see below** |
+**FINAL, on the complete 2-day window: 47 hourly files, ~13M L2 rows,
+7,182 JOIN orders and 5,777 IMPROVE orders across 81 events.**
+
+| statistic (JOIN) | range across prefixes | 1st half → 2nd half | verdict |
+|---|---|---|---|
+| **fill rate, permissive** | 62.8 – 68.7% | +63.9 → +66.6 | ✅ **STABLE** |
+| **fill rate, strict (trade-through)** | **29.0 – 35.7%** | +31.6 → +34.5 | ✅ **STABLE** |
+| **net P&L per filled contract** | **−1.48 … +2.55¢** | −0.35 → +2.35 | ❌ **SIGN-FLIPS — noise** |
+| adverse selection | −14.04 → **−4.03pp** | −10.30 → **−4.52** | ⚠️ **DECAYING — artifact signature** |
+| "monopoly regime" thin-far-side edge | +2.05 → **+8.83pp** | +4.22 → **+8.06** | ⚠️ **STRENGTHENING — GUARDS #10** |
+
+IMPROVE agrees on every line: fill rate STABLE at 43.8–52.7%, net P&L
+**SIGN-FLIPS** (−2.57 … +2.16¢), adverse selection drifting −7.42 → −2.63pp.
+
+*(The 21- and 28-hour figures that produced the correction above are kept in
+`reports/h10_stability.json`.)*
+
+> ### The result I most expected to find is the one that decays
+>
+> **Adverse selection — the free-roll the 20-year professional warned about and
+> the mechanism this entire strategy was supposed to demonstrate — goes from
+> −14.04pp to −4.03pp as data is added, halving between the first and second
+> half of the sample.** That is the same trajectory shape as this repo's
+> stars-vs-substance false positive.
+>
+> It does not show that adverse selection is absent. It shows that **at 81
+> events I cannot measure it**, and that the large early number was the sample
+> being small.
 
 ### ⚠️ The one result that got better with more data is the one to distrust most
 
@@ -224,6 +243,46 @@ one after the null control is re-run on the full window**, and it is entirely
 possible it stays unconfirmed.
 
 ---
+
+## 4b. The fill model, validated against the few people who wrote one
+
+I wrote `h10_passive.py`'s fill model from first principles, so it was checked
+against the corpus afterwards. Of **3,201 cached repo archives, queue position
+appears in 5.2% and trade-through in 3.0%** — the two things that decide whether
+a maker backtest is honest are the two rarest. Three of the handful that have
+them:
+
+**1. Kalshi publishes queue position, and confirms the discipline.**
+`hbere/kalshi-transport` (1★) wraps
+`GET /portfolio/orders/{order_id}/queue_position`, documented as *"shares
+resting ahead of this order under **price-time priority**."*
+
+> **This validates the core assumption of my fill model** — a new order joins
+> the BACK of its price level and fills only after the size ahead of it is
+> consumed. It is not an assumption I had to make; Kalshi's own API is built on
+> it. (The endpoint is under `/portfolio`, so it is authenticated and no part of
+> this read-only work uses it.)
+
+**2. A practitioner's assumed fill rate matches my measured one.**
+`eshan327/kalshi-arb` hardcodes its paper simulator:
+
+| config constant | value |
+|---|---|
+| `PAPER_SIM_PASSIVE_BASE_FILL_PROB` | **0.35** |
+| `PAPER_SIM_AGGRESSIVE_FILL_PROB` | 0.92 |
+| `PAPER_SIM_QUEUE_AHEAD_FRACTION` | 0.75 |
+| `PAPER_SIM_MIN/MAX_PARTIAL_FILL_FRACTION` | 0.2 / 0.7 |
+
+**Theirs is a guess baked into config; mine is measured off the tape at 31.1%.**
+Together with the r/quant author's ~30%, three independent routes land in the
+same place — and this is now the one number on this page that is stable.
+
+**3. The hygiene note worth stealing.** `tfrmma/prediction-market-maker` (4★),
+the only repo in the corpus carrying all six book-mechanic signals, cancels and
+flattens on restart rather than adopting stale orders, because *"we can't
+recover exact queue position or partial-fill history for an order placed before
+restart."* The same reasoning is why this simulation never adopts a resting
+order across a snapshot re-sync.
 
 ## 5. Limitations, stated rather than discovered later
 
