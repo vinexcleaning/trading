@@ -12,6 +12,10 @@ not started, no order endpoint was touched, `TRADING_DISABLED` untouched.
    extractor results, the answer.
 3. **[DECISIONS.md](DECISIONS.md)** — eight judgement calls taken without
    asking, conservative option each time.
+4. **[REPRODUCTION.md](REPRODUCTION.md)** — a *second* session's independent
+   re-run of all of the above (everything reproduced), the one reporting
+   selection it found (B005a), and a line-by-line look-ahead audit of the
+   decisive test.
 
 ## What is here
 
