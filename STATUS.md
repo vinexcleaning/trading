@@ -1239,3 +1239,195 @@ instrument itself** â€” they read 42%/67% two-sided against 100% elsewhere.
 decided, then re-run `src/run_grid.py`. Nothing from the test family is
 reportable until it passes.
 
+---
+
+## extractor-upgrade — the rubric graded against known answers (2026-08-04)
+
+`extractor-upgrade/` · `FINDINGS_T1.md`, `FINDINGS_T2.md`, `FINDINGS_T3.md`,
+`HOW_TO_CALL.md`, `PAID_OPTIONS.md`, `DECISIONS.md`, `HANDOFF.md` and `src/`
+committed · `data/`, `reports/`, `frames/` gitignored · full write-up in
+[extractor-upgrade/HANDOFF.md](extractor-upgrade/HANDOFF.md).
+
+**Cost $0.00.** Every sibling database opened `mode=ro` in the URI, so this
+project cannot have caused a third lock-contention failure.
+
+### The rubric had never been tested. It has now, on 24 cases with known answers
+
+Every label is fixed **outside** the rubric — arithmetic on the source's own
+numbers, a live API check, a fact this repo already primary-sourced, or an
+internal contradiction. 17 of 24 are **bands** rather than points, each tabled
+with what fixes its bound, because encoding taste as ground truth makes a
+confusion matrix an opinion poll.
+
+| instrument | exact | false RECOMMEND | stale caught |
+|---|---|---|---|
+| **the pipeline as it actually ran** | **17/23 = 74%** | 2 | **0 of 2** |
+| **the mechanical lexicon** | **10/24 = 42%** | 6 | 0 of 2 |
+| **rubric v2 (the fix)** | 13/24 = 54% | 5 | **2 of 2** |
+
+**The model read is the instrument; the lexicon is a ranker that should never
+have been allowed to emit a verdict.** That is now a number rather than an
+opinion, and it matters to `social-signal`, whose reputation table joins both.
+
+### Six defects, measured not asserted
+
+1. **Staleness is invisible BY CONSTRUCTION** — nothing in either instrument
+   asks whether the thing being taught still exists. A Polymarket CLOB v1
+   tutorial is the pipeline's `BUILD_AND_RECOMMEND`. Verified live: both v1
+   clients archived, `py-sdk` pushed today. **The trap: `pip install
+   py-clob-client` STILL WORKS** — PyPI serves 0.34.6 while the repo is
+   archived, so nothing errors and nothing warns.
+2. **Components fire on spans that say the opposite.** S1 (+3, top-weighted)
+   fires on *"I haven't added fees or slippage yet"*. A post warning ABOUT
+   strategy sellers scored **H = −6** on the language it quotes to condemn.
+3. **Two components are unreachable and three are intercepts — and the two
+   implementations disagree about which.** `H1b` has a weight and **no
+   detector**, so it is unreachable in 4,432 posts. `H9`/`H10` never fire in 38
+   reads. `S5` 95%, `S4` 92%, `H4` 87% — which is most of why 38 reads produced
+   **zero SKIPs**. *The same component name means different things in the two
+   corpora, so a score is not comparable across them.*
+4. **The prompt does not declare 6 of the 21 components the code scores.**
+   `B1`–`B5` and `H10` appear nowhere in the `RUBRIC` string and the schema has
+   no `b_components` key — yet `validate_response` and `totals` both read one.
+5. **No verdict in the database can be recomputed from the database.**
+   `verdict()` consumes `teaching_quality`, which is never persisted.
+6. The brief's named failure (Part Time Larry, S=3 H=9 → SKIP) **is already
+   fixed** by the B axis added 08-03. Kept as a regression case.
+
+v2 adds a currency **gate** rebuilt from the GitHub and PyPI APIs on every run,
+plus negation / condemnation / third-party / debunk guards. Over **5,567
+documents neither rubric was tuned on, 10.7% change action** — a targeted fix,
+not a rewrite. **Each guard trades one error for another: false RECOMMEND went
+6 → 5, not 6 → 0.** The ceiling is stated: every remaining failure has the same
+shape — the words look honest and the dishonesty is in the relationship between
+two numbers, or in a denominator that is *absent* and therefore unmatchable.
+
+> **One of the brief's five named cases is not in this repo.** No transcript or
+> markdown anywhere contains "23.53". Recorded as missing and two verifiable
+> cases substituted, rather than writing an unverifiable label into a test set
+> whose whole premise is verifiable labels.
+
+### ⛔ Vision: built, validated, and every route to a YouTube frame is a `Disallow` line
+
+`youtube.com/robots.txt` disallows `/get_video`, `/get_video_info`,
+`/file_download`, `/youtubei/` and `/api/`; `i.ytimg.com/robots.txt` disallows
+`/sb/` — the storyboard path, which was the cheap route. yt-dlp calls
+`/youtubei/v1/`. **There is no fourth route.**
+
+> ### ⚠ It lands on `youtube-signal`, not just on this task
+> **`youtube-transcript-api` fetches from `www.youtube.com/youtubei/v1/player`**
+> (`_settings.py:2`) — the same `Disallow` line, and `/api/` and
+> `/timedtext_video` are disallowed by name too. `social-signal` killed
+> Reddit's own JSON API, X, TikTok and Instagram on exactly this standard and
+> wrote *"a User-Agent string is not consent"*. **The project has been on one
+> side of a line it drew itself on the other side of.**
+>
+> **Nothing was stopped, changed or deleted.** It is the user's call and the
+> options are not equivalent: transcripts are the basis of 38 reads, 484 claims
+> and a 190,000-character knowledge file.
+
+So `src/frames.py` was built, validated end to end against a synthetic video
+with known content at known seconds (5/5), and points at **local files**. It
+renders `SPOKEN: I made 40 percent` beside `SCREEN: Total P/L −18.4%` — the
+mismatch the task is about.
+
+**Would vision have changed anything?** 22 of 38 videos flagged
+`visual_dependent`; **4.9% of runtime** sits inside a `watch_segment`; **8 of
+484 claims** say their evidence was on screen; **0 of 24 test-set labels needed
+a frame**. *The bias in that zero runs against vision and is stated*: the test
+set only admits cases whose answer is independently verifiable, and a claim
+settled only by looking at a screen is exactly the case it could not include.
+
+### Four sources are open and unused, one refuses AI by name
+
+Probed three ways — robots, then live, then **does the content contain what it
+claims**, which is the check prior sessions skipped.
+
+**Open and permitted:** Hacker News's official Firebase API, any Discourse
+forum's `/latest.json`, **PodcastIndex keyless** (12,440 bytes, no header), and
+arctic-shift re-verified. **Closed:** Apple Podcasts (`Disallow: /search*`) and
+**Lobsters**, whose `robots.txt` carries `Content-Signal: ai-input=no,
+ai-train=no`. Its JSON returns 200 and 12,772 bytes of good data. It was not
+taken.
+
+> **396 of 1,197 video descriptions already on disk carry ≥3 chapter markers —
+> 33.1%.** YouTube chapters live in the description and nothing reads them. An
+> author-written table of contents is a strictly better `watch_segment` seed
+> than a phrase list, and it needs no network call, no dependency and nobody's
+> permission. **Highest value-to-work item found.**
+
+### One command, offline, for any session mid-investigation
+
+`extractor-upgrade/src/ask.py` queries all four corpora at once — 484 claims,
+3,165 scored repos, 4,432 scored posts, 240 joined entities — read-only, no
+network, seconds. `--tested` · `--backtester` · `--datasources` · `--tool`.
+See [extractor-upgrade/HOW_TO_CALL.md](extractor-upgrade/HOW_TO_CALL.md).
+
+> ⚠ **Both SKILL.md files quote numbers their own projects have retracted.**
+> `github-signal/SKILL.md` still says `trust_me_bro` is *uncorrelated* with
+> substance (rho +0.03, p 0.41); that project overturned it at n=2,717 —
+> **rho +0.064, p 0.0009, weakly POSITIVE**. It also quotes the stars
+> correlation at n=2,260 against full coverage n=3,165, and
+> `youtube-signal/SKILL.md` gives the **laptop** path as project root.
+> The `K015 = W011` shape again. Not edited — they are sibling files.
+
+### Task 5 was already built, and the axis added to it found nothing new
+
+`social-signal`'s cross-platform table exists (240 entities, 946 observations,
+11 CONTRADICTIONs), so it was not rebuilt. A dated, re-runnable **liveness**
+verdict was joined onto all 176 entities carrying a repo or URL: **148 ALIVE,
+and the only two provably gone — `thebetterers.com` (no DNS) and
+`polymarket/agents` (archived, 637 days) — were already in the table by hand.**
+A live currency check surfaces nothing the reading did not. Its value is that
+it is now automated and dated, so it catches what dies next.
+
+### Two refinements of sibling findings, and neither is a contradiction
+
+- **`bot-hunt` is right about Pinnacle.** `/0.1/sports` returns 401 with no
+  header and 403 with the public guest key, but **`/0.1/sports/29/matchups`
+  returns 200 and 1.7 MB with no header at all.** The index is gated; the
+  endpoint that matters is not. A session probing `/sports` first would wrongly
+  conclude the API is dead.
+- **`oracleselixir.com` returns HTTP 200** (3,919 bytes, a shell) against a
+  recorded 404. Different URLs, so not a contradiction — check the data path
+  rather than either line.
+
+### Five of my own errors, recorded because the shape repeats
+
+Three false kills and one false refusal, all from probes sampling the wrong
+thing: counting every 404 as death (killed three live API hosts); patching that
+with a path-segment heuristic that immediately killed a versioned API base; a
+robots parser that **ignored `Allow:`** and called Hacker News's explicitly
+permitted API forbidden; and a currency alias table that matched the ordinary
+word `agents`. Plus an ffmpeg call that returned **exit code 0 and a blank
+frame**, caught by looking at the image.
+
+**Three candidates for [GUARDS.md](GUARDS.md):** a robots check without `Allow`
+is not a robots check · a 404 never establishes death · a zero exit code is not
+a rendered artifact.
+
+### THIRD INDEX CROSS-CONTAMINATION, and it happened to this session
+
+`CLAUDE.md` section 5 says *"Stage explicit paths. NEVER `git add -A`. Two
+sessions have already cross-contaminated commits that way."* This session staged
+explicit paths only, and it still happened.
+
+**Commit `fbe0f62` is titled `bot-hunt: AMENDMENT A1` and contains four
+`extractor-upgrade` files** — `FINDINGS_T3.md`, `HANDOFF.md`, `PAID_OPTIONS.md`
+and `src/find_sources.py`. A concurrent `bot-hunt` session ran `git commit`
+while those files sat in the index, and **git's index is shared by every
+session in the working tree.** Explicit staging protects you from *your own*
+next command; it does not protect you from somebody else's.
+
+**Not rewritten.** The other session is running now and the content is correct;
+only the attribution is wrong. Recorded here so the history reads honestly.
+
+> **The rule that would actually work** is not about `-A` at all: **stage and
+> commit in the same command**, so nothing of yours is ever resident in the
+> shared index while another session might commit. `git add <paths> && git
+> commit` as one shell invocation, never as two turns. Worth a
+> [GUARDS.md](GUARDS.md) row and worth amending section 5 to say so, because the
+> rule as written has now failed three times.
+
+**Single next action:** read the chapter markers out of the 396 descriptions
+already on disk. Free, offline, needs nobody's permission.
