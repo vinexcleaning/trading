@@ -1560,3 +1560,123 @@ cost real time here:
    cannot be anchored"*, which would have written off the dataset. A census over
    all 312 files found **92% populated**. Same failure as the 100-trade YouTube
    backtest, the n=105 stars correlation and the n=822 `trust_me_bro` reading.
+
+---
+
+## extractor-upgrade, session 2 — I was wrong about frames, and the GitHub ranking recommends dead code (2026-08-05)
+
+Full write-up: [extractor-upgrade/HANDOFF.md](extractor-upgrade/HANDOFF.md).
+Cost $0.00.
+
+### ⛔ RETRACTION, same day: "frame acquisition from YouTube is closed" was too strong
+
+**Three full-resolution video frames per video are permitted and I missed them.**
+
+```
+https://i.ytimg.com/vi/<id>/maxres1.jpg   1280x720, ~110 KB
+https://i.ytimg.com/vi/<id>/maxres2.jpg   ~25 / 50 / 75% of runtime
+https://i.ytimg.com/vi/<id>/maxres3.jpg   AUTO-EXTRACTED VIDEO FRAMES
+```
+
+`i.ytimg.com/robots.txt` disallows **`/sb/` only**. I read that line, correctly
+concluded storyboards were forbidden, and **did not then ask what else lived on
+that host.** Verified: `/sb/` → **403**, `/vi/maxres1.jpg` → **200 and 114,833
+bytes**. Same shape as the false kills already recorded — a probe that samples
+the wrong thing fails toward the conservative answer.
+
+**What survives:** the media *stream* is forbidden at every hop. All three
+`googlevideo.com` hosts checked return `User-agent: * / Disallow: /`, so a
+third-party downloader site is **the same act with one extra hop** — it fetches
+from `googlevideo.com` on your behalf.
+
+### The measurement vision was supposed to make, made
+
+38 videos · 114 frames · 14.5 MB · **6 sheets read in full**, chosen as the ones
+whose stored verdict a screen could plausibly overturn. A loaded sample, so the
+rate below is not a corpus rate. **6 of 6 produced something a transcript could
+not.** Detail: `reports/T2b_screen_evidence.md`.
+
+> ### The one that changes a verdict
+> **`8u6jy8v56ww`** — the 96.83%-win-rate Polymarket BTC study, stored as
+> **ABSORB_AND_RECOMMEND** on S=10 H=6. It projects a $20,000 bankroll at $100 a
+> trade producing **over $300,000 monthly**.
+>
+> **The account visible on screen holds $1.79.** `Portfolio $1.79 · Cash $1.79 ·
+> Amount $0`, no position open. The same frame shows **Up 37¢ / Down 67¢ = 104¢**
+> — a 4% two-sided spread on a market whose break-even the video itself states as
+> 51.02%, so the screen also quantifies the cost side the projection omits.
+>
+> **That verdict is wrong and vision is why.** It is the first verdict in this
+> programme changed by looking at a screen.
+
+The other five: a **paid course sales page with "Coin Bureau viewers get an
+exclusive 10% discount"** terminating a video whose stored verdict is ABSORB
+(`YknxNkTgNWk`) — plus a results card on screen, *"TBO Trend $25 → $321
+(+1,182%, 75% win rate)"*, in **no recorded claim**, for the exact entity
+`social-signal` already flags as CONTRADICTION and whose site now returns **no
+DNS**; unattributed **Bloomberg Brief broadcast footage** and an enabled
+**"Front-Run Institutional"** toggle in the scam case (`PeutA_HKxew`), neither
+ever spoken; a wallet table where the **100.0% win-rate row wagered $752.16 and
+returned $1.99** while a 42.9% row returned +45.4% ROI (`yxfTHAGfaDc`); the
+archived v1 client's own method names, `client.get_order_book` and
+`client.cancel(order_id=…)`, confirming the staleness gate from the code rather
+than the date (`lVqF8oLzVAU`); and a **B=10 build score on a video whose own
+on-screen overlay reads "NO CODE"** (`86AlV6174KI`, logged as TENSION — three
+samples cannot prove absence).
+
+**Frames are ephemeral, per instruction:** 159 images / 14.8 MB deleted after
+extraction. 114 evidence rows kept, screen-derived fields stored apart from
+transcript-derived ones.
+
+### signal-github: 27% of the corpus is discontinued by its own owner
+
+`signal-github/src/currency.py` — a new **gate**, not a component.
+
+| | |
+|---|---|
+| scored repos | 2,732 |
+| **discontinued by their own owner** | **739 = 27.0%** |
+| …importing the archived Polymarket v1 client | 711 |
+| …archived outright by the owner | 28 |
+| **in the top 25 by `s_adj`** | **6 = 24.0%** |
+| **in the top 100** | **35 = 35.0%** |
+
+**The share is worse at the top than in the corpus.** `is_archived`, `pushed_at`
+and `pm_client` were all already computed and **none of them was read by the
+ranking**. And `pip install py-clob-client` still succeeds — PyPI serves 0.34.6
+while the repo is archived — so nothing warns a reader until the order endpoint.
+
+**Gating costs nothing measurable.** Against the external ground truth this
+project already validated `s_adj` against — repos that provably model Kalshi's
+*maker* fee correctly — the top 100 goes **6 → 9** and the top 200 **10 → 17**,
+with **zero fee-correct repos lost.** Removing dead weight promotes the live
+repos underneath it.
+
+**And the ranking has now been graded, which had never been done.** Labels fixed
+outside the instrument: five repos read in full, plus **739 by the owner's own
+statement**, which is not an inference. On the five hand-read cases the ranking
+agrees on **1 of 5** — it would RECOMMEND `hcharper/polyBot-Weather` (rank 3,
+**one commit**, a README claiming *"Guaranteed profit"*, v1 client) and merely
+ABSORB `aulekator` (557 stars, 4 commits, `fee_rate_bps=0` in the live path).
+Five is not a precision estimate; it is five demonstrations that **`s_adj` alone
+must never be read as a recommendation.**
+`extractor-upgrade/reports/T6_github_validation.md`.
+
+### Both SKILL files corrected — they quoted numbers their own projects retracted
+
+- `github-signal`: `trust_me_bro` *"uncorrelated with substance, rho +0.03,
+  p 0.41"* was n=822 and is **withdrawn**. At n=2,717 it is **rho +0.064,
+  p 0.0009 — weakly POSITIVE**; flagged repos score *higher*. It is an honesty
+  signal: discount the claims, not the tooling. Stars corrected to n=3,165.
+- `youtube-signal`: gave the **laptop** path as project root, so its documented
+  commands have been broken since the machine switch. Now also records that
+  three permitted frames per video exist.
+
+### ✅ User decision recorded: the transcript tool keeps running
+
+`youtube-transcript-api` fetches from `www.youtube.com/youtubei/v1/player`, which
+is a `Disallow` line. **The user's decision is to keep using it**, and it is
+recorded here rather than left unexamined. Nothing was stopped or deleted.
+
+**Single next action, unchanged:** read the chapter markers out of the 396
+descriptions already on disk. Free, offline, needs nobody's permission.

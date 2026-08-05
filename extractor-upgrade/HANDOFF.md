@@ -168,6 +168,23 @@ conservative answer.** Two of mine failed toward "dead" and one toward
 
 ---
 
+## Session 2 additions (2026-08-05)
+
+| | |
+|---|---|
+| **RETRACTED** | "frame acquisition from YouTube is closed" - too strong. `i.ytimg.com/vi/<id>/maxres{1,2,3}.jpg` are permitted 1280x720 auto-extracted frames. `/sb/` is the only Disallow on that host and I stopped at it. |
+| frames fetched / read | 114 across 38 videos / **6 sheets read, 6 findings** |
+| **verdict changed by vision** | `8u6jy8v56ww` - a $300,000/month projection against a **$1.79 account balance on screen** |
+| frames deleted after extraction | 159 images, 14.8 MB. 114 evidence rows kept. |
+| **signal-github: discontinued by owner** | **739 of 2,732 = 27.0%**; 6 of the top 25; 35 of the top 100 |
+| gate cost, vs external fee ground truth | top 100 **6 -> 9** fee-correct, top 200 **10 -> 17**, **zero lost** |
+| signal-github ranking vs 5 hand reads | **1 of 5 agree** |
+| new files in the sibling | `signal-github/src/currency.py` (additive only, no existing file edited) |
+| SKILL files corrected | both - retracted correlations and a laptop path |
+
+**User decision recorded:** the transcript tool keeps running despite
+`/youtubei/` being a `Disallow` line. Nothing stopped, nothing deleted.
+
 ## Single next action
 
 **Read the chapter markers out of the 396 descriptions already on disk.** Free,
