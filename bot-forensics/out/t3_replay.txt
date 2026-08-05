@@ -1,0 +1,188 @@
+﻿views 13,658   markets 14,162   score-joined events 1,406
+train events 4,238   holdout events 2,808
+score-joined that are in holdout: 578 / 1,406
+  NIGHT (as it ran 27-28 Jul)      ALL      ->  3280 trades on  650 matches, -5.64 c/trade
+  NIGHT (as it ran 27-28 Jul)      train    ->  1962 trades on  358 matches, -5.80 c/trade
+  NIGHT (as it ran 27-28 Jul)      HOLDOUT  ->  1475 trades on  302 matches, -5.52 c/trade
+  NIGHT floored at 25c (live band) ALL      ->  1534 trades on  622 matches, -7.16 c/trade
+  NIGHT floored at 25c (live band) train    ->   891 trades on  350 matches, -7.48 c/trade
+  NIGHT floored at 25c (live band) HOLDOUT  ->   745 trades on  289 matches, -6.91 c/trade
+  NIGHT + the 60c floor only       ALL      ->   861 trades on  598 matches, -6.78 c/trade
+  NIGHT + the 60c floor only       train    ->   451 trades on  327 matches, -5.83 c/trade
+  NIGHT + the 60c floor only       HOLDOUT  ->   412 trades on  272 matches, -7.60 c/trade
+  NIGHT + the 38c stop only        ALL      ->  3266 trades on  649 matches, -5.63 c/trade
+  NIGHT + the 38c stop only        train    ->  1960 trades on  357 matches, -5.82 c/trade
+  NIGHT + the 38c stop only        HOLDOUT  ->  1463 trades on  302 matches, -5.46 c/trade
+  NIGHT + no stop (hold to settle) ALL      ->  1067 trades on  605 matches, -4.59 c/trade
+  NIGHT + no stop (hold to settle) train    ->   607 trades on  330 matches, -5.39 c/trade
+  NIGHT + no stop (hold to settle) HOLDOUT  ->   478 trades on  282 matches, -3.58 c/trade
+  CURRENT (post 3 Aug fixes)       ALL      ->   498 trades on  425 matches, -6.47 c/trade
+  CURRENT (post 3 Aug fixes)       train    ->   292 trades on  248 matches, -5.96 c/trade
+  CURRENT (post 3 Aug fixes)       HOLDOUT  ->   224 trades on  190 matches, -7.38 c/trade
+
+==============================================================================
+TASK 3 - the live configuration replayed on the backtest data
+==============================================================================
+                                    config  trades  matches  trades_per_match  win_rate     net_$  net_c_per_trade  net_$_per_match  se_$_per_match  t_match   fees_$  avg_entry  settle_frac  stop_frac  target_frac  scored_markets
+         NIGHT (as it ran 27-28 Jul) [ALL]    3280      650             5.046    21.098 -7631.880           -5.643          -11.741           0.864  -13.592 1707.870     26.961        0.030      0.741        0.228            1845
+       NIGHT (as it ran 27-28 Jul) [train]    1962      358             5.480    19.878 -4808.800           -5.800          -13.432           1.295  -10.372 1039.370     25.440        0.029      0.761        0.209            1074
+     NIGHT (as it ran 27-28 Jul) [HOLDOUT]    1475      302             4.884    22.305 -3254.540           -5.522          -10.777           1.137   -9.482  753.490     28.548        0.032      0.721        0.247             771
+    NIGHT floored at 25c (live band) [ALL]    1534      622             2.466    33.898 -1675.870           -7.155           -2.694           0.220  -12.265  627.710     46.674        0.011      0.649        0.340            1845
+  NIGHT floored at 25c (live band) [train]     891      350             2.546    33.446 -1038.480           -7.476           -2.967           0.304   -9.773  369.630     46.055        0.011      0.658        0.331            1074
+NIGHT floored at 25c (live band) [HOLDOUT]     745      289             2.578    34.899  -750.600           -6.912           -2.597           0.339   -7.655  304.780     46.921        0.011      0.635        0.354             771
+          NIGHT + the 60c floor only [ALL]     861      598             1.440    40.186  -533.020           -6.784           -0.891           0.138   -6.436  216.500     65.576        0.012      0.595        0.394            1845
+        NIGHT + the 60c floor only [train]     451      327             1.379    41.242  -239.870           -5.830           -0.734           0.184   -3.994  114.180     65.091        0.011      0.585        0.404            1074
+      NIGHT + the 60c floor only [HOLDOUT]     412      272             1.515    39.320  -283.790           -7.598           -1.043           0.210   -4.977  102.810     66.044        0.012      0.602        0.386             771
+           NIGHT + the 38c stop only [ALL]    3266      649             5.032    21.157 -7626.590           -5.627          -11.751           0.865  -13.579 1702.170     26.851        0.030      0.740        0.230            1845
+         NIGHT + the 38c stop only [train]    1960      357             5.490    19.898 -4813.240           -5.816          -13.482           1.299  -10.382 1038.810     25.395        0.029      0.761        0.210            1074
+       NIGHT + the 38c stop only [HOLDOUT]    1463      302             4.844    22.420 -3244.810           -5.464          -10.744           1.137   -9.449  748.350     28.373        0.031      0.719        0.249             771
+    NIGHT + no stop (hold to settle) [ALL]    1067      605             1.764    46.767 -1836.540           -4.594           -3.036           0.351   -8.650  420.130     37.412        0.142      0.373        0.485            1845
+  NIGHT + no stop (hold to settle) [train]     607      330             1.839    45.140 -1115.140           -5.386           -3.379           0.477   -7.084  248.720     35.751        0.158      0.366        0.476            1074
+NIGHT + no stop (hold to settle) [HOLDOUT]     478      282             1.695    48.326  -782.330           -3.583           -2.774           0.518   -5.355  176.230     39.661        0.128      0.383        0.490             771
+          CURRENT (post 3 Aug fixes) [ALL]     498      425             1.172    41.566  -250.810           -6.471           -0.590           0.127   -4.651  107.880     66.078        0.016      0.580        0.404            1845
+        CURRENT (post 3 Aug fixes) [train]     292      248             1.177    42.123  -134.060           -5.960           -0.541           0.164   -3.288   63.620     65.866        0.014      0.579        0.408            1074
+      CURRENT (post 3 Aug fixes) [HOLDOUT]     224      190             1.179    40.179  -131.920           -7.379           -0.694           0.196   -3.548   48.660     66.067        0.018      0.589        0.393             771
+
+==============================================================================
+WHERE IT RANKS
+==============================================================================
+NIGHT config, all scored markets: -5.64 c/trade
+      -2.29  S2 buy&hold (best known)
+      -4.90  480-sweep best
+      -5.64  ** the night's config **
+      -8.28  S5 random entry
+      -9.36  S1 the v3 strategy
+     -11.43  480-sweep worst
+
+The 480-config sweep spans -11.43 to -4.90 with 0 positive.
+At -5.64 it sits 89% of the way up the sweep's range, i.e. roughly rank 55 of 481.
+
+--- NIGHT (as it ran 27-28 Jul): by tournament
+            trades  matches      net  c_per_trade
+tournament                                       
+ATP            786      155 -2114.38        -6.21
+Challenger    2180      407 -4824.09        -5.40
+WTA            314       88  -693.41        -5.90
+--- NIGHT (as it ran 27-28 Jul): by entry price band
+           trades      net  c_per_trade
+band                                   
+(0, 40]      2388 -6926.57        -5.20
+(40, 50]      301  -382.78        -9.43
+(50, 60]      236  -170.34        -6.62
+(60, 70]      285  -121.61        -4.53
+(70, 80]       60   -29.45        -6.21
+(80, 100]      10    -1.13        -1.61
+--- NIGHT (as it ran 27-28 Jul): by exit reason
+            trades      net  c_per_trade
+reason                                  
+settlement     100  -564.93        -4.64
+stop          2431 -8736.89       -12.09
+target         749  1669.94        15.16
+
+--- NIGHT floored at 25c (live band): by tournament
+            trades  matches      net  c_per_trade
+tournament                                       
+ATP            333      152  -415.09        -8.68
+Challenger     983      377 -1005.78        -6.49
+WTA            218       93  -255.00        -7.83
+--- NIGHT floored at 25c (live band): by entry price band
+           trades     net  c_per_trade
+band                                  
+(0, 40]       615 -941.38        -7.36
+(40, 50]      310 -407.25        -9.69
+(50, 60]      236 -127.09        -4.99
+(60, 70]      296 -158.39        -5.87
+(70, 80]       66  -42.07        -8.11
+(80, 100]      11    0.31         0.40
+--- NIGHT floored at 25c (live band): by exit reason
+            trades      net  c_per_trade
+reason                                  
+settlement      17   -12.77         3.80
+stop           996 -2983.38       -21.76
+target         521  1320.28        20.41
+
+--- NIGHT + the 60c floor only: by tournament
+            trades  matches     net  c_per_trade
+tournament                                      
+ATP            168      118 -102.79        -6.49
+Challenger     553      385 -345.10        -6.92
+WTA            140       95  -85.13        -6.60
+--- NIGHT + the 60c floor only: by entry price band
+           trades     net  c_per_trade
+band                                  
+(40, 50]       16  -12.35        -6.02
+(50, 60]      106  -73.01        -6.55
+(60, 70]      596 -366.20        -6.71
+(70, 80]      121  -70.32        -7.32
+(80, 100]      22  -11.14        -7.49
+--- NIGHT + the 60c floor only: by exit reason
+            trades      net  c_per_trade
+reason                                  
+settlement      10    19.20        17.62
+stop           512 -1403.13       -29.96
+target         339   850.91        27.50
+
+--- NIGHT + the 38c stop only: by tournament
+            trades  matches      net  c_per_trade
+tournament                                       
+ATP            788      155 -2118.98        -6.17
+Challenger    2167      406 -4820.03        -5.38
+WTA            311       88  -687.58        -5.95
+--- NIGHT + the 38c stop only: by entry price band
+           trades      net  c_per_trade
+band                                   
+(0, 40]      2385 -6922.01        -5.18
+(40, 50]      297  -406.01       -10.16
+(50, 60]      233  -163.45        -6.44
+(60, 70]      282  -101.23        -3.78
+(70, 80]       60   -33.27        -7.00
+(80, 100]       9    -0.62        -0.98
+--- NIGHT + the 38c stop only: by exit reason
+            trades      net  c_per_trade
+reason                                  
+settlement      99  -565.90        -4.85
+stop          2417 -8712.33       -12.08
+target         750  1651.64        15.07
+
+--- NIGHT + no stop (hold to settle): by tournament
+            trades  matches      net  c_per_trade
+tournament                                       
+ATP            260      150  -494.96        -6.59
+Challenger     672      373 -1175.08        -3.85
+WTA            135       82  -166.50        -4.45
+--- NIGHT + no stop (hold to settle): by entry price band
+           trades      net  c_per_trade
+band                                   
+(0, 40]       540 -1538.00        -4.08
+(40, 50]      132  -177.84       -10.09
+(50, 60]      131   -38.18        -3.05
+(60, 70]      217   -19.53        -0.73
+(70, 80]       42   -46.66       -13.76
+(80, 100]       5   -16.33       -46.66
+--- NIGHT + no stop (hold to settle): by exit reason
+            trades      net  c_per_trade
+reason                                  
+settlement     152  -863.42       -32.59
+stop           398 -2240.40       -25.69
+target         517  1267.28        19.87
+
+--- CURRENT (post 3 Aug fixes): by tournament
+            trades  matches     net  c_per_trade
+tournament                                      
+ATP             90       80  -48.01        -6.81
+Challenger     334      281 -160.73        -6.03
+WTA             74       64  -42.07        -8.06
+--- CURRENT (post 3 Aug fixes): by entry price band
+           trades     net  c_per_trade
+band                                  
+(40, 50]        4    3.99         9.98
+(50, 60]       43  -15.91        -3.68
+(60, 70]      367 -188.71        -6.45
+(70, 80]       76  -46.62        -8.93
+(80, 100]       8   -3.56        -7.42
+--- CURRENT (post 3 Aug fixes): by exit reason
+            trades     net  c_per_trade
+reason                                 
+settlement       8   10.86        17.34
+stop           289 -701.53       -30.90
+target         201  439.86        27.71

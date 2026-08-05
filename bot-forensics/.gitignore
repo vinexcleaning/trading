@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+
+# Raw extractor listings. These enumerate several hundred named individuals'
+# repositories and named creators' videos, with scores and judgements attached
+# — the same content `signal-github/reports/` and `youtube-signal/reports/`
+# are gitignored for. This repo is PUBLIC. The conclusions drawn from them are
+# in VERDICT.md, which names only organisations, products and the handful of
+# repos STATUS.md already discusses by name.
+out/t4_github_raw.json
+out/t4_github.txt
+out/t4_github_run.txt
+out/t4c_run.txt
+out/t4c_youtube.txt
+out/t4b_verify.txt
+

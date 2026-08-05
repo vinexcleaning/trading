@@ -1900,3 +1900,171 @@ self-inflicted number that agrees with your prior results is worse than either.
 **Single next action:** finish the HN comment pass, then score it — the comments
 are where `social-signal` found its contradictions on Reddit, and there is no
 reason to expect HN to be different.
+
+---
+
+## bot-forensics â€” the night the bot made money (2026-08-05)
+
+`bot-forensics/` Â· code, `FINDINGS.md` (Tasks 1â€“2), `VERDICT.md` (Tasks 3â€“5),
+`DECISIONS.md` and `out/` all committed â€” `out/` is ~250 KB of plain text and
+CSV holding market tickers only, so the evidence is checkable over the web.
+**Read-only throughout: the bot was not started, no order endpoint was touched,
+and `TRADING_DISABLED` is untouched.**
+
+### There was no profitable night
+
+**The live tennis bot's lifetime P&L is âˆ’$6.92 over 108 matches** (74
+independent entry bursts), mean âˆ’$0.064/match, 95% CI **[âˆ’$0.97, +$0.78]**. Its
+equity curve *does* peak at **+$32.19** after 60 matches, at 13:32 UTC on
+28 Jul, and then loses $39.12 over the remaining 48.
+
+**That split was found at the argmax of the equity curve, which is the most
+selection-biased cut available.** Against 200,000 random reorderings of the same
+108 results:
+
+| statistic | observed | null median | p |
+|---|---|---|---|
+| peak of the curve | +$32.19 | +$13.40 | **0.052** |
+| mean(before) âˆ’ mean(after) | +$1.3515 | +$0.9971 | **0.272** |
+
+A zero-drift process with this dispersion shows a positive argmax gap **85%** of
+the time.
+
+> **The account DID go up about $99 in this window and none of it was the bot.**
+> All of it was hand-traded on 25â€“26 Jul, before the bot placed its first order
+> at 05:58 UTC on 27 Jul. Separating the two was not optional: a first attempt
+> split bot from manual on order notional and classified a hand-placed 6c NO
+> longshot (+$14.51 â€” **half the apparent bot total**) as a bot trade. The
+> classifier is now structural (`side==yes`, price 10â€“90c, notional $4.60â€“6.30)
+> and cannot see the outcome.
+
+### Three things established that were not known before
+
+**1. The martingale is in the profitable stretch too, and it went 7 for 7.**
+12 of 101 traded markets averaged DOWN â€” each leg cheaper and therefore
+*larger*. Those 12 are **âˆ’$16.43**; the other 94 matches are **+$9.63**. *The
+bot's entire loss is the martingale.* Before the peak there were **seven
+averaging-down sequences and seven winners, +$6.63**; after it the same
+mechanism lost ~$23, with SAGLEV alone (âˆ’$8.79) bigger than all seven early wins
+combined. **A martingale that is winning is indistinguishable from skill.**
+Minor correction to the existing record: the SAGLEV legs were **749s and later
+apart, not 24s** â€” the 24s figure is the gap from stop-out *fill* to re-entry,
+which is the right number for the re-arm question but overstates how frantic the
+entry sequence looked.
+
+**2. The stale-score bug is now measured, not just asserted.** Over 4,398
+game/set changes in the recorder tape, **only 2.6% of the repricing falls after
+our snapshot showed the new score** â€” +4.68c before, +0.17c after, with a
+placebo five minutes earlier at +0.18c confirming it is not ordinary momentum.
+Whatever the mix of feed lag and honest anticipation, **the entry signal arrived
+after the move it was meant to predict.**
+
+**3. Overnight ITF books are 2â€“6Ã— wider, so the night/day comparison is
+confounded AGAINST the night.** Mean spread by tier in the 40â€“80c band: ATP
+1.17c Â· WTA 1.24c Â· Challenger 1.57c Â· ITF-M 2.80c (night **5.26c**) Â· ITF-W
+4.48c (night **7.16c**). The bucket that looks better has the worse book.
+**0 of 13 permutation-tested time/tier buckets clear BH-FDR at 5%** â€” the same
+answer the set-1 overshoot study reached at 0 of 25.
+
+### â›” Task 3 â€” the decisive test. The strategy loses on ITF worst of all.
+
+`tennis_engine.evaluate()` was **imported and called**, not reimplemented, with
+the night's Config reconstructed from that file's dated comments plus the order
+record. Execution via `backtest/engine._walk`, so the fee/slippage/tie rules are
+the sweep's own.
+
+> âš ï¸ **`backtest/data/sofascore_matches.jsonl` contains ATP, Challenger and WTA
+> and NOT ONE ITF MATCH** â€” while ITF is 10,261 of 13,658 market views and 64 of
+> the 108 matches the bot actually traded. A second arm with a price proxy for
+> "won a set and ahead" covers all 13,658.
+
+| | c/trade | ranks against |
+|---|---|---|
+| S2 buy-and-hold (best known here) | âˆ’2.29 | |
+| 480-config sweep, best of 480 | âˆ’4.90 | |
+| **night's config, ATP/Ch/WTA, real scores** | **âˆ’5.64** | â‰ˆ rank 55 of 481 |
+| **night's config, all tiers, proxy** | **âˆ’8.08** | |
+| S5 **random entry** | âˆ’8.28 | |
+| **night's config, ITF only** | **âˆ’9.13** | t = âˆ’26.0, n = 2,599 matches |
+| S1, the v3 strategy | âˆ’9.36 | |
+
+Every variant, every tier, train **and holdout**, both arms: negative. ITF-only
+holdout is âˆ’8.77c on 1,045 matches, t = âˆ’16.0. There is no climb threshold
+(0/5/10/15/20/30c) at which it turns.
+
+**The live 39 hours are consistent with this.** Live âˆ’$0.064/match (se 0.284)
+against the backtest's âˆ’$0.755/match (se 0.077) â†’ t = 2.35. The live window ran
+about two standard errors better than its own backtest predicts, which is what a
+good run looks like.
+
+> **Four independent files now agree the STOP LOSS is the most expensive
+> component**, and this contradicts the live bot's design. `high_entry`: âˆ’0.78c
+> becomes **âˆ’3.77c** when a stop is added to identical trades. `high_sweep`'s
+> best rows are all hold-to-settlement. S2 beats S1 by 7.07c. And removing the
+> stop is the single best change in the replay (âˆ’6.47 â†’ âˆ’4.59c). The live bot
+> stopped out of 77% of backtested trades.
+
+**`high_sweep.py`, `high_entry.py` and `longshot.py` re-run and SAVED** to
+`bot-forensics/out/rerun_*.txt`, closing `audit/LEDGER.md` R6 â€” those four
+findings no longer exist only in a memory file.
+
+### ðŸ”“ Task 4 â€” one thread REOPENS, and two corrections to this file
+
+**ITF data exists, contrary to the prior session's "NO free ITF source at all".**
+`livetennisapi.com` â€” eleven official client libraries on GitHub, every one
+pushed within two days. Verified directly, not from a README:
+`GET api.livetennisapi.com/api/public/v1/health` â†’ **200 `{"status":"ok"}`**, no
+key; `/v1/matches?status=live` â†’ 401. Advertises **ATP + WTA + Challenger + ITF,
+singles and doubles**, a **free tier** for live scores, market odds at $29.99,
+and a point-by-point tape Jan 2023 â€“ Jul 2026 including ITF.
+**Not verified that the free tier really returns ITF** â€” that needs an API key,
+which needs an account, which is the user's to create. **This is the
+highest-value open item in the report.** Note it reopens *data availability*, not
+the trade â€” Task 3 says ITF economics are the worst of any tier.
+
+> âš ï¸ **Correction to this file: "Sackmann upstream is 404" is too strong.**
+> Checked today: `JeffSackmann/tennis_atp`, `tennis_wta` and
+> `tennis_slam_pointbypoint` **are** 404, but **`tennis_MatchChartingProject` is
+> live, 399â˜…, pushed 2026-05-25**, and `Aneeshers/tennis-sackmann-archive` is a
+> live third-party mirror of the ATP/WTA/Grand-Slam point-by-point data pushed
+> 2026-06-25. `kalshi-tennis/data` is still worth protecting; it is not the only
+> copy of its inputs.
+
+**Nobody has published a working in-play tennis strategy with evidence â€” and the
+field is crowded.** 32 distinct Kalshi/Polymarket tennis repos, **30 created in
+the last 180 days**, 135 stars between all of them (129 in one repo), and every
+repo that states its mode says **paper**. Consistent with finding #9 above: if
+the obvious in-play tennis trade were available it would not survive thirty
+simultaneous discoverers.
+
+**Overnight-vs-daytime in prediction-market sports books: nobody documents it.**
+Four targeted GitHub queries returned one repo between them. In 1,135 YouTube
+transcripts (39.8M chars) "overnight" appears 142 times and **every hit is
+equity/futures session language**. **"ITF" appears zero times.**
+
+> âš ï¸ **A claim in the YouTube corpus is FALSE and was checkable from disk.**
+> `ELpX7I0sPtc` states that on prediction markets a tennis medical withdrawal
+> settles "at the number they were at at the time of the withdrawal".
+> `_settled_all.json` holds 9,352 settled tennis markets: **4,676 `yes` and
+> 4,676 `no`, exactly mirrored, zero non-binary.** `KXITFWMATCH-26JUL23KUJCIO`
+> closed at 43c/61c and settled **yes** for the 43c side â€” a retirement pays a
+> 43c holder 100. `tennis_engine.py:332` has it right. One more entry against
+> the stop loss: that windfall is invisible to one.
+
+### Verdict â€” A and B jointly. C contributes. **D is refuted.**
+
+**A (variance) and B (a martingale that happened to win) together.** C (the
+stale-score bug) is real and measured, but it predicts a persistent negative
+drift and so makes the profitable stretch *less* explicable, not more â€” it
+explains why there is no edge, not why one run went up. **D is refuted**: the
+condition proposed is the worst cell in a 13,658-market test at t = âˆ’26.
+
+**One sentence:** the account did go up ~$30, the bot's own trades were not what
+did it, the shape everyone remembers is the shape a fair coin makes, and the
+mechanism behind the run of small wins is the same one that produced the âˆ’$8.79
+that ended it.
+
+**No action on the bot. `TRADING_DISABLED` stays.** This is the second
+independent verdict on the same strategy, now from the live record as well as
+the backtest.
+

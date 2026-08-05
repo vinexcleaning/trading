@@ -1,0 +1,97 @@
+﻿tournaments in the candle data: ['ATP', 'Challenger', 'ITF-M', 'ITF-W', 'WTA']
+ITF-M         5359
+ITF-W         4902
+Challenger    2078
+ATP            662
+WTA            657
+
+tournaments in the SCORE file: {'Challenger': 913, 'ATP': 254, 'WTA': 239}
+-> ITF has no score coverage at all. That is why this arm exists.
+  NIGHT (as it ran 27-28 Jul)        ALL tiers    ->   2724 tr /  1516 m  -8.08 c/trade  -1.367 $/match
+  NIGHT (as it ran 27-28 Jul)        ITF only     ->   6135 tr /  2599 m  -9.13 c/trade  -1.984 $/match
+  NIGHT (as it ran 27-28 Jul)        ATP/Ch/WTA   ->   1817 tr /   853 m  -7.82 c/trade  -1.604 $/match
+  NIGHT (as it ran 27-28 Jul)        ITF HOLDOUT  ->   2510 tr /  1045 m  -8.77 c/trade  -1.968 $/match
+  NIGHT (as it ran 27-28 Jul)        ALL HOLDOUT  ->   1146 tr /   664 m  -8.42 c/trade  -1.381 $/match
+  NIGHT floored at 25c (live band)   ALL tiers    ->   2713 tr /  1511 m  -8.11 c/trade  -1.366 $/match
+  NIGHT floored at 25c (live band)   ITF only     ->   6143 tr /  2603 m  -9.13 c/trade  -1.985 $/match
+  NIGHT floored at 25c (live band)   ATP/Ch/WTA   ->   1817 tr /   852 m  -7.84 c/trade  -1.603 $/match
+  NIGHT floored at 25c (live band)   ITF HOLDOUT  ->   2518 tr /  1049 m  -8.79 c/trade  -1.971 $/match
+  NIGHT floored at 25c (live band)   ALL HOLDOUT  ->   1140 tr /   661 m  -8.55 c/trade  -1.397 $/match
+  NIGHT + the 60c floor only         ALL tiers    ->   2618 tr /  1517 m  -8.20 c/trade  -1.283 $/match
+  NIGHT + the 60c floor only         ITF only     ->   5989 tr /  2621 m  -8.89 c/trade  -1.833 $/match
+  NIGHT + the 60c floor only         ATP/Ch/WTA   ->   1769 tr /   850 m  -7.85 c/trade  -1.507 $/match
+  NIGHT + the 60c floor only         ITF HOLDOUT  ->   2402 tr /  1050 m  -8.46 c/trade  -1.748 $/match
+  NIGHT + the 60c floor only         ALL HOLDOUT  ->   1076 tr /   647 m  -8.01 c/trade  -1.208 $/match
+  NIGHT + the 38c stop only          ALL tiers    ->   2727 tr /  1522 m  -7.99 c/trade  -1.354 $/match
+  NIGHT + the 38c stop only          ITF only     ->   6113 tr /  2603 m  -9.12 c/trade  -1.971 $/match
+  NIGHT + the 38c stop only          ATP/Ch/WTA   ->   1807 tr /   855 m  -7.94 c/trade  -1.610 $/match
+  NIGHT + the 38c stop only          ITF HOLDOUT  ->   2503 tr /  1047 m  -8.77 c/trade  -1.958 $/match
+  NIGHT + the 38c stop only          ALL HOLDOUT  ->   1143 tr /   666 m  -8.02 c/trade  -1.317 $/match
+  NIGHT + no stop (hold to settle)   ALL tiers    ->   1540 tr /  1304 m  -8.40 c/trade  -0.950 $/match
+  NIGHT + no stop (hold to settle)   ITF only     ->   2909 tr /  2237 m  -7.65 c/trade  -0.913 $/match
+  NIGHT + no stop (hold to settle)   ATP/Ch/WTA   ->   1069 tr /   803 m  -7.85 c/trade  -1.009 $/match
+  NIGHT + no stop (hold to settle)   ITF HOLDOUT  ->   1209 tr /   917 m  -7.33 c/trade  -0.907 $/match
+  NIGHT + no stop (hold to settle)   ALL HOLDOUT  ->    621 tr /   548 m  -9.37 c/trade  -1.038 $/match
+  CURRENT (post 3 Aug fixes)         ALL tiers    ->    708 tr /   580 m  -7.70 c/trade  -0.755 $/match
+  CURRENT (post 3 Aug fixes)         ITF only     ->   2140 tr /  1616 m  -9.49 c/trade  -0.993 $/match
+  CURRENT (post 3 Aug fixes)         ATP/Ch/WTA   ->    535 tr /   435 m  -7.55 c/trade  -0.739 $/match
+  CURRENT (post 3 Aug fixes)         ITF HOLDOUT  ->    855 tr /   651 m  -8.79 c/trade  -0.907 $/match
+  CURRENT (post 3 Aug fixes)         ALL HOLDOUT  ->    255 tr /   218 m  -7.75 c/trade  -0.734 $/match
+
+==============================================================================
+TASK 3b - price-proxy arm, all 13,658 views including ITF
+==============================================================================
+                                        config  trades  matches  tr_per_match  win_rate     net_$  net_c_per_trade  net_$_per_match  se_$_per_match  t_match  avg_entry
+       NIGHT (as it ran 27-28 Jul) [ALL tiers]    2724     1516         1.797    52.753 -2072.370           -8.077           -1.367           0.080  -17.105     65.096
+        NIGHT (as it ran 27-28 Jul) [ITF only]    6135     2599         2.361    50.758 -5156.370           -9.127           -1.984           0.076  -25.993     65.399
+      NIGHT (as it ran 27-28 Jul) [ATP/Ch/WTA]    1817      853         2.130    53.054 -1367.790           -7.818           -1.604           0.121  -13.290     64.931
+     NIGHT (as it ran 27-28 Jul) [ITF HOLDOUT]    2510     1045         2.402    51.275 -2056.910           -8.767           -1.968           0.123  -16.013     64.976
+     NIGHT (as it ran 27-28 Jul) [ALL HOLDOUT]    1146      664         1.726    51.745  -916.930           -8.423           -1.381           0.121  -11.371     65.120
+  NIGHT floored at 25c (live band) [ALL tiers]    2713     1511         1.795    52.746 -2063.320           -8.107           -1.366           0.080  -17.150     65.176
+   NIGHT floored at 25c (live band) [ITF only]    6143     2603         2.360    50.757 -5167.310           -9.134           -1.985           0.076  -26.028     65.434
+ NIGHT floored at 25c (live band) [ATP/Ch/WTA]    1817      852         2.133    53.054 -1366.170           -7.839           -1.603           0.120  -13.321     64.980
+NIGHT floored at 25c (live band) [ITF HOLDOUT]    2518     1049         2.400    51.271 -2067.850           -8.785           -1.971           0.123  -16.068     65.064
+NIGHT floored at 25c (live band) [ALL HOLDOUT]    1140      661         1.725    51.491  -923.260           -8.548           -1.397           0.121  -11.578     65.196
+        NIGHT + the 60c floor only [ALL tiers]    2618     1517         1.726    53.209 -1946.060           -8.204           -1.283           0.077  -16.578     66.469
+         NIGHT + the 60c floor only [ITF only]    5989     2621         2.285    51.728 -4804.870           -8.890           -1.833           0.072  -25.408     66.237
+       NIGHT + the 60c floor only [ATP/Ch/WTA]    1769      850         2.081    53.759 -1281.120           -7.845           -1.507           0.118  -12.815     66.199
+      NIGHT + the 60c floor only [ITF HOLDOUT]    2402     1050         2.288    52.664 -1835.880           -8.465           -1.748           0.114  -15.403     66.184
+      NIGHT + the 60c floor only [ALL HOLDOUT]    1076      647         1.663    53.625  -781.530           -8.008           -1.208           0.117  -10.354     66.709
+         NIGHT + the 38c stop only [ALL tiers]    2727     1522         1.792    53.209 -2061.090           -7.992           -1.354           0.080  -16.907     65.044
+          NIGHT + the 38c stop only [ITF only]    6113     2603         2.348    50.941 -5129.540           -9.117           -1.971           0.076  -26.014     65.427
+        NIGHT + the 38c stop only [ATP/Ch/WTA]    1807      855         2.113    53.127 -1376.690           -7.939           -1.610           0.121  -13.323     64.926
+       NIGHT + the 38c stop only [ITF HOLDOUT]    2503     1047         2.391    51.498 -2049.510           -8.772           -1.958           0.122  -16.024     64.979
+       NIGHT + the 38c stop only [ALL HOLDOUT]    1143      666         1.716    52.931  -877.180           -8.020           -1.317           0.121  -10.857     65.031
+  NIGHT + no stop (hold to settle) [ALL tiers]    1540     1304         1.181    73.636 -1238.380           -8.404           -0.950           0.091  -10.426     65.412
+   NIGHT + no stop (hold to settle) [ITF only]    2909     2237         1.300    75.387 -2042.070           -7.645           -0.913           0.071  -12.915     65.811
+ NIGHT + no stop (hold to settle) [ATP/Ch/WTA]    1069      803         1.331    74.181  -810.350           -7.855           -1.009           0.120   -8.420     65.330
+NIGHT + no stop (hold to settle) [ITF HOLDOUT]    1209      917         1.318    75.517  -831.470           -7.329           -0.907           0.112   -8.130     65.409
+NIGHT + no stop (hold to settle) [ALL HOLDOUT]     621      548         1.133    71.659  -568.970           -9.366           -1.038           0.143   -7.274     65.167
+        CURRENT (post 3 Aug fixes) [ALL tiers]     708      580         1.221    54.096  -437.670           -7.702           -0.755           0.077   -9.835     65.518
+         CURRENT (post 3 Aug fixes) [ITF only]    2140     1616         1.324    50.607 -1604.650           -9.491           -0.993           0.050  -20.012     66.074
+       CURRENT (post 3 Aug fixes) [ATP/Ch/WTA]     535      435         1.230    54.579  -321.420           -7.546           -0.739           0.090   -8.177     65.914
+      CURRENT (post 3 Aug fixes) [ITF HOLDOUT]     855      651         1.313    52.398  -590.270           -8.785           -0.907           0.078  -11.676     65.971
+      CURRENT (post 3 Aug fixes) [ALL HOLDOUT]     255      218         1.170    53.333  -160.110           -7.749           -0.734           0.121   -6.068     65.275
+
+==============================================================================
+PROXY VALIDATION - proxy vs true scores on the SAME markets
+==============================================================================
+NIGHT (as it ran 27-28 Jul)        true-score  -5.64  proxy  -7.82  delta  -2.18 c
+NIGHT floored at 25c (live band)   true-score  -7.16  proxy  -7.84  delta  -0.68 c
+NIGHT + the 60c floor only         true-score  -6.78  proxy  -7.85  delta  -1.06 c
+NIGHT + the 38c stop only          true-score  -5.63  proxy  -7.94  delta  -2.31 c
+NIGHT + no stop (hold to settle)   true-score  -4.59  proxy  -7.85  delta  -3.26 c
+CURRENT (post 3 Aug fixes)         true-score  -6.47  proxy  -7.55  delta  -1.08 c
+
+The proxy arm runs on every ATP/Ch/WTA market; the true-score arm only
+on the ~1,400 with a Sofascore join. They are not the same sample, so
+the delta mixes proxy error with sample difference. Read it as a
+sanity check on sign and magnitude, not as a calibration constant.
+
+--- sensitivity: NIGHT config, ITF only, by climb threshold
+  climb >=  0c :   6225 trades  -9.71 c/trade  -2.502 $/match  t=-27.70
+  climb >=  5c :   6307 trades  -9.55 c/trade  -2.311 $/match  t=-27.37
+  climb >= 10c :   6135 trades  -9.13 c/trade  -1.984 $/match  t=-25.99
+  climb >= 15c :   5677 trades  -8.58 c/trade  -1.609 $/match  t=-24.94
+  climb >= 20c :   3316 trades  -8.84 c/trade  -1.184 $/match  t=-20.46
+  climb >= 30c :    135 trades  -9.72 c/trade  -2.029 $/match  t=-4.86
