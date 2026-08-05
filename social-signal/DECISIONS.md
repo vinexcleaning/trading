@@ -244,6 +244,38 @@ EV."* Depth at finer resolution does not change a cost bar. It is preserved
 because it is **unobtainable at any price after the window closes**, and
 `CLAUDE.md` §8 is explicit that recorded books are never re-pullable.
 
+## D16 — The archive schema, verified by census not by sample
+**2026-08-04.** Recorded because getting this wrong costs a week, and I nearly
+did — twice in the same hour, in opposite directions.
+
+**The schema.** 10 columns: `timestamp_received` (ms), `timestamp` (µs),
+`market_ticker`, `market_id`, `event_type`, `yes_bids`, `no_bids` (lists of
+`{price, size}`), `price`, `delta`, `side`.
+
+**The two event types do different jobs and only one carries a ladder:**
+
+| event_type | rows pulled | populated ladder |
+|---|---|---|
+| `orderbook_snapshot` | 54,796 | **48,758 — 89%** |
+| `orderbook_delta` | 46,386,296 | **0** |
+
+Deltas carry `(price, delta, side)` — e.g. `0.8400 / +599.84 / no`. **The book is
+fully reconstructable**: periodic full-depth snapshots anchor it, deltas move it.
+This is a genuine Level-2 feed, not a trade tape.
+
+**The methodological point, which is the reason this entry exists.** I first
+sampled **26 snapshot rows** from one file, found every ladder empty, and was
+about to record *"snapshots are empty, so the book cannot be anchored"* — a
+conclusion that would have written off the whole dataset. A census over all
+90 files then found **89% populated**. The 26 rows were real; they were markets
+with no book yet at that hour.
+
+**n=26 on a skewed slice produced the exact opposite of the truth.** That is the
+same failure this programme keeps recording under other names — the 100-trade
+YouTube backtest, the n=105 stars correlation, the n=822 `trust_me_bro` reading.
+It is cheap to census a local file and it is never cheap to be wrong about a
+schema.
+
 ---
 
 ## Open audit items
