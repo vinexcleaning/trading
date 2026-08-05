@@ -1,0 +1,102 @@
+﻿==============================================================================
+PART A - every multi-leg entry the bot made
+==============================================================================
+14 of 101 traded markets had more than one filled entry
+
+                                ticker  legs     prices      sizes dirn  size_up  min_gap_s  total     pnl
+         KXITFWMATCH-26JUL28SAGLEV-LEV     3 49->31->19 12->20->32 DOWN     True        749   64.0 -8.7940
+          KXITFMATCH-26JUL28TABSPI-SPI     2     62->34     10->18 DOWN     True       2361   28.0 -7.7508
+         KXITFWMATCH-26JUL28AGUHAR-AGU     2     59->61     10->10   UP    False       4118   20.0 -6.1429
+          KXITFMATCH-26JUL28BREJAN-BRE     2     67->40      9->15 DOWN     True       1052   24.0 -5.6049
+KXATPCHALLENGERMATCH-26JUL28TABSQU-TAB     2     74->52      8->12 DOWN     True       1049   20.0 -5.0566
+KXATPCHALLENGERMATCH-26JUL28KASFER-FER     2     66->37      9->16 DOWN     True       2538   25.0  0.5203
+          KXITFMATCH-26JUL27JIXKOX-KOX     2     83->59      6->10 DOWN     True       1313   16.0  0.5648
+          KXITFMATCH-26JUL28HUDPED-PED     2     68->42      9->14 DOWN     True       1295   23.0  0.6816
+KXATPCHALLENGERMATCH-26JUL26ZHUSHE-ZHU     2     69->49      9->12 DOWN     True       2025   21.0  1.0879
+          KXWTAMATCH-26JUL27KRUBOU-BOU     2     69->39      9->16 DOWN     True        912   25.0  1.1534
+         KXITFWMATCH-26JUL28CEXSHA-SHA     2     38->24     16->26 DOWN     True       1134   42.0  1.2915
+          KXITFMATCH-26JUL28FUNSHA-FUN     2     46->29     13->21 DOWN     True       1703   34.0  1.3307
+          KXITFMATCH-26JUL28WEIRIS-RIS     3 40->69->36  15->9->17 DOWN     True        895   41.0  4.1482
+          KXATPMATCH-26JUL27MAJPAU-MAJ     2     57->68      10->9   UP    False       3885   19.0  6.0143
+
+--- classification
+averaging DOWN (each leg cheaper -> more contracts): 12   total P&L $-16.43   mean $-1.369
+averaging UP   (each leg dearer  -> fewer contracts): 2   total P&L $-0.13   mean $-0.064
+single-entry matches: 94   total $+9.63   mean $+0.102
+
+re-entries with a gap under 60s: 0 of 14
+the martingale legs contributed $-16.43 of the $-6.92 total, on 12 of 108 matches
+
+DID THE PROFITABLE STRETCH CONTAIN A WINNING MARTINGALE?
+  multi-leg entries BEFORE the equity peak: 7
+                                ticker prices  sizes dirn    pnl
+KXATPCHALLENGERMATCH-26JUL28KASFER-FER 66->37  9->16 DOWN 0.5203
+          KXITFMATCH-26JUL27JIXKOX-KOX 83->59  6->10 DOWN 0.5648
+          KXITFMATCH-26JUL28HUDPED-PED 68->42  9->14 DOWN 0.6816
+KXATPCHALLENGERMATCH-26JUL26ZHUSHE-ZHU 69->49  9->12 DOWN 1.0879
+          KXWTAMATCH-26JUL27KRUBOU-BOU 69->39  9->16 DOWN 1.1534
+         KXITFWMATCH-26JUL28CEXSHA-SHA 38->24 16->26 DOWN 1.2915
+          KXITFMATCH-26JUL28FUNSHA-FUN 46->29 13->21 DOWN 1.3307
+  -> averaging-down legs before the peak: 7, total $+6.63
+
+==============================================================================
+PART B - measuring the stale-score bug from the recorder tape
+==============================================================================
+tape rows: 27,083  markets 342  window 2026-07-27 23:01:33.700000048+00:00 -> 2026-07-28 13:49:34.900000095+00:00
+
+age of the last score change at each observation (seconds):
+count    27083.0
+mean       113.0
+std        422.7
+min         -4.3
+10%         14.8
+25%         25.6
+50%         50.6
+75%        144.9
+90%        296.5
+99%        571.9
+max      38378.9
+observations where the score was already >30s old (the guard's limit): 69.4%
+                                        >120s old: 29.5%
+NOTE: this is time since the score last CHANGED, which is mostly the
+natural rhythm of a tennis point. It is an upper bound on freshness,
+not a measure of feed lag. The lag test is below.
+
+game/set changes with 3 clean ticks either side: 4,748 across 305 markets
+
+signed price move (cents of mid), oriented so + = 'in the direction the
+score change implies':
+  3 ticks BEFORE our feed showed the change : mean +4.627c   median +3.500c
+  3 ticks AFTER  our feed showed the change : mean +0.154c   median +0.000c
+  share of the repricing that had ALREADY happened when our feed caught up: 96.8%
+
+READ THIS. If the feed were timely, essentially all of the repricing
+would fall AFTER the tick on which the score changed. Whatever share
+falls BEFORE is information the market had and the bot did not.
+
+by tier:
+               n  before  after
+tier                           
+ATP          162   6.617  0.861
+Challenger  1642   5.933  0.492
+ITF-M       2008   3.024  0.022
+ITF-W        678   4.966 -0.338
+WTA          258   6.657 -0.122
+
+------------------------------------------------------------------------------
+PLACEBO CONTROL and tick spacing
+------------------------------------------------------------------------------
+median seconds between consecutive ticks on one market: 60.0s   mean 60.4s
+so the '3 ticks' windows are roughly 180s wide
+
+n = 4,398 events with 8 clean ticks of history
+  ticks -8 -> -6 (placebo, further back) : mean +0.178c
+  ticks -6 -> -3 (placebo)               : mean +1.387c
+  ticks -3 ->  0 (our feed catches up)   : mean +4.677c
+  ticks  0 -> +3 (after)                 : mean +0.169c
+
+  share of the whole repricing falling in the LAST window before our
+  feed updated: 72.9% of +6.411c
+
+  If the -6..-3 placebo were as large as the -3..0 window this would be
+  ordinary momentum and the lag reading would be void. Compare them.

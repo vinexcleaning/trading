@@ -1,0 +1,98 @@
+﻿108 bot matches, total $-6.92, mean $-0.0641, sd $2.9526
+
+==============================================================================
+1. THE ARGMAX NULL
+==============================================================================
+observed: peak $+32.19 after 60 of 108 matches
+          mean before $+0.5366   mean after $-0.8150   gap $+1.3515
+
+200,000 random reorderings of the SAME 108 P&Ls (7542 discarded: peak at an end)
+  gap under the null : mean $+1.1027   median $+0.9971   95th pct $+2.3292
+  P(null gap >= observed $1.3515) = 0.2719
+  peak under the null: mean $+14.56   median $+13.40   95th pct $+32.39
+  P(null peak >= observed $32.19) = 0.0517
+
+READ THIS: the null here already contains the true total (-$6.92) and
+the true dispersion. It only destroys the ORDER. If p is large, the
+only thing the night/day story rests on is the order the matches
+happened to arrive in.
+
+  same test on zero-drift gaussian noise (sd $2.95): median gap $+nan, 95th $+nan
+  a zero-edge process shows a positive argmax gap 85.0% of the time.
+
+==============================================================================
+2. CLOCK BUCKETS (split on the clock, not on the curve)
+==============================================================================
+
+--- NIGHT (20:00-07:59 UTC) vs DAY (08:00-19:59 UTC)
+          n    total    mean      se       t     win  contracts  c_per_ct   mde_$       p
+night                                                                                    
+day    89.0 -22.1061 -0.2484  0.3182 -0.7806  0.4607     1025.0   -2.1567  0.8909  0.4350
+night  19.0  15.1817  0.7990  0.5990  1.3339  0.6842      212.0    7.1612  1.6772  0.1822
+
+night - day difference in mean per-match P&L: $+1.0474   Welch t=+1.544  p=0.1333
+  (n_night=19, n_day=89)
+
+--- 4-hour UTC block
+          n    total    mean      se       t     win  contracts  c_per_ct   mde_$       p
+block                                                                                    
+00-03   6.0   2.3068  0.3845  1.1266  0.3413  0.5000       68.0    3.3924  3.1544  0.7329
+04-07   5.0  11.6266  2.3253  0.6336  3.6702  1.0000       63.0   18.4549  1.7740  0.0002
+08-11  30.0   5.9410  0.1980  0.4126  0.4799  0.5000      283.0    2.0993  1.1554  0.6313
+12-15  31.0 -18.8660 -0.6086  0.6492 -0.9374  0.4516      493.0   -3.8268  1.8178  0.3485
+16-19  28.0  -9.1811 -0.3279  0.5666 -0.5787  0.4286      249.0   -3.6872  1.5864  0.5628
+20-23   8.0   1.2483  0.1560  1.0404  0.1500  0.6250       81.0    1.5411  2.9132  0.8808
+
+--- tour tier
+               n    total    mean      se       t     win  contracts  c_per_ct   mde_$       p
+tier                                                                                          
+ATP          4.0   7.2764  1.8191  1.7916  1.0154  0.5000       37.0   19.6659  5.0164  0.3099
+Challenger  32.0  17.7386  0.5543  0.3969  1.3966  0.5625      291.0    6.0957  1.1113  0.1625
+ITF-M       40.0  -2.2410 -0.0560  0.4848 -0.1156  0.5500      482.0   -0.4649  1.3574  0.9080
+ITF-W       24.0 -18.3216 -0.7634  0.7175 -1.0640  0.4167      341.0   -5.3729  2.0090  0.2873
+WTA          8.0 -11.3768 -1.4221  0.7830 -1.8162  0.2500       86.0  -13.2288  2.1924  0.0693
+
+--- tier x night, cells with n>=3
+                       n    total    mean      se       t     win  contracts  c_per_ct   mde_$       p
+cellkey                                                                                               
+ATP | day            3.0   9.3642  3.1214  1.7399  1.7940  0.6667       29.0   32.2903  4.8718  0.0728
+Challenger | day    26.0   4.5641  0.1755  0.4380  0.4008  0.5000      224.0    2.0375  1.2265  0.6886
+Challenger | night   6.0  13.1745  2.1958  0.6235  3.5214  0.8333       67.0   19.6634  1.7459  0.0004
+ITF-M | day         34.0  -6.9090 -0.2032  0.5183 -0.3920  0.5000      413.0   -1.6729  1.4513  0.6950
+ITF-M | night        6.0   4.6680  0.7780  1.4171  0.5490  0.8333       69.0    6.7652  3.9678  0.5830
+ITF-W | day         22.0 -17.5743 -0.7988  0.7685 -1.0395  0.4091      324.0   -5.4242  2.1517  0.2986
+WTA | day            4.0 -11.5511 -2.8878  0.4497 -6.4213  0.0000       35.0  -33.0031  1.2592  0.0000
+WTA | night          4.0   0.1743  0.0436  1.1076  0.0393  0.5000       51.0    0.3418  3.1013  0.9686
+
+==============================================================================
+BH-FDR over every bucket tested above
+==============================================================================
+                          family     n    total    mean      se       t       p  bh_crit  bh_pass
+WTA | day           tier x night   4.0 -11.5511 -2.8878  0.4497 -6.4213  0.0000   0.0024     True
+04-07                   4h block   5.0  11.6266  2.3253  0.6336  3.6702  0.0002   0.0048     True
+Challenger | night  tier x night   6.0  13.1745  2.1958  0.6235  3.5214  0.0004   0.0071     True
+WTA                         tier   8.0 -11.3768 -1.4221  0.7830 -1.8162  0.0693   0.0095    False
+ATP | day           tier x night   3.0   9.3642  3.1214  1.7399  1.7940  0.0728   0.0119    False
+Challenger                  tier  32.0  17.7386  0.5543  0.3969  1.3966  0.1625   0.0143    False
+night                  night/day  19.0  15.1817  0.7990  0.5990  1.3339  0.1822   0.0167    False
+ITF-W                       tier  24.0 -18.3216 -0.7634  0.7175 -1.0640  0.2873   0.0190    False
+ITF-W | day         tier x night  22.0 -17.5743 -0.7988  0.7685 -1.0395  0.2986   0.0214    False
+ATP                         tier   4.0   7.2764  1.8191  1.7916  1.0154  0.3099   0.0238    False
+12-15                   4h block  31.0 -18.8660 -0.6086  0.6492 -0.9374  0.3485   0.0262    False
+day                    night/day  89.0 -22.1061 -0.2484  0.3182 -0.7806  0.4350   0.0286    False
+16-19                   4h block  28.0  -9.1811 -0.3279  0.5666 -0.5787  0.5628   0.0310    False
+ITF-M | night       tier x night   6.0   4.6680  0.7780  1.4171  0.5490  0.5830   0.0333    False
+08-11                   4h block  30.0   5.9410  0.1980  0.4126  0.4799  0.6313   0.0357    False
+Challenger | day    tier x night  26.0   4.5641  0.1755  0.4380  0.4008  0.6886   0.0381    False
+ITF-M | day         tier x night  34.0  -6.9090 -0.2032  0.5183 -0.3920  0.6950   0.0405    False
+00-03                   4h block   6.0   2.3068  0.3845  1.1266  0.3413  0.7329   0.0429    False
+20-23                   4h block   8.0   1.2483  0.1560  1.0404  0.1500  0.8808   0.0452    False
+ITF-M                       tier  40.0  -2.2410 -0.0560  0.4848 -0.1156  0.9080   0.0476    False
+WTA | night         tier x night   4.0   0.1743  0.0436  1.1076  0.0393  0.9686   0.0500    False
+
+buckets tested: 21   BH discoveries at FDR 5%: 3
+buckets with a positive mean: 12 of 21  (chance expectation 10.5)
+binomial p against 50/50: 0.6636
+
+The prior tennis study: 0 of 25 buckets cleared, 7 positive where 12.5
+were expected. Compare like with like.

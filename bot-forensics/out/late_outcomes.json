@@ -1,0 +1,50 @@
+{
+ "KXITFMATCH-26JUL28OLIVER-VER": {
+  "result": "no",
+  "status": "finalized",
+  "close_time": "2026-07-28T21:41:46Z",
+  "last": "0.0100"
+ },
+ "KXITFWMATCH-26JUL28SAIPER-SAI": {
+  "result": "yes",
+  "status": "finalized",
+  "close_time": "2026-07-28T21:06:16Z",
+  "last": "0.9900"
+ },
+ "KXITFMATCH-26JUL28DUSFIL-FIL": {
+  "result": "yes",
+  "status": "finalized",
+  "close_time": "2026-07-29T00:27:33Z",
+  "last": "0.9900"
+ },
+ "KXITFMATCH-26JUL28HUELEI-LEI": {
+  "result": "yes",
+  "status": "finalized",
+  "close_time": "2026-07-28T21:11:22Z",
+  "last": "0.9900"
+ },
+ "KXITFMATCH-26JUL28STOBAE-STO": {
+  "result": "yes",
+  "status": "finalized",
+  "close_time": "2026-07-28T20:21:19Z",
+  "last": "0.9900"
+ },
+ "KXITFWMATCH-26JUL28AGUHAR-AGU": {
+  "result": "yes",
+  "status": "finalized",
+  "close_time": "2026-07-28T20:11:01Z",
+  "last": "0.9900"
+ },
+ "KXITFWMATCH-26JUL28KULFRO-FRO": {
+  "result": "no",
+  "status": "finalized",
+  "close_time": "2026-07-28T20:46:22Z",
+  "last": "0.0100"
+ },
+ "KXWTAMATCH-26JUL27EALZHE-ZHE": {
+  "result": "no",
+  "status": "finalized",
+  "close_time": "2026-07-28T20:15:07Z",
+  "last": "0.0100"
+ }
+}

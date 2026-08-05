@@ -1,0 +1,160 @@
+﻿yes_px + no_px value counts: {1.0: 389}
+
+==============================================================================
+Per-ticker fill sequences, 6 busiest tennis tickers
+==============================================================================
+
+--- KXATPMATCH-26JUL26DAMSHE-SHE
+                               t action side   qty  yes_px  no_px    fee  is_taker
+2026-07-26 15:00:56.759142+00:00    buy  yes 40.53    0.59   0.41 0.6863      True
+2026-07-26 15:08:43.565472+00:00   sell   no 40.53    0.87   0.13 0.3209      True
+2026-07-26 15:35:04.099043+00:00    buy  yes 24.00    0.48   0.52 0.4194      True
+2026-07-26 15:35:04.099043+00:00    buy  yes  8.19    0.49   0.51 0.1433      True
+2026-07-26 15:35:04.099043+00:00    buy  yes  8.00    0.47   0.53 0.1395      True
+2026-07-26 15:38:34.907753+00:00    buy  yes  3.17    0.28   0.72 0.0448      True
+2026-07-26 15:38:34.907753+00:00    buy  yes  2.83    0.28   0.72 0.0400      True
+2026-07-26 15:38:34.907753+00:00    buy  yes 11.00    0.28   0.72 0.1553      True
+  settlement: {'market_result': 'no', 'yes_ct': 97.72, 'no_ct': 40.53, 'yes_cost': 47.9658, 'no_cost': 5.2689, 'fee': 1.9495, 'revenue': 0.0, 'value': 0.0}
+
+--- KXITFMATCH-26JUL28WEIRIS-RIS
+                               t action side   qty  yes_px  no_px    fee  is_taker
+2026-07-28 13:32:08.765254+00:00    buy  yes 15.00    0.40   0.60 0.2520      True
+2026-07-28 13:46:30.077627+00:00   sell   no 15.00    0.65   0.35 0.0000     False
+2026-07-28 13:47:03.908198+00:00    buy  yes  9.00    0.68   0.32 0.1371      True
+2026-07-28 14:45:35.149975+00:00   sell   no  4.15    0.38   0.62 0.0685      True
+2026-07-28 14:45:35.149975+00:00   sell   no  4.85    0.38   0.62 0.0800      True
+2026-07-28 14:45:58.690453+00:00    buy  yes 17.00    0.36   0.64 0.2742      True
+2026-07-28 14:54:13.470642+00:00   sell   no 12.43    0.59   0.41 0.0000     False
+2026-07-28 14:55:14.871067+00:00   sell   no  4.57    0.59   0.41 0.0000     False
+  settlement: {'market_result': 'no', 'yes_ct': 41.0, 'no_ct': 41.0, 'yes_cost': 18.24, 'no_cost': 17.8, 'fee': 0.8118, 'revenue': 0.0, 'value': 0.0}
+
+--- KXATPCHALLENGERMATCH-26JUL25FEAZHE-FEA
+                               t action side   qty  yes_px  no_px    fee  is_taker
+2026-07-25 18:43:18.041408+00:00    buy  yes 10.95    0.77   0.23 0.1358      True
+2026-07-25 18:43:18.041408+00:00    buy  yes 21.00    0.77   0.23 0.2604      True
+2026-07-25 18:51:20.764135+00:00   sell   no  2.00    0.89   0.11 0.0138      True
+2026-07-25 18:51:20.764135+00:00   sell   no  8.70    0.89   0.11 0.0597      True
+2026-07-25 18:51:20.764135+00:00   sell   no  1.00    0.89   0.11 0.0069      True
+2026-07-25 18:51:20.764135+00:00   sell   no 20.25    0.89   0.11 0.1388      True
+2026-07-25 19:16:53.959236+00:00    buy  yes 43.68    0.91   0.09 0.2505      True
+  settlement: {'market_result': 'yes', 'yes_ct': 75.63, 'no_ct': 31.95, 'yes_cost': 64.3503, 'no_cost': 3.5145, 'fee': 0.8659, 'revenue': 4368.0, 'value': 100.0}
+
+--- KXATPMATCH-26JUL25BOYCLA-CLA
+                               t action side    qty  yes_px  no_px    fee  is_taker
+2026-07-26 04:33:50.446268+00:00    buy  yes   6.91    0.32   0.68 0.1053      True
+2026-07-26 04:33:50.446268+00:00    buy  yes  10.00    0.32   0.68 0.1524      True
+2026-07-26 04:33:50.446268+00:00    buy  yes   2.92    0.32   0.68 0.0445      True
+2026-07-26 04:33:50.446268+00:00    buy  yes  10.00    0.32   0.68 0.1524      True
+2026-07-26 04:58:41.668880+00:00    buy  yes 104.45    0.09   0.91 0.5989      True
+2026-07-26 05:15:15.761223+00:00   sell   no 134.28    0.18   0.82 1.3874      True
+2026-07-26 05:23:34.923026+00:00    buy  yes  78.49    0.12   0.88 0.5802      True
+  settlement: {'market_result': 'no', 'yes_ct': 212.77, 'no_ct': 134.28, 'yes_cost': 28.3649, 'no_cost': 110.1096, 'fee': 3.0211, 'revenue': 0.0, 'value': 0.0}
+
+--- KXITFWMATCH-26JUL28SAGLEV-LEV
+                               t action side   qty  yes_px  no_px    fee  is_taker
+2026-07-28 14:17:24.443483+00:00    buy  yes 12.00    0.49   0.51 0.2100      True
+2026-07-28 14:30:54.297490+00:00   sell   no 12.00    0.29   0.71 0.1730      True
+2026-07-28 14:31:18.096731+00:00    buy  yes 20.00    0.31   0.69 0.2995      True
+2026-07-28 14:43:24.209982+00:00   sell   no 20.00    0.18   0.82 0.2067      True
+2026-07-28 14:43:47.905658+00:00    buy  yes 32.00    0.19   0.81 0.3448      True
+2026-07-28 15:07:47.262039+00:00   sell   no  4.05    0.11   0.89 0.0000     False
+2026-07-28 15:07:49.866574+00:00   sell   no 27.95    0.11   0.89 0.0000     False
+  settlement: {'market_result': 'no', 'yes_ct': 64.0, 'no_ct': 64.0, 'yes_cost': 18.16, 'no_cost': 53.4, 'fee': 1.234, 'revenue': 0.0, 'value': 0.0}
+
+--- KXITFWMATCH-26JUL25BUCMAL-BUC
+                               t action side   qty  yes_px  no_px    fee  is_taker
+2026-07-25 18:56:39.245443+00:00    buy  yes 23.42    0.41   0.59 0.3966      True
+2026-07-25 19:04:12.953217+00:00   sell   no 17.42    0.48   0.52 0.3044      True
+2026-07-25 19:04:12.953217+00:00   sell   no  1.00    0.49   0.51 0.0175      True
+2026-07-25 19:04:12.953217+00:00   sell   no  5.00    0.50   0.50 0.0875      True
+2026-07-25 19:28:56.168657+00:00    buy  yes 48.73    0.81   0.19 0.5250      True
+2026-07-25 19:44:16.108506+00:00   sell   no 48.73    0.99   0.01 0.0000     False
+  settlement: {'market_result': 'yes', 'yes_ct': 72.15, 'no_ct': 72.15, 'yes_cost': 49.0735, 'no_cost': 12.5557, 'fee': 1.331, 'revenue': 0.0, 'value': 100.0}
+
+==============================================================================
+Net residual position per ticker under the two readings
+==============================================================================
+tickers: 141
+Reading A: tickers with a residual NO short  : 124   total short contracts -2419
+Reading A: tickers with residual YES long    : 140
+Reading B: tickers flat at the end           : 120
+Reading B: tickers with a residual YES long  : 21
+Reading B: tickers going NEGATIVE (impossible if B is right): 0
+
+Reading B residual distribution:
+B_yes
+-7.105427e-15      1
+-1.776357e-15      3
+-8.881784e-16      1
+ 0.000000e+00    112
+ 6.661338e-16      1
+ 1.332268e-15      1
+ 1.776357e-15      1
+ 1.450000e+00      1
+ 6.150000e+00      1
+ 8.000000e+00      2
+ 9.400000e+00      1
+ 1.000000e+01      1
+ 1.111000e+01      1
+ 1.180000e+01      1
+ 1.418000e+01      1
+ 1.524000e+01      1
+ 1.978000e+01      1
+ 2.943000e+01      1
+ 3.276000e+01      1
+ 3.497000e+01      1
+ 4.368000e+01      1
+ 4.926000e+01      1
+ 5.222000e+01      1
+ 5.719000e+01      1
+ 5.763000e+01      1
+ 7.849000e+01      1
+ 7.910000e+01      1
+
+==============================================================================
+Residual under B vs the settlement record's counts
+==============================================================================
+                                         A_yes    A_no         B_yes market_result  yes_ct   no_ct  yes_cost   no_cost     fee  revenue  value
+ticker                                                                                                                                        
+KXATPCHALLENGERMATCH-26JUL25FEAZHE-FEA   75.63  -31.95  4.368000e+01           yes   75.63   31.95   64.3503    3.5145  0.8659   4368.0  100.0
+KXATPCHALLENGERMATCH-26JUL25MICSUR-MIC   60.91  -60.91 -1.776357e-15           yes   60.91   60.91   49.3371    1.2182  0.7399      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL26BITYIL-YIL   16.00  -16.00  0.000000e+00            no   16.00   16.00    5.4400    6.0800  0.2514      0.0    0.0
+KXATPCHALLENGERMATCH-26JUL26CHUBOU-CHU   13.00  -13.00  0.000000e+00           yes   13.00   13.00    6.2400    3.1200  0.2272      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL26MCKFIL-MCK   30.81  -30.81 -1.776357e-15           yes   30.81   30.81   24.6480    4.3134  0.6049      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL26SHETOK-SHE    9.00   -9.00  0.000000e+00            no    9.00    9.00    6.2100    0.4500  0.1348      0.0    0.0
+KXATPCHALLENGERMATCH-26JUL26ZHUSHE-ZHU   21.00  -21.00  0.000000e+00           yes   21.00   21.00   12.0900    7.3200  0.5021      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL26ZINARS-ZIN    8.00    0.00  8.000000e+00           yes    8.00    0.00    5.7600    0.0000  0.0000    800.0  100.0
+KXATPCHALLENGERMATCH-26JUL27BASNAK-BAS    7.00   -7.00  0.000000e+00            no    7.00    7.00    5.8100    2.3800  0.1792      0.0    0.0
+KXATPCHALLENGERMATCH-26JUL27BLACOM-COM    9.00   -9.00  0.000000e+00           yes    9.00    9.00    6.1200    4.4100  0.1371      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL27MILVAN-MIL    9.00   -9.00  0.000000e+00           yes    9.00    9.00    6.0300    0.4500  0.0000      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL27POLKOV-POL    7.00   -7.00  0.000000e+00           yes    7.00    7.00    5.6000    0.1400  0.0784      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL27SAHTUR-SAH    7.00   -7.00  0.000000e+00            no    7.00    7.00    5.8800    1.8200  0.1602      0.0    0.0
+KXATPCHALLENGERMATCH-26JUL27VRBJAN-VRB    8.00   -8.00  0.000000e+00           yes    8.00    8.00    5.6800    3.4400  0.2527      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL28ADDPOU-ADD   11.00  -11.00  0.000000e+00           yes   11.00   11.00    5.9400    7.5900  0.0000      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL28ALKSIN-ALK    8.00   -8.00  0.000000e+00            no    8.00    8.00    5.6000    3.8400  0.2574      0.0    0.0
+KXATPCHALLENGERMATCH-26JUL28ARNPIE-PIE    9.00   -9.00  0.000000e+00           yes    9.00    9.00    6.1200    0.0900  0.1372      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL28GOMCER-GOM    8.00   -8.00  0.000000e+00           yes    8.00    8.00    5.8400    0.4000  0.0000      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL28HOUCAR-CAR    9.00   -9.00  0.000000e+00           yes    9.00    9.00    5.8500    0.0900  0.1434      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL28KASFER-FER   25.00  -25.00 -8.881784e-16           yes   25.00   25.00   11.7700   12.1600  0.5497      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL28KIRINC-INC    8.00   -8.00  0.000000e+00           yes    8.00    8.00    5.8400    0.4000  0.1104      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL28KRUHEN-HEN    9.00   -9.00  0.000000e+00            no    9.00    9.00    5.2200    5.3100  0.3059      0.0    0.0
+KXATPCHALLENGERMATCH-26JUL28MAENEU-MAE    9.00   -9.00  0.000000e+00           yes    9.00    9.00    6.0300    0.0900  0.1393      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL28NIKBAR-NIK    9.00   -9.00  0.000000e+00            no    9.00    9.00    5.6700    6.1200  0.2840      0.0    0.0
+KXATPCHALLENGERMATCH-26JUL28OLITAB-OLI    8.00   -8.00  0.000000e+00           yes    8.00    8.00    5.9200    0.4000  0.1078      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL28RIBTOR-RIB    9.00   -9.00  0.000000e+00            no    9.00    9.00    6.1200    5.6700  0.1371      0.0    0.0
+KXATPCHALLENGERMATCH-26JUL28SCHGOM-GOM    9.00   -9.00  0.000000e+00           yes    9.00    9.00    6.2100    0.0900  0.1348      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL28SKAFAU-SKA    9.00   -9.00  0.000000e+00           yes    9.00    9.00    6.1200    0.0900  0.1371      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL28TABSQU-TAB   20.00  -20.00  0.000000e+00            no   20.00   20.00   12.0800   12.4800  0.4966      0.0    0.0
+KXATPCHALLENGERMATCH-26JUL28VRBBAS-BAS    8.00   -8.00  0.000000e+00           yes    8.00    8.00    5.6000    0.4000  0.1176      0.0  100.0
+KXATPCHALLENGERMATCH-26JUL28ZHULAN-ZHU    9.00   -9.00  0.000000e+00           yes    9.00    9.00    6.2100    0.4500  0.0000      0.0  100.0
+KXATPMATCH-26JUL25BLODAR-BLO             11.11    0.00  1.111000e+01           yes   11.11    0.00    1.8887    0.0000  0.1098   1111.0  100.0
+KXATPMATCH-26JUL25BLODAR-DAR             91.12  -91.12  0.000000e+00            no   91.12   91.12   63.7840   18.2240  2.3602      0.0    0.0
+KXATPMATCH-26JUL25BOYCLA-CLA            212.77 -134.28  7.849000e+01            no  212.77  134.28   28.3649  110.1096  3.0211      0.0    0.0
+KXATPMATCH-26JUL25HEWLAJ-HEW             43.30  -20.42  0.000000e+00           yes   43.30   66.18   23.8150   17.4036  1.2523      0.0  100.0
+KXATPMATCH-26JUL25KWONRUB-KWON           30.45  -30.45  0.000000e+00           yes   30.45   30.45   24.6645    2.4360  0.4850      0.0  100.0
+KXATPMATCH-26JUL25KWONRUB-RUB            62.42  -62.42  0.000000e+00            no   62.42   62.42    1.8726   59.2990  0.3348      0.0    0.0
+KXATPMATCH-26JUL25MAGJOH-JOH             32.76    0.00  3.276000e+01            no   32.76    0.00   24.5700    0.0000  0.4301      0.0    0.0
+KXATPMATCH-26JUL25MEJHER-HER             31.56  -31.56  0.000000e+00           yes   31.56   31.56   23.3544    1.2624  0.5100      0.0  100.0
+KXATPMATCH-26JUL25OCOMAR-OCO              6.15    0.00  6.150000e+00            no    6.15    0.00    1.2915    0.0000  0.0715      0.0    0.0
+
+tickers where residual_B == settlement yes_count_fp : 15 / 133

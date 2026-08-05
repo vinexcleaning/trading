@@ -1,0 +1,159 @@
+﻿==============================================================================
+R1/R2  side and price of every BUY order
+==============================================================================
+side                       no  yes
+day                               
+2026-07-25 00:00:00+00:00   1   21
+2026-07-26 00:00:00+00:00   3   34
+2026-07-27 00:00:00+00:00   0   31
+2026-07-28 00:00:00+00:00   0  113
+
+buy price histogram, by day (cents):
+cents                      1-9  10-59  60-74  75-89  99
+day                                                    
+2026-07-25 00:00:00+00:00    0      0      1      0  20
+2026-07-26 00:00:00+00:00    3      3      0      2  28
+2026-07-27 00:00:00+00:00    0     11     11      6   3
+2026-07-28 00:00:00+00:00    0     37     76      0   0
+
+==============================================================================
+R3  stake that reproduces the size, on buy/yes orders priced 10-90c
+==============================================================================
+2026-07-25  n=  1  best: $25.50 -> 100%   $25.45 -> 100%   $25.40 -> 100%
+2026-07-26  n=  4  best: $25.50 -> 50%   $25.45 -> 50%   $25.40 -> 50%
+2026-07-27  n= 28  best: $6.35 -> 61%   $6.30 -> 61%   $6.25 -> 61%
+2026-07-28  n=113  best: $6.25 -> 99%   $6.30 -> 96%   $6.35 -> 88%
+
+orders where int(6.25/px) != qty, on buy/yes 10-90c:
+                               t                       ticker  cents  initial  pred  filled   status
+2026-07-25 17:12:43.258817+00:00 KXATPMATCH-26JUL25VANGAS-VAN     69    35.55     9   35.55 executed
+2026-07-26 01:20:49.681464+00:00      KXBTC15M-26JUL252130-30     29    32.82    21   32.82 executed
+2026-07-26 01:36:18.354461+00:00      KXBTC15M-26JUL252145-45     78    31.56     8   31.56 executed
+2026-07-26 01:48:02.867309+00:00 KXATPMATCH-26JUL25MAGJOH-JOH     75    32.76     8   32.76 executed
+2026-07-26 19:23:43.551111+00:00 KXWTAMATCH-26JUL26KASSMI-SMI     42    57.19    14   57.19 executed
+2026-07-27 01:34:05.288923+00:00 KXWTAMATCH-26JUL26PRODRE-DRE     24    79.10    26   79.10 executed
+2026-07-27 05:36:18.209341+00:00 KXITFMATCH-26JUL26CRONAK-CRO     70     7.00     8    0.00 canceled
+2026-07-27 05:45:44.009044+00:00 KXITFMATCH-26JUL26CRONAK-CRO     78     6.00     8    6.00 executed
+2026-07-27 05:58:11.927642+00:00 KXITFMATCH-26JUL27JIXKOX-KOX     83     6.00     7    6.00 executed
+2026-07-27 06:01:12.294496+00:00 KXITFMATCH-26JUL27SENKHO-KHO     48    10.00    13   10.00 executed
+2026-07-27 06:19:08.601195+00:00 KXITFMATCH-26JUL27JIXKOX-KOX     56    10.00    11    0.00 canceled
+2026-07-27 06:19:10.020776+00:00 KXITFMATCH-26JUL27JIXKOX-KOX     56    10.00    11    0.00 canceled
+2026-07-27 06:19:14.545994+00:00 KXITFMATCH-26JUL27JIXKOX-KOX     56    10.00    11    0.00 canceled
+2026-07-27 06:19:25.359491+00:00 KXITFMATCH-26JUL27JIXKOX-KOX     56    10.00    11    0.00 canceled
+2026-07-27 06:21:50.627299+00:00 KXITFMATCH-26JUL27DUHLUT-LUT     52    11.00    12   11.00 executed
+2026-07-27 06:24:48.371304+00:00 KXITFMATCH-26JUL27KOZSEL-KOZ     55    10.00    11   10.00 executed
+
+==============================================================================
+CLASSIFIER OUTPUT
+==============================================================================
+bot                        False  True 
+day                                    
+2026-07-25 00:00:00+00:00     22      0
+2026-07-26 00:00:00+00:00     37      0
+2026-07-27 00:00:00+00:00     14     17
+2026-07-28 00:00:00+00:00      0    113
+
+manual buys that survive (should be hand trades only):
+day
+2026-07-25 00:00:00+00:00    22
+2026-07-26 00:00:00+00:00    37
+2026-07-27 00:00:00+00:00    14
+
+                               t                                                    ticker side  cents  initial
+2026-07-25 17:12:43.258817+00:00                              KXATPMATCH-26JUL25VANGAS-VAN  yes     69    35.55
+2026-07-25 18:13:45.735815+00:00                              KXATPMATCH-26JUL25SHEHAR-SHE  yes     99    34.97
+2026-07-25 18:14:49.673903+00:00 KXMVESPORTSMULTIGAMEEXTENDED-S20260CBEE4CBFB7-636B1EC7F4F  yes      0  2325.58
+2026-07-25 18:35:14.762077+00:00                              KXATPMATCH-26JUL25HEWLAJ-HEW  yes     99    43.30
+2026-07-25 18:40:21.395068+00:00                              KXATPMATCH-26JUL25HEWLAJ-HEW   no     99    22.88
+2026-07-25 18:43:18.041408+00:00                    KXATPCHALLENGERMATCH-26JUL25FEAZHE-FEA  yes     99    31.95
+2026-07-25 18:56:39.245443+00:00                             KXITFWMATCH-26JUL25BUCMAL-BUC  yes     99    23.42
+2026-07-25 19:05:14.826071+00:00                             KXITFWMATCH-26JUL25BUCMAL-MAL  yes     99    23.42
+2026-07-25 19:16:53.959236+00:00                    KXATPCHALLENGERMATCH-26JUL25FEAZHE-FEA  yes     99    43.68
+2026-07-25 19:17:59.543831+00:00                             KXITFWMATCH-26JUL25BUCMAL-MAL  yes     99     4.51
+2026-07-25 19:28:56.168657+00:00                             KXITFWMATCH-26JUL25BUCMAL-BUC  yes     99    48.73
+2026-07-25 19:46:19.675692+00:00                              KXATPMATCH-26JUL25SVAYME-SVA  yes     99    70.29
+2026-07-25 20:37:31.811537+00:00                              KXATPMATCH-26JUL25BLODAR-DAR  yes     99    91.12
+2026-07-25 21:02:04.313710+00:00                    KXATPCHALLENGERMATCH-26JUL25MICSUR-MIC  yes     99    60.91
+2026-07-25 21:03:26.612394+00:00                              KXATPMATCH-26JUL25BLODAR-BLO  yes     99    11.11
+2026-07-25 21:31:12.060441+00:00                              KXATPMATCH-26JUL25OCOMAR-OCO  yes     99     6.15
+2026-07-25 21:54:36.721603+00:00                             KXITFWMATCH-26JUL25LUXCHA-CHA  yes     99    11.86
+2026-07-25 21:55:48.121344+00:00                              KXITFMATCH-26JUL25TUDMBI-TUD  yes     99    28.11
+2026-07-25 22:18:21.600910+00:00                             KXITFWMATCH-26JUL25LUXCHA-LUX  yes     99     9.40
+2026-07-25 22:31:08.142203+00:00                              KXITFMATCH-26JUL25TUDMBI-MBI  yes     99    11.80
+2026-07-25 22:32:07.247302+00:00                             KXCLUBFGAME-26JUL25LFCSUN-LFC  yes     99   117.93
+2026-07-25 23:58:14.107928+00:00                        KXARGPREMDIVGAME-26JUL25RIVBAR-BAR  yes     99    15.71
+2026-07-26 01:14:36.199427+00:00                                   KXBTC15M-26JUL252115-15  yes      2    51.66
+2026-07-26 01:19:38.370363+00:00                                   KXBTC15M-26JUL252130-30   no     48    20.08
+2026-07-26 01:20:49.681464+00:00                                   KXBTC15M-26JUL252130-30  yes     29    32.82
+2026-07-26 01:25:40.455351+00:00                                   KXBTC15M-26JUL252130-30  yes      6    14.30
+2026-07-26 01:29:37.179946+00:00                                   KXBTC15M-26JUL252130-30  yes      0   930.00
+2026-07-26 01:36:18.354461+00:00                                   KXBTC15M-26JUL252145-45  yes     78    31.56
+2026-07-26 01:48:02.867309+00:00                              KXATPMATCH-26JUL25MAGJOH-JOH  yes     75    32.76
+2026-07-26 01:54:09.292760+00:00                    KXWTACHALLENGERMATCH-26JUL25SHIDON-SHI   no      6    15.50
+2026-07-26 04:20:19.174160+00:00                             KXATPMATCH-26JUL25KWONRUB-RUB  yes     99    62.42
+2026-07-26 04:23:23.414215+00:00                              KXATPMATCH-26JUL25MEJHER-HER  yes     99    31.56
+2026-07-26 04:27:33.646094+00:00                             KXCLUBFGAME-26JUL25AUCTOT-TIE  yes     99    10.44
+2026-07-26 04:28:39.026740+00:00                               KXMLSGAME-26JUL25PORRSL-TIE  yes     99    13.41
+2026-07-26 04:33:50.446268+00:00                              KXATPMATCH-26JUL25BOYCLA-CLA  yes     99    29.83
+2026-07-26 04:47:10.721900+00:00                    KXWTACHALLENGERMATCH-26JUL25PLEWON-WON  yes     99    33.61
+2026-07-26 04:57:23.790210+00:00                            KXATPMATCH-26JUL25KWONRUB-KWON  yes     99    30.45
+2026-07-26 04:58:41.668880+00:00                              KXATPMATCH-26JUL25BOYCLA-CLA  yes     99   104.45
+2026-07-26 05:23:34.923026+00:00                              KXATPMATCH-26JUL25BOYCLA-CLA  yes     99    78.49
+2026-07-26 13:51:45.290070+00:00                              KXITFMATCH-26JUL26ZAHPER-ZAH  yes     99    19.78
+2026-07-26 13:52:34.408888+00:00                              KXITFMATCH-26JUL26DENHOL-DEN  yes     99    29.43
+2026-07-26 13:58:38.769807+00:00                             KXITFWMATCH-26JUL26MPECHL-MPE  yes     99    15.24
+2026-07-26 14:08:39.489235+00:00                       KXELITESERIENGAME-26JUL26SKBVIF-VIF  yes     99    40.53
+2026-07-26 14:11:45.275764+00:00                    KXATPCHALLENGERMATCH-26JUL26MCKFIL-MCK  yes     99    30.81
+2026-07-26 14:22:07.536429+00:00                             KXITFWMATCH-26JUL26MPECHL-MPE   no     99    35.00
+2026-07-26 15:00:56.759142+00:00                              KXATPMATCH-26JUL26DAMSHE-SHE  yes     99    40.53
+2026-07-26 15:15:41.226464+00:00                              KXATPMATCH-26JUL26DAMSHE-DAM  yes     99    41.89
+2026-07-26 15:35:04.099043+00:00                              KXATPMATCH-26JUL26DAMSHE-SHE  yes     99    40.19
+2026-07-26 15:38:34.907753+00:00                              KXATPMATCH-26JUL26DAMSHE-SHE  yes     99    17.00
+2026-07-26 16:49:46.946217+00:00                              KXATPMATCH-26JUL26GIRILA-ILA  yes     99   105.07
+2026-07-26 16:50:16.272935+00:00                              KXATPMATCH-26JUL26MARECH-MAR  yes     99    29.76
+2026-07-26 17:24:27.616087+00:00                              KXATPMATCH-26JUL26MARECH-MAR  yes     99    27.87
+2026-07-26 18:03:09.466806+00:00                              KXATPMATCH-26JUL26GIRILA-GIR  yes     99    19.41
+2026-07-26 18:18:03.396457+00:00                              KXATPMATCH-26JUL26SVAHEW-SVA  yes     99     1.45
+2026-07-26 19:23:43.551111+00:00                              KXWTAMATCH-26JUL26KASSMI-SMI  yes     42    57.19
+2026-07-26 19:45:52.148665+00:00                              KXATPMATCH-26JUL26MCDSVA-SVA  yes     99    27.60
+2026-07-26 23:10:44.571886+00:00                              KXWTAMATCH-26JUL26HUNJOH-HUN  yes     99    27.60
+2026-07-26 23:33:09.106840+00:00                              KXWTAMATCH-26JUL26HUNJOH-JOH  yes     99    72.50
+2026-07-26 23:40:16.049081+00:00                              KXWTAMATCH-26JUL26HUNJOH-JOH  yes     99    52.22
+2026-07-27 01:34:05.288923+00:00                              KXWTAMATCH-26JUL26PRODRE-DRE  yes     24    79.10
+2026-07-27 05:03:47.116465+00:00                              KXITFMATCH-26JUL26VISVEN-VEN  yes     99    49.26
+2026-07-27 05:04:29.566563+00:00                              KXITFMATCH-26JUL26BRUNEC-NEC  yes     99    36.47
+2026-07-27 05:25:10.281388+00:00                              KXITFMATCH-26JUL26CRONAK-CRO  yes     99    14.18
+2026-07-27 05:36:18.209341+00:00                              KXITFMATCH-26JUL26CRONAK-CRO  yes     70     7.00
+2026-07-27 05:45:44.009044+00:00                              KXITFMATCH-26JUL26CRONAK-CRO  yes     78     6.00
+2026-07-27 05:58:11.927642+00:00                              KXITFMATCH-26JUL27JIXKOX-KOX  yes     83     6.00
+2026-07-27 06:01:12.294496+00:00                              KXITFMATCH-26JUL27SENKHO-KHO  yes     48    10.00
+2026-07-27 06:19:08.601195+00:00                              KXITFMATCH-26JUL27JIXKOX-KOX  yes     56    10.00
+2026-07-27 06:19:10.020776+00:00                              KXITFMATCH-26JUL27JIXKOX-KOX  yes     56    10.00
+2026-07-27 06:19:14.545994+00:00                              KXITFMATCH-26JUL27JIXKOX-KOX  yes     56    10.00
+2026-07-27 06:19:25.359491+00:00                              KXITFMATCH-26JUL27JIXKOX-KOX  yes     56    10.00
+2026-07-27 06:21:50.627299+00:00                              KXITFMATCH-26JUL27DUHLUT-LUT  yes     52    11.00
+2026-07-27 06:24:48.371304+00:00                              KXITFMATCH-26JUL27KOZSEL-KOZ  yes     55    10.00
+
+agreement between the two rules, at ticker level:
+structural_rule  bot  manual  mixed
+notional_rule                      
+bot              105       7      1
+manual             0      42      0
+mixed              0       3      0
+
+tickers they disagree on:
+                                       notional_rule structural_rule
+ticker                                                              
+KXATPMATCH-26JUL25OCOMAR-OCO                     bot          manual
+KXATPMATCH-26JUL26SVAHEW-SVA                     bot          manual
+KXBTC15M-26JUL252115-15                          bot          manual
+KXBTC15M-26JUL252130-30                        mixed          manual
+KXITFMATCH-26JUL26CRONAK-CRO                   mixed          manual
+KXITFMATCH-26JUL27DUHLUT-LUT                     bot          manual
+KXITFMATCH-26JUL27JIXKOX-KOX                     bot           mixed
+KXITFMATCH-26JUL27KOZSEL-KOZ                     bot          manual
+KXITFMATCH-26JUL27SENKHO-KHO                     bot          manual
+KXITFWMATCH-26JUL25BUCMAL-MAL                  mixed          manual
+KXWTACHALLENGERMATCH-26JUL25SHIDON-SHI           bot          manual
+
+written: out/ticker_class.csv  ({'bot': 105, 'manual': 52, 'mixed': 1})

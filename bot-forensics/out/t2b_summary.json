@@ -1,0 +1,11 @@
+{
+ "p_argmax_gap": 0.2718775005455736,
+ "p_argmax_peak": 0.051675,
+ "obs_gap": 1.3515183333333332,
+ "obs_peak": 32.19359999999999,
+ "n_matches": 108,
+ "total": -6.9243999999999994,
+ "buckets_tested": 21,
+ "bh_discoveries": 3,
+ "buckets_positive": 12
+}

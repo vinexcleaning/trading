@@ -1,0 +1,90 @@
+﻿==============================================================================
+A. SHIDON
+==============================================================================
+orders:
+                               t action side  initial  filled   px   status client_order_id
+2026-07-26 01:54:09.292760+00:00    buy   no     15.5    15.5 0.06 executed                
+fills:
+                               t action side  qty  yes_px    fee  is_taker
+2026-07-26 01:54:09.292760+00:00    buy   no 15.5    0.94 0.0612      True
+settlement:
+                                                            21
+event_ticker                KXWTACHALLENGERMATCH-26JUL25SHIDON
+fee_cost                                              0.061200
+market_result                                               no
+no_count_fp                                              15.50
+no_total_cost_dollars                                 0.930000
+revenue                                                 1550.0
+settled_time                       2026-07-26T02:22:56.017363Z
+ticker                  KXWTACHALLENGERMATCH-26JUL25SHIDON-SHI
+value                                                      0.0
+yes_count_fp                                              0.00
+yes_total_cost_dollars                                0.000000
+_src                                         _settlements.json
+t                             2026-07-26 02:22:56.017363+00:00
+yes_ct                                                     0.0
+no_ct                                                     15.5
+yes_cost                                                   0.0
+no_cost                                                   0.93
+fee                                                     0.0612
+event                       KXWTACHALLENGERMATCH-26JUL25SHIDON
+tier                                                Challenger
+sibling market:
+                                    ticker market_result  yes_ct  no_ct  yes_cost  no_cost     fee  revenue  value
+21  KXWTACHALLENGERMATCH-26JUL25SHIDON-SHI            no     0.0   15.5       0.0     0.93  0.0612   1550.0    0.0
+
+==============================================================================
+B. the small 'bot-shaped' buy orders on 25-26 Jul
+==============================================================================
+                               t                                 ticker side  initial    px  notional  filled   status
+2026-07-25 19:17:59.543831+00:00          KXITFWMATCH-26JUL25BUCMAL-MAL  yes     4.51 0.990   4.46490    4.51 executed
+2026-07-25 21:31:12.060441+00:00           KXATPMATCH-26JUL25OCOMAR-OCO  yes     6.15 0.990   6.08850    6.15 executed
+2026-07-26 01:14:36.199427+00:00                KXBTC15M-26JUL252115-15  yes    51.66 0.018   0.92988   51.66 executed
+2026-07-26 01:25:40.455351+00:00                KXBTC15M-26JUL252130-30  yes    14.30 0.065   0.92950   14.30 executed
+2026-07-26 01:29:37.179946+00:00                KXBTC15M-26JUL252130-30  yes   930.00 0.001   0.93000  930.00 executed
+2026-07-26 01:54:09.292760+00:00 KXWTACHALLENGERMATCH-26JUL25SHIDON-SHI   no    15.50 0.060   0.93000   15.50 executed
+2026-07-26 18:18:03.396457+00:00           KXATPMATCH-26JUL26SVAHEW-SVA  yes     1.45 0.990   1.43550    1.45 executed
+
+...and the ORDERS on the same tickers, to see whether the small one is a leg of a larger manual order:
+
+-- KXITFWMATCH-26JUL25BUCMAL-MAL
+                               t action side  initial  filled   px   status
+2026-07-25 19:05:14.826071+00:00    buy  yes    23.42   23.42 0.99 executed
+2026-07-25 19:17:59.543831+00:00    buy  yes     4.51    4.51 0.99 executed
+2026-07-25 19:30:26.954329+00:00   sell  yes    27.93   27.93 0.01 executed
+
+-- KXATPMATCH-26JUL25OCOMAR-OCO
+                               t action side  initial  filled   px   status
+2026-07-25 21:31:12.060441+00:00    buy  yes     6.15    6.15 0.99 executed
+
+-- KXBTC15M-26JUL252115-15
+                               t action side  initial  filled    px   status
+2026-07-26 01:14:36.199427+00:00    buy  yes    51.66   51.66 0.018 executed
+
+-- KXBTC15M-26JUL252130-30
+                               t action side  initial  filled    px   status
+2026-07-26 01:19:38.370363+00:00    buy   no    20.08   20.08 0.480 executed
+2026-07-26 01:19:55.075203+00:00   sell   no    20.08   20.08 0.750 executed
+2026-07-26 01:20:49.681464+00:00    buy  yes    32.82   32.82 0.290 executed
+2026-07-26 01:25:40.455351+00:00    buy  yes    14.30   14.30 0.065 executed
+2026-07-26 01:29:37.179946+00:00    buy  yes   930.00  930.00 0.001 executed
+
+-- KXWTACHALLENGERMATCH-26JUL25SHIDON-SHI
+                               t action side  initial  filled   px   status
+2026-07-26 01:54:09.292760+00:00    buy   no     15.5    15.5 0.06 executed
+
+-- KXATPMATCH-26JUL26SVAHEW-SVA
+                               t action side  initial  filled   px   status
+2026-07-26 18:18:03.396457+00:00    buy  yes     1.45    1.45 0.99 executed
+
+==============================================================================
+C. tickers traded after the last settlement pull (2026-07-28 20:08)
+==============================================================================
+KXITFMATCH-26JUL28DUSFIL-FIL               bought   9.00 sold   9.00 resid   0.00  cash $ -2.935  outcome=UNKNOWN
+KXITFMATCH-26JUL28HUELEI-LEI               bought   9.00 sold   9.00 resid   0.00  cash $ -2.672  outcome=UNKNOWN
+KXITFMATCH-26JUL28OLIVER-VER               bought  10.00 sold   0.00 resid  10.00  cash $ -6.000  outcome=UNKNOWN
+KXITFMATCH-26JUL28STOBAE-STO               bought   8.00 sold   8.00 resid   0.00  cash $ -3.356  outcome=UNKNOWN
+KXITFWMATCH-26JUL28AGUHAR-AGU              bought  20.00 sold  20.00 resid   0.00  cash $ -6.143  outcome=UNKNOWN
+KXITFWMATCH-26JUL28KULFRO-FRO              bought   9.00 sold   9.00 resid   0.00  cash $ -2.491  outcome=UNKNOWN
+KXITFWMATCH-26JUL28SAIPER-SAI              bought   8.00 sold   0.00 resid   8.00  cash $ -6.028  outcome=UNKNOWN
+KXWTAMATCH-26JUL27EALZHE-ZHE               bought   9.00 sold   9.00 resid   0.00  cash $ -2.896  outcome=UNKNOWN

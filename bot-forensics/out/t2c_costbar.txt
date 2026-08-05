@@ -1,0 +1,99 @@
+﻿==============================================================================
+(a) LABEL-PERMUTATION p-values (200,000 shuffles), replacing the
+    t-tests. Null: the bucket label carries no information.
+==============================================================================
+   family     bucket  n    total    mean  contracts  p_two  null_mean  null_sd
+ 4h block      04-07  5  11.6266  2.3253       63.0 0.0477    -0.3255   6.4330
+     tier Challenger 32  17.7386  0.5543      291.0 0.1551    -2.0485  13.9897
+night/day        day 89 -22.1061 -0.2484     1025.0 0.1556    -5.6689  11.6814
+night/day      night 19  15.1817  0.7990      212.0 0.1569    -1.2037  11.6758
+     tier        WTA  8 -11.3768 -1.4221       86.0 0.1854    -0.4921   8.0376
+     tier        ATP  4   7.2764  1.8191       37.0 0.1859    -0.2489   5.8045
+     tier      ITF-W 24 -18.3216 -0.7634      341.0 0.1935    -1.6034  12.7446
+ 4h block      12-15 31 -18.8660 -0.6086      493.0 0.2254    -1.9309  13.8727
+ 4h block      08-11 30   5.9410  0.1980      283.0 0.5703    -1.9967  13.7376
+ 4h block      16-19 28  -9.1811 -0.3279      249.0 0.5813    -1.8313  13.4360
+ 4h block      00-03  6   2.3068  0.3845       68.0 0.7249    -0.4026   7.0429
+ 4h block      20-23  8   1.2483  0.1560       81.0 0.8490    -0.5064   8.0475
+     tier      ITF-M 40  -2.2410 -0.0560      482.0 0.9875    -2.5695  14.8446
+
+BH at FDR 5% over 13 buckets: 0 discoveries
+NOTE: these buckets overlap heavily (the same 27 Jul morning matches
+appear in '04-07', in 'Challenger' and in 'night'), so even this
+correction is optimistic.
+
+==============================================================================
+(b) COST BAR PER BUCKET, from the recorder tapes
+==============================================================================
+recorder rows usable: 27,083  window 2026-07-27 23:01:33.700000048+00:00 -> 2026-07-28 13:49:34.900000095+00:00  markets 342
+restricted to ask 40-80c (the band the bot traded): 9,704 rows
+
+--- cost bar by tier (cents per contract, round trip)
+             n_obs  median_ask  median_spread  mean_spread  fee_in_c  fee_out_c  cost_bar_c
+tier                                                                                       
+ATP          248.0        65.0            1.0        1.165       2.0        2.0         5.0
+Challenger  3347.0        62.0            1.0        1.573       2.0        2.0         5.0
+ITF-M       4076.0        62.0            1.0        2.804       2.0        2.0         5.0
+ITF-W       1523.0        62.0            1.0        4.477       2.0        2.0         5.0
+WTA          510.0        66.0            1.0        1.235       2.0        2.0         5.0
+
+--- cost bar by night/day
+        n_obs  median_ask  median_spread  mean_spread  fee_in_c  fee_out_c  cost_bar_c
+night                                                                                 
+day    7017.0        62.0            1.0        2.149       2.0        2.0         5.0
+night  2687.0        63.0            1.0        3.482       2.0        2.0         5.0
+
+--- cost bar by 4h block
+        n_obs  median_ask  median_spread  mean_spread  fee_in_c  fee_out_c  cost_bar_c
+block                                                                                 
+00-03  2095.0        60.0            1.0        4.048       2.0        2.0         5.0
+04-07   251.0        70.0            1.0        1.598       2.0        2.0         5.0
+08-11  4580.0        62.0            1.0        2.333       2.0        2.0         5.0
+12-15  2437.0        62.0            1.0        1.803       2.0        2.0         5.0
+20-23   341.0        69.0            1.0        1.393       2.0        2.0         5.0
+
+--- cost bar by tier x night
+                   n_obs  median_ask  median_spread  mean_spread  fee_in_c  fee_out_c  cost_bar_c
+tier       night                                                                                 
+ATP        night   248.0        65.0            1.0        1.165       2.0        2.0         5.0
+Challenger day    2530.0        62.0            1.0        1.602       2.0        2.0         5.0
+           night   817.0        58.0            1.0        1.483       2.0        2.0         5.0
+ITF-M      day    3690.0        62.0            1.0        2.547       2.0        2.0         5.0
+           night   386.0        59.0            2.0        5.259       2.0        2.0         6.0
+ITF-W      day     797.0        58.0            1.0        2.038       2.0        2.0         5.0
+           night   726.0        66.0            1.0        7.156       2.0        2.0         5.0
+WTA        night   510.0        66.0            1.0        1.235       2.0        2.0         5.0
+
+==============================================================================
+RESULT AGAINST ITS OWN COST BAR, per bucket
+==============================================================================
+
+by tier:
+               n  c_per_contract  median_spread  cost_bar_c  gross_needed_c
+tier                                                                       
+ATP          4.0          19.666            1.0         5.0             5.0
+Challenger  32.0           6.096            1.0         5.0             5.0
+ITF-M       40.0          -0.465            1.0         5.0             5.0
+ITF-W       24.0          -5.373            1.0         5.0             5.0
+WTA          8.0         -13.229            1.0         5.0             5.0
+
+by night/day:
+          n  c_per_contract  median_spread  cost_bar_c
+night                                                 
+day    89.0          -2.157            1.0         5.0
+night  19.0           7.161            1.0         5.0
+
+by 4h block:
+          n  c_per_contract  median_spread  cost_bar_c
+block                                                 
+00-03   6.0           3.392            1.0         5.0
+04-07   5.0          18.455            1.0         5.0
+08-11  30.0           2.099            1.0         5.0
+12-15  31.0          -3.827            1.0         5.0
+16-19  28.0          -3.687            NaN         NaN
+20-23   8.0           1.541            1.0         5.0
+
+The reported c_per_contract is ALREADY NET of both fees and of the
+spread actually paid - it comes from realised cash. The cost bar column
+is what the strategy had to overcome to reach zero, i.e. how much gross
+edge the signal needed to supply. Read them together, not as a subtraction.
