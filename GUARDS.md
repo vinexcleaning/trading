@@ -658,6 +658,73 @@ own code that put it there.
 
 ---
 
+## 17. The argmax null — "it worked, then it stopped working" is the shape of noise
+
+**Source:** [`bot-forensics/src/t2b_nightday.py`](bot-forensics/src/t2b_nightday.py)
+**Found by:** the live tennis bot's "profitable night", 2026-08-05
+
+### What it tests
+
+Whenever a record is split into a good period and a bad one, ask **how the split
+point was chosen**. If it was chosen by looking at the results — the peak of the
+equity curve, the day the drawdown started, "when the daytime tournaments began"
+— then the difference across it is not evidence, because **the argmax of a
+cumulative sum is by construction the point that maximises
+`mean(before) − mean(after)`.**
+
+### The null, and why it is the right one
+
+Permute the same observations into a random order, recompute the same statistic,
+and compare. This null is unusually strong because it **preserves everything
+except the ordering**: the true total, the true dispersion, every outlier. If
+the observed split is not extreme against it, the story rests entirely on the
+sequence the observations happened to arrive in.
+
+```python
+def argmax_stat(v):
+    c = np.cumsum(v)
+    k = int(np.argmax(c)) + 1
+    return v[:k].mean(), v[k:].mean(), k
+
+pre, post, k = argmax_stat(x)
+gaps = [np.subtract(*argmax_stat(rng.permutation(x))[:2]) for _ in range(200_000)]
+p = np.mean(np.array(gaps) >= pre - post)
+```
+
+### The reading that made it worth writing down
+
+| statistic | observed | null median | null 95th | p |
+|---|---|---|---|---|
+| peak of the equity curve | **+$32.19** | +$13.40 | +$32.39 | 0.052 |
+| mean(before) − mean(after) | **+$1.3515** | +$0.9971 | +$2.3292 | **0.272** |
+
+**A zero-drift process with the same dispersion shows a positive argmax gap 85%
+of the time.** The "it worked overnight and stopped in the daytime" story was
+one of 108 orderings that all produce a rising-then-falling curve.
+
+### The companion rule
+
+Once the argmax split is disqualified, **re-split on something fixed in advance**
+— the clock, the tier, the calendar — and report every bucket with n, the cost
+bar for that bucket, the MDE, and one BH-FDR denominator over the whole family.
+Here: night vs day on a pre-fixed 20:00–07:59 UTC boundary gave Welch p = 0.133,
+and **0 of 13 permutation-tested buckets survived BH at 5%**.
+
+### Two traps inside the companion rule
+
+1. **A t-test on n = 5 with a 100% win rate is not evidence.** Three buckets
+   "cleared" on t-statistics and none survived label permutation.
+2. **Overlapping buckets are not independent tests.** The same five matches
+   appeared in "04–07 UTC", in "Challenger" and in "night", so three apparently
+   separate signals were three views of one run. Say so; BH does not fix it.
+
+### Where it belongs
+
+Anywhere a strategy is described as having "stopped working", "worked until X",
+or "worked in regime R" where R was noticed after the fact. It is the sequential
+form of Guard #1: **the thing that chooses your sample must not be able to see
+your outcome**, and a cumulative curve can see all of it.
+
 ## The one-page version
 
 If you carry nothing else into the next project:
@@ -684,3 +751,7 @@ If you carry nothing else into the next project:
 13. **Never let your own dedup decide your headline number**, and treat a
     result that lands exactly on your prior ones as a reason to go looking
     for the line of code that put it there.
+14. **"It worked, then it stopped working" is the shape of noise.** If the
+    split point was found by looking at the results, permute the same
+    observations into a random order and see how often the null beats you.
+    A zero-drift process rises then falls 85% of the time.
