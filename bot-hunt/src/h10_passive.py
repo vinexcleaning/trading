@@ -296,9 +296,40 @@ def report(rows):
             lo, hi = np.percentile(diffs, [2.5, 97.5])
             gap = float(np.mean([r["won"] - r["price"] / 100.0 for r in filled])
                         - np.mean([r["won"] - r["price"] / 100.0 for r in unf]))
-            print(f"      -> ADVERSE SELECTION = filled minus unfilled = "
+            print(f"      -> RAW filled minus unfilled = "
                   f"{100*gap:+.2f}pp   CI [{100*lo:+.2f},{100*hi:+.2f}]  "
                   f"(paired on {len(keys)} events)")
+
+            # ---- PRICE-STRATIFIED, which removes the confound at source ----
+            # The raw difference is biased because filled and unfilled orders
+            # sit at DIFFERENT PRICES and `outcome - price` is not mean-zero
+            # across the price range. Under a full outcome shuffle the raw
+            # estimator still reads about -2pp, which is the bias measured.
+            # Comparing only within the same 10c price bucket removes it, so
+            # this - not the raw number - is the estimate to quote.
+            num = den = 0.0
+            per_bucket = []
+            for b0 in range(0, 100, 10):
+                fb = [r["won"] - r["price"] / 100.0 for r in filled
+                      if b0 <= r["price"] < b0 + 10]
+                ub = [r["won"] - r["price"] / 100.0 for r in unf
+                      if b0 <= r["price"] < b0 + 10]
+                if len(fb) < 10 or len(ub) < 10:
+                    continue
+                d_ = float(np.mean(fb) - np.mean(ub))
+                w = min(len(fb), len(ub))
+                num += d_ * w
+                den += w
+                per_bucket.append((b0, len(fb), len(ub), d_))
+            if den:
+                strat = num / den
+                print(f"      -> PRICE-STRATIFIED filled minus unfilled = "
+                      f"{100*strat:+.2f}pp  (weighted over "
+                      f"{len(per_bucket)} price buckets)")
+                for b0, nf, nu, d_ in per_bucket:
+                    print(f"           {b0:>2}-{b0+10:<3}c  "
+                          f"filled n={nf:>5} unfilled n={nu:>5}  "
+                          f"{100*d_:+7.2f}pp")
             print(f"         negative = you are filled precisely when the "
                   f"price was too high. The free-roll.")
             print(f"         {'CI EXCLUDES ZERO — adverse selection is real'

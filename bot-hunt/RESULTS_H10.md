@@ -1,5 +1,31 @@
 # RESULTS_H10.md — passive quoting, measured on real Kalshi L2
 
+> # ⚠ CORRECTION, SAME SESSION — THE HEADLINE BELOW WAS UNSTABLE
+>
+> The first version of this file, committed at `5186158`, led with **"you set
+> out to earn +1.50¢ and you get −1.50¢."** That was measured on 21 hourly
+> files. Adding **7 more hours** moved it:
+>
+> | | 21 hours | 28 hours |
+> |---|---|---|
+> | JOIN net P&L per filled contract | **−1.50¢** | **+0.38¢** |
+> | IMPROVE net P&L per filled contract | −1.65¢ | +0.48¢ |
+> | raw adverse selection (JOIN) | −13.47pp, CI excluded zero | −8.52pp, **CI contains zero** |
+> | **fill rate, strict (JOIN)** | **31.0%** | **31.1%** |
+>
+> **The sign of the headline flipped on a 33% increase in data.** The CI
+> contained zero at both sample sizes, so nothing here was ever significant —
+> but I led with the point estimate anyway, and the point estimate was noise.
+>
+> **What survived the change:** the fill rate, essentially unmoved at 31.0% →
+> 31.1%. **What did not:** every P&L and adverse-selection number.
+>
+> The correct reading of this whole page is therefore: **passive quoting on
+> Kalshi esports is indistinguishable from zero, the sign is not stable, and
+> the mechanism is unconfirmed.** The tables below are kept as measured, with
+> the sample size against each, because deleting them is how somebody
+> re-derives them. **§4 is the part that holds.**
+
 **2026-08-05.** H10 was pre-registered on 2026-08-04 and left unrun because it
 needs the order book, not candles. It became runnable when a sibling session
 refuted the premise that Kalshi has no L2 history.
