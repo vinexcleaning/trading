@@ -105,10 +105,17 @@ belongs in `GUARDS.md`.
 chapter markers — 33.1%.**
 
 YouTube chapters live in the description. The descriptions are already on disk.
-A chapter list is an **author-written table of contents**: the cheapest possible
-answer to *which ninety seconds of this forty minutes matter*, and a strictly
-better `watch_segment` seed than the phrase list in `frames.cues()`, because the
-author wrote it and the phrase list is guessing.
+A chapter list is an **author-written table of contents**.
+
+> ⛔ **The sentence that used to follow this one — that chapters are "a strictly
+> better `watch_segment` seed than the phrase list, because the author wrote it
+> and the phrase list is guessing" — is WITHDRAWN. It was written before it was
+> measured, and it does not survive: only 2 of 19 `watch_segments` fall inside a
+> chapter whose title predicts screen content.** Chapters index *topics* over
+> ~2.5 minutes; watch_segments index *moments needing eyes* over ~60 seconds.
+> They are different instruments. See [FINDINGS_T7.md](FINDINGS_T7.md) for what
+> chapters are actually good for — retrieval with no transcript read, and
+> labelling where the permitted frames landed.
 
 **A third of the corpus has been carrying a free table of contents that nothing
 reads.** That is the highest ratio of value to work found in this task, and it
