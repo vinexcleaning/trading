@@ -141,7 +141,7 @@ def item(i):
         return None
 
 
-def collect(pace=0.15, comment_cap=25):
+def collect(pace=0.12, comment_cap=25):
     con = connect()
     have = {r[0] for r in con.execute("SELECT id FROM items")}
     n_new = n_c = 0
@@ -170,7 +170,9 @@ def collect(pace=0.15, comment_cap=25):
                 have.add(sid)
                 n_new += 1
                 # Top-level comments carry the contradictions. Capped, because
-                # a 400-comment thread is not 400 observations.
+                # a 400-comment thread is not 400 observations. Split into its
+                # own pass because comments are ~25x the requests of stories
+                # and blocking the corpus on them is a false economy.
                 for kid in (d.get("kids") or [])[:comment_cap]:
                     if kid in have:
                         continue
@@ -275,13 +277,28 @@ def report():
          f"| F1 beginner / F2 insider stories | {len(f1)} / {len(f2)} |",
          f"| in BOTH families | {len(f1 & f2)} |",
          f"| **F1 ∩ F2 Jaccard** | **{jac:.3f}** |", ""]
-    L.append(f"> **Jaccard {jac:.3f}.** The beginner and insider query families "
-             "return near-disjoint sets here too. `youtube-signal` measured "
-             "0.037 on video and `signal-github` measured 0.032, 0.033 and "
-             "0.036 on repositories. **This is the fourth independent corpus to "
-             "reproduce it**, on a platform with a completely different "
-             "retrieval engine — which is what makes the two-family split a "
-             "property of the vocabulary rather than of any one search index.\n")
+    L.append(
+        f"> **Jaccard {jac:.3f}**, computed from the `membership` table so "
+        "a story can belong to both families. The DIRECTION reproduces: "
+        "`youtube-signal` measured 0.037 on video and `signal-github` "
+        "0.032, 0.033 and 0.036 on repositories, and this is a fourth "
+        "corpus with a completely different retrieval engine."
+        "\n>\n"
+        "> **The MAGNITUDE does not reproduce and I will not claim it "
+        f"does.** {jac:.3f} is about seven times lower than the prior "
+        "three. The most likely reason is that I wrote both term lists "
+        "myself and made them more vocabulary-disjoint than the video "
+        "families were. **A number whose inputs I chose is not an "
+        "independent replication of a number somebody else measured.**"
+        "\n")
+    L.append(
+        "> **And this corpus is STORIES ONLY.** Comments were skipped for "
+        "speed - they are ~25x the requests. On HN a story is usually a "
+        "headline and a URL with no body text at all, so a substance "
+        f"rubric has almost nothing to read: **{verd.get('SKIP', 0)} of "
+        f"{tot} score SKIP.** That is not a finding about Hacker News, it "
+        "is a finding about collecting the wrong half of it. The substance "
+        "is in the comments and they are the next pass.\n")
 
     L.append("## Verdicts under rubric v2\n| verdict | n | share |\n|---|---|---|")
     for k, v in verd.most_common():
@@ -313,11 +330,13 @@ def report():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--collect", action="store_true")
+    ap.add_argument("--stories-only", action="store_true",
+                    help="skip comments; ~25x fewer requests, lands in minutes")
     ap.add_argument("--score", action="store_true")
     ap.add_argument("--report", action="store_true")
     a = ap.parse_args()
     if a.collect:
-        s, c = collect()
+        s, c = collect(comment_cap=0 if a.stories_only else 25)
         print(f"  collected {s} stories, {c} comments")
     if a.score:
         print(f"  scored {score_all()}")

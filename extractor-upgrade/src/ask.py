@@ -12,6 +12,7 @@ OFFLINE, and finishes in seconds, because the corpora are already on disk:
     38 read videos - 484 claims, 112 tools, 36 methods
     4,017 repos - 3,165 scored, 2,882 live, classified by venue and kind
     39,629 Reddit posts, 12,846 comments, 4,432 scored
+    Hacker News, via the explicitly-permitted Firebase API (src/hn.py)
     240 entities with cross-platform reputation verdicts
 
     python src/ask.py "kalshi market maker"
@@ -123,6 +124,28 @@ def reddit_posts(term, limit=10):
                  "WHERE (p.title LIKE ? OR p.selftext LIKE ?) "
                  "  AND s.verdict <> 'SKIP' "
                  "ORDER BY s.s_total DESC, p.score DESC LIMIT ?",
+                 (_like(term), _like(term), limit))
+    con.close()
+    return rows
+
+
+def hn_items(term, limit=10):
+    """Hacker News, if the corpus has been collected. Content came from the
+    explicitly-permitted Firebase endpoint; see src/hn.py."""
+    import sqlite3
+    db = corpora.DATA / "hn.db"
+    if not db.exists():
+        return []
+    con = sqlite3.connect(f"file:{db.as_posix()}?mode=ro", uri=True)
+    con.row_factory = sqlite3.Row
+    rows = _safe(con,
+                 "SELECT i.id, i.kind, i.title, i.text, i.score, "
+                 "       i.descendants, i.family, s.s, s.b, s.h, s.verdict, "
+                 "       s.naked "
+                 "FROM items i JOIN scores s ON s.id = i.id "
+                 "WHERE (i.title LIKE ? OR i.text LIKE ?) "
+                 "  AND s.verdict <> 'SKIP' "
+                 "ORDER BY s.s DESC, i.score DESC LIMIT ?",
                  (_like(term), _like(term), limit))
     con.close()
     return rows
