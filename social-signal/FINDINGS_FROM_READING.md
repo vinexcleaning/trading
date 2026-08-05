@@ -189,6 +189,47 @@ data to run and has never framed that way.
 
 ---
 
+## 0c. Five independent arrivals at this repo's KXBTC15M kill
+
+`STATUS.md` closed the BTC 15-minute thread **structurally**: *"`floor_strike`
+equals the prior window's settlement in 99.86% of 6,261 markets, so every
+contract is minted at-the-money on the peak of the fee curve."* That was derived
+here, from the venue's own data.
+
+Reading the corpus turns up **four unrelated people who got to the same place by
+building the thing**, on both venues:
+
+| source | what they did | where they landed |
+|---|---|---|
+| `/r/Polymarket/1un85mg` (§0) | 4,604 resolved 5-min windows, real recorded books | **every price band loses against price + fee**, −1.6 to −6.5pp |
+| `/r/algotrading/1u0cz4n` | 4 weeks, full apparatus — scanners, paper trading, latency monitoring, hundreds of finalised paper trades | killed it: *"It was failing because the economics weren't there"* |
+| a commenter on that thread | XGB implied-probability model, **Rust** execution, a month of **1-second order-book snapshots** | profitable on paper **with fees included**, **lost several hundred dollars live** — *"the fees were eating any potential profit"* |
+| `artyomderkach-bit/kalshi-15m-market-maker` (via `signal-github`) | built the full engine and backtest harness, ships in paper mode | *"almost every edge that looked real in-sample decayed out-of-sample"* |
+
+The line worth keeping, from the second one:
+
+> **"The closer I got to production realism, the less attractive the strategy
+> became."**
+
+That is this programme's own asymmetry stated by a stranger — **~41 recorded
+corrections here, every one of which shrank the edge, not one of which ever
+revealed a larger effect.** Four outsiders, two venues, four toolchains, one
+conclusion.
+
+**And the one dissent points the same way as everything else.** A commenter:
+*"next 5/15 mins up down is a literal coin toss, therefore the edge is trading
+both sides and managing inventory."* That is not a counter-argument — it is
+§0's split-sell finding restated. The money is on the **supply** side, and §0
+already established why retail cannot reach it: the rebate programme favours
+size and uptime, and the merge windows go to bots in milliseconds.
+
+> **What this does NOT do:** none of it is independent in the strict sense —
+> they are all people who read the same venues and hit the same fee curve. Five
+> people finding the same wall is weaker evidence than one properly powered
+> test. It is, however, exactly what a wall looks like from five directions.
+
+---
+
 ## 1. Copy trading: the leak is exit fidelity, not entry latency
 
 `/r/algotrading/comments/1v56b7h/` · 43 points · 24 comments
