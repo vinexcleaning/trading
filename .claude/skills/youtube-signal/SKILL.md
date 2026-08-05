@@ -9,7 +9,15 @@ Turn YouTube into a knowledge file. Retrieval and ranking are FREE (no API key o
 any kind). Only the final reading step needs a model, and that can be done by you
 in-session at no cost.
 
-**Project root:** `C:\Users\gianf\trading\youtube-signal`
+**Project root:** `C:\Users\vinig\trading\youtube-signal` — the DESKTOP, which is
+primary. `C:\Users\gianf\...` is the LAPTOP and that path does not exist here.
+
+**Frames are available and permitted**, which this file previously did not say:
+`https://i.ytimg.com/vi/<video_id>/maxres{1,2,3}.jpg` are auto-extracted video
+frames at ~25/50/75% of runtime, 1280x720, ~110 KB, and `i.ytimg.com/robots.txt`
+disallows `/sb/` only. Run `extractor-upgrade/src/thumbframes.py`. The media
+stream is a different matter and stays closed — every `googlevideo.com` host
+returns `Disallow: /`, so a downloader site is the same act with an extra hop.
 **Python:** `C:\Users\gianf\trading\youtube-signal\.venv\Scripts\python.exe`
 (`python` on PATH is a Microsoft Store stub and will fail.)
 
