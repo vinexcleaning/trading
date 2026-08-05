@@ -185,6 +185,35 @@ conservative answer.** Two of mine failed toward "dead" and one toward
 **User decision recorded:** the transcript tool keeps running despite
 `/youtubei/` being a `Disallow` line. Nothing stopped, nothing deleted.
 
+## Session 2, second half (2026-08-05)
+
+| | |
+|---|---|
+| chapters found | **367 of 1,197 (30.7%)**, 3,384 chapters, 538 screen-titled |
+| **withdrawn** | "chapters are a better watch_segment seed" - 2 of 19, measured |
+| chapters callable | `ask.py --chapters "results\|p&l"` |
+| **new corpus** | Hacker News, 607 stories, `data/hn.db` |
+| HN permission | `Allow: /*.json$` on Firebase; Algolia serves NO robots.txt and is used for ids only |
+| F1/F2 overlap | 312 / 298, **3 in both, Jaccard 0.005** - direction reproduces, magnitude does not |
+| HN verdicts | **537 of 607 SKIP** - stories only; the substance is in the comments |
+| comment pass | **RUNNING at hand-off** |
+| **my bugs today** | 4: the frame retraction, AND-matched queries, a dedup that zeroed the overlap, a silent no-op comment pass |
+
+### The two that would have produced a false result
+
+**The dedup.** `collect()` skipped ids it already held, so a story found by both
+query families was filed under whichever reached it first - making the overlap
+**structurally zero whatever the corpus contains**. The first run returned
+Jaccard 0.000 and I was one commit from publishing it as *the fourth independent
+corroboration* of this programme's own near-disjoint finding, beside 0.037,
+0.032, 0.033 and 0.036. A self-inflicted number that AGREES with three prior
+measurements is the least likely number in the world to get questioned.
+
+**The comment pass.** Comments were fetched inside the `if already have this
+story: skip` branch, so on an existing corpus it re-ran every query, printed
+every count, and wrote nothing. Same shape as the bug already on record here
+that *"reported 358 repos scored when 92 had real data."*
+
 ## Single next action
 
 **Read the chapter markers out of the 396 descriptions already on disk.** Free,

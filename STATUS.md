@@ -1803,3 +1803,100 @@ it produced nothing in 15 minutes. Replaced by replaying once and slicing orders
 by placement timestamp, which is exactly equivalent because an order placed in
 hour 12 cannot depend on a file from hour 40.
 
+---
+
+## extractor-upgrade — chapters, a fifth corpus, and four bugs of my own (2026-08-05)
+
+Full write-up: [extractor-upgrade/HANDOFF.md](extractor-upgrade/HANDOFF.md) ·
+[FINDINGS_T7.md](extractor-upgrade/FINDINGS_T7.md) ·
+[FINDINGS_T8.md](extractor-upgrade/FINDINGS_T8.md). Cost **$0.00**.
+
+### Chapters — a free index, and a prediction of mine that failed
+
+**367 of 1,197 descriptions already on disk (30.7%)** satisfy YouTube's own
+chapter rule — first stamp `0:00`, at least three, at least 10 s apart.
+**3,384 chapters**, median 8 per video, **538 (15.9%)** whose title names screen
+content. The rule is implemented, not assumed: counting any description with ≥3
+timestamps gives 396, and the 29 difference never render a chapter bar at all.
+
+> ⛔ **I withdraw yesterday's claim.** `FINDINGS_T3` said a chapter list is *"a
+> strictly better `watch_segment` seed than the phrase list."* **Measured: 2 of
+> 19 watch_segments (11%) fall inside a chapter whose title names screen
+> content.** n=19 is small, so this does not make chapters worse — it shows the
+> two signals measure **different things**, which my sentence assumed they did
+> not. A chapter indexes a *topic* over ~2.5 minutes; a watch_segment indexes a
+> *moment needing eyes* over ~60 seconds. Written up before it was measured.
+
+What chapters *are* good for, measured:
+
+- **Retrieval with no transcript read.** `ask.py --chapters "results|p&l"`
+  returns videos **nobody has read** whose authors already stated the result and
+  the period in a structured field. Best of them: `-F0dZ2GxSuA` has a chapter
+  titled **"3-hour results: $13 profit"** — a number *and* a denominator, free,
+  in a column that had been fetched and never queried. Author vocabulary across
+  3,384 chapters: `live` 78 · `code` 68 · `api` 64 · `results` 56 · `profit` 40.
+- **Labelling where the permitted frames landed**, which immediately sharpened
+  an open finding. `86AlV6174KI` is the corpus's only perfect `S=10 B=10`. Its
+  author labels `7m23s "Running Your First Strategy Backtest"` and
+  `13m41s "Coding & Optimizing Your Strategy"`. **The permitted frames land at
+  ~8m19s and ~16m39s, inside both, and both show a man talking to camera against
+  a garden wall.** A chapter is 6 minutes and a frame is one instant, so this
+  proves nothing alone — but the video's TENSION flag now has a second
+  independent leg beside its own on-screen **"NO CODE"** overlay.
+
+### A fifth corpus: Hacker News, on an explicit `Allow`
+
+`hacker-news.firebaseio.com/robots.txt` reads `Allow: /*.json$` **before**
+`Disallow: /`, so the API is explicitly permitted and only the HTML is not.
+`hn.algolia.com` serves **no robots.txt at all** — undecidable, not permitted —
+so Algolia is used *only* to turn a search term into integer ids and **every
+byte of content comes from Firebase.** Enforced by construction.
+
+**607 stories · 312 beginner-family / 298 insider-family · 3 in both ·
+Jaccard 0.005.**
+
+> The **direction** reproduces on a fourth corpus with a completely different
+> retrieval engine. **The magnitude does not, and I am not claiming it does** —
+> 0.005 is about seven times lower than `youtube-signal`'s 0.037 and
+> `signal-github`'s 0.032/0.033/0.036, and the likely reason is that **I wrote
+> both term lists myself** and made them more disjoint than the video families
+> were. A number whose inputs I chose is not an independent replication of a
+> number somebody else measured.
+
+**537 of 607 score SKIP — and that is a finding about my collection, not about
+Hacker News.** Comments were skipped for speed (~25× the requests) and on HN a
+story is usually a headline and a URL with no body text, so a substance rubric
+has nothing to read. **The comment pass is running now.** What the stories layer
+surfaces for free is the **Launch HN for Kalshi itself** — 148 points, **165
+comments**, the venue this programme trades, announced by its founders, replied
+to by 165 people with no reason to be polite.
+
+### ⚠ Four bugs of mine today, and two would have produced a false result
+
+1. **The frame retraction** (§ previous section) — I read `Disallow: /sb/`,
+   correctly concluded storyboards were forbidden, and never asked what else
+   lived on that host.
+2. **Algolia AND-matches every term**, so `"adverse selection market making"`
+   returns **0** while `"adverse selection"` returns 20 and `"market making"`
+   returns 1,343. Long phrases are how a human describes a concept and not how
+   an index is queried.
+3. **My dedup decided the headline number.** `collect()` skipped ids it already
+   held, so a story found by *both* families was filed under whichever reached
+   it first — making the overlap **structurally zero whatever the corpus
+   contains**. The first run returned Jaccard **0.000** and **I was one commit
+   from writing it up as the fourth independent corroboration of this
+   programme's own finding.** It would have been a fabricated result that agreed
+   with three prior measurements, which is exactly when a number is least likely
+   to be questioned.
+4. **The comment pass was a silent no-op that reported progress.** Comments were
+   fetched inside the `if already have this story: skip` branch, so on any
+   corpus that already existed it re-ran every query, printed every count, and
+   wrote nothing. Same shape as the bug this repo already has on record that
+   *"reported 358 repos scored when 92 had real data."*
+
+**A silent no-op that reports progress is worse than a crash**, and a
+self-inflicted number that agrees with your prior results is worse than either.
+
+**Single next action:** finish the HN comment pass, then score it — the comments
+are where `social-signal` found its contradictions on Reddit, and there is no
+reason to expect HN to be different.
