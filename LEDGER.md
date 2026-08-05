@@ -20,16 +20,33 @@ asserts a number and no artifact backs it, the row says `NONE` and the status is
 | Status | Count |
 |---|---|
 | **RETRACTED** | **45** |
-| SETTLED | 124 |
-| SUGGESTIVE | 30 |
-| UNVERIFIED | 28 |
-| BROKEN | 6 |
-| **Total** | **233** |
+| SETTLED | 141 |
+| SUGGESTIVE | 31 |
+| UNVERIFIED | 29 |
+| BROKEN | 8 |
+| **Total** | **254** |
 
 **Updated 2026-08-03**: +16 rows from **Section 6 — kalshi-market-scan**, which
 had no rows in this ledger until then. Three of its retractions (K003, K005,
 K006) and one overstatement (K010) were live in `docs/GO_NO_GO.md` and
 `docs/shortlist.md` and were invisible to any ledger-based check.
+
+**Updated 2026-08-05**: +21 rows from **Section 7 — bot-forensics**, which also
+had no rows here until now, and which is the project whose conclusions are most
+likely to be acted on because it is the only one about **money that actually
+moved**. Ledgering it immediately corrected **two stale rows in Section 5**
+(CH031 gained a magnitude after months without one; CH044 said *"never
+diagnosed, never fixed"* and was wrong on both counts) and surfaced **B005a**, a
+reporting selection in which three of that project's own documents state "0 of
+13" while its own committed output prints "3" from a different, broken arm.
+
+> **RETRACTED stays at 45 — no B-row is itself a retraction — but the
+> directional prior held again.** Every correction bot-forensics produced shrank
+> the apparent edge: **B002** moved $99 of gains from the bot to the hand,
+> **B019** removed a $14.51 winner that a bad classifier had credited to the bot
+> (roughly half its apparent total), and **B003** dissolved the profitable night
+> into the argmax of its own equity curve. **Still not one correction anywhere in
+> this repo has ever revealed a larger effect.**
 
 ## The directional prior, and it is the single most informative number here
 
@@ -255,10 +272,10 @@ carries them in this exact schema. What matters for this ledger:
 | ID | Claim | STATUS | Why it matters |
 |---|---|---|---|
 | **CH057** | "4 weeks / 14k markets / 0 of 480 configs profitable" | **UNVERIFIED** | ~**100× the evidence base** of every other conclusion in the archive, flagged "Not re-verified" in its own handoff. Named the single highest-value verification available, twice. Still open. |
-| **CH031** | The score-staleness guard never fired — `fetched_at` was stamped at cache read | **SETTLED** (bug) | **No live entry result anywhere in the archive is a valid test of the entry logic.** The 4-for-10 included. |
+| **CH031** | The score-staleness guard never fired — `fetched_at` was stamped at cache read | **SETTLED** (bug), **magnitude measured 2026-08-05** | **No live entry result anywhere in the archive is a valid test of the entry logic.** The 4-for-10 included. **[B008](#section-7--bot-forensics-the-night-the-live-tennis-bot-made-money) puts a size on it, which this row lacked for months:** on 4,398 score-change events, **97.4% of the repricing had already happened** by the time the bot's snapshot showed the new score (+4.68c before, +0.17c after, placebo +0.18c). The bot was systematically buying **after** the news. |
 | **CH022** | Three irreconcilable P&L figures for one session (+$0.60 / +$2.51 / −$3.55) | **BROKEN** | The fee ceiling proves −$3.55 is impossible; true net is in **[−$0.68, +$2.51]**. CH021 and CH029 are unusable until this is resolved. |
 | **CH035** | Every negative result in the project is a **taker** result | **UNVERIFIED** | No resting-order strategy was ever tested on any market — until S008 above, which tested it on tennis and found all 15 configurations negative. |
-| **CH044** | A position-sizing blowout produced 64 contracts against an intended 9 | **SETTLED** (bug exists) / cause **UNVERIFIED** | Combined with `max_daily_loss_pct = 0 (OFF)` on a live bot, this is the top standing financial risk. Never diagnosed, never fixed. |
+| **CH044** | A position-sizing blowout produced 64 contracts against an intended 9 | **SETTLED** (bug) / cause **SETTLED 2026-08-03** | ~~Never diagnosed, never fixed.~~ **Both halves of that are now wrong.** Diagnosed 08-03: **not a sizing bug but a martingale** — `qty = int(stake/price)` is arithmetically correct, and sizing by *fixed dollars* buys *more* contracts as price falls, so 64 = 12+20+32 across three re-entries. Fixed the same day (`max_contracts`, `reentry_cooldown_sec = 900`, `max_reentries_per_event = 1`, `max_daily_loss_pct` 0 → 15). **[B007](#section-7--bot-forensics-the-night-the-live-tennis-bot-made-money) then showed it was never confined to one match: twelve averaging-down sequences, −$16.43, and the other 94 matches were +$9.63.** See also **B017** — the legs were 749 s apart, not 24 s. |
 
 ---
 
@@ -327,6 +344,75 @@ projects gets a fresh row and a fresh status each time, and the weakest status
 is the one that survives in whichever document a reader happens to open. Cross-
 reference by *number and n*, not by project. It was found here only because the
 two rows finally sat in the same file.
+
+---
+
+# SECTION 7 — bot-forensics (the night the live tennis bot made money)
+
+**Added 2026-08-05.** Like Section 6 before it, this project had **no rows in
+this ledger at all** until now, and it is the project whose conclusions the user
+is most likely to act on — it is the only one about *money that actually moved*.
+
+Artifacts: `bot-forensics/` — `FINDINGS.md` (Tasks 1–2), `VERDICT.md` (Tasks
+3–5), `DECISIONS.md`, every run's stdout and CSVs committed under
+`bot-forensics/out/`. Source records are the live account's own exchange files in
+`kalshi-inplay-bot/`. **Every number below was independently re-run on
+2026-08-05 and reproduced bit-identically** against the committed output.
+
+| ID | Claim in plain English | Project | Artifact (script + output) | n + unit | Date range | Effect + CI | FDR? | Holdout? | STATUS |
+|---|---|---|---|---|---|---|---|---|---|
+| **B001** | **The bot lost money over its whole life.** −$6.92 across 108 matches. | bot-forensics | `src/t2_master.py` → `out/t2_master.txt`, `out/master_match.csv` | **108 matches → 74 entry bursts** (the scanner fires everything qualifying in one pass, so same-burst matches share one feed state) | 07-27 05:58 → 07-28 21:00 UTC | mean **−$0.064/match**; burst-clustered mean −$0.094, **95% CI [−$0.97, +$0.78]**, t = −0.21 | n/a | n/a | **SETTLED** (null) — effective n is **74**, not 108 and not 1,237 fills |
+| **B002** | **The hand-trading made the money; the bot did not.** Manual +$98.94, bot −$6.92. | bot-forensics | `src/t1c_classify.py` → `out/ticker_class.csv`; `src/t2_master.py` | bot 108 matches / manual 31 / mixed 1 | 07-25 → 07-28 | manual **+$98.94** on 31 matches vs bot **−$6.92** on 108; most of the manual gain predates the bot's first order | n/a | n/a | **SETTLED** — **the single most load-bearing correction in the project.** The account did go up; the bot is not why |
+| **B003** | **The "profitable night" is a cut at the maximum of the equity curve, and the argmax is not a finding.** | bot-forensics | `src/t2b_nightday.py` → `out/t2b_nightday.txt`, `out/perm_buckets.csv` | 108 match P&Ls, 200,000 random reorderings | 07-27 → 07-28 | peak **+$32.19** after 60 matches; random reorder reaches it **p = 0.052**; before/after gap **p = 0.272**; a zero-drift process shows the same shape **85%** of the time | permutation | order-destroying null retains the true total and dispersion | **SETTLED** (null) — generalised into **[GUARDS.md](GUARDS.md) #17** |
+| **B004** | Splitting on the clock instead of the curve: night beats day in **sign only**. | bot-forensics | `src/t2b_nightday.py` | night **n = 19 matches**, day n = 89 | 07-27 → 07-28 | night +$0.799/match vs day −$0.248; **Welch t = 1.54, p = 0.133** | see B005 | n/a | **SUGGESTIVE at best** — the direction the user remembers, at an n that cannot resolve it |
+| **B005** | **0 of 13 permutation-tested buckets clear BH-FDR at 5%.** | bot-forensics | `src/t2c_costbar.py` → `out/t2c_costbar.txt` | 13 buckets (tier, 4h block, night/day), **200,000 shuffles each** | 07-27 → 07-28 | smallest p = **0.0477** (04–07 UTC, n = 5); **0 discoveries**; 12 of 21 buckets positive against a chance expectation of 10.5 (binomial p = 0.66) | **BH-FDR 5%** | n/a | **SETTLED** (null) — ⚠ **see B005a; this number is arm-dependent and the reports quote only this arm** |
+| **B005a** | ⚠ **The parametric arm of the same test reports 3 discoveries, not 0, and no write-up said so.** | bot-forensics | `src/t2b_nightday.py` → `out/t2b_nightday.txt` line 93 | **21** t-tested buckets (adds the tier×night interaction cells) | 07-27 → 07-28 | BH-FDR 5% gives **3 "discoveries"**: WTA\|day (n=4, **−$2.89**, t=−6.4), 04–07 (n=5, p=0.0002), Challenger\|night (n=6, p=0.0004). The permutation p for that same 04–07 bucket is **0.0477 — 240× larger** | BH-FDR 5% | n/a | **BROKEN as a test, and the 0 is the right answer** — a t-test on n=4–6 with small realised variance is wildly anti-conservative, one "discovery" is a *loss* bucket, and the other two are the same six trades seen twice. **The permutation arm supersedes it.** Recorded because the script prints "3" to screen while `FINDINGS.md`, `VERDICT.md` and `HANDOFF.md` all state "0 of 13" without naming the arm |
+| **B006** | **The night/day comparison is confounded against the night at source.** | bot-forensics | `src/t2c_costbar.py` → `out/costbar_tier.csv`, `out/costbar_night.csv` | **27,083 recorder rows**, 342 markets | 07-27 23:01 → 07-28 13:49 UTC | mean spread ATP **1.17c** · WTA 1.24c · Challenger 1.57c · ITF-M 2.80c (night **5.26c**) · ITF-W 4.48c (**night 7.16c**) | n/a | n/a | **SETTLED** — overnight ITF books are **2–6× wider**. The bucket that looked better is the one with the worse book |
+| **B007** | **The martingale is present in the profitable stretch, and it went 7 for 7.** | bot-forensics | `src/t2d_martingale.py` → `out/t2d_martingale.txt`, `out/multileg.csv` | 14 of 101 traded markets had >1 filled entry; **12 averaged down** | 07-27 → 07-28 | averaging-down 12 matches **−$16.43**; single-entry 94 matches **+$9.63**; **before the peak, 7 sequences, 7 winners, +$6.63**; after it ~−$23, SAGLEV alone −$8.79 | n/a | n/a | **SETTLED** — **the bot's entire loss is the twelve averaging-down sequences.** A run of small wins ended by one loss bigger than all of them is the martingale signature, and while running it is indistinguishable from skill |
+| **B008** | **The score feed arrived after the market had already repriced.** Puts a magnitude on CH031. | bot-forensics | `src/t2d_martingale.py` → `out/lag_events.csv` | **4,398 score-change events**, 305 markets, 60 s polling | 07-27 → 07-28 | mean oriented move: placebo (−8→−6) **+0.18c** · (−6→−3) +1.39c · **(−3→0) +4.68c** · **(0→+3) +0.17c**. Only **2.6%** of repricing falls after the bot could see the score | n/a | placebo control at ~5 min | **SETTLED** — the placebo rules out ordinary momentum. Cannot separate feed lag from honest market anticipation at 60 s resolution, **and does not need to**: the entry signal arrived after the event it was meant to predict |
+| **B009** | **The night's actual configuration, replayed over the backtest corpus, loses on every tier — worst on ITF, where it actually traded.** | bot-forensics | `src/t3b_proxy.py` → `out/t3b_proxy.txt`, `out/t3b_proxy.csv` | **13,658 market views**; ITF arm **6,135 trades / 2,599 matches** | 06-29 → 07-27 | ITF **−9.13c/trade, −$1.98/match, t = −26.0**; ITF holdout −8.77c on 1,045 matches, t = −16.0; all tiers −8.08c. No proxy threshold turns it (0c → 30c all −8.6 to −9.7) | n/a | **yes — train/holdout split** | **SETTLED** — **the decisive test, and it refutes verdict D.** Not an underpowered null: a large, precisely measured loss |
+| **B010** | The night's config was **not badly chosen — it is just in a losing family.** | bot-forensics | `src/t3_replay.py` + `src/t3b_proxy.py`; sweep from `kalshi-inplay-bot/backtest/` | 481 configurations | 06-29 → 07-27 | ranks ~**55th of 481** on the tight-book tiers (−5.64c) and **between random entry (−8.28c) and S1 (−9.36c) on ITF**. **0 of 481 profitable** | n/a | yes | **SETTLED** — corroborates CH001/R5: tuning was never the problem |
+| **B011** | The live 39 hours are **consistent with the backtest, not in tension with it.** | bot-forensics | `VERDICT.md` §"the live 39 hours" | live n = 108 matches vs backtest n = 1,616 matches | 07-27 → 07-28 | live −$0.064/match (se 0.284) vs backtest −$0.755 (se 0.077); difference $0.69, se 0.294, **t = 2.35** | n/a | n/a | **SETTLED** — the live window ran ~2σ better than its own backtest predicts. **That is what a good run looks like**, and the large sample is the one to believe |
+| **B012** | **The stop loss is the single most expensive component**, and four independent files now agree. | bot-forensics | `out/rerun_high_sweep.txt`, `out/rerun_high_entry.txt`, `out/rerun_longshot.txt` + Arm A | `high_entry` cell n = 95; 480-config sweep; 13,658-view replay | 06-29 → 07-27 | `high_entry` **+0.62c → −3.77c** on identical trades when an 80c stop is added; S2 buy-and-hold (−2.29c) beats S1's exit ladder (−9.36c) by **7.07c**; removing the stop is the best single change in Arm A (−6.47c → −4.59c) | n/a | partial | **SETTLED** (direction) — **contradicts the live bot's design.** The bot stopped out of **77%** of backtested and 30 of 71 live trades. Closes `kalshi-inplay-bot/audit/LEDGER.md` **R6** — those outputs are now on disk |
+| **B013** | Kalshi tennis settles **strictly binary**; a retirement does *not* settle "at the number". | bot-forensics | `kalshi-inplay-bot/_settled_all.json` scan in `src/t4b_verify.py` → `out/t4b_verify.txt` | **9,352 settled tennis markets** | to 07-28 | **4,676 `yes` / 4,676 `no`, exactly mirrored, zero non-binary settlements.** A 43c holder at retirement is paid **100** | n/a | n/a | **SETTLED** (structural) — **refutes a YouTube claim in this repo's own corpus** (`ELpX7I0sPtc`). Cuts toward holding: the windfall is invisible to a stop. Another entry against B012's stop |
+| **B014** | **Roughly thirty people independently built this same bot in six months and none publishes a settled P&L.** | bot-forensics | `src/t4_github.py` → `out/t4_github.txt` (repo-level detail gitignored — this repo is public) | **32 distinct Kalshi/Polymarket tennis repos** | retrieved 08-05 | **30 of 32 created in the last 180 days**; 135 stars total, **129 of them on one repo**; every repo stating a mode states **paper**; 0 settled P&L | n/a | n/a | **SETTLED** (observational) — the finding is **the crowd, not any repo.** Consistent with the adverse-selection result already in STATUS.md |
+| **B015** | **Nobody documents the overnight-vs-daytime pattern in prediction-market sports books.** | bot-forensics | `src/t4_github.py`, `src/t4c_youtube.py` → `out/t4c_youtube.txt` | 2 YouTube corpora (**1,135 videos, 39.8M chars**) + 4 targeted GitHub queries | searched 08-05 | "overnight" appears **142 times across 75 videos** and **every hit is equity/futures session language**; 4 GitHub queries returned 1 result between them | n/a | n/a | **SETTLED** (null search) — a canary term asserts the scan is alive, after a first pass read the wrong column and cleanly reported a fake 0 |
+| **B016** | ⚠ **A free ITF data source may exist, reopening a thread closed on data availability.** | bot-forensics | `src/t4_github.py`, `src/t4b_verify.py` → `out/t4b_verify.txt` | 11 official client libraries, all pushed within 2 days of 08-05 | checked 08-05 | `api.livetennisapi.com/api/public/v1/health` returns **200, no key**; all data endpoints **401**. Free tier *advertises* ATP+WTA+Challenger+**ITF** live scores | n/a | n/a | **UNVERIFIED — vendor ADVOCACY, not corroboration.** Settling it needs an account, which is the user's to create. **Reopens data availability only** — B009 says ITF economics are the worst of any tier |
+| **B017** | The SAGLEV re-entry legs were **749 s apart, not 24 s**. | bot-forensics | `src/t2d_martingale.py` → `out/multileg.csv` | 3 legs, 1 match | 07-28 | entry-to-entry gap **12–13 min**; **no re-entry anywhere in the record was under 60 s** from the prior entry. The 24 s/23 s figures are stop-fill→re-entry gaps | n/a | n/a | **CORRECTION to STATUS.md and `tennis_engine.py`'s post-mortem comment.** The shipped fix (`reentry_cooldown_sec = 900`) still blocks all twelve, so **no patch changes** — but "24 seconds later" overstates how frantic it looked |
+| **B018** | **The bankroll was stepped up by hand during the winning run.** | bot-forensics | `src/t2_master.py`, order sizes in `out/master_ticker.csv` | 113 orders on 07-28 | 07-27 → 07-28 | implied stake ~$5.1 → ~$5.9 → **exactly $6.25** from 07:44; `$6.25 = 125 × 5%` reproduces **113 of 113** sizes | n/a | n/a | **SETTLED** — a **discretionary size-up on a winning run**, layered on the strategy. The profitable early trades were sized **smaller** than the later losing ones |
+| **B019** | A notional-only bot/manual classifier **misclassified the single largest winner.** | bot-forensics | `src/t0c_botsig.py` (kept as evidence) vs `src/t1c_classify.py` | 1 order of 389 fills | 07-27 | a hand-placed 15.5-contract **NO** longshot at 6c cost $0.93 — bot-sized — and returned **+$14.51**, roughly half the apparent bot total | n/a | n/a | **BROKEN classifier, caught and replaced.** The rule has to be **structural** (`side == yes` ∧ 10–90c ∧ $4.60–6.30 notional). **A classifier that misfires on the largest winner is not a classifier** |
+| **B020** | **"Sackmann upstream is 404" is too strong** — a live mirror exists. | bot-forensics | GitHub API check in `src/t4b_verify.py` → `out/t4b_verify.txt` | 5 repos checked | checked 08-05 | `tennis_atp`, `tennis_wta`, `tennis_slam_pointbypoint` **are** 404 — but **`JeffSackmann/tennis_MatchChartingProject` is live, 399★**, and `Aneeshers/tennis-sackmann-archive` mirrors the point-by-point data, pushed 2026-06-25 | n/a | n/a | **CORRECTION to STATUS.md.** The data is **not unrecoverable**; `kalshi-tennis/data` is not the only copy |
+
+### The verdict these rows add up to
+
+**A and B jointly** — variance plus a martingale that happened to win. **C** (the
+stale-score bug) is real and measured (B008) but explains why the strategy has no
+edge, not why one run went up. **D is refuted by B009**, and that is the
+strongest statement in the project: the exact condition proposed — ITF,
+overnight — is the *worst* cell in the whole test.
+
+### What ledgering this project immediately paid for
+
+Exactly as in Section 6, putting the rows in one file produced findings that
+could not be seen from inside the project:
+
+1. **CH044 was stale in two directions.** It read *"never diagnosed, never
+   fixed"*. It was diagnosed on 08-03 (a martingale, not a sizing bug) and
+   **B007 then showed it was never confined to one match** — twelve sequences,
+   not one. Row corrected inline.
+2. **CH031 had no magnitude.** It recorded the staleness bug as a fact for
+   months; **B008 measures it** at 97.4% of repricing already complete. Row
+   corrected inline.
+3. **B005a is a reporting selection nobody would have caught from the prose.**
+   Three of this project's own documents state "0 of 13" while its own committed
+   output prints "3" from a different arm. The 0 is correct and the 3 is the
+   broken test — but a reader running the script sees the 3.
+
+> **The pattern to notice across B001, B002 and B009.** The user's memory was
+> accurate about the *account* and wrong about the *cause*. The account went up
+> ~$99; the bot lost $6.92 while it did. **"It worked and then it stopped
+> working" was, on measurement, the shape of a fair coin** — which is why it
+> became GUARDS #17 rather than a strategy note.
 
 ---
 

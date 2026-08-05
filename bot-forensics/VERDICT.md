@@ -249,7 +249,11 @@ time. The before/after gap at the peak is exceeded by **27%** of random
 reorderings of the same numbers, and a zero-drift process shows the same
 rising-then-falling shape **85%** of the time. Splitting on the clock instead of
 the curve: night +$0.799/match against day −$0.248, Welch p = 0.133; **0 of 13
-permutation-tested buckets survive BH-FDR at 5%.**
+permutation-tested buckets survive BH-FDR at 5%** (the *parametric* arm over 21
+buckets reports 3, all at n = 4–6 and one of them a loss bucket — see
+[FINDINGS.md](FINDINGS.md) "Which arm this 0 comes from" and ledger row
+[B005a](../LEDGER.md#section-7--bot-forensics-the-night-the-live-tennis-bot-made-money);
+the permutation arm is the correct test and supersedes it).
 
 **B — a martingale that happened to win.** This is the part the user's memory of
 "many trades, not one lucky win" was picking up, and it is the opposite of

@@ -51,7 +51,7 @@ out/                  every run's stdout + the CSVs. Committed on purpose.
 | martingale sequences | 12, **−$16.43**; the other 94 matches +$9.63 |
 | martingale before the peak | **7 of 7 winners, +$6.63** |
 | repricing already done when the feed updated | **97.4%** (n = 4,398) |
-| buckets clearing BH-FDR 5% | **0 of 13** |
+| buckets clearing BH-FDR 5% | **0 of 13** (permutation arm; the parametric arm over 21 buckets says 3 — see B005a) |
 | backtest replay, ITF only | **−9.13c/trade**, −$1.98/match, t = −26.0 |
 | backtest replay, ITF holdout | −8.77c, 1,045 matches, t = −16.0 |
 

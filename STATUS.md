@@ -16,7 +16,7 @@ New ideas go in [INBOX.md](INBOX.md) first, before deciding where they belong.
 | **Tennis set-1 overshoot** | The undershoot is real (âˆ’2.42pp, p=0.0009, n=3,436) and **uncollectable** against a 3.61pp cost bar. 0 of 25 time/tier and 0 of 10 margin buckets clear. | **Stop.** nâ‰ˆ3,970 needed for a 2Â¢ edge; more slicing has negative EV. |
 | **Crypto ladder modelling** | **No model beats the Kalshi mid** on 250 events. Two tie, two lose. The positive control proves the test would have found a 5% bias. | None. NO-GO fired; Task 5 was correctly never run. |
 | **Polymarket copy trading** | Wallet skill is real and persists, but the copyable part (+0.937pp, falling to âˆ’0.135pp in the fee era) is **smaller than the spread** (â‰¥1.0pp). | **Do not build the bot.** Phase 5 deliberately skipped. |
-| **Stage 0â€“5 player model** | **The model loses to the bookmakers**: +0.01922 Brier [+0.01438,+0.02417], n=2,645. Stage 4 gate failed. | None. Sackmann features end 2026-06-02 and the upstream repos are 404. |
+| **Stage 0â€“5 player model** | **The model loses to the bookmakers**: +0.01922 Brier [+0.01438,+0.02417], n=2,645. Stage 4 gate failed. | None. Sackmann features end 2026-06-02 and the upstream repos are 404. **⚠ "the upstream repos are 404" is too strong — corrected 2026-08-05, see the bot-forensics section and ledger row B020.** Three are 404; `tennis_MatchChartingProject` is live at 399★ and a third-party point-by-point mirror was pushed 2026-06-25. Does not change the verdict (the model lost to the bookmakers), only the recoverability. |
 | **BTC 15-minute (KXBTC15M)** | Structurally dead â€” `floor_strike` equals the prior window's settlement in 99.86% of 6,261 markets, so every contract is minted at-the-money on the peak of the fee curve. | None. Structural kill, not statistical. |
 | **Ladder arbitrage** | 0 monotonicity violations in 3,187 scans; 1 gross bucket-sum violation in 1,135, **unprofitable net**. The ladder is wide enough that legging it is self-defeating. | None (10.5 min of recording â€” a preliminary null, but with a structural mechanism). |
 
@@ -54,7 +54,7 @@ endpoint.
 | What | Where | Size | Re-pullable? |
 |---|---|---|---|
 | Polymarket fills / positions / books | `trading\wallet-copy-study\data\` | **12 GB** | Yes â€” permanently public on-chain |
-| Stage 0â€“5 caches, Sackmann, tennis-data | `trading\kalshi-tennis\data\` | **1.6 GB** | **No.** Sackmann upstream is 404; this runs on a frozen mirror ending 2026-06-02. **Only copy.** |
+| Stage 0â€“5 caches, Sackmann, tennis-data | `trading\kalshi-tennis\data\` | **1.6 GB** | **No** for the derived Stage 0–5 caches — those are still the **only copy** and took a full session to compute. ~~Sackmann upstream is 404~~ **⚠ corrected 2026-08-05 (ledger B020): partly recoverable.** `tennis_atp`/`tennis_wta`/`tennis_slam_pointbypoint` are 404, but `JeffSackmann/tennis_MatchChartingProject` is live (399★) and `Aneeshers/tennis-sackmann-archive` mirrors the point-by-point data. Frozen mirror still ends 2026-06-02. |
 | Crypto recordings, panel, spot, Deribit, Polymarket books | `C:\Users\gianf\crypto\data\` | **3.6 GB** | Partly. Recorded Kalshi books: **no**. |
 | Tennis depth + candles | `C:\Users\gianf\kalshi\set1_overshoot\data\` | **384 MB** | Recorded depth: **no**. Candles: yes, for ~69 days. |
 | Byte-identical backup of `kalshi-tennis/src` + `reports` | `trading\_archive\` | 296 KB | Redundant â€” safe to delete |
@@ -2115,4 +2115,68 @@ that ended it.
 **No action on the bot. `TRADING_DISABLED` stays.** This is the second
 independent verdict on the same strategy, now from the live record as well as
 the backtest.
+
+---
+
+## bot-forensics — independent re-run and ledgering (2026-08-05, later session)
+
+A second session re-ran the analysis from scratch and put the project into
+[LEDGER.md](LEDGER.md). **Nothing above was rewritten; the verdict is unchanged.**
+
+### Every headline number reproduced bit-identically
+
+`t2_master.py`, `t2b_nightday.py`, `t2c_costbar.py`, `t2d_martingale.py` and
+`t3b_proxy.py` were re-executed. −$6.92 over 108 matches, 74 bursts, CI
+[−$0.97, +$0.78], peak +$32.19 at 13:32 UTC, argmax p = 0.052, 12 martingale
+sequences at −$16.43, 97.4% of repricing already done, and the decisive ITF
+replay at **−9.13c/trade on 6,135 trades / 2,599 matches** all came back
+unchanged. `t3b_proxy.py`'s full output diffs **identical** to the committed
+copy. **The verdict rests on numbers that now reproduce on a second run.**
+
+### ⚠ One reporting selection found, and it is the only correction
+
+**`t2b_nightday.py` prints "buckets tested: 21 · BH discoveries at FDR 5%: 3" —
+and always did, it is in the committed output at line 93 — while `FINDINGS.md`,
+`VERDICT.md` and `HANDOFF.md` all state "0 of 13" without naming which arm.**
+
+They are two different tests: "0 of 13" is the **permutation** arm (200,000
+shuffles), "3 of 21" is the **parametric** arm over a family that adds the
+tier×night cells. **The 0 is correct and the 3 is the broken test** — the three
+"discoveries" are n = 4, 5 and 6; one of them is a *loss* bucket (WTA|day, all
+four losers); and the parametric p for the 04–07 bucket is 0.0002 against a
+permutation p of **0.0477 on the same five matches, 240× larger.** A t-test at
+n = 4 is anti-conservative, which is precisely why the permutation arm exists.
+
+Marked inline in all three files rather than quietly fixed, because a reader who
+runs the script sees the 3. Ledgered as **B005a**.
+
+### The project is now in the root ledger — Section 7, rows B001–B020
+
+**21 rows.** Tally 233 → **254**; RETRACTED stays **45** (no B-row is itself a
+retraction). Like `kalshi-market-scan` before it, `bot-forensics` had **no rows
+in this ledger at all**, and it is the project most likely to be acted on
+because it is the only one about **money that actually moved**.
+
+**Ledgering it immediately corrected two stale rows in Section 5, exactly as the
+K015=W011 episode predicted:**
+
+| row | was | now |
+|---|---|---|
+| **CH044** | "position-sizing blowout … **never diagnosed, never fixed**" | **wrong on both counts.** Diagnosed 08-03 as a martingale, fixed the same day — and **B007 shows it was never one match: twelve averaging-down sequences, −$16.43, while the other 94 matches were +$9.63** |
+| **CH031** | score-staleness bug recorded as a fact, **no magnitude for months** | **B008 sizes it**: 97.4% of repricing already complete before the bot could see the score |
+
+Also closed: **`kalshi-inplay-bot/audit/LEDGER.md` R6** is now marked resolved
+inline with the four rescued findings restated in the row itself, so they survive
+even if `bot-forensics/out/` is lost. And `FINDINGS.md` pointed at a
+`MARTINGALE.md` that was never written — repointed at the analysis, which is in
+`FINDINGS.md` itself.
+
+**The Sackmann correction is now marked where the claim is made** (the "Threads —
+CLOSED" table and the "Data on disk" table), not only at the bottom of this file.
+The Stage 0–5 derived caches are still the only copy; their *inputs* are partly
+recoverable.
+
+**Still open and still the user's:** the `livetennisapi` free tier needs an
+account to settle. It reopens data availability only — B009 says ITF economics
+are the worst of any tier.
 

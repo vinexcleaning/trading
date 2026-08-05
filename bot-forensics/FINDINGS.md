@@ -200,6 +200,31 @@ is the one with the worse book.
 BH-FDR at 5%: 0 discoveries.** 12 of 21 t-tested buckets had a positive mean
 against a chance expectation of 10.5 (binomial p = 0.66).
 
+> ### ⚠ Which arm this "0" comes from — added 2026-08-05 on re-run
+>
+> **`t2b_nightday.py` prints "buckets tested: 21 · BH discoveries at FDR 5%: 3"
+> to screen, and it always did — the figure is in the committed
+> `out/t2b_nightday.txt` at line 93.** The "0 of 13" quoted above is the
+> *permutation* arm (`t2c_costbar.py`); the "3" is the *parametric* arm over a
+> larger family that adds the tier×night interaction cells. Both are real
+> outputs of this project and only one was ever written up.
+>
+> **The 0 is the right answer and the 3 is the broken test**, for three reasons
+> that should be checked rather than taken on trust:
+>
+> 1. The three "discoveries" are **n = 4, 5 and 6**. A t-test there divides by a
+>    realised standard error that is itself almost unmeasured, and is wildly
+>    anti-conservative. For the 04–07 bucket the parametric p is **0.0002** and
+>    the permutation p on the same five matches is **0.0477 — 240× larger.**
+> 2. **One of the three is a *loss* bucket** — WTA\|day, n = 4, mean −$2.89, all
+>    four losers. It "clears" only because four consistent losses have small
+>    variance. Nobody would call that a discovery.
+> 3. The other two — 04–07 UTC and Challenger\|night — are **the same six trades
+>    seen twice**, as this file already notes.
+>
+> Recorded rather than quietly fixed because a reader who runs the script sees
+> the 3. Ledgered as **[B005a](../LEDGER.md#section-7--bot-forensics-the-night-the-live-tennis-bot-made-money)**.
+
 The only bucket under p = 0.05 on permutation is **04:00–07:00 UTC: n = 5,
 +$11.63, all five winners, p = 0.048** — and it does not survive BH. Those five
 matches are the first five the bot ever placed, on the morning of 27 July, and
@@ -317,7 +342,10 @@ buying *after* the news, i.e. paying the informed side.
    The direction of that bias is not obvious and is examined separately.
 2. **n = 108 matches, effective n = 74 bursts, over 39 hours.** Nothing in this
    file is powered to detect an effect smaller than about $1 per match.
-3. **The martingale is present and it is not confined to SAGLEV** — see
-   `MARTINGALE.md`.
+3. **The martingale is present and it is not confined to SAGLEV** — see "The
+   martingale DID appear in the profitable stretch" above, and `out/multileg.csv`
+   for the twelve sequences. (This pointed at a `MARTINGALE.md` that was never
+   written; the analysis is in this file. Ledgered as
+   [B007](../LEDGER.md#section-7--bot-forensics-the-night-the-live-tennis-bot-made-money).)
 4. The manual/bot split, though structural, is a judgement. Every number is
    reproducible from `out/` and the classifier is one function.
