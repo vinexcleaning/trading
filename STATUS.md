@@ -1521,3 +1521,42 @@ wallet. **ROI 1.6% on closed volume, profit factor 1.09** â€” thin, against
 6â€“18Â¢ mean pre-match spread. Third-party analysis of a wallet selected *because*
 it ranks #128, so **W015** applies: a lead, not a result.
 
+### ✅ Kalshi window RESCUED — 610 tennis matches at tick resolution (2026-08-04)
+
+Acted on the D14 retraction rather than leaving it as a question.
+`social-signal/src/pull_kalshi_archive.py`, 61 minutes, **$0.00**.
+
+| | |
+|---|---|
+| coverage | **15–27 May 2026, 312 of 312 hours, ZERO gaps** |
+| rows kept | **200,626,400** |
+| snapshots | 171,644 — **92% carry a full price/size ladder** |
+| deltas | 200,454,756 `(price, delta, side)` |
+| tickers | 1,220 — 626 `KXATPMATCH` + 594 `KXWTAMATCH`, **0 off-prefix** |
+| **distinct matches** | **610** |
+| streamed / kept | 34.5 GB in → **1.21 GB on disk** (filtered in flight, raw discarded) |
+
+**Why this window and not another:** Kalshi's API is a ~69-day window and closed
+markets 404. On 4 Aug that reaches back to about **27 May**, so everything here
+is already unobtainable from the venue, and the archive's own Kalshi feed is dead
+at 11 June so it never grows back. **It shrank by a day for every day it was left.**
+
+**What it is NOT.** It does **not** reopen the set-1 overshoot thread, which
+closed on arithmetic — *"n≈3,970 needed for a 2¢ edge; more slicing has
+negative EV."* Finer depth does not move a cost bar. And **610 matches of order
+book is not 610 settled tests of a strategy**: it sits above the ~481-settlement
+bar this programme uses for copy-trading questions, but whether it clears any
+bar depends entirely on the question asked of it.
+
+**Two traps recorded in `social-signal/DECISIONS.md` D14–D16**, both of which
+cost real time here:
+
+1. **The parquet files are on a different host** (`r2kalshi.pmxt.dev`), not under
+   the listing path. Guessing `/data/Kalshi/<name>` returns the single-page-app
+   shell with **HTTP 200**. A 200 is not evidence you fetched what you asked for
+   — it took an 18,990-byte "parquet file" with no magic bytes to notice.
+2. **A 26-row sample said the opposite of the truth.** Every ladder in those 26
+   `orderbook_snapshot` rows was empty and the conclusion drafted was *"the book
+   cannot be anchored"*, which would have written off the dataset. A census over
+   all 312 files found **92% populated**. Same failure as the 100-trade YouTube
+   backtest, the n=105 stars correlation and the n=822 `trust_me_bro` reading.
