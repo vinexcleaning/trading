@@ -19,6 +19,7 @@ OFFLINE, and finishes in seconds, because the corpora are already on disk:
     python src/ask.py --backtester kalshi
     python src/ask.py --datasources
     python src/ask.py --tool py-clob-client
+    python src/ask.py --chapters "results|p&l|live account"
 
 Nothing here fetches. If the corpora do not contain the answer, it says so -
 which is itself the answer, and is the point at which running a full skill
@@ -308,9 +309,50 @@ def q_tool(term):
              "results claim at all requires having built something.", 2))
 
 
+def q_chapters(term, limit=25):
+    """Videos whose AUTHOR indexed the thing you are asking about.
+
+    The cheapest lookup in the whole system: chapter titles are written by the
+    creator, sit in a description field that was fetched long ago, and are
+    searchable without reading one word of transcript. 367 of 1,197 videos have
+    them.
+    """
+    import chapters as CH
+    rx = re.compile(term, re.I)
+    rows = CH.scan()
+    have = [r for r in rows if r["chapters"]]
+    _head(f'CHAPTER TITLES MATCHING "{term}" - no transcript read')
+    _p(f"\n{len(have)} of {len(rows)} videos publish a real chapter list "
+       f"(YouTube's own rule: first stamp 0:00, >=3, >=10s apart).\n")
+    n = 0
+    for r in have:
+        m = [(t, ti) for t, ti in r["chapters"] if rx.search(ti)]
+        if not m:
+            continue
+        n += 1
+        _p(f"  {r['video_id']} {'[ALREADY READ]' if r['is_read'] else '              '} "
+           f"{(r['title'] or '')[:56]}")
+        for t, ti in m[:5]:
+            _p(f"      {t//60:>3}m{t%60:02d}s  {ti[:72]}")
+        if n >= limit:
+            break
+    _p(f"\n  {n} videos matched.")
+    _p("\n-- HOW TO READ THIS")
+    _p(_wrap("A chapter titled 'Results' or '3-hour results: $13 profit' is the "
+             "author telling you where the claim is AND, sometimes, what its "
+             "denominator is - for free, before anybody reads anything. A "
+             "video marked [ALREADY READ] has an extraction; the rest are "
+             "candidates, and the chapter title is the cheapest evidence there "
+             "is for picking which.", 2))
+    _p(_wrap("It is NOT a screen detector. Measured: only 2 of 19 recorded "
+             "watch_segments fall inside a chapter whose title names screen "
+             "content. Chapters index topics; watch_segments index moments.", 2))
+
+
 def q_free(term):
     _head(f'"{term}" ACROSS EVERY CORPUS')
     q_tested(term)
+    q_chapters(term)
     q_tool(term)
 
 
@@ -326,6 +368,8 @@ def main():
                     help="what free data do people with real results use")
     ap.add_argument("--tool", metavar="NAME",
                     help="what is said about NAME outside its own marketing")
+    ap.add_argument("--chapters", metavar="REGEX",
+                    help="videos whose AUTHOR indexed this, no transcript read")
     a = ap.parse_args()
 
     ran = False
@@ -337,6 +381,8 @@ def main():
         q_datasources(); ran = True
     if a.tool:
         q_tool(a.tool); ran = True
+    if a.chapters:
+        q_chapters(a.chapters); ran = True
     if a.term and not ran:
         q_free(a.term); ran = True
     if not ran:
