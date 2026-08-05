@@ -159,3 +159,7 @@ signal-github/cache/
 signal-github/reports/
 signal-github/GITHUB_KNOWLEDGE.md
 signal-github/PLAIN_ENGLISH.md
+
+# --- extractor-upgrade: per-document judgments about named creators/authors ---
+extractor-upgrade/reports/
+extractor-upgrade/frames/
