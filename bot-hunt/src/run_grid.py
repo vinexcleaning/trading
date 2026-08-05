@@ -37,6 +37,18 @@ HOLDOUT_FRAC = 0.30
 BANDS = [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95]
 SEED = 20260804
 
+# AMENDMENT A1 (PREREGISTRATION.md, committed 2026-08-05 before re-running).
+# The pre-registered -60min anchor VOIDed on the leak canary: close_time is when
+# the market SETTLES, not when the match starts, so -60min was usually mid-match.
+# Anchors below are the earliest MONOTONE-CLEAN lead per series from
+# src/anchor_sweep.py — clean at that lead AND at every longer one.
+PRIMARY_ANCHOR = 1440          # a single uniform -24h, clean for every series
+PER_SERIES_ANCHOR = {          # sensitivity arm; recovers 2,509 test events
+    "KXCS2GAME": 180, "KXLOLGAME": 1440, "KXVALORANTGAME": 360,
+    "KXMLBGAME": 60,
+}
+SWEEP_ANCHORS = (1440, 2880)   # primary + one longer, both monotone-clean
+
 
 # ------------------------------------------------------------------ panel ---
 
@@ -175,7 +187,7 @@ def sweep(rows, slippage=1.0, anchor=60):
         """picks: list of (row, quote, side)."""
         if len(picks) < 30:
             return
-        nets, evs = [], []
+        nets, evs, days = [], [], []
         for r, q, side in picks:
             quote = Quote(ts=q[0], bid_c=q[1], ask_c=q[2],
                           bid_size=0.0, ask_size=0.0)
@@ -186,15 +198,23 @@ def sweep(rows, slippage=1.0, anchor=60):
                 continue
             nets.append(t.net_c - slippage)
             evs.append(r["event"])
+            days.append(int(r["close_ts"] // 86400))
         if len(nets) < 30:
             return
         nets = np.asarray(nets)
-        # CIs CLUSTERED ON THE EVENT. One match settles once.
+        # CIs CLUSTERED ON THE DAY, not the event.
+        #
+        # An esports match is not independent of the other matches in the same
+        # tournament on the same day: they share teams, patch, format and the
+        # same pool of counterparty attention. Clustering on the event alone
+        # would repeat the mistake GUARDS #8 catalogues - crypto's 89,806
+        # market-minutes that were really 250 events, and the tennis bot's
+        # 25,250 "observations" that were ~171 matches.
         rng = np.random.default_rng(SEED)
-        uniq = list(dict.fromkeys(evs))
+        uniq = list(dict.fromkeys(days))
         idx = defaultdict(list)
-        for i, e in enumerate(evs):
-            idx[e].append(i)
+        for i, dkey in enumerate(days):
+            idx[dkey].append(i)
         boot = np.empty(2000)
         for b in range(2000):
             pick = rng.choice(len(uniq), size=len(uniq), replace=True)
@@ -202,14 +222,21 @@ def sweep(rows, slippage=1.0, anchor=60):
             boot[b] = nets[sel].mean()
         lo, hi = np.percentile(boot, [2.5, 97.5])
         mean = float(nets.mean())
-        se = float(nets.std(ddof=1) / math.sqrt(max(len(uniq), 1)))
-        z = mean / se if se > 0 else 0.0
+        # EFFECTIVE n from the clustered bootstrap: the n that a naive
+        # independent-observation SE would have needed to give this width.
+        se_cluster = float(boot.std(ddof=1))
+        sd = float(nets.std(ddof=1))
+        n_eff = (sd / se_cluster) ** 2 if se_cluster > 0 else float(len(nets))
+        design_effect = len(nets) / n_eff if n_eff > 0 else float("nan")
+        z = mean / se_cluster if se_cluster > 0 else 0.0
         p = 2 * (1 - 0.5 * (1 + math.erf(abs(z) / math.sqrt(2))))
         cells.append({
             "id": sid, "desc": desc, "n_trades": int(len(nets)),
-            "n_events": len(uniq), "mean_c": mean,
-            "ci_lo": float(lo), "ci_hi": float(hi), "p": float(p),
-            "mde_c": float(1.96 * se), "slippage": slippage, "anchor": anchor,
+            "n_events": len(set(evs)), "n_days": len(uniq),
+            "n_eff": float(n_eff), "design_effect": float(design_effect),
+            "mean_c": mean, "ci_lo": float(lo), "ci_hi": float(hi),
+            "p": float(p), "mde_c": float(1.96 * se_cluster),
+            "slippage": slippage, "anchor": anchor,
         })
 
     # H1 calibration by decile
@@ -251,11 +278,13 @@ def sweep(rows, slippage=1.0, anchor=60):
         if q6 and abs(q[2] - q6[2]) < 0.5:
             st.append((r, q, "yes"))
     emit("H9", "buy when ask moved <0.5c in 6h (stale)", st)
-    # NEGATIVE-CONTROL STRATEGY: a coin flip. Must land on the cost bar.
+    # NAIVE BENCHMARKS. Reported beside every result, never omitted.
     rng = np.random.default_rng(SEED + 99)
-    emit("H0-RANDOM", "CONTROL: random side, must equal the cost bar",
+    emit("H0-RANDOM", "NAIVE: random side, no view at all",
          [(r, q, "yes" if rng.random() < 0.5 else "no")
           for r, q, _, _ in prepared])
+    emit("H0-ALLYES", "NAIVE: buy the kept side of every event",
+         [(r, q, "yes") for r, q, _, _ in prepared])
     return cells
 
 
@@ -298,17 +327,17 @@ def main():
             report[label] = {"selection_canary": can, "aborted": True}
             continue
 
-        leak = leak_canary(rows)
+        leak = leak_canary(rows, anchors=(0, 60, 360, PRIMARY_ANCHOR))
         print("  GUARD leak canary (extreme quotes, and how often correct):")
         for anch, d in leak.items():
-            print(f"     anchor -{anch:>3}min  n={d['n']:>5} "
+            print(f"     anchor -{anch:>5}min  n={d['n']:>5} "
                   f"extreme={d['pct_extreme']}%  correct={d['pct_extreme_correct']}%")
-        primary = leak.get(60, {})
+        primary = leak.get(PRIMARY_ANCHOR, {})
         if (primary.get("pct_extreme_correct") is not None
                 and primary["pct_extreme_correct"] >= 99.0
                 and (primary.get("pct_extreme") or 0) > 1.0):
-            print("  !! the -60min anchor shows the 100%-correct-extremes "
-                  "signature. VOID. Anchor must move to -6h.")
+            print(f"  !! the -{PRIMARY_ANCHOR}min anchor shows the "
+                  f"100%-correct-extremes signature. VOID.")
             report[label] = {"leak_canary": leak, "aborted": True}
             continue
 
@@ -320,9 +349,20 @@ def main():
 
         cells = []
         for slip in (0.0, 0.5, 1.0, 2.0):
-            for anch in (60, 360, 1440):
-                cells += [dict(c, series=label) for c in
+            for anch in SWEEP_ANCHORS:
+                cells += [dict(c, series=label, arm="uniform") for c in
                           sweep(use, slippage=slip, anchor=anch)]
+        # SENSITIVITY ARM: each series at its own monotone-clean anchor. Kept
+        # in the SAME BH-FDR denominator, because splitting the denominator is
+        # how a grid quietly doubles its own false-positive budget.
+        for slip in (0.0, 1.0):
+            for s in series:
+                sub = [r for r in use if r["series"] == s]
+                if len(sub) < 60:
+                    continue
+                cells += [dict(c, series=label, arm=f"perseries:{s}") for c in
+                          sweep(sub, slippage=slip,
+                                anchor=PER_SERIES_ANCHOR.get(s, PRIMARY_ANCHOR))]
         if not cells:
             print("  no cell had >=30 trades. Nothing to report.")
             report[label] = {"n_events": len(rows), "cells": 0}
@@ -333,14 +373,65 @@ def main():
         print(f"  cells={m}  BH-FDR q=0.10 threshold p<={thr:.5f}  "
               f"survive={len(surv)}  survive AND CI>0: {len(pos)}")
 
+        # ---------------------------------------------------- NAIVE BENCHMARK
+        # Reported next to every result, per CLAUDE.md sec 6. Two of them,
+        # because they answer different questions:
+        #   RANDOM  what you get for taking liquidity with no view at all.
+        #           Any strategy that does not beat this is not a strategy.
+        #   ALL-YES what you get for buying every event's kept side. It is the
+        #           "just be long" comparator.
+        bench = {c["id"]: c for c in cells
+                 if c["id"] in ("H0-RANDOM", "H0-ALLYES")
+                 and c["slippage"] == 1.0 and c["anchor"] == PRIMARY_ANCHOR
+                 and c.get("arm") == "uniform"}
+        print(f"\n  NAIVE BENCHMARKS (slip=1.0c, anchor=-{PRIMARY_ANCHOR}min):")
+        for k, c in bench.items():
+            print(f"    {k:12} {c['mean_c']:+8.3f}c  "
+                  f"[{c['ci_lo']:+7.3f},{c['ci_hi']:+7.3f}]  "
+                  f"n_trades={c['n_trades']} n_days={c['n_days']} "
+                  f"n_eff={c['n_eff']:.0f} (design effect "
+                  f"{c['design_effect']:.1f}x)")
+        base = bench.get("H0-RANDOM", {}).get("mean_c")
+
         cells.sort(key=lambda c: -c["mean_c"])
-        print(f"\n  {'cell':22} {'slip':>4} {'anch':>5} {'n_ev':>5} "
-              f"{'mean_c':>8} {'CI':>20} {'p':>8} {'MDE':>6} BH")
-        for c in cells[:12] + [c for c in cells if c["id"] == "H0-RANDOM"][:3]:
+        print(f"\n  {'cell':22} {'slip':>4} {'anch':>5} {'n_tr':>5} "
+              f"{'n_eff':>6} {'mean_c':>8} {'vs naive':>9} "
+              f"{'CI':>20} {'p':>8} {'MDE':>6} BH")
+        show = cells[:12] + [c for c in cells if c["id"].startswith("H0-")][:4]
+        for c in show:
+            vs = f"{c['mean_c'] - base:+8.3f}" if base is not None else "     n/a"
             print(f"  {c['id'][:22]:22} {c['slippage']:>4} {c['anchor']:>5} "
-                  f"{c['n_events']:>5} {c['mean_c']:>+8.3f} "
-                  f"[{c['ci_lo']:+7.3f},{c['ci_hi']:+7.3f}] {c['p']:>8.4f} "
-                  f"{c['mde_c']:>6.2f} {'Y' if c['bh_survives'] else '.'}")
+                  f"{c['n_trades']:>5} {c['n_eff']:>6.0f} {c['mean_c']:>+8.3f} "
+                  f"{vs:>9} [{c['ci_lo']:+7.3f},{c['ci_hi']:+7.3f}] "
+                  f"{c['p']:>8.4f} {c['mde_c']:>6.2f} "
+                  f"{'Y' if c['bh_survives'] else '.'}")
+
+        # ------------------------------------------------- PARAMETER SURFACE
+        # The brief requires the SURFACE, not the peak. A sharp isolated peak
+        # is overfitting; a broad plateau may be real. This prints the whole
+        # H1 calibration curve at the primary settings and labels it.
+        print(f"\n  PARAMETER SURFACE — H1 calibration by price band "
+              f"(slip=1.0c, anchor=-{PRIMARY_ANCHOR}min). "
+              f"The shape is the finding, not the max:")
+        surf = sorted([c for c in cells if c["id"].startswith("H1[")
+                       and c["slippage"] == 1.0
+                       and c["anchor"] == PRIMARY_ANCHOR
+                       and c.get("arm") == "uniform"],
+                      key=lambda c: int(c["id"].split("[")[1].split("-")[0]))
+        for c in surf:
+            bar = "#" * max(0, min(40, int(round(c["mean_c"] + 20))))
+            print(f"    {c['id']:14} n_tr={c['n_trades']:>5} "
+                  f"n_eff={c['n_eff']:>5.0f} {c['mean_c']:>+8.3f}c "
+                  f"[{c['ci_lo']:+7.2f},{c['ci_hi']:+7.2f}] |{bar}")
+        if surf:
+            means = [c["mean_c"] for c in surf]
+            best = max(range(len(means)), key=lambda i: means[i])
+            nb = [means[i] for i in (best - 1, best + 1) if 0 <= i < len(means)]
+            gap = (means[best] - max(nb)) if nb else float("nan")
+            shape = ("PEAK (isolated — treat as overfitting)" if gap > 3.0
+                     else "PLATEAU (neighbours agree)")
+            print(f"    -> best band {surf[best]['id']} at {means[best]:+.3f}c; "
+                  f"nearest neighbour gap {gap:+.2f}c -> {shape}")
         report[label] = {"n_events": len(rows), "selection_canary": can,
                          "leak_canary": leak, "n_cells": m,
                          "bh_threshold": thr, "n_survive": len(surv),
