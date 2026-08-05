@@ -44,6 +44,14 @@ and it always did — the line is in the committed `out/t2b_nightday.txt` at lin
 93. [FINDINGS.md](FINDINGS.md), [VERDICT.md](VERDICT.md) and
 [HANDOFF.md](HANDOFF.md) all state "0 of 13" without naming which arm.**
 
+> **Correcting this file's own first draft.** It initially said *no* write-up
+> mentioned the three. That is wrong: **[GUARDS.md](../GUARDS.md) #17 states it
+> correctly** under "Two traps inside the companion rule" — *"Three buckets
+> 'cleared' on t-statistics and none survived label permutation."* So the caveat
+> was not lost, it was **recorded in the reusable guard and dropped from the
+> project's own three documents.** That is a propagation gap, not a suppressed
+> result, and it is a materially smaller problem than the one first written here.
+
 They are two different tests over two different families:
 
 | | family | test | result |
@@ -69,7 +77,13 @@ because a reader who runs the script sees the 3. Ledgered as
 
 > This is the shape the repo keeps producing: the *arm that was reported* was the
 > correct one, and it was reported without saying it was an arm. Nothing is
-> overturned; the audit trail was incomplete.
+> overturned; the audit trail was incomplete **in the project's own files while
+> being complete in the reusable guard** — which is the opposite of the usual
+> failure, and mildly reassuring about `GUARDS.md`.
+>
+> **No new guard is needed.** GUARDS #17 already carries both traps (a t-test at
+> n = 5 with a 100% win rate is not evidence; overlapping buckets are not
+> independent tests). The fix is propagation, not a new canary.
 
 ---
 

@@ -2139,6 +2139,13 @@ copy. **The verdict rests on numbers that now reproduce on a second run.**
 and always did, it is in the committed output at line 93 — while `FINDINGS.md`,
 `VERDICT.md` and `HANDOFF.md` all state "0 of 13" without naming which arm.**
 
+**⚠ Correcting the first version of this entry: [GUARDS.md](GUARDS.md) #17 *does*
+state it** ("three buckets cleared on t-statistics and none survived label
+permutation"). So this is a **propagation gap — the reusable guard kept the
+caveat and the project's own three write-ups dropped it** — not a suppressed
+result, and a smaller problem than first written. **No new guard is needed;**
+GUARDS #17 already carries both traps.
+
 They are two different tests: "0 of 13" is the **permutation** arm (200,000
 shuffles), "3 of 21" is the **parametric** arm over a family that adds the
 tier×night cells. **The 0 is correct and the 3 is the broken test** — the three

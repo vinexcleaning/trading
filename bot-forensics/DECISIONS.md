@@ -50,3 +50,37 @@ one read-only public market lookup.
 market tickers only — no player names, no account identifiers, no keys. The
 coordinating chat reads this repo over the web and cannot see disk, so leaving
 the evidence uncommitted would make the conclusions unverifiable.
+
+## 2026-08-05, second session (independent re-run)
+
+**D9. B005a was marked inline in every file rather than fixed quietly.** The
+simplest change would have been to relabel "0 of 13" as "0 of 13 (permutation
+arm)" and move on. Instead the parametric arm's 3 is stated in full, with the
+reason it is the wrong test. Deleting or silently rewording a number is how
+somebody re-derives it later — CLAUDE.md §6. See [REPRODUCTION.md](REPRODUCTION.md) §2.
+
+**D10. No new guard was added.** The first instinct was a GUARDS #18 on
+"report which arm your correction came from". On checking, **GUARDS #17 already
+carries both traps verbatim**, and the failure was propagation into this
+project's own three documents, not a missing canary. Adding a redundant guard
+would dilute a file whose value is that every entry earns its place.
+
+**D11. The `livetennisapi` free tier is still unverified, and deliberately so.**
+Settling it requires creating an account, which is the user's to do, not mine.
+Left as the single open checkpoint rather than worked around. It reopens *data
+availability* only — B009 says ITF economics are the worst of any tier — so
+nothing downstream is blocked on it.
+
+**D12. Two soft spots in the decisive test were stated, not closed.**
+`t3b_proxy.py` filters on `settlement` being non-null and on `live.sum() >= 10`,
+both of which touch information unavailable at decision time. Neither enters the
+entry rule, and closing them would have meant rewriting the test that produced
+the headline. Since look-ahead *inflates* and the result is strongly negative,
+the reported figure is a ceiling — so the conservative act was to document the
+weakness rather than to re-run around it. **This reasoning would not have been
+acceptable had the result been positive**, and REPRODUCTION.md §3 says so.
+
+**D13. Nothing in `kalshi-inplay-bot/` was changed except one audit ledger row.**
+`audit/LEDGER.md` R6 was marked closed, with the four rescued findings restated
+*inside the row* so they survive even if `bot-forensics/out/` is lost. No code,
+no config, no `TRADING_DISABLED`, and the bot was not started.
