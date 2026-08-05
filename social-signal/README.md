@@ -15,7 +15,18 @@ discipline is `signal-github/src/gh.py`.
 
 ## Run order
 
+**How an item gets graded, in plain English, and what the score is not worth:**
+[`GRADING.md`](GRADING.md).
+
+**Which platforms can be extracted at all, and why the rest cannot:**
+[`PLATFORMS.md`](PLATFORMS.md). Two extractors work — **Reddit** (via the
+research archive) and **Mastodon**. TikTok, X, Instagram, Facebook and Bluesky
+each return nothing usable, for five different and separately measured reasons.
+
 ```bash
+python src/robots_policy.py     # P0  which platforms permit an agent of THIS kind
+python src/probe_platforms.py   # P0  which return text a rubric can grade
+python src/mastodon_fetch.py    # T2b the second working extractor
 python src/join_corpora.py      # T1  YouTube + GitHub, and scan 3k whole-repo sources
 python src/reddit_fetch.py      # T2a collect from the archive (NOT reddit.com — see reddit.py)
 python src/reddit_discover.py   # T2b the join backwards: tools only Reddit knows

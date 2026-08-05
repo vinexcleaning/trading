@@ -163,22 +163,44 @@ def main():
         # both sibling projects report it. A component that never fires is
         # either impossible on this platform or broken.
         fired = collections.Counter()
-        for r in con.execute("SELECT components FROM rd_scores"):
+        fired_by = collections.defaultdict(collections.Counter)
+        scored_by = collections.Counter()
+        for r in con.execute("""SELECT s.components, p.platform
+                                FROM rd_scores s
+                                JOIN rd_posts p ON p.post_id = s.post_id"""):
+            plat = r["platform"] or "reddit"
+            scored_by[plat] += 1
             for c in json.loads(r["components"]):
                 fired[c["component"]] += 1
+                fired_by[plat][c["component"]] += 1
+
         fh.write("\n## Component firing rates — the instrument, audited\n\n")
-        fh.write("| component | meaning | fired | of "
-                 f"{scored} scored threads |\n|---|---|---|---|\n")
+        fh.write("**Split by platform.** An aggregate rate here would hide the "
+                 "only question that matters: is a low score on a platform a "
+                 "fact about the platform, or an instrument that cannot reach "
+                 "it?\n\n")
+        plats = [p for p, _ in scored_by.most_common()]
+        fh.write("| component | meaning | "
+                 + " | ".join(f"{p} (n={scored_by[p]:,})" for p in plats)
+                 + " |\n|---|---" + "|---" * len(plats) + "|\n")
         for comp in list(rubric.S_WEIGHTS) + list(rubric.B_WEIGHTS) + \
                 list(rubric.H_WEIGHTS):
-            n = fired.get(comp, 0)
-            fh.write(f"| {comp} | {rubric.MEANING[comp]} | {n} | "
-                     f"{100*n/max(scored,1):.1f}% |\n")
+            cells = []
+            for p in plats:
+                n = fired_by[p].get(comp, 0)
+                cells.append(f"{n} ({100*n/max(scored_by[p],1):.1f}%)")
+            fh.write(f"| {comp} | {rubric.MEANING[comp]} | "
+                     + " | ".join(cells) + " |\n")
         never = [c for c in rubric.MEANING if fired.get(c, 0) == 0]
-        fh.write(f"\n**Never fired: {', '.join(never) if never else 'none'}.** "
+        fh.write(f"\n**Never fired anywhere: "
+                 f"{', '.join(never) if never else 'none'}.** "
                  "A component that never fires is either impossible on this "
                  "platform or broken, and the two are told apart by reading, "
-                 "not by adjusting the pattern until it fires.\n")
+                 "not by adjusting the pattern until it fires.\n\n")
+        for p in plats:
+            dead = [c for c in rubric.MEANING if fired_by[p].get(c, 0) == 0]
+            if dead:
+                fh.write(f"**Dead on {p}:** {', '.join(dead)}.\n\n")
     print(f"  wrote {out}")
     db.log(con, "reddit_score",
            f"scored={scored} " + " ".join(f"{k}={v}" for k, v in census.most_common()))

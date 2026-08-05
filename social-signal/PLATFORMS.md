@@ -182,6 +182,43 @@ a substance layer.** It is cheap (189 calls, 0 errors, 13 minutes for 6,727
 posts) and it names tools and links out. It will not produce the 4,604-window
 autopsy that r/Polymarket produced.
 
+### The component audit says exactly *why*, and it is not a broken instrument
+
+The obvious worry with a 35× gap is that the rubric simply cannot reach short
+posts. Splitting the component firing rates per platform settles it — and the
+answer is the opposite of "broken":
+
+| component | reddit (n=4,434) | mastodon (n=2,202) |
+|---|---|---|
+| **S5 — names specific tools, sites or steps** | 35.8% | **82.8%** |
+| S1 — names the cost side | 17.5% | 4.0% |
+| S2 — separates backtest from live | 24.7% | 2.7% |
+| S3 — states a sample size | 9.9% | **0.5%** |
+| S4 — gives a mechanism | 27.2% | 2.6% |
+| B1 — shows working code | 3.8% | 0.9% |
+| H1 — shows a failure | 4.5% | **0.1%** |
+| **H10 — promotes a product, discloses nothing** | 2.1% | **4.9%** |
+
+**Mastodon fires the tool-naming component at 2.3× Reddit's rate and every
+other substance component at a fifth to a tenth.** `H3` (a claim with sample
+size *and* period *and* capital), `H4` (names its own weakness), `H7`, `H9` and
+`B5` are **dead on Mastodon** — zero firings in 2,202 scored posts.
+
+That is a precise description of the content: **a name and a link, and no
+argument.** It is why passage is high (S5 alone clears the gate) and
+recommend-grade is near zero (nothing else fires). The instrument is working; it
+is reporting a real property.
+
+And the one component that fires *more* on Mastodon besides tool-naming is
+**H10 — promotes a product and discloses no interest at all**, at 4.9% against
+Reddit's 2.1%. More tool-naming *and* more undisclosed promotion is the
+signature of a promotion channel, which is what a discovery layer largely is.
+
+> **One dead component, flagged rather than fixed.** `H1b` — "shows a failure
+> that sets up a sale" — fired **zero times on either platform**. That is either
+> impossible in this corpus or the pattern is broken, and the two are told apart
+> by reading, not by adjusting the pattern until it fires.
+
 ---
 
 ## How to run them

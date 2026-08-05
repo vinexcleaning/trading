@@ -276,6 +276,57 @@ YouTube backtest, the n=105 stars correlation, the n=822 `trust_me_bro` reading.
 It is cheap to census a local file and it is never cheap to be wrong about a
 schema.
 
+## D17 — No TikTok extractor, although a working path exists
+**2026-08-05.** This is the decision the whole project's credibility rests on,
+so the viable path is written out in full rather than glossed.
+
+**It would have worked.** TikTok's `User-agent: *` block explicitly allows
+`/tag`, `/discover`, `/foryou` and `/music` — hashtag pages are a complete
+discovery mechanism — and `www.tiktok.com/oembed?url=…` is **documented,
+keyless, and returns HTTP 200** with the full post caption in its `title` field
+(measured: an 82-character caption with hashtags), plus author name, handle and
+canonical URL. Discovery plus scoreable text. Two hours of work.
+
+**It is not ours to take.** The same file opens with:
+
+```
+User-agent: GPTBot / OAI-SearchBot / anthropic-ai / ClaudeBot / Claude-User /
+            Claude-SearchBot / PerplexityBot / Google-Extended /
+            meta-externalagent / CCBot / Bytespider / ... (25 agents)
+Disallow: /
+```
+
+**robots.txt specificity means the named group binds and `*` does not.** TikTok
+names this agent **four times** and refuses the entire site. The permissive
+block is addressed to search engines. Building on `/tag` would require relying
+on the `*` block while being one of the agents explicitly excluded from it —
+i.e. on not identifying as what I am.
+
+**Conservative option taken:** no TikTok adapter, and the viable path documented
+so nobody re-derives it and quietly builds it. Recorded in `PLATFORMS.md` where
+a reader will actually find it.
+
+**Note what this replaces.** The earlier kill was on *substance* — short-form is
+marketing-dominated, measured at 31.6% [19.1, 47.5] gate-passage against 66.3%
+[61.9, 70.3] for 10–30 minute video. That measurement stands and is still worth
+having. **But it was never the binding constraint, and presenting it as the
+reason would have been a rationalisation.** The binding constraint is that
+TikTok said no.
+
+## D18 — Mastodon kept as a discovery layer, not a substance layer
+**2026-08-05.** Graded on the same rubric as Reddit: 33% of Mastodon items clear
+the on-topic gate against Reddit's 11%, and **0.18% of those reach
+recommend-grade against Reddit's 6.4%** — a 35× gap. `DROP_G1_THIN` fires on 5%
+of Mastodon and 64% of Reddit, which locates the cause: Mastodon posts almost
+always have *some* text and almost never enough.
+
+**Kept anyway**, because it is nearly free (189 calls, 0 errors, 13 minutes for
+6,727 posts), it is the only X-shaped platform that permits this agent, and it
+names tools and links outward — which is what a discovery layer is for.
+**Weighted accordingly:** it should not be expected to produce the kind of
+4,604-window autopsy that r/Polymarket produced, and a future ranking that mixes
+the two platforms without splitting will be misled by the passage rate.
+
 ---
 
 ## Open audit items

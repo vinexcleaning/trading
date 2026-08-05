@@ -1,8 +1,27 @@
 # HANDOFF — social-signal
 
-**Session of 2026-08-04**, desktop `C:\Users\vinig`, working directory
+**Session of 2026-08-04 → 05**, desktop `C:\Users\vinig`, working directory
 `C:\Users\vinig\trading\social-signal`. Ran unattended start to finish.
 **Cost: $0.00.** No API key for any platform exists or was needed.
+
+> ## ⇒ START HERE: [`PLATFORMS.md`](PLATFORMS.md)
+>
+> The extractors are the deliverable, and that file is the one-table answer to
+> *which exist, which cannot, and why*. Two work end to end — retrieve → gate →
+> score → grade, one rubric, both platforms:
+>
+> | platform | items | PASS | recommend-grade |
+> |---|---|---|---|
+> | **Reddit** (via archive) | 39,633 posts + 12,846 comments | 4,434 | 282 |
+> | **Mastodon** | 6,727 posts | 2,202 | 4 |
+>
+> **TikTok, X, Instagram, Facebook and Bluesky each return nothing usable, for
+> five different reasons**, all measured. The sharp one: TikTok's `*` block
+> *explicitly allows* `/tag`, `/discover` and `/foryou`, and its oEmbed endpoint
+> is keyless and returns the full caption — but a named group lists
+> `anthropic-ai`, `ClaudeBot`, `Claude-User` and `Claude-SearchBot` and
+> disallows everything. Specificity wins. **The permissive block is for search
+> engines.**
 
 Two sibling sessions were running **in this same working tree** throughout.
 Everything here reads their databases and never writes to them, and every commit
@@ -475,6 +494,57 @@ swap a known-bad instrument for an unknown one. **No verdict in
    is idempotent; re-run `join_corpora.py` to refresh.
 7. **Reddit usernames are personal data.** `reports/` is gitignored and nothing
    committed names a Reddit account.
+
+---
+
+## 10b. The extractors, added 2026-08-05
+
+`robots_policy.py` · `probe_platforms.py` · `mastodon_fetch.py` ·
+[`PLATFORMS.md`](PLATFORMS.md)
+
+**The method that produced the platform matrix, because it is reusable.** Two
+questions, asked separately, of every platform:
+
+1. **Is there a `robots.txt` group naming an agent of THIS kind?** Not "what
+   does `*` say". Where a platform names AI agents in their own group, that
+   group binds us and `*` does not. `robots_policy.py` answers it for ten
+   platforms and prints the exact line that refuses.
+2. **Does it return text a rubric can grade?** `probe_platforms.py` fetches a
+   real post per platform and reports whether the payload contains prose or
+   only a title and a thumbnail.
+
+Verdicts: `REFUSED_BY_NAME` tiktok · `REFUSED_VIA_STAR` x, reddit ·
+`NAMED_WITH_RULES` facebook · `NO_ROBOTS_SERVED` instagram, threads ·
+`PERMITTED` arctic_shift, youtube, bluesky, mastodon.
+
+**Mastodon is the new working extractor.** 189 calls, 0 errors, 0 rate-limits,
+6,727 posts in 13 minutes. Keyless. Full post text, author handle, ISO
+timestamp, favourite and reply counts. Discovery by hashtag across four
+instances, paginated on `max_id`. It writes into the shared `rd_posts` table
+behind a new `platform` column, so the gate, the rubric and the stance pass
+apply unchanged — **there is no second pipeline to maintain.**
+
+**And grading it produced a finding.** Same rubric, split per platform because
+an averaged rate is an average of two different objects:
+
+| platform | items | PASS | recommend-grade | rate |
+|---|---|---|---|---|
+| reddit | 39,633 | 4,434 (11%) | 282 | **6.4% of PASS** |
+| mastodon | 6,727 | 2,202 (**33%**) | 4 | **0.18% of PASS** |
+
+Mastodon clears the on-topic gate at **3× Reddit's rate** and yields
+recommend-grade items at **1/35th**. `DROP_G1_THIN` fires on 64% of Reddit and
+5% of Mastodon: posts almost always have *some* text and almost never enough.
+**This is the short-form finding again, on a text platform — the constraint was
+never the medium, it is length.** Keep Mastodon as a *discovery* layer, not a
+substance layer.
+
+**One bug worth carrying to any project using `db.py`:** a `CREATE INDEX` on a
+migrated column must NOT live in `SCHEMA`. `executescript` runs `SCHEMA` first,
+and `CREATE TABLE IF NOT EXISTS` is a no-op against an existing table, so the
+index fires before the `ALTER` adds the column and `connect()` raises
+`no such column`. This is `youtube-signal`'s recorded bug #4/#5 in a third
+costume.
 
 ---
 
