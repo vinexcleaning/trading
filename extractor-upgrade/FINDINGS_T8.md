@@ -128,3 +128,101 @@ had no reason to be polite. That thread alone is worth the comment pass.
   binding constraint is Algolia's `hitsPerPage`, not the corpus.
 - Neither number is a sample of Hacker News. They are a sample of twenty
   searches I chose.
+
+---
+
+# The comment pass landed — and it did not go how I said it would
+
+3,272 comments across 374 threads. **3,886 items scored.**
+
+## 1. Comments did not rescue the corpus. They diluted it.
+
+| | non-SKIP | rate |
+|---|---|---|
+| stories | 70 / 614 | **11.4%** |
+| comments | 127 / 3,272 | **3.9%** |
+| whole corpus | 197 / 3,886 | **5.1%** |
+
+I predicted *"the substance is in the comments."* **Absolute yield nearly
+tripled — 70 non-SKIP items became 197 — and the RATE more than halved.** Most
+HN comments are short conversational replies with nothing for a substance rubric
+to hold on to, and 88.5% SKIP became **94.9%**.
+
+Both readings are true and they answer different questions. *"Is a comment worth
+collecting?"* — mostly no, 25 comments per story to find 0.34 useful ones.
+*"Is the comment pass worth running?"* — yes, it produced 127 items that did not
+exist before, and the best of them are better than anything in the stories layer.
+
+## 2. What the good comments actually contain
+
+Every one of these lands on a thread this repo has already closed:
+
+> **"I spent almost 6 years trading crypto. Our best month's volume was $6B.
+> Nothing we tried with usual strategies worked consistently. Backtesting
+> parameters, ML with smart feature selection, boosting, neural networks —
+> everything failed out of sample."**
+>
+> A practitioner at $6B monthly volume reaching this programme's own core
+> result, unprompted, on a different asset class. `S=7 H=6`.
+
+> **"In backtesting it was phenomenal. While executing though, trading fees,
+> slippage and other factors negated all the advantages."**
+>
+> The backtest-to-live collapse, stated in one sentence by someone it happened
+> to.
+
+> *On PredictIt's long shots:* **"PredictIt specifically encourages these long
+> shots to be over weighted thanks to their $850 risk limit in any given
+> market."**
+>
+> A **structural mechanism** for long-shot overpricing — a position limit that
+> caps how much informed money can correct it. `youtube-signal` has the same
+> bias measured on Kalshi (5¢ contracts resolve YES 4.18% across 72M trades) and
+> **no mechanism attached to it.** This supplies one.
+
+> *On a prediction-market microstructure paper:* **"an expected loss of 0.57¢ on
+> a 1¢ contract implies an expected gain of 0.43¢ on a 99¢ contract, or a 5.75ppt
+> edge… Small edges can be easily eaten [by the fee structure]."**
+>
+> Someone doing this repo's own cost-bar arithmetic in a comment box, and
+> reaching the same place: the edge is real and smaller than the cost of
+> reaching it.
+
+## 3. ⚠ HN did NOT find a repo that GitHub search missed — and I nearly said it did
+
+The obvious cross-corpus test: 90 GitHub repos are named across the HN corpus,
+**18 trading-relevant, and 17 of those 18 are absent from `signal-github`'s
+4,017.** That looked like a retrieval failure worth reporting.
+
+**It is not, and checking killed it.** Only **two** of the 18 are
+prediction-market repos at all:
+
+| repo | status |
+|---|---|
+| `rodlaf/kalshimarketmaker` | **already in the corpus** — 226★, alive, pushed 2026-04-14 |
+| `Gabagool2-2/polymarket-trading-bot-python` | **HTTP 404 — does not exist** |
+
+The other 16 are Binance bots, `quantopian/zipline`, `awesome-quant`,
+`OpenHFT/Chronicle-Queue` — things `signal-github`'s topic gate **correctly
+excludes**. The dramatic-looking 17 is explained almost entirely by scope, not
+by retrieval.
+
+> **So the negative result is the finding, and it is a good one:
+> `signal-github`'s six retrieval axes have complete coverage of the on-topic
+> space as probed from outside.** Nobody had ever tested that from a corpus
+> built independently, and it has now been tested and passed.
+>
+> Recorded because the 17-of-18 framing survived three of my own commands before
+> I checked what the 17 actually were. **A striking ratio with a mixed
+> denominator is not a finding.**
+
+## 4. Where that leaves Hacker News
+
+**Keep it, at low priority.** It is permitted, keyless, free, and it produced
+four practitioner statements that land on closed threads — one of which supplies
+a *mechanism* for a bias this repo had only measured. But 5.1% non-SKIP over
+3,886 items is a thin seam, and the repo-overlap test says it adds no code
+coverage at all.
+
+Its real value is the one thing no other corpus here has: **people who traded
+professionally, writing about why it stopped working, with no product to sell.**
