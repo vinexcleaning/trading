@@ -219,6 +219,30 @@ signature of a promotion channel, which is what a discovery layer largely is.
 > impossible in this corpus or the pattern is broken, and the two are told apart
 > by reading, not by adjusting the pattern until it fires.
 
+### Tripling the corpus with broader tags returned exactly nothing
+
+The obvious next move after 6,727 posts was more tags. 25 were added —
+`machinelearning`, `datascience`, `programming`, `bitcoin`, `opensource`, `ai`,
+`security`, `privacy` and the rest — and the corpus went to 19,281.
+
+| | items | PASS | recommend-grade |
+|---|---|---|---|
+| the original 10 narrow tags | 6,727 | 2,202 (**32.7%**) | 4 |
+| after adding 25 broad tags | 19,281 | 2,607 (13.5%) | **4** |
+| **the 12,554 posts added** | — | 405 (**3.2%**) | **0** |
+
+**12,554 new posts, 405 of them on topic, and not one reached recommend-grade.**
+`DROP_G3_OFF_TOPIC` went 4,159 → 15,498. The broad tags are pure volume.
+
+This replicates `youtube-signal`'s own retrieval result on a different platform:
+narrow venue-specific queries returned **70% PASS against 50%** there, and a
+within-family Jaccard of 0.86–0.92 against 0.69–0.76. **Specificity is the whole
+game in retrieval design, and "collect more" is not a strategy.**
+
+Keep the narrow set — `kalshi`, `polymarket`, `predictionmarket(s)`, `trading`,
+`algotrading`, `quant`, `sportsbetting`, `betting`, `finance`, `optionstrading`.
+The rest cost 35 minutes of somebody's bandwidth and bought nothing.
+
 ---
 
 ## How to run them
