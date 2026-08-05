@@ -173,3 +173,87 @@ sport they never touched — and it is the term the esports arb author measured 
 A cell clearing BH-FDR **and** the cost bar **and** the holdout **and** showing a
 broad plateau **and** failing on the MLB control. All five. Fewer than five and
 it is one of the 65 cells that clear on noise.
+
+---
+
+# AMENDMENT A1 â€” the anchor. 2026-08-05.
+
+**Committed BEFORE any strategy was re-run at the new anchors, and decided on a
+LEAK DIAGNOSTIC ONLY. No return number at any of these anchors had been seen
+when this was written** â€” the grid's own gate voided the run before it printed a
+single test-family return. Git history is the evidence.
+
+`set1_overshoot` recorded its amendments A1/A2 with provenance for this reason;
+an amendment made after seeing results is not an amendment, it is a choice.
+
+## What fired
+
+Â§1b pre-registered a âˆ’60 min anchor and a VOID condition: the T010/T011
+signature of extreme quotes (â‰¤2Â¢ or â‰¥98Â¢) that are â‰¥99% correct on >1% of
+observations. **It fired on the test family**, at n = 2,779:
+
+| anchor | % extreme | % of those correct | verdict |
+|---|---|---|---|
+| âˆ’0 min | 40.19% | 99.8% | VOID |
+| **âˆ’60 min (pre-registered)** | **13.96%** | **99.7%** | **VOID** |
+| âˆ’6 h | 2.34% | 100.0% | VOID |
+
+The gate refused to print a result. That is the gate working.
+
+## Why â€” a modelling error of mine, not a market fact
+
+**`close_time` is when the market SETTLES, not when the match starts.** A
+best-of-3 CS2 series runs 1.5â€“3 hours and a Bo5 LoL series longer, with
+settlement after that. So "60 minutes before close" is usually *mid-match* and
+sometimes after the result is known. The strategies were reading prices that had
+already seen the outcome.
+
+**No usable start-time field exists.** The market record carries
+`occurrence_datetime`, and it is a trap this repo has already paid for:
+**LEDGER T010** retracted a headline because *"`occurrence_datetime` is at/after
+match end"*. It is not a start time. `open_time` is when the market was listed
+(13 h before close in the sampled record), not when play begins.
+
+So the anchor has to be found by measurement, which is exactly what T011 did.
+
+## The sweep, and a defect in my own rule
+
+`src/anchor_sweep.py`, 10 leads Ã— 4 series, `reports/anchor_sweep.json`.
+
+**The rule is MONOTONE cleanliness â€” clean at that lead AND at every longer
+lead â€” not first-clean.** v1 of the sweep took the smallest lead labelled clean
+and was wrong: `KXVALORANTGAME` reads "clean" at 30 min on **98.5%** correct,
+just under a hard 99% cutoff, and is then VOID at 60, 120 and 180 min. A single
+reading slipping under a threshold is not evidence a leak is gone. Same class of
+error as the fixed 0.25Â¢ tolerance that failed `validate_engine.py`'s L1: a hard
+threshold applied to a noisy statistic.
+
+| series | monotone-clean anchor | events | first-clean would have said |
+|---|---|---|---|
+| KXCS2GAME | **âˆ’180 min** | 1,522 | 180 min |
+| KXLOLGAME | **âˆ’24 h** | 505 | 1,440 min |
+| KXVALORANTGAME | **âˆ’6 h** | 482 | **30 min â€” rejected** |
+| KXMLBGAME *(control)* | **âˆ’60 min** | 909 | 60 min |
+
+> **`KXLOLGAME` is the extreme case and is worth stating on its own: at âˆ’6 h it
+> is still 7.76% extreme and 100% of those correct; at âˆ’12 h, 4.43% and 100%.**
+> It only goes clean at âˆ’24 h. LoL series are long and Kalshi's close sits well
+> after the result.
+
+## The amended design
+
+| | |
+|---|---|
+| **PRIMARY** | a **single uniform anchor of âˆ’24 h** for every series, including the control. It is monotone-clean everywhere, so one rule covers the whole grid and nothing is chosen per family. **1,527 test events** + 909 control. |
+| **SENSITIVITY** | the per-series monotone-clean anchors above. Recovers 2,509 test events. Reported beside the primary; if the two disagree in sign, the primary governs and the disagreement is the finding. |
+
+**Everything else in this pre-registration is unchanged** â€” the strategies, the
+grid, the one BH-FDR denominator, the sealed newest-30% holdout, the dedupe
+rule, the negative-control family, and the expectation that all of it fails.
+
+**What this amendment costs, stated rather than hidden:** the test now measures
+a market a full day before play, where far less information exists and the book
+is thinner. An edge could be real at âˆ’3 h and absent at âˆ’24 h. That is a genuine
+loss of power against the strategy, and it is the price of an anchor that cannot
+see the answer. The per-series sensitivity arm exists to bound it.
+
