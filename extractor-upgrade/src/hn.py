@@ -61,16 +61,28 @@ FIREBASE = "https://hacker-news.firebaseio.com/v0"    # CONTENT: explicitly Allo
 # phrasing versus insider vocabulary. On the video corpus the two returned
 # near-disjoint sets (Jaccard 0.037) and the insider family's yield of obscure
 # sources beat the beginner family's by 2.25x.
+# !! THE FIRST VERSION OF THIS TABLE WAS SELF-DEFEATING. Algolia AND-matches
+# every term in the query, so a long insider phrase matches almost nothing.
+# Probed directly rather than guessed:
+#     "adverse selection market making"      0 hits
+#     "adverse selection"                   20
+#     "market making"                    1,343
+#     "de-vig sportsbook"                    0
+#     "walk forward backtest overfitting"    1
+#     "walk forward"                        79
+# Long phrases are how a human describes a concept and are NOT how a search
+# index is queried. Insider vocabulary has to be SHORT to survive AND-matching.
 QUERIES = {
     "F1_beginner": [
         "prediction market", "polymarket", "kalshi",
-        "sports betting model", "trading bot profitable",
+        "sports betting", "trading bot", "make money trading",
+        "algorithmic trading", "quant trading",
     ],
     "F2_insider": [
-        "adverse selection market making", "order book imbalance",
-        "maker taker fee", "walk forward backtest overfitting",
-        "brier score calibration", "de-vig sportsbook",
-        "market microstructure retail", "look-ahead bias backtest",
+        "adverse selection", "market making", "order book imbalance",
+        "maker taker", "walk forward", "market microstructure",
+        "brier score", "kelly criterion", "lookahead bias",
+        "slippage", "limit order book", "execution cost",
     ],
 }
 
@@ -94,6 +106,14 @@ def connect():
     CREATE TABLE IF NOT EXISTS scores(
       id INTEGER PRIMARY KEY, s INTEGER, b INTEGER, h INTEGER,
       verdict TEXT, stale INTEGER, naked INTEGER, fired TEXT);
+    -- !! A story found by BOTH query families used to be recorded under
+    -- whichever family reached it first, because `collect` skipped any id it
+    -- already had. That made the F1-F2 overlap STRUCTURALLY ZERO - the dedup
+    -- decided the answer, not the data. Membership now lives in its own table
+    -- so a story can belong to both, and Jaccard is computed from it.
+    CREATE TABLE IF NOT EXISTS membership(
+      id INTEGER, family TEXT, query TEXT,
+      PRIMARY KEY(id, family, query));
     CREATE TABLE IF NOT EXISTS runlog(ts TEXT, step TEXT, detail TEXT);
     """)
     return con
@@ -131,6 +151,10 @@ def collect(pace=0.15, comment_cap=25):
             print(f"  [{family}] {term!r}: {len(ids)} stories")
             time.sleep(pace)
             for sid in ids:
+                # Membership is recorded ALWAYS, even for an id already held -
+                # this is the line whose absence made the overlap zero.
+                con.execute("INSERT OR IGNORE INTO membership VALUES(?,?,?)",
+                            (sid, family, term))
                 if sid in have:
                     continue
                 d = item(sid)
@@ -215,9 +239,9 @@ def report():
     # The family overlap test - the same measurement youtube-signal built its
     # retrieval design on.
     f1 = {r[0] for r in con.execute(
-        "SELECT id FROM items WHERE family='F1_beginner' AND kind='story'")}
+        "SELECT id FROM membership WHERE family='F1_beginner'")}
     f2 = {r[0] for r in con.execute(
-        "SELECT id FROM items WHERE family='F2_insider' AND kind='story'")}
+        "SELECT id FROM membership WHERE family='F2_insider'")}
     jac = len(f1 & f2) / len(f1 | f2) if (f1 | f2) else 0
 
     top = con.execute(
@@ -248,8 +272,8 @@ def report():
          f"| items | **{tot:,}** |",
          f"| stories | **{st:,}** |",
          f"| comments | {tot - st:,} |",
-         f"| F1 beginner / F2 insider stories | {fam.get('F1_beginner',0)} / "
-         f"{fam.get('F2_insider',0)} |",
+         f"| F1 beginner / F2 insider stories | {len(f1)} / {len(f2)} |",
+         f"| in BOTH families | {len(f1 & f2)} |",
          f"| **F1 ∩ F2 Jaccard** | **{jac:.3f}** |", ""]
     L.append(f"> **Jaccard {jac:.3f}.** The beginner and insider query families "
              "return near-disjoint sets here too. `youtube-signal` measured "
