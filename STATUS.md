@@ -1897,9 +1897,57 @@ to by 165 people with no reason to be polite.
 **A silent no-op that reports progress is worse than a crash**, and a
 self-inflicted number that agrees with your prior results is worse than either.
 
-**Single next action:** finish the HN comment pass, then score it — the comments
-are where `social-signal` found its contradictions on Reddit, and there is no
-reason to expect HN to be different.
+### The HN comment pass finished, and it went the other way
+
+**3,272 comments across 374 threads · 3,886 items scored.** My prediction was
+*"the substance is in the comments."*
+
+| | non-SKIP | rate |
+|---|---|---|
+| stories | 70 / 614 | **11.4%** |
+| comments | 127 / 3,272 | **3.9%** |
+| whole corpus | 197 / 3,886 | **5.1%** |
+
+**Absolute yield nearly tripled (70 -> 197) and the rate more than halved.**
+88.5% SKIP became **94.9%**. Comments diluted the corpus. Both readings are
+true and answer different questions: a comment is mostly not worth collecting
+(25 per story to find 0.34 useful ones), and the pass was still worth running.
+
+The four that justify it all land on threads this repo has closed — a
+practitioner at **$6B monthly crypto volume** writing *"nothing we tried with
+usual strategies worked consistently… everything failed out of sample"*; the
+backtest-to-live collapse in one sentence; someone doing this repo's own
+cost-bar arithmetic in a comment box; and **a structural mechanism for
+long-shot overpricing that this repo did not have** — PredictIt's **$850
+per-market risk limit** caps how much informed money can correct a mispriced
+long shot. `youtube-signal` measured the same bias on Kalshi (5c contracts
+resolve YES 4.18% over 72M trades) with **no mechanism attached**. This
+supplies one.
+
+> ### ⚠ HN did NOT find a repo GitHub search missed, and I nearly said it did
+> 90 GitHub repos are named across the HN corpus, 18 trading-relevant, and
+> **17 of those 18 absent from `signal-github`'s 4,017.** That reads as a
+> retrieval failure. Checking killed it: **only two of the 18 are
+> prediction-market repos at all** — `rodlaf/kalshimarketmaker`, which is
+> **already in the corpus** (226 stars, alive), and
+> `Gabagool2-2/polymarket-trading-bot-python`, which returns **HTTP 404 and does
+> not exist**. The other 16 are Binance bots, `zipline`, `awesome-quant`,
+> `Chronicle-Queue` — correctly excluded by the topic gate.
+>
+> **The negative result is the finding: `signal-github`'s six retrieval axes
+> have complete coverage of the on-topic space as probed from an independently
+> built corpus.** Nobody had tested that from outside. Recorded because the
+> 17-of-18 framing survived three of my own commands before I checked what the
+> 17 were. **A striking ratio with a mixed denominator is not a finding.**
+
+**Verdict on Hacker News: keep, at low priority.** 5.1% non-SKIP is a thin seam
+and it adds no code coverage — but it is the only corpus here containing people
+who traded professionally, writing about why it stopped working, with nothing
+to sell.
+
+**Single next action:** nothing is running. The open items are the four new
+[GUARDS.md](GUARDS.md) rows (13-16) landing in other projects' checks, and
+pointing `youtube-signal`'s reader at podcasts via the keyless PodcastIndex.
 
 ---
 

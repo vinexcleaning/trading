@@ -196,7 +196,7 @@ conservative answer.** Two of mine failed toward "dead" and one toward
 | HN permission | `Allow: /*.json$` on Firebase; Algolia serves NO robots.txt and is used for ids only |
 | F1/F2 overlap | 312 / 298, **3 in both, Jaccard 0.005** - direction reproduces, magnitude does not |
 | HN verdicts | **537 of 607 SKIP** - stories only; the substance is in the comments |
-| comment pass | **RUNNING at hand-off** - 60 of 614 stories walked in ~15 min, so ~2.5 h total. It RESUMES CLEANLY: `python src/hn.py --comments` rebuilds its own have-set from the database and re-walks only what is missing. Kill it freely. |
+| comment pass | **DONE** - 3,272 comments, 374 threads, 3,886 items scored. Comments DILUTED the corpus: 11.4% non-SKIP on stories, **3.9% on comments**. (was: RUNNING at hand-off - 60 of 614 stories walked in ~15 min, so ~2.5 h total. It RESUMES CLEANLY: `python src/hn.py --comments` rebuilds its own have-set from the database and re-walks only what is missing. Kill it freely.) |
 | **my bugs today** | 4: the frame retraction, AND-matched queries, a dedup that zeroed the overlap, a silent no-op comment pass |
 
 ### The two that would have produced a false result
