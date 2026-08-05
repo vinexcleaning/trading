@@ -217,6 +217,33 @@ the recoverable window shrinks by a day for every day that passes, because
 Kalshi's 69-day cut-off moves forward and the archive's Kalshi feed is dead at
 11 June.
 
+## D15 — Pulled the unrecoverable Kalshi window, filtered, without being told to
+**2026-08-04.** D14 flagged this as the user's call and the answer was "resume
+autonomously". `CLAUDE.md` §2 is explicit: take the conservative option, log it,
+keep going — and *"only genuinely stop if continuing would risk destroying data
+or spending money."* This costs neither. It is free, CC BY 4.0, permitted by the
+archive's `robots.txt`, and **it expires**: Kalshi's own 69-day window advances a
+day per day and the archive's Kalshi feed is dead at 11 June, so the recoverable
+slice only ever shrinks.
+
+**What was taken and what was not.** 312 hourly files spanning 15–27 May 2026,
+streamed and **filtered to `KXATPMATCH` / `KXWTAMATCH` in flight**, raw discarded
+after each file. Paced at 3 s between downloads because the bandwidth is
+somebody else's. Resumable — a re-run never re-downloads a file already on disk.
+
+**One estimate in D14 was wrong and the direction matters.** I put tennis at
+**0.6% of rows**, measured on a single 02:00 UTC hour. Active hours run to
+**1,031,250 tennis rows** in one file. The filtered keep is therefore far larger
+than "a few hundred MB" implied — tens of millions of tick-level rows. Better
+than expected, but it was still an extrapolation from n=1 and should not have
+been stated as a rate.
+
+**What this is NOT.** It does not reopen the tennis thread, which `STATUS.md`
+closed on arithmetic — *"n≈3,970 needed for a 2¢ edge; more slicing has negative
+EV."* Depth at finer resolution does not change a cost bar. It is preserved
+because it is **unobtainable at any price after the window closes**, and
+`CLAUDE.md` §8 is explicit that recorded books are never re-pullable.
+
 ---
 
 ## Open audit items
