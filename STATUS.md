@@ -2212,3 +2212,84 @@ the site never affirms it either, so it stays an inference written by the vendor
 any tier (−9.13c/trade, t = −26). **In none of the three verdicts does the bot
 come back on.**
 
+
+### bot-hunt â€” the shortlist's #1 mechanism, tested for the first time (2026-08-05)
+
+Full write-up: [bot-hunt/RESULTS_CROSSVENUE.md](bot-hunt/RESULTS_CROSSVENUE.md).
+
+`SHORTLIST.md` ranked esports first on a mechanism **nobody in this repo had
+ever tested**: de-vig a sharp sportsbook, compare to the prediction market,
+trade the difference. It cannot be backtested â€” Pinnacle is live-only and every
+free historical esports odds source is dead â€” so the recorder started
+**2026-08-04 21:27 UTC** was the entire apparatus. 145 cycles, **13.4M Pinnacle
+priced records**, 710 esports matchups, 99k Kalshi book snapshots.
+
+**Result, on 5,334 paired observations at a median 7-second time alignment:**
+
+| de-vig | median buy edge (fair âˆ’ Kalshi ask) | >2Â¢ | >5Â¢ |
+|---|---|---|---|
+| multiplicative | **âˆ’0.72Â¢** | 13.1% | 2.9% |
+| power | **âˆ’0.75Â¢** | 12.4% | 0.7% |
+| worst-case | **âˆ’1.64Â¢** | 5.9% | 0.5% |
+
+**The median edge is negative under every method.** Pinnacle's overround is
+4.82pp. **This is the fourth independent confirmation that Kalshi is the sharp
+line** â€” after tennis (**T012**, r=0.9878 vs the Betfair close), MLB moneyline
+(0.37Â¢), and 3-way soccer ladders (0 of 93) â€” now against the sharpest book in
+the world at 7-second alignment.
+
+> **The de-vig METHOD decides most of the apparent tail**: >5Â¢ buy edge on 2.9%
+> of observations under multiplicative but **0.5%** under worst-case. That is
+> exactly what the one author with a reconciled live P&L reported when his Shin
+> implementation *"ran hot on favourites"*.
+
+#### âš  The join is where cross-venue work dies, and mine had a real phantom
+
+Matching on the Kalshi **ticker** matched **3 of 218** events â€” its outcome
+codes are 2â€“4 letter abbreviations (`REDA`, `ODK`, `WAVE`) while every other
+venue uses full names. Matching on full names gave 97, and **hand-auditing every
+one** found a **`KXCS2GAME` market paired to a Mobile Legends matchup**. The
+join never looked at the league.
+
+Two filters added, and they are the precision step the corpora insist on:
+**game consistency**, and **roster-suffix AGREEMENT** â€” an organisation fields
+several teams, so the test is not whether "Academy" is present (both venues
+legitimately say it when the match really is between academies) but whether they
+**agree**. 97 â†’ 84 events. The 13 contributing events were unchanged, so the
+numbers stand â€” **that is luck, not design.**
+
+> My first audit script flagged 6 of 10 pairs suspect and **most flags were
+> wrong**: it fired whenever a suffix appeared at all. A detector that fires on
+> the correct case is not a detector. Fixed to compare, not detect.
+
+#### A recorder gap found and fixed
+
+`k_book` stored no market title, which is why the join had to be reconstructed
+from a separately-pulled universe. Added a **`k_names`** table, populated for
+every listed market (names are free once the listing is in hand). Recorder
+restarted. **Anyone building a live cross-venue system hits this on day one.**
+
+#### Contamination check on the one positive result: not killed, not confirmed
+
+`src/contamination_check.py`, four tests against the thin-far-side "monopoly
+regime" edge that GUARDS #10 flagged for strengthening with n:
+
+| test | JOIN | reading |
+|---|---|---|
+| baseline | +8.19pp | the claimed effect |
+| **within-event** | **+6.08pp** [âˆ’6.13, +20.13] | keeps **74%** â†’ **not** a between-event artifact, but 75 events cannot resolve it |
+| time-to-event | thin is **2,149** min out vs thick **1,467** | âš ï¸ a real ~11 h confound; effect present in both strata |
+| price-stratified | +7.04pp | price is **not** the confound |
+| **placebo** (even vs odd placement minute) | **âˆ’3.7pp = 45% of the effect** | âš ï¸ the estimator's noise floor |
+
+**Stays a lead.** The binding constraint is **81 events**, not 13M rows â€” more
+hours of the same matches add orders and no independent information. Pulling
+2026-06-01..06-04 for ~10Ã— the events.
+
+> âš ï¸ **I nearly recorded the opposite conclusion.** My first rule printed
+> *"DOES NOT SURVIVE â€” the effect is BETWEEN events"* whenever the within-event
+> CI included zero. A point estimate keeping 74% of its size has not collapsed;
+> the *interval* widened. The rule is now three-valued â€” SURVIVES / UNDERPOWERED
+> / COLLAPSES â€” which is **GUARDS #1's principle applied beyond the selection
+> canary: UNTESTABLE must never be rendered as a verdict about the effect.**
+
