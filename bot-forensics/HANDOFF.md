@@ -62,12 +62,16 @@ out/                  every run's stdout + the CSVs. Committed on purpose.
 ## Open items, highest value first
 
 1. **`livetennisapi.com` free tier — does it actually return ITF?**
-   `GET https://api.livetennisapi.com/api/public/v1/health` returns 200 with no
-   key; everything else is 401. The free tier is advertised as live scores for
-   ATP + WTA + Challenger + **ITF**. **Settling this needs an account, which is
-   the user's to create — I do not create accounts.** It reopens *data
-   availability* only; Task 3 says ITF economics are the worst of any tier, so
-   this does not reopen the trade.
+   **The test is now written, tested and waiting on one free signup:
+   [`ITF_CHECK.md`](ITF_CHECK.md) has click-by-click steps, and
+   `src/t5_itf_probe.py` runs the check in 6 requests and prints
+   PASS / FAIL / INCONCLUSIVE.** Endpoint paths are verified rather than guessed
+   — `/matches`, `/tournaments`, `/players`, `/fixtures` and `/usage` all return
+   **401, not 404**, so the routes exist and only want a key. Both failure paths
+   (no key, bad key) are tested; the key is never printed, stored or committed.
+   **Settling it needs an account, which is the user's to create — I do not
+   create accounts.** It reopens *data availability* only; Task 3 (B009) says ITF
+   economics are the worst of any tier, so this does not reopen the trade.
 2. **`STATUS.md`'s "Sackmann upstream is 404" needs softening.** Three repos are
    404; `tennis_MatchChartingProject` is live at 399★ and a third-party mirror
    of the ATP/WTA data was pushed 2026-06-25.

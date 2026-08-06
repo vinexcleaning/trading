@@ -2183,7 +2183,32 @@ CLOSED" table and the "Data on disk" table), not only at the bottom of this file
 The Stage 0–5 derived caches are still the only copy; their *inputs* are partly
 recoverable.
 
-**Still open and still the user's:** the `livetennisapi` free tier needs an
-account to settle. It reopens data availability only — B009 says ITF economics
-are the worst of any tier.
+### The ITF check is now built and waiting on one free signup
+
+**Still the user's, but no longer unprepared.**
+[bot-forensics/ITF_CHECK.md](bot-forensics/ITF_CHECK.md) has click-by-click
+steps against the **verified** current form (one field, "Your email"; button
+"Get my key"; no password, no card), and `src/t5_itf_probe.py` runs the check in
+**6 requests** and prints PASS / FAIL / INCONCLUSIVE.
+
+**Endpoint paths are verified, not guessed:** `/matches`, `/tournaments`,
+`/players`, `/fixtures` and `/usage` all return **401, not 404**, so those routes
+exist and only want a key. `/health` is 200 without one. Both failure paths (no
+key, bad key) were tested. **The key is never printed, stored or committed** —
+only its length and `twjp_` prefix.
+
+**One thing I could not verify and said so rather than guessing:** whether the
+key appears on screen or arrives by email. The page does not say. `ITF_CHECK.md`
+tells the user to check the page first, then the inbox.
+
+**Sharpened reading of the vendor's claim.** ITF appears in the hero blurb, the
+FAQ and the historical-tape description. The Free tier card restricts by
+**capability** (no odds, no model, no WebSocket) and **rate** (30/min, 1,000/day)
+and **states no tour restriction anywhere.** That makes free ITF plausible — but
+the site never affirms it either, so it stays an inference written by the vendor.
+**Which is exactly why it gets measured rather than believed.**
+
+**It reopens data availability only** — B009 says ITF economics are the worst of
+any tier (−9.13c/trade, t = −26). **In none of the three verdicts does the bot
+come back on.**
 
