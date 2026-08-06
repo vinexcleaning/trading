@@ -98,6 +98,86 @@ run trustworthy.
 
 ---
 
+## 3b. THE POLYMARKET LEG — the venue the reconciled live P&L came from
+
+Kalshi showed no edge. Polymarket is the one venue left and the one that
+matters: it is where the **+$4,973 net over 3,858 fills** actually happened, and
+it is structurally different in the way the whole maker argument turned on —
+**makers are paid a rebate rather than charged a fee.**
+
+### ⚠️ The structural finding is bigger than the edge measurement
+
+Of **436 recorded esports (slug, outcome) pairs**:
+
+| kind | count |
+|---|---|
+| map / game-N markets | **247** |
+| props (rampage, clutch, first-blood, totals…) | **111** |
+| handicaps | **62** |
+| **plausible moneylines** | **16** |
+
+**Polymarket esports is ~96% derivative markets.** The moneyline surface — the
+only thing a sportsbook moneyline can be de-vigged against — is a thin corner of
+it. Anyone describing "trading Polymarket esports" is mostly describing maps,
+handicaps and props, and **pairing a moneyline to a handicap is the classic
+phantom** the corpora warn about.
+
+### The measurement
+
+After the phantom filters (below): **5 matched moneylines, 3 with overlapping
+quotes, 291 paired observations**, median alignment 256 s.
+
+| de-vig | n | median buy edge | p90 | >2¢ |
+|---|---|---|---|---|
+| multiplicative | 97 | **−2.62¢** | **−0.09¢** | 1.0% |
+| power | 97 | **−0.83¢** | +0.07¢ | 7.2% |
+| worst-case | 97 | **−2.62¢** | **−0.31¢** | 1.0% |
+
+Polymarket's spread on these markets is **1.00¢ median**; Pinnacle's overround
+7.06pp.
+
+> **Same direction as Kalshi, and slightly worse.** Under two of three de-vig
+> methods even the **90th-percentile** observation has a negative edge. But
+> **three markets is not a result** — it is a direction, on the smallest sample
+> in this file, and it is quoted only because it agrees with the Kalshi finding
+> rather than contradicting it.
+
+### ⚠️ Four of twelve matches were phantoms, from a one-character team name
+
+The first join matched 12 moneylines. **Four of them — "FOKUS Sakura", "Gentle
+Mates GC", "Natus Vincere" and "SK Nebula" — all matched the *same* Pinnacle
+matchup, "Trace vs A Team".**
+
+The cause is worth writing down because it is invisible until you look:
+**Pinnacle's "A Team" normalises to `"a"`** once the stopword `team` is
+stripped, and a substring test then matches almost every outcome name
+containing the letter *a*. A single-character team name silently swallowed a
+quarter of the sample.
+
+Two fixes, and they are the two-sided check the Kalshi join had by construction:
+
+1. **A length floor on *both* strings** before substring matching is allowed —
+   exact match otherwise.
+2. **The opponent must appear in the slug.** Recording one token per market
+   leaves only one side's name, so a single-name match cannot be verified the
+   way the Kalshi join verified both. The slug carries both teams as
+   abbreviations (`val-fpx-jdg-2026-08-06`), so requiring the *opponent's*
+   prefix to appear there restores the second side.
+
+**12 → 5 matches, and all five are genuine on inspection.** Unlike the Kalshi
+case, here the phantoms *were* contributing observations, so **the pre-filter
+numbers were contaminated and the post-filter ones are the only ones quoted.**
+
+### A second recorder gap, found and fixed
+
+`p_book` stored only the **first** outcome token of each market, so a census
+found *"slugs with ≥2 recorded outcomes: 0 of 436"*. A single token's bid/ask
+does carry both directions — buying the complement is selling this one — but one
+side alone cannot show the real two-sided book, detect a crossed market, or
+compare the two books' independent spreads. Fixed to probe both tokens;
+recorder restarted 2026-08-06 00:33 UTC. **Same class as the missing
+`k_names`: cheap to record, impossible to reconstruct afterwards.**
+
 ## 4. Limitations
 
 1. **13 events.** The recorder has run ~27 hours and most matched events predate

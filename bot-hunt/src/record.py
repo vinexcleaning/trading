@@ -300,20 +300,34 @@ def poly_cycle(con: sqlite3.Connection, cid: int) -> None:
                     outs = json.loads(m.get("outcomes") or "[]")
                 except (json.JSONDecodeError, TypeError):
                     continue
-                if not toks or toks[0] in seen:
+                if not toks:
                     continue
-                seen.add(toks[0])
+                # BOTH OUTCOME TOKENS, not just the first.
+                #
+                # FIXED 2026-08-06. v1 probed `toks[0]` only, so `p_book` held
+                # one side of every market and a census found "slugs with >=2
+                # recorded outcomes: 0 of 436". A single token's bid/ask does
+                # carry both directions (buying the complement is selling this
+                # one), but recording one side alone makes it impossible to see
+                # the real two-sided book, to detect a crossed market, or to
+                # compare the two books' independent spreads. Same class of gap
+                # as the missing `k_names`: cheap to record, expensive to
+                # reconstruct later, and not recoverable at all after the fact.
+                if toks[0] in seen:
+                    continue
                 if len(seen) > 40:
                     break
-                bk = V.p_book(toks[0])
-                bid, ask, bs, asz, nb, na = V.p_touch(bk)
-                if bid is None and ask is None:
-                    continue
-                n_two += int(bid is not None and ask is not None)
-                recs.append((cid, ts, tag, m.get("slug"), toks[0],
-                             outs[0] if outs else None, bid, ask, bs, asz,
-                             nb, na, V.p_depth_5c(bk),
-                             V.fnum(m.get("orderPriceMinTickSize"))))
+                for ti, tok in enumerate(toks[:2]):
+                    seen.add(tok)
+                    bk = V.p_book(tok)
+                    bid, ask, bs, asz, nb, na = V.p_touch(bk)
+                    if bid is None and ask is None:
+                        continue
+                    n_two += int(bid is not None and ask is not None)
+                    recs.append((cid, ts, tag, m.get("slug"), tok,
+                                 outs[ti] if outs and ti < len(outs) else None,
+                                 bid, ask, bs, asz, nb, na, V.p_depth_5c(bk),
+                                 V.fnum(m.get("orderPriceMinTickSize"))))
         if recs:
             con.executemany(
                 "insert into p_book values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", recs)
