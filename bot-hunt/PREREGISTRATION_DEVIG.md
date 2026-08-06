@@ -280,6 +280,25 @@ is an artifact"* and *"MLB is where I expect the reference-price edge to be."*
 The old design's error-catching mechanism is unavailable to H11 and **must be
 replaced, not quietly dropped.** §4.3 replaces it.
 
+> ### ⚠ CORRECTION 2026-08-06, same day, found by the full-programme audit
+>
+> **The paragraph below calls the DraftKings figure one of "four independent
+> measurements". It is not of the same quality as the other three, and this file
+> should have said so.** It is **[M011](../LEDGER.md#m011)**, whose status is
+> **SUGGESTIVE**, on **26 game sides = 13 games**, from **one snapshot**, against
+> **DraftKings — a retail book, not a sharp one**. Its own author wrote that
+> caveat; it sat in `market-selection/LEDGER_ADDITIONS.md`, which was never merged
+> into `LEDGER.md`, so no ledger-based check could see it. It is also the
+> *corrected* form of **M002**, a retraction that at n = 4 games said the
+> opposite ("6 of 8 game sides exceed the cost bar").
+>
+> **The design does not change and the asymmetric bar in §6.8 stands** — the
+> direction is independently corroborated by T012 (tennis, n=809, r 0.9878), B027
+> (tennis calibration, 0 of 10 tradeable bands) and, since this file was written,
+> by [RESULTS_DEVIG.md](RESULTS_DEVIG.md) on MLB itself. **What was wrong is the
+> word "known" and the count "four".** Read it as three measurements plus a
+> 13-game snapshot.
+
 **Also broken — the prior.** Four independent measurements say MLB moneyline is
 efficient: 0.37¢ against de-vigged DraftKings with 0 of 26 over the bar; a 1.0¢
 candle spread at every lead; 0 of 148 structural cells; and the third-party API

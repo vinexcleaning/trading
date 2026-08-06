@@ -19,12 +19,26 @@ asserts a number and no artifact backs it, the row says `NONE` and the status is
 
 | Status | Count |
 |---|---|
-| **RETRACTED** | **45** |
-| SETTLED | 148 |
-| SUGGESTIVE | 31 |
-| UNVERIFIED | 28 |
-| BROKEN | 9 |
-| **Total** | **261** |
+| **RETRACTED** | **51** |
+| SETTLED | 175 |
+| SUGGESTIVE | 36 |
+| UNVERIFIED | 30 |
+| BROKEN | 11 |
+| CANCELLED | 1 |
+| **Total** | **304** |
+
+**Updated 2026-08-06 (second entry)**: **+43 rows** from the full-programme
+audit — **Section 8**, which merges `market-selection`'s 29 rows (they sat in an
+unmerged `LEDGER_ADDITIONS.md` for four days, invisible to every cross-check) and
+adds `bot-hunt`'s 14. **It paid immediately, for the third time out of three:**
+**[M011](#m011)** is a **SUGGESTIVE** row on **13 games against a retail book**
+that is quoted as established fact in **eight** places, including as the
+justification for making MLB a negative control and as one of "four independent
+measurements" in a pre-registration written the same morning; and **M001** — the
+retraction of *"Kalshi order-book depth is not public"* — is **still stated as a
+live blocker in `crypto/MM_RESULTS.md`**, which is part of why the crypto
+market-making thread stalled. Depth is public, free, 20 levels a side, re-verified
+live on 2026-08-06.
 
 **Updated 2026-08-03**: +16 rows from **Section 6 — kalshi-market-scan**, which
 had no rows in this ledger until then. Three of its retractions (K003, K005,
@@ -442,6 +456,142 @@ could not be seen from inside the project:
 > ~$99; the bot lost $6.92 while it did. **"It worked and then it stopped
 > working" was, on measurement, the shape of a fair coin** — which is why it
 > became GUARDS #17 rather than a strategy note.
+
+---
+
+# SECTION 8 — market-selection (merged 2026-08-06) and bot-hunt
+
+**Added 2026-08-06 by the full-programme audit.** Both projects had **zero rows
+in this ledger**. `market-selection` kept its claims in
+[market-selection/LEDGER_ADDITIONS.md](market-selection/LEDGER_ADDITIONS.md),
+whose own header says *"Merge into LEDGER.md at the next inventory"* — **it was
+never merged.** `bot-hunt` has four results documents and had no rows at all.
+
+> ### ⚠ It paid on the first pass, for the third time out of three
+>
+> Section 6 found **K015 = W011**. Section 7 found **B005a** and two stale CH
+> rows. This section found **two live defects, and one of them is load-bearing
+> in a pre-registration written the same morning.**
+
+### ⚠⚠ M011 is SUGGESTIVE and is quoted as established fact in eight places
+
+<a id="m011"></a>
+
+| ID | Claim | STATUS |
+|---|---|---|
+| **M011** | **"Kalshi's MLB moneyline already tracks the free DraftKings line."** median \|Kalshi mid − de-vigged DK\| **0.37¢**, p90 0.75¢, max 1.94¢, **0 of 26 exceed the cost bar** | **SUGGESTIVE** |
+
+The row's own author wrote the caveat and it is exact:
+
+> *"**SUGGESTIVE** — one snapshot, not a closing line, DK is retail not Pinnacle."*
+
+**n = 26 game sides = 13 games. One snapshot. Against a retail book.** And it is
+the corrected form of **M002**, a retraction which at n = 4 games said the
+*opposite* ("6 of 8 game sides exceed the cost bar").
+
+It is now cited as a settled fact in **eight** places across `bot-hunt`:
+
+| where | what it is doing there |
+|---|---|
+| `PREREGISTRATION.md` §0 | **the justification for making MLB the negative control** — *"MLB moneyline is known efficient"* |
+| `PREREGISTRATION.md` §4 | one of three measurements grounding "I expect every strategy to fail" |
+| **`PREREGISTRATION_DEVIG.md` §4.2** | **one of "four independent measurements" said to establish MLB is efficient — used to set an ASYMMETRIC decision bar against the test. Written 2026-08-06, hours before this audit found the row.** |
+| `PREREGISTRATION_DEVIG.md` §7 | listed under "what I expect" |
+| `RESULTS_CROSSVENUE.md` §2 | part of the "fourth independent confirmation that Kalshi is the sharp line" chain |
+| `PRIOR_ART.md`, `SHORTLIST.md` ×2, `FINDINGS.md` | family ranking and mechanism selection |
+
+**What actually changes, stated precisely.** The *direction* is corroborated
+independently — T012 on tennis (r 0.9878, n=809), B027 on tennis calibration
+(0 of 10 tradeable bands), and `bot-hunt`'s own **RESULTS_DEVIG** on MLB itself
+(a 2.75¢ cost bar against a 2.01pp Pinnacle overround, q = 0 of 17). So no
+verdict flips. **What was wrong is the word "known", and the count "four
+independent measurements" — one of the four is a 13-game snapshot against a
+retail book, and it should have been named as such in a document whose whole
+purpose is to fix the standard of evidence in advance.**
+
+### ⚠⚠ M001 is RETRACTED and `crypto/MM_RESULTS.md` still states it as a blocker
+
+| ID | Retracted claim | Why it died |
+|---|---|---|
+| **M001** | *"Kalshi's `/orderbook` returns empty; order-book depth is not public."* Held by a prior session and **independently reproduced on 85 markets**. | Both readings parsed a key that does not exist. The response has exactly one top-level key, **`orderbook_fp`**, holding `yes_dollars`/`no_dollars`. Depth is **public, free, unauthenticated, 20 levels a side.** |
+
+**`crypto/MM_RESULTS.md` §0.2 still states the retracted version as a headline
+finding**, in bold, as one of two reasons the market-making study could not
+proceed:
+
+> *"❌ Kalshi does not expose order-book depth publicly at all … So this is not a
+> gap in our recording — the depth is not public. … Full-depth Kalshi book
+> reconstruction is not available to us, now or historically."*
+
+**Re-verified live 2026-08-06 on `KXBTCD-26AUG0620-T73299.99`:** the response
+carries `orderbook_fp` with `no_dollars` at **16 price levels**. `bot-hunt`'s
+recorder has been reading it correctly this whole time
+(`bot-hunt/src/venues.py::k_orderbook`).
+
+> **This is why the crypto market-making thread stalled, and the premise was
+> false.** It does not by itself prove market making works — the decisive
+> adverse-selection measurement is still unrun (C025, and the audit's D2) — but
+> *"the data does not exist"* was never true. See the audit's ranked item #2.
+
+### The remaining market-selection rows, merged by reference
+
+**M001–M027** are carried in full at
+[market-selection/LEDGER_ADDITIONS.md](market-selection/LEDGER_ADDITIONS.md) and
+are now part of this ledger's denominator. Six retractions (**M001–M004, M005r,
+M006r**), 17 SETTLED, 4 SUGGESTIVE (**M011, M019, M022, M026**), 1 UNVERIFIED
+(M016), 1 CANCELLED (M025).
+
+Three that matter beyond their own project:
+
+- **M009 / M010** — the Kalshi trade tape retains **exactly 69 days and rolls
+  daily**, bisected at 13 ages. ⚠ **This is in direct tension with `bot-hunt`'s
+  BH009 below**, which bisected the *market listing* boundary twice and found a
+  **fixed calendar date** that did not move. Both cannot be right about the same
+  object; they may be right about **two different objects** (the trade tape vs
+  the market listing). **Unresolved, and it gates a stated 2026-08-19 deadline.**
+- **M005** — order-book depth is public, 20 levels a side, 92.2% of snapshots
+  carry depth. The positive form of M001.
+- **M017** — `football-data.co.uk` serves a **wrong-country file at HTTP 200**:
+  `COL` ≡ `POL` ≡ `BOL` are byte-identical (Poland). A naive probe "confirms"
+  Colombian odds that do not exist. This is GUARDS #13 in the wild.
+
+### bot-hunt — BH001–BH014
+
+| ID | Claim in plain English | Artifact | n + unit | Effect | STATUS |
+|---|---|---|---|---|---|
+| **BH001** | Pinnacle's guest API returns live priced markets **unauthenticated and free** — 27,582 soccer, 3,728 tennis, 1,920 baseball, 643 esports, each with `maxRiskStake`. | `src/probe_pinnacle.py` → `reports/pinnacle_probe.json` | 6 sports | only **3 of 3,195** archived repos reference it | **SETTLED** (API fact) |
+| **BH002** | **Nothing survives the structural grid on esports, and nothing survives on the MLB control.** | `src/run_grid.py` → `reports/grid_train.json`, [RESULTS.md](bot-hunt/RESULTS.md) | **2,779 esports events** / 909 MLB, 260 + 148 cells | **0 cells with a CI above zero**; 120 survive BH-FDR and **every one is negative** | **SETTLED** (null) |
+| **BH003** | **`close_time` is when the market SETTLES, not when play starts** — the pre-registered −60 min anchor was VOID at 13.96% extreme quotes, 99.7% correct. | Amendment A1, `src/anchor_sweep.py` | 2,779 events × 10 leads × 4 series | anchor moved to a uniform **−24 h**, monotone-clean | **SETTLED** — the gate fired before any return printed |
+| **BH004** | **Esports' real pre-match cost is 3–6× the figure the shortlist ranked it on.** | `src/spread_vs_lead.py` → `reports/spread_vs_lead.json` | all settled markets, 4 series | CS2 p90 spread **12¢ → 69¢** from 15 min to 24 h; mean triples. MLB is 1.0¢ at every lead *(⚠ see BH013)* | **SETTLED** — the most useful thing the grid produced |
+| **BH005** | **Resting orders do get filled: 29–36% strict (trade-through), 63–69% permissive.** | `src/h10_passive.py`, `h10_stability.py` → [RESULTS_H10.md](bot-hunt/RESULTS_H10.md) | 12,959 simulated orders, **81 events**, ~13M L2 rows | stable across nested prefixes; the pre-registered <20% falsification **fails** | **SETTLED** — the one number H10 produced |
+| **BH006** | H10's net P&L and adverse selection. | same | 81 events | net P&L **sign-flips −1.48 … +2.55¢** across nested prefixes; adverse selection **decays −14.04 → −4.03pp** as data is added | **BROKEN as evidence** — decay toward zero is the artifact signature; GUARDS #10 flags the one strengthening quantity as contamination, not a finding |
+| **BH007** | De-vigged Pinnacle vs the Kalshi ask on esports: **the median buy edge is negative under every method.** | `src/crossvenue_join.py` → [RESULTS_CROSSVENUE.md](bot-hunt/RESULTS_CROSSVENUE.md) | 5,334 paired observations, **13 events**, median 7 s alignment | multiplicative −0.72¢ · power −0.75¢ · worst-case −1.64¢; Pinnacle overround 4.82pp | **SUGGESTIVE** — 13 events, **no settlement joined**, so it measures price agreement and not P&L. Its own §4.3 says so |
+| **BH008** | **Polymarket esports is ~96% derivative markets.** | `src/poly_crossvenue.py` | 436 recorded (slug, outcome) pairs | maps/game-N **247** · props 111 · handicaps 62 · **plausible moneylines 16** | **SETTLED** — pairing a moneyline to a handicap is the classic phantom |
+| **BH009** | Kalshi's **market-listing** retention is a **fixed calendar boundary**, not a rolling window. | `src/probe_historical.py` → `reports/historical_probe.json` | 4 independent query forms; 18 families | all return the same earliest `close_time`; **13 of 18 share 2026-05-25**; bisected 08-02 and 08-04 with the window **growing** 69 → 71 days | **UNVERIFIED** — ⚠ **contradicts M009/M010** above, which bisected the **trade tape** at exactly 69 days rolling. Two points is not enough to overturn either. **Re-bisect before acting on the 2026-08-19 deadline** |
+| **BH010** | Retrievable settled **events** by family, against LEDGER **K014**'s 481-event bar. | `src/dimension_e.py` → `reports/dimension_e.json` | 5 families | ITF 8,000/7,636 (16.6×) · CS2 1,648 (3.4×) · WTA/ATP 974/942 (2.0×) · MLB 907 (1.9×) · **all five S. American soccer series 152 (0.32×)** | **SETTLED** — kills the prior #1 entry on an axis it was never ranked on |
+| **BH011** | **The de-vig test's cost bar is larger than the entire vig it removes.** | `src/devig_power.py` → `reports/devig_power.json`, [RESULTS_DEVIG.md](bot-hunt/RESULTS_DEVIG.md) | **17 joined MLB games**, 21 joined events | Pinnacle MLB overround **2.01pp**; Kalshi cost bar **2.75¢** at 50¢; qualifying rate **q = 0 of 17**; best per-event net gap **choosing entry with hindsight −0.91¢** | **SETTLED** (structural) — a 5¢ edge needs 4,356 events ≈ **1.8 MLB seasons**; no settlement was joined |
+| **BH012** | **`close_time` on a LIVE Kalshi MLB market is the game start plus exactly 72 h.** On settled markets Kalshi rewrites it to the true settlement instant (2.4–3.2 h after start). | `src/mlb_scope.py`, `devig_power.py` | **94 of 94** active markets at 72.00 h; 1,830 finalized at 2.4–3.2 h | start derived from the ticker instead, **exact against Pinnacle's `starts_utc` on 22 of 22** | **SETTLED** — third Kalshi time field to mislead this repo, after BH003 and T010 |
+| **BH013** | ⚠ **`RESULTS.md` §3's "`KXMLBGAME` is 1.0¢ at every lead" is a CANDLE measurement.** | `src/mlb_scope.py` → `reports/mlb_scope.json` | 12,720 recorded book snapshots, 120 tickers, 100% two-sided | recorded live touch is **median 2.0¢, p90 7.0¢**. The strategy pays the touch | **SETTLED** — correction to BH004's MLB row, marked inline rather than deleted |
+| **BH014** | `record.py` probed `mkts[:60]` in Kalshi's **undocumented** listing order. | `src/record.py` diff, `reports/mlb_scope.json` | 214 cycles, 122 MLB tickers | `KXMLBGAME` lists 85–104 against a cap of 60; snapshots per ticker ran **min 1, p25 25, median 94** — the server decided which ~40 got no book | **BROKEN, fixed 2026-08-06** — now sorted by `close_time` ascending |
+
+### Tally after this section
+
+| Status | was | **now** |
+|---|---|---|
+| **RETRACTED** | 45 | **51** (+6, all `market-selection`: M001–M004, M005r, M006r) |
+| SETTLED | 148 | **175** (+17 M, +10 BH) |
+| SUGGESTIVE | 31 | **36** (+4 M, +1 BH) |
+| UNVERIFIED | 28 | **30** (+1 M, +1 BH) |
+| BROKEN | 9 | **11** (+2 BH) |
+| CANCELLED | — | **1** (M025) |
+| **Total** | 261 | **304** |
+
+> **The directional prior held for the 47th time.** All six newly-merged
+> retractions shrank the edge or removed a premise: **M002** took MLB from "6 of
+> 8 sides beat the cost bar" to **0 of 26**; **M005r** removed the entire stated
+> mechanism of what had been the top-ranked shortlist entry; **M006r** turned a
+> 79%-exceed reading into an uninterpretable one. **Still not one correction
+> anywhere in this repo has ever revealed a larger effect.**
 
 ---
 

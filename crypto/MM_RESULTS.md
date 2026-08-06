@@ -31,6 +31,38 @@ them from this data would be invented.
 
 ### 0.2 ❌ Kalshi does not expose order-book depth publicly at all
 
+> # ⚠⚠ THIS SECTION IS WRONG. RETRACTED 2026-08-06. Read this box first.
+>
+> **Kalshi order-book depth IS public, free, unauthenticated, 20 levels a side.**
+> This section, and the sentence below that *"full-depth Kalshi book
+> reconstruction is not available to us, now or historically"*, are the claim
+> **[M001](../LEDGER.md#section-8--market-selection-merged-2026-08-06-and-bot-hunt)**,
+> which `market-selection` retracted on 2026-08-02.
+>
+> **The cause was a parse, not the API.** The response has exactly **one**
+> top-level key, **`orderbook_fp`**, holding `yes_dollars` / `no_dollars`. There
+> is no `orderbook` key and no `yes`/`no` key — so reading those yields an empty
+> book from an **HTTP 200 on every market**, liquid or dead. That is why it
+> reproduced on 85 markets including one with $1.6 M of 24 h volume: the failure
+> is deterministic and independent of the market.
+>
+> **Re-verified live 2026-08-06** on `KXBTCD-26AUG0620-T73299.99` — `orderbook_fp`
+> returned **16 price levels**. `bot-hunt/src/venues.py::k_orderbook` has been
+> reading it correctly the whole time, and its recorder stores 5¢ depth per side.
+>
+> **What this changes:** the two stated reasons this study could not proceed were
+> (a) the laptop recorded only top-of-book at 120 s, and (b) depth is not public.
+> **(b) is false.** (a) remains true of that recording, but a fresh recorder gets
+> full depth for free, and `archive.pmxt.dev` carries historical L2 with
+> microsecond timestamps.
+>
+> **What this does NOT change:** §10's verdict is still *"Not yet reached"*. The
+> decisive measurement — adverse selection on real `KXBTCD` flow at 373 ms — is
+> still unrun, and **C025** ("0 of 4 series profitable") still has an artifact for
+> only one series. See `AUDIT_2026-08-06.md` item **D2**, ranked #2 of sixteen.
+>
+> Nothing below is deleted. Deleting a wrong number is how someone re-derives it.
+
 `GET /markets/{ticker}/orderbook?depth=50` returns **HTTP 200 with an empty
 body** (`keys: []`, `yes: None`, `no: None`) on a live, actively-quoted market.
 So this is not a gap in our recording — **the depth is not public**. No amount of
