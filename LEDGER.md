@@ -20,11 +20,11 @@ asserts a number and no artifact backs it, the row says `NONE` and the status is
 | Status | Count |
 |---|---|
 | **RETRACTED** | **45** |
-| SETTLED | 146 |
+| SETTLED | 148 |
 | SUGGESTIVE | 31 |
-| UNVERIFIED | 29 |
+| UNVERIFIED | 28 |
 | BROKEN | 9 |
-| **Total** | **260** |
+| **Total** | **261** |
 
 **Updated 2026-08-03**: +16 rows from **Section 6 — kalshi-market-scan**, which
 had no rows in this ledger until then. Three of its retractions (K003, K005,
@@ -40,7 +40,7 @@ diagnosed, never fixed"* and was wrong on both counts) and surfaced **B005a**, a
 reporting selection in which three of that project's own documents state "0 of
 13" while its own committed output prints "3" from a different, broken arm.
 
-**Updated 2026-08-06**: +6 rows (**B021–B026**), tally 254 → **260**. The ITF
+**Updated 2026-08-06**: +7 rows (**B021–B027**), tally 254 → **261**. The ITF
 question is **settled affirmatively** — a free source exists and the thread was
 closed on a false premise (B021) — and the user's player-feature hypothesis was
 tested over **2,008 pre-registered cells** and returned a clean null (B023).
@@ -404,7 +404,13 @@ Artifacts: `bot-forensics/` — `FINDINGS.md` (Tasks 1–2), `VERDICT.md` (Tasks
 | **B023** | **Pre-match player features add nothing to Kalshi's opening price.** | bot-forensics | `src/t6_features.py`, `src/t7_sweep.py` → `out/t7_sweep_*.csv`, [FINDINGS_T7.md](bot-forensics/FINDINGS_T7.md) | **6,519 events** (4,563 train / 1,956 holdout), **2,008 cells** | 06-29 → 07-27 | **2 BH discoveries; the same machinery on shuffled data yields 4.1 on average.** Real max\|t\| **4.17** vs null mean **4.40** | **BH-FDR 5%, one denominator over all 2,008** | **yes, time-ordered 70/30** | **SETTLED** (null) — pre-registered before running. **A sweep that finds less than its own null has found nothing** |
 | **B024** | The one surviving signal — "buy the heavy favourite" — **is a wide-book quoting artifact, not a mispricing.** | bot-forensics | `src/t7_sweep.py`; spread-stratified table in FINDINGS_T7 | 952 events ≥80c | 06-29 → 07-27 | residual by opening spread: **≤2c → +1.18pp (t=0.64)** · 2–4c +4.87pp · 4–8c +3.50pp · **>8c +7.92pp**. Monotonic in spread; gone where tradeable | within B023's family | holdout same sign, **net at ask −0.77c** | **SETTLED** — a mid quoted inside an 11.8c spread is not a price. Tight-book MDE **5.15pp**, so a real effect is not excluded, only unevidenced |
 | **B025** | ⚠ **Two bugs in this session's own analysis code, caught before publication.** | bot-forensics | `src/t7_sweep.py` docstrings + FINDINGS_T7 | — | 08-06 | (a) the first permutation null shuffled within **tier only**, manufacturing a −38pp residual in every high-price cell → **1,010 false discoveries of 2,008, max\|t\| 22**; (b) entries priced at the **mid**, worth 2–3c/contract — **larger than every effect measured** | n/a | n/a | **BROKEN, fixed, and recorded.** The tell on (a) was that the null was *worse* than the real data. Both bugs pushed toward a false positive |
-| **B026** | ⚠ **Possible tension with K009**, unresolved. | bot-forensics | FINDINGS_T7 §"one tension" | 691 train events ≥80c vs K009's 762 matches | — | K009: favourite-longshot bias **does not exist** on Kalshi (−0.67pp). This study: **+4.31pp at ≥80c** at the open | — | — | **UNVERIFIED (an open contradiction).** Offered reconciliation: K009 measures **traded** prices, this measures the **opening mid**, and the gap is concentrated in the widest books. On tight books this reads **+1.18pp, t=0.64**, consistent with K009. **K009 is the better-supported number** — it is measured where trades happen |
+| **B026** | ⚠ **Possible tension with K009**, unresolved. | bot-forensics | FINDINGS_T7 §"one tension" | 691 train events ≥80c vs K009's 762 matches | — | K009: favourite-longshot bias **does not exist** on Kalshi (−0.67pp). This study: **+4.31pp at ≥80c** at the open | — | — | **RESOLVED 2026-08-06 by [B027](#b027) — the two agree, and K009 is right.** ~~UNVERIFIED, an open contradiction.~~ The full calibration curve on **tradeable books shows 0 of 10 price bands deviating**, mean residual **+0.03pp**. t7's +4.31pp was a wide-book quoting artifact, exactly as the offered reconciliation proposed. **SETTLED** |
+
+<a id="b027"></a>
+
+| ID | Claim in plain English | Project | Artifact (script + output) | n + unit | Date range | Effect + CI | FDR? | Holdout? | STATUS |
+|---|---|---|---|---|---|---|---|---|---|
+| **B027** | **Where Kalshi tennis is liquid, its opening price is calibrated across the entire price range. Where it is wide, it is not — and that is where every apparent edge in this repo has come from.** | bot-forensics | `src/t8_calibration.py` → `out/t8_calibration.txt`, `out/t8_calibration.csv` | **6,519 events**; 1,531 tradeable (spread ≤2c), 3,332 wide (>4c) | 06-29 → 07-27 | **tradeable books: 0 of 10 price bands have a Wilson CI excluding zero**, pooled residual **+0.03pp, se 1.09pp, t=+0.03**. Wide books: **2 of 10** deviate (40–50c **−4.96pp**, 80–90c **+5.16pp**) | Wilson CI per band | n/a — full sample, both arms pre-declared | **SETTLED.** Resolves B026 in K009's favour. Per-band tight-book n is 114–208 so each band alone is weak (±5–12pp); the **pooled** tight-book figure is the well-powered one |
 
 ### The verdict these rows add up to
 

@@ -157,7 +157,31 @@ This is the same shape as every other thread in this repo: **a real effect
 smaller than the cost of reaching it.** It is now the ninth apparent positive to
 die, and the 46th correction that shrank rather than grew an edge.
 
-### One tension to flag rather than bury
+### ✅ The tension with K009 — RESOLVED, and K009 was right
+
+Run after the above, as `src/t8_calibration.py`. The full calibration curve,
+split by whether the opening book was tradeable:
+
+| | price bands whose 95% CI excludes zero | pooled residual |
+|---|---|---|
+| **tradeable books (spread ≤ 2c)** | **0 of 10** | **+0.03pp**, se 1.09pp, t = **+0.03** |
+| wide books (spread > 4c) | **2 of 10** | +0.60pp, se 0.75pp |
+| all books | 2 of 10 | +0.31pp, se 0.53pp |
+
+The two wide-book deviations are 40–50c at **−4.96pp** and 80–90c at
+**+5.16pp** — the same heavy-favourite cell t7 flagged, and it is present *only*
+where the book is wide.
+
+> **Where Kalshi tennis is liquid, its opening price is calibrated across the
+> entire price range from 1c to 99c.** K009's "the favourite-longshot bias does
+> not exist on Kalshi" is confirmed on independent data by a different method,
+> and t7's +4.31pp is fully explained as a wide-book quoting artifact.
+
+Power caveat, stated plainly: each tight-book band holds only 114–208 events, so
+a single band could hide a 5–12pp effect. The **pooled** tight-book number is the
+well-powered one, and it is +0.03pp.
+
+### The original tension, kept for the record
 
 `kalshi-market-scan` K009 says **the favourite-longshot bias does not exist on
 Kalshi** (aggregate −0.67pp, 762 settled matches). This study finds **+4.31pp at
