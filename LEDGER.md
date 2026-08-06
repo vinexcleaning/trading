@@ -543,12 +543,26 @@ M006r**), 17 SETTLED, 4 SUGGESTIVE (**M011, M019, M022, M026**), 1 UNVERIFIED
 
 Three that matter beyond their own project:
 
-- **M009 / M010** — the Kalshi trade tape retains **exactly 69 days and rolls
-  daily**, bisected at 13 ages. ⚠ **This is in direct tension with `bot-hunt`'s
-  BH009 below**, which bisected the *market listing* boundary twice and found a
-  **fixed calendar date** that did not move. Both cannot be right about the same
-  object; they may be right about **two different objects** (the trade tape vs
-  the market listing). **Unresolved, and it gates a stated 2026-08-19 deadline.**
+- **M009 / M010** — *"the Kalshi trade tape retains **exactly 69 days and rolls
+  daily**"*, bisected at 13 ages. ⚠ **RESOLVED THE SAME DAY, AGAINST M009. See
+  BH009 below.** A third bisection on 2026-08-06 put the boundary at
+  **2026-05-25 on both the listing and the tape — 73 days old, and unmoved
+  across three measurements four days apart while the "window" grew 69 → 71 →
+  73.** A rolling 69-day window would sit at 2026-05-29. **M009's 69 was the age
+  of a fixed date on the day it was measured**, and M010's arithmetic
+  consequence — *"the whole overlap is gone by 2026-08-19"* — **does not
+  follow.** M009 → **RETRACTED**, M010 → **RETRACTED (its premise)**.
+  > **Caveat, stated because it cuts against the convenient reading:** a fixed
+  > boundary is not a promise. Three points over four days establish that it is
+  > not rolling *now*; the mechanism is unknown (it looks like a data-migration
+  > cutover), and a fixed boundary can vanish in one step rather than sliding.
+  > **It removes a deadline; it does not create a guarantee.**
+  >
+  > **A trap in the probe itself, recorded because a naive read is nonsense:**
+  > `KXBTCD` and `KXITFMATCH` returned "earliest = 1 day / 41 days". Both hit the
+  > **8,000-market pagination cap**, so their "earliest" is where the page ran
+  > out, not where the data ends. **Only the six families that did *not* hit the
+  > cap carry information — and all six read exactly `2026-05-25`.**
 - **M005** — order-book depth is public, 20 levels a side, 92.2% of snapshots
   carry depth. The positive form of M001.
 - **M017** — `football-data.co.uk` serves a **wrong-country file at HTTP 200**:
@@ -567,7 +581,7 @@ Three that matter beyond their own project:
 | **BH006** | H10's net P&L and adverse selection. | same | 81 events | net P&L **sign-flips −1.48 … +2.55¢** across nested prefixes; adverse selection **decays −14.04 → −4.03pp** as data is added | **BROKEN as evidence** — decay toward zero is the artifact signature; GUARDS #10 flags the one strengthening quantity as contamination, not a finding |
 | **BH007** | De-vigged Pinnacle vs the Kalshi ask on esports: **the median buy edge is negative under every method.** | `src/crossvenue_join.py` → [RESULTS_CROSSVENUE.md](bot-hunt/RESULTS_CROSSVENUE.md) | 5,334 paired observations, **13 events**, median 7 s alignment | multiplicative −0.72¢ · power −0.75¢ · worst-case −1.64¢; Pinnacle overround 4.82pp | **SUGGESTIVE** — 13 events, **no settlement joined**, so it measures price agreement and not P&L. Its own §4.3 says so |
 | **BH008** | **Polymarket esports is ~96% derivative markets.** | `src/poly_crossvenue.py` | 436 recorded (slug, outcome) pairs | maps/game-N **247** · props 111 · handicaps 62 · **plausible moneylines 16** | **SETTLED** — pairing a moneyline to a handicap is the classic phantom |
-| **BH009** | Kalshi's **market-listing** retention is a **fixed calendar boundary**, not a rolling window. | `src/probe_historical.py` → `reports/historical_probe.json` | 4 independent query forms; 18 families | all return the same earliest `close_time`; **13 of 18 share 2026-05-25**; bisected 08-02 and 08-04 with the window **growing** 69 → 71 days | **UNVERIFIED** — ⚠ **contradicts M009/M010** above, which bisected the **trade tape** at exactly 69 days rolling. Two points is not enough to overturn either. **Re-bisect before acting on the 2026-08-19 deadline** |
+| **BH009** | Kalshi's retention is a **fixed calendar boundary at 2026-05-25**, not a rolling window — **and it is the same boundary on the market listing AND the trade tape.** | `src/probe_historical.py`, **`src/retention_rebisect.py` → `reports/retention_rebisect.json`** | 8 unrelated families + 11 tape ages, probed at one minute | **third bisection: 08-02 → 69 d, 08-04 → 71 d, 08-06 → 73 d, boundary unmoved at 2026-05-25 throughout.** Tape has trades at 73 d and **zero at 74 d**; 6 of 8 families read exactly `2026-05-25` | **SETTLED 2026-08-06** — ⚠ **this REFUTES M009/M010's "exactly 69 days, rolls daily".** The 69 was the *age of a fixed date on the day it was measured*. **The 2026-08-19 deadline does not exist** |
 | **BH010** | Retrievable settled **events** by family, against LEDGER **K014**'s 481-event bar. | `src/dimension_e.py` → `reports/dimension_e.json` | 5 families | ITF 8,000/7,636 (16.6×) · CS2 1,648 (3.4×) · WTA/ATP 974/942 (2.0×) · MLB 907 (1.9×) · **all five S. American soccer series 152 (0.32×)** | **SETTLED** — kills the prior #1 entry on an axis it was never ranked on |
 | **BH011** | **The de-vig test's cost bar is larger than the entire vig it removes.** | `src/devig_power.py` → `reports/devig_power.json`, [RESULTS_DEVIG.md](bot-hunt/RESULTS_DEVIG.md) | **17 joined MLB games**, 21 joined events | Pinnacle MLB overround **2.01pp**; Kalshi cost bar **2.75¢** at 50¢; qualifying rate **q = 0 of 17**; best per-event net gap **choosing entry with hindsight −0.91¢** | **SETTLED** (structural) — a 5¢ edge needs 4,356 events ≈ **1.8 MLB seasons**; no settlement was joined |
 | **BH012** | **`close_time` on a LIVE Kalshi MLB market is the game start plus exactly 72 h.** On settled markets Kalshi rewrites it to the true settlement instant (2.4–3.2 h after start). | `src/mlb_scope.py`, `devig_power.py` | **94 of 94** active markets at 72.00 h; 1,830 finalized at 2.4–3.2 h | start derived from the ticker instead, **exact against Pinnacle's `starts_utc` on 22 of 22** | **SETTLED** — third Kalshi time field to mislead this repo, after BH003 and T010 |

@@ -19,6 +19,36 @@ hour within each group.
 
 ## ⏳ THE DECAYING ITEM — highest priority of anything on this page
 
+> # ⚠⚠ IT IS NOT DECAYING. RETRACTED 2026-08-06. Read this box first.
+>
+> **The boundary is a FIXED CALENDAR DATE, not a rolling window, and the
+> 2026-08-19 deadline below does not exist.** Three bisections, four days apart,
+> on `bot-hunt/src/retention_rebisect.py` → `reports/retention_rebisect.json`:
+>
+> | measured | boundary | its age that day |
+> |---|---|---|
+> | 2026-08-02 (this file) | 2026-05-25 | **69 days** |
+> | 2026-08-04 (`bot-hunt` BH009) | 2026-05-25 | **71 days** |
+> | **2026-08-06** | **2026-05-25** | **73 days** |
+>
+> **The boundary never moved. The "69-day window" was the age of a fixed date on
+> the day it was measured.** A genuinely rolling 69-day window would today start
+> at 2026-05-29; the tape returns trades at **73 days** and nothing at 74, and
+> **6 of 8 unrelated families report exactly `2026-05-25`** as their earliest
+> settled market — listing and tape agreeing on one date.
+>
+> **What this means practically: nothing is expiring one day per day, and no work
+> needs to be rushed to beat 2026-08-19.** The 11 days 05-14 → 05-24 are still
+> gone — that part stands.
+>
+> **What it does NOT mean.** A fixed boundary is not a promise. The mechanism is
+> unknown and looks like a data-migration cutover; such a boundary can disappear
+> in one step rather than sliding. **This removes a deadline. It does not create
+> a guarantee**, and a mirror of anything genuinely irreplaceable is still worth
+> having.
+>
+> Nothing below is deleted — deleting a wrong number is how someone re-derives it.
+
 The Kalshi trade tape retains **exactly 69 days** (measured by bisection:
 trades present at 2026-05-25, zero at 2026-05-24). The window rolls forward
 daily.
