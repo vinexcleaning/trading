@@ -91,3 +91,43 @@ later.
 Every call in `bot-hunt/` is public and unauthenticated. There is no
 authenticated code path in `src/venues.py` by construction. Standing instruction,
 recorded so it is auditable.
+
+---
+
+## 2026-08-06 — the de-vig test (H11)
+
+**D10. Ran the de-vig test on MLB even though MLB was Step 6's negative
+control.** Given up: the ability to use "it worked on MLB, therefore the
+machinery is broken" as an error check. Taken instead: three internal placebo
+controls (mismatched pair, stale reference, two-sided coherence) which run on
+the same events and so cannot be separately underpowered. Why this way: MLB is
+the only family that simultaneously has a joinable reference price, a stable
+cost bar, and a real forward event rate. The conservative alternative — refuse
+to test at all — forfeits the only runnable version of the shortlist's #1
+mechanism. Control DATA is not reused; a hard 2026-08-05T00:00:00Z boundary
+enforces it.
+
+**D11. `worst_case` de-vig is primary, not the better-fitting `power`.** Given
+up: statistical fit. Why: RESULTS_CROSSVENUE measured that the de-vig method
+choice decides most of the apparent tail, and the one author with a reconciled
+live P&L reported his Shin implementation "ran hot on favourites". A method that
+manufactures the tail under test is not a neutral instrument.
+
+**D12. Derived the game start from the ticker rather than from `close_time`.**
+`close_time` on a live Kalshi MLB market is start + exactly 72 h; on a settled
+one it is the real settlement instant. Given up: a field that is right for
+settled markets and would have been simpler. Why: the third Kalshi time field to
+mislead this repo, after Amendment A1 and LEDGER T010. Verified exact against
+Pinnacle's independent `starts_utc` on 22 of 22 jointly-listed games.
+
+**D13. Sorted the recorder's book probes by `close_time` ascending instead of
+raising the 60-market cap.** Given up: coverage of the far-out games in
+large families. Why: raising the cap costs API budget on the one process that
+must never be starved (C018 puts the unauthenticated ceiling at 15 req/s), and a
+pre-match strategy trades the games about to start. The old arbitrary ordering
+left some MLB tickers with 1 snapshot in 214 cycles.
+
+**D14. Recorded `q = 0` with its rule-of-three upper bound (0.18) and used the
+UPPER bound for every timeline.** Given up: the more decisive-sounding point
+estimate. Why: a point estimate of zero on n=17 is not a measurement of zero,
+and every event-count in RESULTS_DEVIG.md is therefore the optimistic one.

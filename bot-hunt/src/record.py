@@ -242,6 +242,26 @@ def kalshi_cycle(con: sqlite3.Connection, cid: int) -> None:
             [(m.get("ticker"), series, m.get("event_ticker"), m.get("title"),
               m.get("yes_sub_title"), m.get("no_sub_title"),
               m.get("close_time"), ts) for m in mkts if m.get("ticker")])
+        # PROBE THE SOONEST-CLOSING MARKETS FIRST.
+        #
+        # FIXED 2026-08-06. v1 was `mkts[:60]` in whatever order Kalshi's
+        # /markets endpoint happened to return, and that order is undocumented.
+        # KXMLBGAME lists 85-104 markets against a cap of 60, so ~40 of them got
+        # no orderbook probe on any given cycle and WHICH 40 was decided by an
+        # unspecified server-side ordering. Measured effect: snapshots per MLB
+        # ticker ran min=1, p25=25, median=94 over 214 cycles. Some markets were
+        # nearly starved and nothing said so.
+        #
+        # close_time ascending is the right key rather than an arbitrary one: a
+        # pre-match strategy trades the games about to start, so the markets
+        # that matter are exactly the ones this ordering guarantees. For live
+        # MLB markets close_time is the game start plus a fixed 72 h (see
+        # PREREGISTRATION_DEVIG.md section 2.5), so ordering by it is ordering
+        # by first pitch. Markets with no close_time sort last rather than
+        # first -- an absent field must never win a priority contest.
+        mkts.sort(key=lambda m: (m.get("close_time") is None,
+                                 m.get("close_time") or "",
+                                 m.get("ticker") or ""))
         for m in mkts[:60]:
             tk = m.get("ticker")
             if not tk:

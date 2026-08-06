@@ -2461,3 +2461,83 @@ window and stands regardless.**
 
 **Ledger: +7 rows (B021–B027), tally 254 → 261.** RETRACTED still 45 — the
 directional prior held for the 46th time.
+
+---
+
+### bot-hunt — the de-vig test: never actually run, now pre-registered, and NOT reachable on MLB (2026-08-06)
+
+Full write-up: [bot-hunt/PREREGISTRATION_DEVIG.md](bot-hunt/PREREGISTRATION_DEVIG.md)
+(committed `d163484`, **before any return existed**) and
+[bot-hunt/RESULTS_DEVIG.md](bot-hunt/RESULTS_DEVIG.md). **No settlement outcome
+has been joined to any price in either file.**
+
+**The question:** de-vig Pinnacle → fair value → compare to the executable Kalshi
+price → **count it only when the gap beats cost**. **It has never been run here.**
+Step 6 tested H1–H9 on **Kalshi's own price only**; RESULTS_CROSSVENUE measured
+the **distribution** of the de-vigged gap on esports with **no settlement, no
+gate and no P&L** (its own §4.3 says so). T012 is a calibration statistic.
+
+**The answer is arithmetic, not statistics.** Pinnacle's MLB overround is
+**2.01 pp** — that is the whole quantity de-vigging removes, ~1 pp per side. The
+Kalshi taker fee at 50¢ is **1.75¢** and the quoted spread **2.0¢**, so the cost
+bar at 1¢ slippage is **2.75¢**. *The cost bar is larger than the entire vig.*
+
+Measured qualifying rate **q = 0 of 17 events** at the primary cell (1 of 17 at
+zero slippage). The **best** per-event net gap, choosing the entry with hindsight
+across each event's full 24 h window, is **−0.91¢** — no event is positive at any
+moment. Rule-of-three upper bound `q ≤ 0.18`, and all timelines below use that
+optimistic figure.
+
+| stage | events needed | verdict |
+|---|---|---|
+| **A** — is the de-vigged reference a *better forecast* than Kalshi's price (paired Brier) | **≈ 440 ≈ 30 MLB days ≈ early Sept 2026** | **REACHABLE** |
+| **B** — the gated P&L test as asked | 5¢ edge → **4,356 events = 1.8 seasons**; 3¢ → **5.0 seasons**. Rest of this season resolves only **11.6¢** | **NOT REACHABLE** |
+
+No historical shortcut: Pinnacle has no historical endpoint at any price, and the
+only free historical sharp line found is **soccer only**. Baseball is
+forward-only.
+
+> ### ⚠ THE RECORDER WAS DEAD FOR 2.5 HOURS AND NOTHING NOTICED
+> Last cycle **2026-08-06T15:13Z**, no process alive at 17:41Z, **zero bytes in
+> `recorder3.err`.** It had been launched from a prior session's shell and died
+> with it. Restarted detached. **Nothing monitors it** — and it is the only asset
+> in the project that cannot be bought back later.
+
+**Two recorder defects found and fixed.** (1) `record.py` probed `mkts[:60]` in
+Kalshi's **undocumented** listing order; `KXMLBGAME` lists 85–104, so ~40 got no
+book per cycle and the server chose which — snapshots per MLB ticker ran **min 1,
+p25 25, median 94** over 214 cycles. Now sorted by `close_time` ascending.
+(2) The club-name join silently dropped the **Athletics** (`A's` → `a s`, under
+the length-4 floor that exists to stop the Polymarket one-character phantom); 5
+of 53 events lost, fixed with an exact 30-club code map, join 17 → 21.
+
+> ### ⚠ Third Kalshi time field to mislead this repo
+> **`close_time` on a LIVE Kalshi MLB market is the game start plus exactly
+> 72 h** (94 of 94 active markets). On **settled** markets Kalshi rewrites it to
+> the true settlement instant, 2.4–3.2 h after start. Anchoring a live market on
+> it anchors **69 hours after first pitch.** After Amendment A1 and LEDGER T010,
+> this is the third. Start is now derived from the ticker, verified exact against
+> Pinnacle's independent `starts_utc` on **22 of 22** jointly-listed games.
+>
+> ✅ **The old MLB control is NOT damaged** — it ran on settled markets, where the
+> field is the true settlement instant. Checked specifically; the opposite would
+> have voided RESULTS.md's control gate.
+
+> ⚠ **Correction to [bot-hunt/RESULTS.md](bot-hunt/RESULTS.md) §3.** Its
+> "`KXMLBGAME` is **1.0¢** at every lead" is a **candle** measurement. The
+> recorded live touch is **median 2.0¢, p90 7.0¢**, and the strategy pays the
+> touch. Marked inline rather than deleted.
+
+**MLB was Step 6's negative control, and promoting it to test family is
+legitimate — with one thing genuinely broken.** The control is **spent**, not
+reserved: it gated one candle-based run of H1–H9 and reported PASS. The **data**
+is not reused — a hard boundary excludes any game starting before
+**2026-08-05T00:00:00Z**, clearing the control set's latest game start
+(**2026-08-04T23:40:00Z**), asserted in code. What breaks is that the family can
+no longer generate its own null, so **three internal controls replace it**
+(mismatched-pair placebo as the gate, stale-reference placebo, two-sided
+coherence), and a positive H11 must clear **all six** pre-registered conditions.
+
+**Next: build and schedule the settlement puller.** It is the only leg with a
+**deadline** — Kalshi's window is ~69 days and closed markets 404 for good.
+Stage A cannot run without it, and Stage A is the only reachable stage.

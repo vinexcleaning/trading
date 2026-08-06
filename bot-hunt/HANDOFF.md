@@ -344,3 +344,119 @@ one puller is already near it, and the recorder is the irreplaceable one.
 
 `data/` and `reports/` are gitignored — they hold recorded data and fetched
 third-party content, and this repo is public.
+
+---
+
+## 8. 2026-08-06 — the de-vig test: PRE-REGISTERED, scoped, and NOT reachable on MLB
+
+**Read [PREREGISTRATION_DEVIG.md](PREREGISTRATION_DEVIG.md) then
+[RESULTS_DEVIG.md](RESULTS_DEVIG.md).** No settlement outcome has been joined to
+any price; neither file contains a return.
+
+### 8a. The de-vig test had never been run. Three things resemble it and are not it.
+
+- **Step 6 / [RESULTS.md](RESULTS.md)** — H1–H9 on **Kalshi's own price only**.
+  No external reference price appears anywhere in it, and PREREGISTRATION.md §0
+  says so in its own words.
+- **[RESULTS_CROSSVENUE.md](RESULTS_CROSSVENUE.md)** — measured the
+  **distribution** of `fair − ask` on esports. No settlement, no gate, no P&L.
+  `crossvenue_join.py` contains no reference to a result field, and its own §4.3
+  says *"this measures price agreement, not realised P&L."*
+- **T012** — a calibration statistic on tennis against Betfair.
+
+### 8b. The answer is arithmetic and does not need more data
+
+**The cost bar to take an MLB moneyline is larger than the entire vig being
+removed from Pinnacle.** Pinnacle's MLB overround is **2.01 pp**; the Kalshi
+taker fee at 50¢ is **1.75¢** and the quoted spread is **2.0¢**, so the bar at
+1¢ slippage is **2.75¢**. De-vigging moves each side by roughly **1 pp**.
+
+Measured `q` (fraction of events producing an entry): **0 of 17** at the primary
+cell; 1 of 17 at zero slippage. The **best** per-event net gap, choosing the
+entry with hindsight over each event's whole 24-hour window, is **−0.91¢** —
+**no event is positive at any moment.** The rule-of-three upper bound on `q` is
+0.18, and every timeline below uses that optimistic figure.
+
+| | |
+|---|---|
+| **Stage A** — is the de-vigged reference a *better forecast* than Kalshi's price (paired Brier) | **≈ 440 events ≈ 30 MLB days ≈ early Sept 2026. REACHABLE.** |
+| **Stage B** — the gated P&L test as asked | 5¢ edge needs **4,356 events = 1.8 seasons**; 3¢ needs **5.0 seasons**. The rest of this season resolves only an **11.6¢** edge. **NOT REACHABLE.** |
+
+No historical shortcut exists: Pinnacle has no historical endpoint at any price,
+and the only free historical sharp line found (`football-data.co.uk`) is
+**soccer only**. Baseball is forward-only.
+
+### 8c. ⚠ THE RECORDER WAS DEAD FOR 2.5 HOURS AND NOTHING NOTICED
+
+Last cycle **2026-08-06T15:13Z**; no python process alive at 17:41Z; **zero
+bytes written to `recorder3.err`.** It had been launched from a prior session's
+shell and died with it. Restarted detached (and again at 17:51Z for the fix
+below). **Nothing monitors it.** This is the only asset in the project that
+cannot be bought back later — a watchdog is worth more than any analysis here.
+
+### 8d. Two recorder defects found and fixed
+
+1. **`record.py` probed `mkts[:60]` in Kalshi's undocumented listing order.**
+   `KXMLBGAME` lists 85–104 markets, so ~40 got no book per cycle and the server
+   decided which. Snapshots per MLB ticker ran **min 1, p25 25, median 94** over
+   214 cycles. Now sorted by `close_time` ascending — the games about to start
+   are never the ones dropped. **Recorder restarted to pick this up.**
+2. **The club-name join silently dropped the Athletics.** Kalshi writes `A's` →
+   normalises to `a s`, length 3, under the length-4 floor that exists to stop a
+   one-character name swallowing the sample (the Polymarket phantom). 5 of 53
+   events lost. Replaced with an exact 30-club code map on the ticker suffix:
+   join **17 → 21 events**, and Pinnacle's aggregate props
+   (`Home Runs (15 Games)`) become unmatchable too.
+
+### 8e. ⚠ Third Kalshi time field to mislead this repo — and one number corrected
+
+**`close_time` on a LIVE Kalshi MLB market is the game start plus exactly 72 h**
+(94 of 94 active markets). On **settled** markets Kalshi rewrites it to the true
+settlement instant, 2.4–3.2 h after start. Anchoring a live market on it anchors
+**69 hours after first pitch**. After Amendment A1 and LEDGER T010, this is the
+third Kalshi time field to mislead this repo. The design derives the start from
+the ticker, verified exact against Pinnacle's `starts_utc` on **22 of 22**
+jointly-listed games.
+
+> ✅ **The old MLB control is NOT damaged.** It ran on settled markets, where
+> `close_time` is the true settlement instant, so its −24 h anchor really was
+> ~21 h pre-match. Checked specifically, because the opposite would have voided
+> RESULTS.md's control gate.
+
+> ⚠ **RESULTS.md §3's "KXMLBGAME is 1.0¢ at every lead" is a CANDLE
+> measurement.** The recorded live touch is **median 2.0¢, p90 7.0¢**. The
+> strategy pays the touch. Corrected inline in RESULTS_DEVIG.md; every cost
+> figure in the new design is recomputed from the recorded book.
+
+### 8f. MLB as control → MLB as test family: what breaks, and the clean way
+
+**Spent, not reserved.** The control gated one candle-based run of H1–H9 and
+reported PASS; a control is a role a dataset played in one experiment, not a
+permanent property of a family. **The DATA is not reused** — a hard boundary
+excludes any game starting before **2026-08-05T00:00:00Z**, clearing the control
+set's latest game start (**2026-08-04T23:40:00Z**) by 20 minutes, asserted in
+code.
+
+**What genuinely breaks:** the family can no longer generate its own null.
+Replaced by three internal controls — **mismatched-pair placebo (the gate)**,
+stale-reference placebo, two-sided coherence — which run on the same events and
+so cannot be separately underpowered. And the prior now runs against the test,
+so a positive H11 must clear **all six** of Stage A, BH-FDR, a CI above cost, a
+clean placebo, PLATEAU-not-PEAK, and the sealed holdout.
+
+### 8g. The single next thing
+
+**Build and schedule the settlement puller.** Every other leg is recording;
+outcomes are the only leg with a **deadline** — Kalshi's window is ~69 days and
+closed markets 404 for good. Stage A cannot run without them, and Stage A is the
+only stage that is reachable. Then the **Polymarket leg**, where makers are paid
+a rebate rather than charged a fee and the §8b arithmetic is genuinely different.
+
+### 8h. Files added this session
+
+| file | what |
+|---|---|
+| `PREREGISTRATION_DEVIG.md` | H11, committed at `d163484` before any return existed |
+| `RESULTS_DEVIG.md` | the feasibility measurement — `q`, the event counts, no settlement |
+| `src/mlb_scope.py` | apparatus census. ⚠ its name-only join is **superseded**; do not quote its 34.6% |
+| `src/devig_power.py` | the pre-registered join + gate, measuring `q` only |
