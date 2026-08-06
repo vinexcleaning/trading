@@ -163,3 +163,6 @@ signal-github/PLAIN_ENGLISH.md
 # --- extractor-upgrade: per-document judgments about named creators/authors ---
 extractor-upgrade/reports/
 extractor-upgrade/frames/
+
+# bot-forensics: 1.8MB feature table carrying player names; rebuilds in one command
+bot-forensics/out/t6_features.csv

@@ -84,3 +84,40 @@ acceptable had the result been positive**, and REPRODUCTION.md §3 says so.
 `audit/LEDGER.md` R6 was marked closed, with the four rescued findings restated
 *inside the row* so they survive even if `bot-forensics/out/` is lost. No code,
 no config, no `TRADING_DISABLED`, and the bot was not started.
+
+## 2026-08-06, third session
+
+**D14. The 2,008-cell sweep was pre-registered before it was run.**
+`PREREGISTRATION_T6.md` was written and committed as its own commit, before
+`t6_features.py` executed once. The target (residual, not win rate), unit
+(event), dedupe rule (ticker order), split (time-ordered 70/30), correction
+(BH-FDR, one denominator) and economic bar were all fixed with no number in
+hand. A sweep this size is a false-positive machine otherwise.
+
+**D15. Two bugs in my own code were reported, not quietly fixed.** The broken
+permutation null and the mid-priced entries are written up in FINDINGS_T7 and
+ledgered as B025. Both pushed toward a false positive. A reader who only saw
+the corrected version would have no way to judge how close the study came to
+publishing one.
+
+**D16. `out/t6_features.csv` is NOT committed.** 1.8 MB, and it carries player
+names in a public repo. Professional players' results are public record, so
+this is caution rather than a rule violation — but the aggregate outputs
+(`t7_sweep_*.csv`, `t8_calibration.csv`) carry the findings and no names, and
+the table rebuilds in one command. The conservative option cost nothing.
+
+**D17. The API key was used but never written to disk or committed.** It was
+supplied in chat. Every script reads it from the environment and prints only
+its length and `twjp_` prefix. The handoff recommends rotating it.
+
+**D18. The upcoming-match sheet ships with its own disclaimer in its output.**
+`t9_upcoming.py` prints, every run, that `p1_win_rank` is not a price and that
+where it disagrees with a market the market is the better bet. Producing a
+"picks" sheet off an unvalidated ranking model is exactly the `trust_me_bro`
+pattern this repo catalogues in other people's repos.
+
+**D19. The null was stated as bounded rather than as a general result.**
+B023 could have been written as "player features do not work." It is written as
+"not demonstrated on 29 days of form data", because `corr(prior win rate,
+outcome) = +0.0058` shows the window, not the hypothesis, is what failed. The
+stronger claim would have been cheaper to write and wrong.

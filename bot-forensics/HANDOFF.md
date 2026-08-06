@@ -110,5 +110,60 @@ out/                  every run's stdout + the CSVs. Committed on purpose.
 - No entry-level tick data for the live trades — the recorder tape covers
   27 Jul 23:01 → 28 Jul 13:49 only, so the 16:00–19:59 UTC cost bar is unmeasured.
 - The score-joined backtest arm cannot see ITF at all; arm B's proxy is a proxy.
-- The `livetennisapi` free tier is unverified (see above).
+- ~~The `livetennisapi` free tier is unverified.~~ **SETTLED 2026-08-06: it
+  returns 7,786 ITF tournaments on a free key.** See below.
 - Nothing was changed in `kalshi-inplay-bot/`. Not one byte.
+
+---
+
+## 2026-08-06 session — ITF settled, player features tested
+
+New: `PREREGISTRATION_T6.md` (written and committed *before* running),
+`FINDINGS_T7.md`, and `src/t5_itf_probe.py` … `src/t9_upcoming.py`.
+
+| | |
+|---|---|
+| ITF on the **free** tier | **7,786 tournaments** — the thread was closed on a false premise (B021) |
+| vendor rate limit | advertised 1,000/day, **actually 100/day** (B022) |
+| feature events built | **6,519**, leak-free; selection canary 0.5005, z = +0.09 |
+| cells swept | **2,008**; **2** BH discoveries against **4.1** on shuffled data (B023) |
+| the one survivor | wide-book artifact — +1.18pp on tradeable books, **−0.77c** net at ask (B024) |
+| **calibration, tradeable books** | **0 of 10 bands deviate**, pooled **+0.03pp** (B027) |
+| bugs in my own code, caught | **2**, both toward a false positive (B025) |
+
+### Run order
+
+    .venv\Scripts\python.exe src\t6_features.py      -> out/t6_features.csv
+    .venv\Scripts\python.exe src\t7_sweep.py         -> the 2,008-cell sweep (slow)
+    .venv\Scripts\python.exe src\t8_calibration.py   -> the calibration curve
+    $env:LIVETENNIS_API_KEY="twjp_..."
+    .venv\Scripts\python.exe src\t9_upcoming.py      -> the fixtures sheet
+
+`out/t6_features.csv` is **deliberately not committed** — 1.8 MB and it carries
+player names. It rebuilds in one command from data already on disk.
+
+### Traps hit this session
+
+- **`views.pkl` unpickles `engine.MarketView`**, so `backtest/` must be on
+  `sys.path` before `pickle.load` or you get a bare `ModuleNotFoundError`.
+- **`round` is a bad `itertuples` field name** — it silently fell through to a
+  tuple index. Use `to_dict("records")`.
+- **A permutation null must preserve whatever the cells select on.** Shuffling
+  within tier while cells selected on price manufactured **1,010** false
+  discoveries. Stratify on price too.
+- **Never price an entry at the mid.** Worth 2–3c on these books — larger than
+  anything measurable here.
+- **The API throws transient 502s that are not auth failures.** The first
+  version of `t5_itf_probe.py` reported "key rejected" on one.
+
+### Next, highest value first
+
+1. **The 29-day window is the binding constraint on everything weak here.**
+   The history plan is **$9.99** for 43 months including ITF, and would let the
+   whole feature study re-run on 3 years instead of 4 weeks. **B027 does not
+   depend on it and stands either way.**
+2. **Record fixtures daily.** Surface is on every fixture but cannot be joined
+   retrospectively. A month of recording unlocks surface analysis.
+3. **Rotate the API key** — it was pasted into a chat. No script here writes it
+   to disk or commits it.
+4. **Nothing to the bot.** `TRADING_DISABLED` stays.
