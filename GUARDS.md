@@ -1,4 +1,4 @@
-# GUARDS.md — the reusable part
+﻿# GUARDS.md â€” the reusable part
 
 Every canary, control and check that exists in any project, where it lives, and
 which projects have it. **This is the most transferable output of all four
@@ -12,36 +12,36 @@ coverage table.
 
 | Guard | set1_overshoot | crypto | wallet-copy-study | kalshi-tennis | desktop bot / v3 |
 |---|---|---|---|---|---|
-| 1. Selection canary (3-valued) | ✅ enforced at build | ➖ audited clean, not enforced | ✅ equivalent | ⚠️ retro-audited, 2 UNSAFE found | ❌ **presume void** |
-| 2. Within-match leak canary | ✅ | ✅ | ✅ | ✅ (found the leak) | ❌ |
-| 3. Synthetic null | ✅ | ✅ | ✅ | ❌ | ❌ |
-| 4. Positive control (planted effect) | ✅ | ✅ (15% and 5%) | ➖ implicit | ✅ (Stage 3 traits) | ❌ |
-| 5. Deliberate-leak diagnostic | ✅ | ✅ | ❌ | ✅ (anchor sweep) | ❌ |
-| 6. Exact-decimal fee arithmetic | ✅ | ✅ | ✅ (empirical) | ✅ **fixed 08-03** | ✅ **fixed 08-03** |
-| 6b. **Anti-reimplementation guard** (repo-wide) | ✅ enforced repo-wide by [`common/tests/test_no_fee_reimplementation.py`](common/tests/test_no_fee_reimplementation.py) — one test covers every project | | | | |
-| 7. Per-market P&L decomposition | ✅ exact identity | ✅ | ✅ | ❌ | ❌ |
-| 8. Effective sample size | ✅ (day-clustered) | ✅ (event-clustered) | ✅ (market/series-day) | ➖ partial | ❌ |
-| 9. Guard-rot test | ✅ | ❌ | ❌ | ❌ | ❌ |
-| 10. Pre-registration before seeing numbers | ✅ | ✅ | ✅ | ❌ | ❌ |
-| 11. BH-FDR across the whole ledger | ✅ 97 rows | ✅ 101 tests | ✅ per family | ✅ 43 segments | ❌ |
-| 13. Content-assert, not call-assert (a 200/exit-0 is not a result) | ✅ `frames.is_flat` | | | | |
-| 14. `robots.txt` `Allow:` implemented (longest match wins) | ✅ `find_sources.robots_allows` | | | | |
-| 15. A 404 never establishes death | ✅ `unify_currency._dead` | | | | |
-| 16. Membership table, so dedup cannot decide an overlap statistic | ✅ `hn.membership` | | | | |
-| 12. Content-level recorder health check | ✅ | ⚠️ specified, status unknown | n/a | n/a | ❌ **check first** |
+| 1. Selection canary (3-valued) | âœ… enforced at build | âž– audited clean, not enforced | âœ… equivalent | âš ï¸ retro-audited, 2 UNSAFE found | âŒ **presume void** |
+| 2. Within-match leak canary | âœ… | âœ… | âœ… | âœ… (found the leak) | âŒ |
+| 3. Synthetic null | âœ… | âœ… | âœ… | âŒ | âŒ |
+| 4. Positive control (planted effect) | âœ… | âœ… (15% and 5%) | âž– implicit | âœ… (Stage 3 traits) | âŒ |
+| 5. Deliberate-leak diagnostic | âœ… | âœ… | âŒ | âœ… (anchor sweep) | âŒ |
+| 6. Exact-decimal fee arithmetic | âœ… | âœ… | âœ… (empirical) | âœ… **fixed 08-03** | âœ… **fixed 08-03** |
+| 6b. **Anti-reimplementation guard** (repo-wide) | âœ… enforced repo-wide by [`common/tests/test_no_fee_reimplementation.py`](common/tests/test_no_fee_reimplementation.py) â€” one test covers every project | | | | |
+| 7. Per-market P&L decomposition | âœ… exact identity | âœ… | âœ… | âŒ | âŒ |
+| 8. Effective sample size | âœ… (day-clustered) | âœ… (event-clustered) | âœ… (market/series-day) | âž– partial | âŒ |
+| 9. Guard-rot test | âœ… | âŒ | âŒ | âŒ | âŒ |
+| 10. Pre-registration before seeing numbers | âœ… | âœ… | âœ… | âŒ | âŒ |
+| 11. BH-FDR across the whole ledger | âœ… 97 rows | âœ… 101 tests | âœ… per family | âœ… 43 segments | âŒ |
+| 13. Content-assert, not call-assert (a 200/exit-0 is not a result) | âœ… `frames.is_flat` | | | | |
+| 14. `robots.txt` `Allow:` implemented (longest match wins) | âœ… `find_sources.robots_allows` | | | | |
+| 15. A 404 never establishes death | âœ… `unify_currency._dead` | | | | |
+| 16. Membership table, so dedup cannot decide an overlap statistic | âœ… `hn.membership` | | | | |
+| 12. Content-level recorder health check | âœ… | âš ï¸ specified, status unknown | n/a | n/a | âŒ **check first** |
 
-✅ present and enforced ➖ present but weaker ⚠️ partial or unverified ❌ absent
+âœ… present and enforced âž– present but weaker âš ï¸ partial or unverified âŒ absent
 
 ---
 
-## 1. The selection canary — P(kept side wins) = 0.50
+## 1. The selection canary â€” P(kept side wins) = 0.50
 
 **The single most valuable guard in the repo.** It is the one that caught the
 bug that voided three phases of work.
 
 **Source:** [`set1_overshoot/src/leakguard.py`](set1_overshoot/src/leakguard.py)
-**Tests:** [`set1_overshoot/tests/test_leakguard.py`](set1_overshoot/tests/test_leakguard.py) — 9 tests, all passing
-**Audit:** [`set1_overshoot/SELECTION_AUDIT.md`](set1_overshoot/SELECTION_AUDIT.md) — 315 occurrences across 4 codebases
+**Tests:** [`set1_overshoot/tests/test_leakguard.py`](set1_overshoot/tests/test_leakguard.py) â€” 9 tests, all passing
+**Audit:** [`set1_overshoot/SELECTION_AUDIT.md`](set1_overshoot/SELECTION_AUDIT.md) â€” 315 occurrences across 4 codebases
 
 ### What it tests
 
@@ -52,28 +52,28 @@ answer.** The null is exact: over mirrored pairs, P(the kept side wins) = 0.5000
 ### Why it exists
 
 `p0_universe.py` deduped by keeping the higher-`volume_fp` side. That looks like
-a tie-break. It is a coin weighted by the outcome — the winning side attracts
+a tie-break. It is a coin weighted by the outcome â€” the winning side attracts
 more volume. Measured:
 
 | Rule | P(kept wins) | z | Verdict |
 |---|---|---|---|
-| higher `last_price_dollars` | **0.9989** | **+140.3** | catastrophic — it *is* the answer |
+| higher `last_price_dollars` | **0.9989** | **+140.3** | catastrophic â€” it *is* the answer |
 | higher `open_interest_fp` | **0.5558** | **+15.7** | unsafe |
-| higher `volume_fp` — **the bug** | **0.5356** | **+10.0** | unsafe |
-| higher `liquidity_dollars` | 0.5031 | +0.88 | **UNTESTABLE** — see below |
-| **first ticker alphabetically — the fix** | **0.4969** | **−0.88** | clean |
+| higher `volume_fp` â€” **the bug** | **0.5356** | **+10.0** | unsafe |
+| higher `liquidity_dollars` | 0.5031 | +0.88 | **UNTESTABLE** â€” see below |
+| **first ticker alphabetically â€” the fix** | **0.4969** | **âˆ’0.88** | clean |
 | API listing order (kalshi-tennis) | 0.5050 | +1.44 | clean |
 
 The two orientations disagreed by **25.5pp**. Everything downstream was void.
 
-### The three-valued verdict — PASS / FAIL / UNTESTABLE
+### The three-valued verdict â€” PASS / FAIL / UNTESTABLE
 
 This is the part most implementations get wrong, and v1 of this file got it
 wrong too.
 
 `liquidity_dollars` scored z = +0.88 and was **recorded as a clean alternative
 rule**. It is not clean. The field reads 0 on almost every settled tennis
-market, so the rule almost never actually chooses anything — the tie-break does
+market, so the rule almost never actually chooses anything â€” the tie-break does
 the work. **Any mostly-null field passes a correlation test for free.**
 
 So the guard returns three values, and **UNTESTABLE is never rendered as a
@@ -110,8 +110,8 @@ Same module, `check_selection(mask, outcome, implied)`. Different null:
 > **A filter may change *who* is in the sample. It may not change *how well the
 > market prices them*.**
 
-The statistic is the **calibration residual** `outcome − implied`, not the raw
-outcome rate — because the residual is what every downstream result actually
+The statistic is the **calibration residual** `outcome âˆ’ implied`, not the raw
+outcome rate â€” because the residual is what every downstream result actually
 rests on. A filter that selects strong favourites shifts the outcome rate
 legitimately; it must not shift the residual.
 
@@ -120,16 +120,16 @@ UNTESTABLE. Readings from the audit:
 
 | Filter | Kept residual | Dropped residual | z | Verdict |
 |---|---|---|---|---|
-| `plausible` duration 25–330 min | +0.0029 (n=16,258) | +0.0294 (n=682) | −2.59 | borderline, below \|z\|=4 |
-| leaking-anchor spread ≤10¢/5¢/2¢ | — | — | +0.11 / 0.00 / +0.14 | **inconclusive and moot** — only 502 joined rows |
+| `plausible` duration 25â€“330 min | +0.0029 (n=16,258) | +0.0294 (n=682) | âˆ’2.59 | borderline, below \|z\|=4 |
+| leaking-anchor spread â‰¤10Â¢/5Â¢/2Â¢ | â€” | â€” | +0.11 / 0.00 / +0.14 | **inconclusive and moot** â€” only 502 joined rows |
 | label join (set1) | +0.0597 (n=604) | +0.0166 (n=2,832) | **+2.15** | **UNTESTABLE**, MDE 5.60pp |
-| spread > 15¢ mask | — | — | **−6.34** | **FAIL** — real composition effect |
-| play-window (drops 14.4%) | undefined | undefined | — | **structurally justified, not tested** |
+| spread > 15Â¢ mask | â€” | â€” | **âˆ’6.34** | **FAIL** â€” real composition effect |
+| play-window (drops 14.4%) | undefined | undefined | â€” | **structurally justified, not tested** |
 
 ### Enforcement, not mere presence
 
 - `p0_universe.py` **asserts the canary at build time and refuses to write a
-  universe that fails.** Current build: 0.4969, z = −0.88.
+  universe that fails.** Current build: 0.4969, z = âˆ’0.88.
 - A **source-level test** asserts that the canary is called and that the dedupe
   sort references no post-settlement field.
 
@@ -137,29 +137,29 @@ UNTESTABLE. Readings from the audit:
 
 | Project | State |
 |---|---|
-| crypto | Audited clean — no post-settlement field appears in any filter, sort or dedupe. Not wired in as an assertion. |
-| wallet-copy-study | Equivalent guard: `reports/selection_audit.json` scores a null strategy at −0.0pp with random subsets straddling zero. |
+| crypto | Audited clean â€” no post-settlement field appears in any filter, sort or dedupe. Not wired in as an assertion. |
+| wallet-copy-study | Equivalent guard: `reports/selection_audit.json` scores a null strategy at âˆ’0.0pp with random subsets straddling zero. |
 | kalshi-tennis | Retro-audited. **Two UNSAFE sites found and still live**: `stage4_kalshi_liquid.py:24` and `stage5_selective.py:131` both filter on a spread read from the leaking anchor. |
-| **v3 backtest (desktop)** | **PRESUME VOID.** It deduped 14,162 mirrored Kalshi markets — the same operation, same exchange, same sport. **One grep answers it.** |
+| **v3 backtest (desktop)** | **PRESUME VOID.** It deduped 14,162 mirrored Kalshi markets â€” the same operation, same exchange, same sport. **One grep answers it.** |
 | **copy-trading wallet ranking (desktop)** | Unknown ranking field and timing. |
 
 ---
 
-## 2. The within-match leak canary — look-ahead inside one market
+## 2. The within-match leak canary â€” look-ahead inside one market
 
 **Different failure, different guard.** The selection canary watches *which rows
 exist*. This one watches *whether a price was read from after the decision*.
 
-**Source:** `kalshi-tennis/src/anchor_leak_test.py` → `reports/anchor_leak_test.txt`
+**Source:** `kalshi-tennis/src/anchor_leak_test.py` â†’ `reports/anchor_leak_test.txt`
 
 ### The test
 
 Sweep the price anchor backwards from settlement and watch two diagnostics:
 
-| Anchor | Quotes outside 2¢–98¢ | Of those, % correct | corr with books |
+| Anchor | Quotes outside 2Â¢â€“98Â¢ | Of those, % correct | corr with books |
 |---|---|---|---|
-| **−0h** | **4.1%** | **100%** | 0.824 |
-| −6h | 0.1% | — | **0.9775** |
+| **âˆ’0h** | **4.1%** | **100%** | 0.824 |
+| âˆ’6h | 0.1% | â€” | **0.9775** |
 
 **A real pre-match market cannot produce quotes that are 100% correct at the
 extremes.** That is the signature.
@@ -173,7 +173,7 @@ judgement call.
 
 ### Why it is not sufficient on its own
 
-Stated plainly in `SELECTION_AUDIT.md` §4:
+Stated plainly in `SELECTION_AUDIT.md` Â§4:
 
 > The leak canary watches for look-ahead **within** a match. The volume-dedupe
 > leak was **between** two markets: every price was correctly timestamped, and
@@ -190,24 +190,24 @@ Stated plainly in `SELECTION_AUDIT.md` §4:
 
 | Project | Artifact | Result |
 |---|---|---|
-| set1_overshoot | `reports/p2_synth_null.txt`, `p2_synth_null_clean.txt` | **−0.59pp** (also reported −0.06pp on an earlier build) — PASS |
-| crypto | `src/synthetic_control.py` → `reports/synthetic_control.json` (`L4-A`) | diff **−0.000028, CI [−0.00013, +0.00008] contains zero**, p=0.593 — PASS |
-| wallet-copy-study | `reports/selection_audit.json` | null strategy scores **−0.0pp**; random subsets straddle zero — PASS |
+| set1_overshoot | `reports/p2_synth_null.txt`, `p2_synth_null_clean.txt` | **âˆ’0.59pp** (also reported âˆ’0.06pp on an earlier build) â€” PASS |
+| crypto | `src/synthetic_control.py` â†’ `reports/synthetic_control.json` (`L4-A`) | diff **âˆ’0.000028, CI [âˆ’0.00013, +0.00008] contains zero**, p=0.593 â€” PASS |
+| wallet-copy-study | `reports/selection_audit.json` | null strategy scores **âˆ’0.0pp**; random subsets straddle zero â€” PASS |
 
 ---
 
-## 4. Positive control — a planted effect the pipeline must find
+## 4. Positive control â€” a planted effect the pipeline must find
 
 A null control alone proves nothing: a pipeline that always reports zero passes
 it. **You need the pipeline to detect an effect you put there.**
 
 | Project | Artifact | Planted | Detected |
 |---|---|---|---|
-| set1_overshoot | `reports/p2_synth_boost.txt` | 5pp | **+4.54pp** (also +4.04pp on the later build) — PASS |
-| crypto `L4-B` | `reports/synthetic_control.json` | 15% wing bias | **−0.002655 [−0.00310,−0.00217]**, p<0.0001 — PASS |
-| crypto `L4-B5` | same | **5% wing bias (sensitivity floor)** | **−0.000334 [−0.00050,−0.00014]**, p<0.0001 — PASS |
-| crypto `L4-C` | same | outcome leaked into a feature | Brier **0.0004 vs 0.1032** — PASS |
-| kalshi-tennis | `reports/stage3_traits.txt` | match win rate (known-real trait) | split-half r **+0.633** — PASS |
+| set1_overshoot | `reports/p2_synth_boost.txt` | 5pp | **+4.54pp** (also +4.04pp on the later build) â€” PASS |
+| crypto `L4-B` | `reports/synthetic_control.json` | 15% wing bias | **âˆ’0.002655 [âˆ’0.00310,âˆ’0.00217]**, p<0.0001 â€” PASS |
+| crypto `L4-B5` | same | **5% wing bias (sensitivity floor)** | **âˆ’0.000334 [âˆ’0.00050,âˆ’0.00014]**, p<0.0001 â€” PASS |
+| crypto `L4-C` | same | outcome leaked into a feature | Brier **0.0004 vs 0.1032** â€” PASS |
+| kalshi-tennis | `reports/stage3_traits.txt` | match win rate (known-real trait) | split-half r **+0.633** â€” PASS |
 
 **This is what makes crypto's headline null credible.** `C010` says no model
 beats the mid. `L4-B5` proves the same pipeline would have found a 5% bias. The
@@ -216,21 +216,21 @@ the null is a measurement, not a failure to look.
 
 ---
 
-## 5. Deliberate-leak diagnostic — prove the detector still bites
+## 5. Deliberate-leak diagnostic â€” prove the detector still bites
 
 Distinct from the positive control: here you plant a *leak* rather than an
 *effect*, and the pipeline must light up.
 
 | Project | Artifact | Result |
 |---|---|---|
-| set1_overshoot | `hypothesis_ledger.csv#32,33` (`cpleak-10`, `cpleak+0`) | **+6.96pp** and **−2.67pp** vs honest rules — marked `DELIBERATE LEAK, diagnostic only` in the ledger itself |
-| kalshi-tennis | the −0h anchor in the sweep | 100%-correct extremes — the leak, measured |
+| set1_overshoot | `hypothesis_ledger.csv#32,33` (`cpleak-10`, `cpleak+0`) | **+6.96pp** and **âˆ’2.67pp** vs honest rules â€” marked `DELIBERATE LEAK, diagnostic only` in the ledger itself |
+| kalshi-tennis | the âˆ’0h anchor in the sweep | 100%-correct extremes â€” the leak, measured |
 
 ---
 
 ## 6. Exact-decimal fee arithmetic
 
-**Source:** [`common/kalshi_fees.py`](common/kalshi_fees.py) — **the single
+**Source:** [`common/kalshi_fees.py`](common/kalshi_fees.py) â€” **the single
 implementation**. Tests in [`common/tests/`](common/tests/). Every other module
 in the repo imports it; none reimplements it.
 
@@ -248,12 +248,12 @@ separate codebases.** The instruction issued was: one shared, tested `fees.py`.
 The instruction was not enough. By 08-03 the formula existed **seventeen times
 across five projects.** Nine copies carried the bug; **two of those were in the
 live-money path** (`tennis_engine.py`, `paper_bot.py`). Measured against exact
-Decimal over the integer-cent × order-size grid, each unguarded copy
-overcharged on **115 of 1,881 cells (6.1%)**, always by exactly 1¢.
+Decimal over the integer-cent Ã— order-size grid, each unguarded copy
+overcharged on **115 of 1,881 cells (6.1%)**, always by exactly 1Â¢.
 
 > **Telling people to share a module does not make them share it.** The count
 > went from 3 to 17 *after* the instruction was issued. What stops the 18th
-> copy is a test that fails when one appears — not a convention.
+> copy is a test that fails when one appears â€” not a convention.
 
 ### The guard that enforces it
 
@@ -270,11 +270,11 @@ honest:
   removed, so the list cannot silently become a blanket exemption. *(This fired
   on its first run and caught a stale entry.)*
 - **empty reasons fail.** Every entry states why.
-- **the detector is proven to bite** on the canonical bug — guard-rot
+- **the detector is proven to bite** on the canonical bug â€” guard-rot
   protection, GUARDS #9. A check that cannot fail is not a check.
 
 Legitimate allowlist entries are Polymarket code (where `0.07` is the
-*documented* rate retained specifically to prove it wrong — it matched 0.0% of
+*documented* rate retained specifically to prove it wrong â€” it matched 0.0% of
 4,310 real fills), prose inside generated reports, and the sibling project's
 audit of published fee claims.
 
@@ -289,18 +289,18 @@ fee = roundup( 0.07 * C * P * (1 - P) )   # dollars, rounded UP per order
 
 Two functions with a deliberate distinction:
 
-- `fee_rate_cents(price)` — **unrounded**, for expectancy arithmetic, where
+- `fee_rate_cents(price)` â€” **unrounded**, for expectancy arithmetic, where
   per-order round-up is an artefact of order size rather than an economic cost.
-- `fee_order_cents(price, contracts)` — what an actual order is **charged**.
+- `fee_order_cents(price, contracts)` â€” what an actual order is **charged**.
 
 Verified against hard-coded reference points, asserted at import:
 
 | Price | Per-contract fee |
 |---|---|
-| 50¢ | **1.75¢** (peak) |
-| 90¢ / 10¢ | **0.63¢** |
-| 55¢ | 1.7325¢ |
-| 1¢ / 99¢ | 0.0693¢ |
+| 50Â¢ | **1.75Â¢** (peak) |
+| 90Â¢ / 10Â¢ | **0.63Â¢** |
+| 55Â¢ | 1.7325Â¢ |
+| 1Â¢ / 99Â¢ | 0.0693Â¢ |
 
 Plus order-level round-up: `fee_order_cents(50, 1) == 2`, `(50, 100) == 175`.
 
@@ -316,22 +316,22 @@ Two cases where the docs were **wrong** and only the venue's own data revealed i
 
 | Venue | Documented | Actual | Evidence |
 |---|---|---|---|
-| **Polymarket** | `0.07 · p(1−p)` — matches **0.0%** of fills | **`0.10 · min(p, 1−p)`** | 4,310 on-chain fills, median relative error 0.000000, **100% within 1%** (`crypto/reports/poly_fee_resolution.json`); independently reproduced on 5,362 fills in wallet-copy-study |
+| **Polymarket** | `0.07 Â· p(1âˆ’p)` â€” matches **0.0%** of fills | **`0.10 Â· min(p, 1âˆ’p)`** | 4,310 on-chain fills, median relative error 0.000000, **100% within 1%** (`crypto/reports/poly_fee_resolution.json`); independently reproduced on 5,362 fills in wallet-copy-study |
 | **Kalshi maker** | "25% of taker" | **zero on Challenger/ITF (91% of the book)**, applies on ATP/WTA only | resolved from the series `fee_type` field |
 
-Consequence: Polymarket costs **2.86× Kalshi at 50¢**, which retired the claimed
+Consequence: Polymarket costs **2.86Ã— Kalshi at 50Â¢**, which retired the claimed
 cost parity.
 
 **Guard the sign.** wallet-copy-study's fee check initially reported median
-relative error 0.96 — an inverted maker side. It is now protected by a test that
-asserts **inverting the side is off by exactly 100% at 50¢**. A silent sign error
+relative error 0.96 â€” an inverted maker side. It is now protected by a test that
+asserts **inverting the side is off by exactly 100% at 50Â¢**. A silent sign error
 there would have poisoned every cost number in the study.
 
 ---
 
 ## 7. Per-market P&L decomposition, marked at actual settlement
 
-**Source:** `set1_overshoot/src/p5_maker.py` → `reports/p5_task1b.md`;
+**Source:** `set1_overshoot/src/p5_maker.py` â†’ `reports/p5_task1b.md`;
 tests in `set1_overshoot/tests/test_pnl.py`
 
 ### The rule
@@ -340,12 +340,12 @@ Every opportunity's P&L decomposes into named components that **sum to the total
 exactly**, and the position is marked at **actual settlement**, never at a
 model price, never at the mid.
 
-Measured residual: **+0.0000¢**. It is an identity, and it is asserted.
+Measured residual: **+0.0000Â¢**. It is an identity, and it is asserted.
 
 ### Why it matters
 
 It is what makes the maker result interpretable. The four-way decomposition
-showed **adverse selection already exceeds price improvement** — so a maker
+showed **adverse selection already exceeds price improvement** â€” so a maker
 strategy is not "the taker result plus a fee saving", and no amount of fee
 optimisation rescues it. Without the decomposition you get a single negative
 number and no idea which term killed it.
@@ -353,18 +353,18 @@ number and no idea which term killed it.
 ### The mid-price trap this enforces
 
 `kalshi-tennis` Stage 5 reported **+14.4% to +24.6% ROI** marked at the mid. At
-executable fills — buy YES lifts the **ask**, buy NO costs **1 − bid** — the same
-strategy returns **−24.3% to −30.9%**, every CI below zero. Mean entry moved
-**27–32¢**.
+executable fills â€” buy YES lifts the **ask**, buy NO costs **1 âˆ’ bid** â€” the same
+strategy returns **âˆ’24.3% to âˆ’30.9%**, every CI below zero. Mean entry moved
+**27â€“32Â¢**.
 
-The mechanism: **39.8% of held-out markets quote wider than 10¢.** A 1¢/99¢
-quote has a 50¢ "mid" that nobody will ever trade at.
+The mechanism: **39.8% of held-out markets quote wider than 10Â¢.** A 1Â¢/99Â¢
+quote has a 50Â¢ "mid" that nobody will ever trade at.
 
 > **Never mark at the mid. Fill at the ask when buying and the bid when selling.**
 
 ### Where it is absent
 
-`kalshi-tennis` has no decomposition and no execution model — that is precisely
+`kalshi-tennis` has no decomposition and no execution model â€” that is precisely
 how T008 survived as a headline.
 
 ---
@@ -374,7 +374,7 @@ how T008 survived as a headline.
 **Row count is not evidence count.** This is failure mode #1 across the whole
 archive, and it is responsible for more retracted claims than any other error.
 
-**Sources:** `crypto/src/effective_n_audit.py` →
+**Sources:** `crypto/src/effective_n_audit.py` â†’
 `reports/effective_n_audit.json`, `.txt`, and
 [`crypto/docs/EFFECTIVE_N_AUDIT.md`](crypto/docs/EFFECTIVE_N_AUDIT.md)
 
@@ -382,42 +382,42 @@ archive, and it is responsible for more retracted claims than any other error.
 
 | Project | Naive n | **Correct unit** | Correct n | Inflation |
 |---|---|---|---|---|
-| crypto | 89,806 market-minutes | **event** | **250** | ~360 correlated minutes/event ⇒ **CIs widen ~10×** |
-| set1_overshoot | 19,782 markets | **match** (day-clustered bootstrap) | 3,436 events | mirrored pairs ⇒ √2 |
-| wallet-copy-study | 2,234,479 trades | **market**, and **(wallet, series, day)** | 2,271 markets | 288 BTC 5-min markets in a day ≠ 288 draws |
+| crypto | 89,806 market-minutes | **event** | **250** | ~360 correlated minutes/event â‡’ **CIs widen ~10Ã—** |
+| set1_overshoot | 19,782 markets | **match** (day-clustered bootstrap) | 3,436 events | mirrored pairs â‡’ âˆš2 |
+| wallet-copy-study | 2,234,479 trades | **market**, and **(wallet, series, day)** | 2,271 markets | 288 BTC 5-min markets in a day â‰  288 draws |
 | tennis bot (chat) | 25,250 "observations" | **match** | ~171 matches | **~2 orders of magnitude** |
-| copy trading (chat) | 644 fills | **match** | 1 | **644×** |
+| copy trading (chat) | 644 fills | **match** | 1 | **644Ã—** |
 
 ### What it killed
 
-- **crypto `MIDCAL`**: raw reliability showed a **+4.2pp** gap against a ~1.3¢
-  cost bar. Under event clustering the CIs widened ~10× and 14 of 17 buckets went
+- **crypto `MIDCAL`**: raw reliability showed a **+4.2pp** gap against a ~1.3Â¢
+  cost bar. Under event clustering the CIs widened ~10Ã— and 14 of 17 buckets went
   to zero. It failed BH, halved between disjoint halves, and had had the
   **opposite sign at n=13**.
 - **The "+95pp genius wallet"**: 21 bets on **one match**.
 - **The "+7.05pp" copy-trading benchmark**: a trade-clustered interval on a
   market-clustered phenomenon. Recomputed with market clustering: **+2.09pp,
-  CI [−1.37,+5.35]**, and **−0.29pp net**.
+  CI [âˆ’1.37,+5.35]**, and **âˆ’0.29pp net**.
 
 ### Cross-asset independence
 
 crypto measured it directly: **1.81 effective independent series out of 4**
-(settlement-sign phi 0.59–0.70 between assets). BTC/ETH hourly return correlation
-is **0.891**, and 62% of BTC's extreme hours are also ETH's — so the fat-tail
+(settlement-sign phi 0.59â€“0.70 between assets). BTC/ETH hourly return correlation
+is **0.891**, and 62% of BTC's extreme hours are also ETH's â€” so the fat-tail
 result is **one** finding, not two.
 
 The audit re-checked every pooled claim against this and produced a four-valued
-verdict — including one the brief did not anticipate:
+verdict â€” including one the brief did not anticipate:
 
-> **`UNSUPPORTED`** — *"MM scan: 0 of 4 series profitable"* had **no artifact
+> **`UNSUPPORTED`** â€” *"MM scan: 0 of 4 series profitable"* had **no artifact
 > behind it at all**. Only KXBTCD (58 markets) was ever P&L-tested.
 
 ### The power calculation that follows
 
 - Distinguishing a real 3% edge from zero needs **~1,000+ trades**; separating
   55% from 50% needs ~400. The account cannot fund that sample.
-- set1_overshoot: 3,436 events, sd 45¢ ⇒ **n ≈ 3,970** needed for a 2¢ edge.
-- wallet-copy-study: σ = 0.296 ⇒ **n ≈ 274 markets** per wallet; only **27%**
+- set1_overshoot: 3,436 events, sd 45Â¢ â‡’ **n â‰ˆ 3,970** needed for a 2Â¢ edge.
+- wallet-copy-study: Ïƒ = 0.296 â‡’ **n â‰ˆ 274 markets** per wallet; only **27%**
   of wallets clear it.
 
 > **"You've been trying to solve a sample-size problem with effort."**
@@ -425,8 +425,8 @@ verdict — including one the brief did not anticipate:
 ### MDE reported next to every null
 
 Every segment table in set1_overshoot reports its minimum detectable effect
-beside the point estimate — so `0 of 25` reads honestly as *"0 of 25, median MDE
-3.7–9.0¢ against a ~2¢ target"* rather than as evidence of absence.
+beside the point estimate â€” so `0 of 25` reads honestly as *"0 of 25, median MDE
+3.7â€“9.0Â¢ against a ~2Â¢ target"* rather than as evidence of absence.
 
 ---
 
@@ -439,9 +439,9 @@ beside the point estimate — so `0 of 25` reads honestly as *"0 of 25, median M
 
 | Known-bad rule | Must still read | Current |
 |---|---|---|
-| `last_price` | catastrophic | **+140.4** ✅ |
-| `open_interest` | fail | **+15.7** ✅ |
-| `volume` | fail | **+10.0** ✅ |
+| `last_price` | catastrophic | **+140.4** âœ… |
+| `open_interest` | fail | **+15.7** âœ… |
+| `volume` | fail | **+10.0** âœ… |
 
 If any of these ever passes, the guard has broken, not the data.
 
@@ -456,7 +456,7 @@ test that the canary is actually invoked.
 
 | Project | Artifact |
 |---|---|
-| set1_overshoot | `PREREGISTRATION.md`, `PREREGISTRATION_PARTB.md` — point prediction **+1.3pp**, interval **[−1,+3]**, gates fixed in advance; amendments A1/A2 recorded **with provenance** |
+| set1_overshoot | `PREREGISTRATION.md`, `PREREGISTRATION_PARTB.md` â€” point prediction **+1.3pp**, interval **[âˆ’1,+3]**, gates fixed in advance; amendments A1/A2 recorded **with provenance** |
 | crypto | `PREREGISTRATION.md`, `docs/GO_NO_GO.md` |
 | wallet-copy-study | `DECISIONS.md`, `docs/wallet_criteria.md` |
 
@@ -483,21 +483,21 @@ contamination until proven otherwise.**
 
 ## 11. Benjamini-Hochberg across the whole ledger
 
-Not per phase, not per family — **across every hypothesis the project ever
+Not per phase, not per family â€” **across every hypothesis the project ever
 evaluated**, so the denominator stays honest.
 
 | Project | Ledger | Tests | Survive |
 |---|---|---|---|
-| set1_overshoot | `HYPOTHESIS_LEDGER.md` + `reports/hypothesis_ledger.csv` | **97** hypotheses, 80 with a computable p | **30** at q=0.1 (threshold p ≤ 0.03740) |
+| set1_overshoot | `HYPOTHESIS_LEDGER.md` + `reports/hypothesis_ledger.csv` | **97** hypotheses, 80 with a computable p | **30** at q=0.1 (threshold p â‰¤ 0.03740) |
 | crypto | `HYPOTHESIS_LEDGER.md` | **17** hypotheses / **101** individual tests | **2 facts, 0 tradeable edges** |
-| kalshi-tennis | `reports/stage5_selective.txt` | 43 segments | 19 survive at α=0.05 — **all negative** |
+| kalshi-tennis | `reports/stage5_selective.txt` | 43 segments | 19 survive at Î±=0.05 â€” **all negative** |
 | wallet-copy-study | per family | 20 / 13 / 7-test families | 18/20, 12/13, 6/7 |
 
 Two conventions worth copying:
 
 1. **Two-sided p-values**, "because an undershoot is a finding here and a
    one-sided overshoot test would hide it."
-2. **Cancelled hypotheses stay in the table** (crypto's `CANCELLED` status) —
+2. **Cancelled hypotheses stay in the table** (crypto's `CANCELLED` status) â€”
    pre-registered but unanswerable, kept so the denominator does not quietly
    shrink.
 
@@ -512,23 +512,23 @@ Two conventions worth copying:
 | Project | What happened |
 |---|---|
 | crypto | An orderbook parse bug wrote **real row counts with empty content for 1h45m**, caught **by accident**. *"For a project whose only irreplaceable asset is continuously accruing recorded data, that bug class is existential."* |
-| crypto | Kalshi's legacy price fields (`yes_bid`, `yes_ask`, `last_price`, `volume`, `open_interest`) now return **`None`** — values moved to `*_dollars` / `*_fp`. Any recorder still reading the old names is silently writing nulls. |
+| crypto | Kalshi's legacy price fields (`yes_bid`, `yes_ask`, `last_price`, `volume`, `open_interest`) now return **`None`** â€” values moved to `*_dollars` / `*_fp`. Any recorder still reading the old names is silently writing nulls. |
 
 ### The check that is actually implemented
 
-`set1_overshoot`'s depth recorder, run **×5 per day**, asserts on content:
+`set1_overshoot`'s depth recorder, run **Ã—5 per day**, asserts on content:
 
 | Assertion | Reading |
 |---|---|
 | non-empty snapshots | **98.8%** |
 | levels per side | **20** |
-| prices in (0,1) | ✅ |
+| prices in (0,1) | âœ… |
 | staleness | **3 s old** |
 
 ### Still open
 
 - crypto's fix was **specified** (content-level check every 15 min alerting on
-  schema drift) — **implementation status unknown**.
+  schema drift) â€” **implementation status unknown**.
 - **The desktop recorders have never been checked for the `None` bug.** One grep
   of `kalshi_client.py` and `record_data.py`. If they have been writing `None`,
   every recorded book on that machine is worthless, and it gates all Tier B work.
@@ -546,9 +546,9 @@ Every one of these returned **success** and **wrong**:
 
 | what returned success | what was actually true |
 |---|---|
-| `football-data.co.uk` HTTP **200** | `COL.csv` is byte-identical to `POL.csv`; its own League column reads *Ekstraklasa*. `KOR.csv` ≡ `NOR.csv`. |
-| `ffmpeg` exit **0**, empty stderr | a **blank frame**. `%` in `drawtext` renders the whole caption as nothing. Bisected: `"Total 18%"` → 1,002-byte blank, `"Total 18 pct"` → 3,007 bytes with text. `\%` does not help; `textfile=` does not help; `expansion=none` does. |
-| a collector that **printed a running total for every query** | it wrote **zero rows** — the write sat inside an `if already-have: skip` branch. |
+| `football-data.co.uk` HTTP **200** | `COL.csv` is byte-identical to `POL.csv`; its own League column reads *Ekstraklasa*. `KOR.csv` â‰¡ `NOR.csv`. |
+| `ffmpeg` exit **0**, empty stderr | a **blank frame**. `%` in `drawtext` renders the whole caption as nothing. Bisected: `"Total 18%"` â†’ 1,002-byte blank, `"Total 18 pct"` â†’ 3,007 bytes with text. `\%` does not help; `textfile=` does not help; `expansion=none` does. |
+| a collector that **printed a running total for every query** | it wrote **zero rows** â€” the write sat inside an `if already-have: skip` branch. |
 | an earlier repo scorer | *"reported 358 repos scored when 92 had real data."* |
 
 **The check is always the same shape: assert something about the CONTENT, not
@@ -576,8 +576,8 @@ Disallow: /               only the HTML is not
 A parser that reads the `Disallow` and ignores the `Allow` calls a **documented,
 explicitly-permitted public API off-limits.** The standard is **longest match
 wins**, with `*` and `$` wildcards. Implementing it flipped two hosts in
-*opposite* directions — Hacker News forbidden → **permitted**, Apple Podcasts
-permitted → **forbidden** (`Disallow: /search*`, which the naive parser had
+*opposite* directions â€” Hacker News forbidden â†’ **permitted**, Apple Podcasts
+permitted â†’ **forbidden** (`Disallow: /search*`, which the naive parser had
 missed the other way).
 
 Two corollaries, both learned the expensive way:
@@ -587,7 +587,7 @@ Two corollaries, both learned the expensive way:
 - **Read the whole file before concluding a host is closed.** `i.ytimg.com`
   disallows `/sb/` and nothing else. Reading that line, correctly concluding
   storyboards were forbidden, and stopping there cost a day and produced a
-  published retraction — `/vi/<id>/maxres{1,2,3}.jpg` are permitted 1280×720
+  published retraction â€” `/vi/<id>/maxres{1,2,3}.jpg` are permitted 1280Ã—720
   video frames.
 
 **Refusing something you are permitted to use costs exactly as much as using
@@ -601,10 +601,10 @@ something you are not.**
 the same script.*
 
 - **v1** counted every 404 as death and killed `api.elections.kalshi.com`,
-  `api.exchange.coinbase.com` and `r2v2.pmxt.dev` — all live hosts whose **base
+  `api.exchange.coinbase.com` and `r2v2.pmxt.dev` â€” all live hosts whose **base
   URL has no handler**.
 - **v2** patched that with a path-segment heuristic and immediately killed
-  `https://api.elections.kalshi.com/trade-api/v2` — a **versioned API base this
+  `https://api.elections.kalshi.com/trade-api/v2` â€” a **versioned API base this
   repo is recording against right now.** A heuristic written to fix a false kill
   produced another one on its first run.
 
@@ -615,7 +615,7 @@ Only four states establish death, and none of them is an inference:
 | **NO_DNS** | the name does not resolve; nothing is there to serve anything |
 | **ARCHIVED** | the **owner's own flag**, not a judgment |
 | **HTTP 410 Gone** | the one status that explicitly means permanently removed |
-| **COLD** | no push in >1 year — reported as its own state, never as death |
+| **COLD** | no push in >1 year â€” reported as its own state, never as death |
 
 `401` / `403` / `429` are a door **held shut**, not a door that is **gone**.
 `guest.api.arcadia.pinnacle.com/0.1/sports` returns **401**, while
@@ -634,7 +634,7 @@ Only four states establish death, and none of them is an inference:
 even if you skip the rest.*
 
 A retrieval design here rests on the finding that **beginner-phrasing and
-insider-vocabulary queries return near-disjoint sets** — Jaccard 0.037 on video,
+insider-vocabulary queries return near-disjoint sets** â€” Jaccard 0.037 on video,
 0.032 / 0.033 / 0.036 on repositories.
 
 A fourth corpus was built to test it. The collector skipped any id it already
@@ -651,14 +651,14 @@ fourth independent corroboration*.
 
 **The guard:** for any set-overlap, set-difference or novelty statistic, record
 membership in a table that permits multiple memberships, and compute the
-statistic from *that* — never from a deduplicated collection whose insertion
+statistic from *that* â€” never from a deduplicated collection whose insertion
 order silently defines the answer. And when a new measurement lands **exactly**
 where the old ones did, that is the moment to go looking for the line of your
 own code that put it there.
 
 ---
 
-## 17. The argmax null — "it worked, then it stopped working" is the shape of noise
+## 17. The argmax null â€” "it worked, then it stopped working" is the shape of noise
 
 **Source:** [`bot-forensics/src/t2b_nightday.py`](bot-forensics/src/t2b_nightday.py)
 **Found by:** the live tennis bot's "profitable night", 2026-08-05
@@ -666,11 +666,11 @@ own code that put it there.
 ### What it tests
 
 Whenever a record is split into a good period and a bad one, ask **how the split
-point was chosen**. If it was chosen by looking at the results — the peak of the
+point was chosen**. If it was chosen by looking at the results â€” the peak of the
 equity curve, the day the drawdown started, "when the daytime tournaments began"
-— then the difference across it is not evidence, because **the argmax of a
+â€” then the difference across it is not evidence, because **the argmax of a
 cumulative sum is by construction the point that maximises
-`mean(before) − mean(after)`.**
+`mean(before) âˆ’ mean(after)`.**
 
 ### The null, and why it is the right one
 
@@ -696,7 +696,7 @@ p = np.mean(np.array(gaps) >= pre - post)
 | statistic | observed | null median | null 95th | p |
 |---|---|---|---|---|
 | peak of the equity curve | **+$32.19** | +$13.40 | +$32.39 | 0.052 |
-| mean(before) − mean(after) | **+$1.3515** | +$0.9971 | +$2.3292 | **0.272** |
+| mean(before) âˆ’ mean(after) | **+$1.3515** | +$0.9971 | +$2.3292 | **0.272** |
 
 **A zero-drift process with the same dispersion shows a positive argmax gap 85%
 of the time.** The "it worked overnight and stopped in the daytime" story was
@@ -705,9 +705,9 @@ one of 108 orderings that all produce a rising-then-falling curve.
 ### The companion rule
 
 Once the argmax split is disqualified, **re-split on something fixed in advance**
-— the clock, the tier, the calendar — and report every bucket with n, the cost
+â€” the clock, the tier, the calendar â€” and report every bucket with n, the cost
 bar for that bucket, the MDE, and one BH-FDR denominator over the whole family.
-Here: night vs day on a pre-fixed 20:00–07:59 UTC boundary gave Welch p = 0.133,
+Here: night vs day on a pre-fixed 20:00â€“07:59 UTC boundary gave Welch p = 0.133,
 and **0 of 13 permutation-tested buckets survived BH at 5%**.
 
 ### Two traps inside the companion rule
@@ -715,7 +715,7 @@ and **0 of 13 permutation-tested buckets survived BH at 5%**.
 1. **A t-test on n = 5 with a 100% win rate is not evidence.** Three buckets
    "cleared" on t-statistics and none survived label permutation.
 2. **Overlapping buckets are not independent tests.** The same five matches
-   appeared in "04–07 UTC", in "Challenger" and in "night", so three apparently
+   appeared in "04â€“07 UTC", in "Challenger" and in "night", so three apparently
    separate signals were three views of one run. Say so; BH does not fix it.
 
 ### Where it belongs
@@ -724,6 +724,180 @@ Anywhere a strategy is described as having "stopped working", "worked until X",
 or "worked in regime R" where R was noticed after the fact. It is the sequential
 form of Guard #1: **the thing that chooses your sample must not be able to see
 your outcome**, and a cumulative curve can see all of it.
+
+---
+
+## 18. The structural-invariant canary â€” conservation can pass while the book rots
+
+**Source:** [`bot-hunt/src/replay.py`](bot-hunt/src/replay.py)
+**Contributed by `bot-hunt`, 2026-08-05,** replaying 13M rows of Kalshi L2.
+
+Reconstructing an order book from `snapshot + deltas` has an obvious check:
+**no price level may go negative**, because you cannot remove size that was
+never there. It ran at **0.047% violations and PASSED throughout.**
+
+The replay was still wrong. It ended with books like **bid 99 / ask 16 â€”
+crossed by 83Â¢**, which is free money and cannot exist. The cause was that a
+snapshot was *skipped* whenever the ticker already had carried-forward state, so
+the book **never re-synced** and levels the feed expects a snapshot to clear
+accumulated all day.
+
+> **Stale levels are not negative levels.** Conservation is a check on the
+> *arithmetic*; it says nothing about whether the state is *real*.
+
+**The guard: assert an invariant the real object must satisfy, not just one your
+update rule must satisfy.** For a two-sided book that is
+`best_bid + best_opposing_bid â‰¤ 100`. Adding it turned an invisible failure into
+a 75% violation rate on the first run.
+
+It also settled two questions the conservation check could not:
+
+| | crossed rate |
+|---|---|
+| pre-event observations | **5.60%** |
+| post-event observations | **83.65%** |
+| under the alternative price-space reading | **~100%** â€” refuted |
+
+So the price convention was confirmed correct, and **settled books are simply
+not maintained** â€” any L2 study must restrict to pre-event data. One invariant,
+three answers.
+
+---
+
+## 19. The stability curve â€” a statistic that wanders was never a measurement
+
+**Source:** [`bot-hunt/src/h10_stability.py`](bot-hunt/src/h10_stability.py)
+**Contributed by `bot-hunt`, 2026-08-05,** after publishing a headline that
+flipped sign 40 minutes later.
+
+Re-run the whole analysis over **nested prefixes** of the same corpus and plot
+each statistic against n. This is the method that killed this repo's own
+stars-vs-substance false positive (**Ï +0.241 at n=105 â†’ âˆ’0.007 at n=3,165**);
+it generalises to every number a study reports.
+
+Four trajectory shapes, and only one of them is a result:
+
+| shape | verdict | example from the run that motivated this |
+|---|---|---|
+| **flat** | âœ… a measurement | fill rate **30.8 â†’ 31.2%**, last-3 drift **0.01** |
+| **sign-flips** | âŒ noise, not a small effect | net P&L **âˆ’1.71 â€¦ +2.55Â¢** |
+| **decays toward zero** | âš ï¸ small-sample artifact | adverse selection **âˆ’14.04 â†’ âˆ’4.03pp** |
+| **strengthens with n** | âš ï¸ contamination â€” see **#10** | thin-book edge **+2.05 â†’ +8.83pp** |
+
+> **I published "you set out to earn +1.50Â¢ and you get âˆ’1.50Â¢" on 21 hourly
+> files. Seven more hours made it +0.38Â¢.** The CI contained zero at both sizes,
+> so nothing was ever significant â€” the point estimate was simply a point on a
+> random walk, and I led with it.
+
+**Run this before quoting any number, not after being embarrassed by one.** It
+is cheap: replay once and slice the results by timestamp. (v1 re-ran the full
+pipeline per prefix â€” O(nÂ²) â€” and produced nothing in 15 minutes.)
+
+---
+
+## 20. The placebo split â€” measure your estimator's noise floor before believing it
+
+**Source:** [`bot-hunt/src/contamination_check.py`](bot-hunt/src/contamination_check.py)
+**Contributed by `bot-hunt`, 2026-08-05.**
+
+Before believing that a split on some variable produced an effect, **split the
+same data on a variable that cannot possibly matter** and see what the estimator
+reports. On a real dataset, splitting filled orders by the **parity of the
+placement minute** produced **âˆ’3.7pp â€” 45% of the claimed effect.**
+
+That is not a bug. It is the estimator's noise floor on this sample, and it is
+the number a claimed effect has to be judged against:
+
+> An effect that is **2.2Ã— a meaningless split** is not the same object as one
+> that is 20Ã—, even if both have the same p-value.
+
+This is the sibling of the synthetic null (#3). The synthetic null asks *"does
+the pipeline invent an effect in data with none?"*; the placebo asks *"how big
+an effect does this pipeline invent on THIS data from a split that means
+nothing?"* **Real data has structure that synthetic data does not**, so the
+placebo is the tighter bound and the one to report.
+
+Related, from the same run: a permutation null that shuffles the outcome across
+clusters exposed that the estimator was **biased by âˆ’2pp under the null** â€” so a
+bootstrap CI centred on the raw difference was **anti-conservative** and excluded
+zero when the permutation test gave p = 0.135. **When a bootstrap and a
+permutation test disagree, believe the permutation test**: it absorbs the
+estimator's own bias automatically.
+
+---
+
+## 21. UNTESTABLE is a verdict about the TEST, never about the effect
+
+**Contributed by `bot-hunt`, 2026-08-05.** GUARDS #1 established three-valued
+verdicts for the selection canary. **The principle is general and it is easy to
+lose the moment a different test is written.**
+
+A within-event stratification returned **+6.08pp with a CI of [âˆ’6.13, +20.13]**
+against a **+8.19pp** baseline. The rule as first written printed:
+
+> *"DOES NOT SURVIVE â€” the effect is BETWEEN events, not within them."*
+
+**That is a claim about the world, and it was wrong.** A point estimate keeping
+**74%** of its size has not collapsed; the *interval* widened, because the
+within-event comparison had 75 events instead of the full sample's leverage.
+"The effect is between-events" and "this test cannot resolve it" are opposite
+findings and the code conflated them.
+
+**The guard: any verdict function that can emit a conclusion must be able to
+emit "I could not tell."** Three states, always:
+
+| verdict | condition |
+|---|---|
+| **SURVIVES** | interval excludes zero |
+| **UNDERPOWERED** | interval includes zero **but the point estimate is largely retained** |
+| **COLLAPSES** | the point estimate itself goes away |
+
+The same shape as *"innocence by emptiness is not innocence"* â€” and the same
+shape as a control family that **did not run** being read as a control that
+**passed**, which is how a `.get(key, 0)` default let `bot-hunt` print
+*"control clean â†’ results are reportable"* over a family with no data at all.
+
+---
+
+## 22. Cross-venue joins: name similarity is RECALL; the second side is PRECISION
+
+**Source:** [`bot-hunt/src/poly_crossvenue.py`](bot-hunt/src/poly_crossvenue.py),
+[`crossvenue_join.py`](bot-hunt/src/crossvenue_join.py)
+**Contributed by `bot-hunt`, 2026-08-06.** Three phantom classes in one session.
+
+Matching a contract across venues on names alone fails in ways that are
+invisible in aggregate:
+
+| phantom | what happened |
+|---|---|
+| **wrong sport entirely** | a `KXCS2GAME` market paired to a **Mobile Legends** matchup. The join never checked the league. |
+| **a degenerate short name** | Pinnacle's **"A Team"** normalises to **`"a"`** once the stopword *team* is stripped â€” and `"a" in name` is true for almost everything. **Four of twelve matches** collapsed onto the same matchup. |
+| **the organisation's second roster** | "CYBERSHOKE Esports" â‰  "CYBERSHOKE Prospects"; "Vitality" â‰  "Vitality Academy". |
+
+Four filters, in order of how much they buy:
+
+1. **Category consistency** â€” the game, league or sport must agree. Cheapest and
+   catches the worst phantom.
+2. **A length floor on BOTH strings** before any substring match is allowed.
+   Exact match otherwise. One-character names are not a hypothetical.
+3. **Roster-suffix AGREEMENT, not detection.** Both venues legitimately say
+   "Academy" when the match really is between academies. The test is whether
+   they *agree*, not whether the token is present. *(A first version flagged 6
+   of 10 correct pairs as suspect â€” a detector that fires on the correct case is
+   not a detector.)*
+4. **Verify the OTHER side.** A pair is two contracts; matching one name is half
+   a match. Where only one side's name is recorded, the opponent can usually be
+   recovered from the slug or ticker.
+
+> The corpora reached this independently and put it best: **the dangerous
+> phantoms have HIGH token overlap, not low** â€” *"who will **run** for the
+> nomination"* versus *"will X **win** the nomination"* share almost every word.
+> **Token overlap is a recall net; resolution-equivalence is the filter.**
+
+**And record what the join drops.** In one case the phantoms happened to
+contribute no observations, so the numbers were unaffected â€” *that was luck, not
+design*, and the only way to know which you have is to look.
+
 
 ## The one-page version
 
@@ -755,3 +929,4 @@ If you carry nothing else into the next project:
     split point was found by looking at the results, permute the same
     observations into a random order and see how often the null beats you.
     A zero-drift process rises then falls 85% of the time.
+
