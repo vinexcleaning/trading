@@ -1,0 +1,37 @@
+markets: 14162   events: 7081
+tickers with an opening live price: 13630
+scoreable + priced markets: 13476
+events with a clean mirrored pair: 6519
+
+written: out/t6_features.csv   6519 events (4563 train / 1956 holdout)
+
+==========================================================================
+GUARDS
+==========================================================================
+selection canary  P(kept side wins) = 0.5005  n=6519  z=+0.09  -> PASS
+  (ticker-order dedupe. NEVER volume - that is S011.)
+
+market calibration  mean residual = +0.0031  (0 = perfectly calibrated at the open)
+  ATP          n=  312  mean resid +0.0209  se 0.0264  t=+0.79
+  Challenger   n=  984  mean resid +0.0031  se 0.0143  t=+0.22
+  ITF-M        n= 2554  mean resid +0.0038  se 0.0084  t=+0.46
+  ITF-W        n= 2358  mean resid -0.0030  se 0.0086  t=-0.35
+  WTA          n=  311  mean resid +0.0264  se 0.0234  t=+1.13
+
+leak sanity  corr(prior winrate, outcome)  = +0.0058
+             corr(prior winrate, residual) = -0.0029  n=2203
+  raw correlation SHOULD be positive (better players win more).
+  residual correlation is the edge, and should be ~0 if the
+  market already knows what we know.
+
+feature coverage (non-null):
+  a_wr        70.5%   n=4594
+  a_last3     70.5%   n=4594
+  a_rest      70.5%   n=4594
+  h2h_rate     1.2%   n=79
+  round_ord   97.3%   n=6343
+
+h2h with any prior meeting: 79 events (1.2%)
+
+rounds: {'R32': 2728, 'R16': 1967, 'QF': 545, 'Qual': 323, 'SF': 276, 'QualF': 182, '?': 176, 'F': 135, 'R128': 97, 'R64': 90}
+tiers: {'ITF-M': 2554, 'ITF-W': 2358, 'Challenger': 984, 'ATP': 312, 'WTA': 311}

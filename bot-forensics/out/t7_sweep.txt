@@ -1,0 +1,55 @@
+train 4563   holdout 1956
+
+TRAIN sweep: 2008 cells tested
+BH-FDR 5% over the whole family of 2008 cells: **2 discoveries**
+
+--- 12 most extreme cells by |t| on TRAIN (BH column is the test)
+                             cell   n  resid      t      p  bh_pass  edge_c  net_mid_c  net_c  spread
+         any|any|open_price>=80.0 691 0.0431 4.1748 0.0000     True  4.3140     3.1187 0.9566  4.6020
+        any|dear|open_price>=80.0 659 0.0447 4.1629 0.0000     True  4.4659     3.2610 1.0501  4.7132
+    any|dear|experience_diff>=3.0 157 0.0895 3.8817 0.0001    False  8.9459     7.4427 4.8599  5.3439
+    any|dear|experience_diff>=1.0 434 0.0616 3.8575 0.0001    False  6.1624     4.5795 2.0369  5.2742
+ITF-any|dear|experience_diff>=3.0 132 0.0879 3.5912 0.0003    False  8.7879     7.3106 4.6212  5.5606
+ITF-any|dear|experience_diff>=1.0 349 0.0621 3.5533 0.0004    False  6.2063     4.6533 1.9971  5.4957
+      WTA|dear|workload_diff>=0.0  51 0.1306 3.4696 0.0005    False 13.0588    11.4314 9.4902  4.1176
+    ITF-any|dear|open_price>=80.0 547 0.0393 3.2961 0.0010    False  3.9260     2.7395 0.4936  4.7697
+     ITF-any|any|open_price>=80.0 575 0.0377 3.2899 0.0010    False  3.7713     2.5939 0.3983  4.6557
+    WTA|dear|experience_diff>=0.0  49 0.1249 3.2017 0.0014    False 12.4898    10.8776 8.8980  4.2041
+     WTA|dear|workload_diff>=-1.0  56 0.1195 3.1970 0.0014    False 11.9464    10.3393 8.2500  4.3929
+ ITF-any|any|experience_diff>=3.0 260 0.0735 3.1213 0.0018    False  7.3481     5.6788 3.0577  5.3115
+
+==========================================================================
+PERMUTATION NULL - outcome shuffled within (tier x 5c price bin),
+so calibration survives and only the FEATURE link is destroyed
+==========================================================================
+  shuffle  1:   2 BH discoveries, max |t| = 4.17
+  shuffle  2:   2 BH discoveries, max |t| = 4.17
+  shuffle  3:   2 BH discoveries, max |t| = 4.17
+  shuffle  4:   2 BH discoveries, max |t| = 4.15
+  shuffle  5:   3 BH discoveries, max |t| = 4.23
+  shuffle  6:   2 BH discoveries, max |t| = 4.17
+  shuffle  7:   2 BH discoveries, max |t| = 4.16
+  shuffle  8:   8 BH discoveries, max |t| = 6.03
+  shuffle  9:  16 BH discoveries, max |t| = 4.62
+  shuffle 10:   2 BH discoveries, max |t| = 4.17
+
+  null BH discoveries: mean 4.1, max 16
+  observed on real data: 2
+  null max|t|: mean 4.40, max 6.03   observed max|t|: 4.17
+
+==========================================================================
+HOLDOUT - the only number that counts
+==========================================================================
+                     cell  train_resid  train_t   n  hold_resid  hold_t  hold_edge_c  hold_net_c  hold_net_mid_c  spread  same_sign
+ any|any|open_price>=80.0       0.0431   4.1748 261      0.0328  1.7945       3.2816     -0.7701          2.0441  6.0575       True
+any|dear|open_price>=80.0       0.0447   4.1629 254      0.0328  1.7473       3.2835     -0.8228          2.0394  6.1575       True
+
+==========================================================================
+NAIVE BENCHMARKS - every result above must be read against these
+==========================================================================
+  ALL events             n= 6519   at MID  -1.449c   AT ASK  -4.144c  se 0.529
+  favourites (>=50c)     n= 3298   at MID  -0.231c   AT ASK  -2.897c  se 0.741
+  longshots (<50c)       n= 3221   at MID  -2.695c   AT ASK  -5.421c  se 0.756
+
+  Kalshi's own mid at the open is the benchmark to beat, and the
+  calibration table in t6 says it is unbiased to within noise.
