@@ -2293,3 +2293,72 @@ hours of the same matches add orders and no independent information. Pulling
 > / COLLAPSES â€” which is **GUARDS #1's principle applied beyond the selection
 > canary: UNTESTABLE must never be rendered as a verdict about the effect.**
 
+
+### bot-hunt â€” the Polymarket leg, and five new GUARDS entries (2026-08-06)
+
+Detail in [bot-hunt/RESULTS_CROSSVENUE.md](bot-hunt/RESULTS_CROSSVENUE.md) Â§3b.
+
+**Polymarket was the venue left untested and the one that mattered** â€” it is
+where the only reconciled live P&L came from (+$4,973 net over 3,858 fills), and
+makers there are **paid a rebate rather than charged**, the one structural
+difference that could have changed the answer.
+
+#### The structural finding is bigger than the edge
+
+Of **436 recorded esports (slug, outcome) pairs**: **247 map/game-N markets,
+111 props, 62 handicaps â€” and only 16 plausible moneylines.** Polymarket esports
+is **~96% derivative markets**. The moneyline surface, the only thing a
+sportsbook line can be de-vigged against, is a thin corner of it.
+
+#### The measurement
+
+291 paired observations, 3 markets, median alignment 256 s. **Median buy edge
+âˆ’2.62Â¢ (multiplicative), âˆ’0.83Â¢ (power), âˆ’2.62Â¢ (worst-case)** â€” under two of
+three methods even the *90th percentile* observation is negative. Polymarket's
+spread is 1.00Â¢ median; Pinnacle's overround 7.06pp.
+
+**Same direction as Kalshi and slightly worse.** Three markets is a direction,
+not a result, and it is quoted only because it agrees rather than contradicts.
+
+> âš ï¸ **Four of twelve matches were phantoms, from a one-character team name.**
+> "FOKUS Sakura", "Gentle Mates GC", "Natus Vincere" and "SK Nebula" all matched
+> the *same* "Trace vs A Team" â€” because Pinnacle's **"A Team" normalises to
+> `"a"`** once the stopword *team* is stripped, and `"a" in name` is true for
+> almost everything. Fixed with a length floor on both strings and by requiring
+> the **opponent** to appear in the slug. 12 â†’ 5, all five genuine. **Here the
+> phantoms WERE contributing observations**, so only post-filter numbers are
+> quoted.
+
+#### Two recorder gaps found, fixed, and PROVEN
+
+Both were the same class â€” cheap to record, impossible to reconstruct afterwards:
+
+| gap | consequence | fix |
+|---|---|---|
+| `k_book` stored no market title | joining Pinnacle to Kalshi on the ticker matched **3 of 218** events, because the codes are abbreviations | **`k_names`** table â€” live, **1,273 rows**. `NCX`â†’Necaxa, `VPP`â†’VP.Prodigy |
+| `p_book` stored only the **first** outcome token | *"slugs with â‰¥2 recorded outcomes: 0 of 436"* â€” no two-sided book, no crossed-market detection | probes both tokens â€” **17 of 17** in test |
+
+> **Both times the live table read 0 and the obvious inference was wrong** â€”
+> cycles run ~14 min and the changed stage had not run yet. Verified against a
+> scratch DB instead. **GUARDS #13: assert the content, not the call** â€” and
+> "the table is empty" is a statement about timing as often as about code.
+
+#### GUARDS.md 17 â†’ 22
+
+Guards 13â€“17 (from `extractor-upgrade` and `bot-forensics`) already covered the
+football-data trap and probes-that-fail-toward-a-kill, so only what is new was
+added:
+
+- **#18 the structural-invariant canary** â€” conservation ran at **0.047% and
+  PASSED** while the replay produced books **crossed by 83Â¢**. Stale levels are
+  not negative levels. Assert an invariant the *real object* must satisfy.
+- **#19 the stability curve** â€” flat = a measurement, sign-flips = noise, decays
+  to zero = artifact, strengthens with n = contamination.
+- **#20 the placebo split** â€” splitting on the parity of the placement minute
+  produced **45% of a claimed effect**. That is the noise floor a claim must
+  clear. And when a bootstrap and a permutation test disagree, believe the
+  permutation test.
+- **#21 UNTESTABLE is a verdict about the TEST, never about the effect.**
+- **#22 cross-venue joins** â€” name similarity is recall; the second side is
+  precision.
+
