@@ -119,6 +119,21 @@ create table if not exists k_book (
   depth5_yes real, depth5_no real, status text, close_utc text);
 create index if not exists ix_kb on k_book(series, ticker, ts_utc);
 
+-- Ticker -> the human-readable outcome name, written once per ticker.
+--
+-- ADDED 2026-08-05 after the cross-venue join failed. Matching Pinnacle to
+-- Kalshi on the TICKER matched 3 of 218 events, because Kalshi's outcome codes
+-- are 2-4 letter abbreviations (REDA, ODK, WAVE) and every other venue uses
+-- full team names. `yes_sub_title` carries the full name and nothing was
+-- storing it, so the join had to be reconstructed from a separately-pulled
+-- market universe. One table, and the join becomes a first-class operation.
+-- Kept separate from k_book rather than added as columns: the name never
+-- changes, so repeating it on every snapshot would be pure duplication.
+create table if not exists k_names (
+  ticker text primary key, series text, event_ticker text,
+  title text, yes_sub_title text, no_sub_title text,
+  close_utc text, first_seen_utc text);
+
 create table if not exists p_book (
   cycle_id integer, ts_utc text, tag text, slug text, token_id text,
   outcome text, bid_c real, ask_c real, bid_size real, ask_size real,
@@ -219,6 +234,14 @@ def kalshi_cycle(con: sqlite3.Connection, cid: int) -> None:
                                   "limit": 200}, "markets", max_pages=3))
         recs = []
         n_ok = n_two = 0
+        # Names first, for every LISTED market — not only the 60 whose books
+        # get probed — because a name is free once the listing is in hand and
+        # the join needs the whole universe.
+        con.executemany(
+            "insert or ignore into k_names values (?,?,?,?,?,?,?,?)",
+            [(m.get("ticker"), series, m.get("event_ticker"), m.get("title"),
+              m.get("yes_sub_title"), m.get("no_sub_title"),
+              m.get("close_time"), ts) for m in mkts if m.get("ticker")])
         for m in mkts[:60]:
             tk = m.get("ticker")
             if not tk:
