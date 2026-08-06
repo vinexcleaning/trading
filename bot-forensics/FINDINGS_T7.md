@@ -194,3 +194,48 @@ where a mid is least meaningful. **On tight books this study reads +1.18pp,
 t = 0.64, which is consistent with K009.** Recorded as an open item, with K009
 treated as the better-supported number because it is measured where trades
 actually happen.
+
+---
+
+## Postscript — what the live feed adds, and the one thing worth buying
+
+Run as `src/t9_upcoming.py`. Cached to `data/`, so re-runs cost 0 API calls.
+
+**437 upcoming fixtures**, and — importantly — **`surface` is present on every
+one**. Surface is unavailable *retrospectively* (no join key to Kalshi's market
+records) but is available *prospectively*. **If fixtures are recorded from now
+on, surface-conditioned analysis becomes possible in about a month.** That is a
+recorder job, not an analysis job, and it is cheap.
+
+| | |
+|---|---|
+| fixtures | 437 — ITF-M 98 · ITF-W 97 · Challenger 31 · ATP 25 · WTA 20 · rest doubles/teams |
+| surfaces | hard 254 · clay 163 · grass 12 |
+| both players inside the top 2,000 by ranking | 161 of 437 |
+| player database | **30,951 ranked players**, 200 per call |
+
+**The sheet is descriptive and is labelled as such in the script's own output.**
+`p1_win_rank` is an unfitted logistic on the log-ranking gap, printed to make the
+gap readable. It is not a price. Ranking is the most public information in
+tennis; if computed form adds nothing to Kalshi's price (B023) and the price is
+calibrated wherever it is liquid (B027), a ranking model adds less.
+
+### The single highest-value unlock, and it costs $9.99
+
+**Everything weak in this study traces to one cause: the corpus is 29 days
+long.** Head-to-head reached only **1.2%** coverage. `corr(prior win rate,
+outcome)` was **+0.0058** — indistinguishable from zero — because the median
+player appears about three times.
+
+`livetennisapi`'s history plan is **$9.99** and covers **43 monthly periods,
+January 2023 to July 2026, point-by-point, including ITF.** That turns form and
+head-to-head from noise into real features and would let this exact study be
+re-run with 3 years of history instead of 4 weeks.
+
+> **Stated against my own interest in a tidy conclusion:** this study is a null,
+> and a null on a 29-day window is much weaker evidence than a null on three
+> years. **B023 should be read as "not demonstrated on 29 days of form data",
+> not as "player features cannot work."** The $9.99 would settle it properly.
+>
+> What it would *not* change is B027 — the calibration result stands on its own
+> and does not depend on the window length.
