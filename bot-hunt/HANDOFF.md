@@ -23,8 +23,10 @@ five series** against LEDGER K014's bar of 481. See §2.
 
 | what | started | writes |
 |---|---|---|
-| `src/record.py` (10-min cycles) | **2026-08-04 21:27 UTC** | `bot-hunt/data/record.db` |
-| `src/pull_kalshi_soccer.py --series KXCS2GAME,KXLOLGAME,KXVALORANTGAME` | 2026-08-04 22:08 UTC | `bot-hunt/data/kalshi_soccer.db` |
+| `src/record.py` (10-min cycles) | 2026-08-04 21:27 UTC · **restarted 08-06 00:23 UTC** to add `k_names` | `bot-hunt/data/record.db` |
+| `src/pull_l2.py --since 2026-06-01 --until 2026-06-04` | **2026-08-05 20:08 UTC**, 96 files | `bot-hunt/data/l2/` |
+| ~~`pull_kalshi_soccer.py`~~ | finished | `bot-hunt/data/kalshi_soccer.db` |
+| ~~`pull_l2.py 05-30..05-31`~~ | finished, 47 files | `bot-hunt/data/l2/` |
 
 The recorder is the only asset here that accrues in wall-clock time and cannot
 be recovered later. Pinnacle, the Kalshi book and the Polymarket touch are all
@@ -220,25 +222,44 @@ added (−14.04 → −4.03pp — the artifact signature), and the one quantity 
 *strengthens* with n is flagged by **GUARDS #10** as a contamination warning,
 not a finding.
 
-**The next thing is no longer H10.** In priority order:
+**Items 1 and 2 below are DONE — see [RESULTS_CROSSVENUE.md](RESULTS_CROSSVENUE.md)
+and §4c. The live list starts at 3.**
 
-1. **The contamination check on the "monopoly regime" effect.** It is the only
-   positive-direction result in the project. The hypothesis to kill: "thin far
-   side" is measured at placement, and thin books may also be the ones nearest
-   settlement or most stale — so the split may be selecting on something
-   correlated with the outcome rather than on absent competition. Stratify by
-   time-to-event and by staleness before believing any of it.
-2. **More events, not more hours.** 81 events is the binding constraint, and it
-   is why adverse selection cannot be measured. The archive runs
-   2026-05-19T06 → 2026-06-11T03 — about 23 days, so roughly **10× the events
-   are available** for ~1 GB of filtered disk. `src/pull_l2.py` already reads
-   only 72–77% of each file over HTTP Range; extend `--since/--until`.
-3. **Re-bisect the Kalshi retention boundary** before anyone acts on the
+1. ~~Contamination check on the "monopoly regime" effect.~~ **DONE.** Not
+   killed, not confirmed: within-event keeps 74% of the effect (so it is *not*
+   a between-event artifact) but the CI spans zero at 75 events, and a placebo
+   split on the parity of the placement minute produces **45% of the claimed
+   effect** — the estimator's noise floor. Stays a lead.
+2. ~~More events.~~ **RUNNING** — 96 files, 2026-06-01..06-04.
+3. **Re-run everything once the pull lands.** `src/h10_stability.py` and
+   `src/contamination_check.py` both take the binding constraint (81 events) up
+   by roughly 4×. **If net P&L still sign-flips and adverse selection still
+   decays, H10 closes as underpowered rather than negative** — and that is a
+   legitimate closing state, not a failure.
+4. **Join the Polymarket leg.** 436 slugs are recorded and unjoined, and
+   Polymarket is where the reconciled live P&L actually came from. Kalshi is
+   done (§4c: no edge); Polymarket is untested and pays maker rebates, which is
+   the one structural difference that could change the answer.
+5. **Re-bisect the Kalshi retention boundary** before anyone acts on the
    2026-08-19 deadline in `market-selection/WHAT_IS_LEFT.md`.
-4. **Re-establish the ESPN prop feed** (403 on 7 of 7 leagues) or withdraw
+6. **Re-establish the ESPN prop feed** (403 on 7 of 7 leagues) or withdraw
    `KXMLBRFI`'s no-free-reference property, which is the basis of shortlist #3.
-5. **Tell the sibling their archive disk estimate is low** — tennis is 10.8% of
+7. **Tell the sibling their archive disk estimate is low** — tennis is 10.8% of
    a daytime hour, not the 0.6% measured overnight.
+
+## 4c. Cross-venue: the shortlist's #1 mechanism is TESTED and shows no edge
+
+[RESULTS_CROSSVENUE.md](RESULTS_CROSSVENUE.md). 5,334 paired Pinnacle/Kalshi
+observations at a **median 7-second alignment**, 13 events. **Median buy edge is
+negative under every de-vig method** — multiplicative −0.72¢, power −0.75¢,
+worst-case −1.64¢. Fourth independent confirmation that Kalshi is the sharp
+line.
+
+**The join is the hard part and mine had a real phantom** — a `KXCS2GAME` market
+paired to a *Mobile Legends* matchup, because the join never checked the league.
+Game-consistency and roster-suffix-agreement filters added. **Matching on the
+Kalshi ticker matches 3 of 218 events**; the full names live in
+`yes_sub_title`, which the recorder now stores in `k_names`.
 
 ---
 
