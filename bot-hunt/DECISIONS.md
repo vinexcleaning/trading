@@ -131,3 +131,31 @@ left some MLB tickers with 1 snapshot in 214 cycles.
 UPPER bound for every timeline.** Given up: the more decisive-sounding point
 estimate. Why: a point estimate of zero on n=17 is not a measurement of zero,
 and every event-count in RESULTS_DEVIG.md is therefore the optimistic one.
+
+---
+
+## 2026-08-06 — the full-programme audit (root-level work, logged here)
+
+**D15. Fixed T022 (non-deterministic dedupe) in `kalshi-tennis` without being
+able to run it.** Given up: execution proof. `kalshi-tennis/data/` is
+**laptop-only and empty on this desktop**, so the change is verified by AST parse
+and an isolated determinism test, not by a real run. Why this way: the previous
+behaviour was *non-deterministic* — two runs on identical data could keep
+different rows — and a fixed, outcome-blind rule is strictly better than a rule
+that cannot be reproduced to be audited. Every sort column is a pre-match feature
+or identifier; none is outcome-derived, which is the condition GUARDS #1 exists
+for. Marked "FIXED, unrun" in the ledger rather than "FIXED".
+
+**D16. Corrected T021's severity DOWN rather than "fixing" it.** The ledger
+wording ("sorts variants on mean_pnl over the full sample with no holdout") reads
+like a selection step. Reading the code shows it orders only the printed table,
+with Benjamini-Hochberg applied across every segment. Given up: a tidy
+"defect closed" line. Why: silently changing behaviour to match a wrong
+description would have been worse than correcting the description.
+
+**D17. Did NOT rush the weather or crypto pulls to finish inside one session.**
+Given up: completing task (a) in this turn. The Kalshi candlestick endpoint runs
+~1.4 s per call and the irreplaceable recorder is live; C018 puts the
+unauthenticated ceiling at 15 req/s and the standing rule is not to run a second
+heavy puller beside the recorder. Two heavy pullers were therefore **sequenced,
+not parallelised**, and the weather pull left running.

@@ -103,6 +103,19 @@ def enrich(j):
     # The same two players can meet twice on one date (different events), so
     # this key is not unique -- dedupe or the merge silently inflates the row
     # count and double-counts bets.
+    # LEDGER T022, fixed 2026-08-06. `keep="first"` on its own is ORDER-
+    # DEPENDENT: which of two same-day meetings survives was decided by whatever
+    # order the parquet happened to return, so two runs on the same data could
+    # keep different rows and neither was reproducible.
+    #
+    # The fix is an explicit sort on the columns already loaded, all of which are
+    # pre-match features or identifiers -- date, player names, elo and rank gaps,
+    # sample-size counts. NONE is outcome-derived, which is the condition
+    # GUARDS #1 actually cares about: S011 voided four phases of set1_overshoot
+    # by deduping on `volume_fp`, which scored P(kept side wins) = 0.5356,
+    # z = +10.0. A fixed arbitrary rule is not ideal; a non-deterministic one is
+    # strictly worse, because it cannot even be reproduced to be audited.
+    p = p.sort_values(list(p.columns), kind="mergesort")
     p = p.drop_duplicates(subset=["date", "p1", "p2"], keep="first")
     j = j.copy()
     j["date"] = pd.to_datetime(j["date"])
@@ -259,6 +272,17 @@ def main():
     else:
         res = pd.DataFrame(rows)
         res["survives_bh"] = bh(res["p"].to_numpy())
+        # LEDGER T021, re-read 2026-08-06 and its severity CORRECTED DOWN.
+        # The row is worded "sorts variants on mean_pnl over the full sample
+        # with no holdout", which reads like a selection step. It is not: this
+        # sort only decides the ORDER OF THE PRINTED TABLE, and the
+        # Benjamini-Hochberg correction below is applied across EVERY segment,
+        # not across the 25 shown. Nothing downstream consumes the ordering.
+        #
+        # The hazard that remains is a reading hazard: printing the 25 best
+        # realised P&Ls invites a reader to quote one. `res.head(25)` below is
+        # therefore the thing to be careful with, and `n_sig` -- computed over
+        # all segments -- is the number that means anything.
         res = res.sort_values("mean_pnl", ascending=False)
         emit(f"segments tested: {len(res)}  "
              f"(Benjamini-Hochberg at alpha=0.05 applied across all of them)")
