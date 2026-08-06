@@ -244,6 +244,64 @@ possible it stays unconfirmed.
 
 ---
 
+## 4a. THE CONTAMINATION CHECK on the "monopoly regime" effect
+
+GUARDS #10 flagged it because it strengthened with n. `src/contamination_check.py`
+tries four ways to kill it. **None of them kills it — and none of them confirms
+it either.**
+
+| test | JOIN | IMPROVE | reading |
+|---|---|---|---|
+| **BASELINE** thin − thick far side | **+8.19pp** | **+10.20pp** | the claimed effect |
+| **T1 within-event** | **+6.08pp** [−6.13, +20.13] | **+6.85pp** [−4.87, +19.70] | keeps **74% / 67%** of the baseline |
+| **T2 time-to-event** | thin is **2,149** min out vs thick **1,467** | 2,149 vs 1,856 | ⚠️ a real confound, ~11 h |
+| T2, effect within each time stratum | +12.50 early / +6.89 late | +10.31 / +9.83 | present in **both** — not purely time |
+| **T3 price-stratified** | **+7.04pp** (86% kept) | **+7.62pp** (75% kept) | price is **not** the confound |
+| **T4 PLACEBO** (even vs odd placement minute) | **−3.7pp = 45% of the effect** | −1.8pp = 18% | ⚠️ **the noise floor** |
+
+### What each test actually settled
+
+**T1 is the decisive one and it half-answers.** Comparing thin against thick
+*inside the same match* retains **74%** of the effect. So it is **not** a
+between-event artifact — it is not that thin matches happen to resolve a certain
+way. But the within-event CI spans zero, because only 75 events have both arms.
+
+> ⚠️ **My first verdict rule got this backwards and I nearly recorded a wrong
+> conclusion.** v1 printed *"DOES NOT SURVIVE — the effect is BETWEEN events"*
+> whenever the within-event CI included zero. But a point estimate that keeps
+> 74% of its size has not collapsed; the *interval* widened. Those are different
+> findings. The rule is now three-valued — SURVIVES / UNDERPOWERED / COLLAPSES —
+> which is GUARDS #1's principle applied to a test other than the selection
+> canary: **UNTESTABLE must never be rendered as a verdict about the effect.**
+
+**T2 found a genuine confound that does not explain it.** Thin books really are
+placed further from the event — a median of **2,149 minutes versus 1,467**,
+about 11 hours. So "thin far side" is partly "early". But the effect appears in
+**both** time strata (+12.50pp early, +6.89pp late), so time is not the whole
+story.
+
+**T3 clears price.** Thin orders sit at a median 42¢ against thick at 53¢, so
+the price distributions genuinely differ — and stratifying by price keeps 86% of
+the effect. Not the confound.
+
+**T4 is the most sobering number on this page.** Splitting the *same* filled
+orders on the **parity of the placement minute** — a variable that cannot
+possibly matter — produces an apparent effect of **−3.7pp on JOIN**. That is the
+estimator's noise floor on an arbitrary split, and the claimed effect is only
+**2.2× it** (5.5× on IMPROVE).
+
+### Verdict
+
+**Not killed, not confirmed.** It survives the between-event, price and
+time-stratum checks in point estimate; it fails to produce a within-event
+interval that excludes zero; and on JOIN it is barely twice the noise floor of
+a meaningless split.
+
+**The binding constraint is 81 events, not 13M rows.** More hours of the same
+matches adds orders and no independent information. The archive spans
+2026-05-19 → 2026-06-11, so ~10× the events are available; the pull is running.
+**Until then this stays a lead, exactly as GUARDS #10 requires.**
+
 ## 4b. The fill model, validated against the few people who wrote one
 
 I wrote `h10_passive.py`'s fill model from first principles, so it was checked
