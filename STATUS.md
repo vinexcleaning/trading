@@ -2541,3 +2541,53 @@ coherence), and a positive H11 must clear **all six** pre-registered conditions.
 **Next: build and schedule the settlement puller.** It is the only leg with a
 **deadline** — Kalshi's window is ~69 days and closed markets 404 for good.
 Stage A cannot run without it, and Stage A is the only reachable stage.
+
+---
+
+## 📋 FULL-PROGRAMME AUDIT + THE SCOREBOARD (2026-08-06)
+
+Two new root files. **Nothing was fixed and nothing was re-run.**
+
+- **[SCOREBOARD.md](SCOREBOARD.md)** — the readable one. One page per market,
+  plain English, no statistics notation. **55 strategies across 9 markets: 0
+  WORK, 35 DON'T, 20 NOT ENOUGH DATA.** Every row carries profit per contract,
+  what $5 becomes, how many events it was tested on, and a verdict, with a bar
+  chart per market. **Six rows are labelled 🔴 FAKE** and printed beside their
+  honest twin. Every market lists **what was never tested**.
+- **[AUDIT_2026-08-06.md](AUDIT_2026-08-06.md)** — 16 defects, ranked by whether
+  they could flip a verdict, with a clean-findings section.
+
+### The eight that could flip a verdict
+
+| # | defect |
+|---|---|
+| **D1** | `set1_overshoot` **S022/S023 were computed on the VOID event set and never re-run.** S023 is the *fade* side — half of "no edge in either direction" rests on cost arithmetic that is *expected*, not measured |
+| **D2** | **The crypto market-making verdict was never reached.** `MM_RESULTS.md` §10 is titled "Verdict" and opens **"Not yet reached"**; the deciding measurement (adverse selection on real `KXBTCD` flow at 373 ms) was never run; gross margin at the touch is a **full 1.00¢**; and **C025's "0 of 4 series" has an artifact for ONE series**. **`STATUS.md` above lists crypto as CLOSED. These disagree.** |
+| **D3** | `stage5_selective.py:255` still sorts variants on `mean_pnl` over the full sample **with no holdout** — live in the code |
+| **D4** | **Weather cleared two of three gates and the third was never measured** — *"Edge vs the mid: still unmeasured."* `KXTEMPDCH` is the **only family in the programme clearing both the power bar and the capacity bar**, by 6% |
+| **D5** | **Four projects have ZERO ledger rows** — `bot-hunt` (four results docs), `market-selection`, `soccer`, the two Polymarket copy projects. **Ledgering an unledgered project has found a verdict-relevant defect 2 times out of 2** (K015 = W011; B005a) |
+| **D6** | **The soccer selection canary returned UNTESTABLE and was never closed.** ~30 minutes of work sits under the entire soccer dataset |
+| **D7** | **K010 is load-bearing and OVERSTATED** — mitigated, because B027 confirms the direction independently on tennis |
+| **D8** | **The 2026-08-19 retention deadline is contradicted by its own two bisections** — the window *grew* rather than rolled |
+
+### The answer to "what was never tested"
+
+**Player form WAS tested** — 6,519 events, 2,008 cells, clean null (B023) — but on
+a **29-day window** where the median player appears about three times, so it
+reads *"not demonstrated"*, not *"cannot work"*. **Head-to-head** was built and
+reached **1.2%** coverage. **Surface** was **never tested** and cannot be done
+retrospectively — but it is present on **every upcoming fixture**, so a month of
+recording unlocks it. **Serve stats, aces, double faults: never tested and not
+available in any free feed we have.**
+
+> **For MLB, esports and soccer, nothing about the players or teams has ever been
+> tested at all.** Every strategy on those three markets is price-versus-price.
+> Starting pitcher, roster changes, map pool, patch version, xG, injuries, form —
+> all unexplored, and for soccer the form data is **already downloaded and never
+> joined**.
+
+### The three genuinely unfinished tests (not failures — never run)
+
+1. **🟡 Weather vs. the market price** — the deciding gate, empty.
+2. **🟡 Crypto market making** — validated rig, 1.00¢ gap, one measurement short.
+3. **🟡 Tennis player form on more than 29 days** — **$9.99** buys three years.
