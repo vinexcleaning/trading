@@ -2362,3 +2362,102 @@ added:
 - **#22 cross-venue joins** â€” name similarity is recall; the second side is
   precision.
 
+
+---
+
+## bot-forensics — ITF settled, and the player-feature hypothesis tested (2026-08-06)
+
+Overnight autonomous session. **Read-only against the bot: it was not started,
+`TRADING_DISABLED` untouched, nothing in `kalshi-inplay-bot/` changed.**
+Full write-up: [bot-forensics/FINDINGS_T7.md](bot-forensics/FINDINGS_T7.md).
+Design fixed in advance in
+[bot-forensics/PREREGISTRATION_T6.md](bot-forensics/PREREGISTRATION_T6.md),
+committed **before** any number existed.
+
+### 🔓 The ITF thread was closed on a false premise
+
+The user supplied a free `livetennisapi` key. **`GET /tournaments?tour=itf`
+returns `total: 7786` on the free tier.** A free ITF data source exists.
+`B016` UNVERIFIED → **SETTLED** via new ledger row **B021**.
+
+**This reopens data availability only.** B009 still says ITF economics are the
+worst of any tier (−9.13c/trade, t = −26). Nothing about the bot changes.
+
+> ⚠ **The vendor's own rate limit is wrong by 10×** (ledger **B022**). The site
+> advertises 1,000/day; the API's `/usage` returns `per_day: 100`. Anything
+> planned against the advertised figure is planned wrong.
+
+> ⚠ **The API key is in a chat transcript and should be treated as disposable.**
+> It is never written to disk or committed by any script here. Rotate when
+> convenient — it is free to replace.
+
+### The user's hypothesis, tested properly: a clean null
+
+*"Kalshi is efficient in aggregate, but individual matches contain more —
+form, head-to-head, rest, surface."* The premise is right and had never been
+tested on pre-match player features. It has now been.
+
+Built **6,519 events** with leak-free form / rest / workload / H2H / round
+features, using `markets.parquet`'s `player` column — which carries names for
+all 14,162 markets, so no external data was needed. Selection canary **0.5005,
+z = +0.09, PASS**.
+
+| | |
+|---|---|
+| cells swept | **2,008**, one BH-FDR denominator over all of them |
+| BH discoveries, real data | **2** |
+| BH discoveries, **shuffled** data | **4.1 on average** |
+| max \|t\|, real vs null | **4.17** vs **4.40** |
+
+**A sweep that finds less than its own null has found nothing.** (Ledger **B023**.)
+
+The one survivor — "buy the heavy favourite", +4.31pp on train, same sign on
+holdout — **died on execution.** Its residual is monotonic in the width of the
+opening book: **+1.18pp (t = 0.64) on tradeable ≤2c books, +7.92pp on >8c
+books.** Net at the ask on holdout: **−0.77c**. (Ledger **B024**.)
+
+### The strongest positive result of the night, and it is about the market
+
+`t8_calibration.py`: **on tradeable books (spread ≤ 2c), 0 of 10 price bands
+from 1c to 99c deviate from calibration.** Pooled residual **+0.03pp, se 1.09pp,
+t = +0.03**. On wide books, 2 of 10 deviate.
+
+**Where Kalshi tennis is liquid, its opening price is right across the whole
+range.** This also **resolves B026 in K009's favour** — "the favourite-longshot
+bias does not exist on Kalshi" is now confirmed on independent data by a
+different method. Ledger **B027**.
+
+### ⚠ Two bugs in my own analysis code, both pushing toward a false positive
+
+Caught before publication and recorded as **B025**:
+
+1. The first permutation null shuffled outcomes **within tier only**. Favourites
+   really win ~92%, so handing them the tier average manufactured a −38pp
+   residual and **1,010 false discoveries of 2,008, max \|t\| = 22.** The tell
+   was that the null was *worse* than the real data.
+2. Entries were priced at the **mid**. A taker lifts the ask — worth 2–3c here,
+   **larger than every effect measured.**
+
+### What could NOT be done, stated rather than worked around
+
+- **Surface retrospectively:** no join key. Kalshi's records carry tier, not
+  tournament name. **But surface IS on every upcoming fixture** — recording
+  fixtures from now makes surface analysis possible in ~a month. Cheap, and a
+  recorder job rather than an analysis one.
+- **Serve %, double faults, aces:** absent from the feed at any reachable tier.
+- **Head-to-head:** built, but only **1.2%** of events had a prior meeting.
+
+### The honest limit on the null, and the one thing worth $9.99
+
+**Every weak part of this study traces to the corpus being 29 days long.**
+`corr(prior win rate, outcome)` was **+0.0058** because the median player appears
+about three times. **B023 should be read as "not demonstrated on 29 days of form
+data", not "player features cannot work."**
+
+`livetennisapi`'s history plan is **$9.99** for **43 months, Jan 2023 → Jul 2026,
+point-by-point, including ITF.** That would let this exact study re-run on three
+years instead of four weeks and settle it properly. **B027 does not depend on the
+window and stands regardless.**
+
+**Ledger: +7 rows (B021–B027), tally 254 → 261.** RETRACTED still 45 — the
+directional prior held for the 46th time.
