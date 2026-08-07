@@ -1,0 +1,29 @@
+{
+ "series": "KXTEMPDCH",
+ "markets_pulled": 5186,
+ "zero_candle": 58,
+ "lead_1h": {
+  "markets": 0,
+  "bid_gt_0": 0,
+  "two_sided": 0,
+  "mean_spread_c": null
+ },
+ "lead_2h": {
+  "markets": 0,
+  "bid_gt_0": 0,
+  "two_sided": 0,
+  "mean_spread_c": null
+ },
+ "lead_3h": {
+  "markets": 0,
+  "bid_gt_0": 0,
+  "two_sided": 0,
+  "mean_spread_c": null
+ },
+ "lead_6h": {
+  "markets": 0,
+  "bid_gt_0": 0,
+  "two_sided": 0,
+  "mean_spread_c": null
+ }
+}
