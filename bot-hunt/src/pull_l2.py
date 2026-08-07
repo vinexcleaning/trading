@@ -44,6 +44,11 @@ HREF = re.compile(r'href="(https?://[^"]*kalshi_orderbook_[^"]*\.parquet)"')
 FILE_RE = re.compile(r"kalshi_orderbook_(\d{4}-\d{2}-\d{2})T(\d{2})\.parquet")
 
 PREFIXES = ("KXCS2GAME", "KXLOLGAME", "KXVALORANTGAME")
+# Overridable from the command line (--prefixes / --tag) so the same streaming
+# reader can serve the crypto maker-viability test without a second copy of it.
+# Defaults are unchanged, so every existing `es_*.parquet` pull still reproduces
+# byte for byte.
+OUT_TAG = "es"
 # Everything H10 needs and nothing it does not. `timestamp_received` and
 # `market_id` are dropped, which is pure transfer saved.
 COLS = ["timestamp", "market_ticker", "event_type", "yes_bids", "no_bids",
@@ -154,6 +159,10 @@ def main():
                     help="comma list of UTC hours, e.g. 12,13,14; blank = all")
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--list", action="store_true")
+    ap.add_argument("--prefixes", default="",
+                    help="comma list of ticker prefixes; default is esports")
+    ap.add_argument("--tag", default="",
+                    help="output filename prefix; default 'es'")
     a = ap.parse_args()
 
     OUT.mkdir(parents=True, exist_ok=True)
@@ -175,11 +184,18 @@ def main():
             print(" ", k, idx[k])
         return
 
+    global PREFIXES, OUT_TAG
+    if a.prefixes:
+        PREFIXES = tuple(x.strip() for x in a.prefixes.split(",") if x.strip())
+    if a.tag:
+        OUT_TAG = a.tag
+    print(f"prefixes={PREFIXES}  tag={OUT_TAG}", flush=True)
+
     tot_read = tot_size = kept = done = failed = 0
     t0 = time.time()
     for i, k in enumerate(keys, 1):
-        out_path = OUT / f"es_{k}.parquet"
-        if out_path.exists() or (OUT / f"es_{k}.empty").exists():
+        out_path = OUT / f"{OUT_TAG}_{k}.parquet"
+        if out_path.exists() or (OUT / f"{OUT_TAG}_{k}.empty").exists():
             continue
         try:
             hf = HttpFile(idx[k])
@@ -202,7 +218,7 @@ def main():
                 n_out = out.num_rows
                 kept += n_out
             else:
-                (OUT / f"es_{k}.empty").touch()
+                (OUT / f"{OUT_TAG}_{k}.empty").touch()
             tot_read += hf.bytes_read
             tot_size += hf.size
             done += 1

@@ -171,6 +171,48 @@ cost **and** clean on N1 **and** a PLATEAU **and** surviving the sealed holdout
 **and** with reportable depth at the resting level. **Fewer than six and it is a
 lead, not a finding.**
 
+## 6b. AMENDMENT A1 — the hour sample. Declared BEFORE the pull, 2026-08-07.
+
+**No number from this design existed when this was written.** The trial pull that
+forced it produced only transfer statistics.
+
+**What fired.** §7 says "~24 days is what exists" and did not say how much of each
+day. Measured on one trial hour (`2026-05-30T17`, `KXBTCD`):
+
+| | |
+|---|---|
+| rows kept | **570,699** for one hour, one series |
+| **transfer** | **92.5 MB of a 127 MB file — 73%** |
+
+Parquet stores columns contiguously, but the book columns (`yes_bids`,
+`no_bids`) *are* most of the file, so range requests save far less here than
+they did on the esports pull. **The full window is 550 files ≈ 51 GB.**
+
+`pull_l2.py`'s own docstring says it: *"This is somebody else's volunteer-run
+archive … taking 37 GB to answer one question would be rude and unnecessary."*
+That applies to me.
+
+**The rule, fixed now and applied identically to every day:**
+
+> **Three hours of every day — 08:00, 14:00 and 20:00 UTC.** 24 days × 3 =
+> **72 files ≈ 6.7 GB**, giving **72 events across 24 day-clusters**.
+
+**Why three, and why those.** The binding constraint on this design is the number
+of **days** (§2.3 clusters on the day), not hours within a day — extra hours buy
+within-day precision the day-clustered interval barely uses. Three spread across
+the active session samples different liquidity regimes rather than one; a single
+fixed hour would confound the result with whatever is special about that hour.
+
+**What this costs, stated rather than hidden:** ~87% of the archive's book events
+are not read. If a maker edge exists **only** in the hours not sampled, this will
+miss it. The three hours are fixed in advance and identical across days, so the
+sample is uniform — but it is a sample, and any result carries that.
+
+**One consequence for §4.7's holdout:** the holdout is still the newest 30% of
+**days**, unchanged. Sampling hours does not touch it.
+
+---
+
 ## 7. Scope, and what is deliberately NOT in it
 
 - **One series, `KXBTCD`.** `KXBTC`, `KXETHD`, `KXETH` are a **replication arm**,
