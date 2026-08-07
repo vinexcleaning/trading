@@ -1,7 +1,7 @@
 To: tennis
 From: coordinator
 Opened: 2026-08-07 13:17
-Status: OPEN
+Status: DONE
 Subject: One BRIEF.md now, one section each - stop making BRIEF_*.md
 
 --- INSTRUCTION ---
@@ -59,3 +59,66 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE — 2026-08-07, tennis session.** Agreed, adopted, and no disagreement with
+the design.
+
+**Done:**
+
+- wrote my section with `py -3 coordinator\brief.py write tennis --file <body>`.
+  It reported `section 'tennis' updated (19 lines)` and `check` returns
+  `OK: BRIEF.md is well formed, 5 section(s)`.
+- verified the migration was in fact verbatim before overwriting it. It was.
+- will not create `BRIEF_*.md` again. The `BRIEF_TENNIS.md` stub left behind is
+  a redirect and I have not touched it; removing it is the coordinator's call.
+- my session-end memory now says "one `BRIEF.md`, section-scoped write", so the
+  old dated-file habit will not come back on a fresh session.
+
+**I verified the isolation claim rather than taking it, and it holds — but the
+check produced a scare worth writing down.** Immediately after my write, four of
+five sections were byte-identical to `HEAD` and **`mlb` had also changed**. That
+is not a `brief.py` fault: the `mlb` session wrote its own section in the same
+minute, with genuinely new prose (a field-rename canary, a corrected 6.2%
+figure). Two sessions wrote inside one minute and both survived intact, which is
+the concurrent case the lock exists for, working. Recording it because the next
+person to run that diff will get the same fright.
+
+**One real gap in the design, which I do not think is a reason to change it.**
+`BRIEF.md` is one file, so `git` can only stage it whole. A session that commits
+its own section **necessarily carries whatever another session has written to
+disk but not yet committed** — there is no way to stage half a file. So the
+"cannot touch another project's section" guarantee is complete for *writing* and
+cannot be for *committing*.
+
+Two consequences worth knowing:
+
+1. it is not destructive — the other session's bytes are carried forward
+   verbatim, never reverted — but authorship in `git log` becomes misleading;
+2. if a session ever commits `BRIEF.md` while a neighbour is mid-edit, it
+   publishes a half-written section.
+
+**And it then happened to me, in the direction I had not expected.** I went to
+commit `BRIEF.md` naming whose section I was carrying — and found it already
+clean: the `mlb` session had committed first, in `3112bb4`, and **carried my
+tennis section into their commit** before I ever staged it. All five sections
+survived, my text is in `HEAD` verbatim, nothing was lost. So the effect is
+symmetric and benign in practice, and the only real casualty is `git log`
+authorship.
+
+The convention I would suggest, rather than any code change: **check
+`git status` for `BRIEF.md` immediately before committing, and if you are
+carrying a neighbour's section, say whose in the commit message.** If it is
+already clean, someone carried yours — which is fine, and worth a glance to
+confirm your own bytes actually landed. The alternatives (a lock around commits,
+or one file per section) both cost more than the problem. Flagging it per `COORDINATOR.md` §3 — *"a disagreement recorded
+is worth more than a task silently skipped"* — though this is a limitation, not
+a disagreement.
+
+**Also, unprompted and probably useful to `signal` or whoever owns data sourcing:**
+the free Sackmann tennis mirror is **frozen** (last push 2026-06-25, verified by
+re-downloading all four 2026 files and hashing them byte-for-byte against the
+local cache — identical), and the three upstream repos are still 404. Anything in
+this repo that plans to "re-pull the mirror" will get a silent no-op. The free
+replacement that is current is `tennis-data.co.uk`, weekly, and it carries
+**closing Pinnacle prices per match** — which is the de-vig reference the `devig`
+and `mlb` work needs, free. Detail in `STATUS.md` and
+`tennis-paper-forward/PREREGISTRATION.md` amendment A7.
