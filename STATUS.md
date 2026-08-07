@@ -2770,3 +2770,154 @@ prediction was wrong; the code was right. Amendment A1.
 a week. The setup guide's steps 6 and 8 exist specifically to prove the two
 recorders were not disturbed; the runner starts no process, stops no process,
 and writes only inside its own folder.
+
+---
+
+## mlb-paper — a PAPER-ONLY 16-bot forward test on Kalshi baseball (2026-08-07)
+
+`mlb-paper/` · full write-up in [mlb-paper/HANDOFF.md](mlb-paper/HANDOFF.md) ·
+the five mentalities and where each came from in
+[mlb-paper/MENTALITIES.md](mlb-paper/MENTALITIES.md) · pre-registration written
+and committed **before the runner produced a single decision**.
+
+**No credentials, no order endpoint, no money.** `tests/test_paper_only.py`
+walks every file and fails on order-shaped code, and is itself run against three
+planted violations (GUARDS #9). **Running now on the desktop, pid 33176**,
+writing only inside `mlb-paper/`. It starts no process and stops none; the two
+laptop recorders are untouched.
+
+### ⚠ ONE BH DENOMINATOR OF 32 ACROSS BOTH FORWARD TESTS — this supersedes tennis's 16
+
+[JOINT_MULTIPLICITY.md](JOINT_MULTIPLICITY.md), new at the repo root.
+
+`tennis-paper-forward/PREREGISTRATION.md` §6 declares *"One BH-FDR denominator
+of 16."* Read alone that is right. Read next to a second sixteen-bot test on the
+same exchange, in the same repo, in the same fortnight, it is a **32-way search
+reported as two 16-way searches**. `wallet-copy-study` R5 already recorded the
+cost of that shape: **54 of 206 "significant" in a pure null** against 0 of 249
+done correctly.
+
+> **No tennis file was edited** — that session owns the folder and is running.
+> The contradiction is flagged here, which is the shared channel. **I trust the
+> joint denominator**, because the two tests will be read side by side by one
+> person and that is what makes them one family. If the tennis session
+> disagrees, it belongs here too, and it must be settled **before** either test
+> publishes.
+
+Cost of the change: MDE widens ~8%, from 22.8¢ to 24.2¢ at n=50 on tennis. Both
+were already far above their ~3.0–3.6¢ cost bars, which is why **both tests
+pre-register their P&L endpoint as UNTESTABLE.**
+
+### Three results that exist before a single settlement
+
+**1. Kalshi's MLB price IS the de-vigged sharp line — on runs as well as winners.**
+
+| | joined | games | median Pinnacle vig | **qualifying above cost** | best net edge, hindsight-picked |
+|---|---|---|---|---|---|
+| `KXMLBGAME` | 20 | 10 | 2.55 pp | **0 (0.0%)** | **−1.82¢** |
+| `KXMLBTOTAL` | 38 | 10 | 4.01 pp | **0 (0.0%)** | **−1.63¢** |
+
+Extends `bot-hunt`'s **q = 0 of 17** to totals for the first time. Fifth
+independent confirmation.
+
+**2. The mismatched-pair placebo manufactures a large fake edge — as designed.**
+`KXMLBGAME` placebo **8 of 18 (44%)**, best **+24.76¢**; `KXMLBTOTAL` placebo
+**28 of 34 (82%)**, best **+20.49¢**. **Any future MLB result that does not
+clear its own placebo by a wide margin is a join error.** Not hypothetical: the
+first version of the join matched on the club pair alone and reported an **80%
+qualifying rate with a 57¢ best edge**, because baseball teams play each other
+three days running and it was pricing Tuesday's Kalshi against Thursday's
+Pinnacle.
+
+**3. ⚠ SCOREBOARD's "249 over/under markets recorded and never examined" is
+about 23 GAMES, not 249.** `KXMLBTOTAL` is an **11-strike ladder** (median 11,
+max 13 per game). The "71 first-inning" figure IS honest — one rung per game.
+Full working in [mlb-paper/TARGET_CHOICE.md](mlb-paper/TARGET_CHOICE.md).
+
+### The answer to "do over/under and first-inning beat moneyline?" — no
+
+| | `KXMLBGAME` | `KXMLBTOTAL` | **`KXMLBRFI`** |
+|---|---|---|---|
+| median spread | 2.0¢ | 2.0¢ | **9.0¢** |
+| enter and hold to settle | 3.0¢ | 3.0¢ | **6.5¢** |
+| median size at the touch | 68.5 | **1,029** | **2** |
+| free sharp reference | Pinnacle ML | Pinnacle totals | **NONE** |
+
+**`KXMLBRFI` is dropped** — 2.2× the cost, two contracts at the touch, no
+reference to check against, and the best published model of it beats the base
+rate by **0.003 Brier**. This is the **third** reading of that book and it
+agrees with `mlb/PROGRESS.md` against `market-selection/SHORTLIST.md`:
+**the 301,578-contracts figure was an 08:00 UTC snapshot and should not be used
+again.**
+
+**`KXMLBTOTAL` is kept as a co-target**, assigned per mentality so the game pool
+stays shared and the denominator does not double. It ties moneyline on cost,
+carries **15× the depth**, and Pinnacle's own vig says the book is less sure
+about runs (4.01 pp, $1,875 limit) than about winners (2.55 pp, $2,500).
+
+### The design error worth recording, because running it is what found it
+
+The first `mentalities.py` gated entry on the de-vigged sharp line already
+agreeing that Kalshi was behind. A dry run **silenced three of five mentalities
+permanently** — correctly, given result 1. That gate turns every mentality into
+a de-vig arbitrage bot, a strategy already measured at zero, **and it makes the
+primary endpoint unmeasurable, because closing-line value cannot be computed on
+a trade that never happened.** Each mentality now states an explicit adjustment
+in cents to the market's own price, with its run-to-cents conversion written
+down, and must still clear the full cost bar. The sharp line is recorded on
+every decision as a yardstick and nothing branches on it.
+
+**SHADOW decisions** carry the rest: a real view (≥1.5¢) that fails the cost bar
+is logged with full reasoning and **no position, no stake, no P&L**. On the
+first live sample the adjustments clustered at **0.5–3.3¢ against a ~3.5¢ cost
+bar** — the archive's recurring shape appearing before a single settlement. A
+shadow is never counted as a trade; that would be the "assume you always get
+filled" error this repo already labels 🔴 FAKE.
+
+### The bar, stated before the run
+
+**The P&L endpoint is pre-registered UNTESTABLE.** sd ≈ 50¢ per game on a
+near-coin-flip market means resolving the measured 3.0¢ cost bar under the joint
+32-way correction needs **~4,004 settled games PER BOT ≈ two and a half years**.
+`bot-hunt` reached the same order by a different route.
+
+**What replaces it as primary is closing-line value** against the de-vigged
+sharp line, sd ≈ 3¢, where **n = 130 resolves 1.0¢** — reachable inside a month.
+Predicted: every bot between **−3.0¢ and +0.5¢**, and **only `early` has a
+mechanism for a positive number**, because it trades the window before Pinnacle
+lists at all.
+
+### Six field traps, each of which produced a wrong number first
+
+1. **Kalshi's MLB ticker time is US EASTERN, not UTC.** Read as UTC every game
+   sits 4 h early and the Pinnacle join rejected **100%** of candidates.
+   Verified two ways, including `close_time` = ET-converted start + exactly 72 h.
+2. **Pinnacle's `/matchups` is 148 of 161 SPECIALS** ("Odd"/"Even" runs), not
+   games; a special carries its real game inside `parent`.
+3. **Pinnacle moneyline sides are keyed by `designation`, not `participantId`** —
+   on parent-derived games those ids are all `None` and the side is chosen at
+   random. Symptom: Toronto at 33.5¢ came back with a 66.65¢ "fair value".
+4. **`/orderbook` returns `orderbook_fp.yes_dollars`**, not `orderbook.yes` —
+   the **fourth** renamed-field trap here after C024.
+5. **`hash()` on a `str` is salted per process**, so an on-disk cache keyed on
+   it never hits across runs while looking exactly like a working cache. A warm
+   brief build took the same 5m23 as a cold one.
+6. **`zoneinfo` ships no tz database on Windows.** `tzdata` is a hard
+   requirement or every ticker parses four hours early — found by running the
+   tests in a fresh venv, not by reading the code.
+
+### Free sources, and the two the brief's own rule forbids
+
+`statsapi.mlb.com` ALLOWED (probables a day ahead, pitcher game logs with pitch
+counts, `battingOrder`, bullpen rosters, standings splits, venue elevation **and
+`azimuthAngle`**). `aviationweather.gov` ALLOWED, **no robots.txt at all** —
+METAR plus **TAF**, a 24–30 h forecast of wind direction and speed, which is the
+only form in which wind means anything for a total once resolved against the
+park's azimuth.
+
+> 🚫 **`api.open-meteo.com` and `api.weather.gov` are BOTH `User-agent: * /
+> Disallow: /`** and are refused. `retrosheet.org/gamelogs/` likewise.
+> `reports/robots_policy.json` is an enforcement point, not a report.
+
+**Next: `deploy\check.bat` once a day.** Laptop install is
+[mlb-paper/deploy/README.md](mlb-paper/deploy/README.md), click by click.
