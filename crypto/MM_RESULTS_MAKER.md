@@ -117,7 +117,71 @@ puller (C018 puts the unauthenticated ceiling at 15 req/s).
 
 ---
 
-## 6. ✅ THE MULTI-DAY RUN LANDED — and adverse selection now has a number
+## 6b. ⚠⚠ FINAL, at 658 events — and it corrects §6 twice. Read this, not §6.
+
+**§6 below was written at 415/664 markets and clustered on the wrong unit. Two
+errors, both mine, both found within minutes of each other.**
+
+### Error 1 — I clustered on the event. The events are not independent.
+
+All ~96 fifteen-minute BTC windows in a day share **one BTC trajectory**. They
+are nowhere near 96 independent observations. Clustering on the day instead:
+
+| | mean | 95% CI | **CI width** |
+|---|---|---|---|
+| event-clustered (§6, wrong) | +0.321¢ | [−0.368, +0.997] | **1.36¢** |
+| **day-clustered (right)** | — see error 2 | — | **7.78¢** |
+
+**5.7× too narrow.** This is C019/C026's lesson and K003's exactly — *a
+ten-strike ladder is one temperature reading, not ten markets*. Here **a day of
+15-minute BTC markets is far closer to one observation than to 97**, and I made
+the same mistake the ledger already records twice.
+
+### Error 2 — the day-clustered number was itself contaminated, by ONE market
+
+The day-clustered mean came out **−2.206¢** and I nearly reported that. Per day:
+
+| day | maker P&L | events |
+|---|---|---|
+| 07-24 … 07-30 | +0.624 · +0.595 · +0.975 · −0.497 · +0.351 · +0.370 · −0.619¢ | 96, 96, 96, 96, 96, 96, 81 |
+| **07-31** | **−19.444¢** | **1** |
+
+**2026-07-31 is not a day — it is the pull's exclusive end boundary, and exactly
+one 15-minute market landed on it.** A single market was dragging the whole
+eight-day mean from +0.257¢ to −2.206¢. Dropping it:
+
+| | 7 full days |
+|---|---|
+| maker absolute P&L | **+0.257¢/day**, positive on **5 of 7**, day sd ≈ 0.55¢ |
+| **adverse selection (real − placebo)** | **−0.526¢**, negative on **7 of 7** |
+
+### What actually survives
+
+| | |
+|---|---|
+| **Adverse selection is REAL and CONSISTENT** | **negative on 8 of 8 days**, day-clustered mean **−1.256¢, 95% CI [−2.788, −0.344]** — excludes zero. Excluding the stub day it is **−0.526¢** and still 7 of 7. |
+| **It GREW as data was added** | −0.387¢ at 432 events → **−0.532¢** at 658. Every step of this analysis moved against the maker. |
+| **Total maker P&L is NOT resolvable** | +0.257¢/day against a day sd of 0.55¢ on 7 days. The honest statement is *unknown*, not *positive*. |
+
+> **Retracting my own framing from two messages ago.** I wrote that adverse
+> selection at 0.387¢ against a ~1.00¢ spread was *"the first encouraging sign in
+> this programme."* At full sample the cost is **0.532¢**, it grew 37% when I
+> added 52% more events, the absolute P&L fell from +0.504¢ to +0.321¢, and the
+> correct clustering leaves the total unmeasurable. **Every one of those moves is
+> in the discouraging direction. That is the directional prior holding for the
+> 49th time, and I got ahead of the data.**
+
+**What is genuinely new and stands:** adverse selection on real Kalshi crypto
+flow is **~0.5¢ per contract, consistent on every day measured**. That is the
+number `MM_RESULTS.md` §10 asked for. It is **below** the ~1.00¢ gross margin —
+so the question is not settled against market making, it is *unresolved*, and
+resolving it needs **weeks of days, not hundreds of correlated 15-minute
+windows**, plus the other half: what a resting order actually captures, which
+needs the order book this project already records.
+
+---
+
+## 6. Superseded — the 415-market run (kept; §6b corrects it)
 
 **2026-08-07.** `src/maker_multiday.py` → `reports/maker_multiday.json`.
 **432 KXBTC15M events, 3,263,999 trades, 5 days, 0 rows dropped, 0 markets
