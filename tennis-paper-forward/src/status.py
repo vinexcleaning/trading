@@ -172,6 +172,16 @@ DISK
     if bd.exists():
         print(f"  briefs/                {len(list(bd.glob('*.json'))):8d} files")
 
+    # The logs are the asset. Rotation stops them filling the disk, but
+    # rotation also DELETES the oldest generation - so the ceiling has to be
+    # visible before it is reached, not discovered afterwards.
+    total = sum(p.stat().st_size for p in LOGS.glob("*.jsonl*") if p.is_file())
+    print(f"  {'ALL LOGS':22s} {total/1e9:8.2f} GB of a 2.00 GB ceiling")
+    if total > 1_500_000_000:
+        print("  *** The logs are near the 2 GB ceiling. Past it, the OLDEST")
+        print("      reasoning records start being deleted. Copy logs/ somewhere")
+        print("      else, or raise MAX_LOG_GENERATIONS in src/forward.py. ***")
+
     print("""
 NEXT
   full pre-registered analysis:  .venv\\Scripts\\python.exe -m src.analyse

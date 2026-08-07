@@ -121,7 +121,12 @@ def _append_fsync(path: Path, line: str) -> None:
 
 
 MAX_LOG_BYTES = 250_000_000      # roll at 250 MB
-MAX_LOG_GENERATIONS = 4          # so the logs cannot exceed ~1 GB in total
+# Eight generations = a 2 GB ceiling. Measured after the D15 fix, the reasoning
+# log runs about 170 MB/day, so a week is ~1.2 GB and a fortnight ~2.4 GB. Four
+# generations would have quietly discarded the first 18% of a one-week run;
+# eight covers a week with headroom, and `src/status.py` warns at 1.5 GB so the
+# ceiling is seen coming rather than hit silently.
+MAX_LOG_GENERATIONS = 8
 
 
 def _rotate(path: Path) -> None:
