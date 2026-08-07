@@ -1,0 +1,46 @@
+{
+ "KXBTCD": {
+  "trades": 123615,
+  "events": 11,
+  "maker_c_per_contract": 1.0624,
+  "ci": [
+   -3.4614,
+   5.8751
+  ],
+  "maker_fee_c": 0.0,
+  "frac_fills_profitable": 0.5415
+ },
+ "KXBTC15M": {
+  "trades": 463483,
+  "events": 29,
+  "maker_c_per_contract": 0.8734,
+  "ci": [
+   -0.5963,
+   2.6698
+  ],
+  "maker_fee_c": 0.0,
+  "frac_fills_profitable": 0.5229
+ },
+ "KXETHD": {
+  "trades": 12327,
+  "events": 11,
+  "maker_c_per_contract": 1.9325,
+  "ci": [
+   -0.0495,
+   3.967
+  ],
+  "maker_fee_c": 0.0,
+  "frac_fills_profitable": 0.5199
+ },
+ "KXETH15M": {
+  "trades": 82387,
+  "events": 29,
+  "maker_c_per_contract": 0.7036,
+  "ci": [
+   -1.2366,
+   2.5934
+  ],
+  "maker_fee_c": 0.0,
+  "frac_fills_profitable": 0.4872
+ }
+}

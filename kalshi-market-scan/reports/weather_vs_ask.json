@@ -1,0 +1,133 @@
+{
+ "persist_hod|0.0": {
+  "hours": 74,
+  "mean_net_c": 1.3765,
+  "ci": [
+   -0.8585,
+   4.8049
+  ],
+  "median_ask_c": 1.0
+ },
+ "persist_hod|0.5": {
+  "hours": 72,
+  "mean_net_c": 0.9166,
+  "ci": [
+   -1.3805,
+   4.5192
+  ],
+  "median_ask_c": 1.0
+ },
+ "persist_hod|1.0": {
+  "hours": 67,
+  "mean_net_c": 0.425,
+  "ci": [
+   -2.0116,
+   4.2965
+  ],
+  "median_ask_c": 1.0
+ },
+ "persist_hod|2.0": {
+  "hours": 66,
+  "mean_net_c": -0.5957,
+  "ci": [
+   -3.0693,
+   3.3344
+  ],
+  "median_ask_c": 1.0
+ },
+ "climatology|0.0": {
+  "hours": 81,
+  "mean_net_c": 2.2592,
+  "ci": [
+   -0.3715,
+   5.7872
+  ],
+  "median_ask_c": 1.0
+ },
+ "climatology|0.5": {
+  "hours": 80,
+  "mean_net_c": 1.7758,
+  "ci": [
+   -0.934,
+   5.3014
+  ],
+  "median_ask_c": 1.0
+ },
+ "climatology|1.0": {
+  "hours": 72,
+  "mean_net_c": 1.3734,
+  "ci": [
+   -1.6369,
+   5.2368
+  ],
+  "median_ask_c": 1.0
+ },
+ "climatology|2.0": {
+  "hours": 68,
+  "mean_net_c": 0.3485,
+  "ci": [
+   -2.8126,
+   4.4174
+  ],
+  "median_ask_c": 1.0
+ },
+ "always_50|0.0": {
+  "hours": 68,
+  "mean_net_c": 2.0074,
+  "ci": [
+   -1.2099,
+   5.9626
+  ],
+  "median_ask_c": 1.0
+ },
+ "always_50|0.5": {
+  "hours": 68,
+  "mean_net_c": 1.5074,
+  "ci": [
+   -1.7099,
+   5.7387
+  ],
+  "median_ask_c": 1.0
+ },
+ "always_50|1.0": {
+  "hours": 68,
+  "mean_net_c": 1.0074,
+  "ci": [
+   -2.0693,
+   5.2387
+  ],
+  "median_ask_c": 1.0
+ },
+ "always_50|2.0": {
+  "hours": 68,
+  "mean_net_c": 0.0074,
+  "ci": [
+   -3.2099,
+   4.4143
+  ],
+  "median_ask_c": 1.0
+ },
+ "B0-ALLASK": {
+  "hours": 308,
+  "mean_net_c": -59.4598,
+  "ci": [
+   -63.103,
+   -55.7182
+  ]
+ },
+ "B0-CHEAP<20c": {
+  "hours": 66,
+  "mean_net_c": -1.9111,
+  "ci": [
+   -2.5039,
+   -1.1602
+  ]
+ },
+ "N2_permutation": {
+  "real_c": 0.425,
+  "null_mean_c": -2.0003,
+  "null_sd_c": 1.279,
+  "p": 0.92,
+  "draws": 200
+ }
+}
