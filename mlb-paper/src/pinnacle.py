@@ -24,26 +24,69 @@ listed starter, which is how a "listed pitchers" market knows to void.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import time
 import urllib.request
 from datetime import datetime, timezone
+from pathlib import Path
 
 BASE = "https://guest.api.arcadia.pinnacle.com/0.1"
 UA = {"User-Agent": "trading-research/1.0 (personal research)"}
 SPORT_BASEBALL = 3
 
 
-def _g(url, tries=4):
+CACHE_DIR = Path(__file__).resolve().parent.parent / "data" / "cache_pin"
+CACHE_TTL_S = 240          # the recorder polls at 600 s; this is well inside it
+
+
+def _g(url, tries=4, ttl_s=CACHE_TTL_S):
+    """Cached GET. Pinnacle 401s under load and that must not kill a brief.
+
+    The guest API returns **HTTP 401** intermittently -- not a credential
+    problem, a rate limit wearing a misleading status code. `ask.py
+    --datasources` already records the sibling trap ("the /0.1/sports INDEX
+    returns 401, probing that first makes a live API look dead"). Two
+    consequences, both deliberate:
+      * a short on-disk cache, because bot-hunt's recorder is polling the same
+        host every 600 s from this machine and the two should not compete;
+      * on final failure this raises, and EVERY caller in this project treats
+        the Pinnacle reference as OPTIONAL. A brief with no sharp reference is
+        a brief that says so, not a crash.
+    """
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    # NOTE: `hash()` on a str is SALTED PER PROCESS (PYTHONHASHSEED), so a
+    # cache keyed on it never hits across runs -- it silently degrades to no
+    # cache at all while looking like one. The first version of this did
+    # exactly that and a second brief build cost the same 6 minutes as the
+    # first. hashlib is stable across processes and machines.
+    f = CACHE_DIR / (hashlib.sha1(url.encode("utf-8")).hexdigest()[:20] + ".json")
+    if ttl_s > 0 and f.exists() and (time.time() - f.stat().st_mtime) < ttl_s:
+        try:
+            return json.loads(f.read_text())
+        except json.JSONDecodeError:
+            pass
+    last = None
     for i in range(tries):
         try:
             req = urllib.request.Request(url, headers=UA)
             with urllib.request.urlopen(req, timeout=30) as r:
-                return json.load(r)
-        except Exception:
-            if i == tries - 1:
-                raise
-            time.sleep(2 ** i)
+                d = json.load(r)
+            if ttl_s > 0:
+                f.write_text(json.dumps(d))
+            return d
+        except Exception as e:                     # noqa: BLE001
+            last = e
+            if i < tries - 1:
+                time.sleep(3 * (2 ** i))
+    # last resort: a stale cache beats no reference at all, and the staleness
+    # is visible because every consumer records `pinnacle_fetched_at`.
+    if f.exists():
+        try:
+            return json.loads(f.read_text())
+        except json.JSONDecodeError:
+            pass
+    raise RuntimeError(f"pinnacle unavailable: {url}: {last}")
 
 
 def _iso(s):
