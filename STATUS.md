@@ -2588,6 +2588,95 @@ available in any free feed we have.**
 
 ### The three genuinely unfinished tests (not failures — never run)
 
-1. **🟡 Weather vs. the market price** — the deciding gate, empty.
-2. **🟡 Crypto market making** — validated rig, 1.00¢ gap, one measurement short.
+1. ~~**🟡 Weather vs. the market price**~~ — **RUN 2026-08-07. CLOSED, no edge.**
+2. ~~**🟡 Crypto market making**~~ — **RUN 2026-08-07. Does not survive its own
+   placebo; needs more than one day of tape.**
 3. **🟡 Tennis player form on more than 29 days** — **$9.99** buys three years.
+   *Still open, and now the only one of the three that is.*
+
+---
+
+## Two of the three unfinished tests are now RUN (2026-08-07)
+
+### ✅ WEATHER — the gate is closed. No edge, and the control said so first.
+
+Full write-up: [kalshi-market-scan/docs/RESULTS_WEATHER_VS_ASK.md](kalshi-market-scan/docs/RESULTS_WEATHER_VS_ASK.md).
+Design pre-registered at `9db1a5a` before any number existed.
+
+| | persist_hod *(the model)* | **N1 climatology** | **N3 always-50** |
+|---|---|---|---|
+| mean net @1¢ slip | **+0.43¢** | **+1.37¢** | **+1.01¢** |
+| 95% CI | [−2.01, +4.30] | [−1.64, +5.24] | [−2.07, +5.24] |
+| median qualifying ask | **1.0¢** | 1.0¢ | 1.0¢ |
+
+**N1 fires.** The pre-registration says a positive climatology arm means the gate
+is selecting cheap asks rather than a forecast, and that **nothing is
+reportable**. Climatology does not merely tie — **it beats the real model**. And
+**a model that assigns 50% to everything also clears the gate.** Permutation
+p = 0.9200. Every CI crosses zero. Holdout (132 hours) sealed and untouched.
+
+> **The finding that outlives the null:** at the market's open, **2,286 of 2,463
+> strikes (93%) are offered at 95–100¢ — implied 0.983 — against an actual win
+> rate of 0.459, with no bid on any of them.** That is a placeholder, not a
+> price. K004's 2,972 contracts of depth is real but is **not** the depth
+> available at decision time; the book forms *during* the hour as the temperature
+> becomes knowable.
+>
+> **K002 stands untouched** — the model really is the better *forecaster*. It is
+> also the worse *trader*, on the same 440 settlement hours. **Forecast quality
+> and tradeable edge are different quantities**, and this is the cleanest
+> demonstration of it in the repo.
+
+### ✅ CRYPTO MARKET MAKING — run, and killed by its own placebo
+
+Full write-up: [crypto/MM_RESULTS_MAKER.md](crypto/MM_RESULTS_MAKER.md).
+**2,034,720 trades** marked to settlement. Maker fee confirmed **zero** by
+*fetching* each series' `fee_type`, never assuming it.
+
+| series | events | maker ¢/contract | **placebo (aggressor shuffled)** | p |
+|---|---|---|---|---|
+| **KXBTC15M** | **29** | +0.873¢ | **+1.351¢ — BEATS it** | **0.995** |
+| KXBTCD | 11 | +1.062¢ | +0.144¢ | 0.125 |
+
+All four series looked positive (+0.70 to +1.93¢). **Shuffling away the entire
+maker/taker distinction raises the number.** And "always buy YES" returns
+**+3.874¢** on the same data — naming the mechanism as a **one-day directional
+move**, not a maker edge.
+
+**The premise that blocked this thread was false.** `MM_RESULTS.md` §0.2 states
+in bold that Kalshi does not expose order-book depth. That is **M001**, retracted
+2026-08-02 — re-verified live, 16 price levels. Marked inline there.
+
+**Next: the tape across many days.** One day gives 11–29 correlated events;
+**~73 days are retrievable** now that the retention boundary is known fixed.
+
+### ⚠ And a correction to my own claim, in both places it appeared
+
+**[SCOREBOARD.md](SCOREBOARD.md) and [bot-hunt/RESULTS_DEVIG.md](bot-hunt/RESULTS_DEVIG.md)
+said "the cost of trading is bigger than the whole margin you're trying to
+exploit". That is not a valid argument.** The overround is what you *strip* to
+estimate fair value; it does **not bound** the edge. Corrected inline.
+
+**What actually settles it is a measurement** — see
+[bot-hunt/RESULTS_DEVIG_WHERE.md](bot-hunt/RESULTS_DEVIG_WHERE.md):
+
+| |de-vigged Pinnacle fair − Kalshi ask|, 1,460 observations / 30 games |
+|---|
+| median **0.77¢** · p90 **1.45¢** · p99 **2.38¢** · **maximum 2.77¢** |
+| cost bar **2.75¢** · positive after cost on **0.00%** of observations |
+
+**The largest disagreement anywhere in the sample barely reaches the cost of
+acting on it.** For an edge to exist the venues would have to disagree by ~4× their
+observed maximum. Decisive — and decisive *because it was measured*.
+
+**Stage A (does the sharp price simply forecast better?) is ON TRACK**: 30 joined
+events, 17 fully settled, **13.8 joined/day** against ~15 MLB games/day.
+**Decides ≈ 2026-09-06.**
+
+**Where is the margin wide enough? Nowhere.** Pinnacle's overround runs 2.44pp
+(MLB) to **13.21pp** (CS2 Esports World Cup Qualifier) — but Kalshi's own recorded
+spread moves with it: **KXCS2GAME median 8.0¢, mean 23.97¢** against
+**KXATPMATCH 1.0¢ / 1.98¢**. Wide margin and wide cost are **the same
+phenomenon**. The widest markets (Rwandan and Chilean basketball, 12.6–12.9pp)
+have no Kalshi counterpart at all. And the best margin-to-cost ratio in the whole
+set is ATP/WTA tennis — **which is exactly T012, already run and already null**.

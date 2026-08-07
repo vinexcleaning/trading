@@ -460,3 +460,41 @@ a rebate rather than charged a fee and the §8b arithmetic is genuinely differen
 | `RESULTS_DEVIG.md` | the feasibility measurement — `q`, the event counts, no settlement |
 | `src/mlb_scope.py` | apparatus census. ⚠ its name-only join is **superseded**; do not quote its 34.6% |
 | `src/devig_power.py` | the pre-registered join + gate, measuring `q` only |
+
+---
+
+## 9. 2026-08-07 — the three de-vig questions, answered
+
+Read [RESULTS_DEVIG_WHERE.md](RESULTS_DEVIG_WHERE.md). `src/devig_where.py`.
+
+**⚠ A correction to this project's own claim comes first.** RESULTS_DEVIG.md §1
+led with *"the cost bar is larger than the entire vig being removed"*. **That is
+not a valid argument.** The overround is what you *strip* to estimate fair value;
+it does **not bound** the edge. Corrected there and in SCOREBOARD.md.
+
+**Q1 — not underpowered on MLB; decisive on evidence.** `|de-vigged fair − ask|`
+over **1,460 paired observations on 30 joined games**: median **0.77¢**, p99
+2.38¢, **max 2.77¢**, against a **2.75¢** cost bar. Positive after cost on
+**0.00%**. The venues would have to disagree by ~4× their observed maximum.
+
+**Q2 — on track, decides ≈ 2026-09-06.** 30 joined (was 21), **17 fully
+settled**, **13.8 joined events/day** vs ~15 MLB games/day. The settlement leg —
+§5's "single next thing", previously unbuilt — now exists and ran.
+
+**Q3 — no, and it is a mechanism.** Overround 2.44pp (MLB) → **13.21pp** (CS2
+EWC Qualifier). But Kalshi's recorded spread moves with it: **KXCS2GAME 8.0¢
+median / 23.97¢ mean** vs **KXATPMATCH 1.0¢ / 1.98¢**. The widest markets
+(Rwandan/Chilean basketball) have **no Kalshi counterpart**. The best ratio is
+ATP/WTA — **which is T012, already null**.
+
+### Recorder note
+
+`k_names` + the exact start-time key + the 30-club code map are working: **1 of
+67** events dropped on names. The other 36 drops are games **Pinnacle has not
+listed yet** and resolve daily.
+
+### The one number to carry
+
+**Stage A is the only de-vig test still alive, and it is 30 days out.** If the
+de-vigged sharp price is not a better *forecast* than Kalshi's own, no threshold
+on the gap can be an edge and the thread closes for good.
