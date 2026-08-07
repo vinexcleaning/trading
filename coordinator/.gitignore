@@ -1,0 +1,2 @@
+# The BRIEF.md write lock. Transient; never useful to anyone else.
+.brieflock/

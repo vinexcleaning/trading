@@ -1,0 +1,372 @@
+"""Read every project's state off disk and write SCAN.md.
+
+This is the part the coordinating chat cannot do: it reads GitHub, so it cannot
+see uncommitted work, unpushed commits, or file timestamps. This can.
+
+It only READS. It runs no git command that changes anything, makes no network
+call, and touches no file outside coordinator/.
+
+Usage
+-----
+  py -3 coordinator\\scan.py            # write SCAN.md and print the digest
+  py -3 coordinator\\scan.py --quiet    # write SCAN.md only
+"""
+
+from __future__ import annotations
+
+import argparse
+import re
+import subprocess
+import sys
+from datetime import datetime, timedelta
+from pathlib import Path
+
+import mail as mailmod
+
+HERE = Path(__file__).resolve().parent
+REPO = HERE.parent
+SCAN = HERE / "SCAN.md"
+BRIEF = REPO / "BRIEF.md"
+
+# Folders that are not projects.
+SKIP = {".git", ".claude", "_archive", "prompts", "__pycache__", ".brieflock"}
+
+# Directories never worth walking for timestamps.
+HEAVY = {".venv", "venv", "__pycache__", ".git", "data", "Data", "reports",
+         "node_modules", ".pytest_cache", ".mypy_cache", "logs"}
+
+# A workstream is what the user thinks in. A folder is what git thinks in.
+# One workstream can span several folders -- de-vig does.
+WORKSTREAMS = {
+    "tennis": {
+        "title": "Tennis — paper forward test",
+        "folders": ["tennis-paper-forward", "kalshi-tennis", "set1_overshoot"],
+    },
+    "mlb": {
+        "title": "Baseball — paper forward test",
+        "folders": ["mlb-paper", "mlb"],
+    },
+    "devig": {
+        "title": "De-vig, weather and crypto market making",
+        "folders": ["bot-hunt", "kalshi-market-scan", "crypto", "market-selection"],
+    },
+    "signal": {
+        "title": "Signal hunting — GitHub, YouTube, social",
+        "folders": ["signal-github", "youtube-signal", "social-signal",
+                    "extractor-upgrade", "bot-forensics"],
+    },
+    "coordinator": {
+        "title": "Coordination",
+        "folders": ["coordinator", "common"],
+    },
+}
+
+
+# --------------------------------------------------------------------------
+# git, read-only
+# --------------------------------------------------------------------------
+def git(*args: str) -> str:
+    try:
+        r = subprocess.run(["git", *args], cwd=REPO, capture_output=True,
+                           text=True, timeout=60)
+        return r.stdout.strip()
+    except Exception:
+        return ""
+
+
+def head() -> str:
+    return git("rev-parse", "--short", "HEAD") or "unknown"
+
+
+def unpushed():
+    """Commits the coordinating chat cannot see. The single most useful line here."""
+    out = git("log", "--oneline", "origin/main..HEAD")
+    return [l for l in out.splitlines() if l.strip()]
+
+
+def dirty_by_folder():
+    """{folder: n_changed_files} from the working tree."""
+    out = git("status", "--porcelain")
+    counts, root = {}, 0
+    for line in out.splitlines():
+        path = line[3:].strip().strip('"')
+        if " -> " in path:
+            path = path.split(" -> ")[-1]
+        top = path.split("/")[0]
+        if "/" in path and (REPO / top).is_dir():
+            counts[top] = counts.get(top, 0) + 1
+        else:
+            root += 1
+    return counts, root
+
+
+def last_commit(folder: str):
+    out = git("log", "-1", "--format=%h|%ad|%s", "--date=format:%Y-%m-%d %H:%M",
+              "--", folder)
+    if not out or "|" not in out:
+        return None
+    h, when, subj = out.split("|", 2)
+    return {"hash": h, "when": when, "subject": subj}
+
+
+# --------------------------------------------------------------------------
+# filesystem
+# --------------------------------------------------------------------------
+def newest_file(folder: Path, cap: int = 4000):
+    """Most recently modified tracked-ish file, ignoring venvs and recorded data."""
+    newest_t, newest_p, seen = 0.0, None, 0
+    for root, dirs, files in walk(folder):
+        dirs[:] = [d for d in dirs if d not in HEAVY and not d.startswith(".")]
+        for f in files:
+            seen += 1
+            if seen > cap:
+                return newest_t, newest_p, True
+            p = Path(root) / f
+            try:
+                t = p.stat().st_mtime
+            except OSError:
+                continue
+            if t > newest_t:
+                newest_t, newest_p = t, p
+    return newest_t, newest_p, False
+
+
+def walk(folder: Path):
+    import os
+    return os.walk(folder)
+
+
+def ts(epoch: float) -> str:
+    return datetime.fromtimestamp(epoch).strftime("%Y-%m-%d %H:%M") if epoch else "—"
+
+
+def ago(when: str) -> str:
+    """'2026-08-07 09:14' -> '4 hours ago'. Plain English, no jargon."""
+    try:
+        t = datetime.strptime(when[:16], "%Y-%m-%d %H:%M")
+    except Exception:
+        return ""
+    d = datetime.now() - t
+    if d < timedelta(0):
+        return "just now"
+    mins = int(d.total_seconds() // 60)
+    if mins < 60:
+        return f"{mins} minute{'s' if mins != 1 else ''} ago"
+    hrs = mins // 60
+    if hrs < 48:
+        return f"{hrs} hour{'s' if hrs != 1 else ''} ago"
+    return f"{hrs // 24} day{'s' if hrs // 24 != 1 else ''} ago"
+
+
+# --------------------------------------------------------------------------
+# BRIEF.md sections
+# --------------------------------------------------------------------------
+def brief_sections():
+    if not BRIEF.exists():
+        return {}
+    text = BRIEF.read_text(encoding="utf-8", errors="replace")
+    out = {}
+    for m in re.finditer(r"<!--\s*SECTION:([a-z0-9-]+)(?:\s+updated=(\S+))?\s*-->", text):
+        out[m.group(1)] = (m.group(2) or "?").replace("T", " ")
+    return out
+
+
+# --------------------------------------------------------------------------
+# assemble
+# --------------------------------------------------------------------------
+def collect():
+    project_dirs = sorted(
+        p.name for p in REPO.iterdir()
+        if p.is_dir() and p.name not in SKIP and not p.name.startswith(".")
+    )
+    dirty, root_dirty = dirty_by_folder()
+    sections = brief_sections()
+    mailcounts = mailmod.counts()
+
+    assigned = {f for w in WORKSTREAMS.values() for f in w["folders"]}
+    unassigned = [d for d in project_dirs if d not in assigned]
+
+    folders = {}
+    for d in project_dirs:
+        path = REPO / d
+        lc = last_commit(d)
+        t, p, capped = newest_file(path)
+        folders[d] = {
+            "commit": lc,
+            "dirty": dirty.get(d, 0),
+            "newest_time": t,
+            "newest_path": str(p.relative_to(REPO)).replace("\\", "/") if p else "",
+            "capped": capped,
+            "handoff": (path / "HANDOFF.md").exists(),
+            "decisions": (path / "DECISIONS.md").exists(),
+        }
+
+    return {
+        "head": head(),
+        "now": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "unpushed": unpushed(),
+        "root_dirty": root_dirty,
+        "folders": folders,
+        "unassigned": unassigned,
+        "sections": sections,
+        "mail": mailcounts,
+    }
+
+
+def concerns(state) -> list[str]:
+    """Plain-English things a human should actually look at."""
+    out = []
+
+    if state["unpushed"]:
+        n = len(state["unpushed"])
+        out.append(
+            f"**{n} commit{'s' if n != 1 else ''} exist{'' if n != 1 else 's'} "
+            f"here but not on GitHub.** The coordinating chat cannot see "
+            f"{'them' if n != 1 else 'it'} at all. Whoever made "
+            f"{'them' if n != 1 else 'it'} needs to push."
+        )
+
+    for slug, ws in WORKSTREAMS.items():
+        if slug == "coordinator":
+            continue
+        sec = state["sections"].get(slug)
+        newest_commit = None
+        for f in ws["folders"]:
+            c = state["folders"].get(f, {}).get("commit")
+            if c and (newest_commit is None or c["when"] > newest_commit):
+                newest_commit = c["when"]
+        if sec is None:
+            out.append(
+                f"**{ws['title']} has no section in BRIEF.md yet.** The "
+                f"coordinating chat has nothing to read about it."
+            )
+        elif newest_commit and sec != "?" and sec < newest_commit:
+            out.append(
+                f"**{ws['title']} did work it has not written up.** Its last "
+                f"commit is {newest_commit}, its brief section was last written "
+                f"{sec}. The page is behind the work."
+            )
+
+    for slug, c in state["mail"].items():
+        n = c.get("OPEN", 0)
+        if n:
+            out.append(
+                f"**{n} instruction{'s' if n != 1 else ''} to `{slug}` "
+                f"{'are' if n != 1 else 'is'} still unanswered.** "
+                f"Say 'check your mail' in that window."
+            )
+        if c.get("BLOCKED"):
+            out.append(f"**`{slug}` reported {c['BLOCKED']} blocked instruction(s).**")
+
+    dirty_folders = [f for f, v in state["folders"].items() if v["dirty"]]
+    if state["root_dirty"]:
+        dirty_folders.append(f"the repo root ({state['root_dirty']} file(s))")
+    if dirty_folders:
+        out.append(
+            "**Uncommitted work on disk in: " + ", ".join(sorted(dirty_folders)) +
+            ".** That is normal mid-session, and invisible off this machine."
+        )
+
+    if state["unassigned"]:
+        out.append(
+            "**Folders belonging to no workstream: " +
+            ", ".join(state["unassigned"]) + ".** They are still scanned and "
+            "listed below — they are just not summarised on the one page. "
+            "Nothing was dropped silently."
+        )
+
+    if not out:
+        out.append("Nothing needs attention. Everything is pushed and written up.")
+    return out
+
+
+def render(state) -> str:
+    L = []
+    L.append("# SCAN.md — machine-read state of every project\n")
+    L.append(f"Generated **{state['now']}** at commit `{state['head']}`. "
+             f"Regenerated by `coordinator\\start.bat`; **never hand-edit it** — "
+             f"edits are overwritten and nothing is lost when it is deleted.\n")
+
+    L.append("## What a human should look at\n")
+    for c in concerns(state):
+        L.append(f"- {c}")
+    L.append("")
+
+    if state["unpushed"]:
+        L.append("## Commits here but not on GitHub\n")
+        for line in state["unpushed"]:
+            L.append(f"- `{line}`")
+        L.append("")
+
+    L.append("## Workstreams\n")
+    L.append("| Workstream | Brief section written | Newest commit | Uncommitted files | Open mail |")
+    L.append("|---|---|---|---|---|")
+    for slug, ws in WORKSTREAMS.items():
+        sec = state["sections"].get(slug, "— none —")
+        newest, dirty = "—", 0
+        for f in ws["folders"]:
+            v = state["folders"].get(f)
+            if not v:
+                continue
+            dirty += v["dirty"]
+            if v["commit"] and (newest == "—" or v["commit"]["when"] > newest):
+                newest = v["commit"]["when"]
+        om = state["mail"].get(slug, {}).get("OPEN", 0)
+        L.append(f"| **{ws['title']}** (`{slug}`) | {sec} | {newest} | "
+                 f"{dirty or '—'} | {om or '—'} |")
+    L.append("")
+
+    L.append("## Every folder, as git and the filesystem see it\n")
+    L.append("| Folder | Last commit | When | Newest file touched | Uncommitted | HANDOFF | DECISIONS |")
+    L.append("|---|---|---|---|---|---|---|")
+    for name in sorted(state["folders"]):
+        v = state["folders"][name]
+        c = v["commit"]
+        subj = (c["subject"][:58] + "…") if c and len(c["subject"]) > 59 else (c["subject"] if c else "no commits")
+        L.append(
+            f"| `{name}` | {('`' + c['hash'] + '` ' + subj) if c else 'never committed'} | "
+            f"{c['when'] if c else '—'} | {ts(v['newest_time'])} | "
+            f"{v['dirty'] or '—'} | {'yes' if v['handoff'] else '—'} | "
+            f"{'yes' if v['decisions'] else '—'} |"
+        )
+    L.append("")
+    L.append("`Newest file touched` is filesystem time and includes files git "
+             "never sees (recorded data, virtual environments are excluded). A "
+             "folder whose newest file is far ahead of its last commit is "
+             "either mid-session or has forgotten to commit.\n")
+    return "\n".join(L) + "\n"
+
+
+def digest(state) -> str:
+    L = [f"COORDINATOR SCAN — {state['now']} — commit {state['head']}", ""]
+    for c in concerns(state):
+        L.append("  * " + re.sub(r"\*\*(.+?)\*\*", r"\1", c))
+    L.append("")
+    L.append("Give the coordinating chat this URL:")
+    L.append(f"  https://raw.githubusercontent.com/vinexcleaning/trading/main/BRIEF.md?v={state['head']}")
+    return "\n".join(L)
+
+
+def _ascii_safe_console():
+    """Old Windows consoles are cp1252 and choke on an em dash."""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
+
+
+def main() -> int:
+    _ascii_safe_console()
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--quiet", action="store_true")
+    a = ap.parse_args()
+    state = collect()
+    SCAN.write_text(render(state), encoding="utf-8", newline="\n")
+    if not a.quiet:
+        print(digest(state))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -3120,3 +3120,85 @@ that end. Push it, or it does not exist to that chat.
 request and is marked **FROZEN SNAPSHOT** at the top so it cannot be misread as
 current. **The tennis and de-vig sessions should create their own fixed-name
 briefs and stop dating them.**
+
+---
+
+## Coordinator session, 2026-08-07 — the brief is ONE file now, and instructions travel through files
+
+**New folder `coordinator/`. Nothing outside it was touched except the shared
+root files named below.** No project folder was entered.
+
+### 1. Six brief files became one: [BRIEF.md](BRIEF.md)
+
+The fixed-name rule agreed earlier today did not hold. There were **six**
+`BRIEF_*.md` files at the root, not three — three fixed-name and three dated
+duplicates that the rule was meant to stop. Working out which was current had
+become a job in itself, which is the thing the rule existed to prevent.
+
+`BRIEF.md` now has **one section per workstream**: `coordinator` · `tennis` ·
+`mlb` · `devig` · `signal`. Each session writes **only its own**:
+
+```
+py -3 coordinator\brief.py write <slug> --file <your section>
+```
+
+That command re-reads the file **inside a lock**, replaces only the bytes
+between that slug's two markers, and writes atomically. **There is no
+whole-file mode.** `coordinator/tests/test_brief_isolation.py` plants
+neighbouring sections and asserts every byte survives a rewrite — the same
+class of failure as the `git add -A` cross-contamination and the fee formula
+going from 3 copies to 17 while the rule was only a convention.
+
+**Existing briefs were migrated verbatim and are attributed to the session that
+wrote them. Nothing was re-audited or reworded.**
+
+### 2. What I did to files other sessions own — flagged, not quiet
+
+- **Deleted** `BRIEF_2026-08-07.md`, `BRIEF_DEVIG_2026-08-07.md`,
+  `BRIEF_TENNIS_2026-08-07.md`. Duplicates or frozen snapshots; content is in
+  `BRIEF.md` and in git history.
+- **Replaced** `BRIEF_TENNIS.md`, `BRIEF_MLB.md`, `BRIEF_DEVIG.md` with a
+  three-line redirect, rather than deleting them, because the coordinating chat
+  may hold those URLs and a 404 tells it nothing.
+
+This crosses §5. Taken because the user's instruction was explicitly to migrate
+them and tell the other sessions. Recorded in `coordinator/DECISIONS.md` D2.
+**If a session disagrees, say so — do not silently recreate its old file.**
+
+### 3. A mailbox, so instructions stop being copy-pasted
+
+`coordinator/mailbox/<slug>/` holds instructions addressed to that session. One
+Markdown file each. **To answer, edit the file**: `Status: OPEN` → `DONE` or
+`BLOCKED`, and type under the reply line. No script to run.
+
+**Four messages are OPEN** — one to each of `tennis`, `mlb`, `devig`, `signal`,
+explaining the new convention.
+
+**The one documented exception to §5:** a session may write inside
+`coordinator/mailbox/<its-own-slug>/` and nowhere else in `coordinator/`.
+
+### 4. What it deliberately cannot do
+
+Written down **before** it was built, in
+[coordinator/COORDINATOR.md](coordinator/COORDINATOR.md). The load-bearing ones:
+
+- **It can leave a message. It cannot deliver one.** No session can interrupt
+  another. A session mid-task will not see new mail until it finishes.
+- **It cannot start, stop or steer a session.**
+- **It reports state, not truth.** It never audits a claim. `LEDGER.md` and
+  `GUARDS.md` are unchanged.
+- **It holds no credential, makes no network call of any kind, and cannot place
+  a trade.** `coordinator/tests/test_no_money_no_network.py` fails on any
+  network import, any credential-shaped token, any order vocabulary, and any
+  `subprocess` call that is not read-only `git`.
+
+### 5. The one thing the coordinating chat gains
+
+It reads GitHub, so **unpushed work is invisible to it**. `coordinator\scan.py`
+reads the actual disk and names unpushed commits, uncommitted folders, and any
+workstream whose last commit is **newer than its brief section** — i.e. work
+done and not written up. Output: `coordinator/SCAN.md`, committed so it is
+readable over the web.
+
+**`CLAUDE.md` §5 was amended** with the brief command and the mailbox rule, so
+every session picks this up automatically at start.

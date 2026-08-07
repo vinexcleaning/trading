@@ -219,8 +219,43 @@ other.** `STATUS.md` is the only shared channel.
 The coordinating chat reads this repo **over the public web**. Work that is
 committed but not pushed is invisible to it. **Push or it did not happen.**
 
+### The brief: ONE file, one section each (changed 2026-08-07)
+
+**There is one brief for the whole repo: [BRIEF.md](BRIEF.md) at the root.** It
+replaced six separate `BRIEF_*.md` files. **Do not create `BRIEF_*.md` any more,
+dated or otherwise** — the coordinating chat has been pointed at `BRIEF.md` and
+will not read anything else.
+
+At the end of every session, write **your own section only**:
+
+```bash
+py -3 coordinator\brief.py write <slug> --file <a file holding your section>
+```
+
+Slugs: `tennis` · `mlb` · `devig` · `signal` · `coordinator`. That command
+replaces only the text between your two markers, re-reads the file inside a
+lock, and has no whole-file mode — so it cannot flatten another session's
+section. Same content rules as before: `## Title`, an `**As of YYYY-MM-DD.**`
+line, under 20 lines, plain English, no acronyms.
+
+`STATUS.md` is unchanged and still the detailed channel *between* sessions.
+`BRIEF.md` is the short channel *out*.
+
+### Check your mailbox at the start of every session
+
+`coordinator/mailbox/<your-slug>/` holds instructions addressed to you. **Read
+it before you start work.** To answer, edit the message file itself: change
+`Status: OPEN` to `Status: DONE` or `BLOCKED`, and type under the reply line.
+No script to run.
+
+**This is the one documented exception to "work only inside your own folder":**
+you may write inside `coordinator/mailbox/<your-slug>/` and nowhere else in
+`coordinator/`.
+
 Related: [HOW_THIS_WORKS.md](HOW_THIS_WORKS.md) is the short operating manual;
 this file is the detailed contract.
+[coordinator/COORDINATOR.md](coordinator/COORDINATOR.md) is the design of the
+coordinator and, explicitly, the list of what it cannot do.
 
 ---
 
