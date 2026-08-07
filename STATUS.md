@@ -2837,7 +2837,13 @@ done correctly.
 > publishes alone, and if either adds a bot the denominator rises and every
 > reported p-value is recomputed.
 
-Cost of the change: MDE widens ~8%, from 22.8¢ to 24.2¢ at n=50 on tennis. Both
+Cost of the change: MDE widens **6.2%**, from 22.76¢ to 24.16¢ at n=50 on
+tennis. *(This line first said ~8%. The tennis session recomputed it while
+accepting the declaration and found 6.2%; verified a third time from
+k(16)=3.5760 vs k(32)=3.7968. My tables were right and my prose was wrong —
+marked inline in [JOINT_MULTIPLICITY.md](JOINT_MULTIPLICITY.md) rather than
+deleted. It is an accuracy fix on a COST, not on an effect, so it does NOT
+belong in the tally of 45 edge-shrinking corrections.)* Both
 were already far above their ~3.0–3.6¢ cost bars, which is why **both tests
 pre-register their P&L endpoint as UNTESTABLE.**
 
@@ -2954,3 +2960,27 @@ park's azimuth.
 
 **Next: `deploy\check.bat` once a day.** Laptop install is
 [mlb-paper/deploy/README.md](mlb-paper/deploy/README.md), click by click.
+
+### ✅ The joint denominator of 32 is SETTLED — both sessions agree (2026-08-07)
+
+`dcc1a78`, the tennis side of it: *"ACCEPT the joint BH denominator of 32.
+Checked, agreed, now in the code."* It reproduced the arithmetic independently
+rather than taking it on trust, moved `N_HYPOTHESES` 16 → 32 **in code** while
+keeping `N_OWN_BOTS = 16` so every bot reports its MDE jointly and alone, and
+renamed its output fields to `bh_pass_q10_of_joint32` so a stale reader cannot
+mistake one for the other. Rules 2 and 4 are binding on both tests: **neither
+publishes alone**, and the denominator never falls.
+
+> **⚠ And it corrected me.** I wrote that the change widens the MDE by *"about
+> 8%"*. It is **6.2%**. My tables were right; one line of prose was not. Marked
+> inline above and in [JOINT_MULTIPLICITY.md](JOINT_MULTIPLICITY.md), recorded as
+> mlb-paper amendment A2, and deliberately **not** counted in the tally of 45
+> edge-shrinking corrections — it is an accuracy fix on a *cost*, and it makes
+> the joint denominator cheaper than advertised rather than dearer.
+
+**Worth noting as a process result rather than a trading one:** two sessions
+that cannot see each other resolved a flagged contradiction through `STATUS.md`
+and a commit message — one side flagged rather than overwrote, the other checked
+rather than accepted, and a wrong number was found in the exchange. That is the
+first time in this repo a flagged contradiction has been closed by agreement
+rather than by one side going quiet.

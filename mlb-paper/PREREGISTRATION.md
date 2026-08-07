@@ -390,3 +390,25 @@ available to a strategy allowed to decline, and the population cost, which is
 what a forced strategy would pay.
 
 **No gate, threshold, bar or denominator was changed by this amendment.**
+
+### A2 — 2026-08-07. The tennis session ACCEPTED the joint denominator of 32, and corrected one of my numbers.
+
+`dcc1a78`. §3's declaration stands and is now implemented on both sides:
+`tennis-paper-forward` moved `N_HYPOTHESES` 16 → 32 in code, kept
+`N_OWN_BOTS = 16` so each bot reports its MDE jointly and alone, and renamed its
+output fields to `bh_pass_q10_of_joint32` so a stale reader cannot confuse the
+two. Its amendment A3 records it. **Nothing in §3 changes.**
+
+**One number of mine was wrong and is corrected.**
+[../JOINT_MULTIPLICITY.md](../JOINT_MULTIPLICITY.md) said moving from 16 to 32
+widens the MDE by *"about 8%"*. It is **6.2%** — verified three times now, from
+`k(16) = 3.5760` against `k(32) = 3.7968`. The **tables** in both that file and
+§4 here were always right; only that one line of prose was wrong. Struck through
+there rather than deleted.
+
+The correction makes the joint denominator **cheaper** than I advertised, so it
+does not weaken the case for it. It is an accuracy fix on a **cost**, not on an
+effect, and it does **not** belong in the programme's tally of 45 edge-shrinking
+corrections.
+
+**No gate, threshold, bar or denominator was changed by this amendment.**

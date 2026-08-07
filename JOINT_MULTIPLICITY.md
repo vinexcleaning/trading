@@ -49,15 +49,33 @@ finding."*
 
 ## What it costs, stated so nobody is surprised later
 
-Moving from 16 to 32 widens the minimum detectable effect by about **8%**. That
-is small. It is also the whole point: the correction is not there to be
-comfortable, it is there so that if one of 32 bots comes back looking good, the
-number attached to it is honest about how many were searched.
+Moving from 16 to 32 widens the minimum detectable effect by ~~about **8%**~~
+**6.2%**. That is small. It is also the whole point: the correction is not there
+to be comfortable, it is there so that if one of 32 bots comes back looking
+good, the number attached to it is honest about how many were searched.
+
+> ### ⚠ CORRECTED 2026-08-07 — the "8%" was wrong, and the tennis session caught it
+> The concurrent tennis session recomputed the widening independently while
+> accepting this declaration (`dcc1a78`) and found **6.2%, not ~8%**. Verified
+> here a third time from the power constants: `k(16) = 3.5760`,
+> `k(32) = 3.7968`, ratio **6.17%**.
+>
+> **The table below was always right; the prose above it was not.** 22.76¢ →
+> 24.16¢ is a 6.2% widening, and I wrote "about 8%" next to my own correct
+> numbers. Struck through rather than deleted, because deleting a wrong number
+> is how somebody re-derives it.
+>
+> This correction makes the joint denominator **cheaper** than advertised, not
+> dearer, so it does not weaken the case for adopting it. It is also not one of
+> the programme's 45 edge-shrinking corrections — it is an accuracy fix on a
+> **cost**, not on an effect, and it should not be counted in that tally.
 
 | | MDE, tennis (sd ≈ 45¢) | MDE, MLB (sd ≈ 50¢) |
 |---|---|---|
-| n = 50, BH across **16** | 22.8¢ | 25.4¢ |
-| n = 50, BH across **32** | **24.2¢** | **26.9¢** |
+| n = 50, BH across **16** | 22.76¢ | 25.29¢ |
+| n = 50, BH across **32** | **24.16¢** | **26.85¢** |
+| n = 2,000, BH across **16** | 3.60¢ | 4.00¢ |
+| n = 2,000, BH across **32** | **3.82¢** | **4.24¢** |
 
 Both remain far above the ~3.0–3.6¢ cost bars, which is why **both tests
 pre-register their P&L endpoint as UNTESTABLE** and put a decidable endpoint in
@@ -73,3 +91,36 @@ that a session works inside its own folder and flags contradictions in
 is flagged there. If the tennis session disagrees with this declaration, that
 disagreement belongs in `STATUS.md` too — and it must be settled **before**
 either test publishes, not after.
+
+## ✅ SETTLED 2026-08-07 — the tennis session checked it and accepted it
+
+`dcc1a78`, *"tennis: ACCEPT the joint BH denominator of 32. Checked, agreed, now
+in the code."* It did three things worth recording:
+
+1. **Reproduced the arithmetic independently** rather than taking it on trust,
+   and confirmed `k = 3.797` at α = 0.10/32 is exact.
+2. **Corrected the one number that was wrong** — the widening is **6.2%**, not
+   the ~8% this file's prose claimed. See the correction box above.
+3. **Put it in the code, not only in prose**: `N_HYPOTHESES` 16 → 32, with
+   `N_OWN_BOTS = 16` retained so every bot reports its MDE both jointly and
+   alone, and its output fields renamed to `bh_pass_q10_of_joint32` /
+   `mde_at_this_n_bh_joint32` so a stale reader cannot mistake one for the
+   other. Its §3 and §6 are deliberately **not** edited; amendment A3 is what
+   tells a reader arriving at §6 that the 16 there is now 32.
+
+It also states the asymmetry more sharply than this file did, and the sentence
+is worth keeping:
+
+> *A multiplicity correction may only ever move stricter after a run begins.
+> Raising it costs power — a price paid against yourself. Lowering it, including
+> by dropping a test from the family after seeing its results, is how a search
+> gets reported as smaller than it was.*
+
+**Rules 2 and 4 are accepted as binding on both tests.** Neither publishes
+alone, and if either adds a bot the denominator rises and every reported
+p-value is recomputed.
+
+> **This was settled between two sessions that cannot see each other, through
+> `STATUS.md` and a commit message.** That is the coordination mechanism working
+> as designed — a contradiction flagged rather than overwritten, checked by the
+> other side rather than accepted on trust, and corrected in the process.
