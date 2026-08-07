@@ -2984,3 +2984,30 @@ and a commit message — one side flagged rather than overwrote, the other check
 rather than accepted, and a wrong number was found in the exchange. That is the
 first time in this repo a flagged contradiction has been closed by agreement
 rather than by one side going quiet.
+
+### 📄 Brief filenames are now FIXED, not dated — applies to every session (2026-08-07)
+
+User instruction, recorded here because it names files owned by other sessions
+and I am not editing theirs.
+
+> **One fixed brief per workstream, overwritten at the end of every session.
+> `BRIEF_MLB.md` · `BRIEF_TENNIS.md` · `BRIEF_DEVIG.md`. Do NOT create a new
+> dated file.**
+
+**Why it changed.** A dated file per session buries the current one in a growing
+pile and the coordinating chat has to work out which is newest. A fixed name is
+always the latest state at a stable URL.
+
+**Because the name no longer carries a date, put the date inside the file** — an
+`**As of YYYY-MM-DD.**` line at the top saying it is overwritten every session,
+so a reader knows nothing in it is stale.
+
+Unchanged: under 20 lines, plain English, no jargon, no acronyms; `STATUS.md`
+stays the channel *between* sessions, and the brief is what reaches the
+coordinator, which **cannot read `STATUS.md`** — its URL is cached and frozen on
+that end. Push it, or it does not exist to that chat.
+
+`BRIEF_MLB.md` is written. `BRIEF_2026-08-07.md` is kept for now at the user's
+request and is marked **FROZEN SNAPSHOT** at the top so it cannot be misread as
+current. **The tennis and de-vig sessions should create their own fixed-name
+briefs and stop dating them.**
