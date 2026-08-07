@@ -2684,6 +2684,55 @@ set is ATP/WTA tennis — **which is exactly T012, already run and already null*
 
 ---
 
+## tennis-paper-forward — THE 50-MATCH RUN IS DONE. 0 of 16 stand up. (2026-08-07)
+
+Brief for the coordinating chat: **[BRIEF_TENNIS.md](BRIEF_TENNIS.md)** (fixed
+name, overwritten each session). Full detail:
+[tennis-paper-forward/HANDOFF.md](tennis-paper-forward/HANDOFF.md).
+
+Reached 50 settled matches in **11 hours**, not the predicted week, stopped
+itself, was analysed, and has been **restarted toward 2,500**.
+
+| verdict | bots |
+|---|---|
+| **SURVIVES** | **0** |
+| UNTESTABLE | 13 |
+| CANCELLED — never traded once in 538 ticks | 3 (all `momentum`) |
+
+**The one durable number: it costs 4.79c per contract to round-trip Kalshi
+tennis** — 2.67c fees + 2.12c spread, n=81. **That is ABOVE the 3.61c bar this
+repo has been using**, and it is measured rather than assumed. Every edge in the
+archive is smaller than it. Gates: T1 pass (538 ticks, zero gaps, zero result
+leaks), T4 median pairwise Jaccard 0.083 (the five styles are genuinely
+different instruments; favourite vs underdog exactly 0.000).
+
+### ⚠ Two false signals, both produced by my own code, both pre-predicted
+
+**Three bots reported SURVIVES on n=2**, one at +16.83c with a CI **0.06c wide**.
+It had won both its bets, so every bootstrap resample was positive and the
+interval could not cover zero — while the same row printed an MDE of 120.8c
+beside a "detected" 16.8c. PREREGISTRATION §8 item 1 predicted this before any
+data existed and the code never implemented it. Amendment **A4**; both new
+guards can only turn SURVIVES into UNTESTABLE, never the reverse.
+
+**Slippage read −1.14c, which looked like price improvement and is not.** Entries
+are limited to ask+3c, so **208 runaway fills were refused** and never entered
+the sample: the adverse tail is truncated at +3c and the favourable tail is not.
+Amendment **A5**.
+
+> Same lesson as the two defects logged yesterday (D14/D15): **the run reported
+> itself perfectly healthy throughout, and neither was visible in any status
+> display.** One needed the process list, one needed `ls -la`, and these two
+> needed reading the n beside the number.
+
+### What it costs to answer the real question
+
+~**2,250 settled matches per bot**, which at the observed rate is about **three
+weeks** of continuous running, not one. Restarted with `--target 2500`. **This
+is the user's call** — the brief asks him whether to keep going or stop here.
+
+---
+
 ## tennis-paper-forward — a paper-only 16-bot forward test (2026-08-06)
 
 `tennis-paper-forward/` · code, `PREREGISTRATION.md`, `DECISIONS.md`,

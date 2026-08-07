@@ -169,11 +169,44 @@ def mde_cents(n_matches: int, alpha: float) -> float:
                  * SD_PRIOR_CENTS / math.sqrt(n_matches))
 
 
+# A bootstrap over fewer than this many matches cannot produce an interval that
+# means anything. With n=2 and both observations the same sign, EVERY resample
+# has that sign, so the interval is structurally incapable of covering zero no
+# matter what the truth is.
+MIN_N_FOR_AN_INTERVAL = 5
+
+
 def verdict(point: float, lo: float, hi: float, cost_bar: float,
-            bh_pass: bool) -> str:
-    """Three values, always. GUARDS #21 - 'I could not tell' is a verdict."""
+            bh_pass: bool, n_matches: int = 0, mde: float = float("inf")) -> str:
+    """Three values, always. GUARDS #21 - 'I could not tell' is a verdict.
+
+    ⚠ THE TWO GUARDS BELOW WERE ADDED AFTER THE FIRST RESULTS, AND THAT IS
+    LEGITIMATE, BECAUSE THEY ONLY ENFORCE WHAT WAS ALREADY PRE-REGISTERED.
+
+    The first run returned SURVIVES for three bots on n=2 matches, with a
+    confidence interval 0.06c wide. `favourite__hold` won both of its two bets
+    at +16.80c and +16.86c per contract; the bootstrap resampled two nearly
+    identical positive numbers and could never draw a negative one. Going
+    2-for-2 on coin flips happens 25% of the time.
+
+    The same row reported an MDE of 120.8c beside a detected effect of 16.8c -
+    the row contradicted itself. PREREGISTRATION.md §8 item 1 had already
+    declared, before any data existed: "Any bot beating its cost bar at n < 100.
+    The MDE says that cannot be resolved, so a 'significant' result at that n is
+    a fluke or a leak." The code simply failed to implement it.
+
+    Fixing analysis code to match its own pre-registration is the opposite of
+    p-hacking, and note the direction: both guards can only ever turn a
+    SURVIVES into an UNTESTABLE. Nothing here can promote a result.
+    """
     if math.isnan(point):
         return "CANCELLED (no settled trades)"
+    if n_matches < MIN_N_FOR_AN_INTERVAL:
+        return (f"UNTESTABLE (n={n_matches}: too few matches for a bootstrap "
+                f"interval to mean anything - it cannot straddle zero)")
+    if abs(point) < mde:
+        return (f"UNTESTABLE (the effect {point:+.2f}c is smaller than what this "
+                f"n could detect, {mde:.1f}c - the test cannot resolve it)")
     if bh_pass and lo > 0 and point > cost_bar:
         return "SURVIVES"
     if lo <= 0 <= hi:
@@ -266,13 +299,32 @@ class Analysis:
         if not rows:
             return {"status": "no closed positions yet"}
         pt, lo, hi, nm = cluster_bootstrap(by_match)
+        spreads = [((self.briefs.get(e) or {}).get("market") or {}).get("spread")
+                   for e in by_match]
+        spreads = [s for s in spreads if s is not None]
+        mean_spread = float(np.mean(spreads)) if spreads else float("nan")
+        n_runaway = sum(1 for lg in (self.state.get("engine", {}).get("ledgers") or {}).values()
+                        for r in lg.get("rejected", [])
+                        if "ran to" in r.get("reason", "") or "fell to" in r.get("reason", ""))
         return {
-            "round_trip_fee_per_contract_cents": round(float(np.mean(rows)), 3),
-            "clustered_ci95": [round(lo, 3), round(hi, 3)],
+            "PRE_REGISTERED_METRIC_IS_FEES_PLUS_SPREAD_PLUS_SLIPPAGE": True,
+            "fees_only_per_contract_cents": round(float(np.mean(rows)), 3),
+            "fees_only_clustered_ci95": [round(lo, 3), round(hi, 3)],
+            "mean_spread_paid_cents": round(mean_spread, 3),
+            "TOTAL_round_trip_cost_per_contract_cents":
+                round(float(np.mean(rows)) + mean_spread, 3),
             "n_matches": nm,
             "entry_fee_per_contract_median": round(float(np.median(fees)), 3) if fees else None,
             "slippage_decision_to_fill_mean_cents": round(float(np.mean(slip)), 3) if slip else None,
             "slippage_n": len(slip),
+            "slippage_max_adverse_observed": (max(slip) if slip else None),
+            "fills_refused_because_the_market_ran_away": n_runaway,
+            "SLIPPAGE_IS_CENSORED_AND_THE_MEAN_IS_NOT_AN_EDGE": (
+                "Entries carry a limit of ask+3c and exits a limit of bid-3c, so every "
+                f"fill worse than that was REFUSED - {n_runaway} of them - and never "
+                "entered this sample. The adverse tail is truncated at +3c while the "
+                "favourable tail is not, which is why the mean is negative. It is the "
+                "limit hiding the bad fills, not price improvement."),
             "note": ("slippage is the cost of filling on the NEXT tick's book rather "
                      "than the one that triggered the decision"),
         }
@@ -362,7 +414,9 @@ class Analysis:
             v["bh_pass_q10_of_joint32"] = bool(passed.get(b))
             v["verdict"] = verdict(v["mean_cents_per_contract"],
                                    v["ci95_clustered"][0], v["ci95_clustered"][1],
-                                   v["own_cost_bar_cents"], bool(passed.get(b)))
+                                   v["own_cost_bar_cents"], bool(passed.get(b)),
+                                   n_matches=v["n_matches"],
+                                   mde=v["mde_at_this_n_bh_joint32"])
         return out
 
     def t5_execution_gap(self, per_bot: dict[str, dict]) -> dict:

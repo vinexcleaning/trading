@@ -357,5 +357,60 @@ this amendment is what tells them it is 32.
 
 ---
 
+### A4 — 2026-08-07. The verdict function did not implement its own §8. Fixed, and it can only ever make results STRICTER.
+
+**What the first analysis at n=50 returned:** `SURVIVES` for three bots —
+`favourite__hold` at **+16.83c with a confidence interval of [16.80, 16.86]**,
+0.06c wide, on **n=2 matches**.
+
+**Why it was wrong.** That bot won both of its two bets. The cluster bootstrap
+resampled two nearly identical positive numbers, so **every** resample was
+positive and the interval was structurally incapable of covering zero. Going
+2-for-2 on coin flips happens 25% of the time. The same row reported an MDE of
+**120.8c** beside a "detected" effect of 16.8c — **the row contradicted
+itself.**
+
+**§8 item 1 of this document had already called it**, before any data existed:
+*"Any bot beating its cost bar at n < 100. The MDE says that cannot be resolved,
+so a 'significant' result at that n is a fluke or a leak."* The prediction was
+right. The code just never implemented it.
+
+**Two guards added to `verdict()`:**
+
+1. `n < 5` → **UNTESTABLE**. A bootstrap over fewer than five matches cannot
+   produce an interval that means anything.
+2. `|effect| < MDE at that n` → **UNTESTABLE**. A test may not claim to have
+   detected something smaller than the smallest thing it can detect.
+
+**Why this is not p-hacking, and the test that matters:** both guards can only
+ever turn a SURVIVES into an UNTESTABLE. **Neither can promote any result.**
+Fixing analysis code so it matches its own pre-registration is the opposite of
+tuning it against outcomes — and the direction rule is the same one that
+governed A3.
+
+**After the fix: 0 SURVIVES, 13 UNTESTABLE, 3 CANCELLED.** Which is what §6
+predicted in advance ("no bot survives BH, and the modal verdict is
+UNDERPOWERED") — UNTESTABLE being the stricter, more accurate label for the
+same state.
+
+### A5 — 2026-08-07. T3 was computed as fees only; the pre-registered metric included the spread.
+
+§4/T3 defines the metric as *"entry fee + exit fee + spread paid + measured
+slippage."* The code summed the fees and stopped. Corrected: the components are
+now reported separately and totalled.
+
+Fees **2.67c** + mean spread paid **2.12c** = **4.79c** total round-trip cost
+per contract. The prediction was 3.5–4.5c, so the true figure is **slightly
+above** the predicted range, and above the archive's 3.61c tennis bar.
+
+**And the slippage number is censored — it is not price improvement.** Entries
+carry a limit of ask+3c and exits bid−3c, so **208 fills that ran away were
+refused** and never entered the sample. The adverse tail is truncated at exactly
++3c while the favourable tail is not, which is the whole reason the mean reads
+−1.14c. §8 item 6 said a suspiciously good number is where to go looking for the
+line of code that produced it. This was that line.
+
+---
+
 *Each entry gets a date, a reason, and what it changed. The text above §10 is
 never edited.*

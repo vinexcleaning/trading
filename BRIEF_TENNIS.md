@@ -1,19 +1,19 @@
 # Tennis paper test — brief
 
-**As of 2026-08-07.** This file is overwritten at the end of every session, so what you are reading is always the latest. Nothing below is older than the date on this line.
+**As of 2026-08-07.** Overwritten at the end of every session, so this is always the latest. **The 50-match run FINISHED and has been analysed.** No money was ever involved: no keys, no order-placing code, and a test fails the build if any appears.
 
-**No money can be touched.** There are no keys and no order-placing code anywhere in it, and a test fails the build if any appears.
+**What it is.** **16 tennis bots** — five styles × three exit rules, plus one that only watches — reading the same live tennis matches on Kalshi, each writing down its reasoning and stake **before** knowing the result. It hit 50 finished matches in 11 hours, not the week I expected, and stopped itself. **The 32 you may see elsewhere is the COMBINED total: 16 tennis + 16 baseball**, counted as one search because you read them side by side.
 
-**What it is.** **16 tennis bots** — five styles × three exit rules, plus one that only watches and never buys — all reading the same live tennis matches on Kalshi. Every bot writes down its reasoning and how much it would stake **before** it knows the result. It is running now and needs about a week to reach 50 finished matches.
+**RESULT: no bot made a claim that stands up. 0 of 16.** Thirteen came back "can't tell", three never traded at all. That is what was predicted in writing before it ran.
 
-**About the 32: that is the COMBINED total, 16 tennis + 16 baseball.** A separate session built a matching baseball test. Because you will read the two side by side, they count as one search of 32 rather than two searches of 16. That makes the bar for claiming anything stricter, which is the whole point of doing it.
+**The one number worth keeping: it costs 4.8 cents per contract to get in and out** (2.7 fees + 2.1 the buy/sell gap). That is *higher* than the 3.6 cents this repo has been assuming, and it is measured, not estimated. **Any tennis edge smaller than 4.8 cents is unreachable**, and every edge this repo has ever found was smaller than that.
 
-**What 50 matches CAN answer:** what it really costs to get in and out of this market, whether the five styles actually pick different matches or are the same bot in five hats, and whether the thing survives a week alone on a laptop.
+**Three bots briefly showed a "real" profit and it was false.** They had won 2 bets out of 2 — which happens 25% of the time with coin flips — and the maths reported that as near-certainty. My own written plan had predicted this exact trap and I had not built the check into the code. It is built now, and it can only ever make results stricter, never better.
 
-**What it CANNOT answer: whether any bot makes money.** That is not caution, it is arithmetic. With 50 matches we could only detect an edge of about 24 cents per contract, and trading costs about 3.6 cents. Getting a real answer needs roughly **2,250 finished matches per bot**. Any profit figure before then is noise wearing a number.
+**A second false signal, same shape.** The fills looked like they were coming in *better* than expected. They weren't: the system refuses any fill that moves more than 3 cents against it, so the bad fills were being thrown away and never counted. 208 of them. Good-looking number, produced by my own code.
 
-**Still open.** No live scores — the site that has them tells automated readers to stay out, so no bot can see the score, only the price. Player history stops on 1 June, so anything called "recent form" is ten weeks old and ageing. Three quarters of the matches are the lowest tier, so most numbers will mostly describe that tier.
+**What went right.** 538 checks over 11 hours with no gaps, no crashes and no double-running. The five styles genuinely pick different matches, not the same ones in different hats. Player and surface data covered 90–100% of matches.
 
-**Two bugs found and fixed, both of which looked perfectly healthy from the outside.** Three copies were running at once and silently overwriting each other's results; and the reasoning log was growing fast enough to delete its own earliest records before the test could finish. Neither showed up in any status display — they were only visible in the process list and the file size.
+**Still open.** No live scores — the site that has them tells automated readers to stay out, so bots see prices only. Player form data stops 1 June (now 67 days stale). One style never placed a single bet in 11 hours.
 
-**What I need from you:** nothing yet. When you want it on the laptop it is about 15 minutes: `tennis-paper-forward/deploy/LAPTOP_SETUP.md`. Two of its steps exist purely to prove your two recorders were not disturbed.
+**What I need from you: one decision.** Getting a real answer on profit needs about **2,250 finished matches per bot** — at the observed rate, roughly **three weeks** of continuous running, not one. I have restarted it to keep collecting. **Say if you would rather stop it here.** Otherwise the next step is moving it to the laptop so it can run undisturbed: 15 minutes, `tennis-paper-forward/deploy/LAPTOP_SETUP.md`.

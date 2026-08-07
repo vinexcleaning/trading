@@ -5,7 +5,65 @@ Designed to be moved to the laptop and left for a week.
 
 ---
 
-## State: BUILT, TESTED, RUNNING. Nothing is blocked.
+## State: THE 50-MATCH RUN IS COMPLETE AND ANALYSED. Restarted toward 2,500.
+
+### THE RESULT: 0 of 16 bots produced a claim that stands up
+
+| verdict | bots |
+|---|---|
+| **SURVIVES** | **0** |
+| UNTESTABLE | 13 |
+| CANCELLED (never traded) | 3 — all three `momentum` variants |
+
+Which is what §6 predicted in writing before the run: *"no bot survives BH, and
+the modal verdict is UNDERPOWERED."*
+
+### The five gates
+
+| gate | result | prediction |
+|---|---|---|
+| **T1** machinery | **PASS.** 538 ticks, **zero** non-contiguous jumps, median 13.6 s, p95 15.2 s, **0 result leaks** | pass ✓ |
+| **T2** brief coverage | ATP/WTA 87.5–100% both players, surface 100%; ITF surface **96.3%**, point-by-point **2.8%** | ITF <60% ✗ (A1), point-by-point <20% ✓ |
+| **T3** cost to trade | **4.79c** = 2.67c fees + 2.12c spread, n=81 | 3.5–4.5c — **slightly under-predicted** |
+| **T4** divergence | median pairwise Jaccard **0.083**; favourite vs underdog **0.000** | <0.5 ✓, favourite/underdog disjoint ✓ |
+| **T5** execution gap | control (mid, zero fees) beats 9 of 12 bots by **12–23c**; n=21, CI [−25.8, +36.0] | gap larger than every edge ✓ |
+
+**T3 is the number worth keeping.** 4.79c is *above* the 3.61c bar this repo has
+been using, and it is measured rather than assumed. Every edge in the archive is
+smaller than it.
+
+**T5 caveat:** the control's picks are not identical to each bot's, so the gap
+mixes execution cost with selection differences. The direction is consistent;
+the level is noise at n=21.
+
+**Spread split (exploratory):** −1.36c at ≤2c wide, −3.53c at 3–4c, −21.1c at
+>8c. Losses grow with the spread — the opposite direction to the archive's fake
+edges, which *grew* with it. Sanity check passes.
+
+---
+
+## ⚠ TWO FALSE SIGNALS THIS RUN PRODUCED, BOTH FROM MY OWN CODE
+
+**1. Three bots reported SURVIVES on n=2.** `favourite__hold` at +16.83c with a
+CI of **[16.80, 16.86]** — 0.06c wide. It had won both of its two bets, so every
+bootstrap resample was positive and the interval **could not** cover zero. The
+same row printed an MDE of 120.8c beside a "detected" 16.8c effect.
+PREREGISTRATION §8 item 1 had predicted this exact failure before any data
+existed; the code never implemented it. Fixed in amendment **A4** — and both new
+guards can only turn SURVIVES into UNTESTABLE, never the reverse.
+
+**2. Slippage looked favourable at −1.14c.** It is not price improvement: entries
+are limited to ask+3c, so **208 runaway fills were refused** and never entered
+the sample. The adverse tail is truncated at exactly +3c and the favourable tail
+is not. Amendment **A5**. §8 item 6 said a suspiciously good number is where to
+go looking for the line of code that made it — this was that line.
+
+> Both are the same lesson as D14/D15: the run reported itself perfectly healthy
+> throughout. Neither was visible in any status display.
+
+---
+
+## State of the machinery: BUILT, TESTED, RUNNING. Nothing is blocked.
 
 | | |
 |---|---|
@@ -14,7 +72,7 @@ Designed to be moved to the laptop and left for a week.
 | pool | ~248 markets → **~123 matches** (ATP 10 · WTA 9 · Challenger 13 · **ITF 91**) |
 | bots | **16** — 5 mentalities × 3 exit modes + 1 no-trade control |
 | paper positions | filling, exiting and re-entering correctly |
-| settled matches | **0 of 50** — the clean run restarted 2026-08-07 04:20 |
+| settled matches | **50 of 50 reached, analysed, then restarted toward 2,500** |
 | ⚠ earlier desktop data | **discarded.** Six runners shared one state file during development (D14). No conclusion was drawn from it. |
 | money at risk | **none, and none is reachable** |
 
@@ -141,8 +199,7 @@ written in full and fsynced. **D15.**
    about 15 minutes. Step 6 and step 8 exist to prove the two recorders were not
    disturbed.
 2. **Leave it for a week.** `deploy\check.bat` whenever you feel like it.
-3. **At 50 settled matches** the runner stops itself. Run `-m src.analyse` and
-   read PREREGISTRATION.md §3 before §6.
+3. ~~At 50 settled matches~~ **DONE 2026-08-07.** `reports/results.json` holds it.
 4. **Then decide whether to keep going.** Nothing about this design stops at 50
    — the target is a flag. If the T1–T5 gates come back clean, the cheapest
    useful thing is to raise `--target` and let it keep running, because the only
