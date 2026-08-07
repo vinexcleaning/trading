@@ -354,3 +354,39 @@ Written now, so it cannot be rationalised later.
 
 *Each entry gets a date, a reason, and what it changed. The text above §11 is
 never edited.*
+
+### A1 — 2026-08-07. Two pre-registered predictions failed within hours. Both recorded, neither used to change a gate.
+
+**§5/P5 predicted probable pitchers "below 60% at T−48 h."** Measured on the
+first 13 briefs at that lead: **85%**. The prediction said that a high number
+should make me suspect the schedule hydrate of back-filling rather than
+celebrate. It was checked: `probablePitcher` comes off the schedule endpoint at
+request time and carries no historical fill-in, and the 15% that are missing are
+the games where the club genuinely has not announced. **The prediction was
+simply wrong** — MLB clubs announce probables further ahead than I assumed.
+
+**§5/P4 predicted 2.5–3.5¢ hold-to-settle.** Measured: **2.18¢**, made of a
+0.50¢ spread paid, −0.02¢ slippage and a 1.70¢ fee.
+
+> That number first came back as **1.68¢**, which tripped P4's own
+> *"below 2.0¢ is a bug"* alarm. **The alarm was right and the bug was in the
+> report, not the engine**: `report.py` was computing slippage and fees and had
+> simply omitted the spread paid, which §5/P4's own definition names. The fill
+> model was correct throughout — `_exec_price` pays the ask, and
+> `tests/test_guards.py` proves it never touches a mid. Fixed, and recorded
+> here because the guard catching the analyst rather than the engine is the
+> case that usually goes unrecorded.
+
+**Why 2.18¢ is still below the predicted range, and it is not an error.** The
+prediction was built on the **population** median spread of 2.0¢
+(`reports/market_census.json`). The realised spread paid is **1.0¢**, because
+the bots **decline the wider quotes** — a wider quote makes their own net edge
+fail their own cost bar. That is a genuine selection effect and it runs in the
+*opposite* direction to the esports finding, where a strategy that had to trade
+every qualifying event paid the mean rather than the median.
+
+**Both numbers will be reported side by side**: the realised cost, which is only
+available to a strategy allowed to decline, and the population cost, which is
+what a forced strategy would pay.
+
+**No gate, threshold, bar or denominator was changed by this amendment.**
