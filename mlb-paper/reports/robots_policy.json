@@ -1,0 +1,216 @@
+{
+  "checked_at_utc": "2026-08-07T01:18:42+00:00",
+  "user_agent": "trading-research/1.0 (personal research)",
+  "hosts": {
+    "https://statsapi.mlb.com": {
+      "allowed": true,
+      "example_path_allowed": true,
+      "crawl_delay_s": null
+    },
+    "https://baseballsavant.mlb.com": {
+      "allowed": true,
+      "example_path_allowed": true,
+      "crawl_delay_s": null
+    },
+    "https://api.open-meteo.com": {
+      "allowed": false,
+      "example_path_allowed": false,
+      "crawl_delay_s": null
+    },
+    "https://api.weather.gov": {
+      "allowed": false,
+      "example_path_allowed": false,
+      "crawl_delay_s": null
+    },
+    "https://aviationweather.gov": {
+      "allowed": true,
+      "example_path_allowed": true,
+      "crawl_delay_s": null
+    },
+    "https://www.retrosheet.org": {
+      "allowed": true,
+      "example_path_allowed": false,
+      "crawl_delay_s": null
+    },
+    "https://raw.githubusercontent.com": {
+      "allowed": true,
+      "example_path_allowed": true,
+      "crawl_delay_s": null
+    },
+    "https://api.github.com": {
+      "allowed": true,
+      "example_path_allowed": true,
+      "crawl_delay_s": null
+    },
+    "https://api.elections.kalshi.com": {
+      "allowed": true,
+      "example_path_allowed": true,
+      "crawl_delay_s": null
+    },
+    "https://guest.api.arcadia.pinnacle.com": {
+      "allowed": true,
+      "example_path_allowed": true,
+      "crawl_delay_s": null
+    },
+    "https://www.fangraphs.com": {
+      "allowed": true,
+      "example_path_allowed": true,
+      "crawl_delay_s": null
+    },
+    "https://www.baseball-reference.com": {
+      "allowed": true,
+      "example_path_allowed": true,
+      "crawl_delay_s": 3
+    },
+    "https://www.rotowire.com": {
+      "allowed": true,
+      "example_path_allowed": true,
+      "crawl_delay_s": null
+    },
+    "https://www.espn.com": {
+      "allowed": true,
+      "example_path_allowed": true,
+      "crawl_delay_s": null
+    },
+    "https://www.reddit.com": {
+      "allowed": false,
+      "example_path_allowed": false,
+      "crawl_delay_s": null
+    },
+    "https://www.mlb.com": {
+      "allowed": true,
+      "example_path_allowed": true,
+      "crawl_delay_s": null
+    }
+  },
+  "urls": [
+    {
+      "url": "https://statsapi.mlb.com/api/v1/schedule?sportId=1",
+      "host": "https://statsapi.mlb.com",
+      "why": "MLB Stats API: schedule, probable pitchers, linescore, boxscore",
+      "allowed": true,
+      "allowed_wildcard": true,
+      "crawl_delay_s": null
+    },
+    {
+      "url": "https://baseballsavant.mlb.com/statcast_search",
+      "host": "https://baseballsavant.mlb.com",
+      "why": "Statcast search (pitch-level); also the CSV export",
+      "allowed": true,
+      "allowed_wildcard": true,
+      "crawl_delay_s": null
+    },
+    {
+      "url": "https://api.open-meteo.com/v1/forecast",
+      "host": "https://api.open-meteo.com",
+      "why": "Open-Meteo -- robots.txt is `Disallow: /`. REFUSED.",
+      "allowed": false,
+      "allowed_wildcard": false,
+      "crawl_delay_s": null
+    },
+    {
+      "url": "https://api.weather.gov/points/39.9,-75.1",
+      "host": "https://api.weather.gov",
+      "why": "US NWS -- robots.txt is `Disallow: /`. REFUSED.",
+      "allowed": false,
+      "allowed_wildcard": false,
+      "crawl_delay_s": null
+    },
+    {
+      "url": "https://aviationweather.gov/api/data/taf?ids=KPIT&format=json",
+      "host": "https://aviationweather.gov",
+      "why": "NOAA Aviation Weather Center: METAR observed + TAF forecast wind/temp",
+      "allowed": true,
+      "allowed_wildcard": true,
+      "crawl_delay_s": null
+    },
+    {
+      "url": "https://www.retrosheet.org/gamelogs/index.html",
+      "host": "https://www.retrosheet.org",
+      "why": "Retrosheet game logs",
+      "allowed": false,
+      "allowed_wildcard": false,
+      "crawl_delay_s": null
+    },
+    {
+      "url": "https://raw.githubusercontent.com/chadwickbureau/register/master/README.md",
+      "host": "https://raw.githubusercontent.com",
+      "why": "Chadwick Bureau player register (raw.githubusercontent)",
+      "allowed": true,
+      "allowed_wildcard": true,
+      "crawl_delay_s": null
+    },
+    {
+      "url": "https://api.github.com/rate_limit",
+      "host": "https://api.github.com",
+      "why": "GitHub API",
+      "allowed": true,
+      "allowed_wildcard": true,
+      "crawl_delay_s": null
+    },
+    {
+      "url": "https://api.elections.kalshi.com/trade-api/v2/exchange/status",
+      "host": "https://api.elections.kalshi.com",
+      "why": "Kalshi public read API",
+      "allowed": true,
+      "allowed_wildcard": true,
+      "crawl_delay_s": null
+    },
+    {
+      "url": "https://guest.api.arcadia.pinnacle.com/0.1/sports/3/matchups",
+      "host": "https://guest.api.arcadia.pinnacle.com",
+      "why": "Pinnacle guest API (the sharp reference)",
+      "allowed": true,
+      "allowed_wildcard": true,
+      "crawl_delay_s": null
+    },
+    {
+      "url": "https://www.fangraphs.com/",
+      "host": "https://www.fangraphs.com",
+      "why": "FanGraphs",
+      "allowed": true,
+      "allowed_wildcard": true,
+      "crawl_delay_s": null
+    },
+    {
+      "url": "https://www.baseball-reference.com/",
+      "host": "https://www.baseball-reference.com",
+      "why": "Baseball-Reference",
+      "allowed": true,
+      "allowed_wildcard": true,
+      "crawl_delay_s": 3
+    },
+    {
+      "url": "https://www.rotowire.com/baseball/",
+      "host": "https://www.rotowire.com",
+      "why": "RotoWire",
+      "allowed": true,
+      "allowed_wildcard": true,
+      "crawl_delay_s": null
+    },
+    {
+      "url": "https://www.espn.com/mlb/",
+      "host": "https://www.espn.com",
+      "why": "ESPN web",
+      "allowed": true,
+      "allowed_wildcard": true,
+      "crawl_delay_s": null
+    },
+    {
+      "url": "https://www.reddit.com/r/baseball/",
+      "host": "https://www.reddit.com",
+      "why": "Reddit (known Disallow: /)",
+      "allowed": false,
+      "allowed_wildcard": false,
+      "crawl_delay_s": null
+    },
+    {
+      "url": "https://www.mlb.com/",
+      "host": "https://www.mlb.com",
+      "why": "MLB.com web",
+      "allowed": true,
+      "allowed_wildcard": true,
+      "crawl_delay_s": null
+    }
+  ]
+}

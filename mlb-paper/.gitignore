@@ -1,0 +1,10 @@
+# Recorded data, never committed. Kalshi's window is ~69 days and closed
+# markets 404, so this is the part that cannot be re-pulled.
+data/
+logs/
+.venv/
+__pycache__/
+*.pyc
+# Reports can name nothing private, but the brief sample is large and
+# regenerable; keep the small measured ones and drop the bulk.
+reports/brief_sample.json

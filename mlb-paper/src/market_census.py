@@ -107,7 +107,7 @@ def taker_fee_cents(price_c, contracts=1):
     GUARDS #6 / common/tests/test_no_fee_reimplementation.py: this file must
     never contain the arithmetic itself. It delegates.
     """
-    sys.path.insert(0, str(Path(r"C:\Users\vinig\trading")))
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
     from common.kalshi_fees import fee_order_cents
     return float(fee_order_cents(price_c, contracts))
 

@@ -13,7 +13,7 @@ import sqlite3
 import textwrap
 from pathlib import Path
 
-TRADING = Path(r"C:\Users\vinig\trading")
+TRADING = Path(__file__).resolve().parents[2]
 SOCIAL = TRADING / "social-signal" / "data" / "social.db"
 GITHUB = TRADING / "signal-github" / "data" / "github.db"
 

@@ -22,7 +22,7 @@ import sys
 import textwrap
 from pathlib import Path
 
-TRADING = Path(r"C:\Users\vinig\trading")
+TRADING = Path(__file__).resolve().parents[2]
 DBS = {
     "reddit": TRADING / "social-signal" / "data" / "social.db",
     "github": TRADING / "signal-github" / "data" / "github.db",

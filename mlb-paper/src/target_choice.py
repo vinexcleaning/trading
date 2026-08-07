@@ -42,7 +42,12 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-sys.path.insert(0, str(Path(r"C:\Users\vinig\trading")))
+# The repo root, derived from this file. NEVER a hardcoded home
+# directory: this package is meant to run on the laptop, whose paths
+# live under a different user, and a hardcoded desktop path would
+# import nothing and fail at the first shared-fee call.
+TRADING_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(TRADING_ROOT))
 
 import pinnacle as PIN                          # noqa: E402
 from common.kalshi_fees import fee_order_cents   # noqa: E402

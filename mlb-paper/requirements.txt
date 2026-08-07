@@ -1,0 +1,12 @@
+# mlb-paper runs on the standard library and two things.
+#
+# tzdata is NOT optional on Windows. CPython's zoneinfo has no bundled tz
+# database and Windows ships none, so `ZoneInfo("America/New_York")` raises
+# ZoneInfoNotFoundError in a bare venv. Kalshi's MLB ticker times are US
+# EASTERN, so without it every game is parsed four hours early and the whole
+# run is wrong in a way that looks like a network problem. Found by running the
+# tests inside a fresh venv, not by reading the code.
+tzdata>=2024.1
+
+# tests only
+pytest>=8.0

@@ -47,7 +47,12 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-sys.path.insert(0, str(Path(r"C:\Users\vinig\trading")))
+# The repo root, derived from this file. NEVER a hardcoded home
+# directory: this package is meant to run on the laptop, whose paths
+# live under a different user, and a hardcoded desktop path would
+# import nothing and fail at the first shared-fee call.
+TRADING_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(TRADING_ROOT))
 
 import kalshi as K          # noqa: E402
 import parkfactor as PF     # noqa: E402
@@ -214,11 +219,36 @@ def _market_block(game_key, kalshi_by_game, pin_games, pin_mkts, k_parts):
 # ------------------------------------------------------------------- the API
 
 def build_for_day(day=None, as_of=None, series=("KXMLBGAME", "KXMLBTOTAL"),
-                  want_lineups=True, want_weather=True, want_bullpen=True):
-    """One brief per scheduled game. `as_of` is the decision instant."""
+                  want_lineups=True, want_weather=True, want_bullpen=True,
+                  only_keys=None, max_games=None, needs=None):
+    """One brief per scheduled game. `as_of` is the decision instant.
+
+    `only_keys` restricts the build to specific Kalshi game keys and
+    `max_games` caps how many are built in one call. Both exist because a full
+    15-game build costs ~10 minutes and several hundred requests against free
+    public APIs, which is longer than the runner's 300 s tick -- the first
+    unattended tick took 618.9 s and would have overrun every interval. Games
+    not built this call are simply built on a later tick; nothing is lost,
+    because the brief cache is keyed per game and a starter's game log does not
+    change inside half an hour.
+
+    `needs` is a set of block names ("bullpen", "lineup", "weather"). The
+    expensive blocks are skipped for games whose decision window cannot use
+    them -- the bullpen block alone is ~20 boxscore reads per team and no
+    mentality reads it before T-6 h.
+    """
     as_of = as_of or datetime.now(timezone.utc)
     day = day or as_of.date()
+    # MLB's "game date" is the LOCAL calendar date; a 7pm Pacific game on the
+    # 7th starts at 02:10 UTC on the 8th. Kalshi's game_key is keyed on the UTC
+    # start, so a UTC day D contains late games from MLB's day D-1. Fetching
+    # only day D silently loses every West-coast night game -- observed as
+    # "brief unavailable for 2026-08-08:LAD@AZ" repeating on every tick.
     games = S.schedule(day)
+    seen = {g["gamePk"] for g in games}
+    for extra in S.schedule(day - timedelta(days=1)):
+        if extra["gamePk"] not in seen:
+            games.append(extra)
     pf = PF.load()
     stand = S.standings(_season(as_of))
     # The sharp reference is OPTIONAL. Pinnacle's guest API 401s under load
@@ -245,13 +275,15 @@ def build_for_day(day=None, as_of=None, series=("KXMLBGAME", "KXMLBTOTAL"),
             continue
 
     out = []
+    built = 0
     for g in games:
         if (g.get("status") or {}).get("abstractGameState") == "Final":
             continue
+        if max_games is not None and built >= max_games:
+            break
         starts = _iso(g["gameDate"])
         home_id = g["teams"]["home"]["team"]["id"]
         away_id = g["teams"]["away"]["team"]["id"]
-        v = S.venue(g["venue"]["id"])
 
         gk = None
         kp = None
@@ -267,6 +299,14 @@ def build_for_day(day=None, as_of=None, series=("KXMLBGAME", "KXMLBTOTAL"),
                     break
             if gk:
                 break
+
+        # The only_keys filter has to be here, BEFORE the expensive blocks.
+        # Applying it after the build would still pay for every game and only
+        # discard the result -- which is what the first version did, and it is
+        # why the first unattended tick took 618.9 s against a 300 s interval.
+        if only_keys is not None and gk not in only_keys:
+            continue
+        v = S.venue(g["venue"]["id"])
 
         b = {
             "built_at_utc": as_of.isoformat(timespec="seconds"),
@@ -299,14 +339,14 @@ def build_for_day(day=None, as_of=None, series=("KXMLBGAME", "KXMLBTOTAL"),
                 "home": _starter_block("home", g, as_of),
             },
         }
-        if want_bullpen:
+        if want_bullpen and (needs is None or "bullpen" in needs):
             b["bullpen"] = {
                 "away": S.bullpen_load(away_id, _season(as_of), as_of),
                 "home": S.bullpen_load(home_id, _season(as_of), as_of),
             }
-        if want_lineups:
+        if want_lineups and (needs is None or "lineup" in needs):
             b["lineup"] = _lineup_block(g, as_of)
-        if want_weather:
+        if want_weather and (needs is None or "weather" in needs):
             try:
                 b["weather"] = WX.forecast(v, starts)
             except RuntimeError as e:
@@ -319,6 +359,7 @@ def build_for_day(day=None, as_of=None, series=("KXMLBGAME", "KXMLBTOTAL"),
                            "reference_available": False,
                            "note": "no Kalshi market matched this game"}
         out.append(b)
+        built += 1
     return out
 
 
