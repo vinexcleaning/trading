@@ -171,9 +171,27 @@ def main() -> None:
                 # above is exactly this endpoint ignoring a filter it accepted.
                 if str(t.get("ticker") or "") != tk:
                     continue
+                # ⚠ THE RENAMED-FIELD TRAP, C024 / GUARDS #12, and I walked
+                # straight into it. The trade object carries `yes_price_dollars`
+                # / `no_price_dollars` / `count_fp`. The legacy `yes_price`,
+                # `no_price`, `count` DO NOT EXIST and read None on every trade.
+                # v1 of this file read the legacy names and stored 3,979,927
+                # rows of NULL price. `record.py`'s own docstring warns about
+                # exactly this: "The legacy integer-cent fields return None on
+                # every Kalshi market; a recorder reading them writes silent
+                # nulls."
+                #
+                # It only surfaced because the analysis refused to coerce. Had
+                # it used `float(x or 0)`, every fill would have been priced at
+                # 0c and the maker handed a free 100c winner on every YES
+                # settlement -- a fabricated edge, in the flattering direction.
+                yp = fnum(t.get("yes_price_dollars"))
+                np_ = fnum(t.get("no_price_dollars"))
+                cnt = fnum(t.get("count_fp"))
+                if yp is None or cnt is None:
+                    continue
                 rows.append((t.get("trade_id"), tk, s, tk.rsplit("-", 1)[0],
-                             fnum(t.get("count")), fnum(t.get("yes_price")),
-                             fnum(t.get("no_price")),
+                             cnt, yp, np_,
                              t.get("taker_outcome_side"),
                              t.get("taker_book_side"), t.get("created_time")))
             if rows:
@@ -194,6 +212,22 @@ def main() -> None:
         # minutes, a 325 MB WAL, 2,580 s of KERNEL time, and ZERO rows visible
         # to a reader. Per-ticker commits keep each transaction ~12,000 rows.
         con.commit()
+        # CONTENT ASSERT, not a call assert (GUARDS #13). A 200 and a row count
+        # are not a result. After the first ticker, demand that prices actually
+        # arrived -- this is the check that would have caught the renamed-field
+        # trap above in ten seconds instead of after 3.98 M useless rows.
+        if i == 1:
+            bad = con.execute(
+                "select count(*) from trades where yes_price is null "
+                "or count is null").fetchone()[0]
+            tot = con.execute("select count(*) from trades").fetchone()[0]
+            if tot == 0 or bad:
+                raise SystemExit(
+                    f"CONTENT ASSERT FAILED: {bad} of {tot} stored trades have "
+                    "a null price or size. Refusing to pull a useless tape. "
+                    "Check the *_dollars / *_fp field names.")
+            print(f"   content assert OK: {tot:,} priced trades on ticker 1",
+                  flush=True)
         if i % 25 == 0 or i == len(todo):
             el = time.time() - started
             tot = con.execute("select count(*) from trades").fetchone()[0]

@@ -56,11 +56,23 @@ def fee_for(series: str):
     return SeriesFees.from_api(obj) if "fee_type" in obj else None
 
 
-def event_means(ev, pnl, w):
-    d = pd.DataFrame({"ev": ev, "p": pnl, "w": np.maximum(w, 1e-9)})
-    g = d.groupby("ev").apply(
-        lambda x: np.average(x.p, weights=x.w), include_groups=False)
-    return g
+def make_grouper(ev):
+    """Contract-weighted per-event mean via bincount.
+
+    A pandas groupby-apply over 3.5 M rows, 300 times for the permutation null,
+    is minutes of wall clock. bincount is the same arithmetic in one pass and
+    makes the placebo affordable -- which matters, because the placebo is the
+    test statistic here, not a nicety.
+    """
+    codes, uniq = pd.factorize(ev)
+    return codes, len(uniq)
+
+
+def event_means(codes, n_ev, pnl, w):
+    w = np.maximum(w, 1e-9)
+    num = np.bincount(codes, weights=pnl * w, minlength=n_ev)
+    den = np.bincount(codes, weights=w, minlength=n_ev)
+    return num / den
 
 
 def boot_ci(v, rng):
@@ -77,11 +89,23 @@ def main() -> None:
         print("no trade_tape.db - run pull_trade_tape.py first")
         return
     con = sqlite3.connect(f"file:{DB.as_posix()}?mode=ro", uri=True, timeout=300)
+    # Drop rows the arithmetic cannot use, and COUNT them rather than letting
+    # them coerce. A null yes_price silently becoming 0 would price a fill at
+    # 0c and hand the maker a free 100c winner -- exactly the shape of defect
+    # that manufactures an edge. The first run crashed on it, which is the
+    # lucky outcome.
+    n_all = pd.read_sql(
+        "select count(*) n from trades t join markets m on m.ticker=t.ticker "
+        "where m.result in ('yes','no')", con).n[0]
     t = pd.read_sql(
         "select t.ticker, t.series, t.count, t.yes_price, t.taker_outcome_side, "
         "m.result, m.close_time from trades t join markets m on m.ticker=t.ticker "
-        "where m.result in ('yes','no')", con)
+        "where m.result in ('yes','no') and t.yes_price is not null "
+        "and t.count is not null and t.taker_outcome_side in ('yes','no')", con)
     con.close()
+    print(f"dropped {n_all - len(t):,} of {n_all:,} rows for a null price, "
+          f"null size or missing aggressor side "
+          f"({100*(n_all-len(t))/max(n_all,1):.3f}%)")
     if t.empty:
         print("no joined trades")
         return
@@ -108,25 +132,27 @@ def main() -> None:
             # the maker is always the opposite side of the taker
             return np.where(taker_yes, yp - 100.0 * y, 100.0 * y - yp) - mk
 
-        real_g = event_means(ev, pnl_of(ty), w)
+        codes, n_ev = make_grouper(ev)
+        real_g = event_means(codes, n_ev, pnl_of(ty), w)
         real = float(real_g.mean())
-        lo, hi = boot_ci(real_g.values, rng)
+        lo, hi = boot_ci(real_g, rng)
 
         print(f"\n{'='*72}\n{s}   events={len(real_g):,}  trades={len(sub):,}  "
               f"maker fee={mk:.2f}c (charges_maker={sf.charges_maker})\n{'='*72}")
         print(f"   REAL maker P&L      {real:+.4f}c   95% CI [{lo:+.4f},{hi:+.4f}]")
 
         # ---------------- THE PLACEBO: destroy the aggressor label only
-        idx_by_ev = pd.Series(range(len(ev))).groupby(ev).apply(
-            lambda x: x.values, include_groups=False)
+        order = np.argsort(codes, kind="stable")
+        bounds = np.searchsorted(codes[order], np.arange(n_ev + 1))
+        groups = [order[bounds[k]:bounds[k + 1]] for k in range(n_ev)]
         perm = []
         for _ in range(N_PERM):
             sh = ty.copy()
-            for arr in idx_by_ev:
+            for arr in groups:
                 v = sh[arr]
                 rng.shuffle(v)
                 sh[arr] = v
-            perm.append(float(event_means(ev, pnl_of(sh), w).mean()))
+            perm.append(float(event_means(codes, n_ev, pnl_of(sh), w).mean()))
         perm = np.array(perm)
         diff = real - perm.mean()
         p = float((np.abs(perm - perm.mean()) >= abs(diff)).mean())
@@ -136,8 +162,8 @@ def main() -> None:
         print(f"   >>> REAL - PLACEBO = {diff:+.4f}c      permutation p = {p:.4f}")
 
         # ---------------- D1 directional controls
-        dl = float(event_means(ev, 100.0 * y - yp, w).mean())
-        ds = float(event_means(ev, yp - 100.0 * y, w).mean())
+        dl = float(event_means(codes, n_ev, 100.0 * y - yp, w).mean())
+        ds = float(event_means(codes, n_ev, yp - 100.0 * y, w).mean())
         print(f"   D1 always-long-yes {dl:+.4f}c   always-short-yes {ds:+.4f}c")
 
         # ---------------- D2 per day
@@ -156,12 +182,13 @@ def main() -> None:
         pts = []
         for frac in (0.25, 0.5, 0.75, 1.0):
             keep = set(uniq[: max(2, int(len(uniq) * frac))])
-            m = np.array([e in keep for e in ev])
-            pts.append((frac, float(event_means(ev[m], pnl_of(ty)[m], w[m]).mean())))
+            m = np.isin(ev, list(keep))
+            c2, n2 = make_grouper(ev[m])
+            pts.append((frac, float(event_means(c2, n2, pnl_of(ty)[m], w[m]).mean())))
         print("   D3 stability: " + "  ".join(
             f"{int(f*100)}%={v:+.3f}c" for f, v in pts))
 
-        out[s] = {"events": int(len(real_g)), "trades": int(len(sub)),
+        out[s] = {"events": int(n_ev), "trades": int(len(sub)),
                   "maker_fee_c": mk, "real_c": round(real, 4),
                   "ci": [round(lo, 4), round(hi, 4)],
                   "placebo_mean_c": round(float(perm.mean()), 4),
