@@ -72,3 +72,18 @@ coordination tool should never be one review away from each other.
 is labelled at the top as written by the coordinator from repo state and not
 re-audited. The conservative alternative — leave it blank — was rejected because
 a missing section reads as "nothing here" rather than "nobody has reported".
+
+### D8 — The freshness check is "is this commit findable", not "is this the newest commit"
+
+**2026-08-07.** The first version of the stamp said *"if the newest commit on
+GitHub is not `X`, you are reading a cached copy"*. **That was wrong and would
+have fired on every single read.** The stamp is written *before* the commit that
+carries it exists, so it can never name that commit — it always lags by one.
+
+Reworded: the commit named must be **findable in the history**. If it is not,
+the page predates it and is cached. Being one or two commits behind is normal
+and the stamp now says so. A check that cries wolf every time is worse than no
+check, because it trains the reader to ignore it.
+
+**Caught by pushing and looking at the result**, not by a test. There is no test
+for this; the honest statement is that the wording is verified by eye.

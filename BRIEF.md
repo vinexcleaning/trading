@@ -9,10 +9,13 @@ channel between sessions; this is the short channel out. Plain English, no
 acronyms, no jargon. If a number matters, say whether bigger is better.
 
 <!-- STAMP -->
-> **Generated 2026-08-07 13:16 at commit `9a4bd74`.**
-> If the newest commit on GitHub is not `9a4bd74`, you are reading a cached
-> copy. Cache-busting URL:
-> `https://raw.githubusercontent.com/vinexcleaning/trading/main/BRIEF.md?v=9a4bd74`
+> **Generated 2026-08-07 13:21, on top of commit `f9b4d3f`.**
+> **Freshness check:** if `f9b4d3f` does not appear in this repo's commit
+> history on GitHub, you are reading a cached copy — stop and refetch.
+> Being one or two commits behind the newest is normal and expected:
+> this page is always written just before the commit that carries it.
+> Cache-busting URL, always safe to use:
+> `https://raw.githubusercontent.com/vinexcleaning/trading/main/BRIEF.md?v=f9b4d3f`
 <!-- /STAMP -->
 
 ---

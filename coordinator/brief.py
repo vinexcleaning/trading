@@ -121,11 +121,18 @@ def write_brief_atomic(text: str) -> None:
 def stamp_block() -> str:
     h = head_hash()
     now = f"{datetime.now():%Y-%m-%d %H:%M}"
+    # The stamp can never name the commit that contains it -- it is written
+    # before that commit exists. So the freshness test is one-directional:
+    # commit `h` must be FINDABLE in the repo history. If it is not, the page
+    # predates it and is cached. Being one or two commits behind is normal.
     return (
         f"{STAMP_OPEN}\n"
-        f"> **Generated {now} at commit `{h}`.**\n"
-        f"> If the newest commit on GitHub is not `{h}`, you are reading a cached\n"
-        f"> copy. Cache-busting URL:\n"
+        f"> **Generated {now}, on top of commit `{h}`.**\n"
+        f"> **Freshness check:** if `{h}` does not appear in this repo's commit\n"
+        f"> history on GitHub, you are reading a cached copy — stop and refetch.\n"
+        f"> Being one or two commits behind the newest is normal and expected:\n"
+        f"> this page is always written just before the commit that carries it.\n"
+        f"> Cache-busting URL, always safe to use:\n"
         f"> `https://raw.githubusercontent.com/vinexcleaning/trading/main/BRIEF.md?v={h}`\n"
         f"{STAMP_CLOSE}"
     )
