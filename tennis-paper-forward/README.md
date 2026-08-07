@@ -58,7 +58,7 @@ exists.** That is the point of the whole exercise.
 |---|---|
 | `src/safety.py` | the only network call in the package. GET only, against a host+path allowlist with no order path on it |
 | same | refuses to start if any Kalshi credential is in the process environment |
-| `tests/test_paper_only.py` | greps every source file for order-shaped tokens; **plants a violation and asserts the detector still bites** |
+| `tests/test_paper_only.py` | greps every source file for order-shaped tokens; **plants a violation and asserts the detector still bites**; and asserts the single-instance lock is re-checked every tick, not just at startup |
 
 There is no signing code, no private key, and no `TRADING_DISABLED` switch —
 because there is nothing to switch off.

@@ -176,3 +176,59 @@ def test_the_detector_bites_on_a_planted_violation(tmp_path):
         "the detector failed to fire on code that literally posts an order. "
         "The guard has rotted, not the data."
     )
+
+
+# --------------------------------------------------------------------------
+# 5. Single instance — continuously, not just at startup
+# --------------------------------------------------------------------------
+
+def test_the_lock_is_re_asserted_every_tick_not_only_at_startup(monkeypatch, tmp_path):
+    """Checking a lock once at startup is a greeting, not a lock.
+
+    Six runners were alive at once on the dev machine because the lock was
+    deleted between restarts. Two runners sharing one state.json is the worst
+    kind of corruption: the write is atomic, so the file is never malformed -
+    it is simply whichever process wrote last, silently discarding the other's
+    positions.
+    """
+    import json as _json
+    from src import forward
+
+    lock = tmp_path / ".runner.lock"
+    monkeypatch.setattr(forward, "LOCK", lock)
+    monkeypatch.setattr(forward, "DATA", tmp_path)
+
+    # we hold it -> fine
+    lock.write_text(_json.dumps({"pid": os.getpid()}), encoding="utf-8")
+    forward.assert_still_own_lock()
+
+    # somebody else took it -> we must stop
+    lock.write_text(_json.dumps({"pid": os.getpid() + 99999}), encoding="utf-8")
+    with pytest.raises(forward.LockLost):
+        forward.assert_still_own_lock()
+
+    # it vanished -> we re-take it rather than dying
+    lock.unlink()
+    forward.assert_still_own_lock()
+    assert _json.loads(lock.read_text(encoding="utf-8"))["pid"] == os.getpid()
+
+
+def test_the_runner_loop_actually_calls_the_lock_check():
+    """Source-level: the guard existing is not the same as it being wired in."""
+    src = (SRC / "forward.py").read_text(encoding="utf-8")
+    loop = src.split("while not _STOP:")[1].split("self._save()")[0]
+    assert "assert_still_own_lock()" in loop, (
+        "the per-tick lock assertion is defined but not called in the run loop")
+    assert "except LockLost" in loop, (
+        "LockLost is raised but not handled, so it would be swallowed by the "
+        "generic `except Exception` that keeps the runner alive through errors")
+
+
+def test_release_does_not_remove_someone_elses_lock(monkeypatch, tmp_path):
+    import json as _json
+    from src import forward
+    lock = tmp_path / ".runner.lock"
+    monkeypatch.setattr(forward, "LOCK", lock)
+    lock.write_text(_json.dumps({"pid": os.getpid() + 99999}), encoding="utf-8")
+    forward.release_lock()
+    assert lock.exists(), "a shutting-down runner deleted the live runner's lock"

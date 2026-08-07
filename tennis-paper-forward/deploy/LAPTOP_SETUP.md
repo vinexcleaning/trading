@@ -91,7 +91,7 @@ python -m venv .venv
 .venv\Scripts\python.exe -m pytest tests -q
 ```
 
-**What you should see:** `49 passed`, or more.
+**What you should see:** `52 passed`, or more.
 
 **If anything fails, stop and send me the output.** These tests are the reason
 you can leave this running unattended. Among other things they assert that no
@@ -127,6 +127,12 @@ Get-CimInstance Win32_Process -Filter "Name like 'python%'" | Select-Object Proc
 
 **Write down, or screenshot, the two recorder lines.** You are going to compare
 against this in step 8.
+
+> **Expect two lines per running program, not one.** A Python virtual
+> environment on Windows uses a small launcher that starts the real interpreter,
+> so both show up with the same command line. The one doing the work has CPU
+> time against it; the launcher sits at zero. This is normal and is not two
+> copies running.
 
 ---
 
@@ -227,6 +233,7 @@ output rather than letting you draw that conclusion.
 | what you see | what it means |
 |---|---|
 | `a runner is ALREADY RUNNING (pid N)` | the guard working. One runner at a time is correct. |
+| `LOCK LOST` in the log, then a clean stop | also the guard working. A second runner started, and the older one stood down rather than share the state file. Nothing is lost. |
 | `no interpreter at ...\.venv\Scripts\python.exe` | step 3 did not run, or ran in a different folder |
 | `Kalshi credentials are present in this process environment` | this machine has `KALSHI_KEY_ID` set. The paper package refuses to share a process with it. Open a fresh PowerShell, or clear it for that session with `$env:KALSHI_KEY_ID=""`. |
 | the tick count stops advancing | run `check.bat`; if the last tick is over ten minutes old it says so in capitals |

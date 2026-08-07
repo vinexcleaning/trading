@@ -76,6 +76,22 @@ SETTLEMENT_BATCH = 25
 # fictional fill.
 PENDING_MAX_AGE_SEC = 300
 
+# How much a PASS verdict must move before it is worth another line. Anything
+# that acts is always written in full; this governs repetition only.
+PASS_RELOG_CONVICTION_MOVE = 2.0     # a real change of mind, not price wobble
+# The periodic heartbeat. Measured: at 0.5-cent conviction granularity the log
+# ran 141 lines/tick and 780 MB/day, which would have rotated the earliest
+# decisions off the disk before the run reached fifty matches. Coarsening the
+# change threshold took it to 40 lines/tick and 143 MB/day - and at that point
+# THIS was the dominant term, because 16 bots x ~136 matches is 2,176 heartbeats
+# an hour on its own. Six hours puts a full week at roughly a third of the
+# rotation budget. Nothing is lost by widening it: `repeated_unchanged` already
+# counts every skipped tick and attaches the count to the next record written,
+# so how long a view was held is recorded either way.
+PASS_RELOG_MAX_GAP_SEC = 6 * 3600
+MENTALITY_BARS = {"favourite": 2.0, "underdog": 2.0, "brief-led": 2.5,
+                  "momentum": 2.5, "unconstrained": 3.5}
+
 _STOP = False
 
 
@@ -183,9 +199,55 @@ def acquire_lock() -> None:
 
 def release_lock() -> None:
     try:
+        if LOCK.exists():
+            owner = json.loads(LOCK.read_text(encoding="utf-8")).get("pid")
+            if owner != os.getpid():
+                return          # not ours to remove
         LOCK.unlink(missing_ok=True)
     except Exception:
         pass
+
+
+class LockLost(RuntimeError):
+    """Another process took the lock while we were running."""
+
+
+def assert_still_own_lock() -> None:
+    """Re-check ownership EVERY TICK, not just at startup.
+
+    Checking a lock once at startup is not a lock, it is a greeting. Two ways
+    a second writer gets in afterwards, and both are realistic on the laptop:
+
+      * somebody deletes a lock they believe is stale while the owner is alive
+        (the setup guide even tells them how, for the case where it IS stale)
+      * the Task Scheduler watchdog fires during a window where the lock file
+        is briefly absent
+
+    Two runners then share one `state.json` and one reasoning log, and because
+    the state write is atomic the file is never malformed - it is simply
+    whichever process wrote last, silently discarding the other's positions.
+    That is the worst kind of corruption: it looks completely fine.
+
+    This is not hypothetical. Six runners were alive at once on this machine
+    during development, because the developer deleted the lock before each
+    restart. The guard worked and was bypassed; the fix is to make bypassing it
+    survive only until the next tick.
+    """
+    try:
+        if not LOCK.exists():
+            _atomic_write(LOCK, json.dumps({"pid": os.getpid(), "started": now(),
+                                            "note": "re-created; it had been removed"}))
+            return
+        owner = json.loads(LOCK.read_text(encoding="utf-8")).get("pid")
+    except Exception:
+        return                  # an unreadable lock is not evidence of a rival
+    if owner != os.getpid():
+        raise LockLost(
+            f"the lock is now held by pid {owner}, not by this process "
+            f"({os.getpid()}). Another runner started. Exiting so that two "
+            f"processes cannot write one state file - the last writer would "
+            f"silently discard the other's positions."
+        )
 
 
 # --------------------------------------------------------------------------
@@ -195,10 +257,11 @@ def release_lock() -> None:
 class Forward:
     def __init__(self, poll_sec: int = DEFAULT_POLL_SEC,
                  target: int = DEFAULT_TARGET_MATCHES,
-                 size: int = 10, once: bool = False):
+                 size: int = 10, once: bool = False, no_lock: bool = False):
         self.poll_sec = poll_sec
         self.target = target
         self.once = once
+        self.no_lock = no_lock
         self.engine = PaperEngine(BOT_NAMES, size=size)
         self.runner = BotRunner(self.engine, self._log_reasoning)
         self.live: dict[str, LiveState] = {}
@@ -233,8 +296,10 @@ class Forward:
         self.runner.control_intents = list(s.get("control_intents", []))
         from .engine import PendingOrder
         self.engine.pending = [PendingOrder(**o) for o in s.get("pending", [])]
-        self._last_view = {tuple(k.split("|", 1)): tuple(v)
-                           for k, v in (s.get("last_view") or {}).items()}
+        # Deliberately NOT restored. On resume the first pass on every match
+        # is written in full again, which costs one extra record per bot per
+        # match and guarantees the log after a restart is readable on its own.
+        self._last_view = {}
         for et, d in (s.get("live") or {}).items():
             ls = LiveState(event_ticker=et, ticker=d.get("ticker", ""))
             ls.first_seen = d.get("first_seen", "")
@@ -262,7 +327,6 @@ class Forward:
             "control_intents": self.runner.control_intents,
             "engine": self.engine.snapshot(),
             "pending": [asdict(o) for o in self.engine.pending],
-            "last_view": {f"{k[0]}|{k[1]}": list(v) for k, v in self._last_view.items()},
             "live": {
                 et: {"ticker": ls.ticker, "first_seen": ls.first_seen,
                      "ticks": [asdict(t) for t in ls.ticks[-120:]]}
@@ -293,16 +357,39 @@ class Forward:
         assert d.outcome_known is False, "a deliberation must be written before the result"
         self.deliberations += 1
         key = (d.bot, d.event_ticker)
-        sig = (d.action, round(d.conviction * 2) / 2, d.side_ticker)
+        now_ts = datetime.now(timezone.utc).timestamp()
+
+        # Anything that ACTS is always written in full, always.
+        if d.action != "pass":
+            if self._repeat_count.get(key):
+                d.repeated_unchanged = self._repeat_count.pop(key)
+            self._last_view[key] = (d.action, d.conviction, now_ts)
+            self._pending_lines.append(d.to_json())
+            return
+
         prev = self._last_view.get(key)
-        material = d.action != "pass" or prev is None or prev != sig
-        if not material:
+        if prev is None:
+            # FIRST LOOK at this match by this bot - full record, with prose.
+            self._last_view[key] = ("pass", d.conviction, now_ts)
+            self._pending_lines.append(d.to_json())
+            return
+
+        # A repeated pass. Three things make it worth another line, and small
+        # conviction wobble as prices tick is not one of them: at 0.5-cent
+        # granularity it produced 141 records a tick, 780 MB a day, and would
+        # have rotated the earliest decisions off the disk before the run
+        # reached fifty matches.
+        _prev_act, prev_conv, prev_ts = prev
+        bar = MENTALITY_BARS.get(d.mentality, 2.5)
+        crossed_the_bar = (prev_conv < bar) != (d.conviction < bar)
+        moved_a_lot = abs(d.conviction - prev_conv) >= PASS_RELOG_CONVICTION_MOVE
+        too_long = (now_ts - prev_ts) >= PASS_RELOG_MAX_GAP_SEC
+        if not (crossed_the_bar or moved_a_lot or too_long):
             self._repeat_count[key] = self._repeat_count.get(key, 0) + 1
             return
-        if prev is not None and self._repeat_count.get(key):
-            d.repeated_unchanged = self._repeat_count.pop(key)
-        self._last_view[key] = sig
-        self._pending_lines.append(d.to_json())
+        d.repeated_unchanged = self._repeat_count.pop(key, 0)
+        self._last_view[key] = ("pass", d.conviction, now_ts)
+        self._pending_lines.append(d.to_json_compact())
 
     def _flush_reasoning(self) -> int:
         if not self._pending_lines:
@@ -529,6 +616,8 @@ class Forward:
             f"{len(BOT_NAMES)} bots, size {self.engine.size} contracts")
         while not _STOP:
             try:
+                if not self.no_lock:
+                    assert_still_own_lock()
                 h = self.tick()
                 say(f"tick {h['tick']:5d}  markets {h['markets']:4d}  matches {h['matches']:3d}  "
                     f"delib {h['deliberations']:5d}  open {h['open_positions']:3d}  "
@@ -541,6 +630,10 @@ class Forward:
                     break
             except KeyboardInterrupt:
                 break
+            except LockLost as exc:
+                say(f"LOCK LOST - {exc}")
+                say("stopping. This is the guard working, not a failure.")
+                return
             except Exception:
                 say("tick failed:\n" + traceback.format_exc())
             if self.once:
@@ -571,7 +664,8 @@ def main(argv: list[str] | None = None) -> int:
     if not a.no_lock:
         acquire_lock()
     try:
-        Forward(poll_sec=a.poll, target=a.target, size=a.size, once=a.once).run()
+        Forward(poll_sec=a.poll, target=a.target, size=a.size, once=a.once,
+                no_lock=a.no_lock).run()
     finally:
         if not a.no_lock:
             release_lock()

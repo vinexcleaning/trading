@@ -238,3 +238,88 @@ stops being read. Flagged in STATUS.md rather than fixed silently.
 | serve speed, aces, first-serve % as live inputs | not in any free live feed. They are in the brief as career aggregates only |
 | a compounding bankroll | a fixed bankroll makes sizing skill measurable against a constant denominator. Compounding confounds it with path order |
 | trading the mirror side as "sell" | Kalshi lists both sides, so buying the other market's YES is the same trade with a clean fill model. Shorting would need a second execution model for no new information |
+---
+
+## D14 — The lock is re-asserted EVERY TICK, not just at startup (2026-08-07)
+
+**Found the hard way:** six `python.exe` entries matching this project were
+alive on the dev machine at once.
+
+**Counted correctly, that is THREE runners, not six.** A venv's
+`Scripts\python.exe` on Windows is a launcher stub that re-execs the real
+interpreter, so every runner shows up **twice** — a parent with 0 CPU seconds
+waiting on a child that does the work. Stated because the raw count is what
+`check.bat` and [deploy/LAPTOP_SETUP.md](deploy/LAPTOP_SETUP.md) steps 6 and 8
+put in front of a human, and a person comparing process lists needs to know that
+two lines per runner is normal.
+
+Three is still three too many, and at least two were **actively ticking** — the
+run log shows tick 168 and tick 169 written 0.1 seconds apart by different
+processes, which is the concurrency proving itself.
+
+**Cause:** me. I ran `rm -f data/.runner.lock` before each development restart,
+which is exactly what the startup guard is there to prevent. The guard worked
+and I bypassed it.
+
+**But it exposed a real defect for the laptop.** A lock checked once at startup
+is a greeting, not a lock. Two realistic ways a second writer gets in
+afterwards:
+
+- somebody deletes a lock they believe is stale while the owner is alive —
+  and [deploy/LAPTOP_SETUP.md](deploy/LAPTOP_SETUP.md) itself tells them how,
+  for the case where it genuinely is stale
+- the Task Scheduler watchdog fires in a window where the lock file is briefly
+  absent
+
+Two runners then share one `state.json`. **The corruption this produces is the
+worst kind, because the file is never malformed** — the write is atomic, so it
+is simply whichever process wrote last, silently discarding the other's
+positions. Nothing looks wrong.
+
+**Decision:** `assert_still_own_lock()` runs at the top of every tick. If the
+lock names another pid, the runner stops with a message that says the guard is
+working. If the lock has vanished, it re-takes it rather than dying.
+`release_lock()` now also refuses to delete a lock it does not own.
+
+**Three tests**, including a source-level one asserting the check is actually
+*called* in the run loop and that `LockLost` is handled before the generic
+`except Exception` that keeps the runner alive through errors. Verified by
+guard-rot: removing the call makes the test fail.
+
+**Consequence for the data:** every paper result produced on the desktop before
+2026-08-07 04:20 is discarded. Six writers shared one state file, so the
+positions in it are not a coherent record of anything. The clean run starts
+from zero. No conclusion had been drawn from it.
+
+---
+
+## D15 — The reasoning log was 5.5x too large to survive the run (2026-08-07)
+
+**Measured after 2.5 hours:** `reasoning.jsonl` at **222 MB**, growing at
+**780 MB/day**, against a 1 GB rotation budget. At that rate the earliest
+decisions would have been rotated off the disk **before the run reached fifty
+matches** — silently destroying the one asset this project exists to create.
+
+**Two causes, both fixed:**
+
+1. **The re-log trigger was too fine.** A pass was rewritten whenever conviction
+   moved half a point, and conviction moves whenever the price ticks. 93% of all
+   records were repeated passes. Now a pass is rewritten only when the action
+   changes, when conviction crosses that mentality's entry bar, when it moves by
+   ≥2.0, or on a six-hourly heartbeat.
+2. **Repeated passes carried full prose.** 3.8 KB each. A repeat now writes a
+   compact record — about 400 bytes — carrying which tactics fired, in which
+   direction, with what weight, but not the rendered rationale.
+
+**What is NOT throttled, and this is the pre-registration guarantee:** the first
+look at every match by every bot, and every entry, re-entry, deferral and exit,
+is always written in full with everything in it, and fsynced, before the result
+exists.
+
+**Result:** 141 → 40 lines/tick, 780 → ~143 MB/day, and after widening the
+heartbeat to six hours a full week sits at roughly a third of the rotation
+budget instead of 5.5x over it.
+
+**The general lesson, which is GUARDS #13 wearing different clothes:** the
+runner reported healthy ticks and correct counts the entire time. Nothing
+alerted. The defect was only visible by looking at the size of the file.

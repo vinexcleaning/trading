@@ -9,12 +9,13 @@ Designed to be moved to the laptop and left for a week.
 
 | | |
 |---|---|
-| tests | **49 pass** in this package; **52 pass** across `common/` |
+| tests | **52 pass** in this package; **52 pass** across `common/` |
 | live ticks | steady state **~12 s** against a 60 s poll |
 | pool | ~248 markets → **~123 matches** (ATP 10 · WTA 9 · Challenger 13 · **ITF 91**) |
 | bots | **16** — 5 mentalities × 3 exit modes + 1 no-trade control |
 | paper positions | filling, exiting and re-entering correctly |
-| settled matches | **0 of 50** — nothing had settled yet at handoff |
+| settled matches | **0 of 50** — the clean run restarted 2026-08-07 04:20 |
+| ⚠ earlier desktop data | **discarded.** Six runners shared one state file during development (D14). No conclusion was drawn from it. |
 | money at risk | **none, and none is reachable** |
 
 ---
@@ -84,6 +85,33 @@ This reproduces the archive's arbitrage result — *"52 real violations, 0 with
 enough size to trade"* — on a market family it had not been measured on. It was
 briefly mislabelled here as a stale-book alarm; the correct stale-book invariant
 is `bid_sum > 100`, which fires on 1–2 matches per tick. GUARDS #18.
+
+---
+
+## Two defects found and fixed on 2026-08-07, both invisible from the outside
+
+Worth reading before trusting any long unattended run, here or elsewhere.
+
+**The lock was checked once at startup and never again.** Six runners were alive
+at once — my fault, from deleting the lock between dev restarts — but a lock
+checked once is a greeting, not a lock, and the laptop has two realistic ways to
+reproduce it. Two runners share one `state.json`, and because the write is
+atomic the file is **never malformed**: it is simply whichever process wrote
+last, silently discarding the other's positions. Now re-asserted every tick,
+with a source-level test that the check is actually *called* in the loop and a
+guard-rot check that removing it fails the test. **D14.**
+
+**The reasoning log would have destroyed itself before the run finished.** At
+222 MB after 2.5 hours it was growing at 780 MB/day against a 1 GB rotation
+budget — so the earliest decisions would have been rotated off the disk before
+the fiftieth match settled. 93% of records were repeated passes at 3.8 KB each.
+Now 40 lines/tick and ~143 MB/day, with first looks and every action still
+written in full and fsynced. **D15.**
+
+> Both were **completely invisible from the outside**: healthy ticks, correct
+> counts, no alerts. The first was visible only in the process list, the second
+> only in `ls -la`. GUARDS #13 in a new costume — assert the content, and the
+> size of a growing file is content.
 
 ---
 
