@@ -35,7 +35,7 @@ src/bots.py        five mentalities, three exit modes, the control, the tick loo
 src/engine.py      paper fills at the ask/bid, fees from common/kalshi_fees.py
 src/forward.py     the unattended runner: lock, atomic state, fsync, rotation
 src/status.py      the one-command check
-src/analyse.py     the pre-registered gates and the 16-way BH-FDR
+src/analyse.py     the pre-registered gates and the JOINT 32-way BH-FDR
 deploy/            batch wrapper, Task Scheduler install/uninstall, setup guide
 ```
 
@@ -89,9 +89,12 @@ is `bid_sum > 100`, which fires on 1–2 matches per tick. GUARDS #18.
 
 ## Where the honest limits are
 
-1. **50 matches decides nothing about P&L.** Under BH across 16, the MDE is
-   **22.8c** against a 3.6c cost bar. ~2,000 settled matches per bot would be
-   needed. Pre-registered as UNTESTABLE; `analyse.py` leads with it.
+1. **50 matches decides nothing about P&L.** Under BH across the **joint 32**
+   (this test's 16 plus `mlb-paper`'s 16 - see ../JOINT_MULTIPLICITY.md and
+   amendment A3), the MDE is **24.2c** against a 3.6c cost bar. ~2,252 settled
+   matches per bot would be needed. Pre-registered as UNTESTABLE; `analyse.py`
+   leads with it. **Rule 2 binds: the two tests are reported together or
+   neither is reported.**
 2. **The archive stops 2026-06-01.** "Recent form" is form as of then, and gets
    one day staler per day. `staleness_days` is in every brief.
 3. **No live scores.** SofaScore's `robots.txt` is 403 → UNDECIDABLE (GUARDS

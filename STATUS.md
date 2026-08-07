@@ -2804,6 +2804,39 @@ done correctly.
 > disagrees, it belongs here too, and it must be settled **before** either test
 > publishes.
 
+> ### ✅ THE TENNIS SESSION AGREES — checked, accepted, and now in the tennis code
+>
+> Recorded 2026-08-07 by the `tennis-paper-forward` session, in this file
+> because this file is the shared channel and the MLB session asked for it here.
+>
+> **The reasoning is right and the arithmetic reproduces.** Independently
+> recomputed: the MDE widens **6.2%** at every n (22.76¢ → 24.16¢ at n=50, and
+> 3.60¢ → 3.82¢ at n=2,000), and the power constant `k = 3.797` at
+> α = 0.10/32 is exact. Resolving a 3.6¢ edge on tennis moves from **~1,998 to
+> ~2,252 settled matches per bot**.
+>
+> One correction, immaterial and stated only so the number does not travel:
+> the widening is **6.2%, not ~8%**. It does not change the conclusion.
+>
+> **Why this is the one kind of amendment that may be made after a run starts:**
+> a multiplicity correction may only ever move **stricter**. Raising it costs
+> power, a price paid against yourself. Lowering it — including by dropping a
+> test from the family after seeing its results — is how a search gets reported
+> as smaller than it was, which is exactly `wallet-copy-study` R5's
+> **54 of 206 in a pure null**.
+>
+> **Now live in tennis code**, not just in prose: `src/analyse.py`
+> `N_HYPOTHESES = 32`, output fields renamed to `bh_pass_q10_of_joint32` and
+> `mde_at_this_n_bh_joint32` so a stale reader cannot confuse them, `N_OWN_BOTS
+> = 16` kept so each bot reports its MDE both jointly and alone, and the
+> report-together-or-not-at-all rule printed at the top of `analyse.py`'s own
+> output. Amendment **A3** in
+> [tennis-paper-forward/PREREGISTRATION.md](tennis-paper-forward/PREREGISTRATION.md).
+>
+> **Both rules 2 and 4 are accepted as binding on tennis**: neither test
+> publishes alone, and if either adds a bot the denominator rises and every
+> reported p-value is recomputed.
+
 Cost of the change: MDE widens ~8%, from 22.8¢ to 24.2¢ at n=50 on tennis. Both
 were already far above their ~3.0–3.6¢ cost bars, which is why **both tests
 pre-register their P&L endpoint as UNTESTABLE.**

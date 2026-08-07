@@ -5,9 +5,14 @@ Run it whenever. It reads only what is on disk and changes nothing.
     .venv\\Scripts\\python.exe -m src.analyse
 
 EVERYTHING HERE WAS FIXED IN PREREGISTRATION.md BEFORE THE RUN
-    The gates, the sixteen-way BH denominator, the clustering unit, the
-    three-valued verdict, and the prediction that the P&L endpoint is
-    UNTESTABLE at fifty matches. This module computes them; it does not choose
+    The gates, the clustering unit, the three-valued verdict, and the
+    prediction that the P&L endpoint is UNTESTABLE at fifty matches.
+
+    THE ONE EXCEPTION IS THE BH DENOMINATOR, WHICH ROSE 16 -> 32 AFTER THE RUN
+    STARTED AND BEFORE ANY RESULT EXISTED. See N_HYPOTHESES below,
+    ../JOINT_MULTIPLICITY.md, and PREREGISTRATION.md amendment A3. A denominator
+    that RISES is the only direction a correction may move after the fact; one
+    that falls is how a search gets reported as smaller than it was. This module computes them; it does not choose
     them. If a number here looks interesting and is not in the pre-registration,
     it is an observation, and it is labelled EXPLORATORY.
 """
@@ -29,7 +34,26 @@ LOGS = ROOT / "logs"
 REPORTS = ROOT / "reports"
 
 BH_Q = 0.10
-N_HYPOTHESES = 16          # fixed in PREREGISTRATION.md §6, before any result
+# THE DENOMINATOR IS 32, NOT 16, AND IT IS JOINT WITH mlb-paper.
+#
+# PREREGISTRATION.md §6 declared 16 over this test's own bots. Read alone that
+# is right. A second sixteen-bot forward test (`mlb-paper/`) is running on the
+# same exchange, in the same repo, in the same fortnight, and the two will be
+# read side by side by one person - which makes them ONE family. Correcting each
+# inside itself and then comparing is a 32-way search reported as two 16-way
+# searches.
+#
+# The joint declaration is ../JOINT_MULTIPLICITY.md, written by the MLB session
+# before either test had a settled result. This session has checked its
+# arithmetic and AGREES; see PREREGISTRATION.md amendment A3.
+#
+# What it costs here: the MDE widens 6.2% at every n (22.76c -> 24.16c at n=50),
+# and resolving a 3.6c edge goes from ~1,998 to ~2,252 settled matches per bot.
+#
+# It never falls. If either test adds a bot it rises, and every previously
+# reported p-value is recomputed at the new value.
+N_HYPOTHESES = 32
+N_OWN_BOTS = 16            # this test's own bots, for reporting only
 SD_PRIOR_CENTS = 45.0      # set1_overshoot, 3,436 events
 BOOTSTRAP = 20_000
 SEED = 20260806
@@ -155,7 +179,8 @@ def verdict(point: float, lo: float, hi: float, cost_bar: float,
     if lo <= 0 <= hi:
         return "UNDERPOWERED"
     if lo > 0 or hi < 0:
-        return "UNDERPOWERED (interval excludes zero but does not survive BH across 16)"
+        return ("UNDERPOWERED (interval excludes zero but does not survive BH "
+                f"across the joint {N_HYPOTHESES})")
     return "COLLAPSES"
 
 
@@ -323,7 +348,8 @@ class Analysis:
                 "own_cost_bar_cents": round(bar, 3),
                 "p_two_sided": (None if math.isnan(p) else round(p, 5)),
                 "mde_at_this_n_alpha05": round(mde_cents(nm, 0.05), 2),
-                "mde_at_this_n_bh16": round(mde_cents(nm, BH_Q / N_HYPOTHESES), 2),
+                "mde_at_this_n_bh_joint32": round(mde_cents(nm, BH_Q / N_HYPOTHESES), 2),
+                "mde_if_corrected_alone_bh16": round(mde_cents(nm, BH_Q / N_OWN_BOTS), 2),
                 "put_5_dollars_in": round(5.0 * (1 + pt / max(1.0, avg_price)), 2),
             }
         # one BH denominator across all sixteen
@@ -333,7 +359,7 @@ class Analysis:
         for b, v in out.items():
             if v["n_matches"] == 0:
                 continue
-            v["bh_pass_q10_of_16"] = bool(passed.get(b))
+            v["bh_pass_q10_of_joint32"] = bool(passed.get(b))
             v["verdict"] = verdict(v["mean_cents_per_contract"],
                                    v["ci95_clustered"][0], v["ci95_clustered"][1],
                                    v["own_cost_bar_cents"], bool(passed.get(b)))
@@ -455,11 +481,16 @@ def main() -> int:
         "target": 50,
         "PREREGISTERED_WARNING": (
             f"At {settled} settled matches the minimum detectable effect under BH "
-            f"across 16 is {mde_cents(max(2, settled), BH_Q/N_HYPOTHESES):.1f}c against "
-            f"a cost bar of about 3.6c. The P&L endpoint was pre-registered as "
-            f"UNTESTABLE at this sample size and it still is. About 2,000 settled "
-            f"matches PER BOT would be needed to resolve an edge the size of the "
-            f"cost bar."),
+            f"across the JOINT denominator of {N_HYPOTHESES} (this test's 16 bots plus "
+            f"mlb-paper's 16 - see ../JOINT_MULTIPLICITY.md) is "
+            f"{mde_cents(max(2, settled), BH_Q/N_HYPOTHESES):.1f}c against a cost bar of "
+            f"about 3.6c. The P&L endpoint was pre-registered as UNTESTABLE at this "
+            f"sample size and it still is. About 2,252 settled matches PER BOT would be "
+            f"needed to resolve an edge the size of the cost bar."),
+        "REPORTING_RULE": (
+            "JOINT_MULTIPLICITY.md rule 2: the two forward tests are reported TOGETHER "
+            "or neither is reported. A tennis result published alone under a 16-way "
+            "correction would be published at the wrong bar."),
         "T1_machinery": a.t1_machinery(),
         "T2_brief_coverage": a.t2_coverage(),
         "T3_execution_cost": a.t3_execution_cost(),

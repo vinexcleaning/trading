@@ -40,7 +40,7 @@ first thing you see — then how the test is doing and how many days remain.
 | **five mentalities** | favourite (80c+) · underdog (5–35c) · brief-led · momentum · unconstrained |
 | **× three exit modes** | hold to settle · exit once · exit and re-enter freely |
 | **+ one control** | logs intended trades, takes none |
-| **= 16 bots** | all in one Benjamini–Hochberg denominator |
+| **= 16 bots** | in ONE Benjamini–Hochberg family of **32**, jointly with `mlb-paper` |
 
 All sixteen see the **same match pool** on the same tick. None is forced to
 enter anything. A mentality is a disposition, not a rule: each owns several
@@ -80,9 +80,10 @@ form as of then. `staleness_days` carries the figure into every brief so a bot
 can reason about it.
 
 **Fifty matches cannot decide whether any of this makes money.** Under BH across
-sixteen bots, fifty matches detects a **22.8c** edge against a **3.6c** cost
-bar. Resolving an edge the size of the cost bar needs about **2,000 settled
-matches per bot**. The P&L endpoint is pre-registered as UNTESTABLE at this
+the **joint denominator of 32** — this test's sixteen bots plus the concurrent
+`mlb-paper` test's sixteen, see [../JOINT_MULTIPLICITY.md](../JOINT_MULTIPLICITY.md)
+— fifty matches detects a **24.2c** edge against a **3.6c** cost bar. Resolving
+an edge the size of the cost bar needs about **2,252 settled matches per bot**. The P&L endpoint is pre-registered as UNTESTABLE at this
 sample size and `analyse.py` says so at the top of its own output.
 
 What fifty matches *can* decide: whether the machinery survives a week, what the

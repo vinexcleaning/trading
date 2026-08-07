@@ -298,6 +298,63 @@ DECISIONS.md D5.
 available that was previously missing on three quarters of the sample; it did
 not alter what any of them is measured against.
 
+### A3 — 2026-08-07. The BH denominator RISES from 16 to 32. §6 is superseded. **Agreed.**
+
+**What §6 declared:** "One BH-FDR denominator of 16, at q = 0.10, over all
+sixteen bots."
+
+**What supersedes it:** [../JOINT_MULTIPLICITY.md](../JOINT_MULTIPLICITY.md),
+written by the concurrent `mlb-paper` session before either test had a settled
+result. A second sixteen-bot forward test — same five-mentality × three-exit
+structure, same exchange, same repo, same fortnight — is running alongside this
+one. Correcting each test inside itself and then reading the two side by side is
+**a 32-way search reported as two 16-way searches**.
+
+**This session has checked the arithmetic and agrees.** Verified independently:
+
+| n matches | MDE at m=16 | MDE at m=32 | widening |
+|---|---|---|---|
+| 20 | 35.98c | 38.20c | +6.2% |
+| **50** | **22.76c** | **24.16c** | **+6.2%** |
+| 2,000 | 3.60c | 3.82c | +6.2% |
+
+and their power constant `k = 3.797` at α = 0.10/32 reproduces exactly. Their
+prose says "about 8%"; it is **6.2%** — noted, immaterial, and not worth an
+amendment of its own.
+
+**The cost to this test:** resolving a 3.6c edge moves from **~1,998 to ~2,252
+settled matches per bot**. §3's conclusion is unchanged and slightly
+strengthened: the P&L endpoint remains UNTESTABLE at n = 50, now at 24.2c
+rather than 22.8c.
+
+**Why this amendment is legitimate and a downward revision would not be:** a
+multiplicity correction may only ever be made **stricter** after a run begins.
+Raising it costs power, which is a price paid against oneself. Lowering it —
+including by dropping a test from the family after seeing its results — is how
+a search gets reported as smaller than it was, and is the error
+`wallet-copy-study` R5 already priced: **54 of 206 "significant" in a pure
+null** against 0 of 249 done correctly.
+
+**Accepted in full, including the rules that come with it:**
+
+1. cancelled, zero-entry and control bots stay in the denominator
+2. **the two tests are reported together, or neither is reported** — a tennis
+   result published alone under a 16-way correction is published at the wrong
+   bar
+3. the denominator stays 32 even if one test stops early
+4. it never falls; if either test adds a bot it rises, and every previously
+   reported p-value is recomputed
+
+**Changed in code:** `src/analyse.py` `N_HYPOTHESES = 32`, with `N_OWN_BOTS =
+16` retained so each bot's report shows the MDE both jointly and alone. Every
+output field is renamed (`bh_pass_q10_of_joint32`, `mde_at_this_n_bh_joint32`)
+so a stale reader cannot mistake one for the other. `analyse.py` now prints the
+reporting rule at the top of its own output.
+
+**Not changed:** §3's table and §6's text stay as originally written, per the
+rule that the text above §10 is never edited. A reader arriving at §6 sees 16;
+this amendment is what tells them it is 32.
+
 ---
 
 *Each entry gets a date, a reason, and what it changed. The text above §10 is
