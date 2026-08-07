@@ -114,3 +114,39 @@ puller (C018 puts the unauthenticated ceiling at 15 req/s).
 > available says nothing, that the apparent +0.87 to +1.93¢ is a one-day
 > directional artifact, and that the question is now genuinely runnable for the
 > first time.
+
+---
+
+## 6. IN FLIGHT (2026-08-07) — the multi-day tape pull. Do not kill it.
+
+`src/pull_trade_tape.py`, **PID 28028**, writing `crypto/data/trade_tape.db`.
+**Resumable per ticker** — if it dies, re-run the same command and it skips what
+it has.
+
+```bash
+C:/Users/vinig/trading/bot-hunt/.venv/Scripts/python.exe src/pull_trade_tape.py --series KXBTC15M --start 2026-07-24 --end 2026-08-07 --pace 0.2 --slice-min 5
+```
+
+| | |
+|---|---|
+| target | **1,327 settled KXBTC15M markets = 1,327 events**, against the **29** the one-day run had |
+| what is kept | the **first 5 minutes of every market's life**, uniformly |
+| rate | ~7.8 s/market, ~10,350 trades per slice, **0 markets hitting the page cap** |
+| analysis, ready to run | `src/maker_multiday.py` |
+
+**The test statistic is `real − placebo`, not `real`.** That is the lesson of §3:
+the raw number was positive and meaningless.
+
+### Three defects in my own tooling, found by running it
+
+1. **`/markets/trades` silently ignores `series_ticker`** — it returns KXABNB,
+   KXALIENS, KXASEANGAME. A filter that is accepted and ignored is worse than
+   one that errors.
+2. **Committing every 100 tickers did not finish.** Each market carries
+   20,000–30,000 trades, so the transaction held ~2M uncommitted rows and every
+   `insert or ignore` re-checked the primary key against the growing set.
+   **45 minutes, a 325 MB WAL, 2,580 s of kernel time, zero rows visible.**
+3. **The cursor is NEWEST-FIRST**, so a page cap keeps the trades nearest
+   settlement and discards early price discovery — the worst direction to
+   truncate in, and adjacent to the leak that voided T010. Replaced with a
+   uniform time slice.
