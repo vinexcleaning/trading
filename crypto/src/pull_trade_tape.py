@@ -68,6 +68,10 @@ def main() -> None:
     ap.add_argument("--start", required=True)
     ap.add_argument("--end", required=True)
     ap.add_argument("--pace", type=float, default=0.25)
+    ap.add_argument("--life-min", type=int, default=15,
+                    help="the market's full life in minutes")
+    ap.add_argument("--slice-min", type=int, default=5,
+                    help="minutes from OPEN to keep; 0 = the whole life")
     # 20, not 8. MEASURED: one 15-minute market holds 12,462 trades over 13
     # pages, and THE CURSOR IS NEWEST-FIRST -- page 1 is the last 1,000 trades
     # before settlement. So a page cap does not sample a market, it keeps the
@@ -116,12 +120,40 @@ def main() -> None:
         [x.strip() for x in a.series.split(",")])]
     print(f"tickers to pull: {len(todo):,}", flush=True)
 
+    # ---- the WINDOW SLICE, declared here and applied to every market alike.
+    #
+    # MEASURED: a KXBTC15M market carries ~18,000-20,000 trades in its fifteen
+    # minutes. Pulling all of them is ~17 s per market -- over two hours for a
+    # five-day sample -- and a page cap does NOT fix it, because the cursor is
+    # NEWEST-FIRST: capping keeps the trades closest to settlement and discards
+    # the early price discovery. That is the worst direction to truncate in,
+    # since near-settlement prices are pinned at 0/100 and carry least
+    # information about whether a maker can earn anything.
+    #
+    # So instead of truncating by COUNT (biased), slice by TIME (uniform): take
+    # the first `--slice-min` minutes of every market's life. Every market is
+    # treated identically, nothing is dropped inside the slice, and it is the
+    # window a real maker would actually quote in -- before the outcome is
+    # nearly determined. Declared before any P&L was computed on this data.
+    close_ts = {}
+    for tk, ct in con.execute(
+            "select ticker, close_time from markets where close_time is not null"):
+        try:
+            close_ts[tk] = int(datetime.strptime(
+                ct, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc).timestamp())
+        except (TypeError, ValueError):
+            pass
+
     started = time.time()
     for i, tk in enumerate(todo, 1):
         s = tk.split("-")[0]
         cursor, pages, kept = None, 0, 0
+        ct = close_ts.get(tk)
         while pages < a.max_pages:
             p = {"ticker": tk, "limit": 1000}
+            if ct and a.slice_min:
+                p["min_ts"] = ct - a.life_min * 60
+                p["max_ts"] = ct - (a.life_min - a.slice_min) * 60
             if cursor:
                 p["cursor"] = cursor
             r = V.k_get("/markets/trades", p, pace=a.pace)
@@ -155,8 +187,14 @@ def main() -> None:
         con.execute("insert or replace into pulled values (?,?,?,?)",
                     (tk, kept, pages,
                      datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")))
-        if i % 100 == 0 or i == len(todo):
-            con.commit()
+        # COMMIT EVERY TICKER. v1 committed every 100 and it did not finish:
+        # each market carries ~12,000 trades, so a 100-ticker transaction holds
+        # ~1.2 M uncommitted rows and every `insert or ignore` re-checks the
+        # primary key against the whole growing uncommitted set. Measured: 45
+        # minutes, a 325 MB WAL, 2,580 s of KERNEL time, and ZERO rows visible
+        # to a reader. Per-ticker commits keep each transaction ~12,000 rows.
+        con.commit()
+        if i % 25 == 0 or i == len(todo):
             el = time.time() - started
             tot = con.execute("select count(*) from trades").fetchone()[0]
             print(f"   {i}/{len(todo)}  db={tot:,} trades  "
