@@ -9,13 +9,13 @@ channel between sessions; this is the short channel out. Plain English, no
 acronyms, no jargon. If a number matters, say whether bigger is better.
 
 <!-- STAMP -->
-> **Generated 2026-08-07 13:21, on top of commit `f9b4d3f`.**
-> **Freshness check:** if `f9b4d3f` does not appear in this repo's commit
+> **Generated 2026-08-07 13:34, on top of commit `13b8e61`.**
+> **Freshness check:** if `13b8e61` does not appear in this repo's commit
 > history on GitHub, you are reading a cached copy — stop and refetch.
 > Being one or two commits behind the newest is normal and expected:
 > this page is always written just before the commit that carries it.
 > Cache-busting URL, always safe to use:
-> `https://raw.githubusercontent.com/vinexcleaning/trading/main/BRIEF.md?v=f9b4d3f`
+> `https://raw.githubusercontent.com/vinexcleaning/trading/main/BRIEF.md?v=13b8e61`
 <!-- /STAMP -->
 
 ---
@@ -115,30 +115,28 @@ _Section `mlb` last written 2026-08-07 13:16._
 
 ---
 
-<!-- SECTION:devig updated=2026-08-07T13:16 -->
+<!-- SECTION:devig updated=2026-08-07T13:34 -->
 ## De-vig, weather, and crypto market making
 
-_Written by the `devig` session. Migrated verbatim from `BRIEF_DEVIG.md` on 2026-08-07; not re-audited by the coordinator._
+**As of 2026-08-07.** This section is rewritten at the end of every session, so nothing in it is stale. Fuller versions: `bot-hunt/RESULTS_DEVIG_WHERE.md`, `kalshi-market-scan/docs/RESULTS_WEATHER_VS_ASK.md`, `crypto/MM_RESULTS_MAKER.md`, `crypto/PREREGISTRATION_MAKER_VIABILITY.md`.
 
-**As of 2026-08-07.** This file is overwritten at the end of every session, so nothing in it is stale. Fuller versions: `bot-hunt/RESULTS_DEVIG_WHERE.md`, `kalshi-market-scan/docs/RESULTS_WEATHER_VS_ASK.md`, `crypto/MM_RESULTS_MAKER.md`.
+**1. De-vig is CLOSED — but not for the reason I first gave.** I wrote that the cost of trading is bigger than the bookmaker's whole margin. **That argument is wrong and I retract it:** the margin is what you strip off to work out the true price, not a cap on how wrong Kalshi can be. What settles it is a measurement — across **1,460 price comparisons on 30 baseball games, the two venues never disagreed by more than 2.77 cents**, and acting costs 2.75.
 
-**1. Dead — but not for the reason I first gave.** I wrote that the cost of trading is bigger than the bookmaker's whole margin. **That argument is wrong and I retract it:** the margin is what you strip off to work out the true price, not a cap on how wrong Kalshi can be. What actually settles it is a measurement — across **1,460 price comparisons on 30 baseball games, the two venues never disagreed by more than 2.77 cents**, and acting costs 2.75.
+**A second session reached the same place independently.** The MLB paper-test found **0 of 58 markets worth trading across 10 games**, best case (picked with hindsight) still **−1.63¢**. It also tested over/under totals — a market type I had never looked at, carrying a **57% wider** bookmaker margin. Still nothing. Two codebases, three market types, same answer. More games will not rescue this.
 
-**And a second session reached it independently.** The MLB paper-test found **0 of 58 markets worth trading across 10 games**, best case (picked with hindsight) still **−1.63¢**. It also tested over/under totals — a family I had never looked at, carrying a **57% wider** bookmaker margin. Still nothing. Two codebases, three market types, same answer. More games will not rescue this.
-
-**One honest limit:** every test uses Pinnacle, the sharpest book in the world. A *retail* book with a fat margin on a market Kalshi quotes tightly has never been tested. The one comparison of that kind in the archive rests on 13 games and proves nothing either way.
+**One honest limit:** every test used Pinnacle, the sharpest book in the world. A *retail* book with a fat margin on a market Kalshi quotes tightly has never been tested. The one comparison of that kind in the archive rests on 13 games and proves nothing either way.
 
 **2. The cheaper version is on track and decides ~6 September.** Instead of trading, just ask whether the sharp price *predicts* better than Kalshi's. 30 games joined, 17 already settled, ~14/day arriving. Needs ~440. If Pinnacle is not the better forecaster, no version of this idea can work and the thread closes for good.
 
-**3. Weather — closed, no edge.** The model scored +0.43¢; plain climatology scored **+1.37¢** and a model that guesses 50% on everything scored **+1.01¢**. When a model that knows nothing beats yours, you have measured the gate, not a forecast. The reason: at the moment these markets open, **93% of prices are offers at 95–100¢ against a 46% actual win rate, with nobody bidding.** That is a placeholder, not a price.
+**3. Weather — CLOSED, no edge.** The model scored +0.43¢; plain climatology scored **+1.37¢** and a model that guesses 50% on everything scored **+1.01¢**. When a model that knows nothing beats yours, you have measured the gate and not a forecast. The reason: at the moment these markets open, **93% of prices are offers at 95–100¢ against a 46% actual win rate, with nobody bidding.** That is a placeholder, not a price.
 
-**4. Crypto market making — ran on 658 markets and 4.9 million trades. One real finding, and I got ahead of it once.** Getting picked off costs a maker about **0.5¢ per contract, and it was negative on every single one of the eight days measured.** That is the number this project has wanted for weeks. **Whether market making actually makes money is still unknown** — I first reported it as encouraging, then found I had counted 96 fifteen-minute markets in a day as 96 independent facts when they all ride the same Bitcoin move. Correcting that widened the uncertainty **fivefold** and the answer became "cannot tell". Adding more data also made the picked-off cost **worse**, not better. Two of my own bugs were caught on the way, one of which would have priced four million trades at zero and invented a large fake profit.
+**4. Crypto market making — one real finding, and I got ahead of it once.** On 658 markets and 4.9 million trades, getting picked off costs a maker about **0.5¢ per contract, negative on every one of the eight days measured**. That is the number this project has wanted for weeks. **Whether market making makes money is still unknown.** I first called it encouraging, then found I had counted 96 fifteen-minute markets in a day as 96 independent facts when they all ride the same Bitcoin move; correcting that widened the uncertainty **fivefold** and the answer became "cannot tell". Adding more data also made the pick-off cost **worse**, not better.
 
-**5. The one live money question is now set up and written down in advance.** Does a resting order earn enough spread to cover that 0.5¢ pick-off cost? **Correction to something I told you: the order book is free, but it is *not* being recorded for crypto** — the recorder covers five other markets and crypto is not one of them. I had that wrong, and it was the difference between "needs weeks" and "runs now." What rescues it is a public archive that turns out to hold **24 days of full order-book history for Bitcoin markets** — nobody had checked. So this runs on data that already exists. Plan committed before any number: `crypto/PREREGISTRATION_MAKER_VIABILITY.md`. I expect it to fail, and said why in advance.
+**5. The one live money question is set up and written down in advance — not yet run.** Does a resting order earn enough spread to cover that 0.5¢? **Correction to something I told the user: the order book is free but is NOT being recorded for crypto** — the recorder covers five other markets and crypto is not one. That was the difference between "needs weeks" and "runs now", and I had it wrong until I checked. What rescues it is a public archive holding **24 days of full order-book history for Bitcoin markets**, which nobody had checked for crypto. Plan committed before any number exists: `crypto/PREREGISTRATION_MAKER_VIABILITY.md`. I expect it to fail and said why in advance. **Awaiting a go-ahead; nothing is running.**
 
-**Net: de-vig closed, weather closed. Two alive — the September forecast test, and this one. One idea queued but not started: every de-vig test used the sharpest bookmaker in the world; a *retail* book with a fat margin has never been tried, and there is a known blocker to clear first.**
+**Net: de-vig closed, weather closed. Two things alive — the September forecast test, and the resting-order test above. One idea queued but NOT started: a retail book with a fat margin, which has a known blocker (the free retail feed found so far quotes only one side, so it cannot be de-vigged at all).**
 
-_Section `devig` last written 2026-08-07 13:16._
+_Section `devig` last written 2026-08-07 13:34._
 <!-- /SECTION:devig -->
 
 ---

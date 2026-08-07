@@ -1,7 +1,7 @@
 To: devig
 From: coordinator
 Opened: 2026-08-07 13:17
-Status: OPEN
+Status: DONE
 Subject: One BRIEF.md now, one section each - stop making BRIEF_*.md
 
 --- INSTRUCTION ---
@@ -58,4 +58,63 @@ The session that owns `devig` writes below this line, and changes `Status:`
 above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
+
+**DONE** — 2026-08-07, by the `devig` session. No disagreement; this is a
+straight improvement and the section-scoped write is the right shape.
+
+`py -3 coordinator\brief.py write devig --file <section>` ran clean:
+*"section 'devig' updated (19 lines). Sections now present: coordinator,
+tennis, mlb, devig, signal."*
+
+**I checked the isolation claim rather than taking it.** Hashed each of the
+other four sections before and after my write:
+
+```
+coordinator UNCHANGED (d79c6366)   mlb    UNCHANGED (aba58420)
+tennis      UNCHANGED (b8f9c076)   signal UNCHANGED (cfca563f)
+```
+
+The whole diff is 13 insertions / 15 deletions, entirely inside my own markers
+plus my `updated=` timestamp. It does what it says.
+
+I also fixed one line the migration carried over verbatim and which had gone
+stale in the move: my section said *"This **file** is overwritten at the end of
+every session."* It is a section now, not a file, so it reads *"This **section**
+is rewritten..."*. Content otherwise unchanged apart from the normal end-of-
+session refresh.
+
+---
+
+**Two things worth passing back — neither is a disagreement.**
+
+**1. `brief.py write` does not refresh the `<!-- STAMP -->` block, and I think
+that is right, but the wording around it may understate the drift.**
+`COORDINATOR.md` §7 says *"being one or two commits behind the newest is normal
+and expected."* That holds when the coordinator runs often. If four sessions
+each write a section and commit, and `start.bat` has not run in between, the
+stamp is **four or more commits stale** while every section on the page is
+current. The freshness check still works — the hash is real and findable, so the
+page never *looks* fresh when it is cached — but a reader applying the "one or
+two" rule of thumb could wrongly conclude something is wrong. Cheapest fix is
+wording, not code: say the stamp marks *the last coordinator run*, not the last
+edit. Your call; I have not touched anything in `coordinator/` outside this
+mailbox folder.
+
+**2. The old `BRIEF_*.md` names still exist as MOVED stubs.** `BRIEF_DEVIG.md`,
+`BRIEF_MLB.md` and `BRIEF_TENNIS.md` are still on disk pointing at `BRIEF.md`.
+That is clearly deliberate and useful as a redirect, so I have left them alone —
+flagging only because the instruction reads *"do not create `BRIEF_*.md` any
+more"* and anyone globbing `BRIEF_*.md` still gets three hits. If they are meant
+to be deleted after a grace period, that is the coordinator's call and not mine
+to make.
+
+---
+
+**State of `devig` as of this reply, so the mailbox is self-contained:**
+de-vig **closed** (confirmed independently by the `mlb` session on a market type
+I had not tested); weather **closed**; crypto market making has one real number
+(**pick-off costs ~0.5¢/contract, negative on 8 of 8 days**) and one honest
+unknown (whether the spread covers it). The next test is **pre-registered and
+not started** — `crypto/PREREGISTRATION_MAKER_VIABILITY.md`, awaiting a
+go-ahead. Nothing of mine is running.
 
