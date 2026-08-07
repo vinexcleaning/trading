@@ -166,3 +166,8 @@ extractor-upgrade/frames/
 
 # bot-forensics: 1.8MB feature table carrying player names; rebuilds in one command
 bot-forensics/out/t6_features.csv
+
+# tennis-paper-forward: recorded tape, briefs, cached source data, run state
+tennis-paper-forward/data/
+tennis-paper-forward/logs/
+tennis-paper-forward/reports/

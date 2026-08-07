@@ -1,0 +1,8 @@
+# Paper-only forward test.
+# Nothing here can sign a request or place an order. There is deliberately no
+# `cryptography` and no Kalshi client library: the package reads public
+# endpoints over plain GET and has nothing to sign with.
+requests>=2.31
+numpy>=1.26
+scipy>=1.11
+pytest>=8.0

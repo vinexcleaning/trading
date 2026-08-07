@@ -32,6 +32,7 @@ New ideas go in [INBOX.md](INBOX.md) first, before deciding where they belong.
 | **Score-staleness (already fixed)** | `fetched_at` was stamped at cache read, so the 30 s guard never rejected anything. | Nothing to fix â€” but **no live entry result predating the fix is a valid test of the entry logic.** Treat the 4-for-10 as void. |
 | **Label coverage (tennis)** | Blocked. Apify at a monthly hard limit; Flashscore's `dayOffsets` is âˆ’7..+7 against a âˆ’68 need. | Restore quota, then label day-by-day via `crawlstone/tennis-scraper` or `tennisexplorer` (~$20, not $3.44). Only path above 13.9% coverage. |
 | **youtube-signal** | **UNBLOCKED and productive. 38 videos read, $0.00 spent, 0 API units.** The old "buy $5 of API credit" blocker was wrong â€” transcripts are read in-session. Two corpora: broad (746 videos, 370 PASS, 29 read) and a **targeted Kalshi/Polymarket one** (470 videos, 328 PASS, **9 read, 134 claims, 25 tools**). **Nine actionable findings** incl. the three-number check, itemised fees on both venues, 8 backtest-realism rules, the `filtfilt` look-ahead trap, and an adverse-selection result that **contradicts our own maker thesis**. See the dated section below. | **Read more of the targeted corpus.** `$env:SIGNAL_DB="kalshi_edge"` then `src/target_rank.py`. The broad corpus's retrieval test is still NOT DEMONSTRATED and is secondary to the practical hunt. |
+| **tennis-paper-forward** | **NEW 2026-08-06. Built, tested, running.** A **PAPER-ONLY** forward test: 16 bots (5 mentalities x 3 exit modes + a no-trade control) over the SAME pool of ~123 live Kalshi singles tennis matches. No credentials, no order endpoint, GET-only allowlist - enforced by a test that plants a violation and asserts the detector bites. Every decision, and its stake, logged with full reasoning BEFORE the result exists. 49 tests pass here, 52 across `common/`. **Pre-registered as UNTESTABLE on P&L at n=50** (MDE 22.8c under BH across 16, against a 3.6c cost bar; ~2,000 matches/bot needed). What IS measurable at 50: execution cost, brief coverage, mentality divergence, and machine survival. | **Move it to the laptop** - `tennis-paper-forward/deploy/LAPTOP_SETUP.md`, ~15 min, and leave it a week. |
 | **signal-github** | **Working, not blocked.** 4,017 retrieved / 3,252 gated / **3,165 scored (97.3%) for ZERO core API calls** via codeload tarballs; **credibility for 3,146**; 4 read. 283 repos then retroactively DROPPED for having <=1 commit (gate G1's second half, applied at last), so the live scored set is **2,882**. Token in signal-github/.env -> 5,000/hr + code search (916 repos no other axis found). Callable as **/github-signal**. Stars settled: rho -0.008 p 0.65 at n=3,165 - the earlier +0.241 correction was itself the error. `trust_me_bro` 19.1% of 2,717 and **weakly POSITIVELY correlated with substance** (+0.064, p 0.0009) - the earlier 'uncorrelated' reading was n=822. Fees now primary-sourced on both venues (C1/C1a/C2). | **Read the KalshiEX Rulebook** - the member agreement is silent on automation and says the Rulebook governs, so it is the only open item that could change the venue answer. It defeats HTTP and a real browser. |
 
 ---
@@ -2680,3 +2681,92 @@ spread moves with it: **KXCS2GAME median 8.0¢, mean 23.97¢** against
 phenomenon**. The widest markets (Rwandan and Chilean basketball, 12.6–12.9pp)
 have no Kalshi counterpart at all. And the best margin-to-cost ratio in the whole
 set is ATP/WTA tennis — **which is exactly T012, already run and already null**.
+
+---
+
+## tennis-paper-forward — a paper-only 16-bot forward test (2026-08-06)
+
+`tennis-paper-forward/` · code, `PREREGISTRATION.md`, `DECISIONS.md`,
+`HANDOFF.md`, `deploy/` committed · `data/`, `logs/`, `reports/` gitignored ·
+full write-up in [tennis-paper-forward/HANDOFF.md](tennis-paper-forward/HANDOFF.md).
+
+**NO MONEY IS REACHABLE FROM THIS CODE.** No credentials, no signing, no order
+endpoint, and a GET-only host+path allowlist that has no order path on it.
+`tests/test_paper_only.py` greps every source file for order-shaped tokens and
+— GUARDS #9 — plants a violation to prove the detector still bites. There is no
+`TRADING_DISABLED` switch because there is nothing to switch off.
+
+Five mentalities (favourite 80c+ · underdog 5-35c · brief-led · momentum ·
+unconstrained) x three exit modes (hold / exit once / exit and re-enter) plus a
+no-trade control = **16 bots, one BH-FDR denominator**. All see the same pool on
+the same tick; none is forced to enter. Each also sizes its own stake from its
+own confidence inside a fixed $500 paper bankroll, so **selection skill and
+sizing skill are scored apart**.
+
+### ⚠ The headline is a power calculation, not a result
+
+**Fifty settled matches cannot decide whether any of these bots makes money.**
+Under BH at q=0.10 across sixteen, n=50 detects a **22.8c** edge against a
+**3.6c** cost bar. Resolving an edge the size of the cost bar needs about
+**2,000 settled matches PER BOT**. The P&L endpoint is pre-registered as
+UNTESTABLE and `analyse.py` leads its own output with that sentence.
+
+What n=50 *can* decide, and what the primary gates therefore are: execution cost
+(sd ~2.5c → MDE 0.99c), brief coverage, whether the five mentalities are
+genuinely different instruments, whether the machine survives a week, and how
+much execution takes out.
+
+### Three things measured while building it
+
+**1. Kalshi tennis markets DO carry the tournament — going forward.**
+[SCOREBOARD.md](SCOREBOARD.md) says surface *"cannot be done backwards"*. True
+of settled markets; **not true of open ones** — `rules_primary` reads *"…in the
+2026 ATP Montreal Round Of 32…"*. Joined to a 4,845-venue surface index built
+from the archive's own `tourney_name`→`surface` record, that gives **100%
+surface coverage on ATP, WTA and ITF** (84.6% Challenger). SCOREBOARD's own note
+called this *"cheap"* and said it becomes testable in about a month of
+recording. The recording has started.
+
+**2. Being broken makes the next two games worse, against a MATCHED control.**
+From the Match Charting Project point-by-point, 185 players with ≥50 occasions
+of each, player-clustered bootstrap:
+
+| after being broken, vs after a HOLD in the same matches | effect | CI95 | negative for |
+|---|---|---|---|
+| breaks back on the very next return game | **−3.33pp** | [−4.14, −2.52] | 138/185 |
+| holds the next service game | **−5.55pp** | [−6.39, −4.72] | 157/185 |
+
+Against the naive all-games baseline the same quantities read −2.31pp and
+−4.03pp — **the matched control makes the effect BIGGER, not smaller.** GUARDS
+#20. It is a brief field, **not a strategy**, and it retains a confound the
+control does not remove: being broken is more likely during a stretch where the
+opponent is playing well.
+
+**3. Gross sub-100c ask sums are common on ITF and still not tradeable.**
+13–16 of ~123 matches per tick have both YES asks summing under a dollar, median
+**1c**, and **zero** beat the two-leg fee (~2.5c). That reproduces
+[SCOREBOARD.md](SCOREBOARD.md) page 9 — *"52 real violations, 0 with enough size
+to trade"* — on a market family it had not been measured on. Briefly mislabelled
+here as a stale-book alarm; the correct stale-book invariant is `bid_sum > 100`
+(GUARDS #18), which fires on 1–2 matches per tick.
+
+### One pre-registered prediction already failed, and it is recorded
+
+PREREGISTRATION.md §4 predicted ITF player resolution **below 60%** and said
+that above 80% *"I should suspect the name matcher, not celebrate."* Measured:
+**88.9%**. The check was run: **168 of 172 ITF resolutions were exact
+normalised-name matches**, and all 4 surname fallbacks are correct. The
+prediction was wrong; the code was right. Amendment A1.
+
+### Note for other sessions
+
+> ⚠ `common/tests/test_no_fee_reimplementation.py` was **already RED** on
+> `extractor-upgrade/src/cases.py` before this project existed — three quoted
+> fee literals inside case *prose*, no arithmetic. An allowlist entry with a
+> written reason was added, which is the mechanism that test documents. All 52
+> `common/` tests now pass. Flagging rather than fixing silently, per §5.
+
+**Next: move it to the laptop** (`deploy/LAPTOP_SETUP.md`, ~15 min) and leave it
+a week. The setup guide's steps 6 and 8 exist specifically to prove the two
+recorders were not disturbed; the runner starts no process, stops no process,
+and writes only inside its own folder.

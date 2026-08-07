@@ -53,6 +53,14 @@ ALLOWED = {
         "0.07 appears only in the module docstring, not in code",
     "kalshi-inplay-bot/backtest/generate_report.py":
         "0.07 appears only inside a markdown string in a generated report",
+    # Added 2026-08-06 by tennis-paper-forward. This guard was already RED on
+    # this file before that project existed. The three hits are quoted prose
+    # inside case descriptions ("maker 0.0175 vs taker 0.07", "0.07*C*P*(1-P)
+    # rounded up") - the file describes fee errors found in other people's
+    # repos and contains no arithmetic of its own.
+    "extractor-upgrade/src/cases.py":
+        "describes fee defects found elsewhere; the literals are quoted prose "
+        "inside case text, and the module computes no fee",
 
     # Another session's audit of fee CLAIMS. The literals are the data being
     # audited, not a calculation. See commit e3b87d7.
