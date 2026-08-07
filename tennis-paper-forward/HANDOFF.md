@@ -13,7 +13,7 @@ Designed to be moved to the laptop and left for a week.
 |---|---|
 | **SURVIVES** | **0** |
 | UNTESTABLE | 13 |
-| CANCELLED (never traded) | 3 — all three `momentum` variants |
+| CANCELLED (never traded) | 3 — all three `momentum` variants. **Diagnosed 2026-08-07 as a BUG, not caution: structurally incapable of ever firing. Fixed, amendment A6.** |
 
 Which is what §6 predicted in writing before the run: *"no bot survives BH, and
 the modal verdict is UNDERPOWERED."*
@@ -67,7 +67,7 @@ go looking for the line of code that made it — this was that line.
 
 | | |
 |---|---|
-| tests | **52 pass** in this package; **52 pass** across `common/` |
+| tests | **70 pass** in this package; **52 pass** across `common/` |
 | live ticks | steady state **~12 s** against a 60 s poll |
 | pool | ~248 markets → **~123 matches** (ATP 10 · WTA 9 · Challenger 13 · **ITF 91**) |
 | bots | **16** — 5 mentalities × 3 exit modes + 1 no-trade control |
@@ -181,8 +181,10 @@ written in full and fsynced. **D15.**
    matches per bot would be needed. Pre-registered as UNTESTABLE; `analyse.py`
    leads with it. **Rule 2 binds: the two tests are reported together or
    neither is reported.**
-2. **The archive stops 2026-06-01.** "Recent form" is form as of then, and gets
-   one day staler per day. `staleness_days` is in every brief.
+2. ~~The archive stops 2026-06-01.~~ **PARTLY FIXED 2026-08-07 (A7).** The
+   mirror is frozen and re-downloading is a verified no-op; tennis-data.co.uk
+   refreshes main tour to within 4 days, 938 of 984 rows merged. **But it is
+   MAIN TOUR ONLY — about 13% of the pool. Challenger and ITF stay stale.**
 3. **No live scores.** SofaScore's `robots.txt` is 403 → UNDECIDABLE (GUARDS
    #14). So `momentum` is price momentum on our own tape, and no bot can see
    sets, games or who is serving. **This is the single largest missing

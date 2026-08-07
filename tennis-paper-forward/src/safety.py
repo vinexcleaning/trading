@@ -61,6 +61,19 @@ READ_ONLY_PATHS: dict[str, tuple[str, ...]] = {
     ),
     "raw.githubusercontent.com": ("/",),
     "api.github.com": ("/repos/",),
+    # tennis-data.co.uk. Its robots.txt (read in FULL, 2026-08-07) says
+    # "All robots will spider the domain" and disallows only /stuff/ and the
+    # 2000-2005 directories. The year directories we use are explicitly
+    # permitted; the disallowed ones are refused below rather than merely
+    # left out, so the refusal is visible in the code.
+    "www.tennis-data.co.uk": ("/20", "/robots.txt"),
+}
+
+#: Paths this host's own robots.txt forbids. GUARDS #14 - implement the file,
+#: do not summarise it.
+ROBOTS_DISALLOWED = {
+    "www.tennis-data.co.uk": ("/stuff/", "/2000/", "/2001/", "/2002/",
+                              "/2003/", "/2004/", "/2005/"),
 }
 
 # Hosts whose robots.txt we could not read, or which forbid us. Requests to
@@ -96,6 +109,11 @@ def _check(method: str, url: str, allow_undecidable: bool) -> None:
         raise PaperOnlyViolation(
             f"path not on the read-only allowlist for {host}: {p.path!r}"
         )
+    for bad in ROBOTS_DISALLOWED.get(host, ()):
+        if p.path.startswith(bad):
+            raise PaperOnlyViolation(
+                f"{host}{p.path} is Disallowed by that host's own robots.txt"
+            )
 
 
 # --------------------------------------------------------------------------
@@ -164,6 +182,7 @@ def get(
     retries: int = 3,
     allow_undecidable: bool = False,
     expect_json: bool = True,
+    as_bytes: bool = False,
 ) -> Any:
     """The only outbound call in this package. GET, allowlisted, rate-limited.
 
@@ -189,6 +208,8 @@ def get(
                 time.sleep(2.0 * (attempt + 1))
                 continue
             r.raise_for_status()
+            if as_bytes:
+                return r.content
             return r.json() if expect_json else r.text
         except Exception as exc:  # noqa: BLE001 - re-raised below
             last = exc

@@ -404,6 +404,17 @@ class Archive:
             rec.rank_points = _i(r.get("points"))
             rec.hand, rec.height, rec.ioc = info[1], info[2], info[3]
 
+    def absorb(self, rows: list[dict]) -> None:
+        """Fold additional matches into an already-built archive.
+
+        Used by tennisdata.py to bring main-tour form up to date. It runs the
+        SAME `_build` path, so elo, form, deciding-set and H2H all update by the
+        one code path rather than a parallel one that could drift from it.
+        """
+        if not rows:
+            return
+        self._build(rows)
+
     # -- lookup ------------------------------------------------------------
 
     def find(self, full_name: str, surname_hint: str | None = None) -> PlayerRecord | None:

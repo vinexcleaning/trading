@@ -277,6 +277,18 @@ class Mentality:
     # PREREGISTRATION.md before the run.
     enter_at = 1.0
 
+    # Does this disposition's case rest on the free ARCHIVE (form, surface,
+    # player history), or only on the live tape and book?
+    #
+    # This exists because getting it wrong silently killed a bot. `momentum`
+    # inherited the archive-staleness penalty even though it never reads the
+    # archive - its whole thesis is price movement on our own recorded tape.
+    # At 67 days of staleness that penalty is -1.72, against a maximum possible
+    # positive score of +3.60, so its ceiling was +1.88 against a bar of 2.50.
+    # Over 13,089 deliberations its best ever was +1.90, and it never traded
+    # once. See PREREGISTRATION.md amendment A6.
+    uses_archive = True
+
     def sides(self, mv: MatchView, brief: Brief) -> list[tuple[str, str, int, int]]:
         """(ticker, player, ask, spread) for every quotable side of the event."""
         out = []
@@ -309,6 +321,18 @@ class Mentality:
 
     def _data_penalty(self, brief: Brief, blk: dict, opp: dict) -> list[Consideration]:
         c: list[Consideration] = []
+        # The book is shared by everyone, so a stale book is everyone's problem.
+        if brief.market.get("stale_book"):
+            c.append(Consideration(
+                "stale_book",
+                "the two bids on this match sum to more than a dollar, which cannot be "
+                "true - one side of the book is stale, so neither price is trusted",
+                "against", 3.0))
+        if not self.uses_archive:
+            # A disposition that does not read the archive is not penalised for
+            # the archive being old. Penalising it would be charging it for a
+            # source it never consults.
+            return c
         if not blk.get("resolved") or not opp.get("resolved"):
             c.append(Consideration(
                 "unresolved_player",
@@ -327,12 +351,6 @@ class Mentality:
                 "the tournament is not in the surface lookup, so the surface record "
                 "below is the all-surface record",
                 "against", 0.5))
-        if brief.market.get("stale_book"):
-            c.append(Consideration(
-                "stale_book",
-                "the two bids on this match sum to more than a dollar, which cannot be "
-                "true - one side of the book is stale, so neither price is trusted",
-                "against", 3.0))
         return c
 
 
@@ -600,6 +618,7 @@ class BriefLedMentality(Mentality):
 class MomentumMentality(Mentality):
     name = "momentum"
     enter_at = 2.5
+    uses_archive = False   # trades our own tape, not the archive. See A6.
     MIN_TICKS = 6
 
     def consider(self, mv, brief, live, ticker, player, ask, spread):

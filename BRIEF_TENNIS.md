@@ -1,19 +1,17 @@
 # Tennis paper test — brief
 
-**As of 2026-08-07.** Overwritten at the end of every session, so this is always the latest. **The 50-match run FINISHED and has been analysed.** No money was ever involved: no keys, no order-placing code, and a test fails the build if any appears.
+**As of 2026-08-07 (evening).** Overwritten at the end of every session, so this is always the latest. Still collecting, now past 106 finished matches on the way to a target of 2,500. No money is involved: no keys, no order-placing code, and a test fails the build if any appears. **It calls no AI model — it is plain arithmetic, and running it costs nothing.**
 
-**What it is.** **16 tennis bots** — five styles × three exit rules, plus one that only watches — reading the same live tennis matches on Kalshi, each writing down its reasoning and stake **before** knowing the result. It hit 50 finished matches in 11 hours, not the week I expected, and stopped itself. **The 32 you may see elsewhere is the COMBINED total: 16 tennis + 16 baseball**, counted as one search because you read them side by side.
+**Job 1 — refresh the stale player data. Done, with a real limit.** The free Sackmann mirror **cannot be refreshed: it is frozen.** I re-downloaded every 2026 file and compared them byte for byte against what we already had — identical, and the original source is still deleted. So I found the one free source that *is* current, tennis-data.co.uk, which publishes weekly and permits this in its own robots file. **Player form went from 67 days stale to 4**, with 938 of 984 new results merged.
 
-**RESULT: no bot made a claim that stands up. 0 of 16.** Thirteen came back "can't tell", three never traded at all. That is what was predicted in writing before it ran.
+**The catch, stated plainly: that source covers the main tour only.** Challenger and lower-tier events are **87% of the matches Kalshi actually lists**, and no free current source covers them. So this fixes form for about **one match in eight**. The rest is exactly as stale as it was.
 
-**The one number worth keeping: it costs 4.8 cents per contract to get in and out** (2.7 fees + 2.1 the buy/sell gap). That is *higher* than the 3.6 cents this repo has been assuming, and it is measured, not estimated. **Any tennis edge smaller than 4.8 cents is unreachable**, and every edge this repo has ever found was smaller than that.
+**Along the way I found the name matching was quietly dropping 3 in 10 results** — and dropping them hardest for the *best-known* players, because of hyphens (Auger-Aliassime), two-word surnames (De Minaur) and double initials (Cerundolo J.M.). Fixed; misses are now 3–6%. Where two players genuinely share a surname and initial it refuses to guess.
 
-**Three bots briefly showed a "real" profit and it was false.** They had won 2 bets out of 2 — which happens 25% of the time with coin flips — and the maths reported that as near-certainty. My own written plan had predicted this exact trap and I had not built the check into the code. It is built now, and it can only ever make results stricter, never better.
+**Job 2 — the style that placed zero bets. It is a BUG, not correct caution, and it could never have traded.** Over 13,089 decisions its best score was 1.90 against a threshold of 2.50. Its maximum *possible* score was 1.88. **No market condition could have made it buy anything.**
 
-**A second false signal, same shape.** The fills looked like they were coming in *better* than expected. They weren't: the system refuses any fill that moves more than 3 cents against it, so the bad fills were being thrown away and never counted. 208 of them. Good-looking number, produced by my own code.
+**The cause:** it was being penalised for the player-history data being old — but that style ignores player history entirely. It trades price movement on our own recorded prices. It was being charged for something it never uses. Fixed: it has now placed **24 bets**, and it still correctly refuses moves too small to cover the cost of trading.
 
-**What went right.** 538 checks over 11 hours with no gaps, no crashes and no double-running. The five styles genuinely pick different matches, not the same ones in different hats. Player and surface data covered 90–100% of matches.
+**What that cost us:** three of the sixteen bots contributed nothing to the first 50-match run while still counting toward the statistical bar — so the test was harder to pass than the search actually justified. Conservative direction, but not deliberate.
 
-**Still open.** No live scores — the site that has them tells automated readers to stay out, so bots see prices only. Player form data stops 1 June (now 67 days stale). One style never placed a single bet in 11 hours.
-
-**What I need from you: one decision.** Getting a real answer on profit needs about **2,250 finished matches per bot** — at the observed rate, roughly **three weeks** of continuous running, not one. I have restarted it to keep collecting. **Say if you would rather stop it here.** Otherwise the next step is moving it to the laptop so it can run undisturbed: 15 minutes, `tennis-paper-forward/deploy/LAPTOP_SETUP.md`.
+**What I need from you: nothing.** It is running with both fixes. Two things to know: the profit question still needs about 2,250 matches per bot (roughly three weeks), and moving it to the laptop takes 15 minutes whenever you want it off your desktop — `tennis-paper-forward/deploy/LAPTOP_SETUP.md`.

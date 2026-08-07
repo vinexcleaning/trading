@@ -50,6 +50,8 @@ from .brief import Brief, build_brief
 from .engine import PaperEngine
 from .kalshi_read import (MatchView, build_match_pool, fetch_event, fetch_tennis,
                           TENNIS_SERIES)
+from .sackmann import get_archive
+from .tennisdata import refresh as refresh_form
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
@@ -75,6 +77,10 @@ SETTLEMENT_BATCH = 25
 # hours later and filling yesterday's intention would be the worst kind of
 # fictional fill.
 PENDING_MAX_AGE_SEC = 300
+
+# How often to pull fresh main-tour results. The Sackmann mirror is frozen at
+# 2026-06-01; tennis-data.co.uk is updated weekly. Daily is generous.
+FORM_REFRESH_SEC = 24 * 3600
 
 # How much a PASS verdict must move before it is worth another line. Anything
 # that acts is always written in full; this governs repetition only.
@@ -280,6 +286,7 @@ class Forward:
         self._last_view: dict[tuple[str, str], tuple] = {}
         self._repeat_count: dict[tuple[str, str], int] = {}
         self._logged_lines = 0
+        self._last_form_refresh = 0.0
         self._load()
 
     # -- persistence -------------------------------------------------------
@@ -417,9 +424,38 @@ class Forward:
 
     # -- one tick ----------------------------------------------------------
 
+    def refresh_form(self) -> None:
+        """Top up main-tour form from tennis-data.co.uk.
+
+        The Sackmann mirror is FROZEN (last push 2026-06-25, data to
+        2026-06-01, verified byte-identical on re-download). This is the only
+        free source found that is current. MAIN TOUR ONLY - Challenger and ITF,
+        which are ~88% of the Kalshi pool, are not covered and stay stale.
+
+        Failure here must never take the runner down: stale form is a weaker
+        brief, a dead runner is no brief at all.
+        """
+        now_t = time.time()
+        if now_t - self._last_form_refresh < FORM_REFRESH_SEC:
+            return
+        self._last_form_refresh = now_t
+        for tour in ("atp", "wta"):
+            try:
+                arch = get_archive(tour)
+                before = arch.last_date
+                r = refresh_form(arch)
+                say(f"form refresh {tour}: {before} -> {arch.last_date}  "
+                    f"merged {r.rows_merged}/{r.rows_after_archive} new rows, "
+                    f"{r.unmatched_players} unresolved, "
+                    f"{r.dropped_future_dated} future-dated dropped")
+            except Exception as exc:  # noqa: BLE001
+                say(f"form refresh failed for {tour} ({exc}) - continuing on the "
+                    f"frozen mirror, which is stale but correct")
+
     def tick(self) -> dict[str, Any]:
         self.tick_no += 1
         t0 = time.time()
+        self.refresh_form()
 
         quotes = fetch_tennis(status="open")
         # An open market carrying a result is a settled market that has not

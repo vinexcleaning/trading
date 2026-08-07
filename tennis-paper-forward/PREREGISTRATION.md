@@ -412,5 +412,94 @@ line of code that produced it. This was that line.
 
 ---
 
+### A6 — 2026-08-07. `momentum` never traded because it was STRUCTURALLY UNABLE TO. A bug, not caution.
+
+**The finding.** Over **13,089 deliberations** across 538 ticks, momentum's
+highest conviction ever was **+1.90** against a bar of **2.50**. It never once
+came close, and it was never going to.
+
+**The arithmetic, from its single best deliberation:**
+
+| | |
+|---|---|
+| `price_move`, at its maximum | **+3.00** |
+| `volume_confirmation`, at its maximum | **+0.60** |
+| maximum possible positive score | **+3.60** |
+| `stale_form`, at 67 days stale, unavoidable | **−1.72** |
+| **ceiling** | **+1.88**, against a bar of 2.50 |
+
+Its best observed deliberation was +1.90 — the ceiling. **No market condition
+could have made it trade.**
+
+**The cause.** `stale_form` penalises a bot for the free archive's form data
+being old. It was applied to every mentality by a shared `_data_penalty`. But
+momentum's entire thesis is **price movement on our own recorded tape** — it
+never reads form, surface or player history at all. It was being charged for a
+source it does not consult.
+
+**The fix.** `Mentality.uses_archive`, `False` for momentum. A disposition that
+does not read the archive is not penalised for the archive being old. It still
+carries `stale_book`, because a stale book corrupts the tape it *does* read.
+
+**Verified live after the fix:** 24 entries in 13,419 deliberations, maximum
+conviction +3.60. It fires on 6c+ moves and correctly declines anything smaller
+than the ~4.8c round trip, and still refuses on a stale book.
+
+**⚠ Direction, stated plainly because it is the loose one.** Unlike A3, A4 and
+A5, this change makes a bot **more** able to trade. That is only acceptable
+because **momentum's n was 0** — there was no result to protect and nothing that
+could be p-hacked. Declared here before its first settled trade exists. The
+denominator stays **32** (JOINT_MULTIPLICITY rule 4: it never falls).
+
+**What it cost.** Three of sixteen bots contributed nothing to the first 50-match
+run, while still occupying three slots in the multiple-testing denominator — so
+the correction was stricter than the search actually was. That is the
+conservative direction, but it was not deliberate.
+
+### A7 — 2026-08-07. Form data refreshed: 67 days stale → 4. Main tour only.
+
+**The mirror cannot be refreshed. It is frozen.**
+`Aneeshers/tennis-sackmann-archive` was last pushed 2026-06-25. Re-downloading
+all four 2026 files and hashing them against the local cache: **byte
+identical**. The three upstream Sackmann repos are still 404. "Refresh from the
+mirror" is a no-op, and checking rather than assuming is the only reason that is
+known.
+
+**The one free source found that is actually current:** `tennis-data.co.uk`,
+weekly, running to **2026-08-03**. Its `robots.txt` was read **in full** and
+explicitly permits this — *"All robots will spider the domain"*, with
+`Disallow:` only on `/stuff/` and 2000–2005, and those are refused in code
+rather than merely avoided.
+
+| | ATP | WTA |
+|---|---|---|
+| archive last date | 20260601 → **20260803** | 20260602 → **20260803** |
+| new rows merged | **480 of 497** | **458 of 487** |
+| unresolved, skipped not guessed | 17 (3%) | 29 (6%) |
+
+**⚠ MAIN TOUR ONLY. This fixes form for about 13% of the Kalshi pool.**
+Challenger is 15% and ITF is 73%, and neither is covered by any free current
+source found. Their form is exactly as stale as it was.
+
+**Three name-format defects found on the way**, which cost 273 of 984 rows on
+the first attempt and were concentrated in *the most-listed players*: hyphens
+(`Auger-Aliassime F.`), multi-word surnames (`De Minaur A.`), and compound
+initials (`Cerundolo J.M.`) which did not parse at all. Fixed by indexing every
+suffix of each archive name. Miss rate 30%/25% → **3%/6%**.
+
+**One tie-break, and it is a constraint rather than a guess.** `Nakashima B.`
+is Brandon (450 matches, main tour) *and* Bryce (43, futures only). Because this
+source publishes main tour only, a candidate who has never played a main-tour
+match cannot be the player in a main-tour row. Where two main-tour candidates
+share a surname and initial, the join is **refused** — GUARDS #22.
+
+**Two content traps guarded.** The WTA workbook contains a **2029 date** (a
+typo); a naive `max(date)` would have put "now" five years out and emptied every
+form window. And the two workbooks are hashed against each other, because this
+is the same operator family as `football-data.co.uk`, where `COL.csv` was
+byte-identical to `POL.csv` at HTTP 200.
+
+---
+
 *Each entry gets a date, a reason, and what it changed. The text above §10 is
 never edited.*

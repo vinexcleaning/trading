@@ -2684,6 +2684,66 @@ set is ATP/WTA tennis — **which is exactly T012, already run and already null*
 
 ---
 
+## tennis-paper-forward — form refreshed, and the silent bot was a BUG (2026-08-07, later)
+
+Brief: **[BRIEF_TENNIS.md](BRIEF_TENNIS.md)**. Amendments A6/A7 in
+[tennis-paper-forward/PREREGISTRATION.md](tennis-paper-forward/PREREGISTRATION.md).
+70 tests here, 52 in `common/`. Running, past 106 settled toward 2,500.
+
+### ⚠ THE SACKMANN MIRROR IS FROZEN — this affects any project relying on it
+
+`Aneeshers/tennis-sackmann-archive` last pushed **2026-06-25**; its 2026 files
+stop at 20260601. All four re-downloaded and hashed against the local cache:
+**byte identical**. Upstream `tennis_atp` / `tennis_wta` /
+`tennis_slam_pointbypoint` remain **404**. **"Re-pull the mirror" is a no-op**,
+and that is measured rather than assumed.
+
+**The free source that IS current: `tennis-data.co.uk`**, weekly, to
+**2026-08-03**, with surface, round, rankings **and closing bookmaker odds
+including Pinnacle**. Its `robots.txt` was read in full and explicitly permits
+it (*"All robots will spider the domain"*, `Disallow:` only `/stuff/` and
+2000–2005 — refused in code, not merely avoided). Form staleness **67 days → 4**,
+938 of 984 new rows merged.
+
+> **MAIN TOUR ONLY.** Challenger 15% + ITF 73% of the Kalshi pool are **not
+> covered** and stay stale. This fixes ~13% of the sample.
+>
+> **Note for `mlb-paper` and any de-vig work:** that workbook carries B365,
+> **Pinnacle**, Max and Avg closing prices per match, free. This project does
+> not use them; whoever is doing closing-line value on tennis should.
+
+**Name matching was silently dropping 3 in 10 rows**, worst for the most-listed
+players — hyphens (`Auger-Aliassime F.`), multi-word surnames (`De Minaur A.`),
+compound initials (`Cerundolo J.M.`, which did not parse at all). Fixed by
+indexing every name suffix: **30%/25% → 3%/6%**. Genuine surname+initial
+collisions are still **refused**, not guessed (GUARDS #22).
+
+### `momentum` never traded because it COULD NOT. Structural, not conservative.
+
+Over **13,089 deliberations** its best conviction was **+1.90** against a bar of
+**2.50** — and its theoretical ceiling was **+1.88**:
+
+| | |
+|---|---|
+| `price_move` max +3.00, `volume_confirmation` max +0.60 | **+3.60** |
+| `stale_form` at 67 days, unavoidable | **−1.72** |
+| **ceiling** | **+1.88** vs a 2.50 bar |
+
+**The shared `_data_penalty` charged it for the archive being stale — and
+momentum never reads the archive.** Its thesis is price movement on our own
+tape. Fixed via `Mentality.uses_archive`; it has since placed **24** entries at
+up to +3.60, still declining moves smaller than the ~4.8c round trip.
+
+> ⚠ **This is the one amendment in the loose direction** — it makes a bot more
+> able to trade. Acceptable only because momentum's **n was 0**: no result
+> existed to protect. Denominator stays **32** (rule 4, it never falls).
+>
+> **What it cost:** 3 of 16 bots contributed nothing to the 50-match run while
+> still occupying 3 slots in the correction — so the bar was stricter than the
+> search warranted. Conservative, but not deliberate.
+
+---
+
 ## tennis-paper-forward — THE 50-MATCH RUN IS DONE. 0 of 16 stand up. (2026-08-07)
 
 Brief for the coordinating chat: **[BRIEF_TENNIS.md](BRIEF_TENNIS.md)** (fixed
