@@ -117,7 +117,79 @@ puller (C018 puts the unauthenticated ceiling at 15 req/s).
 
 ---
 
-## 6. IN FLIGHT (2026-08-07) — the multi-day tape pull. Do not kill it.
+## 6. ✅ THE MULTI-DAY RUN LANDED — and adverse selection now has a number
+
+**2026-08-07.** `src/maker_multiday.py` → `reports/maker_multiday.json`.
+**432 KXBTC15M events, 3,263,999 trades, 5 days, 0 rows dropped, 0 markets
+page-capped.** Against the 29 events §3 had.
+
+`MM_RESULTS.md` §10 named exactly one open question: *"does adverse selection on
+real flow exceed 1.00¢ per round trip?"* **It now has an answer.**
+
+| | KXBTC15M, 432 events |
+|---|---|
+| **REAL** maker P&L, marked to settlement | **+0.5044¢** · 95% CI **[−0.3101, +1.2872]** |
+| **PLACEBO** — passive side reassigned at random within each event | **+0.8911¢** · sd 0.0681 |
+| **REAL − PLACEBO** | **−0.3867¢** · permutation **p = 0.0000** |
+| D1 always-long-yes / always-short-yes | **+0.6263¢ / −0.6263¢** |
+| D2 per day | 5 days, mean +0.414¢, **positive on 80%** |
+| D3 stability at 25 / 50 / 75 / 100% of events | **+0.526 · +0.555 · +0.535 · +0.504¢** |
+
+### What changed from the one-day run, and it is the whole point
+
+At 29 events the placebo beat the real result at **p = 0.995** — indistinguishable
+noise. At **432** events the placebo still beats it, but now by
+**−0.3867¢ with p = 0.0000.** The placebo's own sd tightened **0.216 → 0.068**, a
+3.2× narrowing against the 3.9× that √(432/29) predicts.
+
+> **That is adverse selection, measured.** Being the passive side is
+> **significantly worse than having the passive side assigned at random** — which
+> is only possible if takers systematically hit at prices that turn out to
+> favour them. **It costs the maker 0.387¢ per contract.**
+
+### Three things this does NOT say
+
+1. **It does not say the maker lost money.** The maker side earned **+0.504¢** in
+   absolute terms. That figure's CI crosses zero and it is contaminated: D1 shows
+   this window had a real directional drift (**always-long-yes +0.626¢**), so any
+   participant net-long YES looked good regardless of who was passive.
+2. **It does not say adverse selection exceeds the spread.** 0.387¢ against
+   MM_RESULTS' stated **1.00¢** gross margin at the touch. **On this measurement
+   it does not** — which is the first result in this programme pointing toward a
+   strategy rather than away from one, and is exactly why it needs the caveats
+   below rather than a headline.
+3. **The two statistics answer different questions and must not be merged.** The
+   permutation test is **within**-event (valid for adverse selection); the
+   bootstrap CI is **between**-event (valid for total P&L). The total is not
+   distinguishable from zero; the adverse-selection term is, decisively.
+
+### Limitations, stated rather than buried
+
+- **5 days, one series, and only the first 5 minutes of each market's life.**
+  That slice was chosen before any P&L was computed, and for a stated reason
+  (§below), but it is a slice.
+- **This is the maker side of ALL flow** — a quoter permanently at the touch on
+  both sides. A real maker chooses when and where to quote, so this is a lower
+  bound on skill and an upper bound on volume.
+- **It measures fills that happened, not a fill model.** That is the design's
+  strength and also its ceiling: it cannot tell you what a *different* quote
+  would have earned.
+- **The pull was still running at 415/664 markets** when this ran. D3's stability
+  curve is flat to ±0.05¢ across quartiles, so more events are expected to move
+  the point estimate very little — but the run should be repeated at completion.
+
+### The honest next step
+
+**Do not build anything on +0.504¢.** The one number that is solid is the
+**−0.387¢ adverse-selection cost**. To know whether quoting is viable you need
+the other half — what a resting order actually captures — and that needs the
+**order book**, which is public and free (§1) and which the recorder has been
+storing all along. That is the measurement `bot-hunt`'s H10 machinery already
+does, pointed at crypto instead of esports.
+
+---
+
+## 7. IN FLIGHT (2026-08-07) — the multi-day tape pull. Do not kill it.
 
 `src/pull_trade_tape.py`, **PID 28028**, writing `crypto/data/trade_tape.db`.
 **Resumable per ticker** — if it dies, re-run the same command and it skips what

@@ -1,0 +1,38 @@
+{
+ "KXBTC15M": {
+  "events": 432,
+  "trades": 3263999,
+  "maker_fee_c": 0.0,
+  "real_c": 0.5044,
+  "ci": [
+   -0.3101,
+   1.2872
+  ],
+  "placebo_mean_c": 0.8911,
+  "placebo_sd_c": 0.0681,
+  "real_minus_placebo_c": -0.3867,
+  "perm_p": 0.0,
+  "always_long_yes_c": 0.6263,
+  "always_short_yes_c": -0.6263,
+  "days": 5,
+  "day_positive_frac": 0.8,
+  "stability": [
+   [
+    0.25,
+    0.5262
+   ],
+   [
+    0.5,
+    0.5548
+   ],
+   [
+    0.75,
+    0.535
+   ],
+   [
+    1.0,
+    0.5044
+   ]
+  ]
+ }
+}
