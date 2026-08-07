@@ -29,6 +29,7 @@ coverage table.
 | 15. A 404 never establishes death | âœ… `unify_currency._dead` | | | | |
 | 16. Membership table, so dedup cannot decide an overlap statistic | âœ… `hn.membership` | | | | |
 | 12. Content-level recorder health check | âœ… | âš ï¸ specified, status unknown | n/a | n/a | âŒ **check first** |
+| 23. **Renamed-field trap** (venue schema drift) | ✅ enforced repo-wide by [`common/kalshi_fields.py`](common/kalshi_fields.py) + [`test_no_legacy_kalshi_fields.py`](common/tests/test_no_legacy_kalshi_fields.py) — found **2 live bugs** the day it was written | | | | |
 
 âœ… present and enforced âž– present but weaker âš ï¸ partial or unverified âŒ absent
 
@@ -899,6 +900,107 @@ contribute no observations, so the numbers were unaffected â€” *that was lu
 design*, and the only way to know which you have is to look.
 
 
+## 23. The renamed-field trap — a missing key reads `None` and becomes a silent zero
+
+**Three sessions have now shipped this bug, and the third had the warning
+already written down in front of it.** That is what makes it a guard, not a note.
+
+**Source:** [`common/kalshi_fields.py`](common/kalshi_fields.py) — the field map
+plus `assert_priced()`
+**Triage:** [`common/scan_legacy_kalshi_fields.py`](common/scan_legacy_kalshi_fields.py)
+→ [`common/LEGACY_FIELD_SCAN.md`](common/LEGACY_FIELD_SCAN.md)
+**Tests:** [`common/tests/test_no_legacy_kalshi_fields.py`](common/tests/test_no_legacy_kalshi_fields.py) — 6 tests
+**Contributed by `mlb-paper`, 2026-08-07**, after `crypto` hit it the same day.
+
+### What it tests
+
+Kalshi renamed its price and size fields to `*_dollars` and `*_fp`. **The legacy
+names are not `None` — they are ABSENT.** So `obj.get("yes_bid")` returns `None`,
+`float(x or 0)` turns that into `0`, and the run completes with clean-looking
+numbers that are wrong in the flattering direction.
+
+Verified against the live API on 2026-08-07, not recited from documentation:
+
+| object | dead (absent) | live |
+|---|---|---|
+| market | `yes_bid` `yes_ask` `no_bid` `no_ask` `last_price` `volume` `volume_24h` `open_interest` `yes_bid_size` `yes_ask_size` | `*_dollars`, `*_fp` |
+| trade | `yes_price` `no_price` `count` | `yes_price_dollars` `no_price_dollars` `count_fp` |
+| orderbook | `orderbook` → `.yes` / `.no` | **`orderbook_fp` → `.yes_dollars` / `.no_dollars`** |
+| candlestick | `volume` `open_interest` | `volume_fp` `open_interest_fp` |
+
+### ⚠ The half-truth that makes a blanket ban wrong
+
+On a **candlestick**, `yes_bid` / `yes_ask` / `price` are **live** — as
+*containers* whose leaves are `*_dollars`. On the **same object**, `volume` and
+`open_interest` are **dead**. `STATUS.md` records only the first half
+("candlesticks are a different schema — do not fix them"), which would let
+somebody read `candle["volume"]` believing candlesticks are exempt. They are not.
+
+### The three incidents
+
+| where | what | cost |
+|---|---|---|
+| `set1_overshoot` (C024) | `volume` → `volume_fp` | a dedupe summed to **zero**; the first run reported a clean fake result |
+| `mlb-paper` 2026-08-07 | `orderbook.yes` → `orderbook_fp.yes_dollars` | every depth read 0 |
+| `crypto` 2026-08-07 | `yes_price`/`no_price`/`count` on the trade object | **3,979,927 rows stored with a null price**, across two 50-minute pulls |
+
+The crypto session's own account is the most useful sentence here: its recorder
+docstring warned about exactly this, *in those words*, and it wrote a new puller
+and did the documented thing anyway. **Prose does not hold.** GUARDS #6 records
+the same lesson — the fee formula went 3 copies → 17 while the rule was only a
+convention, and stopped at 17 the day it became a failing test.
+
+### The enforcement is a RUNTIME assert, not a static ban
+
+`assert_priced(obj, kind)` on the **first object of a pull**. Exact, cannot be
+fooled by where the dict came from, and costs ten seconds instead of two
+fifty-minute pulls. GUARDS #13 applied to a schema: *a 200 and a row count are
+not a result.*
+
+### Why the static half is a REPORT and not a failing test
+
+Recorded because the mistake is instructive. The first version asserted
+repo-wide that no dead name is read anywhere. **It fired on 25 files across 10
+projects, and the first four sampled were all correct code** — two reading
+candlesticks, two reading their own stored JSON under their own key names.
+
+A static checker cannot see whether a dict came off the wire or out of your own
+database. **A guard that fires on correct code in ten projects gets
+wholesale-allowlisted and then deleted — guard rot arriving on day one.** So the
+scan classifies into `WIRE` / `CANDLE` / `OWN`, only `WIRE` needs a human, and
+the test defends the boundary rather than the whole repo.
+
+### What it found on the day it was written — 44 files, 7 WIRE, 2 real bugs
+
+Both the same mistake, and **neither is in this session's folder, so both are
+flagged rather than fixed** (CLAUDE.md §5):
+
+- **`market-selection/src/probe_orderbook.py:73`** — reads
+  `r.json().get("orderbook")`, which is always absent, so `yes_levels` and
+  `no_levels` are **0 for every market**. The file's entire purpose is probing
+  book depth.
+- **`crypto/src/mm_capability_probe.py:61`** — the same read. It prints
+  `keys: []` and finds no levels, i.e. **it reports the orderbook endpoint as
+  returning nothing.**
+
+> ### ⚠ This may explain a contradiction this repo has recorded twice
+> `CLAUDE.md` §5 names two cross-session disagreements that have already
+> happened: the Kalshi maker-fee question, and **"whether the orderbook endpoint
+> returns data."** A capability probe that reads the wrong key reports exactly
+> that symptom.
+>
+> **Stated as a mechanism, not a verdict.** I have shown the probe *would*
+> report an empty book; I have not shown this is what produced the recorded
+> disagreement. The owning sessions should check.
+
+### The one file to copy
+
+`common/measure_tennis_maker_liquidity.py` already does the right thing: it
+**asserts `volume_fp` is present and raises if the schema moved**, then reads
+its own accumulator. It is the model.
+
+---
+
 ## The one-page version
 
 If you carry nothing else into the next project:
@@ -929,4 +1031,9 @@ If you carry nothing else into the next project:
     split point was found by looking at the results, permute the same
     observations into a random order and see how often the null beats you.
     A zero-drift process rises then falls 85% of the time.
+15. **A missing key is not a zero.** When a venue renames a field the old name
+    goes ABSENT, `.get()` hands you `None`, and `float(x or 0)` turns that into
+    a clean, plausible, wrong number. Assert the schema on the FIRST object of
+    every pull. Three sessions here have shipped this, and the third had the
+    warning written down in front of it.
 

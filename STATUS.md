@@ -3202,3 +3202,56 @@ readable over the web.
 
 **`CLAUDE.md` §5 was amended** with the brief command and the mailbox rule, so
 every session picks this up automatically at start.
+
+### 🔴 GUARD #23 added, and it found TWO live bugs in other sessions' folders (2026-08-07)
+
+[GUARDS.md #23](GUARDS.md) · `common/kalshi_fields.py` ·
+`common/scan_legacy_kalshi_fields.py` · 6 tests, 58 `common/` tests pass.
+
+**Three sessions have now shipped the renamed-field bug** — `set1_overshoot`
+(C024), `mlb-paper` and `crypto`, the last two on the same day. The crypto one
+is the reason this is now a guard rather than another paragraph: **its own
+recorder docstring warned about exactly this, in those words**, and a new puller
+did the documented thing anyway and stored **3,979,927 rows with a null price**.
+Prose does not hold. GUARDS #6 is the precedent — the fee formula went 3 copies
+→ 17 while the rule was a convention, and stopped the day it became a test.
+
+**The trap:** the legacy names are not `None`, they are **ABSENT**. `.get()`
+returns `None`, `float(x or 0)` makes it `0`, the run completes, and the numbers
+are wrong in the flattering direction.
+
+> **⚠ Two bugs found, both in folders that are not mine, so both are FLAGGED and
+> NOT FIXED** (CLAUDE.md §5). Both are the same mistake:
+>
+> - **`market-selection/src/probe_orderbook.py:73`** reads
+>   `r.json().get("orderbook")`. The response nests under **`orderbook_fp`** with
+>   keys `yes_dollars`/`no_dollars`, so **`yes_levels` and `no_levels` are 0 for
+>   every market**. Probing book depth is the file's entire purpose.
+> - **`crypto/src/mm_capability_probe.py:61`** does the same, prints
+>   `keys: []`, finds no levels — **it reports the orderbook endpoint as
+>   returning nothing.**
+
+> ### ⚠ And this may explain a contradiction recorded TWICE in CLAUDE.md §5
+> §5 names two cross-session disagreements that have already happened: the
+> Kalshi maker-fee question, and **"whether the orderbook endpoint returns
+> data."** A capability probe reading the wrong key reports exactly that
+> symptom. **Stated as a mechanism, not a verdict** — I have shown the probe
+> *would* report an empty book, not that this is what caused the recorded
+> disagreement. **`market-selection` and `crypto` should check their own
+> reports before trusting any depth number derived from these two files.**
+
+**Why the enforcement is a runtime assert and the static half is only a report.**
+The first version was a repo-wide failing test. It fired on **25 files across 10
+projects and the first four sampled were all correct code** — two reading
+candlesticks (where `yes_bid`/`yes_ask` are live *containers*), two reading their
+own stored JSON. A static checker cannot see whether a dict came off the wire or
+out of your own database, and **a guard that fires on correct code in ten
+projects gets wholesale-allowlisted and then deleted.** The scan now classifies
+into WIRE / CANDLE / OWN (44 files: 7 / 9 / 28) and the test defends the
+boundary rather than the whole repo.
+
+> ⚠ **A correction to this file's own Task 1 note.** It says candlesticks are "a
+> different schema — do not fix them", which is only half true. On a candlestick
+> `yes_bid`/`yes_ask`/`price` ARE live containers — but `volume` and
+> `open_interest` are **dead there too**. Reading `candle["volume"]` believing
+> candlesticks are exempt is a live trap the existing note does not cover.

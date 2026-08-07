@@ -9,13 +9,13 @@ channel between sessions; this is the short channel out. Plain English, no
 acronyms, no jargon. If a number matters, say whether bigger is better.
 
 <!-- STAMP -->
-> **Generated 2026-08-07 13:34, on top of commit `13b8e61`.**
-> **Freshness check:** if `13b8e61` does not appear in this repo's commit
+> **Generated 2026-08-07 13:40, on top of commit `60205cd`.**
+> **Freshness check:** if `60205cd` does not appear in this repo's commit
 > history on GitHub, you are reading a cached copy — stop and refetch.
 > Being one or two commits behind the newest is normal and expected:
 > this page is always written just before the commit that carries it.
 > Cache-busting URL, always safe to use:
-> `https://raw.githubusercontent.com/vinexcleaning/trading/main/BRIEF.md?v=13b8e61`
+> `https://raw.githubusercontent.com/vinexcleaning/trading/main/BRIEF.md?v=60205cd`
 <!-- /STAMP -->
 
 ---
@@ -65,52 +65,52 @@ _Section `coordinator` last written 2026-08-07 13:16._
 
 ---
 
-<!-- SECTION:tennis updated=2026-08-07T13:16 -->
+<!-- SECTION:tennis updated=2026-08-07T13:40 -->
 ## Tennis — paper forward test
 
-_Written by the `tennis-paper-forward` session. Migrated verbatim from `BRIEF_TENNIS.md` on 2026-08-07; not re-audited by the coordinator._
+**As of 2026-08-07 (evening).** Running now, **108 finished matches** collected of a 2,500 target. No money is involved and none can be: no keys, no order-placing code, and a test fails the build if any appears. **It calls no AI model — it is plain arithmetic, so running it costs nothing beyond electricity.**
 
-**As of 2026-08-07 (evening).** Overwritten at the end of every session, so this is always the latest. Still collecting, now past 106 finished matches on the way to a target of 2,500. No money is involved: no keys, no order-placing code, and a test fails the build if any appears. **It calls no AI model — it is plain arithmetic, and running it costs nothing.**
+**The result so far, from the completed 50-match checkpoint: 0 of 16 bots produced a claim that stands up.** Thirteen came back "can't tell", three had never traded. That is exactly what was written down in advance.
 
-**Job 1 — refresh the stale player data. Done, with a real limit.** The free Sackmann mirror **cannot be refreshed: it is frozen.** I re-downloaded every 2026 file and compared them byte for byte against what we already had — identical, and the original source is still deleted. So I found the one free source that *is* current, tennis-data.co.uk, which publishes weekly and permits this in its own robots file. **Player form went from 67 days stale to 4**, with 938 of 984 new results merged.
+**The one number worth carrying to other projects: it costs 4.8 cents per contract to get in and out of Kalshi tennis** (2.7 fees + 2.1 the buy/sell gap). That is *higher* than the 3.6 cents this repo has been assuming, and it is measured rather than estimated. **Bigger is worse.** Every edge this repo has ever found is smaller than 4.8 cents.
 
-**The catch, stated plainly: that source covers the main tour only.** Challenger and lower-tier events are **87% of the matches Kalshi actually lists**, and no free current source covers them. So this fixes form for about **one match in eight**. The rest is exactly as stale as it was.
+**Player form data: refreshed from 67 days stale to 4.** The free Sackmann mirror **cannot be refreshed — it is frozen**, which I established by re-downloading every 2026 file and comparing byte for byte. I found the one free source that is current (tennis-data.co.uk, weekly, permitted by its own robots file) and merged 938 of 984 new results.
 
-**Along the way I found the name matching was quietly dropping 3 in 10 results** — and dropping them hardest for the *best-known* players, because of hyphens (Auger-Aliassime), two-word surnames (De Minaur) and double initials (Cerundolo J.M.). Fixed; misses are now 3–6%. Where two players genuinely share a surname and initial it refuses to guess.
+**The limit on that, stated plainly: it covers the top tier only.** Challenger and lower events are **87% of the matches Kalshi lists**, and no free current source covers them. So this fixed form for about **one match in eight**; the rest is as stale as before.
 
-**Job 2 — the style that placed zero bets. It is a BUG, not correct caution, and it could never have traded.** Over 13,089 decisions its best score was 1.90 against a threshold of 2.50. Its maximum *possible* score was 1.88. **No market condition could have made it buy anything.**
+**A style that had placed zero bets turned out to be broken, not cautious.** Over 13,089 decisions its best score was 1.90 against a threshold of 2.50 — and its maximum *possible* score was 1.88, so no market condition could ever have made it trade. It was being penalised for player-history data being old, while ignoring player history entirely. Fixed: it has now placed 78 bets.
 
-**The cause:** it was being penalised for the player-history data being old — but that style ignores player history entirely. It trades price movement on our own recorded prices. It was being charged for something it never uses. Fixed: it has now placed **24 bets**, and it still correctly refuses moves too small to cover the cost of trading.
+**Four separate defects this week were invisible from the outside** — the program reported healthy the whole time. Three copies running at once overwriting each other; a log growing fast enough to delete its own earliest records; a "profitable" bot that had won 2 bets out of 2; and fills that looked better than expected only because the bad ones were being thrown away. All four are fixed and tested.
 
-**What that cost us:** three of the sixteen bots contributed nothing to the first 50-match run while still counting toward the statistical bar — so the test was harder to pass than the search actually justified. Conservative direction, but not deliberate.
+**Open questions.** No live scores, so bots see prices only — the site that has them tells automated readers to stay out. And the profit question still needs roughly **2,250 finished matches per bot**, about three weeks of continuous running.
 
-**What I need from you: nothing.** It is running with both fixes. Two things to know: the profit question still needs about 2,250 matches per bot (roughly three weeks), and moving it to the laptop takes 15 minutes whenever you want it off your desktop — `tennis-paper-forward/deploy/LAPTOP_SETUP.md`.
+**What I need from you: nothing.** It is collecting. Moving it to the laptop takes 15 minutes whenever you want it off the desktop — `tennis-paper-forward/deploy/LAPTOP_SETUP.md`.
 
-_Section `tennis` last written 2026-08-07 13:16._
+_Section `tennis` last written 2026-08-07 13:40._
 <!-- /SECTION:tennis -->
 
 ---
 
-<!-- SECTION:mlb updated=2026-08-07T13:16 -->
+<!-- SECTION:mlb updated=2026-08-07T13:40 -->
 ## Baseball — paper forward test
 
-_Written by the `mlb-paper` session. Migrated verbatim from `BRIEF_MLB.md` on 2026-08-07; not re-audited by the coordinator._
+**As of 2026-08-07.** Written by the `mlb-paper` session at the end of its run.
 
-**As of 2026-08-07.** This file is overwritten at the end of every baseball session, so it is always the latest state and there is only ever one of it. Nothing in it is stale.
+**What it is.** Sixteen bots, no real money anywhere, all watching the same games on Kalshi. Each has a different way of thinking about a game: the starting pitcher, the weather and the ballpark, how tired the bullpen is, betting early before the professional bookmakers post a price, and reacting quickly when the team sheets come out. Everything they look at is free — official baseball data and government weather. Every bot writes down its reasoning before the game starts, so nothing can be rewritten afterwards. It runs on its own and comes back after a restart.
 
-**What I built.** A baseball version of the tennis paper test. Sixteen bots, no real money anywhere, all watching the same games on Kalshi. Each has a different way of thinking about a game: the starting pitcher, the weather and the ballpark, how tired the bullpen is, betting early before the professional bookmakers post a price, and reacting quickly when the team sheets come out. Everything they look at is free — official baseball data and government weather. Every bot writes down its reasoning before the game starts, so nothing can be rewritten afterwards. It runs on its own and comes back after a restart.
+**Nothing here calls a paid service.** The bots are plain arithmetic — no language model, no API bill. Zero cost per game, and zero for the thousands of games needed to finish. The only thing that ever cost money is the session building it.
 
-**The first thing it already tells us, before any game has finished.** Kalshi's baseball prices already match the sharpest bookmaker in the world to within about a penny. I checked 58 markets and not one was off by enough to cover the cost of trading. So these bots are not trying to beat Kalshi — they have to beat professionals. I have written down in advance that I expect all five ideas to fail, and how I will know.
+**The first finding, before any game has finished.** Kalshi's baseball prices already match the sharpest bookmaker in the world to within about a penny. I checked 58 markets and not one was off by enough to cover the cost of trading. So these bots are not trying to beat Kalshi — they have to beat professionals. I have written down in advance that I expect all five ideas to fail, and how I will know.
 
-**Your question about the other two markets: no, they are not better.** The "249 over/under markets recorded and never looked at" is really about 23 games. That market lists eleven different price levels for the same game, so the count was inflated about elevenfold. The first-inning market costs more than twice as much to trade and has almost nothing available to buy, so I dropped it. I kept over/under alongside the main market, because weather and tired pitchers change how many runs are scored much more than they change who wins.
+**The other two markets are not better.** The "249 over/under markets recorded and never looked at" is really about 23 games — that market lists eleven price levels for the same game, so the count was inflated about elevenfold. The first-inning market costs more than twice as much to trade and has almost nothing available to buy, so I dropped it. Over/under is kept alongside, because weather and tired pitchers change how many runs are scored far more than they change who wins.
 
-**One thing settled itself.** I set a stricter standard that applies to the tennis test as well as this one, and flagged it rather than changing their files. The tennis session checked my working, agreed, put it in their code — and found a number I had got wrong. I have corrected it and said so. Note for anyone reading across projects: where that standard mentions 32, that is the **combined** number of bots across baseball and tennis together, not either test's own count of 16.
+**A new safety check found two real bugs elsewhere in the repo.** Kalshi renamed some of its data fields; the old names now return nothing, and "nothing" quietly becomes zero in a calculation. Three separate sessions have been caught by this, so I turned it into an automatic check. It immediately found two files — in the market-selection and crypto folders, not mine — that read the wrong name and therefore report every order book as empty. I have flagged them for their owners rather than editing someone else's work. One of those files is a test whose whole job is to answer a question this repo has argued about twice: whether that data source returns anything at all. It may have been answering "no" because of this bug. Worth someone checking.
 
-**What's open — one small question.** That wrong number: should it count in the running tally of corrections this project keeps? I have left it out, because the tally is about promising results shrinking, and this was a cost being restated. Either answer is fine; tell me if you want it counted.
+**What's open — one small question.** I got a number wrong earlier and corrected it (a cost was 6.2%, not the 8% I said). Should that count in the running tally of corrections this project keeps? I left it out, because the tally is about promising results shrinking and this was a cost being restated. Either answer is fine.
 
-**Nothing needs doing.** To see how it is going, run `mlb-paper\deploy\check.bat`. The first line says either ALIVE or STALE. That is the only command you need.
+**Nothing needs doing.** To see how the baseball test is going, run `mlb-paper\deploy\check.bat`. The first line says either ALIVE or STALE. That is the only command needed.
 
-_Section `mlb` last written 2026-08-07 13:16._
+_Section `mlb` last written 2026-08-07 13:40._
 <!-- /SECTION:mlb -->
 
 ---
