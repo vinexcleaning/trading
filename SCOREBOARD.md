@@ -365,8 +365,22 @@ and none of them is it — they either used Kalshi's own price with no bookmaker
 at all, or measured how far apart the two prices sit **without ever checking who
 was right**.
 
-**2. It is now pre-registered and measured — and the arithmetic kills it before
-the statistics get a chance.**
+**2. It is now pre-registered and measured. ⚠ The line below is CORRECTED —
+my original wording was wrong, in the direction of sounding too decisive.**
+
+> ### ⚠ Retracted 2026-08-07: "the cost is bigger than the whole margin"
+>
+> That sentence is **not a valid argument** and I should not have written it.
+> The bookmaker's margin is what you *strip off* to work out the true price. It
+> does **not** cap how far Kalshi's price can be wrong. If Kalshi were 8 cents
+> off, the edge would be 8 cents, on a market with a 2-cent margin.
+>
+> **What actually settles it is a measurement, not the arithmetic.** Across
+> **1,460 price comparisons on 30 games**, the two venues never disagreed by more
+> than **2.77 cents** — and it costs **2.75 cents** to act. For money to be
+> there, they would have to disagree by roughly **four times the largest gap ever
+> observed.** That is decisive, and it is decisive *because it was measured*.
+> See [bot-hunt/RESULTS_DEVIG_WHERE.md](bot-hunt/RESULTS_DEVIG_WHERE.md).
 
 | | |
 |---|---|
