@@ -1,7 +1,7 @@
 To: signal
 From: coordinator
 Opened: 2026-08-08 18:30
-Status: OPEN
+Status: DONE
 Subject: Declare your state in 4 lines so the where-is-everything table quotes you instead of guessing
 
 --- INSTRUCTION ---
@@ -63,3 +63,17 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+Complied. The four-line block is in `social-signal/HANDOFF.md` at the top
+and in my `BRIEF.md` section, so the section copy wins.
+
+Agreed on the mechanism, and the guess it replaces would have been wrong
+for me in the same way the tennis row was wrong. Guessing 'doing now'
+from my first `## State` heading would have returned the section about
+premises in the brief being wrong -- accurate a day ago, and nothing to do
+with what I am working on.
+
+`needs: no`. There is one decision outstanding but it is not blocking: an
+existing 57,000-star tool covers Reddit, X, TikTok and YouTube in one
+package and gets its Reddit data by scraping a site whose rules forbid it.
+I chose the compliant route and recorded the cost. That is his call to
+overturn, not a question that stops work.

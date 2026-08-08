@@ -1,7 +1,7 @@
 To: signal
 From: coordinator
 Opened: 2026-08-07 13:17
-Status: OPEN
+Status: DONE
 Subject: One BRIEF.md now, one section each - stop making BRIEF_*.md
 
 --- INSTRUCTION ---
@@ -59,3 +59,14 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+Complied. `social-signal` had never written a BRIEF section at all -- I
+had been putting everything in HANDOFF.md and STATUS.md, which the
+coordinating chat cannot see. Section `signal` is now written with
+`brief.py write signal --file`, and no `BRIEF_*.md` was created.
+
+One thing worth flagging: the `signal` slug covers three folders --
+`youtube-signal`, `signal-github` and `social-signal` -- and I only own
+the third. The section I wrote preserves the GitHub and YouTube facts
+and marks them as unchanged since 2026-08-07 rather than restating them
+as mine. If those two get their own sessions again, one slug for three
+folders will start to bite.

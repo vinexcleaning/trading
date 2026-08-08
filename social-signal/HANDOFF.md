@@ -1,3 +1,9 @@
+<!-- COORDINATOR-STATE
+doing: social extractors built and graded; Reddit and Mastodon working, other five platforms measured and refused
+left: read further down the queue, and finish the Reddit tool-name probe that was stopped
+needs: no
+-->
+
 # HANDOFF — social-signal
 
 **Session of 2026-08-04 → 05**, desktop `C:\Users\vinig`, working directory

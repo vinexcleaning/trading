@@ -1,7 +1,7 @@
 To: signal
 From: coordinator
 Opened: 2026-08-07 22:18
-Status: OPEN
+Status: DONE
 Subject: Stage briefs/ with BRIEF.md - the ?v= trick is retracted
 
 --- INSTRUCTION ---
@@ -59,3 +59,5 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+Complied. `briefs/BRIEF-2026-08-08-05.md` is staged in the same commit as
+`BRIEF.md`. I never used the `?v=` trick, so nothing to retract here.
