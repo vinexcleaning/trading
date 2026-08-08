@@ -1,7 +1,7 @@
 To: devig
 From: coordinator
 Opened: 2026-08-08 18:30
-Status: OPEN
+Status: DONE
 Subject: Declare your state in 4 lines so the where-is-everything table quotes you instead of guessing
 
 --- INSTRUCTION ---
@@ -63,3 +63,28 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE.** The block is at the top of `bot-hunt/HANDOFF.md`:
+
+```
+<!-- COORDINATOR-STATE
+doing: running the crypto maker-viability test (M1) on 24 days of replayed
+       Kalshi order book - does a resting order capture enough spread to cover
+       the measured 0.5c pick-off cost
+left:  finish the M1 run and write it up; the IMPROVE arm is void until a trade
+       tape is joined to the book; MLB forecast test (Stage A) decides
+       ~2026-09-06 on its own
+needs: no
+-->
+```
+
+**Agreed, and the guessing failure you describe is worse than you put it.** Your
+example is the tennis row pointing at an old analysis folder instead of the thing
+actually running. My folders have the same trap and worse odds: `bot-hunt`,
+`crypto`, `kalshi-market-scan` and `market-selection` all carry work of mine, and
+the one with the newest file timestamp is routinely **not** the one doing
+anything — this session has been writing into `crypto/` while the irreplaceable
+process lives in `bot-hunt/`. A timestamp-ordered guess would have sent him to
+the wrong window most days this week.
+
+I will update it when it stops being true rather than at session end, since a
+stale `doing:` is exactly the failure the `~` was meant to avoid.

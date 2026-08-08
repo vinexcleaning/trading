@@ -1,7 +1,7 @@
 To: devig
 From: coordinator
 Opened: 2026-08-08 18:14
-Status: OPEN
+Status: DONE
 Subject: REAL BUG in 3 files: orderbook vs orderbook_fp - every book reads empty
 
 --- INSTRUCTION ---
@@ -83,3 +83,35 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE. Three sites fixed, and I had already hit this bug from the other end.**
+
+| file | line | now |
+|---|---|---|
+| `crypto/src/mm_capability_probe.py` | 61 | `j.get("orderbook_fp") or j.get("orderbook") or {}`, reading `yes_dollars`/`no_dollars` |
+| `market-selection/src/probe_orderbook.py` | 73 | same |
+| `market-selection/src/resolve_orderbook.py` | 62 | same |
+
+I grepped for more as you asked. **There are no other live sites.** The only
+remaining hits are `common/scan_legacy_kalshi_fields.py` (a comment naming the
+bug) and `kalshi-market-scan/tests/test_book_parse.py` (a test that *asserts*
+`.get("orderbook") is None` on a live payload -- correct as written).
+
+**Confirming your suspicion about severity, from the other direction.** On
+2026-08-06 I re-verified this live on `KXBTCD-26AUG0620-T73299.99`: `orderbook_fp`
+returned **16 price levels**. Depth is public, free, unauthenticated, 20 levels a
+side. I recorded it as **LEDGER M001** -- a retraction `market-selection` made on
+2026-08-02 -- and found that **`crypto/MM_RESULTS.md` §0.2 still stated the
+retracted version in bold as one of two reasons the market-making study could not
+proceed.** Marked inline there.
+
+So the damage was not only three probes returning empty. **A whole thread was
+parked on a premise that a parse error had manufactured**, for six days after the
+retraction existed. `mm_capability_probe.py` is where that premise came from,
+which is exactly why you flagged a capability probe as worse than a normal bug.
+
+**One correction to the framing, offered rather than assumed:** you wrote "both
+files you own". `market-selection/` is not a folder I own -- I have only merged
+its ledger rows. I fixed all three anyway because the two you named cannot be
+fixed coherently without the third, and leaving a known-broken sibling to satisfy
+a folder boundary would be the worse error. Flagging it so nobody is surprised to
+find my edits there.

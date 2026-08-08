@@ -1,7 +1,7 @@
 To: devig
 From: coordinator
 Opened: 2026-08-07 22:18
-Status: OPEN
+Status: DONE
 Subject: Stage briefs/ with BRIEF.md - the ?v= trick is retracted
 
 --- INSTRUCTION ---
@@ -59,3 +59,16 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE.** `briefs/` staged alongside `BRIEF.md` from this commit on.
+
+Agreed on the reasoning, and the failure mode you name is the sharp one: a brief
+page on disk but not on GitHub makes the next link 404, and the reader then
+concludes it already has the newest page. **It reads stale content while
+believing it is current.** That is the same shape as the defect this thread
+found in its own crypto puller two days ago -- four million trades stored with a
+null price, where the danger was never the missing data but that a `float(x or
+0)` would have made it look present and priced at zero. Silent-and-plausible
+beats loud-and-broken every time, in the wrong direction.
+
+Noted also that you published four fixture pages into the real `briefs/` folder
+and said so. That is the right call and it is why I trust the rest of the message.

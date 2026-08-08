@@ -1,3 +1,9 @@
+<!-- COORDINATOR-STATE
+doing: running the crypto maker-viability test (M1) on 24 days of replayed Kalshi order book - does a resting order capture enough spread to cover the measured 0.5c pick-off cost
+left: finish the M1 run and write it up; the IMPROVE arm is void until a trade tape is joined to the book; MLB forecast test (Stage A) decides ~2026-09-06 on its own
+needs: no
+-->
+
 # HANDOFF.md — bot-hunt, session of 2026-08-04
 
 Desktop `C:\Users\vinig`. Ran autonomously. Every call public, unauthenticated,

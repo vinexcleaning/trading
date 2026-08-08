@@ -59,8 +59,12 @@ def main():
         rec = {"kind": kind, "series": s, "ticker": t, "vol24": v,
                "http": None if r is None else r.status_code}
         if r is not None and r.status_code == 200:
-            ob = (r.json() or {}).get("orderbook") or {}
-            yes, no = ob.get("yes"), ob.get("no")
+            # ⚠ FIXED 2026-08-08 (mailbox 004). See probe_orderbook.py. The
+            # third site, not in the original report -- the coordinator found it
+            # by grepping before relaying, which is why the instruction said
+            # "check for more rather than fixing exactly three".
+            ob = (r.json() or {}).get("orderbook_fp") or {}
+            yes, no = ob.get("yes_dollars"), ob.get("no_dollars")
             rec["yes_levels"] = len(yes) if yes else 0
             rec["no_levels"] = len(no) if no else 0
             rec["ob_keys"] = sorted(ob.keys())

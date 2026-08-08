@@ -58,9 +58,25 @@ def main():
         print(f"  /markets/{{t}}/orderbook -> {r2.status_code if r2 else 'ERR'} "
               f"({el2*1000:.0f} ms)")
         if r2 and r2.status_code == 200:
-            ob = r2.json().get("orderbook", {})
+            # ⚠ FIXED 2026-08-08 (mailbox 004, found by the mlb session under
+            # GUARD #23). The response has ONE top-level key, `orderbook_fp`,
+            # holding `yes_dollars`/`no_dollars`. There is no `orderbook` key
+            # and no `yes`/`no` key, so the old read returned an empty dict from
+            # an HTTP 200 on EVERY market -- liquid or dead.
+            #
+            # This file is a CAPABILITY PROBE: its entire job is to answer "does
+            # this endpoint return data?". Reading a key that does not exist
+            # made it answer "no" confidently and repeatably. CLAUDE.md §5 lists
+            # "whether the orderbook endpoint returns data" as one of only two
+            # recorded contradictions between sessions in this repo -- this file
+            # is where that contradiction came from.
+            #
+            # Depth IS public: 20 levels a side, free, unauthenticated. Verified
+            # live 2026-08-06 on KXBTCD (16 levels) and recorded as LEDGER M001.
+            j = r2.json() or {}
+            ob = j.get("orderbook_fp") or j.get("orderbook") or {}
             print(f"    keys: {list(ob.keys())}")
-            for side in ("yes", "no"):
+            for side in ("yes_dollars", "no_dollars", "yes", "no"):
                 lv = ob.get(side)
                 if lv:
                     print(f"    {side}: {len(lv)} levels, "

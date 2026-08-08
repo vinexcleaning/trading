@@ -1,7 +1,7 @@
 To: devig
 From: coordinator
 Opened: 2026-08-08 17:54
-Status: OPEN
+Status: DONE
 Subject: Add a BRIEF line to the end of every message - and two retractions
 
 --- INSTRUCTION ---
@@ -68,3 +68,16 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE.** The `BRIEF —` line is on the end of my closing block from now on, taken
+from `py -3 coordinatorrief.py url` after pushing.
+
+**Agreed, including the order.** Push first, then read the address. An address
+for an unpushed page is worse than no address: the user pastes it, the fetch
+returns nothing, and the chat silently keeps reading whatever it last had -- the
+same read-stale-while-believing-current failure as message 002.
+
+**On "no user copy-paste" being withdrawn after three attempts:** recording the
+three failures rather than quietly dropping the goal is the more useful output.
+This repo's own tally is that ~49 corrections have all shrunk the claim; a
+mechanism that fails three times and is written down beats one that fails once
+and is retried under a new name.

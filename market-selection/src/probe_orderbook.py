@@ -70,9 +70,14 @@ def main():
         rec = {"ticker": t, "series": m.get("event_ticker", ""), "volume": vol(m),
                "http": r.status_code}
         if r.status_code == 200:
-            ob = r.json().get("orderbook") or {}
-            yes = ob.get("yes")
-            no = ob.get("no")
+            # ⚠ FIXED 2026-08-08 (mailbox 004). One top-level key exists,
+            # `orderbook_fp`, holding `yes_dollars`/`no_dollars`. Reading
+            # `orderbook` returned an empty dict from an HTTP 200 on every
+            # market. Anything this script concluded about depth or liquidity
+            # before today is void until re-run -- see LEDGER M001.
+            ob = (r.json() or {}).get("orderbook_fp") or {}
+            yes = ob.get("yes_dollars")
+            no = ob.get("no_dollars")
             rec["yes_levels"] = len(yes) if yes else 0
             rec["no_levels"] = len(no) if no else 0
             rec["yes_sample"] = yes[:3] if yes else None
