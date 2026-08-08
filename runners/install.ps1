@@ -95,11 +95,31 @@ if (Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue) {
     Write-Host "A task named '$TaskName' already exists; it will be replaced." -ForegroundColor Yellow
 }
 
-$action = New-ScheduledTaskAction -Execute "powershell.exe" `
-    -Argument ("-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$watchdog`" -Quiet") `
+# Launched through wscript, not powershell, so NOTHING IS EVER DRAWN.
+# powershell.exe is a console program: Windows creates a console for it and
+# -WindowStyle Hidden only hides that console after it exists, so a black box
+# flashes on screen every ten minutes forever. wscript.exe is GUI-subsystem and
+# never gets one.
+$shim = Join-Path $here "watchdog_hidden.vbs"
+if (-not (Test-Path $shim)) { throw "watchdog_hidden.vbs not found at $shim" }
+$action = New-ScheduledTaskAction -Execute "wscript.exe" `
+    -Argument ("//nologo `"$shim`"") `
     -WorkingDirectory $here
 
+# THREE triggers, and the logon one is load-bearing after a power-off.
+#
+# A task registered like this runs in the user's own session, which means an
+# AtStartup trigger cannot fire until somebody logs in - so on its own it does
+# NOT survive the machine being switched off at the wall and switched back on.
+# That was the actual failure this whole thing exists to fix (13 hours lost to a
+# physical power-off), so relying on AtStartup alone would have fixed the wrong
+# thing and looked correct while doing it.
+#
+# AtLogOn covers the power-off case. The 10-minute repeat covers a crash. The
+# AtStartup one is kept because it costs nothing and helps if the task is ever
+# moved to a system account.
 $tStartup = New-ScheduledTaskTrigger -AtStartup
+$tLogon = New-ScheduledTaskTrigger -AtLogOn
 $tWatch = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) `
     -RepetitionInterval (New-TimeSpan -Minutes $WatchdogMinutes)
 
@@ -109,7 +129,7 @@ $settings = New-ScheduledTaskSettingsSet `
 
 if ($PSCmdlet.ShouldProcess($TaskName, "Register the one watchdog task")) {
     Register-ScheduledTask -TaskName $TaskName -Action $action `
-        -Trigger @($tStartup, $tWatch) -Settings $settings `
+        -Trigger @($tStartup, $tLogon, $tWatch) -Settings $settings `
         -Description ("Starts any paper test listed in runners\runners.json that is not " +
                       "running. Never stops anything. No credentials, no order code.") `
         -Force | Out-Null
@@ -127,5 +147,12 @@ DONE.
   Add another test:             one entry in runners\runners.json, then nothing
   Stop it all:                  runners\uninstall.ps1
 
-  Set Sleep = Never and Lid close = Do nothing, or none of this runs overnight.
+  Nothing will appear on screen. The tests run under pythonw.exe, which has no
+  console, and the watchdog runs through wscript, which never draws a window.
+  The ONLY way to see them is runners\check.bat.
+
+  After a power-off, the tests come back WHEN YOU LOG IN - within a minute or
+  two. They do not run at the sign-in screen, because this task runs in your own
+  Windows session. That is the honest limit: a machine sitting at the login
+  screen for six hours is collecting nothing.
 "@

@@ -59,6 +59,21 @@ foreach ($r in $cfg.runners) {
     $dir = Join-Path $root $r.dir
     $exe = Join-Path $dir $r.exe
 
+    # windowless: run under pythonw.exe, which has NO CONSOLE AT ALL.
+    #
+    # -WindowStyle Hidden alone is not enough. python.exe is a console program,
+    # so Windows still creates a console for it and hiding it is a cosmetic
+    # afterthought that can still flash on start. pythonw.exe is built as a GUI
+    # subsystem binary and never gets one.
+    #
+    # `exe` deliberately stays python.exe in the registry so that `verify` runs
+    # under the CONSOLE interpreter -- running a test suite under pythonw would
+    # send its output nowhere and report success in silence.
+    if ($r.windowless) {
+        $w = $exe -replace 'python\.exe$', 'pythonw.exe'
+        if (Test-Path $w) { $exe = $w }
+    }
+
     if (-not (Test-Path $dir)) {
         Say ("  {0,-10} FOLDER MISSING: {1}" -f $r.name, $dir)
         continue

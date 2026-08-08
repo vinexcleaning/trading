@@ -5,9 +5,10 @@
     "name": "short label, used in the status page and nowhere else",
     "enabled": "false means the watchdog ignores it completely",
     "dir": "folder, relative to the repo root",
-    "exe": "interpreter, relative to dir",
+    "exe": "interpreter, relative to dir. Keep this python.exe even when windowless is true - see below",
     "args": "arguments, as a list",
     "match": "a substring of the command line that identifies THIS runner in the process list. Must be unique across entries.",
+    "windowless": "true runs it under pythonw.exe, which has no console at all - nothing appears on screen, ever. `exe` stays python.exe so that `verify` still runs under the console interpreter; a test suite run under pythonw would send its output nowhere and report success in silence.",
     "verify": "args to run before installing, to prove the thing is safe. Install refuses if it exits non-zero.",
     "log": "where the wrapper appends stdout, relative to dir",
     "paper_only": "documentation only - the real guarantee is each project's own test suite, run via `verify`"
@@ -17,6 +18,7 @@
     {
       "name": "tennis",
       "enabled": true,
+      "windowless": true,
       "dir": "tennis-paper-forward",
       "exe": ".venv\\Scripts\\python.exe",
       "args": ["-m", "src.forward", "--poll", "60", "--target", "2500"],
@@ -28,8 +30,9 @@
 
     {
       "name": "mlb",
-      "enabled": false,
-      "_why_disabled": "Owned by the mlb-paper session and not mine to switch on. Flip enabled to true when that session says it is ready; nothing else needs changing. Its own deploy/ scripts keep working either way.",
+      "enabled": true,
+      "windowless": true,
+      "_enabled_by": "The user, 2026-08-08, explicitly: 'enable both tennis and mlb'. Previously off because it belongs to the mlb-paper session and was not mine to switch on. Its own deploy/ scripts still work and were not touched. Flagged to that session in STATUS.md.",
       "dir": "mlb-paper",
       "exe": ".venv\\Scripts\\python.exe",
       "args": ["src\\run.py"],

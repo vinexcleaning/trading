@@ -3488,3 +3488,116 @@ session's text; this note is the flag, per §5.
 
 Limits written **before** the code, in `COORDINATOR.md` §3b, with a test that
 fails if any of them is deleted from the document. Decisions D11–D16.
+
+---
+
+## coordinator — the laptop recorders: why they still cannot be monitored (2026-08-08, later)
+
+**Asked directly: add them as monitored-only, or say plainly why not. The plain
+answer is that monitoring is impossible from this machine, and no config change
+makes it possible.** Checked, not assumed:
+
+| Channel | State |
+|---|---|
+| shared or mapped drive to the laptop | **none** — only `C:` and `D:` exist here |
+| network call | forbidden by design (D6), test-enforced, and there is no endpoint |
+| cloud-sync folder | none present |
+| git | the recorders' data is gitignored and they push no heartbeat |
+
+**There is no signal to read.** A registry entry that produced `ALIVE` from an
+edited config file would be the worst available outcome — those two recorders
+are accruing the one dataset here that cannot be re-pulled at any price.
+
+### What was done instead, and what it is worth
+
+They are registered as `"monitor": "confirmation"`. The coordinator tracks how
+long ago a **human** last confirmed them, nags after 24 hours, and prints the
+exact check. Two states, named so they cannot be misread — `CONFIRMED (by hand)`
+and `CHECK IT BY HAND` — and a test asserts neither contains the word ALIVE.
+
+```
+py -3 coordinator\runners.py confirm tennis-depth-recorder --note "both lines present"
+```
+
+**This monitors a check-in, not a recorder.** One can die a minute after a
+confirmation and the page reads `CONFIRMED` for the rest of the window. That
+sentence prints next to the state every time.
+
+**It is still better than what was there.** The old behaviour said "can't see
+from this machine" and then never raised it again — the hole was not merely
+unmonitored, it was **silent**. Both now appear under "what needs you" and will
+keep appearing until somebody looks.
+
+**The one thing that would make it real, not built:** the laptop writes a
+heartbeat into the repo on a timer and pushes it; the coordinator reads the
+timestamp from the committed file. It needs git to be able to push from the
+laptop (unverified) and adds a commit every few minutes to a public repo.
+`runners/` is the natural home — it already has a 10-minute task on that
+machine. Flagged to that session; **the user's call.**
+
+### The two runner registries are compared, not merged
+
+`runners/runners.json` owns **what runs**. `coordinator/runners.json` owns
+**whether it is producing anything**. Different questions, so they stay
+separate — but two lists of the same runners drift, and this repo's record on
+that is the fee formula reaching 17 copies while its rule was a convention.
+
+Every coordinator run reports a runner in one and not the other, both
+directions, naming the failure each would cause. **They agree right now**:
+`tennis` and `mlb`, both enabled, both watched. `runners/`'s own 19 tests pass
+and nothing in that folder was edited.
+
+Consequences absorbed: `logs\wrapper.log` is now the first heartbeat checked for
+both tests, and the restart advice changed from `deploy\run_forward.bat` to
+*"the watchdog restarts it within 10 minutes; if it is STALE for longer, the
+watchdog is what stopped."*
+
+### Two overclaims caught by tests, recorded rather than quietly fixed
+
+1. **The table said "the laptop recorder is not running".** It cannot know
+   that — the only true statement is that nobody has confirmed it. This shipped
+   inside the same change that added the mechanism designed to prevent it.
+2. **The error path had an error in it.** `Path.relative_to` raises on a path
+   outside the repo and was used inside the message reporting a *missing*
+   watchdog registry, so the report about the broken thing was itself a crash.
+
+Fixing (1) meant attributing every "needs you" line to its source: a reason the
+coordinator **derived** is its own claim; a reason a session **declared** is
+quoted and now prints *"that chat said so, in its own words"*.
+
+### Also, the state blocks are landing
+
+**3 of 5 chats have now declared their own state** (`tennis`, `mlb`, `signal`,
+plus `coordinator`) — up from 1. `devig` is still guessed. Decisions D17–D19.
+
+---
+
+## ⚠ NOTE FOR THE `mlb-paper` SESSION — your runner is now in the shared watchdog (2026-08-08)
+
+**The user asked for it explicitly**, in these words: *"enable both tennis and
+mlb in runners.json, so both come back automatically after a power-off or
+reboot."* Previously I had it registered and **disabled**, on the grounds that it
+was yours to switch on.
+
+What this means for you, all of it:
+
+- `runners/runners.json` now has `mlb` with `enabled: true` and
+  `windowless: true`. It runs `srcun.py` under **`pythonw.exe`**, so it has no
+  console window.
+- **Your own `mlb-paper/deploy/` scripts are untouched and still work.** Do not
+  use both schedulers at once - two tasks watching one runner is pointless,
+  though harmless, because your own lock refuses the second copy.
+- The watchdog **cannot stop anything**. It has no `Stop-Process`, no
+  `taskkill`, and a test fails the build if either appears. It only ever starts
+  what is missing.
+- Its liveness check matches on `srcun.py` **and** the folder name. If you
+  ever change how `run.py` is invoked, update `match` in the registry or the
+  watchdog will think it is down and start a second copy - which your lock will
+  refuse, so the failure is noisy rather than damaging.
+- `install.ps1` runs **your** test suite before scheduling anything and refuses
+  to install if it fails. It passed: 18 tests, 2m56s.
+
+**If you would rather own your own scheduling, say so** — set `enabled: false`
+with a `_why_disabled` line and it drops straight out. I have flagged this here
+rather than in your mailbox because writing to another session's mailbox is not
+mine to do.
