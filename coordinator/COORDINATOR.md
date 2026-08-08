@@ -224,11 +224,58 @@ cleanly on 2026-08-07 and a two-state check would have shouted `STALE` at it
 every run. A check that cries wolf gets ignored — the same failure already
 recorded as **D8**.
 
-### It cannot see anything running on the laptop
+### It cannot see anything running on the laptop, and no amount of code fixes that
 
-The registry holds desktop paths. A recorder running on the laptop is reported
-as **`can't see from this machine`**, never as `STALE`. Saying "dead" about
-something you cannot observe is worse than saying nothing.
+**This was asked directly on 2026-08-08 — "add them as monitored-only if you
+can, or tell me plainly why not" — so here is the plain why not.**
+
+Monitoring needs a *signal that crosses machines*. Checked, not assumed:
+
+| Channel | State |
+|---|---|
+| A shared or mapped drive | **None.** Only `C:` and `D:` exist on this machine |
+| A network call | **Forbidden by design** (D6) and enforced by test. There is also no endpoint to call |
+| A cloud-sync folder | None present |
+| Git | The laptop's recorder data is gitignored, and it writes no heartbeat that gets pushed |
+
+So there is nothing to read. **No entry in any registry can invent a signal that
+does not arrive**, and a row that says `ALIVE` because a config file was edited
+would be the worst possible outcome here — these two recorders are collecting
+the one dataset in this repo that cannot be re-pulled at any price.
+
+**What was added instead, and it is a weaker thing:** those two are registered
+with `"monitor": "confirmation"`. The coordinator tracks **how long ago a human
+last confirmed they were alive**, nags when that goes stale, and prints the
+exact check to run. It monitors **the freshness of a human check-in, not the
+recorder.** A recorder can die one minute after a confirmation and the page will
+read `CONFIRMED` for the rest of the window.
+
+That is a real improvement on the previous behaviour — which was to say
+`can't see from this machine` and then **never mention it again**, so the hole
+was not just unmonitored, it was silent. It is not monitoring.
+
+**The one thing that would make real monitoring possible** is a heartbeat the
+laptop writes and pushes to this repo on a timer; the coordinator would then
+read a timestamp out of a committed file instead of a file's age. That is work
+**on the laptop**, needs git to be able to push from there, and adds a commit
+every few minutes to a public repo. It is not built, and pretending otherwise
+in a registry entry would be exactly the kind of asserted-not-measured claim
+this repo keeps having to retract.
+
+A desktop runner that goes quiet is reported as **`STALE`**. A laptop one is
+never called dead on the basis of no evidence.
+
+### It does not decide which runners exist — `runners/runners.json` does
+
+The watchdog at [`../runners/`](../runners/) is the registry of what *runs* on
+this machine. `coordinator/runners.json` is a separate list of how to tell
+whether each one is *producing anything*. **Two lists of the same runners can
+drift**, and this repo's own record on that is the fee formula reaching 17
+copies while its rule was a convention.
+
+They are not merged, because they answer different questions. Instead every run
+compares them and reports a runner that is in one and not the other. **That
+catches drift; it does not prevent it.**
 
 ### A background test that is not registered is not watched
 

@@ -9,7 +9,7 @@ while writing nonsense reads ALIVE; a healthy runner having a long quiet spell
 reads STALE. It is a heartbeat, not a health check, and it is not dressed up as
 one. See COORDINATOR.md section 3b.
 
-Four states, because two would lie:
+Four states for a runner this machine can see, because two would lie:
 
   ALIVE      the heartbeat changed inside its own threshold
   STALE      a continuous job that has gone quiet -- go and look at it
@@ -20,9 +20,28 @@ FINISHED exists because of a real near-miss: crypto's tape pull completed
 cleanly and a two-state check would have shouted STALE at it forever. A check
 that cries wolf gets ignored -- already recorded here as decision D8.
 
-Runners on the laptop are reported "can't see from this machine", never dead.
-Claiming to know the state of something you cannot observe is worse than saying
-nothing.
+AND TWO STATES THAT ARE NOT LIVENESS AT ALL
+-------------------------------------------
+The two Kalshi recorders run on the LAPTOP. There is no shared drive, no sync
+folder, no heartbeat that reaches this machine, and this module makes no
+network call by design. **There is no signal to read, and no registry entry can
+invent one.**
+
+  CONFIRMED (by hand)   a human said it was running, at the time shown
+  CHECK IT BY HAND      nobody has said so recently enough
+
+Those describe **the freshness of a human check-in, not the recorder.** It can
+die one minute after a confirmation and this will read CONFIRMED for the rest
+of the window. That is a real weakness and it is printed next to the state
+every time, because a reader who mistakes it for monitoring is worse off than
+one who was told nothing. See COORDINATOR.md section 3b.
+
+TWO REGISTRIES, COMPARED NOT MERGED
+-----------------------------------
+runners/runners.json (the shared watchdog) owns WHAT RUNS on this machine.
+This module owns WHETHER IT IS PRODUCING ANYTHING. Different questions, so
+they stay separate -- but two lists of the same runners drift, so every run
+reports any runner present in one and missing from the other.
 
 No network. No credentials. Reads files and asks Windows whether a process id
 still exists. Never starts, stops or restarts anything.
@@ -31,6 +50,7 @@ Usage
 -----
   py -3 coordinator\\runners.py            # the table
   py -3 coordinator\\runners.py --json     # same, machine-readable
+  py -3 coordinator\\runners.py confirm <id> --note "what you saw"
 """
 
 from __future__ import annotations
@@ -38,6 +58,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import textwrap
 from datetime import datetime
 from pathlib import Path
 
@@ -50,6 +71,19 @@ STALE = "STALE"
 FINISHED = "FINISHED"
 NEVER = "NEVER RUN"
 UNSEEN = "can't see from this machine"
+
+# Confirmation-monitored runners -- see COORDINATOR.md section 3b. These two
+# states describe A HUMAN CHECK-IN, not a process. They are named so that
+# nobody can read them as liveness.
+CONFIRMED = "CONFIRMED (by hand)"
+CHECK_IT = "CHECK IT BY HAND"
+
+CONFIRMS = HERE / "confirmations"
+
+# The watchdog's own registry. It owns WHAT RUNS; this module owns WHETHER IT
+# IS PRODUCING ANYTHING. Two lists of the same runners drift, so they are
+# compared rather than merged.
+WATCHDOG_REGISTRY = REPO / "runners" / "runners.json"
 
 # How far back a one-shot log tail is read looking for its done marker.
 TAIL_BYTES = 4096
@@ -154,6 +188,20 @@ def lock_pid(rel):
         return None
 
 
+def rel_to_repo(p: Path) -> str:
+    """Path relative to the repo, or the whole path if it lies outside it.
+
+    Path.relative_to RAISES on a path outside the repo. It was used inside an
+    error message about a missing file, so the failure path had a second
+    failure hiding in it -- the report about the broken thing was itself the
+    crash. Found by a test that pointed the registry at a temp folder.
+    """
+    try:
+        return str(p.relative_to(REPO)).replace("\\", "/")
+    except ValueError:
+        return str(p)
+
+
 def minutes_since(epoch: float) -> float:
     return (datetime.now().timestamp() - epoch) / 60.0
 
@@ -169,6 +217,90 @@ def english_age(mins: float) -> str:
         return f"{n} hour{'s' if n != 1 else ''} ago"
     n = int(mins // 1440)
     return f"{n} day{'s' if n != 1 else ''} ago"
+
+
+# --------------------------------------------------------------------------
+# confirmation monitoring -- for runners no signal reaches
+# --------------------------------------------------------------------------
+def confirmation_path(runner_id: str) -> Path:
+    return CONFIRMS / f"{runner_id}.json"
+
+
+def last_confirmation(runner_id: str) -> dict | None:
+    p = confirmation_path(runner_id)
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
+def record_confirmation(runner_id: str, note: str, when: str) -> Path:
+    """Write down that a human looked and it was alive. Nothing more.
+
+    This is the whole of what 'monitored-only' can mean for the laptop
+    recorders: there is no shared drive, no sync folder, no heartbeat that
+    reaches this machine and no network call allowed. So what is stored is the
+    check-in, and the coordinator nags when the check-in goes stale.
+    """
+    CONFIRMS.mkdir(exist_ok=True)
+    path = confirmation_path(runner_id)
+    path.write_text(
+        json.dumps({"runner": runner_id, "confirmed_alive_at": when,
+                    "note": note}, indent=2) + "\n",
+        encoding="utf-8", newline="\n")
+    return path
+
+
+def check_confirmation(entry: dict, out: dict) -> dict:
+    """State the age of the last human check-in. NOT the state of the runner.
+
+    A recorder can die one minute after a confirmation and this reads
+    CONFIRMED for the rest of the window. That is stated everywhere it is
+    printed, because a reader who mistakes it for liveness is worse off than
+    one who was told nothing.
+    """
+    hours = float(entry.get("confirm_every_hours", 24))
+    rec = last_confirmation(entry["id"])
+    where = f"on the {out['machine']}"
+
+    if not rec:
+        out["state"] = CHECK_IT
+        out["why"] = (
+            f"Nobody has ever confirmed this is running. It is {where}, and "
+            f"nothing on this machine can see it -- no shared drive, no "
+            f"heartbeat, and the coordinator makes no network calls. This is "
+            f"not monitoring; it is a reminder to go and look."
+        )
+        out["needs_a_human"] = True
+        return out
+
+    try:
+        t = datetime.strptime(rec["confirmed_alive_at"][:16], "%Y-%m-%d %H:%M")
+    except Exception:
+        t = None
+    mins = minutes_since(t.timestamp()) if t else 1e9
+    out["last_write"] = rec.get("confirmed_alive_at", "?")
+    out["age_minutes"] = round(mins, 1)
+    note = f" Note: {rec['note']}" if rec.get("note") else ""
+
+    if mins <= hours * 60:
+        out["state"] = CONFIRMED
+        out["why"] = (
+            f"A human confirmed it was running {english_age(mins)}.{note} "
+            f"**That is a statement about the past, not monitoring** -- it "
+            f"could have stopped since and nothing here would know."
+        )
+        return out
+
+    out["state"] = CHECK_IT
+    out["why"] = (
+        f"The last time anyone confirmed this was running was "
+        f"{english_age(mins)}, and a check is expected every {int(hours)} "
+        f"hours.{note} Nothing on this machine can see it, so this is the only "
+        f"signal there is."
+    )
+    out["needs_a_human"] = True
+    return out
 
 
 # --------------------------------------------------------------------------
@@ -191,6 +323,9 @@ def check(entry: dict) -> dict:
         "process": "",
         "needs_a_human": False,
     }
+
+    if entry.get("monitor") == "confirmation":
+        return check_confirmation(entry, out)
 
     if out["machine"] != "desktop":
         out["state"] = UNSEEN
@@ -323,6 +458,47 @@ def load() -> list[dict]:
     return data.get("runners", [])
 
 
+def watchdog_drift(entries: list[dict]) -> list[str]:
+    """Runners the watchdog starts that nothing watches, and vice versa.
+
+    runners/runners.json says WHAT RUNS. This file says HOW TO TELL IT IS
+    PRODUCING ANYTHING. They are separate on purpose -- different questions --
+    but two lists of the same runners drift, and the record in this repo on
+    that is the fee formula reaching 17 copies while its rule was a convention.
+    """
+    try:
+        wd = json.loads(WATCHDOG_REGISTRY.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return [f"{rel_to_repo(WATCHDOG_REGISTRY)} is missing. Either the "
+                f"shared watchdog was removed, or this is not the machine that "
+                f"runs the tests. Nothing below is cross-checked."]
+    except Exception as exc:
+        return [f"{rel_to_repo(WATCHDOG_REGISTRY)} could not be read "
+                f"({exc}). The two registries were NOT cross-checked."]
+
+    enabled = {r["name"] for r in wd.get("runners", []) if r.get("enabled")}
+    disabled = {r["name"] for r in wd.get("runners", []) if not r.get("enabled")}
+    watched = {e["watchdog_name"] for e in entries if e.get("watchdog_name")}
+
+    out = []
+    for name in sorted(enabled - watched):
+        out.append(
+            f"The watchdog starts '{name}' but nothing in coordinator/"
+            f"runners.json checks whether it is producing anything. It would "
+            f"be restarted forever while writing nothing, and this page would "
+            f"never mention it."
+        )
+    for name in sorted(watched - enabled):
+        why = ("it is present but disabled" if name in disabled
+               else "it is not in that file at all")
+        out.append(
+            f"coordinator/runners.json watches '{name}', but the watchdog will "
+            f"not start it -- {why}. After a reboot it stays down, and the row "
+            f"here will read STALE with no explanation."
+        )
+    return out
+
+
 def check_all() -> dict:
     entries = load()
     rows = [check(e) for e in entries]
@@ -331,7 +507,11 @@ def check_all() -> dict:
         known.update(e.get("heartbeat") or [])
         if e.get("lock"):
             known.add(e["lock"])
-    return {"runners": rows, "unregistered": unregistered(known)}
+    return {
+        "runners": rows,
+        "unregistered": unregistered(known),
+        "drift": watchdog_drift(entries),
+    }
 
 
 def by_workstream(result: dict) -> dict:
@@ -349,12 +529,32 @@ def render(result: dict) -> str:
     width = max((len(r["title"]) for r in result["runners"]), default=10)
     for r in result["runners"]:
         L.append(f"  {r['state']:<28} {r['title']:<{width}}")
-        L.append(f"      {r['why']}")
-        if r["state"] == STALE and r["restart"]:
-            L.append(f"      To restart it:  {r['restart']}")
+        for chunk in textwrap.wrap(r["why"].replace("**", ""), 68,
+                                   initial_indent="      ",
+                                   subsequent_indent="      "):
+            L.append(chunk)
+        if r["state"] in (STALE, CHECK_IT) and r["restart"]:
+            for chunk in textwrap.wrap("What to do:  " + r["restart"], 68,
+                                       initial_indent="      ",
+                                       subsequent_indent="        "):
+                L.append(chunk)
         L.append("")
     L.append("  ALIVE means it wrote to its log recently. It does NOT mean the")
     L.append("  numbers coming out of it are right -- nothing here checks that.")
+    L.append("")
+    L.append("  CONFIRMED means A HUMAN SAID SO, at the time shown. Nothing on")
+    L.append("  this machine can see the laptop recorders -- no shared drive,")
+    L.append("  no heartbeat, no network call. They can stop one minute after a")
+    L.append("  confirmation and this page will not know. See COORDINATOR.md")
+    L.append("  section 3b for why that cannot be fixed by editing a config.")
+
+    if result.get("drift"):
+        L.append("")
+        L.append("  THE TWO RUNNER LISTS DISAGREE:")
+        for d in result["drift"]:
+            for chunk in textwrap.wrap(d, 68, initial_indent="    - ",
+                                       subsequent_indent="      "):
+                L.append(chunk)
     un = result["unregistered"]
     if un:
         L.append("")
@@ -377,11 +577,43 @@ def _ascii_safe_console():
             pass
 
 
+def cmd_confirm(runner_id: str, note: str, when: str | None) -> int:
+    entry = next((e for e in load() if e["id"] == runner_id), None)
+    if entry is None:
+        ids = ", ".join(e["id"] for e in load())
+        sys.exit(f"No runner called '{runner_id}'. Known: {ids}")
+    if entry.get("monitor") != "confirmation":
+        sys.exit(
+            f"'{runner_id}' is watched by its log file, not by hand. Confirming "
+            f"it would replace a measurement with an opinion. Nothing written."
+        )
+    stamp = when or f"{datetime.now():%Y-%m-%d %H:%M}"
+    path = record_confirmation(runner_id, note, stamp)
+    print(f"Recorded: {entry['title']} was confirmed running at {stamp}.")
+    if note:
+        print(f"Note: {note}")
+    print(f"Written to {rel_to_repo(path)}")
+    print()
+    print("This records that SOMEBODY LOOKED. It does not monitor anything.")
+    print(f"The next reminder is in {int(entry.get('confirm_every_hours', 24))} "
+          f"hours.")
+    return 0
+
+
 def main() -> int:
     _ascii_safe_console()
     ap = argparse.ArgumentParser(description=__doc__)
+    sub = ap.add_subparsers(dest="cmd")
     ap.add_argument("--json", action="store_true")
+
+    c = sub.add_parser("confirm", help="record that a human saw it running")
+    c.add_argument("runner_id")
+    c.add_argument("--note", default="", help="what you actually saw")
+    c.add_argument("--at", default=None, help="YYYY-MM-DD HH:MM, if not now")
+
     a = ap.parse_args()
+    if a.cmd == "confirm":
+        return cmd_confirm(a.runner_id, a.note, a.at)
     result = check_all()
     print(json.dumps(result, indent=2) if a.json else render(result))
     return 0

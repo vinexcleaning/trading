@@ -241,24 +241,47 @@ def row_for(slug: str, ws: dict, state: dict, runstate: dict) -> dict:
         tally: dict[str, int] = {}
         for t in tests:
             tally[t["state"]] = tally.get(t["state"], 0) + 1
-        order = [runmod.STALE, runmod.NEVER, runmod.ALIVE, runmod.FINISHED,
-                 runmod.UNSEEN]
+        order = [runmod.STALE, runmod.CHECK_IT, runmod.NEVER, runmod.ALIVE,
+                 runmod.CONFIRMED, runmod.FINISHED, runmod.UNSEEN]
         parts = [(f"{n} " if len(tests) > 1 else "") + s
                  for s in order for n in [tally.get(s, 0)] if n]
         test_cell = ", ".join(parts)
         test_detail = " ".join(f"{t['title']}: {t['state']}. {t['why']}" for t in tests)
 
     # 5. "Needs me" -- only from signals that can actually be established.
-    why_needed = []
+    # The wording has to match what is actually known. Saying "the laptop
+    # recorder is not running" was a flat overclaim: nothing on this machine
+    # can see it, so the only true statement is that nobody has confirmed it.
+    # Each reason is attributed. A reason the coordinator DERIVED is its own
+    # claim and has to survive "how do you know that". A reason a session
+    # DECLARED is that session's text, quoted, and is not the coordinator's to
+    # reword -- which is also why the two are kept apart rather than merged
+    # into one list of sentences.
+    why_needed: list[dict] = []
+
+    def derived(text: str) -> None:
+        why_needed.append({"source": "coordinator", "text": text})
+
     for t in tests:
-        if t["needs_a_human"]:
-            why_needed.append(
-                f"the {t['title'].lower()} is not running -- restart it with "
+        if not t["needs_a_human"]:
+            continue
+        if t["state"] == runmod.CHECK_IT:
+            since = (f"the last check was {runmod.english_age(t['age_minutes'])}"
+                     if t["age_minutes"] is not None
+                     else "nobody has ever checked")
+            derived(
+                f"nobody has confirmed the {t['title'].lower()} is still "
+                f"running, and {since}. Nothing here can see it, so this is "
+                f"the only signal there is. Go and look: {t['restart']}"
+            )
+        else:
+            derived(
+                f"the {t['title'].lower()} has stopped producing anything. "
                 f"{t['restart']}"
             )
     open_mail = state["mail"].get(slug, {}).get("OPEN", 0)
     if open_mail:
-        why_needed.append(
+        derived(
             f"{open_mail} instruction(s) sitting unanswered in that window -- "
             f"open it and say 'check your mail'"
         )
@@ -268,13 +291,16 @@ def row_for(slug: str, ws: dict, state: dict, runstate: dict) -> dict:
     # It is reported once, for the whole repo, by scan.py.
     dirty = sum(state["folders"].get(f, {}).get("dirty", 0) for f in ws["folders"])
     if dirty:
-        why_needed.append(
+        derived(
             f"{dirty} changed file(s) never committed -- invisible to the "
             f"coordinating chat until that window commits and pushes"
         )
     if needs_declared and not needs_declared.lower().startswith("no"):
-        why_needed.append(needs_declared.lstrip("yes").lstrip(" -–—:").strip()
-                          or "that session says it needs you")
+        why_needed.append({
+            "source": "declared",
+            "text": (needs_declared.lstrip("yes").lstrip(" -–—:").strip()
+                     or "that session says it needs you"),
+        })
 
     return {
         "slug": slug,
@@ -349,7 +375,9 @@ def render_console(state, runstate, rows) -> str:
         for r in needed:
             L.append(f"  {r['slug']} -- {r['title']}")
             for w in r["why_needed"]:
-                for chunk in textwrap.wrap(w, 70, initial_indent="      - ",
+                tag = "" if w["source"] == "coordinator" else                     " (that chat said so, in its own words)"
+                for chunk in textwrap.wrap(w["text"] + tag, 70,
+                                           initial_indent="      - ",
                                            subsequent_indent="        "):
                     L.append(chunk)
             L.append("")
@@ -396,7 +424,8 @@ def render_markdown(state, runstate, rows) -> str:
         for r in needed:
             L.append(f"**{r['slug']} — {r['title']}**\n")
             for w in r["why_needed"]:
-                L.append(f"- {w}")
+                tag = "" if w["source"] == "coordinator" else                     " — *that chat said so, in its own words*"
+                L.append(f"- {w['text']}{tag}")
             L.append("")
     else:
         L.append("Nothing. No signal fired — which means *no signal fired*, "
@@ -411,7 +440,23 @@ def render_markdown(state, runstate, rows) -> str:
     L.append("")
     L.append("`ALIVE` means **it wrote to its log recently**. It does not mean "
              "the numbers coming out of it are correct — nothing here checks "
-             "that. See [COORDINATOR.md](COORDINATOR.md) §3b.\n")
+             "that.\n")
+    L.append("`CONFIRMED (by hand)` is **not liveness**. The two Kalshi "
+             "recorders run on the laptop, and there is no shared drive, no "
+             "heartbeat and no network call that could reach them — so what is "
+             "tracked is how long ago a human last looked. A recorder can stop "
+             "one minute after a confirmation and this page will not know. "
+             "See [COORDINATOR.md](COORDINATOR.md) §3b for why no config change "
+             "fixes that.\n")
+
+    if runstate.get("drift"):
+        L.append("### ⚠ The two runner lists disagree\n")
+        L.append("`runners/runners.json` says what **runs**; "
+                 "`coordinator/runners.json` says how to tell it is **producing "
+                 "anything**. One of them is missing a runner the other has.\n")
+        for d in runstate["drift"]:
+            L.append(f"- {d}")
+        L.append("")
 
     un = runstate["unregistered"]
     if un:

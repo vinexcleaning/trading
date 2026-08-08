@@ -265,3 +265,97 @@ while its rule was only a convention. The addition is **additive, four lines,
 and touches no existing text.** Every session also has the mailbox message.
 
 **Flagged rather than done quietly**, and trivially reversible.
+
+### D17 — The laptop recorders are registered as "confirmation-monitored", which is NOT monitoring
+
+**2026-08-08.** The user asked directly: *"add them to runners.json as
+monitored-only if you can, or tell me plainly why not."*
+
+**Monitoring is not possible from this machine, and no config change makes it
+possible.** Checked rather than assumed:
+
+| Channel | State |
+|---|---|
+| shared or mapped drive | **none** — only `C:` and `D:` exist here |
+| network call | forbidden by **D6** and enforced by test; also no endpoint |
+| cloud-sync folder | none present |
+| git | the recorders' data is gitignored and they push no heartbeat |
+
+There is no signal. A registry entry that produced `ALIVE` from an edited
+config would be the worst outcome available, because these two recorders are
+accruing the one dataset in this repo that **cannot be re-pulled at any price**.
+
+**What was done instead.** They carry `"monitor": "confirmation"`. The
+coordinator tracks how long ago a **human** last confirmed them, nags when that
+goes stale, and prints the exact check. Two states, named so they cannot be
+misread — `CONFIRMED (by hand)` and `CHECK IT BY HAND` — and neither contains
+the word ALIVE, which a test asserts.
+
+**This monitors a check-in, not a recorder.** One can die a minute after a
+confirmation and the page reads `CONFIRMED` for the rest of the window. That
+sentence is printed next to the state every single time.
+
+**Why it is still an improvement.** The old behaviour said *"can't see from this
+machine"* and set `needs_a_human = False`, so the row **never appeared under
+"what needs you" again**. The hole was not merely unmonitored, it was silent.
+It now nags every 24 hours.
+
+**Rejected: a git-carried heartbeat** — the laptop writes a timestamp file and
+pushes it on a timer; the coordinator reads the timestamp out of the committed
+file. It would be real monitoring. Not built, because it is work on the laptop,
+requires git to be able to push from there (unverified), and adds a commit
+every few minutes to a public repo. **Shipping it as an entry while the writing
+half did not exist would be an asserted-not-measured claim**, which is the
+failure this repo keeps recording. It is written down here as the one option
+that would change the answer, with its cost, and it is the user's call.
+
+**`confirm` refuses to run on a heartbeat-watched runner** — that would replace
+a measurement with an opinion.
+
+### D18 — The two runner registries are compared, not merged
+
+**2026-08-08.** Another session built `runners/` — a shared watchdog with its
+own `runners.json` — while this work was in flight. There are now two lists
+naming the same runners.
+
+Merging them was rejected: they answer different questions. `runners/` owns
+**what runs** (folder, interpreter, arguments, how to prove it is safe).
+`coordinator/runners.json` owns **whether it is producing anything** (heartbeat
+files, thresholds, one-shot versus continuous, plain English).
+
+But two lists of the same runners drift, and the record here is the fee formula
+reaching 17 copies while its rule was only a convention. So every run compares
+them and reports a runner in one and not the other — in both directions, each
+with the specific failure it would cause:
+
+- watchdog starts it, nothing watches it → *restarted forever while writing
+  nothing, and this page never mentions it*
+- watched here, watchdog will not start it → *stays down after a reboot, and
+  the row reads STALE with no explanation*
+
+**That catches drift. It does not prevent it.**
+
+**Consequences absorbed the same day:** both restart instructions were rewritten
+— the answer is no longer `deploy\run_forward.bat` but *"the watchdog restarts
+it within 10 minutes; if it is STALE for longer, the watchdog is what stopped"*
+— and `logs\wrapper.log` was added as the first heartbeat for both tests.
+
+### D19 — Two overclaims were caught by tests and are recorded rather than quietly fixed
+
+**2026-08-08.**
+
+1. **The table said *"the laptop recorder is not running"*.** It cannot know
+   that. The only true statement is that nobody has confirmed it. This is the
+   exact failure the confirmation mechanism exists to prevent, and it shipped
+   inside the same change that introduced the mechanism. A test now asserts the
+   words are not used about anything this machine cannot see.
+2. **The error path had an error in it.** `Path.relative_to` raises on a path
+   outside the repo, and it was used inside the message reporting a *missing*
+   watchdog registry — so the report about the broken thing was itself a crash.
+   Found by pointing the registry at a temp folder in a test.
+
+Fixing (1) required attributing every "needs you" reason to its source. A reason
+the **coordinator derived** is its own claim and must survive *how do you know
+that*. A reason a **session declared** is that session's text, quoted, and is
+not the coordinator's to reword — it is now printed with *"that chat said so, in
+its own words"*.

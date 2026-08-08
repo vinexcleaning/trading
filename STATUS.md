@@ -3567,8 +3567,14 @@ quoted and now prints *"that chat said so, in its own words"*.
 
 ### Also, the state blocks are landing
 
-**3 of 5 chats have now declared their own state** (`tennis`, `mlb`, `signal`,
-plus `coordinator`) — up from 1. `devig` is still guessed. Decisions D17–D19.
+**5 of 5 chats have now declared their own state**, up from 1 an hour ago.
+**There is not a single guessed cell left in the table.** Every chat picked up
+its mailbox message and added the four lines without being asked twice — which
+is the first end-to-end evidence that the mailbox actually delivers, and it is
+worth more than the feature it delivered.
+
+The guesser is now a fallback nobody is relying on. **That is the right time to
+stop improving it.** Decisions D17–D19.
 
 ---
 

@@ -90,3 +90,36 @@ nothing here checks that any number coming out of it is correct.
 A background test that is not listed in `runners.json` is **not watched**. Every
 run also prints log files it found on disk that nobody registered, so an
 omission is visible — but visible is not the same as covered.
+
+## CONFIRMED is not monitoring either — it is a note that somebody looked
+
+The two Kalshi recorders run on the **laptop**. There is no shared drive, no
+sync folder, no heartbeat that reaches this machine, and the coordinator makes
+no network call. **There is nothing to read, and no entry in any config file can
+invent a signal.**
+
+So they are tracked by human check-in. After looking at the laptop:
+
+```bash
+py -3 coordinator\runners.py confirm tennis-depth-recorder --note "both recorder lines present"
+```
+
+That records **that somebody looked**, and the coordinator stops asking for 24
+hours. A recorder can stop one minute later and this page will not know. It
+replaces a silent hole with a noisy one; it is not monitoring. The one thing
+that would make it real is a heartbeat the laptop pushes into this repo — see
+[COORDINATOR.md](COORDINATOR.md) §3b and `DECISIONS.md` D17.
+
+`confirm` refuses to run on a runner watched by its log file. That would swap a
+measurement for an opinion.
+
+## Two runner lists, on purpose
+
+| File | Owns |
+|---|---|
+| [`../runners/runners.json`](../runners/runners.json) | **what runs** — the shared watchdog's registry |
+| `runners.json` here | **whether it is producing anything** |
+
+They are compared on every run and any runner in one but not the other is
+reported, with the specific failure it would cause. That catches drift; it does
+not prevent it.

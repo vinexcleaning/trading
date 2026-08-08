@@ -1,19 +1,30 @@
 {
   "_README": [
-    "The list of background tests the coordinator watches. Hand-written.",
-    "Anything not in here is NOT watched -- runners.py lists log-shaped files it",
-    "found on disk that are missing from this file, so an omission is visible.",
+    "How the coordinator tells whether each background test is PRODUCING",
+    "anything. It is NOT the list of what runs on this machine -- that is",
+    "runners/runners.json, owned by the watchdog. The two are compared on every",
+    "run and a runner present in one and missing from the other is reported.",
     "",
+    "monitor:     'heartbeat' = a file on THIS machine changes while it works.",
+    "             'confirmation' = no signal reaches this machine at all, so",
+    "             what is tracked is how long ago a HUMAN confirmed it alive.",
+    "             A confirmation is a statement about the past, not monitoring.",
     "kind:        'continuous' = should always be running. 'one-shot' = runs to",
     "             completion and then legitimately stops.",
-    "machine:     'desktop' = this machine, checkable. 'laptop' = NOT checkable",
-    "             from here; it is reported as unknown, never as dead.",
+    "machine:     'desktop' = this machine. 'laptop' = a different machine with",
+    "             no shared drive, no sync folder and no heartbeat that reaches",
+    "             here. See COORDINATOR.md section 3b for why that cannot be",
+    "             fixed by editing this file.",
     "heartbeat:   files it touches while working. The newest one wins.",
     "lock:        optional file holding {'pid': N}. Used only to tell 'stopped'",
     "             from 'running but silent'. Absence is not failure.",
     "stale_after_minutes: quiet for longer than this and it is STALE.",
     "done_marker: one-shot only. If the log's tail contains this, it FINISHED.",
-    "restart:     the exact command a human runs. The coordinator never runs it."
+    "watchdog_name: the 'name' of this runner in runners/runners.json, if the",
+    "             shared watchdog starts it. Used only to detect drift.",
+    "confirm_every_hours: confirmation-monitored only. Longer than this since",
+    "             the last human check-in and the coordinator asks for one.",
+    "restart:     what a human does. The coordinator never runs it."
   ],
 
   "runners": [
@@ -22,38 +33,45 @@
       "workstream": "tennis",
       "title": "Tennis paper forward test",
       "plain_english": "Watches live tennis markets and writes down what 16 rule-based bots would have done. Paper only -- it cannot place an order and has no credentials.",
+      "monitor": "heartbeat",
       "kind": "continuous",
       "machine": "desktop",
+      "watchdog_name": "tennis",
       "heartbeat": [
+        "tennis-paper-forward/logs/wrapper.log",
         "tennis-paper-forward/logs/health.jsonl",
         "tennis-paper-forward/logs/runner.log"
       ],
       "lock": "tennis-paper-forward/data/.runner.lock",
       "writes_every_minutes": 1,
       "stale_after_minutes": 20,
-      "restart": "tennis-paper-forward\\deploy\\run_forward.bat"
+      "restart": "nothing -- the shared watchdog restarts it within 10 minutes. If it is STALE for longer than that, the WATCHDOG is what has stopped: run runners\\check.bat"
     },
     {
       "id": "mlb-paper",
       "workstream": "mlb",
       "title": "Baseball paper forward test",
       "plain_english": "Same idea as the tennis one, on baseball markets. Paper only.",
+      "monitor": "heartbeat",
       "kind": "continuous",
       "machine": "desktop",
+      "watchdog_name": "mlb",
       "heartbeat": [
+        "mlb-paper/logs/wrapper.log",
         "mlb-paper/logs/runner.out",
         "mlb-paper/logs/run.log"
       ],
       "lock": "mlb-paper/data/runner.lock",
       "writes_every_minutes": 5,
       "stale_after_minutes": 25,
-      "restart": "mlb-paper\\deploy\\run_mlb_paper.bat"
+      "restart": "nothing -- the shared watchdog restarts it within 10 minutes. If it is STALE for longer than that, the WATCHDOG is what has stopped: run runners\\check.bat"
     },
     {
       "id": "crypto-tape-pull",
       "workstream": "devig",
       "title": "Crypto trade-tape download",
       "plain_english": "A one-off download of every recorded trade on the 15-minute Bitcoin markets. It was supposed to finish and stop.",
+      "monitor": "heartbeat",
       "kind": "one-shot",
       "machine": "desktop",
       "heartbeat": ["crypto/data/tape_pull.log"],
@@ -66,28 +84,28 @@
     {
       "id": "tennis-depth-recorder",
       "workstream": "tennis",
-      "title": "Tennis order-book depth recorder",
-      "plain_english": "Records live order books on the laptop. This is the one dataset that can never be re-downloaded -- Kalshi keeps no history.",
+      "title": "Tennis order-book depth recorder (laptop)",
+      "plain_english": "Records live Kalshi order books on the laptop. This is the one dataset in the whole repo that can never be re-downloaded -- Kalshi publishes no historical order-book endpoint, so any gap is permanent.",
+      "monitor": "confirmation",
       "kind": "continuous",
       "machine": "laptop",
       "heartbeat": [],
       "lock": null,
-      "writes_every_minutes": 1,
-      "stale_after_minutes": 20,
-      "restart": "on the LAPTOP: record_depth.py"
+      "confirm_every_hours": 24,
+      "restart": "ON THE LAPTOP: double-click runners\\check.bat. The recorder line to look for is record_depth.py. If it is missing, start it the way LAPTOP_SETUP.md describes -- the watchdog deliberately cannot touch the recorders."
     },
     {
       "id": "crypto-15m-opens",
       "workstream": "devig",
-      "title": "Bitcoin 15-minute opens recorder",
-      "plain_english": "Records each new 15-minute Bitcoin market as it opens. Runs on the laptop.",
+      "title": "Bitcoin 15-minute opens recorder (laptop)",
+      "plain_english": "Records each new 15-minute Bitcoin market as it opens. Runs on the laptop. Also unrepeatable -- a closed market is gone.",
+      "monitor": "confirmation",
       "kind": "continuous",
       "machine": "laptop",
       "heartbeat": [],
       "lock": null,
-      "writes_every_minutes": 15,
-      "stale_after_minutes": 60,
-      "restart": "on the LAPTOP: record_15m_opens_v2.py --hours 168"
+      "confirm_every_hours": 24,
+      "restart": "ON THE LAPTOP: double-click runners\\check.bat. The recorder line to look for is record_15m_opens_v2.py. If it is missing, restart it with --hours 168."
     }
   ]
 }
