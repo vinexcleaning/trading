@@ -1,39 +1,48 @@
 # briefs/
 
-**Every version of [BRIEF.md](../BRIEF.md), each at its own permanent path.**
+**Every version of the brief, each at its own permanent address.**
 
 Do not edit anything in here. These files are written by
 `coordinator/brief.py` and are **never rewritten once created**.
 
 | File | What it is |
 |---|---|
-| `BRIEF-YYYY-MM-DD-NN.md` | One generation. Immutable. |
+| `BRIEF-YYYY-MM-DD-NN.md` | One version. Immutable. |
 | `BRIEF-YYYY-MM-DD.md` | That day's final state. Rewritten during the day. |
 
 ## Why this folder exists
 
-The coordinating chat reads this repo over the public web, and its fetcher
-**caches by path and discards query strings** — a request for `?v=A` returns the
-body cached under `?v=B`. Measured on 2026-08-07, not assumed. So no
-cache-busting URL can work, and `BRIEF.md` freezes exactly the way `STATUS.md`
-did.
+The coordinating chat reads this repo over the public web, and three things
+about it were **measured, not assumed**:
 
-The way round it is not to defeat the cache but to route around it. **Each page
-names the path of the next page.** A reader starts anywhere — even at a copy
-frozen weeks ago — and follows next-links until one returns 404. The last page
-that loaded is the newest.
+1. **It caches by path and discards query strings.** A request for `?v=A`
+   returned the body cached under `?v=B`. No cache-busting address can work.
+2. **The repo-root `BRIEF.md` is frozen for it forever.** A connection test put
+   a marker word in the page; the chat found it here and **not** there.
+   **`BRIEF.md` is never the address you hand out.**
+3. **It will not follow an address printed inside a page.** It can only open one
+   the user pastes.
 
-Entry point, which never changes:
+So the answer is not a clever address — it is an address that **cannot go
+stale**. Each page here is written once and never touched again, so what it says
+is exactly what was true at the timestamp on it.
+
+## How the address reaches the chat
+
+**One paste per page. That is the floor, and it is accepted.**
+
+Every session ends every message with a `BRIEF —` line carrying the current
+address, so the user copies the last line rather than going to look for it.
+To print it yourself:
 
 ```
-https://raw.githubusercontent.com/vinexcleaning/trading/main/BRIEF.md
+py -3 coordinator\brief.py url
 ```
 
 ## The thing that breaks it
 
-**A page here that is not pushed.** The previous page tells a reader to fetch
-it, the fetch returns nothing, and the reader concludes it already has the
-newest — reading stale content while believing it is current.
+**A page here that is not pushed.** The user pastes its address, the fetch
+returns nothing, and the chat silently keeps reading whatever it last had.
 
 `coordinator\start.bat` reports any unpushed page as the first item in its
 digest, and `brief.py check` fails on any gap in the numbering. If you see

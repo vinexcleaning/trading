@@ -12,12 +12,14 @@ Usage
   py -3 coordinator\\brief.py write <slug> --stdin
   py -3 coordinator\\brief.py stamp                 # refresh the header + publish
   py -3 coordinator\\brief.py list                  # slugs + when each was written
-  py -3 coordinator\\brief.py chain                 # entry URL and newest page
+  py -3 coordinator\\brief.py url                   # the address to paste (1 line)
+  py -3 coordinator\\brief.py chain                 # the same, with context
   py -3 coordinator\\brief.py check                 # validate, exit 1 if broken
 
-Every write also publishes an immutable copy to briefs/BRIEF-<date>-<NN>.md.
-Each page names the path of the next one, so a reader that caches by path can
-walk forward on its own. Snapshots are never rewritten.
+Every write also publishes an immutable copy to briefs/BRIEF-<date>-<NN>.md,
+which is the address the coordinating chat is given. Snapshots are never
+rewritten. The repo-root BRIEF.md is the working file and is cached frozen for
+that reader -- do not hand it out.
 """
 
 from __future__ import annotations
@@ -50,12 +52,14 @@ One section per project. **Every session overwrites only its own section**, via
 `py -3 coordinator\\brief.py write <slug> --file <body.md>`. Nothing else in this
 file is touched by that command.
 
-This is the file the coordinating chat reads. `STATUS.md` stays the detailed
-channel between sessions; this is the short channel out. Plain English, no
-acronyms, no jargon. If a number matters, say whether bigger is better.
+`STATUS.md` stays the detailed channel between sessions; this is the short
+channel out. Plain English, no acronyms, no jargon. If a number matters, say
+whether bigger is better.
 
-Every version of this page is also kept forever at a dated path under
-[briefs/](briefs/). Follow the chain in the box below to reach the newest.
+**This file is the working copy, not the address anyone is given.** Every
+version is also saved to its own permanent address under [briefs/](briefs/),
+and that is what the coordinating chat is handed — this one is cached frozen on
+its end and would serve it an old page forever.
 """
 
 STAMP_OPEN = "<!-- STAMP -->"
@@ -146,44 +150,50 @@ def core(text: str) -> str:
 def stamp_block() -> str:
     """The freshness header.
 
-    A query string is NOT a cache key for at least one fetcher in use here: a
-    request for `?v=A` came back with the body cached under `?v=B`. Measured,
-    not assumed. So `?v=` is useless and no query-parameter scheme can work.
-    Only a genuinely different PATH gets fetched fresh.
+    Two things were measured against the real reader, not assumed:
 
-    Hence a chain of paths. Every page names the path of the next one. A reader
-    follows next-links until one 404s; the last page that loaded is the newest.
+    1. A query string is not a cache key. `?v=A` returned the body cached
+       under `?v=B`, so no query-parameter scheme can work.
+    2. `BRIEF.md` at the repo root is permanently frozen for that reader. It
+       cached on first fetch and has never updated since.
+
+    A third: an address printed inside a plain-text `.md` is not a link that
+    reader will follow, so the chain cannot be walked automatically. **One
+    paste per page is the floor.** The design does not try to beat that -- it
+    just puts the right address where it is easy to copy.
     """
     h = head_hash()
     now = datetime.now()
-    day = f"{now:%Y-%m-%d}"
-    tomorrow = f"{now.date() + timedelta(days=1)}"
-    nxt = next_generation_number(day) + 1
     return (
         f"{STAMP_OPEN}\n"
         f"> **Generated {now:%Y-%m-%d %H:%M}, on top of commit `{h}`.**\n"
         f">\n"
-        f"> **Automated readers: follow the chain below. Do not re-fetch this\n"
-        f"> page and do not add a query string.** Query strings are discarded by\n"
-        f"> at least one fetcher in use here: two requests differing only in a `v=`\n"
-        f"> parameter returned the same cached body. Only a different **path** is\n"
-        f"> fetched fresh.\n"
+        f"> **This page never changes.** Every version of the brief is written to\n"
+        f"> its own permanent address under `briefs/`, and none is ever edited\n"
+        f"> afterwards. So what you are reading is exactly what was true at the\n"
+        f"> time above, and nothing here will silently become stale.\n"
         f">\n"
-        f"> **Next page, if one exists:**\n"
-        f"> `{RAW}/briefs/BRIEF-{day}-{nxt:02d}.md`\n"
-        f"> Fetch it. If it loads, read it and follow *its* next link. Repeat\n"
-        f"> until one returns 404 — the last page that loaded is the newest.\n"
+        f"> **To get a newer one, ask the user for the current address.** Every\n"
+        f"> message a working session sends them ends with it, ready to copy.\n"
+        f"> Say: *\"paste me the brief link from the bottom of your last session\n"
+        f"> message\"*.\n"
         f">\n"
-        f"> **To skip a whole day forward:**\n"
-        f"> `{RAW}/briefs/BRIEF-{tomorrow}.md`\n"
-        f"> One page exists per day the repo was worked on, holding that day's\n"
-        f"> final state. A 404 means nothing was published that day — try the\n"
-        f"> day after, and so on up to today's date.\n"
+        f"> **Do not** re-fetch `BRIEF.md` at the repo root — it is cached frozen\n"
+        f"> and will hand you an old page while looking current. **Do not** add a\n"
+        f"> query string to any address; it is discarded before the cache is\n"
+        f"> checked.\n"
         f">\n"
         f"> **Cross-check:** commit `{h}` must appear in this repo's commit\n"
-        f"> history. If it does not, this page predates it and is cached.\n"
+        f"> history. If it does not, something is wrong — say so rather than\n"
+        f"> reading on.\n"
         f"{STAMP_CLOSE}"
     )
+
+
+def newest_url() -> str:
+    """The one address worth pasting. Exactly one line, nothing else."""
+    snaps = snapshots()
+    return f"{RAW}/briefs/{snaps[-1].name}" if snaps else f"{RAW}/BRIEF.md"
 
 
 def publish() -> str | None:
@@ -340,18 +350,18 @@ def snapshots():
 
 
 def cmd_chain() -> None:
-    """What to hand a reader that has never seen this repo, and the walk itself."""
     snaps = snapshots()
     if not snaps:
-        print("No snapshots yet. Run:  py -3 coordinator\\brief.py stamp")
+        print("No pages yet. Run:  py -3 coordinator\\brief.py stamp")
         return
-    print("Entry point for a reader that has nothing (never changes):")
-    print(f"  {RAW}/BRIEF.md")
-    print("\nNewest page right now:")
-    print(f"  {RAW}/briefs/{snaps[-1].name}")
-    print(f"\n{len(snaps)} snapshot(s), {len(set(p.name[6:16] for p in snaps))} day(s).")
-    print("A reader follows each page's next link until one 404s. It does not")
-    print("need any of these URLs in advance except the entry point.")
+    print("PASTE THIS INTO THE COORDINATING CHAT:")
+    print(f"  {newest_url()}")
+    print()
+    print(f"{len(snaps)} page(s), {len(set(p.name[6:16] for p in snaps))} day(s).")
+    print("Do NOT give it the repo-root BRIEF.md address -- that one is cached")
+    print("frozen for it and will hand back an old page looking current.")
+    print("It cannot follow a link printed inside a page, so it needs this")
+    print("address pasted. One paste per page is the floor; that is accepted.")
 
 
 def cmd_check() -> int:
@@ -419,7 +429,8 @@ def main() -> int:
 
     sub.add_parser("stamp", help="refresh the freshness header and publish")
     sub.add_parser("list", help="show sections and when each was written")
-    sub.add_parser("chain", help="the entry URL and the newest page")
+    sub.add_parser("chain", help="the address to paste, with context")
+    sub.add_parser("url", help="just the address to paste, one line, nothing else")
     sub.add_parser("check", help="validate structure and the snapshot chain")
 
     a = ap.parse_args()
@@ -439,6 +450,9 @@ def main() -> int:
         return 0
     if a.cmd == "chain":
         cmd_chain()
+        return 0
+    if a.cmd == "url":
+        print(newest_url())
         return 0
     return cmd_check()
 

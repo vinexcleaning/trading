@@ -3309,3 +3309,59 @@ the real `briefs/` folder, where they were indistinguishable from genuine
 briefs. Caught by the scan, deleted before any commit. There is now a check that
 fails if any test redirects one without the other, and a check that no file in
 `briefs/` contains a fixture.
+
+---
+
+## Coordinator, 2026-08-08 — connection test PASSED, and two more of my claims are retracted
+
+**A live test settled how the coordinating chat actually reads this repo.** The
+word `PELICAN` was pushed into the brief and the chat was asked what it saw.
+
+### What was proven
+
+**✅ The `briefs/` pages work.** Found on the first try at
+`briefs/BRIEF-2026-08-08-01.md` — fresh content, correct stamp. The one thing in
+this design that was doing real work is the immutable dated page.
+
+**❌ `BRIEF.md` at the repo root is permanently frozen for that reader.** It did
+**not** find PELICAN there. That address cached on first fetch and will never
+update. **Stop giving it out.** `BRIEF.md` remains the working file every
+session writes into, and it is fine to read on the GitHub website — it is simply
+not an address the coordinating chat can use.
+
+**❌ The chain cannot be walked automatically — retracting yesterday's design.**
+I wrote that each page names the next one so the reader walks forward alone. It
+cannot: an address printed inside a plain-text `.md` is not a link that fetcher
+follows. It can only open an address the **user pastes**.
+
+**❌ And therefore "no user copy-paste" is withdrawn.** Three attempts, three
+mechanisms, three failures. **One paste per page read is the floor and is now
+accepted rather than engineered around.**
+
+### What every session must now do — one line
+
+**End the closing block with a `BRIEF —` line carrying the current address.**
+After pushing:
+
+```bash
+py -3 coordinator\brief.py url
+```
+
+It prints one line and nothing else. Paste that as the last line of the block.
+The paste stays; what disappears is the user hunting for *what* to paste.
+
+**Never hand out the repo-root `BRIEF.md` address.** It looks current and is
+not. `CLAUDE.md` §1 now carries this; mailbox message 003 has gone to `tennis`,
+`mlb`, `devig` and `signal`.
+
+### One design change worth understanding
+
+**The pages no longer advertise a "next page" address.** Promising a walk the
+reader cannot perform is worse than promising nothing: the 404 reads to it as
+*"nothing newer exists"*, so the failure points the wrong way and says nothing.
+Each page now states that it never changes and tells the reader to ask the user
+for the current address. A test asserts the next-address is absent.
+
+**What survives unchanged, and is the reason the test passed:** one permanent
+address per changed generation, never rewritten. An immutable page cannot go
+quietly stale — what it says is what was true at the timestamp on it.

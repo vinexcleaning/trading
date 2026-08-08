@@ -26,6 +26,8 @@ import mail as mailmod
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 SCAN = HERE / "SCAN.md"
+
+RAW = "https://raw.githubusercontent.com/vinexcleaning/trading/main"
 BRIEF = REPO / "BRIEF.md"
 
 # Folders that are not projects.
@@ -369,13 +371,13 @@ def digest(state) -> str:
     for c in concerns(state):
         L.append("  * " + re.sub(r"\*\*(.+?)\*\*", r"\1", c))
     L.append("")
-    L.append("Entry URL for the coordinating chat (give it ONCE, never changes):")
-    L.append("  https://raw.githubusercontent.com/vinexcleaning/trading/main/BRIEF.md")
-    L.append("It follows the next-links inside each page to reach the newest by")
-    L.append("itself. Do not add ?v= or any query string -- it is discarded.")
-    if state["newest_snapshot"]:
-        L.append("")
-        L.append(f"Newest page right now: briefs/{state['newest_snapshot']}")
+    L.append("PASTE THIS INTO THE COORDINATING CHAT:")
+    L.append(f"  {RAW}/briefs/{state['newest_snapshot']}"
+             if state["newest_snapshot"] else "  (no page published yet)")
+    L.append("")
+    L.append("Not the repo-root BRIEF.md address -- that one is cached frozen on")
+    L.append("its end and hands back an old page looking current. It also cannot")
+    L.append("follow a link printed inside a page, so it needs this pasted.")
     return "\n".join(L)
 
 

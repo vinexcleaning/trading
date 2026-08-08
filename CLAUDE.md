@@ -22,7 +22,30 @@ WHAT IT MEANS — did this help, hurt, or change nothing? If a number matters,
 WHAT I NEED FROM YOU — "nothing, continuing", or a specific decision written as
   a question with the options spelled out
 NEXT — one line
+BRIEF — https://raw.githubusercontent.com/.../briefs/BRIEF-2026-08-04-03.md
 ```
+
+### The last line: the brief address
+
+**End the block with a `BRIEF —` line carrying the current brief address.**
+After you have pushed, run this and paste its single line of output:
+
+```bash
+py -3 coordinator\brief.py url
+```
+
+**Why it is there.** The coordinating chat cannot reach a fresh page on its own.
+Two things were measured against it, not assumed: `BRIEF.md` at the repo root is
+**cached frozen** for it and will never update, and an address printed inside a
+`.md` file is **not a link it can follow**. So it can only open an address the
+user pastes.
+
+**One paste per page is the floor. That is accepted, not a bug to engineer
+around.** Putting the address at the bottom of every message is the whole fix —
+it is sitting there ready to copy, and the user never has to go and find it.
+
+**Never give out the repo-root `BRIEF.md` address.** It looks current and is
+not. Give only the `briefs/...` address the command prints.
 
 ### The sync marker
 

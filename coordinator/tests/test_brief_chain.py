@@ -48,10 +48,18 @@ def main() -> int:
     first_body = first.read_text(encoding="utf-8")
     day = first.name[6:16]
 
-    # The page must name the NEXT path, not its own, and no query string.
-    nxt = re.search(r"briefs/BRIEF-\d{4}-\d\d-\d\d-(\d\d)\.md", first_body)
-    check(nxt is not None, "the page names a next path")
-    check(nxt and nxt.group(1) == "02", "the next path is the following generation")
+    # The page must NOT promise a next address. Tested 2026-08-08: that reader
+    # will not follow an address printed inside a .md, so promising a walk sends
+    # it looking for something it cannot use, and a 404 then reads to it as
+    # "nothing newer exists". It must be told to ask the user instead.
+    check(
+        not re.search(r"briefs/BRIEF-\d{4}-\d\d-\d\d-\d\d\.md", first_body),
+        "the page does NOT promise a next address it cannot follow",
+    )
+    check("ask the user" in first_body.lower(),
+          "the page tells the reader to ask the user for a newer address")
+    check("BRIEF.md" in first_body and "cached frozen" in first_body,
+          "the page warns off the repo-root BRIEF.md address")
     check("?v=" not in first_body, "no query-string cache trick anywhere on the page")
     check((brief.BRIEFS / f"BRIEF-{day}.md").exists(), "a day page is written too")
 

@@ -120,3 +120,40 @@ link 404, and a walking reader then believes a stale page is the newest. That is
 silent and points the wrong way, so `scan.py` reports unpushed snapshots as the
 first item in the digest, and `brief.py check` fails on any gap in the
 numbering.
+
+### D10 — RETRACTED: "no user copy-paste". One paste per page is the floor.
+
+**2026-08-08.** A connection test settled three things, each of which killed an
+assumption I had shipped as though it were measured.
+
+1. **`BRIEF.md` at the repo root is permanently frozen for that reader.** The
+   word `PELICAN` was pushed into the page. The chat found it at
+   `briefs/BRIEF-2026-08-08-01.md` and **not** at `BRIEF.md`. That address
+   cached on first fetch and has never updated. **It is no longer given out.**
+2. **The `briefs/` pages work.** Fresh content, correct stamp, first try.
+3. **The chain cannot be walked automatically.** An address printed inside a
+   plain-text `.md` is not a link that fetcher follows. D9's "the reader follows
+   next-links until one 404s" **is retracted** — it can only open an address the
+   user pastes.
+
+**So the claim that instructions and briefs would flow with no user copy-paste
+is withdrawn.** Three attempts to remove that paste have now failed on three
+different mechanisms. The user's call, and the right one: **accept it rather
+than engineer around it.**
+
+**What replaced it:** every session's closing block now ends with a `BRIEF —`
+line carrying the current address (`CLAUDE.md` §1). `py -3 coordinator\brief.py
+url` prints it alone. The paste stays; the *hunting* for what to paste is gone.
+
+**Also changed in the pages themselves:** they no longer advertise a next
+address. Promising a walk the reader cannot do is worse than promising nothing,
+because the 404 reads to it as "nothing newer exists" — the failure points the
+wrong way. Each page now says: this page never changes, and to get a newer one,
+ask the user for the address at the bottom of their last session message.
+`tests/test_brief_chain.py` asserts the page does **not** contain a next
+address.
+
+**What is unchanged and still earning its keep:** one permanent address per
+changed generation, never rewritten. An immutable page cannot go quietly stale —
+what it says is what was true at its timestamp. That property is why the test
+passed at all.

@@ -43,6 +43,13 @@ session that needs it. Each session finds it and replies **in the same file**.
 The user goes from *"paste this into five windows and paste five answers back"*
 to *"paste this once"*.
 
+**It does not get to zero pastes, and the earlier claim that it would is
+retracted.** Going the other way — repo back to the coordinating chat — costs
+**one paste per page read**, and that is a floor, not a temporary state. See §7.
+What is removed is the *routing*: which window, which file, which of six briefs
+is current. What remains is one address the user copies from the bottom of a
+message.
+
 ### And one thing only a session on disk can do
 
 The coordinator reads the **actual filesystem** — uncommitted changes, unpushed
@@ -86,13 +93,15 @@ The coordinating chat reads GitHub. Therefore:
 - **Unpushed work stays invisible.** The coordinator will *tell you* it is
   unpushed, which is the fix — but it cannot push another session's work for it,
   because that would cross into another session's folder.
-- **`BRIEF.md` will be cached, and there is no way to stop it.** The fetcher
-  keys on path and ignores query strings — measured, see §7. The answer is not
-  to defeat the cache but to route around it: every version also lives at its
-  own permanent path, and each page names the next one, so a frozen copy still
-  leads forward. **The cost is that the reader must follow links rather than
-  re-fetch.** A reader that refuses to follow links cannot be made current by
-  anything in this repo.
+- **`BRIEF.md` is cached frozen for that reader and always will be.** Confirmed
+  by test, not assumed — see §7. It is never handed out. Every version also
+  lives at its own permanent address under `briefs/`, and that is what gets
+  given.
+- **It cannot get a fresh page to the chat without the user.** The chat will not
+  follow an address printed inside a page, so **one paste per page is the
+  floor.** Three separate attempts to remove that paste have failed. What the
+  coordinator can do is make the address free to find: every session message
+  ends with it.
 
 ### It cannot judge the trading work
 
@@ -148,7 +157,8 @@ prevent it.
 
 | File | What it is |
 |---|---|
-| `../BRIEF.md` | **The output.** One page, one section per project. The only thing the coordinating chat needs to read. |
+| `../BRIEF.md` | The working page, one section per project. Sessions write here. **Not the address anyone is given** — it is cached frozen for the coordinating chat. |
+| `../briefs/` | Every published version, each at its own permanent address, never edited afterwards. **This is what the coordinating chat is handed.** |
 | `brief.py` | Writes exactly one section of `BRIEF.md`. Locked, atomic, section-scoped. |
 | `scan.py` | Reads every project's state off disk. Writes `SCAN.md`. |
 | `mail.py` | Creates and lists mailbox messages. |
@@ -223,72 +233,68 @@ visible rather than lost.
 > and nowhere else in `coordinator/`. Replying to a message is not reaching into
 > someone else's work.
 
-## 7. Beating the cache — a chain of paths
+## 7. Reaching the coordinating chat — three measurements, one honest answer
 
-### What does not work, measured
+Everything in this section was **tested against the real reader**. Each test
+killed an assumption I had shipped.
 
-**A query string is not a cache key.** The coordinating chat's fetcher keys its
-cache on the **path** and discards the query string entirely: a request for
-`?v=f9b4d3f` returned the body cached under `?v=13b8e61`. That was tested, not
-assumed — and it kills **every** query-parameter scheme, not just that one.
+### Measurement 1 — a query string is not a cache key
 
-The first version of this file claimed a `?v=` URL would beat the cache. **That
-claim was wrong and is retracted.** Only a genuinely different **path** is
-fetched fresh.
+`BRIEF.md?v=<hash>` was supposed to beat the cache. **It does not.** That
+fetcher keys on the **path** and discards the query string: a request for
+`?v=f9b4d3f` returned the body cached under `?v=13b8e61`. **No query-parameter
+scheme can work.** The original claim is retracted; it was asserted, never
+measured.
 
-### What works
+### Measurement 2 — the repo-root `BRIEF.md` is frozen forever
 
-**Every version of the page is also written to its own permanent path**, and
-**each page names the path of the next one**. The reader walks the chain itself.
+A connection test placed the word `PELICAN` in the page and pushed it. The chat
+found it at `briefs/BRIEF-2026-08-08-01.md` and **did not find it at
+`BRIEF.md`** — that address cached on first fetch and has not updated since.
 
-```
-BRIEF.md                        <- the live page, and the entry point
-briefs/BRIEF-2026-08-07-01.md   <- immutable, never rewritten
-briefs/BRIEF-2026-08-07-02.md
-briefs/BRIEF-2026-08-07.md      <- that day's final state
-briefs/BRIEF-2026-08-08-01.md
-```
+**So `BRIEF.md` is never handed out.** It is the working file that sessions
+write into and that a human can read on the GitHub website. It is not an entry
+point and there is no entry point that stays fresh.
 
-Inside every page:
+### Measurement 3 — the chain cannot be walked automatically
 
-- **Next page** — `briefs/BRIEF-<today>-<NN+1>.md`. The reader fetches it. If it
-  loads, it reads it and follows *that* page's next link. **It keeps going until
-  one returns 404. The last page that loaded is the newest.**
-- **Skip a day** — `briefs/BRIEF-<tomorrow>.md`, for a reader that has been away
-  and does not want to walk every generation.
+The pages were built to name the next page's address so the reader could walk
+forward alone. **It cannot.** An address printed inside a plain-text `.md` is
+not a link that fetcher will follow — it can only open an address the user
+pastes.
 
-**The entry point never changes and is given to the chat once:**
-`https://raw.githubusercontent.com/vinexcleaning/trading/main/BRIEF.md`
+### The answer: accept one paste per page
 
-Even when that page freezes — and it will — the frozen copy still contains a
-next-link, so the chain still leads forward. **A cached entry point is no longer
-a dead end. That is the whole point of the design.**
+**One paste per page read is the floor. It is accepted rather than engineered
+around.** Three attempts to remove it have now failed, each on a different
+mechanism, and the pattern is that the reader's fetching behaviour is not
+something this repo controls.
 
-A commit hash is still stamped on each page as a secondary cross-check, but the
-chain is what carries freshness.
+What the design does instead is make that paste cost nothing to find:
+
+- Every version of the brief is written to its **own permanent address**,
+  `briefs/BRIEF-<date>-<NN>.md`, and **never edited afterwards**. A page that
+  cannot change cannot go quietly stale — what it says is what was true at the
+  timestamp on it.
+- **Every session ends every message with that address**, per `CLAUDE.md` §1.
+  The user copies the last line. They never go looking.
+- `py -3 coordinatorrief.py url` prints it, one line, nothing else.
+- A new page is minted **only when the content actually changed**, so the folder
+  does not fill with identical copies.
+
+The page itself now tells the reader what to do when it wants something newer:
+**ask the user for the address**, and specifically do not re-fetch `BRIEF.md`.
 
 ### The one way this breaks, and how it is caught
 
-**A snapshot that exists on disk but not on GitHub.** The live page says "fetch
-generation 03", the fetch 404s, and the reader concludes it already has the
-newest — reading a stale page while believing it is current. That is the worst
-failure mode in this whole system, because it is silent and it points the wrong
-way.
+**A page that exists on disk but not on GitHub.** The user pastes its address,
+the fetch returns nothing, and the chat is stuck on whatever it last read.
 
-Two guards:
-
-- `scan.py` compares `briefs/` against what is on `origin/main` and shouts about
-  any snapshot that is not pushed. It is the first item in the digest.
-- `brief.py check` fails if the numbering has a hole in it, since a gap
-  dead-ends a walking reader exactly the same way.
-
-**Snapshots are never rewritten once published.** If they were, a page already
-fetched would point somewhere that no longer matches. `tests/test_brief_chain.py`
-asserts immutability, gap detection, and that no page carries a query-string
-trick.
-
-**A new snapshot is only minted when the content actually changed**, so
-re-running `start.bat` all day does not fill the folder with identical pages.
+- `scan.py` compares `briefs/` against `origin/main` and reports any unpushed
+  page as the **first** item in its digest.
+- `brief.py check` fails if the numbering has a hole in it.
+- `tests/test_brief_chain.py` asserts pages are never rewritten after
+  publication, and that no page carries a query-string trick.
 
 ## 8. How the user actually uses it
 
@@ -305,8 +311,12 @@ and say who it is for. The coordinator writes the mailbox message. The user
 opens that session's window and says "check your mail" — or just waits, because
 the next session start reads it automatically.
 
-**Giving the coordinating chat the picture:** hand it the URL printed by
-`start.bat`.
+**Giving the coordinating chat the picture:** copy the `BRIEF —` address from
+the bottom of any session's last message and paste it in. `start.bat` prints the
+same address, and `py -3 coordinatorrief.py url` prints it alone.
+
+**Never paste the repo-root `BRIEF.md` address.** It is cached frozen on that
+end and will hand back an old page that looks current.
 
 ## 9. Deliberate non-goals
 
