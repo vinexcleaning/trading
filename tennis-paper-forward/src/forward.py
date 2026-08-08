@@ -333,6 +333,7 @@ class Forward:
             "started": self.started,
             "saved_at": now(),
             "tick_no": self.tick_no,
+            "target": self.target,
             "deliberations": self.deliberations,
             "seen_events": sorted(self.seen_events),
             "settled_events": self.settled_events,
@@ -604,6 +605,7 @@ class Forward:
         closed = sum(len(lg.closed()) for lg in self.engine.ledgers.values())
         h = {
             "ts": now(), "tick": self.tick_no, "secs": round(secs, 2),
+            "target": self.target,
             "markets": n, "matches": len(pool),
             "pct_with_ask": round(100 * with_ask / n, 1) if n else 0.0,
             "zero_ask": zero_ask,

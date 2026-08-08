@@ -111,6 +111,19 @@ def main() -> int:
         print("  *** THE LAST TICK IS OVER TEN MINUTES OLD. The runner is not "
               "working, whatever the lock file says. ***")
 
+    # The target is whatever the runner was actually started with, read from its
+    # own record. It was hardcoded to 50 until 2026-08-08, so once the target was
+    # raised to 2,500 this printed "139 of the 50 needed" and "-4.3 more days".
+    # Not merely wrong -- visibly absurd, and it had been for half a day, because
+    # nobody reads a progress line looking for arithmetic errors.
+    target = h.get("target")
+    if target is None:
+        try:
+            target = int(json.loads((DATA / "state.json").read_text(
+                encoding="utf-8")).get("target") or 50)
+        except Exception:
+            target = 50
+
     print(f"""
 WHAT IT IS SEEING
   tennis markets on Kalshi      {h['markets']}
@@ -128,19 +141,38 @@ WHAT THE BOTS ARE DOING
   closed paper positions          {h['closed_positions']}
 
 PROGRESS
-  settled matches                 {h['settled_total']} of the 50 needed""")
+  settled matches                 {h['settled_total']} of the {target} wanted""")
 
-    span = health[0], health[-1]
+    # Rate over time the runner was actually RUNNING, not wall-clock.
+    #
+    # The first version divided by (last tick - first tick), which silently
+    # includes any period the runner was DEAD. On 2026-08-08 it had been dead
+    # for 12h44m, and the resulting estimate was 1.5 matches/hour against a true
+    # 3.9 -- so it reported 66 days remaining when the honest figure was 25.
+    # An outage made the job look two and a half times longer than it is, which
+    # is exactly the wrong direction: the number gets worse the more of it you
+    # miss, so it punishes you twice for the same fault.
+    #
+    # Gaps longer than five poll intervals are treated as downtime and excluded.
     try:
-        t0 = datetime.fromisoformat(span[0]["ts"])
-        t1 = datetime.fromisoformat(span[1]["ts"])
-        hours = max(0.01, (t1 - t0).total_seconds() / 3600)
-        rate = (span[1]["settled_total"] - span[0]["settled_total"]) / hours
+        stamps = [datetime.fromisoformat(x["ts"]) for x in health]
+        poll = max(1.0, float(health[-1].get("secs", 13)))
+        max_gap = max(300.0, poll * 5)
+        running = 0.0
+        for a, b in zip(stamps, stamps[1:]):
+            gap = (b - a).total_seconds()
+            if gap <= max_gap:
+                running += gap
+        hours = max(0.01, running / 3600)
+        rate = (health[-1]["settled_total"] - health[0]["settled_total"]) / hours
         if rate > 0:
-            need = 50 - h["settled_total"]
-            print(f"  settling at about {rate:.1f} matches/hour over the logged window")
+            need = target - h["settled_total"]
+            print(f"  settling at about {rate:.1f} matches/hour "
+                  f"({hours:.0f}h of actual running time in the log)")
             print(f"  at that rate the remaining {need} take about "
-                  f"{need/rate/24:.1f} more days")
+                  f"{need/rate/24:.0f} more days of UPTIME")
+            print(f"  note: a bot enters roughly 40% of matches, so {target} "
+                  f"settled gives each bot about {int(0.4*target)} trades")
         else:
             print("  no matches have settled in the logged window yet — normal "
                   "early on, since a match must finish AND Kalshi must resolve it")
