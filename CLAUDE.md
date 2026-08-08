@@ -264,6 +264,27 @@ line, under 20 lines, plain English, no acronyms.
 `STATUS.md` is unchanged and still the detailed channel *between* sessions.
 `BRIEF.md` is the short channel *out*.
 
+### Declare your state in four lines, so the coordinator quotes you
+
+The coordinator answers *"where is everything at"* with one table: which chat ·
+doing now · what's left · is its background test alive · does it need the user.
+**The two middle columns can only say what you last wrote down.** Put this
+anywhere in your own `HANDOFF.md` (or in your `BRIEF.md` section) and update it
+when it stops being true:
+
+```
+<!-- COORDINATOR-STATE
+doing: one line, present tense, what you are working on
+left: one line, what still has to happen
+needs: no
+-->
+```
+
+`needs:` is `no`, or `yes - <the question, in one line>` — that line is shown to
+the user verbatim. It is an HTML comment, so it is invisible in rendered
+Markdown. **Without it your two columns are guessed out of your `HANDOFF.md` and
+marked `~`**, and the guesses have already described the wrong folder once.
+
 ### Check your mailbox at the start of every session
 
 `coordinator/mailbox/<your-slug>/` holds instructions addressed to you. **Read

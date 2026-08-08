@@ -3412,3 +3412,79 @@ shutdown and hibernate, but **not** a death while you stay logged in — and say
 plainly which of the two you got.
 
 **Runner restarted 2026-08-08 22:16 UTC.** Startup shortcut verified present.
+
+---
+
+## coordinator — it now answers "where is everything at" (2026-08-08)
+
+**Only `coordinator/`, plus four additive lines in the shared `CLAUDE.md` §5 and
+a mailbox message to every other session. No other session's folder was
+touched.**
+
+### What changed
+
+`coordinator\start.bat` is still **the one command**, and now leads with a table:
+
+| Chat | Doing now | What's left | Background test | Needs you |
+
+Plus, underneath it, what needs the user and the exact thing to do about it —
+and a per-runner **ALIVE / STALE / FINISHED / NEVER RUN** breakdown.
+
+New: `where.py`, `runners.py`, `runners.json`, `newprompt.py`,
+`prompt_template.md`, `tests/test_where_and_runners.py`. All four coordinator
+test suites pass.
+
+### The two columns are quoted where a session declared them, and guessed otherwise
+
+**Right now 1 of 5 chats has declared its state** — only `coordinator`. Sessions
+declare it with an HTML comment in their own `HANDOFF.md`:
+
+```
+<!-- COORDINATOR-STATE
+doing: one line, present tense
+left: one line
+needs: no
+-->
+```
+
+Without it the coordinator guesses from `HANDOFF.md`, **marks the cell `~`, and
+prints how many cells are guesses on every run.** Every session has a mailbox
+message asking for the four lines. The convention is also now in `CLAUDE.md` §5,
+because one that lives only in `coordinator/README.md` gets read by nobody.
+
+### ⚠ Contradiction with this file, and which one to believe
+
+**`STATUS.md` "What is running, where" is stale.** It lists two laptop
+recorders, PIDs 17892 and 24756, as of 08-01. It does **not** list the two
+things actually running on this desktop **right now**, checked directly against
+the process table:
+
+| | |
+|---|---|
+| `tennis-paper-forward` | **ALIVE**, wrote less than a minute ago |
+| `mlb-paper` | **ALIVE**, wrote 3 minutes ago |
+| `crypto` tape pull | **FINISHED** — its log ends `== DONE`. Not a failure |
+| both laptop recorders | **cannot be seen from this machine** |
+
+**Believe `coordinator\runners.py`, not the table above at line 40** — it reads
+the live filesystem and process table; that table is a hand-typed snapshot from
+a week ago on a different machine. It is not edited here because it is another
+session's text; this note is the flag, per §5.
+
+### What is NOT covered, stated plainly
+
+- **15 log files on disk are unwatched** — `bot-hunt` ×11,
+  `kalshi-market-scan` ×4. No process is writing to any of them on this desktop.
+  The coordinator **refuses to guess** which died and which finished, because
+  calling a completed job STALE is how a warning gets ignored (D8). `devig` has
+  a mailbox message asking for one line per job.
+- **A laptop runner that dies will not be noticed by anything.** Real hole.
+- **ALIVE means "wrote to its log recently".** It is a heartbeat, not a health
+  check. Nothing verifies any number coming out of a runner.
+- **`newprompt.py` does not judge an idea.** It copies it verbatim and keyword-
+  matches it against `LEDGER.md` / `INBOX.md` / `SCOREBOARD.md`. On its first
+  real input it surfaced the exact `INBOX.md` line where that idea was already
+  queued — **one useful hit, not a measured retrieval rate.**
+
+Limits written **before** the code, in `COORDINATOR.md` §3b, with a test that
+fails if any of them is deleted from the document. Decisions D11–D16.

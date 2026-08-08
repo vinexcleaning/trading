@@ -74,7 +74,23 @@ def main() -> int:
         for bad in ("git push", "git commit", "git reset", "git checkout",
                     "git clean", "git rm", "git fetch", "git pull"):
             if bad in src.lower():
-                fail(f"{path.name} contains '{bad}'. The coordinator only reads.")
+                fail(f"{path.name} contains '{bad}'. The coordinator only reads. "
+                     f"If this is PROSE telling another session what to run, it "
+                     f"belongs in coordinator/prompt_template.md, which is a "
+                     f"document and is not scanned. Do not weaken this check.")
+
+    # newprompt.py's output tells a new session to pull the repo, which is a
+    # writing git verb and would trip the scan above. The way that is allowed
+    # is by living in a document, so the document has to actually be there --
+    # if it goes missing, the temptation is to paste the text back into the .py.
+    template = COORD / "prompt_template.md"
+    if (COORD / "newprompt.py").exists():
+        if not template.exists():
+            fail("newprompt.py exists but prompt_template.md does not. The "
+                 "prompt text must live in the document, not in the module.")
+        elif len(template.read_text(encoding="utf-8", errors="replace")) < 500:
+            fail("prompt_template.md is nearly empty. A prompt that omits this "
+                 "repo's standing rules is worse than no prompt.")
 
     # It must also not be able to write outside coordinator/ except BRIEF.md.
     for path in PY_FILES:

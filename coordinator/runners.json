@@ -1,0 +1,93 @@
+{
+  "_README": [
+    "The list of background tests the coordinator watches. Hand-written.",
+    "Anything not in here is NOT watched -- runners.py lists log-shaped files it",
+    "found on disk that are missing from this file, so an omission is visible.",
+    "",
+    "kind:        'continuous' = should always be running. 'one-shot' = runs to",
+    "             completion and then legitimately stops.",
+    "machine:     'desktop' = this machine, checkable. 'laptop' = NOT checkable",
+    "             from here; it is reported as unknown, never as dead.",
+    "heartbeat:   files it touches while working. The newest one wins.",
+    "lock:        optional file holding {'pid': N}. Used only to tell 'stopped'",
+    "             from 'running but silent'. Absence is not failure.",
+    "stale_after_minutes: quiet for longer than this and it is STALE.",
+    "done_marker: one-shot only. If the log's tail contains this, it FINISHED.",
+    "restart:     the exact command a human runs. The coordinator never runs it."
+  ],
+
+  "runners": [
+    {
+      "id": "tennis-forward",
+      "workstream": "tennis",
+      "title": "Tennis paper forward test",
+      "plain_english": "Watches live tennis markets and writes down what 16 rule-based bots would have done. Paper only -- it cannot place an order and has no credentials.",
+      "kind": "continuous",
+      "machine": "desktop",
+      "heartbeat": [
+        "tennis-paper-forward/logs/health.jsonl",
+        "tennis-paper-forward/logs/runner.log"
+      ],
+      "lock": "tennis-paper-forward/data/.runner.lock",
+      "writes_every_minutes": 1,
+      "stale_after_minutes": 20,
+      "restart": "tennis-paper-forward\\deploy\\run_forward.bat"
+    },
+    {
+      "id": "mlb-paper",
+      "workstream": "mlb",
+      "title": "Baseball paper forward test",
+      "plain_english": "Same idea as the tennis one, on baseball markets. Paper only.",
+      "kind": "continuous",
+      "machine": "desktop",
+      "heartbeat": [
+        "mlb-paper/logs/runner.out",
+        "mlb-paper/logs/run.log"
+      ],
+      "lock": "mlb-paper/data/runner.lock",
+      "writes_every_minutes": 5,
+      "stale_after_minutes": 25,
+      "restart": "mlb-paper\\deploy\\run_mlb_paper.bat"
+    },
+    {
+      "id": "crypto-tape-pull",
+      "workstream": "devig",
+      "title": "Crypto trade-tape download",
+      "plain_english": "A one-off download of every recorded trade on the 15-minute Bitcoin markets. It was supposed to finish and stop.",
+      "kind": "one-shot",
+      "machine": "desktop",
+      "heartbeat": ["crypto/data/tape_pull.log"],
+      "lock": null,
+      "writes_every_minutes": 1,
+      "stale_after_minutes": 30,
+      "done_marker": "== DONE",
+      "restart": "(finished -- nothing to restart)"
+    },
+    {
+      "id": "tennis-depth-recorder",
+      "workstream": "tennis",
+      "title": "Tennis order-book depth recorder",
+      "plain_english": "Records live order books on the laptop. This is the one dataset that can never be re-downloaded -- Kalshi keeps no history.",
+      "kind": "continuous",
+      "machine": "laptop",
+      "heartbeat": [],
+      "lock": null,
+      "writes_every_minutes": 1,
+      "stale_after_minutes": 20,
+      "restart": "on the LAPTOP: record_depth.py"
+    },
+    {
+      "id": "crypto-15m-opens",
+      "workstream": "devig",
+      "title": "Bitcoin 15-minute opens recorder",
+      "plain_english": "Records each new 15-minute Bitcoin market as it opens. Runs on the laptop.",
+      "kind": "continuous",
+      "machine": "laptop",
+      "heartbeat": [],
+      "lock": null,
+      "writes_every_minutes": 15,
+      "stale_after_minutes": 60,
+      "restart": "on the LAPTOP: record_15m_opens_v2.py --hours 168"
+    }
+  ]
+}

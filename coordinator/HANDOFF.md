@@ -1,7 +1,14 @@
 # HANDOFF.md — coordinator
 
-**Session of 2026-08-07.** The coordinator was created from nothing in this
-session. Nothing here existed before it.
+<!-- COORDINATOR-STATE
+doing: the coordinator now answers "where is everything at" and watches whether each background test is still alive
+left: get the other four chats to add their own COORDINATOR-STATE block, so their two columns are quoted instead of guessed
+needs: no
+-->
+
+**Session of 2026-08-07, extended 2026-08-08.** The coordinator was created from
+nothing in the first session. The second turned it into something that can be
+talked to as a main chat — see §"2026-08-08" at the bottom.
 
 ## State: built, tested, working end to end
 
@@ -65,3 +72,69 @@ is still writing `BRIEF_*.md` and does not know the mailbox exists. The three
 When a sibling session next starts, confirm it (a) read its mailbox and (b)
 wrote its section with `brief.py write`. Until at least one has, the convention
 is documented but unproven.
+
+---
+
+## 2026-08-08 — the coordinator can now be the main chat
+
+The user's ask: *"upgrade the coordinator so it can act as my main chat"* — read
+every project's state off disk and explain it in plain English; answer "where is
+everything at" with a table; say whether each background test is alive or stale
+in that same table; take a new idea in plain English and write the prompt for a
+new session; be one command. And: **write what it cannot do before you build.**
+
+**The limits were written first**, into `COORDINATOR.md` §3b, and a test
+(`tests/test_where_and_runners.py::test_the_docs_state_the_limits_before_the_features`)
+fails if any of them is later deleted from the document.
+
+### What was added
+
+| File | What it does |
+|---|---|
+| `where.py` | The table. Writes `WHERE.md`. |
+| `runners.py` | ALIVE / STALE / FINISHED / NEVER RUN per background test. |
+| `runners.json` | The watch list. Hand-written; anything absent is unwatched. |
+| `newprompt.py` | Plain-English idea → a prompt for a fresh session. |
+| `prompt_template.md` | The text of that prompt. Edit this, not the module. |
+| `tests/test_where_and_runners.py` | 60-odd checks, all passing. |
+
+`start.bat` is unchanged as **the one command** and now leads with the table.
+
+### The state of the table right now
+
+**1 of 5 chats has declared its own state.** Only `coordinator` — the other four
+have a mailbox message asking for four lines. Until they answer, their two
+middle columns are guesses from `HANDOFF.md`, marked `~`, and the run says so
+out loud. **If they ignore it, the table stays mostly guesses.**
+
+### Three things found by looking at output, not by writing tests
+
+1. **The guesser described the wrong project.** Ordering `HANDOFF.md` files by
+   modification time put `kalshi-tennis` — an old analysis folder — ahead of
+   `tennis-paper-forward`, the thing actually running. Registry order encodes
+   which folder *is* the workstream. Fixed, tested.
+2. **A bare `next` in the heading pattern** matched *"what the next session
+   should do"* and put a sentence about reading order into "what's left". Fixed,
+   tested.
+3. **`crypto`'s tape pull is FINISHED, not dead** — its log ends `== DONE`. A
+   two-state ALIVE/STALE check would have shouted at it forever. That is why
+   there are four states. Same reasoning as D8.
+
+### One thing that is a real hole and is not papered over
+
+Two recorders run on the **laptop**, on `C:\Users\gianf\...` paths that do not
+exist here. They read **"can't see from this machine"** and never STALE. If one
+of them dies, **nothing here will notice.** They are recording the one dataset
+in this repo that cannot be re-pulled.
+
+### The next session's single next thing
+
+**Check whether the other four chats answered their mailbox message.** If they
+did, `py -3 coordinator\where.py` should report 5 of 5 declared and no `~`. If
+they did not, that is the finding — say it plainly rather than improving the
+guesser, which is polishing a fallback nobody should be relying on.
+
+Second: **`devig` was asked to classify 15 unwatched log files** (mailbox 007)
+as continuous or one-shot. When it answers, add them to `runners.json`. Nothing
+running on this desktop writes to any of them right now, and the coordinator
+deliberately guessed nothing about which of them died and which finished.

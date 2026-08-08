@@ -24,7 +24,29 @@ user doing routing by hand.
 
 ## 2. What the coordinator is
 
-**A Claude Code session that runs in `coordinator/` and does two jobs.**
+**A Claude Code session that runs in `coordinator/` and does four jobs.** Two of
+them were the original point. Two were added on 2026-08-08 so it can be the
+window the user actually talks to, instead of a filing tool he has to remember
+to use.
+
+### Job 0 — answer "where is everything at"
+
+One table. Which chat · what it is doing now · what is left · is its background
+test alive · does it need him. Then, underneath, exactly what to do about each
+row that says yes. This is what `coordinator\start.bat` prints first, because it
+is the answer to the question he actually has.
+
+**Read §3b before trusting a cell.** The two middle columns are quoted from what
+each session last wrote about itself, and a cell beginning `~` is a guess.
+
+### Job C — turn a plain-English idea into a prompt for a new session
+
+He says the idea in one sentence. `newprompt.py` writes the whole opening
+message for a fresh window: the idea **verbatim**, this repo's standing rules,
+the folder conventions, the pre-registration requirement, the evidence
+standards, and the reporting format — plus a keyword cross-check against
+`LEDGER.md` and `INBOX.md` so an already-refuted idea has a chance of being
+caught before a session spends an hour on it. He opens a window and pastes.
 
 ### Job A — collapse many reports into one page
 
@@ -153,6 +175,108 @@ prevent it.
 
 ---
 
+## 3b. What the "main chat" upgrade CANNOT do
+
+**Written before the code, on purpose.** The upgrade of 2026-08-08 added three
+things: a *where is everything at* table, a *live or dead* check on the
+background tests, and a *write me a prompt for a new session* command. Each one
+has a limit that matters more than the feature.
+
+### It cannot know what a session is doing "right now". It reads files.
+
+The **Doing now** and **What's left** columns are **quoted from what that
+session last wrote about itself**, and the age of that writing is printed next
+to it. If a session has been working for six hours and written nothing down,
+those columns show six-hour-old text, and the age column is the honest part.
+
+Where a session has declared its state explicitly, the cell is a quote. Where it
+has not, the coordinator **guesses** from `HANDOFF.md`, and the cell is prefixed
+`~` and listed in a "guessed" count under the table. **A guess is labelled and
+never presented as a fact.** Coverage is reported every run — *"3 of 5
+workstreams declared their state; 2 were guessed"* — so the table cannot quietly
+degrade into fiction.
+
+### "What's left" is that session's own plan. It is not an assessment.
+
+The coordinator does not know whether the plan is right, whether it is the best
+next thing, or how long it will take. This is the same limit as *"it cannot
+judge the trading work"*, applied to the schedule instead of the result.
+
+### ALIVE means "wrote to its log recently". It does not mean "working".
+
+The liveness check is **file modification time on a heartbeat file**, optionally
+confirmed by the process still existing. A runner that ticks every minute
+writing nonsense reads **ALIVE**. A runner that is genuinely healthy but has a
+20-minute quiet period reads **STALE**. It is a heartbeat, not a health check,
+and it is deliberately not dressed up as one.
+
+Four states, because two would lie:
+
+| State | Means |
+|---|---|
+| `ALIVE` | the heartbeat file changed within its own threshold |
+| `STALE` | a continuous job that has gone quiet. Something to look at |
+| `FINISHED` | a one-shot job whose log says it completed. **Not a problem** |
+| `NEVER RUN` | no heartbeat file has ever appeared |
+
+`FINISHED` exists because of a real near-miss: `crypto`'s tape pull completed
+cleanly on 2026-08-07 and a two-state check would have shouted `STALE` at it
+every run. A check that cries wolf gets ignored — the same failure already
+recorded as **D8**.
+
+### It cannot see anything running on the laptop
+
+The registry holds desktop paths. A recorder running on the laptop is reported
+as **`can't see from this machine`**, never as `STALE`. Saying "dead" about
+something you cannot observe is worse than saying nothing.
+
+### A background test that is not registered is not watched
+
+The registry is a hand-written list in `coordinator/runners.json`. Something new
+that nobody adds is invisible **as a test**. Mitigation, not cure: every run
+also lists log-shaped and lock-shaped files it found on disk that are **not** in
+the registry, under "found on disk, not registered". That makes an omission
+visible. It does not fill it in.
+
+### It cannot restart anything
+
+It prints the exact command to restart a dead runner. It does not run it.
+Starting and stopping work stays with the user and the sessions, exactly as
+"it cannot start, stop, or steer a running session" already says.
+
+### The prompt it writes for a new session is a draft, not a briefing
+
+`newprompt.py` copies the user's idea **verbatim** — it does not paraphrase,
+improve, or judge it — and wraps it in this repo's standing rules, folder
+conventions, evidence standards and reporting format. What it cannot do:
+
+- **It cannot tell you whether the idea is any good**, or whether this repo has
+  already refuted it. It does a **keyword** cross-check against `LEDGER.md` and
+  `INBOX.md` and prints what it hit, flagged as *possibly related, go and read
+  it*. Keyword matching misses every paraphrase. **A clean cross-check is not
+  evidence the idea is new.**
+- **It cannot open the session.** It writes a file and tells the user which
+  window to paste it into. Same wall as everything else here.
+- **It cannot add the idea to `INBOX.md`** — that file is outside
+  `coordinator/`, and the write-nothing-outside-my-folder rule is enforced by
+  test. It prints the exact line to paste in.
+
+### "Needs me" is four mechanical signals, plus whatever the session declared
+
+`yes` is produced by: a stale background test · unanswered mail in that
+workstream · unpushed commits touching its folders · a `needs:` line the session
+wrote itself. **It cannot detect a session that is quietly stuck**, has
+misunderstood its task, or is confidently doing the wrong thing. `no` means *no
+signal fired*, not *all is well*.
+
+### It is still not the coordinating chat
+
+It removes the routing — which window, which file, which page is current. The
+judgment about what is worth doing next is not in here, and putting a table in
+front of it does not change that.
+
+---
+
 ## 4. The pieces
 
 | File | What it is |
@@ -161,10 +285,32 @@ prevent it.
 | `../briefs/` | Every published version, each at its own permanent address, never edited afterwards. **This is what the coordinating chat is handed.** |
 | `brief.py` | Writes exactly one section of `BRIEF.md`. Locked, atomic, section-scoped. |
 | `scan.py` | Reads every project's state off disk. Writes `SCAN.md`. |
+| `where.py` | The **where is everything at** table. Writes `WHERE.md`. |
+| `runners.py` | Is each background test ALIVE, STALE, FINISHED or NEVER RUN. |
+| `runners.json` | The hand-written list of background tests. **Anything not in here is not watched.** |
+| `newprompt.py` | Turns a plain-English idea into a prompt for a new session. |
+| `prompt_template.md` | The text of that prompt. **Edit this, not `newprompt.py`** — see §4a. |
+| `prompts/` | Generated prompts, ready to paste into a new window. |
 | `mail.py` | Creates and lists mailbox messages. |
 | `mailbox/<slug>/` | Messages addressed to that project. Markdown. Edited in place to reply. |
 | `SCAN.md` | Latest machine-read state of every project. Regenerated, never hand-edited. |
-| `start.bat` | **The one command.** Runs the scan, refreshes the stamp, prints a plain-English digest. |
+| `WHERE.md` | The same table as a page. Regenerated, never hand-edited. |
+| `start.bat` | **The one command.** Everything above, in one screen, in plain English. |
+
+### 4a. Why the prompt text lives in a Markdown file
+
+The prompt tells a new session to start by pulling the repo — and
+`tests/test_no_money_no_network.py` fails any coordinator `.py` file that so
+much as *contains the name* of a git verb that writes.
+
+**That canary is right and was not weakened.** The coordinator must never run
+one. But a sentence telling a *different* session what to run is prose, not an
+action, and the canary already exempts documents. So the prompt text moved into
+`prompt_template.md` and the canary gained a check that the template still
+exists and is not empty — because the temptation, when it goes missing, is to
+paste the text back into the module.
+
+**Anything the generated prompt says goes in `prompt_template.md`.**
 
 ## 5. `BRIEF.md` — how one section per project is enforced
 
@@ -298,13 +444,30 @@ the fetch returns nothing, and the chat is stuck on whatever it last read.
 
 ## 8. How the user actually uses it
 
+**The whole of it is: open a Claude Code session in this repo and talk to it in
+plain English.** There is nothing to install, nothing to configure, and no
+command the user types himself. The four things he can ask for:
+
+| He says | It runs | He gets |
+|---|---|---|
+| *"where is everything at"* / *"run the coordinator"* | `coordinator\start.bat` | The table, then what needs him and exactly what to do |
+| *"is the tennis test still running"* | `runners.py` | ALIVE / STALE / FINISHED, with the restart command if it is dead |
+| *"tell the de-vig chat to X"* | `mail.py send` | A filed message that chat reads when it next starts |
+| *"new idea: X"* | `newprompt.py` | A ready-to-paste prompt for a fresh window |
+
 **Starting it:** open a Claude Code session in this repo and say
 
 > run the coordinator
 
-The session runs `coordinator\start.bat`, reads the digest, and reports in plain
-English. Nothing else is required. There is nothing to install and nothing to
-edit.
+The session runs `coordinator\start.bat`, reads the output, and reports in plain
+English. The table comes first because it is the answer to the question he
+usually has.
+
+**Asking for a new session:** say the idea in one sentence. The coordinator
+writes `coordinator/prompts/SESSION-<date>-<name>.md`, tells him which window to
+open, and prints the one line to paste into `INBOX.md`. **It does not judge the
+idea** — but it does print any `LEDGER.md` or `INBOX.md` line that shares words
+with it, which is how a queued-and-already-refuted idea gets caught early.
 
 **Sending an instruction to a session:** paste it into the coordinator session
 and say who it is for. The coordinator writes the mailbox message. The user

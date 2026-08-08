@@ -157,3 +157,111 @@ address.
 changed generation, never rewritten. An immutable page cannot go quietly stale —
 what it says is what was true at its timestamp. That property is why the test
 passed at all.
+
+### D11 — The background-test check has four states, not two
+
+**2026-08-08.** The obvious design is ALIVE / STALE. It was rejected after
+looking at real data: `crypto/data/tape_pull.log` **completed cleanly** on
+2026-08-07 and ends `== DONE`. A two-state check calls that STALE forever.
+
+That is exactly the failure already recorded as **D8** — a check that cries wolf
+on every run trains the reader to ignore it, which is worse than having no
+check. So one-shot jobs are registered as one-shot, declare the line they print
+when they finish, and read **FINISHED**.
+
+The fourth state, **NEVER RUN**, separates "the log is old" from "the log has
+never existed", because those need different actions.
+
+**Reversible:** the states are computed in one function, `runners.check()`.
+
+### D12 — A runner on the laptop is reported as unobservable, never as dead
+
+**2026-08-08.** `STATUS.md` lists two recorders running on the laptop under
+`C:\Users\gianf\...`. From the desktop those paths do not exist, so the naive
+answer is STALE — and it would be **wrong every single time**, about the one
+dataset in this repo that cannot be re-pulled.
+
+They carry `"machine": "laptop"` and read **"can't see from this machine"**.
+Saying "dead" about something you cannot observe is worse than saying nothing.
+
+**The cost, accepted:** if a laptop recorder really does die, nothing here will
+notice. That is a genuine hole and it is not papered over.
+
+### D13 — "Doing now" and "what's left" are quoted where possible and marked `~` where guessed
+
+**2026-08-08.** The user asked for a table with those two columns. Nothing on
+disk holds them: a session's current task is in its head, not in a file.
+
+Three options were considered.
+
+1. **Guess from `HANDOFF.md` and present it plainly.** Rejected — a guess that
+   reads as a fact is the failure mode this whole repo is organised against.
+2. **Leave the columns out.** Rejected — he asked for them, and the information
+   does mostly exist, just unlabelled.
+3. **Taken:** an optional `<!-- COORDINATOR-STATE -->` block a session writes
+   about itself, which is **quoted**; a guess from `HANDOFF.md` when there is no
+   block, prefixed `~`; and a printed count of how many of each, every run.
+
+At the time of writing that count is **1 of 5** — only `coordinator` has
+declared. A mailbox message went to the other four. **If they ignore it the
+table stays mostly guesses, and it will keep saying so.**
+
+**Two bugs in the guesser were found by looking at its output, not by a test**,
+and both are now tested:
+
+- It ordered `HANDOFF.md` files by modification time, so the tennis row
+  described `kalshi-tennis` — an old analysis folder — instead of
+  `tennis-paper-forward`, the thing actually running. Registry order encodes
+  which folder *is* the workstream; a timestamp does not.
+- Its "what's left" heading pattern matched a bare `next`, which caught *"what
+  the next session should do"* in `bot-hunt/HANDOFF.md` and put a sentence about
+  reading order into a column the user acts on.
+
+### D14 — The prompt text moved out of `newprompt.py` into `prompt_template.md`
+
+**2026-08-08.** The generated prompt tells a new session to pull the repo, and
+`tests/test_no_money_no_network.py` fails any coordinator `.py` file containing
+the name of a writing git verb. The canary fired.
+
+**The canary was not weakened.** Two alternatives were rejected: rewording the
+prompt to dodge the string (degrades the prompt to satisfy a scanner), and
+adding an exemption list to the canary (every exemption list eventually holds
+the thing it was meant to catch).
+
+Prose telling a *different* session what to run is not an action, and the canary
+already exempts documents. So the text lives in `prompt_template.md`, and the
+canary **gained** a check that the template exists and is not near-empty —
+because when it goes missing the temptation is to paste the text back into the
+module.
+
+**Judgment call flagged for the user:** this is the coordinator deciding how one
+of its own guards should read. The guard got stricter, not looser, but it is his
+to overrule.
+
+### D15 — `newprompt.py` copies the idea verbatim and cross-checks by keyword only
+
+**2026-08-08.** It could summarise or sharpen the idea before writing the
+prompt. Rejected: "it reports state, not truth" is the line the coordinator does
+not cross, and paraphrasing a one-sentence idea is where a misunderstanding gets
+laundered into an hour of a session's work.
+
+It does do a **keyword** overlap check against `LEDGER.md`, `INBOX.md` and
+`SCOREBOARD.md` and prints the hits, flagged as *possibly related, go and read
+it*. On the first real test — *"test de-vig against a retail bookmaker with a
+fat margin instead of Pinnacle"* — it surfaced the exact `INBOX.md` line where
+that idea is already queued, plus three related `LEDGER.md` rows. **That is one
+useful hit, not a validated retrieval rate**, and the prompt says so: keyword
+matching misses every paraphrase, so a clean cross-check is not clearance.
+
+### D16 — The coordinator added a paragraph to the repo-root `CLAUDE.md`
+
+**2026-08-08.** Adding `COORDINATOR-STATE` to §5 touches a file every session
+loads and nobody owns, which `CLAUDE.md` §5 itself discourages.
+
+Taken because a convention that lives only in `coordinator/README.md` will be
+read by nobody — the same reasoning that put the mailbox rule in `CLAUDE.md` on
+2026-08-07, and the same reasoning behind the fee formula reaching 17 copies
+while its rule was only a convention. The addition is **additive, four lines,
+and touches no existing text.** Every session also has the mailbox message.
+
+**Flagged rather than done quietly**, and trivially reversible.
