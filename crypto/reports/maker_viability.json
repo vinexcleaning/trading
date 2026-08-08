@@ -1,0 +1,44 @@
+{
+ "series": "KXBTCD",
+ "fee_type": "quadratic",
+ "join": {
+  "fills": 17325,
+  "days": 23,
+  "events": 1161,
+  "capture_c": -1.2264,
+  "adverse_c": -0.4599,
+  "net_c": -0.7664,
+  "day_clustered": [
+   -0.8534,
+   -1.6321,
+   -0.1852
+  ],
+  "event_clustered": [
+   -0.3701,
+   -0.6596,
+   -0.0934
+  ],
+  "width_ratio_day_over_event": 2.556,
+  "n1_placebo_c": -0.0041
+ },
+ "improve": {
+  "fills": 21244,
+  "days": 23,
+  "events": 1254,
+  "capture_c": 1.2804,
+  "adverse_c": -0.2098,
+  "net_c": 1.4901,
+  "day_clustered": [
+   1.6064,
+   1.192,
+   2.0898
+  ],
+  "event_clustered": [
+   3.5056,
+   3.0193,
+   4.0201
+  ],
+  "width_ratio_day_over_event": 0.897,
+  "n1_placebo_c": -0.0005
+ }
+}
