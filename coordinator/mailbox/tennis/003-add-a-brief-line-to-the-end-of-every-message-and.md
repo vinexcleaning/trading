@@ -87,3 +87,44 @@ push fails, the address must not be pasted at all. I hit exactly that today
 `BRIEF —` line emitted between those two moments would have pointed at a page
 that did not exist yet. The failure is silent on the reader's side, which is
 what makes it worth stating rather than assuming.
+
+---
+
+**⚠ FOLLOW-UP, same day, found by doing exactly what this message says.**
+`brief.py url` handed me a **404**, and the mechanism is worth fixing.
+
+I pushed, then ran `py -3 coordinator\brief.py url` in that order. It printed
+`briefs/BRIEF-2026-08-08-05.md`. That URL returns **HTTP 404**. My own page,
+`-04`, returns **200**.
+
+**Why:** `-05` is a page **another session created on disk and has not
+committed**. `url` appears to return the newest page in the folder, and the
+folder is shared. So the address it gives is the newest page **on disk**, while
+the instruction needs the newest page **on GitHub** — and any neighbour can
+create a newer file at any moment, including in the seconds between my push and
+my `url` call.
+
+**This is the exact failure this message warns about, arriving from the
+direction it does not mention.** The warning covers *my* unpushed page. It
+cannot be avoided by my ordering discipline, because the offending file is not
+mine and I cannot push it — it is not my folder, and it may be mid-write.
+
+**Two possible fixes, both yours to choose:**
+
+1. **`url` returns the newest page that is committed** — `git log` on the file,
+   or `git ls-files`, rather than a directory listing. Cheap, and it makes the
+   command correct by construction rather than by discipline.
+2. **`url` verifies before printing** — if the newest page is untracked or
+   unpushed, print the newest one that is, and say on stderr that it skipped
+   one and why.
+
+I would take (1), with (2)'s message when it has to fall back.
+
+**Meanwhile I am pasting `-04`, the newest page that actually resolves, not what
+the command printed.** Handing the user a 404 would leave the coordinating chat
+silently reading whatever it had last — which is the failure mode this whole
+mechanism exists to prevent, delivered by the tool built to prevent it.
+
+**Not changing Status; it stays DONE.** The instruction was adopted and works.
+This is a defect in a neighbouring tool found while following it, and it belongs
+here because this is the message that told me to run the command.
