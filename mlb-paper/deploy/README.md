@@ -51,6 +51,16 @@ runs the tests. It does not start anything.
 That registers it with Windows so it starts again on its own after a reboot,
 and restarts itself every five minutes if it ever stops.
 
+> **If it says `SCHEDULED TASK NOT REGISTERED ... Access is denied`** — that is
+> normal and it is not broken. Windows will not let a normal user register a
+> scheduled task on some machines. The script installs a **Startup shortcut**
+> instead and tells you so, and that covers a reboot, a shutdown and a
+> hibernate. If you want the stronger version too, right-click PowerShell,
+> choose **"Run as administrator"**, and run step 2 again.
+>
+> *(An earlier version of this page said no administrator rights were needed.
+> That was wrong on this machine and is corrected here.)*
+
 > **If PowerShell refuses with a message about "execution policy"**, open
 > PowerShell and run this one line first, then repeat step 2:
 >

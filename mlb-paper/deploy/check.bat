@@ -14,7 +14,13 @@ pushd "%PROJ%"
 ".venv\Scripts\python.exe" "src\status.py" %*
 set RC=%ERRORLEVEL%
 popd
-if "%1"=="" (
+REM Pause only when double-clicked, so the window does not vanish. Detected
+REM via cmdcmdline: a double-click runs cmd /c "...check.bat", a shell run does
+REM not. The old version paused whenever %1 was empty, which made the file
+REM unusable from any script or scheduled job -- it would hang forever with no
+REM output. Found by running it non-interactively.
+echo %cmdcmdline% | find /i "%~0" >nul
+if not errorlevel 1 (
   echo.
   echo [press a key to close]
   pause >nul

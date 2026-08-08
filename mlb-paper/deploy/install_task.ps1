@@ -64,20 +64,63 @@ if (Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue) {
   Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false
 }
 
-Register-ScheduledTask -TaskName $TaskName `
-  -Action $action -Trigger @($trigStart, $trigDaily) `
-  -Settings $settings -Principal $principal `
-  -Description "mlb-paper: PAPER-ONLY forward test of five MLB mentalities on Kalshi. No credentials, no order endpoint, no money." | Out-Null
+# ---------------------------------------------------------------------------
+#  VERIFY, DO NOT ANNOUNCE.  The first version of this script printed
+#  "registered scheduled task 'mlb-paper'" while Register-ScheduledTask had
+#  actually failed with Access Denied -- the CIM error is non-terminating and
+#  slipped past $ErrorActionPreference. A script that reports success it did not
+#  achieve is worse than one that crashes: GUARDS #13, assert the CONTENT, not
+#  the call. Every path below reads the task back before saying anything.
+# ---------------------------------------------------------------------------
+$registered = $false
+$why = ""
+try {
+  Register-ScheduledTask -TaskName $TaskName `
+    -Action $action -Trigger @($trigStart, $trigDaily) `
+    -Settings $settings -Principal $principal -Force `
+    -Description "mlb-paper: PAPER-ONLY forward test of five MLB mentalities on Kalshi. No credentials, no order endpoint, no money." `
+    -ErrorAction Stop | Out-Null
+} catch { $why = $_.Exception.Message }
+$registered = [bool](Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue)
 
-Write-Host "registered scheduled task '$TaskName'"
-Write-Host "  runs      : $bat"
-Write-Host "  triggers  : at startup, and daily at 06:00"
-Write-Host "  restarts  : every 5 minutes, up to 999 times, if it ever exits"
+if (-not $registered) {
+  Write-Host ""
+  Write-Host "SCHEDULED TASK NOT REGISTERED: $why" -ForegroundColor Yellow
+  Write-Host ""
+  Write-Host "On this machine Task Scheduler refuses a non-elevated register."
+  Write-Host "That is a MACHINE POLICY, not a fault in this package, and the"
+  Write-Host "README used to claim admin was not needed. It is."
+  Write-Host ""
+  Write-Host "TWO WAYS FORWARD, both fine:"
+  Write-Host "  1. Right-click PowerShell -> 'Run as administrator', then run"
+  Write-Host "     this script again. Gives you restart-on-failure and a run"
+  Write-Host "     that continues whether or not you are logged in."
+  Write-Host "  2. Do nothing. A Startup shortcut is installed below instead."
+  Write-Host "     It brings the runner back at every logon, which covers a"
+  Write-Host "     reboot, a shutdown and a hibernate. It does NOT restart the"
+  Write-Host "     runner if it dies while you stay logged in."
+}
+
+# The no-admin fallback, installed either way so there are two nets.
+$startup = [Environment]::GetFolderPath('Startup')
+$lnk = Join-Path $startup 'mlb-paper.lnk'
+$sc = (New-Object -ComObject WScript.Shell).CreateShortcut($lnk)
+$sc.TargetPath = $bat
+$sc.WorkingDirectory = $proj
+$sc.WindowStyle = 7
+$sc.Description = 'mlb-paper PAPER-ONLY forward test'
+$sc.Save()
+if (-not (Test-Path $lnk)) { throw "could not create the Startup shortcut either" }
 Write-Host ""
-Write-Host "starting it now..."
-Start-ScheduledTask -TaskName $TaskName
-Start-Sleep -Seconds 3
-Get-ScheduledTask -TaskName $TaskName |
-  Select-Object TaskName, State |
-  Format-Table -AutoSize
+Write-Host "VERIFIED  startup shortcut : $lnk"
+if ($registered) {
+  Start-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
+  Start-Sleep -Seconds 3
+  $t = Get-ScheduledTask -TaskName $TaskName
+  Write-Host "VERIFIED  scheduled task   : $($t.TaskName), state=$($t.State)"
+  Write-Host "          triggers at startup and daily 06:00; restarts every 5 min"
+} else {
+  Write-Host "NOT PRESENT  scheduled task (see above) -- the shortcut is doing the work"
+}
+Write-Host ""
 Write-Host "check it with:  deploy\check.bat"

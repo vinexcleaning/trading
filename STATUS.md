@@ -3365,3 +3365,50 @@ for the current address. A test asserts the next-address is absent.
 **What survives unchanged, and is the reason the test passed:** one permanent
 address per changed generation, never rewritten. An immutable page cannot go
 quietly stale — what it says is what was true at the timestamp on it.
+
+### ⚠ mlb-paper runner DIED for 12.7 hours — the machine slept and nothing brought it back (2026-08-08)
+
+**328 ticks, 2026-08-07 02:43 → 2026-08-08 09:30, then nothing.** Found by
+`deploy\check.bat`, whose first line read `*** STALE ***`. The heartbeat did its
+job; the packaging did not.
+
+**Cause, from the Windows event log rather than guessed:**
+
+```
+8/8/2026 5:30:46 AM local   last tick completed normally, 3.2 s
+8/8/2026 5:30:47 AM  id 1074  ...initiated the power off of computer... (Unplanned)
+8/8/2026 5:30:54 AM  id 42    The system is entering sleep.
+```
+
+**Eight seconds.** Last tick finished, machine powered down, runner gone. Zero
+bytes in `runner.err` — the same signature as `bot-hunt`'s recorder, which is
+the incident I cited when building the heartbeat. **I corrected my own first
+guess here: it was not a shell-parenting death. It ran 31 hours, which rules
+that out.**
+
+> ⚠ **STATUS.md's own warning applies and was not heeded: "If the machine
+> sleeps, the gap is irrecoverable — Kalshi publishes no historical order-book
+> endpoint."** 12.7 hours of marks are gone for good. The settled outcomes are
+> not lost (StatsAPI is historical), but the closing-line reference for anything
+> that settled in that window is.
+
+**Two defects in my own deploy package, both fixed:**
+
+1. **`install_task.ps1` printed "registered scheduled task 'mlb-paper'" while
+   registration had FAILED with Access Denied.** The CIM error is
+   non-terminating and slipped past `$ErrorActionPreference = "Stop"`. **A
+   script reporting success it did not achieve is worse than one that
+   crashes** — GUARDS #13, assert the content not the call. It now reads the
+   task back and says `NOT PRESENT` when it is not there.
+2. **`check.bat` paused whenever `%1` was empty**, so it hung forever with no
+   output when run from any script or scheduled job. Now it pauses only when
+   double-clicked, detected via `cmdcmdline`.
+
+**And a false claim in `deploy/README.md`, corrected:** it said the install
+needs no administrator rights. On this machine Task Scheduler refuses a
+non-elevated register for both `S4U` and `Interactive`. The script now installs
+a **Startup-folder shortcut** as a no-admin fallback — which covers a reboot,
+shutdown and hibernate, but **not** a death while you stay logged in — and says
+plainly which of the two you got.
+
+**Runner restarted 2026-08-08 22:16 UTC.** Startup shortcut verified present.
