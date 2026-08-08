@@ -29,7 +29,8 @@ SCAN = HERE / "SCAN.md"
 BRIEF = REPO / "BRIEF.md"
 
 # Folders that are not projects.
-SKIP = {".git", ".claude", "_archive", "prompts", "__pycache__", ".brieflock"}
+SKIP = {".git", ".claude", "_archive", "prompts", "__pycache__", ".brieflock",
+        "briefs"}
 
 # Directories never worth walking for timestamps.
 HEAVY = {".venv", "venv", "__pycache__", ".git", "data", "Data", "reports",
@@ -205,8 +206,19 @@ def collect():
             "decisions": (path / "DECISIONS.md").exists(),
         }
 
+    snaps = sorted((REPO / "briefs").glob("BRIEF-????-??-??-??.md")) \
+        if (REPO / "briefs").is_dir() else []
+
+    # A snapshot that is not on GitHub breaks the chain silently -- the reader
+    # 404s on the next link and concludes it already has the newest page.
+    tracked = set(git("ls-tree", "-r", "--name-only", "origin/main", "briefs/").split())
+    unpublished = [p.name for p in snaps if f"briefs/{p.name}" not in tracked]
+
     return {
         "head": head(),
+        "newest_snapshot": snaps[-1].name if snaps else "",
+        "n_snapshots": len(snaps),
+        "unpublished_snapshots": unpublished,
         "now": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "unpushed": unpushed(),
         "root_dirty": root_dirty,
@@ -250,6 +262,17 @@ def concerns(state) -> list[str]:
                 f"commit is {newest_commit}, its brief section was last written "
                 f"{sec}. The page is behind the work."
             )
+
+    if state["unpublished_snapshots"]:
+        out.append(
+            f"**{len(state['unpublished_snapshots'])} brief page(s) exist on this "
+            f"machine but not on GitHub.** This is the worst failure this system "
+            f"has: the live page tells a reader to fetch the next one, that fetch "
+            f"returns nothing, and the reader concludes it already has the newest. "
+            f"It is then reading a stale page while believing it is current. "
+            f"**Commit and push `briefs/` now:** "
+            + ", ".join(state["unpublished_snapshots"])
+        )
 
     for slug, c in state["mail"].items():
         n = c.get("OPEN", 0)
@@ -346,8 +369,13 @@ def digest(state) -> str:
     for c in concerns(state):
         L.append("  * " + re.sub(r"\*\*(.+?)\*\*", r"\1", c))
     L.append("")
-    L.append("Give the coordinating chat this URL:")
-    L.append(f"  https://raw.githubusercontent.com/vinexcleaning/trading/main/BRIEF.md?v={state['head']}")
+    L.append("Entry URL for the coordinating chat (give it ONCE, never changes):")
+    L.append("  https://raw.githubusercontent.com/vinexcleaning/trading/main/BRIEF.md")
+    L.append("It follows the next-links inside each page to reach the newest by")
+    L.append("itself. Do not add ?v= or any query string -- it is discarded.")
+    if state["newest_snapshot"]:
+        L.append("")
+        L.append(f"Newest page right now: briefs/{state['newest_snapshot']}")
     return "\n".join(L)
 
 

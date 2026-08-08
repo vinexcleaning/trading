@@ -85,6 +85,24 @@ def main() -> int:
                 fail(f"{path.name} may write to repo root path '{target}'. "
                      f"Only BRIEF.md is allowed outside coordinator/.")
 
+    # A test that redirects brief.BRIEF to a temp file must ALSO redirect
+    # brief.BRIEFS, or it publishes its fixtures into the real briefs/ folder
+    # and they enter the public chain looking like genuine briefs. This is not
+    # hypothetical -- it happened on 2026-08-07 and four fake pages were
+    # published locally before the scan caught them.
+    for path in PY_FILES:
+        src = path.read_text(encoding="utf-8", errors="replace")
+        if "brief.BRIEF =" in src and "brief.BRIEFS =" not in src:
+            fail(f"{path.name} redirects brief.BRIEF but not brief.BRIEFS. It "
+                 f"will write test fixtures into the real briefs/ folder.")
+
+    # Nothing in the real briefs/ folder may contain a test fixture.
+    briefs = COORD.parent / "briefs"
+    if briefs.is_dir():
+        for p in sorted(briefs.glob("BRIEF-*.md")):
+            if "SENTINEL" in p.read_text(encoding="utf-8", errors="replace"):
+                fail(f"{p.name} contains a test fixture and is not a real brief.")
+
     # And there must be no credential file lying around.
     for junk in ("*.env", ".env", "*.key", "*.pem", "credentials*"):
         for p in COORD.rglob(junk):

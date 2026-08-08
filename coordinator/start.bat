@@ -32,6 +32,8 @@ echo --- BRIEF.md ---
 %PY% coordinator\brief.py check
 %PY% coordinator\brief.py list
 echo.
+%PY% coordinator\brief.py chain
+echo.
 echo --- Instructions still waiting for an answer ---
 %PY% coordinator\mail.py open
 echo.

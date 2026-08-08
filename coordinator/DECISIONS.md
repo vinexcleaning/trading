@@ -87,3 +87,36 @@ check, because it trains the reader to ignore it.
 
 **Caught by pushing and looking at the result**, not by a test. There is no test
 for this; the honest statement is that the wording is verified by eye.
+
+### D9 — RETRACTED: the `?v=` cache-buster. Replaced by a chain of dated paths.
+
+**2026-08-07.** D8 and §7 of `COORDINATOR.md` both told the coordinating chat to
+fetch `BRIEF.md?v=<hash>`. **The user tested it and it does not work.** That
+fetcher keys its cache on the **path** and discards the query string: a request
+for `?v=f9b4d3f` returned the body cached under `?v=13b8e61`. No
+query-parameter scheme can work against it.
+
+**I asserted this without testing it.** It is exactly the failure this repo
+keeps recording — a mechanism that sounds right, stated as though measured.
+Marked inline in `COORDINATOR.md` §7 rather than deleted.
+
+**Replacement:** every generation of the page is also written to a permanent
+path, `briefs/BRIEF-<date>-<NN>.md`, plus a per-day page. Each page names the
+path of the next one. The reader follows next-links until one 404s. A cached
+entry point is no longer a dead end, because the frozen copy still carries a
+forward link.
+
+**Rejected alternative:** a single rolling `briefs/latest.md`. Same path every
+time, so the same cache freeze, one file later. The whole point is that the path
+must differ.
+
+**The cost, accepted:** the folder grows by one small file per *changed*
+generation. Identical content does not mint a page. And the reader must be
+willing to follow a link — a reader that only re-fetches one URL cannot be
+rescued by anything here.
+
+**New failure mode, guarded:** a snapshot on disk but not pushed makes the next
+link 404, and a walking reader then believes a stale page is the newest. That is
+silent and points the wrong way, so `scan.py` reports unpushed snapshots as the
+first item in the digest, and `brief.py check` fails on any gap in the
+numbering.

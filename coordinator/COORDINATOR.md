@@ -86,10 +86,13 @@ The coordinating chat reads GitHub. Therefore:
 - **Unpushed work stays invisible.** The coordinator will *tell you* it is
   unpushed, which is the fix — but it cannot push another session's work for it,
   because that would cross into another session's folder.
-- **`BRIEF.md` will eventually be cached too.** It is a new filename today, so
-  it is not cached now, but the same freeze that hit `STATUS.md` can hit it.
-  Two mitigations, both in §7: a freshness stamp the chat can self-check, and a
-  cache-busting URL.
+- **`BRIEF.md` will be cached, and there is no way to stop it.** The fetcher
+  keys on path and ignores query strings — measured, see §7. The answer is not
+  to defeat the cache but to route around it: every version also lives at its
+  own permanent path, and each page names the next one, so a frozen copy still
+  leads forward. **The cost is that the reader must follow links rather than
+  re-fetch.** A reader that refuses to follow links cannot be made current by
+  anything in this repo.
 
 ### It cannot judge the trading work
 
@@ -220,19 +223,72 @@ visible rather than lost.
 > and nowhere else in `coordinator/`. Replying to a message is not reaching into
 > someone else's work.
 
-## 7. Beating the cache
+## 7. Beating the cache — a chain of paths
 
-Two things, both automatic:
+### What does not work, measured
 
-1. **A freshness stamp at the top of `BRIEF.md`** — the commit hash it was
-   generated at, and the time. The coordinating chat can compare that hash
-   against the repo's commit list, which is a different URL. If they disagree,
-   it is reading a cached copy and **knows it**. That is the whole trick: a
-   stale page that announces its own staleness is not dangerous.
-2. **A cache-busting URL**, printed by `start.bat` each run:
-   `https://raw.githubusercontent.com/vinexcleaning/trading/main/BRIEF.md?v=<hash>`
-   The query string changes every commit, so it is a new URL to any cache. Give
-   the coordinating chat the freshly printed one.
+**A query string is not a cache key.** The coordinating chat's fetcher keys its
+cache on the **path** and discards the query string entirely: a request for
+`?v=f9b4d3f` returned the body cached under `?v=13b8e61`. That was tested, not
+assumed — and it kills **every** query-parameter scheme, not just that one.
+
+The first version of this file claimed a `?v=` URL would beat the cache. **That
+claim was wrong and is retracted.** Only a genuinely different **path** is
+fetched fresh.
+
+### What works
+
+**Every version of the page is also written to its own permanent path**, and
+**each page names the path of the next one**. The reader walks the chain itself.
+
+```
+BRIEF.md                        <- the live page, and the entry point
+briefs/BRIEF-2026-08-07-01.md   <- immutable, never rewritten
+briefs/BRIEF-2026-08-07-02.md
+briefs/BRIEF-2026-08-07.md      <- that day's final state
+briefs/BRIEF-2026-08-08-01.md
+```
+
+Inside every page:
+
+- **Next page** — `briefs/BRIEF-<today>-<NN+1>.md`. The reader fetches it. If it
+  loads, it reads it and follows *that* page's next link. **It keeps going until
+  one returns 404. The last page that loaded is the newest.**
+- **Skip a day** — `briefs/BRIEF-<tomorrow>.md`, for a reader that has been away
+  and does not want to walk every generation.
+
+**The entry point never changes and is given to the chat once:**
+`https://raw.githubusercontent.com/vinexcleaning/trading/main/BRIEF.md`
+
+Even when that page freezes — and it will — the frozen copy still contains a
+next-link, so the chain still leads forward. **A cached entry point is no longer
+a dead end. That is the whole point of the design.**
+
+A commit hash is still stamped on each page as a secondary cross-check, but the
+chain is what carries freshness.
+
+### The one way this breaks, and how it is caught
+
+**A snapshot that exists on disk but not on GitHub.** The live page says "fetch
+generation 03", the fetch 404s, and the reader concludes it already has the
+newest — reading a stale page while believing it is current. That is the worst
+failure mode in this whole system, because it is silent and it points the wrong
+way.
+
+Two guards:
+
+- `scan.py` compares `briefs/` against what is on `origin/main` and shouts about
+  any snapshot that is not pushed. It is the first item in the digest.
+- `brief.py check` fails if the numbering has a hole in it, since a gap
+  dead-ends a walking reader exactly the same way.
+
+**Snapshots are never rewritten once published.** If they were, a page already
+fetched would point somewhere that no longer matches. `tests/test_brief_chain.py`
+asserts immutability, gap detection, and that no page carries a query-string
+trick.
+
+**A new snapshot is only minted when the content actually changed**, so
+re-running `start.bat` all day does not fill the folder with identical pages.
 
 ## 8. How the user actually uses it
 

@@ -10,9 +10,14 @@ Usage
 -----
   py -3 coordinator\\brief.py write <slug> --file body.md
   py -3 coordinator\\brief.py write <slug> --stdin
-  py -3 coordinator\\brief.py stamp                 # refresh the freshness header
+  py -3 coordinator\\brief.py stamp                 # refresh the header + publish
   py -3 coordinator\\brief.py list                  # slugs + when each was written
-  py -3 coordinator\\brief.py check                 # validate structure, exit 1 if broken
+  py -3 coordinator\\brief.py chain                 # entry URL and newest page
+  py -3 coordinator\\brief.py check                 # validate, exit 1 if broken
+
+Every write also publishes an immutable copy to briefs/BRIEF-<date>-<NN>.md.
+Each page names the path of the next one, so a reader that caches by path can
+walk forward on its own. Snapshots are never rewritten.
 """
 
 from __future__ import annotations
@@ -23,13 +28,16 @@ import re
 import subprocess
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 BRIEF = REPO / "BRIEF.md"
+BRIEFS = REPO / "briefs"
 LOCKDIR = HERE / ".brieflock"
+
+RAW = "https://raw.githubusercontent.com/vinexcleaning/trading/main"
 
 LOCK_WAIT_SECONDS = 60
 LOCK_STALE_SECONDS = 300
@@ -45,6 +53,9 @@ file is touched by that command.
 This is the file the coordinating chat reads. `STATUS.md` stays the detailed
 channel between sessions; this is the short channel out. Plain English, no
 acronyms, no jargon. If a number matters, say whether bigger is better.
+
+Every version of this page is also kept forever at a dated path under
+[briefs/](briefs/). Follow the chain in the box below to reach the newest.
 """
 
 STAMP_OPEN = "<!-- STAMP -->"
@@ -118,24 +129,93 @@ def write_brief_atomic(text: str) -> None:
     os.replace(tmp, BRIEF)
 
 
+def next_generation_number(day: str) -> int:
+    """The number the next snapshot of `day` would take. 1 if none yet."""
+    return len(list(BRIEFS.glob(f"BRIEF-{day}-*.md"))) + 1
+
+
+def core(text: str) -> str:
+    """The page minus its stamp -- what 'has anything actually changed' means."""
+    if STAMP_OPEN in text and STAMP_CLOSE in text:
+        s = text.index(STAMP_OPEN)
+        e = text.index(STAMP_CLOSE) + len(STAMP_CLOSE)
+        text = text[:s] + text[e:]
+    return text.strip()
+
+
 def stamp_block() -> str:
+    """The freshness header.
+
+    A query string is NOT a cache key for at least one fetcher in use here: a
+    request for `?v=A` came back with the body cached under `?v=B`. Measured,
+    not assumed. So `?v=` is useless and no query-parameter scheme can work.
+    Only a genuinely different PATH gets fetched fresh.
+
+    Hence a chain of paths. Every page names the path of the next one. A reader
+    follows next-links until one 404s; the last page that loaded is the newest.
+    """
     h = head_hash()
-    now = f"{datetime.now():%Y-%m-%d %H:%M}"
-    # The stamp can never name the commit that contains it -- it is written
-    # before that commit exists. So the freshness test is one-directional:
-    # commit `h` must be FINDABLE in the repo history. If it is not, the page
-    # predates it and is cached. Being one or two commits behind is normal.
+    now = datetime.now()
+    day = f"{now:%Y-%m-%d}"
+    tomorrow = f"{now.date() + timedelta(days=1)}"
+    nxt = next_generation_number(day) + 1
     return (
         f"{STAMP_OPEN}\n"
-        f"> **Generated {now}, on top of commit `{h}`.**\n"
-        f"> **Freshness check:** if `{h}` does not appear in this repo's commit\n"
-        f"> history on GitHub, you are reading a cached copy — stop and refetch.\n"
-        f"> Being one or two commits behind the newest is normal and expected:\n"
-        f"> this page is always written just before the commit that carries it.\n"
-        f"> Cache-busting URL, always safe to use:\n"
-        f"> `https://raw.githubusercontent.com/vinexcleaning/trading/main/BRIEF.md?v={h}`\n"
+        f"> **Generated {now:%Y-%m-%d %H:%M}, on top of commit `{h}`.**\n"
+        f">\n"
+        f"> **Automated readers: follow the chain below. Do not re-fetch this\n"
+        f"> page and do not add a query string.** Query strings are discarded by\n"
+        f"> at least one fetcher in use here: two requests differing only in a `v=`\n"
+        f"> parameter returned the same cached body. Only a different **path** is\n"
+        f"> fetched fresh.\n"
+        f">\n"
+        f"> **Next page, if one exists:**\n"
+        f"> `{RAW}/briefs/BRIEF-{day}-{nxt:02d}.md`\n"
+        f"> Fetch it. If it loads, read it and follow *its* next link. Repeat\n"
+        f"> until one returns 404 — the last page that loaded is the newest.\n"
+        f">\n"
+        f"> **To skip a whole day forward:**\n"
+        f"> `{RAW}/briefs/BRIEF-{tomorrow}.md`\n"
+        f"> One page exists per day the repo was worked on, holding that day's\n"
+        f"> final state. A 404 means nothing was published that day — try the\n"
+        f"> day after, and so on up to today's date.\n"
+        f">\n"
+        f"> **Cross-check:** commit `{h}` must appear in this repo's commit\n"
+        f"> history. If it does not, this page predates it and is cached.\n"
         f"{STAMP_CLOSE}"
     )
+
+
+def publish() -> str | None:
+    """Copy the live BRIEF.md to an immutable dated path, if anything changed.
+
+    Returns the snapshot's repo-relative path, or None if there was nothing new.
+    Snapshots are NEVER rewritten once created -- that is what makes the chain
+    walkable months later.
+    """
+    BRIEFS.mkdir(exist_ok=True)
+    text = BRIEF.read_text(encoding="utf-8")
+    day = f"{datetime.now():%Y-%m-%d}"
+
+    previous = snapshots()
+    result = None
+    if not (previous and core(previous[-1].read_text(encoding="utf-8")) == core(text)):
+        n = next_generation_number(day)
+        snap = BRIEFS / f"BRIEF-{day}-{n:02d}.md"
+        snap.write_text(text, encoding="utf-8", newline="\n")
+        result = f"briefs/{snap.name}"
+
+    # The day page always mirrors the newest snapshot of its own day. Rebuilt
+    # every time rather than only on change, so a deleted or half-written one
+    # heals itself instead of leaving a hole a reader would fall into.
+    latest = snapshots()
+    if latest:
+        newest = latest[-1]
+        body = newest.read_text(encoding="utf-8")
+        day_page = BRIEFS / f"BRIEF-{newest.name[6:16]}.md"
+        if not day_page.exists() or day_page.read_text(encoding="utf-8") != body:
+            day_page.write_text(body, encoding="utf-8", newline="\n")
+    return result
 
 
 def open_marker(slug: str, when: str) -> str:
@@ -210,11 +290,14 @@ def cmd_write(slug: str, body: str) -> None:
             text += "\n---\n\n" + block + "\n"
             verb = "created"
         write_brief_atomic(text)
+        snap = publish()
     finally:
         release_lock()
 
     print(f"BRIEF.md: section '{slug}' {verb} ({len(body.splitlines())} lines).")
     print(f"Sections now present: {', '.join(s for s, _ in all_sections(read_brief()))}")
+    if snap:
+        print(f"Published snapshot: {snap}  (commit it, or the chain breaks)")
 
 
 def refresh_stamp(text: str) -> str:
@@ -230,9 +313,15 @@ def cmd_stamp() -> None:
     acquire_lock()
     try:
         write_brief_atomic(refresh_stamp(read_brief()))
+        snap = publish()
     finally:
         release_lock()
     print(f"BRIEF.md stamp refreshed to {head_hash()}.")
+    print(
+        f"Published snapshot: {snap}  (commit it, or the chain breaks)"
+        if snap
+        else "No new snapshot — the page has not changed since the last one."
+    )
 
 
 def cmd_list() -> None:
@@ -244,6 +333,25 @@ def cmd_list() -> None:
     width = max(len(s) for s, _ in secs)
     for slug, when in secs:
         print(f"  {slug.ljust(width)}  last written {when.replace('T', ' ')}")
+
+
+def snapshots():
+    return sorted(BRIEFS.glob("BRIEF-????-??-??-??.md")) if BRIEFS.is_dir() else []
+
+
+def cmd_chain() -> None:
+    """What to hand a reader that has never seen this repo, and the walk itself."""
+    snaps = snapshots()
+    if not snaps:
+        print("No snapshots yet. Run:  py -3 coordinator\\brief.py stamp")
+        return
+    print("Entry point for a reader that has nothing (never changes):")
+    print(f"  {RAW}/BRIEF.md")
+    print("\nNewest page right now:")
+    print(f"  {RAW}/briefs/{snaps[-1].name}")
+    print(f"\n{len(snaps)} snapshot(s), {len(set(p.name[6:16] for p in snaps))} day(s).")
+    print("A reader follows each page's next link until one 404s. It does not")
+    print("need any of these URLs in advance except the entry point.")
 
 
 def cmd_check() -> int:
@@ -264,11 +372,28 @@ def cmd_check() -> int:
     for slug in closes:
         if slug not in opens:
             problems.append(f"section '{slug}' is closed but never opened")
+    # The chain must have no gaps: a missing number 404s and stops a reader dead.
+    by_day: dict[str, list[int]] = {}
+    for p in snapshots():
+        by_day.setdefault(p.name[6:16], []).append(int(p.name[17:19]))
+    for day, nums in by_day.items():
+        expected = list(range(1, max(nums) + 1))
+        missing = sorted(set(expected) - set(nums))
+        if missing:
+            problems.append(
+                f"the chain for {day} is missing generation(s) "
+                f"{', '.join(f'{m:02d}' for m in missing)} — a reader following "
+                f"next-links stops there and never sees anything later"
+            )
+        if not (BRIEFS / f"BRIEF-{day}.md").exists():
+            problems.append(f"the day page BRIEF-{day}.md is missing")
+
     if problems:
         for p in sorted(set(problems)):
             print(f"FAIL: {p}")
         return 1
-    print(f"OK: BRIEF.md is well formed, {len(set(opens))} section(s).")
+    print(f"OK: BRIEF.md is well formed, {len(set(opens))} section(s), "
+          f"{len(snapshots())} snapshot(s), chain unbroken.")
     return 0
 
 
@@ -292,9 +417,10 @@ def main() -> int:
     g.add_argument("--file", help="path to a Markdown file holding the section body")
     g.add_argument("--stdin", action="store_true", help="read the body from stdin")
 
-    sub.add_parser("stamp", help="refresh the freshness header only")
+    sub.add_parser("stamp", help="refresh the freshness header and publish")
     sub.add_parser("list", help="show sections and when each was written")
-    sub.add_parser("check", help="validate structure")
+    sub.add_parser("chain", help="the entry URL and the newest page")
+    sub.add_parser("check", help="validate structure and the snapshot chain")
 
     a = ap.parse_args()
     if a.cmd == "write":
@@ -310,6 +436,9 @@ def main() -> int:
         return 0
     if a.cmd == "list":
         cmd_list()
+        return 0
+    if a.cmd == "chain":
+        cmd_chain()
         return 0
     return cmd_check()
 

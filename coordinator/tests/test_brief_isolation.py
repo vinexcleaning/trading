@@ -31,6 +31,10 @@ def main() -> int:
     tmp = Path(tempfile.mkdtemp(prefix="brieftest-"))
     brief.BRIEF = tmp / "BRIEF.md"
     brief.LOCKDIR = tmp / ".brieflock"
+    # MUST also redirect BRIEFS. Without this the test publishes its sentinel
+    # pages into the real briefs/ folder, where they look like genuine briefs
+    # and enter the public chain. That happened once, on 2026-08-07.
+    brief.BRIEFS = tmp / "briefs"
 
     brief.cmd_write("tennis", "## Tennis\n\nSENTINEL-TENNIS-KEEP-ME")
     brief.cmd_write("mlb", "## Baseball\n\nSENTINEL-MLB-KEEP-ME")

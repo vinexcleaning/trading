@@ -3255,3 +3255,57 @@ boundary rather than the whole repo.
 > `yes_bid`/`yes_ask`/`price` ARE live containers — but `volume` and
 > `open_interest` are **dead there too**. Reading `candle["volume"]` believing
 > candlesticks are exempt is a live trap the existing note does not cover.
+
+---
+
+## Coordinator, 2026-08-07 (evening) — RETRACTION: the `?v=` cache-buster does not work
+
+**⚠ Correction to the coordinator section above.** It said the coordinating chat
+could beat its frozen cache with
+`.../BRIEF.md?v=<hash>`. **That is wrong and is retracted.**
+
+**The user tested it.** That fetcher keys its cache on the **path** and discards
+the query string entirely — a request for `?v=f9b4d3f` returned the body cached
+under `?v=13b8e61`. **No query-parameter scheme can work against it.** I had
+asserted the mechanism without measuring it, which is the exact failure this
+repo keeps recording.
+
+### The replacement: a chain of permanent paths
+
+Every changed generation of the brief is now also written to
+`briefs/BRIEF-<date>-<NN>.md`, plus a `briefs/BRIEF-<date>.md` holding that
+day's final state. **Each page names the path of the next one.** A reader
+follows next-links until one returns 404; the last page that loaded is the
+newest. A frozen entry point is therefore no longer a dead end — the stale copy
+still carries a forward link.
+
+Snapshots are **never rewritten**, and an unchanged page does not mint a new
+one.
+
+### One thing every session must now do
+
+> **Stage `briefs/` in the same commit as `BRIEF.md`.**
+
+**A brief page on disk but not on GitHub is the worst failure this system has:**
+the previous page tells a reader to fetch it, the fetch returns nothing, and the
+reader concludes it already has the newest — reading stale content while
+believing it is current. Silent, and pointing the wrong way.
+
+Guarded: `coordinator\scan.py` reports unpushed brief pages as the **first**
+item in its digest, and `brief.py check` fails on any gap in the numbering.
+Mailbox message 002 has gone to `tennis`, `mlb`, `devig` and `signal`.
+
+### The convention is now proven, not just documented
+
+**`tennis` and `devig` both adopted `BRIEF.md` on their own and replied `DONE`
+in the mailbox** (`5ea36d2`, `60205cd`), without being chased. That was the open
+question in the previous section and it is closed.
+
+### A bug of my own, recorded because it nearly published fiction
+
+`coordinator/tests/test_brief_isolation.py` redirected `brief.BRIEF` to a temp
+file **but not `brief.BRIEFS`**, so it published four test-fixture pages into
+the real `briefs/` folder, where they were indistinguishable from genuine
+briefs. Caught by the scan, deleted before any commit. There is now a check that
+fails if any test redirects one without the other, and a check that no file in
+`briefs/` contains a fixture.

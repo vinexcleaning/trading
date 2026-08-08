@@ -47,9 +47,14 @@ is still writing `BRIEF_*.md` and does not know the mailbox exists. The three
 3. **The `signal` section was written by the coordinator, not by that
    workstream** (DECISIONS D7). It is labelled as such. Replace it the moment a
    real session works there.
-4. **`BRIEF.md` will eventually be cached** by whatever froze the `STATUS.md`
-   URL. The freshness stamp makes that detectable, not impossible. If it
-   freezes, the fix is a new filename plus a stamp — same trick again.
+4. **`BRIEF.md` will be cached and there is no way to stop it.** Handled, but
+   read this: the `?v=` cache-buster I originally shipped **does not work** —
+   the fetcher keys on path and discards query strings, tested by the user.
+   Retracted in DECISIONS D9. Replaced by `briefs/BRIEF-<date>-<NN>.md`, one
+   permanent path per changed generation, each page naming the next one's path.
+   **The new failure mode is a snapshot that is not pushed:** the next link
+   404s and a walking reader concludes a stale page is current. `scan.py`
+   reports it first; `brief.py check` fails on any gap. Push `briefs/`.
 5. **Lock contention is untested under real concurrency.** The lock is
    `mkdir`-based with a 60 s wait and a 300 s stale-break. Three sessions have
    never written at the same instant yet. If it ever fails it fails loudly and
