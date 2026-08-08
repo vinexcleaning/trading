@@ -359,3 +359,100 @@ the **coordinator derived** is its own claim and must survive *how do you know
 that*. A reason a **session declared** is that session's text, quoted, and is
 not the coordinator's to reword — it is now printed with *"that chat said so, in
 its own words"*.
+
+---
+
+### D20 — The dictator chat is a *name for a window*, not a new folder
+
+**2026-08-08.** The instruction was to build "the dictator chat" — the one
+window the user talks to. The obvious reading is a new top-level folder. That
+was rejected.
+
+The mailbox, the brief writer, the state scanner, the runner check and the
+naming registry are all already in `coordinator/`, and they are exactly what a
+main chat needs. A second folder would have produced **two lists of the same
+five workstreams**, which is this repo's recorded failure mode — the fee formula
+reached 17 copies while its rule was only a convention, and there are already
+two runner registries that have to be compared every run because they drifted.
+
+So: the tools stay in `coordinator/`, and [`DICTATOR.md`](../DICTATOR.md) at the
+repo root is the document the user reads. **"Dictator chat" names the window;
+`coordinator/` is where its tools live.** The chat is registered under the
+existing `coordinator` slug so nothing about the mailbox, the brief section or
+`scan.py`'s workstream list had to change.
+
+### D21 — Two signals for routing an idea, kept apart, and "cannot tell" is allowed
+
+**2026-08-08.** The first version routed a new idea to whichever chat owned the
+folders the related prior work sat in. It sent *"de-vig a retail bookmaker on
+baseball"* to the **tennis** chat, confidently.
+
+The cause is structural, not a bug: several `LEDGER.md` tables have **no project
+column at all** — the whole MLB and de-vig block is one of them — so those
+workstreams are invisible to a folder-based vote, while `set1_overshoot` and
+`kalshi-tennis` have ~55 rows between them and win every count.
+
+The fix is two signals that are **never added together**: (1) does the idea name
+a chat's own subject, from a hand-written `subjects` list in `chats.json`;
+(2) whose folders does the related work sit in. Signal 1 wins where it fires.
+Where they disagree the answer is **"could not tell"**, which costs one question
+and is cheaper than delivering work to a chat that does not own the folders.
+Four cases are pinned in `tests/test_dictator.py`.
+
+**Adding a subject word is a config line, not a code change.** That is
+deliberate — the alternative is tuning a scorer, and a tuned scorer is a thing
+nobody can audit later.
+
+### D22 — Ranking alone is not allowed to decide what the user sees
+
+**2026-08-08.** The prior-work check ranks related claims. On its **first run**
+it demonstrated its own founding failure: asked about *individual tennis
+players*, it buried **B023** — the pre-match player-feature sweep, which is the
+single row anyone must read before calling that idea settled, and the row whose
+misuse the user cited as the reason for this whole build.
+
+Three changes, in order of how much they mattered:
+
+1. **A per-word pass.** For every distinctive word in the idea, show what the
+   repo has on *that word*, preferring claims that are actually about it. This
+   is a mechanical guarantee, not a better ranking, and it is what surfaces
+   B023.
+2. **Rare words count for more**, so a distinctive word is not drowned by
+   `tennis`, which appears in 152 claims.
+3. **A word in the CLAIM counts triple** a word anywhere else in the row. A row
+   whose *sample* is counted in players is not a row *about* players.
+
+**One ranked list will always bury something.** The design conclusion is to stop
+relying on one.
+
+### D23 — An escaped pipe inside a table cell was silently shifting columns
+
+**2026-08-08.** One `LEDGER.md` row writes an absolute value as `max\|t\| 4.17`.
+Splitting table rows on every `|` shifted that row's later columns by two, which
+put its STATUS in the wrong field. **Seven rows read as status unknown**, and
+B023 — again — was one of them, so the closest related claim to a live question
+was also the one whose result could not be read.
+
+The parser now splits on unescaped pipes only. `?` statuses went from 7 to 1,
+and `test_dictator.py` fails if more than 5% of rows lose their status, because
+the visible symptom of a future column shift is the same.
+
+### D24 — The prior-work report is structured so that "we tried that" is not sayable
+
+**2026-08-08.** The user's stated rule: never *"we tried that"*. A convention
+would not have held — this repo's own record is that conventions decay — so it
+is enforced by the shape of the output instead.
+
+Every related claim prints six fields, and a test fails if any of them is
+dropped: what was tested · the data, with the unit · the dates · what came out ·
+**what the row does not cover**, derived mechanically from its own sample and
+date range · **which words from the new idea appear nowhere in that row**.
+
+That last field is the one that does the work. It is computable, it cannot be
+fudged, and it points straight at the difference. A further test fails if any
+banned phrase appears anywhere in the list of hits.
+
+**What it still cannot do:** decide whether the difference matters. That is a
+judgement, it is left blank on purpose, and the report says out loud that an
+unanswerable comparison must be reported as *"go and read it"* rather than as
+*"already tested"*.

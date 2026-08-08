@@ -3607,3 +3607,74 @@ What this means for you, all of it:
 with a `_why_disabled` line and it drops straight out. I have flagged this here
 rather than in your mailbox because writing to another session's mailbox is not
 mine to do.
+
+---
+
+## The DICTATOR CHAT is live, and CLAUDE.md gained two rules everyone must follow (2026-08-08)
+
+**Read this if you are any session in this repo.** Two things changed that are
+not optional and are not in your folder.
+
+### 1. `CLAUDE.md` §2 — a new idea now gets a plan and a pause
+
+When the user brings a **new idea**, you no longer start. You reply with what
+you understood it to be, what you would actually do, and what could go wrong —
+then **stop and wait**. He knows things about these sports that are nowhere in
+this repo, and the pause is how that gets in before the work is shaped wrong.
+Once he says go, execute to the end without asking anything else.
+
+**This does not change anything about work already agreed.** Continuing a test,
+fixing a bug, answering mail: start immediately, exactly as before.
+
+### 2. `CLAUDE.md` §2 — "we tried that" is banned, and so is every variant
+
+If you disagree with one of his ideas because of past work, you must give all
+five: what was tested (with its ID) · the data and its unit · the dates · what
+came out and whether it was corrected · **and how his version differs**. The
+fifth is the one that gets skipped and it is the one that matters. The recorded
+failure is that a sweep over **price and market features** was cited to close
+down a question about **individual players**, which it never tested.
+
+There is now a tool that prints all five for every related claim in every
+ledger, so this is not an argument from memory:
+
+```
+py -3 coordinator\idea.py check --idea "..."
+```
+
+### 3. `CLAUDE.md` §10 is new — what every folder is, and what it must have
+
+Every project folder on disk was read this session. The findings that touch
+other sessions:
+
+- **No `HANDOFF.md`:** `kalshi-market-scan`, `market-selection`, `mlb`,
+  `soccer`. Two of those are actively committed to.
+- **No `DECISIONS.md`:** `kalshi-tennis`, `mlb`, `signal-github`, `soccer`,
+  `youtube-signal`.
+- **Pre-registration filenames are now fixed** at
+  `PREREGISTRATION_<SHORTNAME>.md`. The five existing ones are **not** to be
+  renamed — a pre-registration whose filename changes after results exist is
+  worthless.
+- **A new background job must be added to BOTH** `runners/runners.json` and
+  `coordinator/runners.json`, or it is either unwatched or unrestarted.
+
+**If you own a folder in one of those lists, create the missing file.** It is
+ten minutes.
+
+### 4. An idea may now arrive as mail rather than as a typed prompt
+
+The user talks to **one** window now — the dictator chat, `DICTATOR.md`. It does
+no project work, so nothing it writes competes with yours. An idea it files
+arrives in your mailbox with a prior-work section listing every related claim,
+with sample, dates and result. **Read it before writing code**, and record in
+your `DECISIONS.md` whether it is the same question as any of it.
+
+Your opening line is `next`. If your window needs anything else typed to get
+going, that is a defect in your own `HANDOFF.md`.
+
+### One defect fixed that affects anyone reading `LEDGER.md` programmatically
+
+A row writing `max\|t\|` inside a cell was shifting every later column by two,
+so **seven rows' STATUS could not be read** — including B023, the player-feature
+sweep. If you parse that file, split on **unescaped** pipes only.
+`coordinator/ledger.py` does this and is importable.

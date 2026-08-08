@@ -1,0 +1,179 @@
+{
+  "_readme": [
+    "The name of every chat, so 'the second tennis one' is never a question",
+    "anyone has to answer from memory six weeks later.",
+    "",
+    "Hand-edited. Every run of dictator.bat compares it against WORKSTREAMS in",
+    "scan.py and reports anything in one list and not the other. The two are",
+    "NOT merged, because they answer different questions: WORKSTREAMS says",
+    "which folders belong to which workstream; this says what each chat is",
+    "called and what to type in it. Comparing catches drift. It does not",
+    "prevent it -- the fee formula reached 17 copies while its rule was a",
+    "convention.",
+    "",
+    "Fields:",
+    "  name     what a human calls it. Unique. Shown everywhere.",
+    "  slug     the short code. Must match the mailbox folder and BRIEF section.",
+    "  folders  the folders this chat is allowed to work in.",
+    "  purpose  one plain sentence. What this chat is FOR.",
+    "  opening  the exact words to type in that window on a normal day.",
+    "  subjects what this chat is ABOUT, in words an idea might use. Used to",
+    "           route a new idea. Add words here rather than tuning code.",
+    "  created  the date the chat was named."
+  ],
+  "chats": [
+    {
+      "name": "Tennis — paper forward test",
+      "slug": "tennis",
+      "folders": [
+        "tennis-paper-forward",
+        "kalshi-tennis",
+        "set1_overshoot"
+      ],
+      "purpose": "Runs the live tennis paper test and everything about Kalshi tennis markets.",
+      "opening": "next",
+      "created": "2026-08-07",
+      "subjects": [
+        "tennis",
+        "atp",
+        "wta",
+        "itf",
+        "challenger",
+        "player",
+        "players",
+        "serve",
+        "clay",
+        "grass",
+        "hardcourt",
+        "set",
+        "tiebreak",
+        "sackmann",
+        "match",
+        "matches"
+      ]
+    },
+    {
+      "name": "Baseball — paper forward test",
+      "slug": "mlb",
+      "folders": [
+        "mlb-paper",
+        "mlb"
+      ],
+      "purpose": "Runs the live baseball paper test, 16 bots, watching closing-line value.",
+      "opening": "next",
+      "created": "2026-08-07",
+      "subjects": [
+        "baseball",
+        "mlb",
+        "pitcher",
+        "pitching",
+        "bullpen",
+        "statcast",
+        "innings",
+        "inning",
+        "batter",
+        "ballpark",
+        "moneyline",
+        "dinger"
+      ]
+    },
+    {
+      "name": "De-vig, weather and crypto market making",
+      "slug": "devig",
+      "folders": [
+        "bot-hunt",
+        "kalshi-market-scan",
+        "crypto",
+        "market-selection"
+      ],
+      "purpose": "Tests whether bookmaker prices, weather models or resting orders beat Kalshi.",
+      "opening": "next",
+      "created": "2026-08-07",
+      "subjects": [
+        "devig",
+        "de-vig",
+        "vig",
+        "bookmaker",
+        "bookmakers",
+        "sportsbook",
+        "pinnacle",
+        "draftkings",
+        "bitcoin",
+        "btc",
+        "ethereum",
+        "crypto",
+        "weather",
+        "temperature",
+        "orderbook",
+        "maker",
+        "spread",
+        "arbitrage",
+        "liquidity",
+        "depth",
+        "ladder",
+        "soccer",
+        "football"
+      ]
+    },
+    {
+      "name": "Signal hunting — GitHub, YouTube, social",
+      "slug": "signal",
+      "folders": [
+        "signal-github",
+        "youtube-signal",
+        "social-signal",
+        "extractor-upgrade",
+        "bot-forensics"
+      ],
+      "purpose": "Finds and grades what other people have already built and published.",
+      "opening": "next",
+      "created": "2026-08-07",
+      "subjects": [
+        "github",
+        "youtube",
+        "reddit",
+        "discord",
+        "twitch",
+        "twitter",
+        "mastodon",
+        "tiktok",
+        "instagram",
+        "social",
+        "scraper",
+        "scrape",
+        "transcript",
+        "video",
+        "videos",
+        "repos",
+        "repository",
+        "forum",
+        "streamer",
+        "streamers",
+        "wallet",
+        "copy-trading"
+      ]
+    },
+    {
+      "name": "Dictator — the chat you talk to",
+      "slug": "coordinator",
+      "folders": [
+        "coordinator",
+        "common"
+      ],
+      "purpose": "Reports where everything is, checks ideas against past work, files instructions. Does no project work.",
+      "opening": "where is everything at",
+      "created": "2026-08-08",
+      "subjects": [
+        "coordinator",
+        "dictator",
+        "brief",
+        "mailbox",
+        "handoff",
+        "status",
+        "reporting",
+        "watchdog",
+        "heartbeat"
+      ]
+    }
+  ]
+}

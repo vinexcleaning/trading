@@ -112,6 +112,61 @@ space**. Only the block has to be readable.
 Operate autonomously. He gives a prompt and expects not to touch it for an hour
 or more. **Do not end a turn merely to report progress.**
 
+### The one exception: a NEW IDEA gets a plan first, then a pause
+
+**Added 2026-08-08, and it is the only thing that overrides "never ask, just
+continue".** When he brings a new idea — a hypothesis, a thing to test, a
+strategy — **do not start.** Reply first with, in plain English and under a
+page:
+
+1. **What you understand the idea to be**, in your own words. If you have it
+   wrong, that is the cheapest possible moment to find out.
+2. **What you would actually do** — the data, the sample, the unit of
+   observation, roughly how long.
+3. **What could go wrong** — the ways this measurement could produce a number
+   that looks real and is not.
+
+Then **stop and wait.** He knows things about these sports that are not in this
+repo and not in your training, and the whole point of the pause is to let him
+put that in before the work is shaped around a wrong assumption.
+
+**Once he says go, execute all the way through without asking anything else.**
+The pause is once, at the start, on the idea. It is not a habit of checking in.
+Everything in this section still applies from that point on: no progress
+reports, no "should I continue", conservative choice logged in `DECISIONS.md`
+and keep moving.
+
+**This does not apply to work already agreed** — continuing a running test,
+fixing a bug, answering mail, finishing a milestone. Those start immediately,
+exactly as before.
+
+### When you disagree with one of his ideas
+
+Say so — he would rather be corrected than agreed with. But **"we tried that"
+is banned**, and so is every version of it: *"already tested"*, *"that's been
+done"*, *"same as the X study"*. Those sentences hide the only thing that
+matters, and one of them has already killed a live idea in this repo.
+
+If you think an idea will not work because of past work, you must give **all
+five** of these or you have not made the argument:
+
+1. **What was tested**, in the words it was recorded in, with its ID.
+2. **What the data was** — how many observations, and what *one* observation
+   was.
+3. **What dates** the data covers.
+4. **What came out**, and whether it was later corrected.
+5. **How his version differs from it** — or an explicit *"I cannot tell whether
+   this is the same question"*.
+
+Point 5 is the one that matters and it is the one that gets skipped. The
+recorded failure: the tennis work swept **price and market features** and found
+nothing, and that sweep was cited to close down a question about **individual
+players**, which it never tested. Running a test twice is cheap. Deleting a live
+idea is not, and nobody ever finds out it happened.
+
+`py -3 coordinator\idea.py check --idea "..."` prints those five fields for
+every related claim in every ledger. Use it rather than arguing from memory.
+
 **Before starting a long task, do this ONCE:** review the repo state, the docs,
 and the plan; identify anything that genuinely requires him; and batch every
 foreseeable human action into **one** checkpoint with exact instructions (§3).
@@ -296,6 +351,25 @@ No script to run.
 you may write inside `coordinator/mailbox/<your-slug>/` and nowhere else in
 `coordinator/`.
 
+### The dictator chat is the window he actually talks to
+
+He does not open five windows and type into each. He talks to **one** window —
+the **dictator chat**, documented in [DICTATOR.md](DICTATOR.md) — and it files
+instructions into your mailbox. **It does no project work**, so nothing it
+writes competes with yours.
+
+What that means for you:
+
+- **An idea may arrive as mail rather than as a typed prompt.** It comes with a
+  prior-work section listing every related claim in every ledger, with what was
+  tested, on what data, over what dates. **Read that before writing code**, and
+  record in your `DECISIONS.md` whether it is the same question as any of it.
+- **Your opening line is `next`.** He types one word. Everything you need is in
+  the mailbox and in this file. If your window needs anything else typed, that
+  is a defect in your own `HANDOFF.md`, not something for him to remember.
+- **Your name is in `coordinator/chats.json`.** If a new chat is spun up for
+  work that overlaps yours, that file is where the folder ownership is settled.
+
 Related: [HOW_THIS_WORKS.md](HOW_THIS_WORKS.md) is the short operating manual;
 this file is the detailed contract.
 [coordinator/COORDINATOR.md](coordinator/COORDINATOR.md) is the design of the
@@ -411,3 +485,115 @@ Regenerate after new videos are read:
 ```bash
 C:\Users\vinig\trading\youtube-signal\.venv\Scripts\python.exe C:\Users\vinig\trading\youtube-signal\src\build_knowledge.py
 ```
+
+---
+
+## 10. What every folder is, and what every folder must have
+
+**Added 2026-08-08 after reading all 23 project folders on disk.** Sessions have
+been briefed separately and have drifted. Everything below was read off the
+files, not off anyone's account of them. **If a rule is not in this file it is
+not shared** — so the conventions that only some folders follow are written
+down here, and the folders that do not follow them are named.
+
+### The folders, and which chat owns each
+
+| Folder | What is actually in it | Owner |
+|---|---|---|
+| `tennis-paper-forward` | 16 bots paper-trading live Kalshi tennis. Own venv, own tests, `test_paper_only.py` enforces no order code | tennis |
+| `set1_overshoot` | Finished study: does the market overshoot after set 1. 97 hypotheses, mostly nulls and retractions | tennis |
+| `kalshi-tennis` | Finished data audit of Kalshi's tennis book. Coverage and leak findings | tennis |
+| `mlb-paper` | 16 bots paper-trading Kalshi baseball. Own venv, three test files, one of them a paper-only canary | mlb |
+| `mlb` | Loose scripts: Statcast pulls, in-play latency, data hunting. **No README, no HANDOFF, no DECISIONS** | mlb |
+| `bot-hunt` | The live de-vig and market-making work. Largest active codebase, own venv, two pre-registrations | devig |
+| `crypto` | Bitcoin/ETH ladder study: fat tails, arbitrage, maker viability. Own tests | devig |
+| `kalshi-market-scan` | Exchange-wide screen: weather models, flow, capacity. 4,597 files, own venv. **No HANDOFF** | devig |
+| `market-selection` | Which market families are worth trading. **No README, no HANDOFF** | devig |
+| `signal-github` | 24,940 files. Scores public trading repos for whether they really trade | signal |
+| `youtube-signal` | Reads video transcripts into a scored knowledge file. **No DECISIONS** | signal |
+| `social-signal` | Reddit/Discord/X/TikTok extractors, joined across platforms | signal |
+| `extractor-upgrade` | Rebuild of the extraction pipeline. Opens sibling databases read-only, on purpose | signal |
+| `bot-forensics` | Reconstruction of a real bot's real trades. The only project about money that moved | signal |
+| `coordinator` | The dictator chat's tools. No network, no credentials, enforced by test | coordinator |
+| `common` | Shared code. **`kalshi_fees.py` is the only fee implementation in the repo** | coordinator |
+| `runners` | The watchdog registry for background tests on this machine | coordinator |
+| `wallet-copy-study`, `soccer`, `ptis-polymarket`, `polymarket-tennis-copy`, `kalshi-inplay-bot`, `kalshi-chat-audit`, `discord-trades-export` | Dormant. No commits since 2026-08-05 or earlier. Their claims are still live in `LEDGER.md` and still count | nobody |
+
+**A dormant folder is not a dead claim.** `wallet-copy-study` has 29 ledger rows
+and has not been touched since 2026-08-03; those rows still get cited.
+
+### The four files every active folder has, and who is missing one
+
+- **`README.md`** — what this folder is, in the first three lines, for someone
+  who has never seen it.
+- **`HANDOFF.md`** — the detail of where it got to. *Missing from:*
+  `kalshi-market-scan`, `market-selection`, `mlb`, `soccer`.
+- **`DECISIONS.md`** — every judgment call taken without asking, and why.
+  *Missing from:* `kalshi-tennis`, `mlb`, `signal-github`, `soccer`,
+  `youtube-signal`.
+- **`PREREGISTRATION*.md`** — what a test had to clear, committed **before** the
+  first result existed. Only 7 folders have one.
+
+**If you own a folder in one of those "missing" lists, create the file this
+session.** It is ten minutes and it is the difference between a result being
+auditable later and being taken on trust.
+
+### Pre-registration: the naming is now fixed
+
+There are five different names on disk (`PREREGISTRATION.md`,
+`PREREGISTRATION_DEVIG.md`, `PREREGISTRATION_T6.md`, `PREREGISTRATION_PARTB.md`,
+`PREREGISTRATION_MAKER_VIABILITY.md`), which is why nothing can count them.
+**New ones are `PREREGISTRATION_<SHORTNAME>.md` in the folder that runs the
+test. Do not rename the existing five** — a pre-registration that changes after
+results exist is worthless, and that includes its filename in a git log.
+
+Every one must state, before any result exists: the hypothesis · the unit of
+observation · the sample · the date range · the holdout split · **and what
+result would make you drop the idea.** The last one is the one that gets left
+out.
+
+### Paper-only is enforced by a test, not by a promise
+
+`tennis-paper-forward/tests/test_paper_only.py` and
+`mlb-paper/tests/test_paper_only.py` walk every source file in their project and
+fail if order-shaped code or a credential appears.
+`coordinator/tests/test_no_money_no_network.py` does the same for the
+coordinator.
+
+**Any new folder that touches a live venue gets one of these before it gets its
+first feature.** Copy the existing test; do not invent a third style.
+
+### Which Python, everywhere
+
+`python` on PATH is a Microsoft Store stub and will fail strangely. Eight
+folders have their own `.venv` (`bot-forensics`, `bot-hunt`,
+`extractor-upgrade`, `kalshi-market-scan`, `mlb-paper`,
+`polymarket-tennis-copy`, `tennis-paper-forward`, `youtube-signal`) — **use that
+folder's `.venv\Scripts\python.exe`.** Everything else uses `py -3`.
+
+**Never write an absolute interpreter path into a document.**
+`wallet-copy-study/HANDOFF.md` names `C:\Users\gianf\AppData\...\Python312`,
+which is a machine that is no longer the primary one, and following it fails.
+
+### `C:\Users\gianf\` is the laptop and is historical
+
+Fifteen documents still carry those paths. **They are not errors to fix in bulk
+and not paths to follow.** If you are editing a document that has one, correct
+that one line to the desktop path or mark it historical. Do not sweep the repo
+for them — several are accurate records of where a dataset actually still lives.
+
+### Declare your state where the coordinator can find it
+
+The `COORDINATOR-STATE` block (§5) may live in **either** your `HANDOFF.md`
+**or** your `BRIEF.md` section. Both are read. Two chats use each right now, and
+that is fine — what is not fine is neither.
+
+### Two runner registries exist and they do not match
+
+`runners/runners.json` lists what *runs* on this machine (`tennis`, `mlb`).
+`coordinator/runners.json` lists how to tell whether each background job is
+*producing anything* (`tennis-forward`, `mlb-paper`, `crypto-tape-pull`,
+`tennis-depth-recorder`, `crypto-15m-opens`). They answer different questions
+and are deliberately not merged, but **a new background job has to be added to
+both** or it is either unwatched or unrestarted. Every run of
+`coordinator\dictator.bat` prints anything in one and not the other.

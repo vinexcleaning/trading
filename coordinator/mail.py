@@ -115,7 +115,11 @@ def cmd_send(slug: str, subject: str, body: str) -> None:
         encoding="utf-8",
         newline="\n",
     )
-    print(f"Filed: {path.relative_to(HERE.parent)}")
+    try:
+        shown = path.relative_to(HERE.parent)
+    except ValueError:
+        shown = path  # a test has redirected MAILBOX outside the repo
+    print(f"Filed: {shown}")
     print(
         f"It is NOT delivered yet. The '{slug}' session sees it when it next "
         f"starts, or when you say 'check your mail' in that window."

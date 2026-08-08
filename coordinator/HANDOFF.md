@@ -1,8 +1,8 @@
 # HANDOFF.md — coordinator
 
 <!-- COORDINATOR-STATE
-doing: the coordinator now answers "where is everything at" and watches whether each background test is still alive
-left: get the other four chats to add their own COORDINATOR-STATE block, so their two columns are quoted instead of guessed
+doing: built the dictator chat - the one window the user talks to. Two-layer report, a prior-work check that cannot say "we tried that", and a name for every chat
+left: four folders still have no HANDOFF.md and five none DECISIONS.md (named in CLAUDE.md §10); the owning chats have to create them
 needs: no
 -->
 
@@ -138,3 +138,42 @@ Second: **`devig` was asked to classify 15 unwatched log files** (mailbox 007)
 as continuous or one-shot. When it answers, add them to `runners.json`. Nothing
 running on this desktop writes to any of them right now, and the coordinator
 deliberately guessed nothing about which of them died and which finished.
+
+---
+
+## 2026-08-08, third session — the dictator chat
+
+**What was asked:** build the one window the user talks to. It does no project
+work. It reports in two layers, it takes a plain-English idea and files it to
+the right chat, and it names every chat it creates. Above all it may never say
+*"we tried that"*.
+
+**What is on disk now**, all inside `coordinator/` except the manual:
+
+| File | What it does |
+|---|---|
+| `../DICTATOR.md` | The manual. Section 1 is what it CANNOT do and was written before the code. |
+| `dictator.bat` | The one command. Layer 1 table, then layer 2 detail, then runners, names, scan, brief, mail. |
+| `detail.py` | Layer 2. Per chat: what it tried, the sample, the dates, what came out, what was withdrawn and why. Nothing recomputed. |
+| `idea.py` | The prior-work check, and filing an idea into a chat's mailbox. |
+| `idea_template.md` | What the receiving chat is told to do. Lives in a document because it names a git verb that writes. |
+| `ledger.py` | One parser for `LEDGER.md` and the three ledgers it points at. 342 claims. |
+| `chats.py` / `chats.json` | Every chat's name, short code, folders, subjects and opening line. |
+| `tests/test_dictator.py` | Six canaries, including one that fails if the report drops any of its six required fields. |
+
+**Three defects this build found in its own first output**, all now tests:
+
+1. It buried **B023** — the exact row whose misuse motivated the build.
+   Fixed with a per-word pass, rare-word weighting, and claim-text weighting.
+2. It routed *"de-vig a retail bookmaker on baseball"* to **tennis**, because
+   the de-vig ledger rows have no project column and the tennis ones do.
+   Fixed with two separate routing signals and an honest "cannot tell".
+3. An escaped pipe (`max\|t\|`) inside a `LEDGER.md` cell was shifting seven
+   rows' columns, so their STATUS could not be read. Fixed in the parser.
+
+**Also this session:** every project folder was read and the shared rules
+written into `CLAUDE.md` — a new **§10** (what each folder is, which four files
+every folder must have, who is missing one, pre-registration naming, which
+Python where, the two runner registries) and a new rule at the top of **§2**:
+a new idea gets a plan and a pause before any work starts, and disagreement
+must name what was tested rather than assert it.
