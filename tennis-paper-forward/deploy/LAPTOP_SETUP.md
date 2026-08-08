@@ -239,3 +239,21 @@ output rather than letting you draw that conclusion.
 | the tick count stops advancing | run `check.bat`; if the last tick is over ten minutes old it says so in capitals |
 | `only N% of markets carry an ask` | Kalshi renamed a price field again. This has happened twice. Stop and tell me — do not let it keep recording nulls. |
 | `markets 0` | either the series list is stale or the network is down. The health log distinguishes them. |
+
+---
+
+## ⚠ SUPERSEDED 2026-08-08 — use `runners\LAPTOP_SETUP.md` instead
+
+This page set up **tennis alone**, with its own scheduled task. A second test
+would have meant a second near-identical task and a third copy of these
+scripts — `mlb-paper/deploy/` was already the second copy.
+
+**[`../../runners/LAPTOP_SETUP.md`](../../runners/LAPTOP_SETUP.md) replaces it.**
+One watchdog, one scheduled task, a registry listing every test. Adding the next
+one is a single line in `runners/runners.json`.
+
+Nothing here was deleted and the scripts in this folder still work. Keep using
+`install_task.ps1` only if you want tennis scheduled **on its own**, separately
+from everything else — and do not use both, or two tasks will watch the same
+runner. (Harmless, because the runner's own lock refuses the second copy, but
+pointless.)
