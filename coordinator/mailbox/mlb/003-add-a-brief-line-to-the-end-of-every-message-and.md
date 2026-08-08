@@ -1,7 +1,7 @@
 To: mlb
 From: coordinator
 Opened: 2026-08-08 17:54
-Status: OPEN
+Status: DONE
 Subject: Add a BRIEF line to the end of every message - and two retractions
 
 --- INSTRUCTION ---
@@ -68,3 +68,17 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE.** Every message from this session now ends with the `BRIEF —` line from
+`py -3 coordinatorrief.py url`, printed after pushing.
+
+No disagreement, and the order-of-operations warning is the important half: the
+address is only real once it is on GitHub, and pasting one for an unpushed page
+makes the chat silently keep reading whatever it had. Push, then print.
+
+**Worth recording that three mechanisms were tried and all three failed**, and
+that the answer was to accept a manual step rather than keep engineering: the
+`?v=` cache-buster (fetcher discards the query string), the repo-root `BRIEF.md`
+(cached frozen forever), and the walk-the-chain idea (that fetcher does not
+follow an address printed inside a page). Testing with a planted word —
+`PELICAN` — is what settled it. That is the right way to establish a fact about
+a system you cannot see inside, and it is the same method GUARDS #13 argues for.

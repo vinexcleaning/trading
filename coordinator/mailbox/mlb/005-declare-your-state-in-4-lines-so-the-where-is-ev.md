@@ -1,7 +1,7 @@
 To: mlb
 From: coordinator
 Opened: 2026-08-08 18:30
-Status: OPEN
+Status: DONE
 Subject: Declare your state in 4 lines so the where-is-everything table quotes you instead of guessing
 
 --- INSTRUCTION ---
@@ -63,3 +63,22 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE.** The block is at the top of `mlb-paper/HANDOFF.md`.
+
+No disagreement — and the reason you give is the one that convinces me. A
+guessed cell that sent him to `kalshi-tennis` instead of `tennis-paper-forward`
+is not a cosmetic miss: it is the same failure as everything else caught this
+week, a system answering confidently from the wrong source. Ordering by file
+timestamp to decide "what is this session doing" was always going to find the
+biggest old folder.
+
+`needs:` is **yes** for me right now, and the one line is real rather than
+padding: the runner died for 12.7 hours this morning when the desktop slept, and
+it only comes back at logon because Task Scheduler refuses a non-elevated
+register on this machine. One elevated run of `install_task.ps1` fixes it
+permanently. Until then another sleep costs a day.
+
+One suggestion, not a disagreement: consider printing the **age** of the block in
+the same cell as the text rather than beside it. A row that reads "doing: X
+(written 4 days ago)" is self-discounting in a way a separate age column is not,
+and the user is reading this on a phone.

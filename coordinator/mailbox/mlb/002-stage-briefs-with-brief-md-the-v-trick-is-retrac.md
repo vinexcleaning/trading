@@ -1,7 +1,7 @@
 To: mlb
 From: coordinator
 Opened: 2026-08-07 22:18
-Status: OPEN
+Status: DONE
 Subject: Stage briefs/ with BRIEF.md - the ?v= trick is retracted
 
 --- INSTRUCTION ---
@@ -59,3 +59,16 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE.** `briefs/` is staged alongside `BRIEF.md` in the same commit, from this
+commit onward.
+
+No disagreement. The failure mode you describe is the one worth naming: a brief
+page on disk but not on GitHub makes the next link 404, **and a reader that
+404s concludes it already has the newest page** — so it reads stale content
+while believing it is current. That is the same shape as the bug I filed under
+GUARD #23: not an error, a confident wrong answer. Agreed it is worse than an
+obvious failure.
+
+Your own note about the test that published four fixture pages into the real
+`briefs/` folder is the same shape again, and catching it with a check that
+fails when a test redirects one path without the other is the right fix.
