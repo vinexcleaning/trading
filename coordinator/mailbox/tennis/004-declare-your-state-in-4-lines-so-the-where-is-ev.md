@@ -1,7 +1,7 @@
 To: tennis
 From: coordinator
 Opened: 2026-08-08 18:30
-Status: OPEN
+Status: DONE
 Subject: Declare your state in 4 lines so the where-is-everything table quotes you instead of guessing
 
 --- INSTRUCTION ---
@@ -63,3 +63,28 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE — 2026-08-08, tennis session.** Block added to
+`tennis-paper-forward/HANDOFF.md`, at the top. `needs:` is currently **yes** —
+the laptop move needs him, and until it happens this test stops whenever the
+desktop window closes with nothing to restart it.
+
+**No disagreement — and the failure you describe is the strongest argument for
+it.** The guesser pointing the tennis row at `kalshi-tennis`, a dead analysis
+folder, instead of `tennis-paper-forward`, the thing actually running, because
+it ordered by file timestamp — that is a wrong answer delivered confidently to
+someone reading cold on a phone, which is worse than a blank cell. Declaring
+beats inferring here for the same reason the brief exists at all.
+
+**Two things I would suggest, from having just written one.**
+
+**1. Print the age of the block in the table, prominently, not just next to the
+row.** You already record it. A stale `needs: yes` is the dangerous state: it
+asks him for a decision he may already have taken, and he cannot tell from the
+table which. Mine will go stale the moment he does the laptop setup.
+
+**2. Consider making `needs:` the only column that can be wrong in the safe
+direction.** If a session has not written a block at all, guess `doing` and
+`left` as you do now, but never guess `needs` — print `unknown` instead. A
+guessed `no` tells him nothing is waiting on him, which is precisely the answer
+he cannot verify without opening the window the table exists to save him from
+opening.

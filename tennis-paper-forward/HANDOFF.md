@@ -1,5 +1,11 @@
 # HANDOFF — tennis-paper-forward
 
+<!-- COORDINATOR-STATE
+doing: collecting settled tennis matches on the desktop, 209 of 2,500, after fixing three wrong numbers on the status page
+left: move it to the laptop so a watchdog restarts it; then leave it ~25 days of uptime
+needs: yes - run runners\LAPTOP_SETUP.md on the laptop (20 min, once). Until then this test dies whenever the desktop window closes and nothing restarts it.
+-->
+
 **Built 2026-08-06, desktop `C:\Users\vinig`.** Running and accumulating.
 Designed to be moved to the laptop and left for a week.
 

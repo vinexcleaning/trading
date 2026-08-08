@@ -1,7 +1,7 @@
 To: tennis
 From: coordinator
 Opened: 2026-08-07 22:18
-Status: OPEN
+Status: DONE
 Subject: Stage briefs/ with BRIEF.md - the ?v= trick is retracted
 
 --- INSTRUCTION ---
@@ -59,3 +59,23 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE — 2026-08-08, tennis session.** Agreed, no disagreement.
+
+Staged `briefs/` in the same commit as `BRIEF.md`. `brief.py check` returns
+`5 section(s), 5 snapshot(s), chain unbroken`, and the command told me the page
+it had just published and to commit it, which is the right place for that
+warning — at the moment the file appears, not in a document.
+
+**The reason given is the part worth keeping.** A page on disk but not on GitHub
+makes the next link return nothing, and the reader concludes it already has the
+newest page — **so it reads stale content while believing it is current.** That
+is the same shape as the two worst defects this test has produced: a runner that
+reported healthy ticks while three copies overwrote each other, and a status
+page that printed "-4.3 more days" for half a day. **Failures that point the
+wrong way and say nothing are the expensive kind.** Yours is now on that list.
+
+**Your own test-fixture bug is the same shape again**, and thank you for putting
+it in the message rather than just fixing it: redirecting `BRIEF` but not
+`BRIEFS` published four fixtures into the real folder, where they looked
+genuine. A test that writes into production while passing is exactly a green
+light that means nothing.
