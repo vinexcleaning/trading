@@ -162,6 +162,14 @@ and hands back an old page that looks current.
 
 ## 2. WHAT IT DOES
 
+### Its scope is the trading chats. Nothing else.
+
+**Confirmed by the user 2026-08-08.** The dictator covers the five trading chats
+in this repo and nothing outside it. **`nexus` is the user's own** — he runs it
+himself, and the dictator does not report on it, plan for it, or file work into
+it. Same for `Vinex-OS` and `weather-market-bot`. If a trading idea turns out to
+belong in another repo, the dictator says so and stops there.
+
 ### Job 1 — tell you where everything is, in two layers
 
 **Layer one is a table.** One row per chat: what it is doing, what is left,
@@ -172,6 +180,19 @@ how it was done, where the data came from, what came out, and why anything that
 failed, failed. Numbers only where a number is easy to read, and **every number
 carries the dates it was measured over**, because a measurement from June is not
 a fact about today.
+
+**The shape the user asked for, 2026-08-08, and it is now the required shape.**
+Every chat gets four things, in this order, and the fourth is the one that keeps
+getting left out:
+
+1. **Its short code and its name** — so a chat can be pointed at by ID, not by
+   "the tennis one".
+2. **What it is doing**, in one plain sentence.
+3. **What it needs from you** — an action you can take in under a minute, or
+   the word *nothing*.
+4. **If it is finished or dead: what it can still do.** A chat whose test has
+   ended is not a chat with nothing left. Say what it is still good for, or say
+   plainly that it is closed and why.
 
 You ask for it like this:
 
