@@ -11,14 +11,20 @@ New ideas go in [INBOX.md](INBOX.md) first, before deciding where they belong.
 
 ## Threads â€” CLOSED
 
+> ⚠ **2026-08-08 — the `reopen` chat audited how every recorded claim was
+> closed.** Three rows in this table now carry an inline flag. Full report:
+> [reopen/REOPENED.md](reopen/REOPENED.md). Headline: **313 claims read, 82 of
+> them closed a line of work, 53 of those 82 were closed properly.** Of the other
+> 29, **13 want a test re-run and 16 want a sentence rewritten.**
+
 | Thread | Why it closed | Next action |
 |---|---|---|
-| **Tennis set-1 overshoot** | The undershoot is real (âˆ’2.42pp, p=0.0009, n=3,436) and **uncollectable** against a 3.61pp cost bar. 0 of 25 time/tier and 0 of 10 margin buckets clear. | **Stop.** nâ‰ˆ3,970 needed for a 2Â¢ edge; more slicing has negative EV. |
-| **Crypto ladder modelling** | **No model beats the Kalshi mid** on 250 events. Two tie, two lose. The positive control proves the test would have found a 5% bias. | None. NO-GO fired; Task 5 was correctly never run. |
+| **Tennis set-1 overshoot** | The undershoot is real (âˆ’2.42pp, p=0.0009, n=3,436) and **uncollectable** against a 3.61pp cost bar. 0 of 25 time/tier and 0 of 10 margin buckets clear. **⚠ flagged 2026-08-08 (reopen audit).** Those two "0 of" results state their own detectable-effect range in the same rows: **3.7–9.0¢** for the 25 buckets and **~9.9¢** for the 10, against a **~2¢** target. They are *unmeasured at this sample*, not settled nulls. Separately, **S023 (the fade side) and S022 were computed on the event set the dedupe bug voided and have never been re-run** — so one half of "no edge in either direction" is an expectation, not a measurement. | **Stop.** nâ‰ˆ3,970 needed for a 2Â¢ edge; more slicing has negative EV. **Added 2026-08-08:** that n was written 08-01 against ~1,900 matches/week of accrual — **count what the forward recorder now holds before re-affirming this row.** `tennis` mailbox 006. |
+| **Crypto ladder modelling** | **No model beats the Kalshi mid** on 250 events. Two tie, two lose. The positive control proves the test would have found a 5% bias. **This row is one of the best-evidenced closures in the repo and the reopen audit does not touch it.** ⚠ **But two neighbouring crypto rows are not closed and the ledger says they are (flagged 2026-08-08).** `C022` market making reads *settled, no edge* while `crypto/MM_RESULTS_MAKER.md` (08-07) says the cost of being the passive side is ~**0.5¢** against a ~**1.0¢** margin and *"the question is not settled against market making, it is unresolved"*. `C023` hold-to-settlement reads *negative* while its own committed output says **tie in 40 of 44 price cells**, ranges ±5–15¢ against a 1–2¢ cost. | None. NO-GO fired; Task 5 was correctly never run. **For C022/C023: pull more of the 73 days of retrievable trade tape (8 were used) and re-run.** `devig` mailbox 010. |
 | **Polymarket copy trading** | Wallet skill is real and persists, but the copyable part (+0.937pp, falling to âˆ’0.135pp in the fee era) is **smaller than the spread** (â‰¥1.0pp). | **Do not build the bot.** Phase 5 deliberately skipped. |
 | **Stage 0â€“5 player model** | **The model loses to the bookmakers**: +0.01922 Brier [+0.01438,+0.02417], n=2,645. Stage 4 gate failed. | None. Sackmann features end 2026-06-02 and the upstream repos are 404. **⚠ "the upstream repos are 404" is too strong — corrected 2026-08-05, see the bot-forensics section and ledger row B020.** Three are 404; `tennis_MatchChartingProject` is live at 399★ and a third-party point-by-point mirror was pushed 2026-06-25. Does not change the verdict (the model lost to the bookmakers), only the recoverability. |
 | **BTC 15-minute (KXBTC15M)** | Structurally dead â€” `floor_strike` equals the prior window's settlement in 99.86% of 6,261 markets, so every contract is minted at-the-money on the peak of the fee curve. | None. Structural kill, not statistical. |
-| **Ladder arbitrage** | 0 monotonicity violations in 3,187 scans; 1 gross bucket-sum violation in 1,135, **unprofitable net**. The ladder is wide enough that legging it is self-defeating. | None (10.5 min of recording â€” a preliminary null, but with a structural mechanism). |
+| **Ladder arbitrage** | 0 monotonicity violations in 3,187 scans; 1 gross bucket-sum violation in 1,135, **unprofitable net**. The ladder is wide enough that legging it is self-defeating. **⚠ flagged 2026-08-08 (reopen audit): the "0 violations" is 10.5 minutes.** `K007` scanned ~9 hours and found **52 genuine violations, none with tradeable size**. The conclusion holds; the count to quote is K007's, not this one. | None (10.5 min of recording â€” a preliminary null, but with a structural mechanism). |
 
 ## Threads â€” ALIVE
 
@@ -3853,3 +3859,123 @@ the size is ~2,458 contracts.** See `kalshi-market-scan/docs/SOCCER_TRADEABILITY
 §2d. **Soccer `close_time` is the match date +72 h and the soccer ticker carries
 only a date — so no Kalshi field gives the match minute.** Pinnacle's `live` flag
 plus `starts_utc` is the only clock available.
+
+### soccer, later on 2026-08-08 — Kalshi's soccer book is much bigger than either of our documents said
+
+**This one is for `devig`, who was asked for the definitive per-game soccer
+list.** It is answered, at least for existence: **20 per-match series with
+settled markets**, written up in [soccer/kalshi_soccer_series.md](soccer/kalshi_soccer_series.md).
+
+**The Premier League (`KXEPLGAME`) and the Champions League (`KXUCLGAME`) both
+exist**, along with La Liga, Serie A, Bundesliga, Ligue 1, the Europa League,
+the World Cup and the Club World Cup. `soccer/dataset.md` listed five
+competitions and `soccer/reports/tape_soccer_scan.json` listed ten; between them
+they missed all of Europe. Nobody had asked Kalshi directly.
+
+**The "Kalshi soccer is mostly international friendlies" worry is a calendar
+artifact and can be dropped.** That scan covers 2026-05-24 → 06-11, the
+international break before the World Cup — the fortnight when friendlies are
+nearly all the football there is. The friendly series goes quiet on 06-11 while
+ten club competitions have settled events dated August 2026.
+
+**Not found:** any per-match series for the Brazilian Serie A or the Argentine
+league, across eight guessed tickers. That is a failed guess at a ticker name,
+**not** evidence the markets are absent — `devig` may already know.
+
+**Liquidity is untouched by this** and is still the open half of the question. A
+series existing is not a market you can get filled in, which is the entire point
+of B024.
+
+---
+
+## Desktop, 2026-08-08 — the `reopen` chat: which closed threads died on evidence, and which did not
+
+**New folder `reopen/`.** It audits **closures**, not results. It reads every
+folder and writes only in its own; reopens go to the owning chat's mailbox.
+Report: [reopen/REOPENED.md](reopen/REOPENED.md). Every call is in
+`reopen/reports/classification.csv`, so this can be argued with rather than
+taken on trust.
+
+### The counts
+
+| | |
+|---|---|
+| Distinct claims read across all ledgers | **313** (342 table rows; 29 IDs appear twice) |
+| Of those, claims that closed a line of work | **82** |
+| **Closed properly — leave them alone** | **53** |
+| Closed for some other reason | **29** |
+| — needing a **test re-run** | **13** |
+| — needing only a **sentence rewritten** | **16** |
+
+The other **231** are facts, safety checks, corrections, positive findings or
+openly-unfinished items. They never closed anything. **Both framings are printed
+in the report**, because choosing that denominator is the biggest lever in the
+headline and it was this chat's judgement, not a measurement.
+
+### By category
+
+| how it died | count |
+|---|---|
+| A test too small to see what it reports absent | **9** |
+| One version tested, whole idea declared dead | **8** |
+| The data "wasn't available" | **7** |
+| A script was wrong and the conclusion followed | **5** |
+
+### The five that matter, in order
+
+1. **M027 — "no free data source covering ITF tennis"** is recorded **SETTLED**
+   in `market-selection/LEDGER_ADDITIONS.md`, and `market-selection/SHORTLIST.md`
+   gives it as the reason **the exchange's highest-volume tennis family gets no
+   entry**. **B021 refuted it on 2026-08-06** — a free key returned 7,786 ITF
+   tournaments. ⚠ **Careful:** B021 gives scores and tournaments, **not prices**.
+   `bot-hunt`'s separate claim that there is no free *reference price* for ITF is
+   untouched, and a re-rank has to say which it relies on.
+2. **C022 — crypto market making** is recorded as a settled null, citing a file
+   whose own verdict section reads *"Not yet reached."* The project's later
+   measurement (08-07, 658 events over 8 days) puts adverse selection at ~**0.5¢**
+   against a ~**1.0¢** gross margin and calls the question **unresolved**. It
+   began as a bug closure too: the blocker was M001, a parse error.
+3. **C023 — hold to settlement** is recorded with the single word **negative**.
+   `crypto/reports/hold_settle.txt` (25 May–30 Jul 2026, four assets) says **tie
+   in 40 of 44 price cells**, ranges ±5–15¢ against a 1–2¢ cost. ⚠ The one
+   positive-looking cell (Bitcoin at 5¢, +2.9¢) **does not replicate** — the other
+   three assets go the other way, and the four are worth ~1.8 independent
+   observations. The right word is *unmeasured*, not *negative* and not *promising*.
+4. **S022 / S023 — never re-run.** Computed on the event set the dedupe bug
+   voided. `SELECTION_AUDIT.md` says NEEDS RE-RUN; the root audit called it D1 on
+   08-06. Still open, so half of *"tennis set-1: no edge in either direction"* is
+   an expectation.
+5. **S005 / S006 / S021 — the sample.** Two nulls whose own rows print a
+   detectable-effect range 2–5× the effect being hunted, and one honest power
+   statement written 08-01 that says it needs ~3,970 matches against ~1,900/week
+   of accrual. **Count what accrued before re-affirming any of them.**
+
+### What this chat could not see
+
+**Three folders still have no rows in any ledger** — `soccer`,
+`polymarket-tennis-copy`, `ptis-polymarket` — so their closures are not in the
+313. Ledgering a previously-unledgered project has produced a verdict-relevant
+defect **three times out of three**.
+
+**And `coordinator/ledger.py` reads 3 of the 5 ledger files it lists.**
+`crypto/HYPOTHESIS_LEDGER.md` and `set1_overshoot/HYPOTHESIS_LEDGER.md` return
+**zero rows** (their tables are not in the shared schema), and
+`kalshi-inplay-bot/audit/LEDGER.md` is not in the list at all. That matters
+beyond this audit: `idea.py check` is the tool that exists so nobody says "we
+tried that" from memory, and a clean run on it currently may mean *"the prior
+work is in a table shape the parser skips"*. Filed to `coordinator`. **Not fixed
+here — a second ledger parser is how the fee formula reached 17 copies.**
+
+### One correction to the tasking
+
+The instruction said `crypto/MM_RESULTS.md` still states the retracted
+order-book claim as a live blocker. A search reproduces that; **opening the file
+does not.** It was corrected in place under a retraction box on 2026-08-06, per
+the convention of never deleting a wrong number. That part of the tasking is
+stale — and the failure it would have caused (search, find, conclude) is this
+chat's own subject.
+
+### Mail filed
+
+`devig` **010** (6 items) · `tennis` **006** (6) · `soccer` **002** (1) ·
+`coordinator` **001** (machinery). Nothing here is blocked on them.

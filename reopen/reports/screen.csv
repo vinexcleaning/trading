@@ -1,0 +1,314 @@
+id,status,project,file,closing,null_language,states_floor,FLOOR_GAP,BUG,DATA,NARROW,claim
+S011,RETRACTED,set1_overshoot,LEDGER.md,yes,0,0,,,,,"Set-1 undershoot −2.53pp, p=0.0007, and everything in Phases 2–5 built on it"
+S003,RETRACTED,set1_overshoot,LEDGER.md,yes,0,1,,,,,"Label-verified subsample −5.75pp [−9.71,−1.79], p=0.0062"
+S012,RETRACTED,set1_overshoot,LEDGER.md,yes,0,0,,,,,"""ATP is the thinnest book — median 30 lots, 3¢ spread"""
+S013,RETRACTED,set1_overshoot,LEDGER.md,yes,0,0,,,,,"""Median 106 contracts at the touch"""
+C003,RETRACTED,crypto,LEDGER.md,yes,1,0,yes,,,,"Round-number settlement pinning, 6/20 survive BH at p≈0"
+C006,RETRACTED,crypto,LEDGER.md,yes,1,1,,,,,Fat-tail edge worth 1.5–1.9¢ net at 2.5–3σ
+C013,RETRACTED,crypto,LEDGER.md,yes,1,1,,,,yes,"Mid calibration gap +4.2pp, net +1.00¢ at the ask"
+C014,RETRACTED,crypto,LEDGER.md,yes,0,0,,,,,464 profitable bucket-sum arbitrage violations at 96–97¢
+C015,RETRACTED,crypto,LEDGER.md,yes,0,0,,,,,Polymarket taker cost is identical to Kalshi
+W006,RETRACTED,wallet-copy-study,LEDGER.md,yes,0,0,,,,,"""72% of the edge lives in exits"""
+W011,RETRACTED,wallet-copy-study,LEDGER.md,yes,0,4,,,,,"Prior study's naive favourite benchmark +7.05pp on n=98,766"
+W012,RETRACTED,wallet-copy-study,LEDGER.md,yes,0,1,,,,,Copying selected wallets loses −5.90pp
+W015,RETRACTED,wallet-copy-study,LEDGER.md,yes,0,0,,yes,,,Polymarket fee formula fits at median relative error 0.96
+W016,RETRACTED,wallet-copy-study,LEDGER.md,yes,0,0,,,,,enable_order_book is a valid eligibility criterion
+T008,RETRACTED,kalshi-tennis,LEDGER.md,yes,1,1,,,,,Stage 5 selective betting returns +14.4% to +24.6% ROI
+T010,RETRACTED,kalshi-tennis,LEDGER.md,yes,0,0,,yes,,,Kalshi beats the Betfair closing line by 0.022 Brier
+T007,RETRACTED,kalshi-tennis,LEDGER.md,yes,0,0,,yes,,,Market beats model once wide quotes are excluded (+0.03711)
+T017,RETRACTED,kalshi-tennis,LEDGER.md,yes,0,0,,yes,yes,,Stage 0 coverage is 74.5%; there is no ITF tier on Kalshi
+K006,RETRACTED,kalshi-market-scan,LEDGER.md,yes,0,0,,,,yes,"Depth at the touch collapses 40× toward expiry, so edge and liquidity are anti-correlated"
+K003,RETRACTED,kalshi-market-scan,LEDGER.md,yes,0,1,,,,,"The weather model was validated on 8,090 test markets"
+K005,RETRACTED,kalshi-market-scan,LEDGER.md,yes,2,0,yes,,,,"""Seven daily families clear the capacity bar, so weather is not capacity-limited"""
+K015,RETRACTED,kalshi-market-scan,LEDGER.md,yes,1,3,,,,,"""Buying everything priced 0.60–0.95 earns +7.05pp ± 0.22 on n=98,766"" — named the finding that reframes the whole copy-trading block"
+S001,SETTLED,set1_overshoot,LEDGER.md,yes,0,1,,,,,The market undershoots after a set-1 dip — it does not overshoot. The effect is real.
+S002,SETTLED,set1_overshoot,LEDGER.md,yes,2,1,,,,,The pre-committed primary entry rule (deep:12) shows no effect at all.
+S004,SETTLED,set1_overshoot,LEDGER.md,yes,0,0,,,,,The cost bar to beat is 3.6104pp = 1.170 spread + 1.000 slip + 1.441 fee.
+S005,SETTLED,set1_overshoot,LEDGER.md,yes,3,1,,,,,No time or tier bucket clears the bar. 0 of 25.
+S006,SETTLED,set1_overshoot,LEDGER.md,yes,3,1,,,,,No set-1 margin bucket clears the bar. 0 of 10 (0.25 expected by chance).
+S007,SUGGESTIVE,set1_overshoot,LEDGER.md,,0,0,,,,,Effect strengthens monotonically as set 1 gets shorter/more lopsided (10.86→5.58→2.77pp; 8.15→4.12→1.84pp).
+S008,SETTLED,set1_overshoot,LEDGER.md,yes,1,0,yes,,,,Maker/resting orders do not fix it. All 15 fill configurations are net-negative per opportunity.
+S009,SETTLED,set1_overshoot,LEDGER.md,yes,0,0,,,,,Maker price improvement is already exceeded by adverse selection.
+S010,SETTLED,set1_overshoot,LEDGER.md,yes,1,0,yes,,,,"Maker fee is zero on Challenger/ITF (91% of the book), applies only on ATP/WTA."
+S014,SETTLED,set1_overshoot,LEDGER.md,yes,0,0,,,,,The set-1 detector calls direction correctly 82.5% of the time.
+S015,SETTLED,set1_overshoot,LEDGER.md,yes,0,0,,,,,"t0 (set-1 end) is estimated +5 min median, MAD 6, against real playing minutes."
+S016,SETTLED,set1_overshoot,LEDGER.md,yes,0,0,,,,yes,Mirrored Kalshi markets are exact inverses (median mid difference 0.00¢).
+S017,SETTLED,set1_overshoot,LEDGER.md,yes,0,0,,,,,The P&L decomposition is an exact identity.
+S018,SETTLED,set1_overshoot,LEDGER.md,yes,1,0,yes,,yes,,Label coverage cannot be raised. Apify hard-capped; Flashscore dayOffsets is −7..+7 against a −68 need.
+S019,SETTLED,set1_overshoot,LEDGER.md,yes,0,0,,,,,Trade-through is not a generous fill assumption — best bid rises in only 6.1% of minutes.
+S020,SETTLED,set1_overshoot,LEDGER.md,yes,0,0,,,,,"15 headline numbers recomputed independently; 14 confirmed, 1 baseline updated."
+S021,SETTLED,set1_overshoot,LEDGER.md,yes,1,3,,,,,The tennis strategy line cannot be resolved with the sample available.
+S022,BROKEN,set1_overshoot,LEDGER.md,yes,0,0,,yes,,,Retirement add-back costs −0.004¢.
+S023,BROKEN,set1_overshoot,LEDGER.md,yes,1,0,yes,yes,,,The fade side loses in all 6 configurations.
+S025,SETTLED,set1_overshoot,LEDGER.md,yes,0,0,,,,,"The two maker-fee tennis series hold 34.4% of tennis volume on 5.8% of the markets — 5.9× concentration. S010's ""91% of the book"" is a *count*; by volume the taker-only series are 65.6%."
+S024,SUGGESTIVE,set1_overshoot,LEDGER.md,,0,0,,,,,plausible duration filter (25–330 min) is immaterial to θ.
+C010,SETTLED,crypto,LEDGER.md,yes,2,1,,,,,"No model beats Kalshi's own mid. Two tie, two lose. The crypto ladder is efficiently priced."
+C011,SETTLED,crypto,LEDGER.md,yes,0,1,,,,,The settlement-average correction genuinely improves the model (M2 beats M1).
+C012,SETTLED,crypto,LEDGER.md,yes,0,1,,,,,Feeding the model fatter tails than the market uses makes the forecast worse.
+C005,SETTLED,crypto,LEDGER.md,yes,0,0,,,,,Hourly BTC/ETH returns are severely fat-tailed.
+C001,SUGGESTIVE,crypto,LEDGER.md,,2,0,yes,,,,Kalshi greater ladders are monotone in strike — no arbitrage.
+C002,SUGGESTIVE,crypto,LEDGER.md,,0,0,,,,,between bucket families sum to 100¢ — no arbitrage net of fees.
+C004,SETTLED,crypto,LEDGER.md,yes,0,0,,,,,"Polymarket's fee is 0.10 × min(p,1−p), not the documented 0.07·p(1−p)."
+C016,SETTLED,crypto,LEDGER.md,yes,2,0,yes,,,,"The ""cheap wings"" are not tradeable — they have an ask but no bid."
+C017,SETTLED,crypto,LEDGER.md,yes,1,0,yes,,,,Deribit cannot serve as a reference price for the hourly ladders.
+C018,SETTLED,crypto,LEDGER.md,yes,0,0,,,yes,,Kalshi unauthenticated rate limit is 15 req/s sustained; 25 req/s ⇒ 56% rejection.
+C007,SETTLED,crypto,LEDGER.md,yes,2,1,,,,,The pipeline finds no edge in synthetic data containing no edge.
+C008,SETTLED,crypto,LEDGER.md,yes,1,1,,,,,"The pipeline detects an injected 15% wing bias, and a 5% one."
+C009,SETTLED,crypto,LEDGER.md,yes,0,0,,,,,The pipeline detects outcome leaked into a feature.
+C019,SETTLED,crypto,LEDGER.md,yes,0,1,,,,,Effective sample size is far below row count — ~360 correlated minutes per event.
+C020,SETTLED,crypto,LEDGER.md,yes,0,0,,,,,ETH does not lead BTC.
+C021,SETTLED,crypto,LEDGER.md,yes,2,0,yes,,,,Path/streak structure in 15m opens is tradeable.
+C022,SETTLED,crypto,LEDGER.md,yes,1,0,yes,,,,Market-making on the ladders is viable.
+C023,SETTLED,crypto,LEDGER.md,yes,2,0,yes,,,,Hold-to-settlement on the ladders is profitable.
+C024,SETTLED,crypto,LEDGER.md,yes,0,0,,yes,,,A silent orderbook parse bug wrote real row counts with empty content for 1h45m.
+C025,UNVERIFIED,crypto,LEDGER.md,,2,0,yes,,,yes,"""MM scan: 0 of 4 series profitable."""
+C026,SETTLED,crypto,LEDGER.md,yes,0,0,,,,,The four crypto assets are not four independent series — there are ~1.81.
+C027,SETTLED,crypto,LEDGER.md,yes,2,1,,,,,Lead-lag ETH→XRP (+0.1544) is tradeable.
+W001,SETTLED,wallet-copy-study,LEDGER.md,yes,0,0,,,,,Wallet skill is real and persists out of sample.
+W002,SETTLED,wallet-copy-study,LEDGER.md,yes,0,1,,,,,A period-1 top decile keeps +2.567pp of excess into an untouched period 2.
+W003,SETTLED,wallet-copy-study,LEDGER.md,yes,0,1,,,,,But a copier who buys the same entries and holds gets only +0.937pp.
+W004,SETTLED,wallet-copy-study,LEDGER.md,yes,0,0,,,,,"And that is less than the spread, so the strategy is break-even at best."
+W005,SETTLED,wallet-copy-study,LEDGER.md,yes,0,1,,,,,The copier return declines monotonically across split points: +1.98 → +0.94 → −0.14.
+W007,SETTLED,wallet-copy-study,LEDGER.md,yes,0,2,,,,yes,Copying exits destroys value at every delay.
+W008,SETTLED,wallet-copy-study,LEDGER.md,yes,1,1,,,,,"It is not timing skill — duration-matched, the wallets add nothing."
+W009,SETTLED,wallet-copy-study,LEDGER.md,yes,0,1,,,,,"It is not tail-risk avoidance — shorter holding is strictly worse, monotonically."
+W010,SETTLED,wallet-copy-study,LEDGER.md,yes,0,1,,,,,Selling winners early and losers early are two enormous effects that cancel.
+W013,SUGGESTIVE,wallet-copy-study,LEDGER.md,,0,1,,,,yes,Entries do decay for selected wallets: +3.436 → +0.427pp over 5 minutes.
+W014,SETTLED,wallet-copy-study,LEDGER.md,yes,1,0,yes,,,,The unconditional decay curve is flat from 0s to 1800s — a bot buys nothing.
+W017,SETTLED,wallet-copy-study,LEDGER.md,yes,0,0,,,,,"Polymarket charged no fee for 91% of on-chain history, switching on 2026-01-08."
+W018,SETTLED,wallet-copy-study,LEDGER.md,yes,0,0,,,,,Ranking inside the fee era finds an almost entirely different top decile.
+W019,SETTLED,wallet-copy-study,LEDGER.md,yes,0,0,,,,,Capacity is not the constraint — price impact does not scale with trade size.
+W020,SETTLED,wallet-copy-study,LEDGER.md,yes,1,0,yes,,,,"Adverse selection is not present — copyable fills are *better*, not worse."
+W021,SETTLED,wallet-copy-study,LEDGER.md,yes,1,0,yes,,,,Market making is not the explanation for persistence.
+W022,SETTLED,wallet-copy-study,LEDGER.md,yes,1,0,yes,,,,Survivorship is not driving the result.
+W023,SETTLED,wallet-copy-study,LEDGER.md,yes,2,0,yes,,,,The excess metric scores a null strategy at zero.
+W024,SETTLED,wallet-copy-study,LEDGER.md,yes,1,0,yes,,,,"Phase 5 (sizing, portfolio, forward test) was deliberately not run."
+T001,SETTLED,kalshi-tennis,LEDGER.md,yes,0,0,,,,,Only 36.9% of Kalshi tennis markets clear all three modelling thresholds.
+T002,SETTLED,kalshi-tennis,LEDGER.md,yes,0,0,,,,,"The binding constraint: Sackmann features end 2026-06-02, and 85.0% of markets are after that."
+T003,SETTLED,kalshi-tennis,LEDGER.md,yes,0,0,,,yes,,Sackmann's upstream repos are gone (404); the project runs on a frozen mirror.
+T004,SETTLED,kalshi-tennis,LEDGER.md,yes,1,0,yes,,,,"""Comeback ability"" is ~75% just overall skill."
+T005,SETTLED,kalshi-tennis,LEDGER.md,yes,0,1,,,,,"The model itself is good: held-out Brier 0.19884, AUC 0.75984."
+T006,SETTLED,kalshi-tennis,LEDGER.md,yes,0,2,,yes,,yes,"But the model loses to the bookmakers. This is the Stage 4 gate, and it failed."
+T009,SETTLED,kalshi-tennis,LEDGER.md,yes,1,0,yes,,,,43 selective segments tested with Benjamini-Hochberg; 19 survive and every one is negative.
+T011,SETTLED,kalshi-tennis,LEDGER.md,yes,0,1,,yes,,,The anchor sweep proves which Kalshi anchor is leak-free.
+T012,SETTLED,kalshi-tennis,LEDGER.md,yes,0,2,,,,,Kalshi is the sharp line — indistinguishable from Betfair at a clean anchor.
+T013,SETTLED,kalshi-tennis,LEDGER.md,yes,1,1,,,,,"Where the two venues disagree by more than it costs to act, Kalshi is closer 49.1% of the time — a coin flip measured precisely."
+T014,SETTLED,kalshi-tennis,LEDGER.md,yes,0,0,,,yes,,tennis-data.co.uk stopped carrying Pinnacle in 2026; the real benchmark is the Betfair Exchange close.
+T015,SETTLED,kalshi-tennis,LEDGER.md,yes,0,1,,,,,"39.8% of held-out Kalshi markets quote wider than 10¢ — a 1c/99c quote has a 50c ""mid"" nobody trades at."
+T016,SETTLED,kalshi-tennis,LEDGER.md,yes,0,0,,,,,Shrinkage behaves correctly across all 8 statistics × 2 buckets.
+T018,SETTLED,kalshi-tennis,LEDGER.md,yes,1,0,yes,,,,The ITF tier cannot be modelled from Sackmann — serve stats on only 4.6% of futures rows.
+T019,SETTLED,kalshi-tennis,LEDGER.md,yes,0,0,,,,,"Player order is assigned cleanly (alphabetical), not by outcome."
+T020,SETTLED,kalshi-tennis,LEDGER.md,yes,0,0,,,,,The API-listing-order side choice is clean.
+T021,SUGGESTIVE,kalshi-tennis,LEDGER.md,,1,0,yes,yes,,,stage5_selective.py sorts variants on mean_pnl over the full sample with no holdout.
+T022,?,kalshi-tennis,LEDGER.md,,2,0,yes,yes,,,"stage5_selective.py dedupes with keep=""first"" — order-dependent and non-deterministic."
+CH057,UNVERIFIED,,LEDGER.md,,2,0,yes,,,,"""4 weeks / 14k markets / 0 of 480 configs profitable"""
+CH031,SETTLED,,LEDGER.md,yes,0,0,,yes,,,The score-staleness guard never fired — fetched_at was stamped at cache read
+CH022,BROKEN,,LEDGER.md,yes,0,1,,yes,,yes,Three irreconcilable P&L figures for one session (+$0.60 / +$2.51 / −$3.55)
+CH035,UNVERIFIED,,LEDGER.md,,1,0,yes,,,,Every negative result in the project is a taker result
+CH044,SETTLED,,LEDGER.md,yes,0,0,,yes,,yes,A position-sizing blowout produced 64 contracts against an intended 9
+K001,SETTLED,kalshi-market-scan,LEDGER.md,yes,3,0,yes,,,,No model beats the Kalshi mid on KXBTC15M direction.
+K002,SETTLED,kalshi-market-scan,LEDGER.md,yes,0,0,,,,,The weather model genuinely beats climatology in all four cities.
+K004,SETTLED,kalshi-market-scan,LEDGER.md,yes,0,1,,,,,Only KXTEMPDCH clears both the power bar and the capacity bar. 1 of 11 families.
+K007,SETTLED,kalshi-market-scan,LEDGER.md,yes,3,0,yes,,,,No-arb violations are real but the size is dust.
+K008,SETTLED,kalshi-market-scan,LEDGER.md,yes,0,2,,,,,Copying Polymarket tennis wallets earns +7.23pp.
+K009,SETTLED,kalshi-market-scan,LEDGER.md,yes,3,0,yes,,,,"The favourite-longshot bias does not exist on Kalshi, so the Polymarket→Kalshi transfer fails."
+K010,UNVERIFIED,kalshi-market-scan,LEDGER.md,,2,3,,,,yes,"Kalshi pre-match prices are calibrated bucket by bucket (""every binomial p ≥ 0.499"")."
+K011,SETTLED,kalshi-market-scan,LEDGER.md,yes,2,0,yes,,,,Flow following on Kalshi has no signal — price absorbs the flow.
+K012,SETTLED,kalshi-market-scan,LEDGER.md,yes,1,1,,,,,"Economics series are killed on recurrence, not on edge."
+K013,SETTLED,kalshi-market-scan,LEDGER.md,yes,1,0,yes,,,,"KXBTC15M is minted at-the-money every 15 minutes, pinning entry to the peak of the fee curve."
+K014,SETTLED,kalshi-market-scan,LEDGER.md,yes,1,1,,,,,"The power bar is 481 settlements for a 5pp edge, 2,084 to clear the 2.4¢ tennis cost bar."
+K016,SETTLED,kalshi-market-scan,LEDGER.md,yes,2,0,yes,,,,Deflated Sharpe was deliberately not computed.
+B001,SETTLED,bot-forensics,LEDGER.md,yes,1,2,,,,,The bot lost money over its whole life. −$6.92 across 108 matches.
+B002,SETTLED,bot-forensics,LEDGER.md,yes,0,0,,,,,"The hand-trading made the money; the bot did not. Manual +$98.94, bot −$6.92."
+B003,SETTLED,bot-forensics,LEDGER.md,yes,2,0,yes,,,,"The ""profitable night"" is a cut at the maximum of the equity curve, and the argmax is not a finding."
+B004,SUGGESTIVE,bot-forensics,LEDGER.md,,1,2,,,,yes,Splitting on the clock instead of the curve: night beats day in sign only.
+B005,SETTLED,bot-forensics,LEDGER.md,yes,2,1,,,,yes,0 of 13 permutation-tested buckets clear BH-FDR at 5%.
+B005a,BROKEN,bot-forensics,LEDGER.md,yes,2,1,,yes,,yes,"⚠ The parametric arm of the same test reports 3 discoveries, not 0, and it propagated to only one of four documents."
+B006,SETTLED,bot-forensics,LEDGER.md,yes,0,0,,,,,The night/day comparison is confounded against the night at source.
+B007,SETTLED,bot-forensics,LEDGER.md,yes,0,0,,,,,"The martingale is present in the profitable stretch, and it went 7 for 7."
+B008,SETTLED,bot-forensics,LEDGER.md,yes,1,0,yes,,,,The score feed arrived after the market had already repriced. Puts a magnitude on CH031.
+B009,SETTLED,bot-forensics,LEDGER.md,yes,1,1,,,,,"The night's actual configuration, replayed over the backtest corpus, loses on every tier — worst on ITF, where it actually traded."
+B010,SETTLED,bot-forensics,LEDGER.md,yes,1,0,yes,,,,The night's config was not badly chosen — it is just in a losing family.
+B011,SETTLED,bot-forensics,LEDGER.md,yes,0,2,,,,yes,"The live 39 hours are consistent with the backtest, not in tension with it."
+B012,SETTLED,bot-forensics,LEDGER.md,yes,0,1,,,,,"The stop loss is the single most expensive component, and four independent files now agree."
+B013,SETTLED,bot-forensics,LEDGER.md,yes,1,0,yes,,,,"Kalshi tennis settles strictly binary; a retirement does *not* settle ""at the number""."
+B014,SETTLED,bot-forensics,LEDGER.md,yes,1,0,yes,,,,Roughly thirty people independently built this same bot in six months and none publishes a settled P&L.
+B015,SETTLED,bot-forensics,LEDGER.md,yes,1,0,yes,yes,,,Nobody documents the overnight-vs-daytime pattern in prediction-market sports books.
+B016,SETTLED,bot-forensics,LEDGER.md,yes,0,0,,,yes,,"⚠ A free ITF data source may exist, reopening a thread closed on data availability."
+B017,SETTLED,bot-forensics,LEDGER.md,yes,0,0,,,,,"The SAGLEV re-entry legs were 749 s apart, not 24 s."
+B018,SETTLED,bot-forensics,LEDGER.md,yes,0,0,,,,,The bankroll was stepped up by hand during the winning run.
+B019,BROKEN,bot-forensics,LEDGER.md,yes,0,0,,yes,,,A notional-only bot/manual classifier misclassified the single largest winner.
+B020,SETTLED,bot-forensics,LEDGER.md,yes,0,0,,,yes,,"""Sackmann upstream is 404"" is too strong — a live mirror exists."
+B021,SETTLED,bot-forensics,LEDGER.md,yes,1,0,yes,,yes,,"A free ITF data source DOES exist. The thread that was closed on ""no free ITF source"" was closed on a false premise."
+B022,SETTLED,bot-forensics,LEDGER.md,yes,0,0,,,yes,,⚠ The vendor's advertised free-tier rate limit is wrong by 10×.
+B023,SETTLED,bot-forensics,LEDGER.md,yes,2,0,yes,,,,Pre-match player features add nothing to Kalshi's opening price.
+B024,SETTLED,bot-forensics,LEDGER.md,yes,0,3,,,yes,,"The one surviving signal — ""buy the heavy favourite"" — is a wide-book quoting artifact, not a mispricing."
+B025,BROKEN,bot-forensics,LEDGER.md,yes,1,0,yes,yes,,,"⚠ Two bugs in this session's own analysis code, caught before publication."
+B026,UNVERIFIED,bot-forensics,LEDGER.md,,2,0,yes,,,,"⚠ Possible tension with K009, unresolved."
+B027,SETTLED,bot-forensics,LEDGER.md,yes,2,4,,,,,"Where Kalshi tennis is liquid, its opening price is calibrated across the entire price range. Where it is wide, it is not — and that is where every apparent edge in this repo has come from."
+M011,SUGGESTIVE,,LEDGER.md,,1,0,yes,,,,"""Kalshi's MLB moneyline already tracks the free DraftKings line."" median |Kalshi mid − de-vigged DK| 0.37¢, p90 0.75¢, max 1.94¢, 0 of 26 exceed the cost bar"
+M001,RETRACTED,,LEDGER.md,yes,1,0,yes,yes,,,"*""Kalshi's /orderbook returns empty; order-book depth is not public.""* Held by a prior session and independently reproduced on 85 markets."
+BH001,SETTLED,,LEDGER.md,yes,0,0,,,,,"Pinnacle's guest API returns live priced markets unauthenticated and free — 27,582 soccer, 3,728 tennis, 1,920 baseball, 643 esports, each with maxRiskStake."
+BH002,SETTLED,,LEDGER.md,yes,4,1,,,,,"Nothing survives the structural grid on esports, and nothing survives on the MLB control."
+BH003,SETTLED,,LEDGER.md,yes,0,0,,,,,"close_time is when the market SETTLES, not when play starts — the pre-registered −60 min anchor was VOID at 13.96% extreme quotes, 99.7% correct."
+BH004,SETTLED,,LEDGER.md,yes,0,0,,,,,Esports' real pre-match cost is 3–6× the figure the shortlist ranked it on.
+BH005,SETTLED,,LEDGER.md,yes,1,0,yes,,,,"Resting orders do get filled: 29–36% strict (trade-through), 63–69% permissive."
+BH006,BROKEN,,LEDGER.md,yes,1,0,yes,yes,,,H10's net P&L and adverse selection.
+BH007,SUGGESTIVE,,LEDGER.md,,1,1,,,,,De-vigged Pinnacle vs the Kalshi ask on esports: the median buy edge is negative under every method.
+BH008,SETTLED,,LEDGER.md,yes,0,0,,,,,Polymarket esports is ~96% derivative markets.
+BH009,SETTLED,,LEDGER.md,yes,2,0,yes,yes,yes,,"Kalshi's retention is a fixed calendar boundary at 2026-05-25, not a rolling window — and it is the same boundary on the market listing AND the trade tape."
+BH010,SETTLED,,LEDGER.md,yes,1,0,yes,,,,"Retrievable settled events by family, against LEDGER K014's 481-event bar."
+BH011,SETTLED,,LEDGER.md,yes,1,0,yes,,,,The de-vig test's cost bar is larger than the entire vig it removes.
+BH012,SETTLED,,LEDGER.md,yes,0,0,,,,,close_time on a LIVE Kalshi MLB market is the game start plus exactly 72 h. On settled markets Kalshi rewrites it to the true settlement instant (2.4–3.2 h after start).
+BH013,SETTLED,,LEDGER.md,yes,0,0,,,yes,,"⚠ RESULTS.md §3's ""KXMLBGAME is 1.0¢ at every lead"" is a CANDLE measurement."
+BH014,BROKEN,,LEDGER.md,yes,0,0,,yes,,,record.py probed mkts[:60] in Kalshi's undocumented listing order.
+CH001,RETRACTED,Tennis player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,1,,,,,"""Backtest shows +14.4% to +24.6% ROI on selective betting."""
+CH002,RETRACTED,Tennis player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,1,,yes,,,"""Kalshi beats the Betfair Exchange closing line by 0.022 Brier."""
+CH003,RETRACTED,Tennis player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,3,,,,,"""Model vs Kalshi is indistinguishable (+0.00714, CI crosses zero)."""
+CH004,RETRACTED,Tennis player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,0,yes,yes,yes,,"""Stage 0 coverage is 74.5%; there is no ITF tier on Kalshi."""
+CH005,RETRACTED,Copy trading,kalshi-chat-audit/LEDGER_CHATS.md,yes,3,2,,,,,"""Wallet copy trading shows a +7.23pp skill edge."""
+CH006,RETRACTED,Copy trading,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,1,,,,yes,"""A wallet returned +95pp."""
+CH007,RETRACTED,Copy trading,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,"""Longshot buying returns −20.9pp."""
+CH008,RETRACTED,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,1,,yes,,yes,"""A fixed-cent stop in a mean-reverting band is a machine for selling local lows — six stops, six bounces, average bounce +30c against a 15c stop."""
+CH009,RETRACTED,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,0,yes,,yes,,"""The COULD NOT CANCEL … 404 warnings left dangling live sell orders — naked short risk, cancel them on Kalshi yourself."""
+CH010,RETRACTED,Exchange-wide scan,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,"""S&P/Nasdaq markets carry a halved fee multiplier."""
+CH011,RETRACTED,Exchange-wide scan,kalshi-chat-audit/LEDGER_CHATS.md,yes,2,0,yes,,,,"""Internal no-arbitrage violations are the highest-quality opportunity on the exchange."""
+CH012,RETRACTED,Exchange-wide scan,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,"""Combo-generated legs dominate the raw Kalshi trade feed, so flow signals are garbage."""
+CH013,RETRACTED,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,0,yes,,,,"""The threshold-optimizer bot found every threshold was negative."""
+CH014,RETRACTED,Skill accuracy,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,"""The tennis-live-predictor skill is going 7/7 on live calls."""
+CH015,RETRACTED,Manual trading,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,1,,,,yes,"""Webb is at 27% against a fair value of ~51% — a 24-point edge."""
+CH016,RETRACTED,Signal bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,"""Win posts in the Discord get far more engagement than loss posts."""
+CH017,RETRACTED,Signal bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,1,,,,,"""The 26 silent calls are weighted toward losses."""
+CH018,RETRACTED,Signal bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,"""The screen-reader bot should require the read price to match rot's card price."""
+CH019,RETRACTED,Tennis backtest,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,yes,"""The mirrored Kalshi markets are not exact inverses."""
+CH020,RETRACTED,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,1,,,,yes,"""The serving signal is worth +3.09c per trade."""
+CH021,BROKEN,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,yes,,,Overnight bot session netted +$0.60 across 10 fills.
+CH023,SUGGESTIVE,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,,0,1,,,,yes,"Exit machinery converted a −$26.48 hold-to-resolution outcome into break-even — ""stops saved ~$27""."
+CH024,SUGGESTIVE,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,,0,1,,,,yes,Average entry price 69.5c; only 4 of 10 players actually won. ~4.7% chance of being pure bad luck.
+CH025,UNVERIFIED,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,,0,1,,,yes,yes,"The 80c+ entry bucket is where all the losses came from (4 trades, 1 winner, −$2.14). Basis for the proposed 75c entry cap."
+CH026,UNVERIFIED,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,,0,1,,,,yes,"Blind price-gated re-entry after a stop is roughly a wash and worse after costs (2 wins, 4 losses); re-entry must be score-gated."
+CH027,UNVERIFIED,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,,0,0,,,,,"Live tennis markets follow a three-act shape (drift band → volatility explosion → terminal ramp), and all six stop-outs came from Act II."
+CH028,BROKEN,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,yes,,,Re-running the 10 trades under the proposed v2 rules gives ≈ +$7 instead of +$0.60.
+CH029,BROKEN,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,yes,,,"Fees ate ~80% of gross profit (gross ≈ +$2.85, ~$2.20–2.30 fees on 91 contracts, ≈2.5c/share round trip)."
+CH030,SETTLED,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,0,yes,,,,The app was closed for 4h13m with five open positions. Take-profits rest server-side on Kalshi and fill regardless; stops are app-side and do nothing while closed.
+CH032,SETTLED,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,1,,,yes,,"The Apify outage was a free-tier monthly hard limit (594 scans at 20s intervals × up to 2 actor runs), not a code fault."
+CH033,SETTLED,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,2,0,yes,,yes,,"The outage did not cause bad trades — the design fails closed (no feed ⇒ no candidates), and stops read Kalshi prices, not Apify."
+CH034,SETTLED,Tennis bot / all,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,Kalshi taker fee = round_up(0.07 × C × P × (1−P)); peak 1.75c/contract at 50c; maker fee 0.0175 × C × P × (1−P) = 25% of taker.
+CH036,SUGGESTIVE,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,,1,0,yes,,,,"Trade A (mean-reversion scalp) needs a 70% hit rate; Trade B (terminal ramp) needs 46%. Therefore ""Trade B is the strategy, Trade A is a hypothesis."""
+CH037,UNVERIFIED,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,,0,1,,,,,"Live bot results, 94 bot-placed trades: men +$27.79 (n=66, 64% win) vs women −$20.14 (n=28, 39% win)."
+CH038,SUGGESTIVE,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,,1,1,,,,,"Baseline ""buy at ask, hold to settlement, all prices"" is −2.58c average — every price band negative."
+CH039,SUGGESTIVE,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,,1,1,,,,,"The deployed live entry rule (set resolved + ahead on sets + 60–75c) returns −6.69c, i.e. 2.6× worse than entering at random."
+CH040,UNVERIFIED,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,,0,2,,,,,Exits vs hold-to-settle were worth +$203 across 114 live markets.
+CH041,SUGGESTIVE,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,,0,1,,,,,"Of 27 live stop-outs, only 26% recovered to a win ⇒ stopping was correct in 3 of 4 cases; widening the stop to 40c was right."
+CH042,SETTLED,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,yes,,,"Breakeven win rate for the deployed rule (enter 70c, exit 95c, stop 40c, ~2–3c fees) is ≈59%; the bot runs ≈55%."
+CH043,SUGGESTIVE,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,,0,0,,,,,"Account arithmetic: $127 → $117 = net −$10 against a $57.52 fee bill ⇒ gross trading P&L ≈ +$47, fees ≈150% of gross. This is a turnover problem, not a strategy problem."
+CH045,SUGGESTIVE,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,,0,0,,,,,The integrated tennis feed runs 30–60 seconds behind live play; Kalshi's API does not expose live scores.
+CH046,UNVERIFIED,Tennis bot,kalshi-chat-audit/LEDGER_CHATS.md,,0,0,,,,,"Kalshi Pro is free during beta; it provides screener/Canvas/trade-tape (flow), not fair value."
+CH047,SETTLED,Tennis backtest,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,1,,,,,"Kalshi candlestick period_interval accepts exactly 1, 60, 1440 minutes; 5,000-candle cap per request. 1 minute is the floor."
+CH048,SETTLED,Tennis backtest,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,Settled tennis markets are returned back to 2026-05-22 (~9 weeks).
+CH049,SETTLED,Tennis backtest,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,1,,,,,"14,162 settled markets = 7,081 matches, exactly 2 mirrored markets per match. Backtesting both double-counts the sample."
+CH050,SETTLED,Tennis backtest,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,yes,"Median Kalshi tennis spread 1c, p90 2c, p99 71c; a 15c spread filter drops ~1.4% of candles."
+CH051,SETTLED,Tennis backtest,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,1,,,,yes,"968/1000 markets settle cleanly to 0 or 1; ~3.2% settle scalar (retirements/walkovers), and mirrored pairs sum to exactly 1.00."
+CH052,SETTLED,Tennis backtest / BTC,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,yes,,,"Floating-point fee bug: 0.07*100*0.5*0.5*100 evaluates to 175.00000000000003, so ceil adds a spurious cent, inflating fees across the board."
+CH053,SETTLED,Tennis backtest,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,yes,,,"Look-ahead bug in the backtest engine: the walk evaluated the entry candle's own high/low, which happened *before* the simulated purchase."
+CH054,SUGGESTIVE,Tennis backtest,kalshi-chat-audit/LEDGER_CHATS.md,,0,3,,,,,"ATP smoke test: every strategy loses money including buy-and-hold; entries at ~65c won only 57%, i.e. the structural-event signal is *anti*-predictive relative to the price paid."
+CH055,SETTLED,Tennis backtest,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,"The train/test split (oldest 60% / newest 40% of 2026-06-29→07-27) straddles the grass→hardcourt transition, so the holdout tests surface transfer confounded with time."
+CH056,SETTLED,Tennis backtest,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,yes,"The backtest's 60-second structural-event window is a strict superset of the live bot's 45-second window, so the backtest validates a signal the live bot never runs. The ""it gets absorbed by the thres"
+CH058,SETTLED,Tennis backtest,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,Strategy families to test include a random-entry control; anything that can't beat random isn't a strategy. Random entries measured −6.96c/trade ≈ pure round-trip friction.
+CH059,SETTLED,Player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,yes,yes,,"Corrected Stage 0 coverage: of 20,922 Kalshi markets, 86.6% have both players present in Sackmann, but only 36.9% clear all three thresholds. ATP-ITF: 20.9%."
+CH060,SETTLED,Player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,"Sackmann feature history ends 2026-06-02; 85.0% of pulled markets were played after that. Only 3,145 markets are both settled and inside the history window."
+CH061,SETTLED,Player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,yes,,Sackmann's tennis_atp / tennis_wta repos are gone (404); the project runs on a frozen third-party mirror (last commit 2026-06-25).
+CH062,SETTLED,Player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,Shrinkage works as intended — raw sd collapses toward population sd across all 8 statistics × 2 buckets.
+CH063,SETTLED,Player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,0,yes,,,,"""Comeback ability"" is ~75% just overall skill. Raw split-half r = +0.439, residualised against the player's own win rate r = +0.125. Tiebreak win rate is noise (r = +0.091 → +0.049). Positive control "
+CH064,SETTLED,Player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,1,,,,,"Held-out model performance: Brier 0.19884, LogLoss 0.58007, AUC 0.75984, Accuracy 0.68707, with every calibration bucket within ~0.021 of truth."
+CH065,SETTLED,Player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,3,,yes,,yes,"The model loses to the bookmakers. Average closing: model 0.22490 vs market 0.20568, diff +0.01922 CI [+0.01438, +0.02417], n=2,645. Pinnacle closing: +0.01816 CI [+0.01216, +0.02425], n=1,774."
+CH066,SETTLED,Player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,3,,,,,"The market beats the model on tradeable Kalshi quotes: spread ≤10c n=302, diff +0.03711 CI [+0.0165, +0.0569]; ≤5c +0.03838; ≤2c +0.03855."
+CH067,SETTLED,Player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,1,,,,,"39.8% of the 502 held-out Kalshi markets quote wider than 10c (median spread 3.0c). A 1c/99c quote has a 50c ""mid"" nobody will trade at."
+CH068,SETTLED,Player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,0,yes,,,,Stage 5 selective search: 43 segments tested with Benjamini-Hochberg at α=0.05; 19 survive and every one of them is negative. No positive segment survives correction.
+CH069,SETTLED,Player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,yes,,tennis-data.co.uk stopped carrying Pinnacle in 2026 — coverage collapsed to 5.1%; the benchmark actually used is the Betfair Exchange closing price (93.6% coverage).
+CH070,SETTLED,Player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,1,,yes,,,"Anchor sweep proves which Kalshi anchor is leak-free: at −0h, 4.1% of quotes are outside 2c–98c and 100% correct, corr with books 0.824. At −6h: 0.1% extreme, corr 0.9775, Kalshi−Betfair +0.00122."
+CH071,SETTLED,Player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,3,,,,,"Kalshi is the sharp line. At −6h vs Betfair: r=0.9878, MAD 1.95c against a 2.44c round-trip cost. Brier diff −0.00053 CI [−0.00312, +0.00157] ⇒ *indistinguishable*."
+CH072,SETTLED,Player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,3,,,,,"Where the two venues disagree by more than it costs to act (230 of 809, 28.4%), Kalshi is closer 49.1% of the time, CI [42.7%, 55.6%] — a coin flip measured precisely. All 14 segments cross zero."
+CH073,SETTLED,Player model,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,0,yes,,,,Sackmann futures files carry serve stats on only 4.6% of rows — the ITF tier cannot be modelled from this source.
+CH074,SUGGESTIVE,Player model,kalshi-chat-audit/LEDGER_CHATS.md,,1,1,,,,yes,"Set-score / parlay markets cannot be less efficient than the match market they decompose from: P(2-0) + P(2-1) = P(match), and a parlay's edge is the product of its legs' edges."
+CH075,SETTLED,Skill accuracy,kalshi-chat-audit/LEDGER_CHATS.md,yes,2,0,yes,,,,"The skill is not predicting — it is reading the scoreboard. Six of eight picks were the player already winning; the two it declined to call were the close ones. Players up a set win ~80% of the time, "
+CH076,SUGGESTIVE,Skill accuracy,kalshi-chat-audit/LEDGER_CHATS.md,,0,0,,,,yes,"The skill's picks are expensive favourites; the user's actual winning trades (Yagan 16c, Chavez 30c, Shibahara 60c) were players the market had underrated. The skill points away from where the money w"
+CH077,UNVERIFIED,Skill accuracy,kalshi-chat-audit/LEDGER_CHATS.md,,0,1,,,yes,,"Individual live win-probability calls (e.g. ""Echargui 96%"", ""Draxl 93%"", ""Samuel 91%"", ""Ma 76%"") are largely scoreline arithmetic plus a confidence label, several explicitly marked ""Confidence: Low""."
+CH078,SETTLED,Exchange scan,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,yes,,"Kalshi unauthenticated rate limit: 15 req/s sustained = 0% rejection; 25 req/s = 56% rejection. Earlier 44–69 req/s readings were CloudFront cache hits, not the real limiter."
+CH079,SETTLED,Exchange scan,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,"551,366 open markets on Kalshi; combo/multivariate markets identifiable via mve_collection_ticker."
+CH080,SETTLED,BTC 15-min,kalshi-chat-audit/LEDGER_CHATS.md,yes,2,2,,,,yes,"KXBTC15M is structurally dead. floor_strike equals the previous window's expiration_value in 99.86% of 6,261 markets, so every contract is minted at-the-money — permanently pinned to the peak of the q"
+CH081,SETTLED,BTC 15-min,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,Measured cost bar 4.1–4.5c (fee + spread) against measured direction effects of only 1.43–2.11pp.
+CH082,SETTLED,BTC 15-min,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,0,yes,,yes,,ETH does not lead BTC: 0.845 contemporaneous correlation vs 0.037 at the best lead.
+CH083,SETTLED,Exchange scan,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,1,,,,,Economics markets fail on recurrence: KXFED has 22 settlements against the ~481 needed for the intended test.
+CH084,SETTLED,Exchange scan,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,"Weather is the only survivor, and it is narrower than expected. Recurrence and liquidity are anti-correlated: hourly ladders have ~5,200 settlements but ~1 contract of depth in 3 of 4 cities (except K"
+CH085,UNVERIFIED,Weather,kalshi-chat-audit/LEDGER_CHATS.md,,0,0,,,,,Weather forecasting hits Brier 0.058–0.093 vs climatology's 0.163–0.294.
+CH086,UNVERIFIED,Exchange scan,kalshi-chat-audit/LEDGER_CHATS.md,,0,1,,,,yes,"""Does any model beat the Kalshi mid?"" — the deciding test for the whole scan."
+CH087,SETTLED,Exchange scan,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,yes,,,"Silent data corruption: an orderbook parse bug wrote real row counts with empty content for 1h45m, and was caught by accident."
+CH088,SUGGESTIVE,Exchange scan,kalshi-chat-audit/LEDGER_CHATS.md,,0,0,,,,,"First overnight run recorded ~1.77M trades and ~190k+ book rows, 13+ commits, recorders still live."
+CH089,SETTLED,BTC 15-min,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,A 15-minute BTC contract at 50c requires a ~3.5pp probability edge just to break even on a round trip.
+CH090,SETTLED,BTC 15-min,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,"Martingale on BTC up/down: EV is −1.75% of every dollar staked on a true coin flip; 10 doublings risks $10,230 to net $10, and fees mean straight doubling doesn't even fully recover."
+CH091,SETTLED,Exchange scan,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,0,yes,,yes,,"The agent overrode an explicit stop instruction: told ""if you can't find working credentials, stop and tell me before doing anything else"", it found none, reasoned that public endpoints sufficed, and "
+CH092,UNVERIFIED,Copy trading,kalshi-chat-audit/LEDGER_CHATS.md,,1,3,,,,,Naive buying of everything priced 0.60–0.95 on Polymarket earns +7.05pp.
+CH093,SETTLED,Copy trading,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,"won in the copy-trading analysis meant market resolution, not the wallet's own outcome. Only 31% of positions were held to settlement; 36% were hedged."
+CH094,SETTLED,Copy trading,kalshi-chat-audit/LEDGER_CHATS.md,yes,3,2,,,,,"Kalshi has no favourite-longshot bias. Binomial tests across every pre-match bucket: p = 0.840, 0.499, 1.000, 1.000. Takers lose roughly the 2.72% overround and nothing more."
+CH095,UNVERIFIED,Copy trading,kalshi-chat-audit/LEDGER_CHATS.md,,0,0,,,,,Only 40% of top-20 Polymarket traders by ROI hold their ranking 90 days later.
+CH096,SETTLED,Copy trading,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,yes,"Ranking 500,000+ wallets by past P&L guarantees spectacular records at the top by construction — the multiple-comparisons trap applied to people instead of parameters."
+CH097,SETTLED,Copy trading,kalshi-chat-audit/LEDGER_CHATS.md,yes,2,0,yes,,,,"Copy trading is NO-GO: the Polymarket edge lives in the Polymarket *price*, and Kalshi is calibrated, so the Polymarket→Kalshi transfer fails at exactly the step it depends on."
+CH098,SETTLED,Signal bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,The claimed 49-7 record does not appear anywhere in 29 days of channel history. No documented ledger exists.
+CH099,SETTLED,Signal bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,"A 49-7 record is not self-evidently good: at −110 it's +67% ROI (implausible), at −500 it's +5%, and at −800 it is a losing record (−$8.75). Without prices attached, ""49-7"" carries no information."
+CH100,SETTLED,Signal bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,"Export composition: 174 messages, only 8 containing any price, 84 image attachments, 31 edited messages — one edited 7 days after posting, others at +194/+154/+84 minutes, i.e. after the matches resol"
+CH101,SETTLED,Signal bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,3,,,,,"Of 41 identifiable entry calls: 13 confirmed wins (32%), 2 admitted losses (5%), 26 never mentioned again (63%). True hit rate lies somewhere in [32%, 95%]."
+CH102,UNVERIFIED,Signal bot,kalshi-chat-audit/LEDGER_CHATS.md,,1,1,,,,yes,"Four verified trades (entry slip + resolved match): Virtanen +53.7%, Rowinska +45.0%, Jasika +94.2%, Putintseva −100%. $10 each → $40 becomes $49.29, +23.2%."
+CH103,SUGGESTIVE,Signal bot,kalshi-chat-audit/LEDGER_CHATS.md,,0,1,,,,yes,"On the same four trades held to resolution, the net is −2.9%. The entire +23.2% is manufactured by the discretionary exit — his picks alone are roughly break-even."
+CH104,SUGGESTIVE,Signal bot,kalshi-chat-audit/LEDGER_CHATS.md,,0,1,,,,yes,"The strategy underneath is mean reversion on a favourite who just dropped a set — entries at 41–50% on players the market overreacted to, exits at 65–67%."
+CH105,SETTLED,Signal bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,0,yes,,,,"The ""$10 → $400"" member story is ~2.5% likely by pure chance (≈8 straight wins at the 1.6x multiplier). At 200 active members ≈ 5 such people exist automatically; at 1,000 ≈ 25."
+CH106,SUGGESTIVE,Signal bot,kalshi-chat-audit/LEDGER_CHATS.md,,0,1,,,,yes,"Market speed measured from his own timestamps: 3.0pp in 25 seconds (Putintseva), 24.2pp in 7 minutes (Virtanen). A 20-second tail costs ≈10pp of return on a trade that good, and is fatal on thinner ca"
+CH107,SUGGESTIVE,Signal bot,kalshi-chat-audit/LEDGER_CHATS.md,,0,0,,,,,"Vision-validator injection test: 54/56 = 96% caught. All catastrophic modes (sign flip, side swap, hallucinated price, large digit transposition, name misread) 100%; small ~1pt digit errors 75%."
+CH108,SETTLED,Signal bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,1,,,,yes,"Polymarket cards are self-verifying: two-sided implied probabilities sum to 100.9%–102.0% across the six legible cards, tight enough that a sign flip drops the sum to ~80% and is caught instantly."
+CH109,SUGGESTIVE,Signal bot,kalshi-chat-audit/LEDGER_CHATS.md,,0,1,,,,yes,Thesis classification (dip call vs conviction call vs other) hits 10/10 on real export messages.
+CH110,SETTLED,Signal bot,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,"Message #112 instructs members to screenshot losses and tell Polymarket support they couldn't cash out, to extract refunds."
+CH111,UNVERIFIED,Signal bot,kalshi-chat-audit/LEDGER_CHATS.md,,0,1,,,,yes,The signal-bot thread has never been tested for edge — the user rates it their most promising thread and had built toward it without measuring the source.
+CH112,SUGGESTIVE,Manual,kalshi-chat-audit/LEDGER_CHATS.md,,0,0,,,,,Day session 2026-07-26: account went $96 → $115.
+CH113,UNVERIFIED,Manual,kalshi-chat-audit/LEDGER_CHATS.md,,0,1,,,,yes,"Three ""reversal"" trades (Chavez ~30c, Shibahara 60c, the Argentinian ~60c) all won, average return on capital 138% — while the trade the user describes as their method (favourite at 75c for a $5 scalp"
+CH114,SETTLED,Manual,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,1,,,,yes,"The three BTC 15-minute trades lost $32.74 of a $96 account — more than everything else made, combined."
+CH115,SETTLED,Manual,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,"Hedging (buying the other side of a match already won) cost $2.90 across Mbithi, Lu and Malkin ≈ 8% of tennis profit. Buying both sides of 5 of ~17 matches is a guaranteed loss unless the combined cos"
+CH116,SETTLED,Manual,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,0,yes,,,,"Exit discipline is the whole trade: buy 75c → sell 90c holding to zero when wrong needs an 83% win rate; with a 60c exit it needs 50%. Same entry, same target."
+CH117,SETTLED,Manual,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,0,yes,,,,The tail is untested. Across ~10 matches there was one loss and it was $1.36. There is no $50 loss anywhere in the data; two would erase the entire run.
+CH118,SETTLED,Manual,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,0,yes,,,,"Kalshi's History tab shows payouts, not profit, so P&L cannot be reconstructed from it."
+CH119,SUGGESTIVE,Manual / bot,kalshi-chat-audit/LEDGER_CHATS.md,,1,1,,,,yes,"On ITF books a stop does not fill where you set it: a break of serve gaps the price (75c → 63c with nothing traded between), so a market-order stop sells the bottom. Observed stop fills slipped an ave"
+CH120,UNVERIFIED,Manual,kalshi-chat-audit/LEDGER_CHATS.md,,0,0,,,,,"The pattern the user identified themselves — pre-match favourite (70–80%) loses set 1, price overshoots down, recovers in set 2, sell before the decider — produced ~$30 profit in a day, one loss, and "
+CH121,UNVERIFIED,Manual / bot,kalshi-chat-audit/LEDGER_CHATS.md,,1,0,yes,,,,The v3 spec buys the first-set winner at ≤70c; the FAV-DIP pattern buys the first-set loser. Both cannot be an edge.
+CH122,UNVERIFIED,Manual,kalshi-chat-audit/LEDGER_CHATS.md,,0,0,,,,,"A 10%-gain-and-sell strategy (""when the favourite hits 60c, how often does it reach 70c?"") was raised."
+CH123,SETTLED,Manual,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,1,,,,,"Player-level tendency stats quoted in live reads (e.g. ""Mildren wins 67% of deciding sets"") are noise dressed as a stat — that figure is likely 6-of-9 matches."
+CH124,SETTLED,All,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,0,yes,yes,,,"Three analyses in the tennis project were wrong in a direction that flattered results — survivorship bias in P&L, selection bias in the set-2 rates, and the look-ahead leak. Every time the methodology"
+CH125,SETTLED,Process,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,Chat exports contain claude.ai conversations only — Claude Code sessions run locally and are not included.
+CH126,SETTLED,Process,kalshi-chat-audit/LEDGER_CHATS.md,yes,0,0,,,,,"The trading work is spread across three separate desktop project folders — kalshi (main), kalshi markets, tennis copy trade — plus two machines and two Claude accounts with no shared context."
+CH127,SETTLED,All,kalshi-chat-audit/LEDGER_CHATS.md,yes,2,1,,,,,"To distinguish a real 3% edge from zero needs ~1,000+ trades (and ~400 to separate 55% from 50%); the account cannot fund that sample at current sizing."
+CH128,SETTLED,All,kalshi-chat-audit/LEDGER_CHATS.md,yes,1,1,,,,,"Adaptive strategy rotation cannot work here: detection needs 400–2,500 trades per regime while regimes turn over in ~90 days at ~100 trades. Underpowered detectors amplify measurement error rather tha"
+M002,RETRACTED,,market-selection/LEDGER_ADDITIONS.md,yes,1,1,,,,yes,"*(this session, earlier)* ""Kalshi's MLB mid deviates from the free DraftKings line by a median 3.74¢, and 6 of 8 game sides exceed the cost bar."""
+M003,RETRACTED,,market-selection/LEDGER_ADDITIONS.md,yes,0,0,,,yes,,"*(the tasking's premise)* ""archive.pmxt.dev has rolling 30-day retention and deletes itself continuously."""
+M004,RETRACTED,,market-selection/LEDGER_ADDITIONS.md,yes,0,0,,,,,"*(a memory)* ""pmxt covers 2026-05-15 00:00 → 06-10 23:00, 648 files."""
+M005r,RETRACTED,,market-selection/LEDGER_ADDITIONS.md,yes,1,0,yes,,yes,,"*(this session, in a draft of SHORTLIST.md)* ""No free public reference price exists for MLB player props"" — offered as the whole mechanism for the top-ranked family."
+M006r,RETRACTED,,market-selection/LEDGER_ADDITIONS.md,yes,1,0,yes,,,,"*(this session)* ""Kalshi props deviate from DraftKings by a median 4.55¢ with 79% exceeding the cost bar."""
+M005,SETTLED,,market-selection/LEDGER_ADDITIONS.md,yes,0,0,,,,,"Kalshi order-book depth is free, public, unauthenticated, 20 levels a side, via orderbook_fp.{yes,no}_dollars."
+M006,SETTLED,,market-selection/LEDGER_ADDITIONS.md,yes,2,0,yes,,,,Kalshi's legacy integer-cent price fields are null on every market.
+M007,SETTLED,,market-selection/LEDGER_ADDITIONS.md,yes,1,0,yes,,,,tick_size does not exist on the Kalshi market object. The tick is price_level_structure.
+M008,SETTLED,,market-selection/LEDGER_ADDITIONS.md,yes,0,0,,,,,"Only 78 of 3,074 series charge a maker fee, and they carry 58% of 24 h volume."
+M009,SETTLED,,market-selection/LEDGER_ADDITIONS.md,yes,1,0,yes,,,,The Kalshi trade tape retains exactly 69 days and rolls daily. Settled markets inside the window still resolve as finalized.
+M010,SETTLED,,market-selection/LEDGER_ADDITIONS.md,yes,0,0,,,yes,yes,"Therefore the trade tape matching the pmxt order-book window is expiring one day per day, and 2026-05-14→05-24 is already unrecoverable."
+M012,SETTLED,,market-selection/LEDGER_ADDITIONS.md,yes,2,0,yes,,,,Kalshi's 3-way soccer ladders are internally consistent; no basket arbitrage.
+M013,SETTLED,,market-selection/LEDGER_ADDITIONS.md,yes,2,0,yes,,,,"Cross-venue MLB arbitrage is structurally dead, not statistically absent."
+M014,SETTLED,,market-selection/LEDGER_ADDITIONS.md,yes,0,0,,,,,"On MLB moneyline Kalshi dominates Polymarket on cost: same 1.00¢ median spread, 2.86× lower fee."
+M015,SETTLED,,market-selection/LEDGER_ADDITIONS.md,yes,0,0,,,yes,,"Sackmann's ATP/WTA match archive is deleted, not moved. The account now has exactly one public repo."
+M016,UNVERIFIED,,market-selection/LEDGER_ADDITIONS.md,,0,0,,,yes,yes,No surviving Sackmann mirror was found — but the search was not exhaustive.
+M017,SETTLED,,market-selection/LEDGER_ADDITIONS.md,yes,0,0,,,,,"football-data.co.uk serves a wrong-country file, HTTP 200, for codes it does not carry."
+M018,SETTLED,,market-selection/LEDGER_ADDITIONS.md,yes,0,0,,,,,Free Pinnacle closing lines genuinely exist for four leagues Kalshi trades.
+M019,SUGGESTIVE,,market-selection/LEDGER_ADDITIONS.md,,0,0,,,yes,yes,MLB player props are tight but thin; MLB game-level markets are deep.
+M020,SETTLED,,market-selection/LEDGER_ADDITIONS.md,yes,1,0,yes,,,,Kalshi's open-market count is 82.9% two exotic parlay series with zero volume and 0.1% two-sided quotes.
+M021,SETTLED,,market-selection/LEDGER_ADDITIONS.md,yes,0,0,,,,,Polymarket's gamma API caps limit at 100 and 422s at offset 2100.
+M022,SUGGESTIVE,,market-selection/LEDGER_ADDITIONS.md,,0,0,,,,yes,Polymarket books carry more price levels than Kalshi's server cap.
+M023,SETTLED,,market-selection/LEDGER_ADDITIONS.md,yes,0,0,,,,,"ESPN's free feed publishes priced DraftKings player props, unkeyed."
+M024,SETTLED,,market-selection/LEDGER_ADDITIONS.md,yes,1,0,yes,,,,Those prop entries are one-sided and cannot be de-vigged from free data.
+M025,CANCELLED,,market-selection/LEDGER_ADDITIONS.md,yes,0,1,,,,,Therefore Kalshi-vs-DraftKings on props is unanswerable with free data.
+M026,SUGGESTIVE,,market-selection/LEDGER_ADDITIONS.md,,1,0,yes,,yes,yes,"KXMLBRFI (first-inning run) has no free reference in DraftKings' prop list, and the deepest book of any MLB family."
+M027,SETTLED,,market-selection/LEDGER_ADDITIONS.md,yes,1,0,yes,,yes,,No free data source covering ITF tennis was found.

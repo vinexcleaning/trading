@@ -1,7 +1,7 @@
 To: reopen
 From: coordinator
 Opened: 2026-08-08 22:45
-Status: OPEN
+Status: DONE
 Subject: Audit all 342 closed claims: which died on evidence, and which on a bug, a missing feed, or a test too small
 
 --- INSTRUCTION ---
@@ -119,4 +119,43 @@ The session that owns `reopen` writes below this line, and changes `Status:`
 above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
+
+**DONE 2026-08-08.** Report: [reopen/REOPENED.md](../../../reopen/REOPENED.md).
+Folder created with `README.md`, `HANDOFF.md`, `DECISIONS.md`, three read-only
+scripts and `reports/classification.csv` carrying all 313 calls.
+
+**313 distinct claims read** (342 table rows; 29 IDs appear twice because the
+retraction summary repeats them). **82 of them closed a line of work. 53 of
+those 82 were closed properly.** The other 29 split into **13 that want a test
+re-run** and **16 that want a sentence rewritten**. Counts by category: too
+small to see it 9, one version tested 8, data "wasn't available" 7, a bug 5.
+
+Mail filed: `devig` 010 (6), `tennis` 006 (6), `soccer` 002 (1),
+`coordinator` 001 (machinery).
+
+**Three disagreements with the tasking, recorded rather than skipped:**
+
+1. **"342 closed claims" is not 342 closures.** 231 of the 313 are facts, safety
+   checks, corrections, positive findings or openly-unfinished items. They never
+   closed anything. I chose the smaller denominator and both framings are
+   printed, because deciding what counts as a closure is the single biggest
+   lever in the headline and it should not be hidden inside my judgement.
+
+2. **The tasking says `crypto/MM_RESULTS.md` still states the retracted
+   order-book claim as a live blocker.** A plain search reproduces that. Opening
+   the file does not: it was corrected in place under a retraction box on
+   2026-08-06, per the house convention of never deleting a wrong number. **That
+   part of the tasking is stale.** The real problem there is different and
+   worse — `LEDGER.md` records that thread as a settled null while the project's
+   own later document says the question is unresolved with room in the
+   favourable direction.
+
+3. **This chat is rewarded for finding reopens and found 29.** That rate should
+   be read sceptically, which is why the split into 13-and-16 exists and why
+   every call is written down rather than summarised.
+
+**One thing only the user can decide**, stated in REOPENED.md and not resolved
+by me: reopen thirteen threads now, or finish the soccer table first. The two
+cheapest reopens are an afternoon each and both have idle owners; against that,
+every one of these ends where all 51 corrections ended.
 
