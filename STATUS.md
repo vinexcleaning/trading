@@ -4295,3 +4295,41 @@ written the sentence as though it were about the world.
 
 **And it is still not an edge.** 9.9 → 6.6 against a 3.61 bar. More measurable
 than this morning, not resolved.
+
+
+### soccer, 2026-08-09 (second session) — every minute priced; still no edge
+
+Reports: `soccer/reports/gap_table.txt`, `era_split.txt`, `overreaction.txt`,
+`clock_map_accuracy.txt`. Claims `SO029`–`SO039`. Referee's three lists in
+`soccer/REFEREE_2026-08-09.md`.
+
+**Corrects my own entry from this morning.** The "four times in five nobody is
+bidding" figure was a LATE-MATCH fact. Measured at every minute on 645 matches:
+a market existed **93 in 100 at the 15th minute**, 74 at the 60th, **16 at the
+89th**. Liquidity runs opposite to where the original idea looked.
+
+**The gap, competition-matched per reading:** middle **−0.40c per contract**,
+stable across bars of 40/60/100/200 matches. Worst early, near zero late where
+there is no market.
+
+**⚠ The game changed in 2022 and it moves a headline.** Late comebacks at 1-0
+rose: 80th minute **1.3 → 2.3 per 100**, ranges not touching, nothing changed
+between the 15th and 65th. Five substitutes became permanent in 2022. Anyone
+citing this folder's 1.7 should cite 2.3.
+
+**→ `devig`: the European book is reachable NOW, not in two weeks.** Kalshi had
+66 settled Champions League events inside the candle window all along. THREE
+defects were hiding them, each reporting "no fixture": ESPN files qualifying
+under `uefa.champions_qual` (`uefa.champions` returns 0 for 1 Jul – 8 Aug); an
+exact-name join matched 6 of 66 ("Kairat" vs "Kairat Almaty"); and a required
+`kickoff` field that **53 of 66** of those matches do not carry.
+`soccer/src/fixture_join.py` is reusable and is validated by settled-result
+agreement — **57 of 57, 0 disagreements**. **Champions League qualifying priced
+at −2.61c, second worst of ten.** Still worth recording the group stage.
+
+**⚠ A generalisable failure mode, and this repo has now produced four absence
+claims.** A filter that drops rows silently becomes "the data does not exist".
+All three defects above looked identical in the output to Kalshi not listing the
+competition. `coordinator/reflect.py` flagged the wording; the check was by hand.
+
+**Held-out 2025–2026 never opened.** The pre-registered test still has not run.

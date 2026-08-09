@@ -1,8 +1,8 @@
 # HANDOFF.md — soccer
 
 <!-- COORDINATOR-STATE
-doing: nothing - stopped by the user 2026-08-09, waiting on the devig chat's Champions League recorder
-left: re-measure the price in STALE states (the current price sample is only ever 2 minutes after a goal, which is NOT the case the idea is about); then, if a price exists, the pre-registered test on the held-out years
+doing: nothing - mailbox 003 closed 2026-08-09, waiting on the user's call
+left: the user decides the four questions in REFEREE_2026-08-09.md; the one that matters is whether to re-run once the Champions League GROUP STAGE gives a deep book in September
 needs: no
 -->
 
@@ -13,42 +13,37 @@ needs: no
 
 ## STOP READING AND READ THIS FIRST
 
-**The comeback idea was reported to the user as answered — "no, the price is not
-there". That answer is narrower than it was stated, and the narrowing is mine,
-found after reporting.**
+**The stale-price limitation that used to be here is FIXED.** Prices are now
+read at every displayed minute, whether or not anything had just happened,
+using `clock_map.py` (median error 8 seconds, leave-one-out on 24,159 anchors).
+645 matches, 30,648 minute-readings.
 
-`src/price_at_state.py` reads the Kalshi price **at the wallclock of a goal, plus
-two minutes.** Every one of its 544 priced moments is therefore *just after
-somebody scored*. For the 149 moments at the 70th minute or later, that means
-**the goal itself happened at minute 68 or later.**
+**What that changed:** the market is there EARLY and gone LATE. Somebody was
+bidding on the losing side **93 times in 100 at the 15th minute and 16 times in
+100 at the 89th**. The earlier "four times in five there is no market" was a
+late-match fact reported as a general one.
 
-**That is not the situation the idea is about.** The ordinary case — 1-0 since
-the 20th minute, now it is the 80th and nothing has happened for an hour — is
-**almost entirely absent from the price sample.** A book two minutes after a late
-goal and a book that has sat on the same scoreline for an hour are not the same
-book, and nothing here measured the second one.
+**What it did not change:** there is still no edge. Competition-matched, middle
+**−0.40c per contract**, stable across every sample bar tried.
 
-Which way it cuts is **not known and must not be guessed**:
+### The failure mode this folder should be remembered for
 
-- it could be *worse* — an hour of quiet lets the price settle further into the
-  extreme, and 99/100 becomes even more universal;
-- it could be *better* — an hour gives market makers time to post resting
-  offers, so there may be liquidity at 97–98 that simply does not exist two
-  minutes after a goal.
+**Three separate defects each hid the European book, and each one reported it as
+"no fixture" — which in the output is indistinguishable from Kalshi not listing
+the competition.**
 
-**Both are plausible and neither was measured.** Until it is, the honest
-statement is: *right after a late goal, the 97-cent trade is available 7 times in
-149. In a settled late scoreline, unknown.*
+1. ESPN files Champions League qualifying under `uefa.champions_qual`.
+   `uefa.champions` returns **0** fixtures for 1 Jul – 8 Aug; the other returns
+   exactly the **66** that Kalshi has settled events for.
+2. Exact-name joining matched **6 of 66** — Kalshi's "Kairat" against ESPN's
+   "Kairat Almaty". `fixture_join.py` fixes it and is validated by settled-result
+   agreement: **57 of 57, 0 disagreements**.
+3. `price_by_minute.py` required a `kickoff` field that **53 of 66** of those
+   matches do not carry.
 
-**This is job #1 for the next session** and it needs no new download — Kalshi
-candles for the same 69-day window already answer it. Sample the price at a fixed
-displayed minute (say 80) in every match, regardless of when the last goal was,
-using the same wallclock method in `price_at_state.py`.
-
-`LEDGER_SOCCER.md` SO026–SO028 carry this limitation inline. The artifact shown
-to the user does **not** — it should be corrected before it is read again.
-
----
+Each fix roughly doubled the European sample: 12 → 39 → **63**. **A filter that
+drops rows silently becomes an absence claim, and this repo has now made four.**
+`coordinator/reflect.py` flagged the wording; the verification was by hand.
 
 ## Why this session stopped
 
@@ -60,6 +55,10 @@ Champions League recorder has data.*
 says it needs **about two weeks** before it holds anything useful, and that its
 first attempt died in 19 minutes because two programs were pointed at one
 database file.
+
+**The recorder is still worth having for the GROUP STAGE**, which is the deep
+book and starts in September. It was not needed for qualifying — that data was
+already inside Kalshi's window.
 
 **Do not start, restart, adopt or write to that recorder.** If it has stopped,
 that is a note for `devig` in `STATUS.md`, not a thing to fix from here.
