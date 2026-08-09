@@ -1,9 +1,30 @@
 # HANDOFF — tennis-paper-forward
 
+## ⚠ S022, S023 AND ANY set1_overshoot RE-RUN NEED THE LAPTOP, NOT THIS MACHINE
+
+Recorded here so it is not rediscovered a third time - the reopen chat and this
+session each found it independently on 2026-08-09.
+
+```
+set1_overshoot/data                        NOT PRESENT
+kalshi-tennis/data                         NOT PRESENT
+/c/Users/gianf/kalshi/set1_overshoot/data  NOT PRESENT
+```
+
+Both are **laptop-only and gitignored** (`STATUS.md` "Data on disk", `CLAUDE.md`
+§8). `p2_fade.py` cannot run from the desktop, and neither can any count of what
+the depth recorder has accrued since 2026-08-01. **That is the user's to do at
+the laptop, or a session opened there.**
+
+**S018 is a different case and was actionable from here** - see
+`src/set1_labels.py`. It is REFUTED: a free source nobody checked supplies 1,062
+set-1 labels for S006's own window against the 479 it used. The join rate still
+needs the laptop.
+
 <!-- COORDINATOR-STATE
-doing: collecting settled tennis matches on the desktop, 209 of 2,500, after fixing three wrong numbers on the status page
-left: move it to the laptop so a watchdog restarts it; then leave it ~25 days of uptime
-needs: yes - run runners\LAPTOP_SETUP.md on the laptop (20 min, once). Until then this test dies whenever the desktop window closes and nothing restarts it.
+doing: collecting on the desktop, 362 settled of 2,500; watchdog installed so both tests restart themselves after a power-off
+left: make both tests windowless (user closing the two consoles); then ~25 days of uptime. S018 refuted - join rate needs the laptop
+needs: yes - close the two visible console windows so the watchdog restarts them invisibly; and the $9.99 point-by-point purchase is still unspent
 -->
 
 **Built 2026-08-06, desktop `C:\Users\vinig`.** Running and accumulating.
