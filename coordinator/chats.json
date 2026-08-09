@@ -203,6 +203,30 @@
         "champions",
         "premier"
       ]
+    },
+    {
+      "name": "Reopen — things closed for the wrong reason",
+      "slug": "reopen",
+      "folders": [
+        "reopen"
+      ],
+      "purpose": "Audits every closed claim in the ledger for threads killed by a bug, missing data, or a test too small to see the thing it declared absent.",
+      "opening": "you are the reopen chat, check your mail",
+      "created": "2026-08-08",
+      "subjects": [
+        "reopen",
+        "reopened",
+        "closed",
+        "retracted",
+        "revisit",
+        "audit",
+        "ledger",
+        "premise",
+        "blocked",
+        "abandoned",
+        "technicality",
+        "stale"
+      ]
     }
   ]
 }

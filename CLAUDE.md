@@ -143,6 +143,21 @@ and it makes the risk shape visible for free — *"97 times you win 3 dollars,
 **A number with no consequence attached is noise.** Every number gets "bigger
 is better" or "bigger is worse" and what it would have to be to matter.
 
+### Name the exact window, every time
+
+**He asked for this on 2026-08-09:** *"Next time be a little more specific on
+which chats."* He had to work out which windows "two chats have unread mail"
+meant.
+
+**Never write "two chats need you" or "the other chats".** Every instruction
+names the window and the exact words to type, as a list he can work down:
+
+> - Open the **De-vig** window and type: `check your mail`
+> - Open the **Signal** window and type: `check your mail`
+
+`py -3 coordinator\chats.py list` prints every chat's name and its opening
+line. There is no excuse for a vague one.
+
 ### When he tells you to drop something, drop it
 
 He reaffirmed a decision about a security item on 2026-08-08 after it had been

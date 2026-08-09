@@ -62,6 +62,10 @@ WORKSTREAMS = {
         "title": "Soccer — comeback rates against Kalshi's price",
         "folders": ["soccer"],
     },
+    "reopen": {
+        "title": "Reopen — things closed for the wrong reason",
+        "folders": ["reopen"],
+    },
     "coordinator": {
         "title": "Coordination",
         "folders": ["coordinator", "common"],
