@@ -10,10 +10,10 @@ are below and the group sizes are why.
 
   the leader was  goals   you pay  they really win   matches   left over
 --------------------------------------------------------------------------
-       top third     18     81.0c            72.6%      1562      -9.48c
-    middle third      8     80.0c            64.9%      1179     -16.22c
-    bottom third     10     55.5c            59.6%       944      +2.37c
-         unknown     11     43.0c            60.7%       206     +15.98c
+       top third     60     75.5c            72.6%      1562      -4.19c
+    middle third     26     67.5c            64.9%      1179      -4.14c
+    bottom third     23     60.0c            59.6%       944      -2.08c
+         unknown     23     71.0c            60.7%       206     -11.74c
 
 'Left over' is what the football says it is worth, minus what
 you pay, minus the fee. Positive would mean you were being paid

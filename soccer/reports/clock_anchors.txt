@@ -1,7 +1,7 @@
-1037 matches with clock anchors
+1146 matches with clock anchors
 
-anchors per match: median 21, fewest 7, most 64
-matches with anchors in BOTH halves: 1016 (98.0%) -- a match with anchors in only one half can only be placed in that half
+anchors per match: median 21, fewest 6, most 64
+matches with anchors in BOTH halves: 1119 (97.6%) -- a match with anchors in only one half can only be placed in that half
 
 by competition:
   usa.usl.1                  120
@@ -11,10 +11,12 @@ by competition:
   ecu.1                       83
   usa.1                       82
   usa.nwsl                    76
+  uefa.champions_qual         66
   bra.1                       60
   per.1                       60
   arg.1                       54
   chi.1                       49
+  uefa.europa_qual            43
   col.1                       33
   mex.1                       32
   eng.1                       20

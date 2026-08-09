@@ -98,6 +98,17 @@ these numbers existed — check the git log, and if it was not, disregard it.
 
 **Kalshi's European per-game books ARE settled and listed**: `KXEPLGAME` 200 settled events (last 2026-05-24), `KXLALIGAGAME` 200 (last 2026-05-24), `KXUCLGAME` 200 (last **2026-08-05**). The Premier League and La Liga have **zero** inside the ~69-day candle window because their season ended before it opened; the Champions League has 66 because qualifying runs through July and August.
 
+## The full-match answer, 2026-08-09 — every minute, with the European book in it
+
+| ID | Claim in plain English | Artifact | n + unit | Effect | STATUS |
+|---|---|---|---|---|---|
+| **SO036** | **The market is there EARLY and gone LATE**, which is the opposite of where the original idea looked. | `reports/gap_table.txt` §1 | **30,648 minute-readings, 645 matches**, every minute 1-90 | somebody bidding on the losing side: **93 in 100 at the 10th–15th minute**, 92 at the 25th, 74 at the 60th, 47 at the 80th, **16 at the 89th**. Priced ≤97c: **83 in 100 at the 10th**, 19 at the 80th, **1 at the 89th** | **SETTLED** — supersedes SO026/SO031. Monotone decline across 17 sampled minutes |
+| **SO037** | **The price is worse than the football says, and it is worst early where the market actually is.** | `reports/gap_table.txt` §4 | 15,216 readings matched to their OWN competition's 2022-2024 cell | overall middle **−0.40c per contract**. Stable across bars: −0.46c at 40 matches, −0.40c at 60, −0.48c at 100, −1.23c at 200 | **SUGGESTIVE** — two populations (rates 2022-2024; prices a 69-day 2026 window). Not a profit measurement and not a realised outcome |
+| **SO038** | **The deepest European book in the sample is among the WORST priced, not the best.** | `reports/gap_table.txt` §4 | **63 Champions League qualifying matches**, 2,546 readings, 1,016 compared | **−2.61c per contract**, second worst of the eleven competitions with enough history to price. A market existed 66 in 100; ≤97c on 47 in 100 | **SUGGESTIVE** — and it is **qualifying, not the group stage**, which is the deeper book that starts in September. Does not settle the group stage |
+| **SO039** | Three competitions look positive and **none should be read as a finding**. | `reports/gap_table.txt` §4 | 11 competitions with enough history | NWSL **+1.86c**, Liga MX **+0.93c**, USL **+0.24c** | **EXPLICITLY NOT NOMINATED** — best three of eleven is the exact shape that looks good by chance, and NWSL rests on 696 matches of history against Liga MX's 3,289. Recorded so nobody re-derives them later as a discovery |
+
+**Three separate defects were each hiding the European book, and each reported it as "no fixture" — indistinguishable in the output from Kalshi not listing the competition.** (1) ESPN files qualifying under `uefa.champions_qual`, not `uefa.champions`. (2) Exact-name joining matched 6 of 66 — Kalshi's "Kairat" against ESPN's "Kairat Almaty". (3) A required `kickoff` field that **53 of 66** Champions League qualifying matches simply do not carry. Fixed in that order; the sample went 12 → 39 → 63 matches. **The lesson is the failure mode, not the fix:** a filter that drops data silently produces an absence claim, and this folder has now produced four.
+
 ### ⚠ SO026–SO028 are narrower than first reported, and this was found after reporting
 
 **Every price in `price_at_state.py` is read at a goal's wallclock plus two

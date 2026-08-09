@@ -1,8 +1,8 @@
-75016 matches given a team-strength reading
+76054 matches given a team-strength reading
   rolling window 20 matches (second reading at 10)
   a team needs 5 played, and 6 rivals active within 120 days, or it reads 'unknown'
 
-BOTH teams' strength known on 66387 of 75016 matches (88.5%). The rest keep an 'unknown' bucket in the table rather than being guessed or dropped.
+BOTH teams' strength known on 66531 of 76054 matches (87.5%). The rest keep an 'unknown' bucket in the table rather than being guessed or dropped.
 
 by competition:
   competition             matches  both known      %
@@ -28,5 +28,7 @@ by competition:
   usa.nwsl                   1452        1333  91.8%
   usa.usl.l1                 1144        1000  87.4%
   uefa.europa.conf            729         269  36.9%
+  uefa.champions_qual         572         120  21.0%
+  uefa.europa_qual            466          24   5.2%
   fifa.world                  232          68  29.3%
   fifa.cwc                    133          12   9.0%

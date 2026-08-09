@@ -1,4 +1,4 @@
-66765 match rows with a timeline
+67806 match rows with a timeline
 
 league                  matches   goals  no_min  unattr   reds   agrees  disagrees  first   last
 usa.1                      5082   15021       0       0   1005     5079          3   2015   2026
@@ -12,7 +12,7 @@ eng.1                      4370   12286       0       0    553     4368         
 fra.1                      4056   10961       0       0   1053     4054          2   2015   2026
 mex.1                      3847   10486       0       0   1366     3822         25   2015   2026
 ger.1                      3519   10764       0       0    538     3515          4   2015   2026
-uefa.europa                3500    9543       1      23    735     3448         52   2015   2026
+uefa.europa                3506    9557       1      23    737     3454         52   2015   2026
 fifa.friendly              2899    7493       0       3    301     2822         77   2015   2026
 chi.1                      2880    7760       1      16   1183     2848         32   2015   2026
 per.1                      2239    5878       0       0    963     2225         14   2016   2026
@@ -22,13 +22,15 @@ usa.usl.l1                 1065    3000       0       0    255     1061         
 usa.nwsl                   1029    2677       0       0     84     1027          2   2015   2026
 bra.copa_do_brazil          745    1759       0       4    201      739          6   2015   2026
 uefa.europa.conf            727    2028       3       0    146      723          4   2021   2026
+uefa.champions_qual         570    1596       0       0    124      569          1   2020   2026
+uefa.europa_qual            465    1325       0       0    133      462          3   2020   2026
 fifa.world                  232     649       0       0     23      232          0   2018   2026
 fifa.cwc                    133     420       0       0     35      133          0   2015   2025
 uru.1                        30      61       0       0      1       30          0   2021   2026
 
 scoreboard and summary disagree on the final score for 0 matches
-TOTAL matches 66765, goals 178366, goals with no readable minute 6, goals credited to neither side 47
-timeline reproduces the final score PER TEAM on 66368 matches, fails on 397 (0.6%)
+TOTAL matches 67806, goals 181301, goals with no readable minute 6, goals credited to neither side 47
+timeline reproduces the final score PER TEAM on 67405 matches, fails on 401 (0.6%)
 
 WHAT ESPN HAS NO TIMELINE FOR -- the gaps, per competition
 
@@ -39,30 +41,32 @@ returned one. A 0-0 costs nothing (no goals to place, the
 match was level throughout). Anything else is a real loss.
 
 competition                got   lost (had goals)   0-0, harmless   % lost
-uru.1                       30               5894             626    99.5%
-ecu.1                     1477               2886             214    66.1%
-per.1                     2239               2814             276    55.7%
-bra.copa_do_brazil         745               1434             174    65.8%
-fifa.friendly             2899                952             172    24.7%
-usa.nwsl                  1029                792              54    43.5%
-usa.usl.l1                1065                144              14    11.9%
-chi.1                     2880                  8               0     0.3%
-col.1                     4804                  8               0     0.2%
-arg.1                     4547                  6               0     0.1%
-uefa.europa               3500                  3               2     0.1%
-uefa.champions            1983                  2               4     0.1%
-uefa.europa.conf           727                  2               0     0.3%
-esp.1                     4395                  2               0     0.0%
-fra.1                     4056                  0               0     0.0%
-fifa.cwc                   133                  0               0     0.0%
-ita.1                     4401                  0               0     0.0%
-ger.1                     3519                  0               0     0.0%
+uru.1                       30               8841             939    99.7%
+ecu.1                     1477               4329             321    74.6%
+per.1                     2239               4221             414    65.3%
+bra.copa_do_brazil         745               2145             261    74.2%
+fifa.friendly             2899               1428             258    33.0%
+usa.nwsl                  1029               1188              81    53.6%
+usa.usl.l1                1065                216              21    16.9%
+col.1                     4804                 12               0     0.2%
+chi.1                     2880                 12               0     0.4%
+arg.1                     4547                  9               0     0.2%
+uefa.europa               3506                  6               4     0.2%
+uefa.europa.conf           727                  4               0     0.5%
+uefa.champions            1983                  3               6     0.2%
+esp.1                     4395                  3               0     0.1%
+uefa.champions_qual        570                  2               0     0.3%
+eng.1                     4370                  0               0     0.0%
 usa.usl.1                 4420                  0               0     0.0%
 fifa.world                 232                  0               0     0.0%
-eng.1                     4370                  0               0     0.0%
-bra.1                     4385                  0               0     0.0%
 usa.1                     5082                  0               0     0.0%
+fifa.cwc                   133                  0               0     0.0%
+fra.1                     4056                  0               0     0.0%
+uefa.europa_qual           465                  0               1     0.0%
+ita.1                     4401                  0               0     0.0%
+bra.1                     4385                  0               0     0.0%
 mex.1                     3847                  0               0     0.0%
+ger.1                     3519                  0               0     0.0%
 
 A match whose goal timeline does not reproduce its final score is UNUSABLE for a comeback table and is dropped, not repaired.
 Note: knockout ties are EXPECTED to fail this check when they go to extra time, because ESPN's final score includes it. The table builder handles those separately rather than dropping them.

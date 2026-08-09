@@ -46,6 +46,7 @@ import kalshi_fees as F            # noqa: E402
 PRICES = os.path.join(DATA, "price_by_minute.jsonl")
 MODERN = ("2022", "2024")
 MIN_PRICED = 8          # fewer priced minutes than this and a cell is not shown
+RATE_BAR = 60           # matches a competition's own cell needs to be used
 SHOW = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 89]
 TIERS = ["top third", "middle third", "bottom third", "unknown"]
 
@@ -80,6 +81,14 @@ def modern_rates():
 
 
 def load_prices():
+    """Price readings, one Kalshi event per ESPN fixture.
+
+    Kalshi occasionally lists the same match twice with the teams the other way
+    round -- `KXUELGAME-26AUG06PAFRBS` and `KXUELGAME-26AUG06RBSPAF` are both
+    Salzburg v Pafos on 2026-08-06. One fixture in 518, so it changes nothing
+    here, but a match counted twice is a match with twice the weight and the
+    fix is three lines.
+    """
     rows = []
     with open(PRICES, encoding="utf-8") as fh:
         for line in fh:
@@ -109,8 +118,17 @@ def load_prices():
                 "has_market": t_bid > 0,
                 "spread": t_ask - t_bid,
                 "leader_tier": lt, "trailer_tier": tt,
+                "espn_id": r["espn_id"],
             })
-    return rows
+    # Keep whichever event carries more readings for each fixture.
+    per = defaultdict(list)
+    for r in rows:
+        per[(r["espn_id"], r["event"])].append(r)
+    best = {}
+    for (eid, ev), v in per.items():
+        if eid not in best or len(v) > len(best[eid]):
+            best[eid] = v
+    return [r for v in best.values() for r in v]
 
 
 def fee_at(price):
@@ -244,27 +262,60 @@ def main():
     for lg, c in mix.most_common():
         out.append(f"    {lg:24s} {c:6d} readings  {c/tot*100:5.1f}%")
     out.append("")
-    out.append("**More than half is the World Cup and international friendlies,")
-    out.append("and there is no European league in it at all.** A friendly is")
-    out.append("barely the same sport -- six substitutions and nobody trying --")
-    out.append("so an average that includes ordinary league football could be")
-    out.append("flattering or damning here purely by mixture.")
+    # COMPUTED, NOT ASSERTED. An earlier version of this file hard-coded
+    # "more than half is the World Cup and friendlies, and there is no European
+    # league at all". Both were true when written and both went false once the
+    # join was fixed -- a sentence cannot notice that, so it is derived now.
+    odd = sum(c for lg, c in mix.items()
+              if lg in ("fifa.world", "fifa.friendly", "fifa.cwc"))
+    euro = sum(c for lg, c in mix.items()
+               if lg.startswith("uefa") or lg in ("eng.1", "esp.1", "ita.1",
+                                                  "ger.1", "fra.1"))
+    out.append(f"One-off internationals -- World Cup, friendlies, Club World")
+    out.append(f"Cup -- are {odd/tot*100:.0f} in 100 of the readings. A friendly is")
+    out.append("barely the same sport for this purpose: six substitutions and")
+    out.append("nobody trying.")
+    out.append("")
+    out.append(f"European football is {euro/tot*100:.0f} in 100 of the readings.")
     out.append("")
     out.append("So: every reading is re-compared against ITS OWN competition's")
     out.append("rate at that exact minute and scoreline, 2022-2024. No averaging")
     out.append("across competitions happens at all.")
     out.append("")
-    nets, thin = [], 0
-    for p in prices:
-        if not p["has_market"]:
+    # HOW MANY MATCHES A COMPETITION'S OWN CELL MUST HAVE BEFORE IT IS USED.
+    # This is a real choice and it changes who is in the sample: Champions
+    # League qualifying has 268 matches in 2022-2024 against Liga MX's
+    # thousands, so a high bar quietly drops exactly the European football this
+    # was extended to include. The answer is reported at several bars rather
+    # than one, so the bar is visible instead of being mine.
+    def run_at(bar):
+        nets, thin = [], 0
+        for p in prices:
+            if not p["has_market"]:
+                continue
+            k, n = by_league.get(
+                (p["league"], p["minute"], p["lead"], p["trail"]), [0, 0])
+            if n < bar:
+                thin += 1
+                continue
+            worth = 100 - k / n * 100
+            nets.append((worth - p["no_cost"] - fee_at(p["no_cost"]), p))
+        return nets, thin
+
+    out.append(f"{'bar for a competition''s own cell':36s} {'readings':>9s} "
+               f"{'middle':>9s} {'average':>9s}")
+    out.append("-" * 68)
+    for bar in (40, 60, 100, 200):
+        v = sorted(x for x, _ in run_at(bar)[0])
+        if len(v) < 20:
             continue
-        k, n = by_league.get(
-            (p["league"], p["minute"], p["lead"], p["trail"]), [0, 0])
-        if n < 100:
-            thin += 1
-            continue
-        worth = 100 - k / n * 100
-        nets.append((worth - p["no_cost"] - fee_at(p["no_cost"]), p))
+        out.append(f"{f'at least {bar} matches behind the cell':36s} "
+                   f"{len(v):9d} {statistics.median(v):+8.2f}c "
+                   f"{sum(v)/len(v):+8.2f}c")
+    out.append("")
+    nets, thin = run_at(RATE_BAR)
+    out.append(f"Everything below uses a bar of {RATE_BAR}.")
+    out.append("")
     out.append(f"{'':>4s}readings compared        {len(nets)}")
     out.append(f"{'':>4s}dropped, own competition thin  {thin}")
     if nets:
@@ -274,7 +325,11 @@ def main():
                    f"per contract")
         out.append(f"{'':>4s}average result          "
                    f"{sum(vals)/len(vals):+.2f}c per contract")
-        out.append(f"{'':>4s}readings that made money {pos} of {len(vals)} "
+        # NOT "made money". Nothing here is a realised outcome -- it is the
+        # historical rate's implied value minus what was charged. Calling it
+        # profit would turn an estimate into a track record.
+        out.append(f"{'':>4s}readings priced better than the")
+        out.append(f"{'':>4s}   history implies        {pos} of {len(vals)} "
                    f"({pos/len(vals)*100:.0f} in 100)")
         out.append("")
         out.append(f"{'minute':>7s} {'readings':>9s} {'middle result':>15s}")
@@ -285,6 +340,44 @@ def main():
                 continue
             out.append(f"{minute:>7d} {len(v):>9d} "
                        f"{statistics.median(v):>+14.2f}c")
+    out.append("")
+    # ------------------------------------------------- per competition
+    out.append("")
+    out.append("BY COMPETITION -- and this is where the European book finally")
+    out.append("appears. Champions League QUALIFYING, not the group stage.")
+    out.append("")
+    out.append(f"{'competition':>22s} {'readings':>9s} {'a market':>9s} "
+               f"{'<=97c':>7s} {'compared':>9s} {'middle result':>14s}")
+    out.append("-" * 76)
+    liq = defaultdict(lambda: [0, 0, 0])
+    per_net = defaultdict(list)
+    for p in prices:
+        L = liq[p["league"]]
+        L[0] += 1
+        if not p["has_market"]:
+            continue
+        L[1] += 1
+        if p["no_cost"] <= 97:
+            L[2] += 1
+        k, n = by_league.get(
+            (p["league"], p["minute"], p["lead"], p["trail"]), [0, 0])
+        if n >= RATE_BAR:
+            per_net[p["league"]].append(
+                100 - k / n * 100 - p["no_cost"] - fee_at(p["no_cost"]))
+    for lg in sorted(liq, key=lambda x: -liq[x][0]):
+        t, m, c = liq[lg]
+        v = sorted(per_net.get(lg, []))
+        mid = f"{statistics.median(v):+.2f}c" if len(v) >= 40 else "-"
+        out.append(f"{lg:>22s} {t:>9d} {m/t*100:>8.0f}% {c/t*100:>6.0f}% "
+                   f"{len(v):>9d} {mid:>14s}")
+    out.append("")
+    out.append("A dash means that competition's own history is too thin at this")
+    out.append("bar to price against -- the World Cup has 128 matches in the")
+    out.append("whole table and Europa qualifying 148 in 2022-2024.")
+    out.append("")
+    out.append("**Do not read the three positive rows as findings.** They are the")
+    out.append("best three of eleven, which is exactly the shape that looks good")
+    out.append("by chance, and two of them rest on thin history of their own.")
     out.append("")
     out.append("This is the number to believe over sections 2 and 3, because it")
     out.append("is the only one where the football and the price come from the")

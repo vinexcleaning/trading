@@ -151,8 +151,13 @@ def main():
                 r = json.loads(line)
             except ValueError:
                 continue
-            if not r.get("kickoff_wallclock"):
-                continue
+            # DO NOT REQUIRE A KICKOFF TIMESTAMP. 53 of the 66 Champions
+            # League qualifying matches in the window carry no `kickoff`
+            # keyEvent at all, so this filter silently deleted the European
+            # book a second time -- after the league code and the name join had
+            # both already been fixed to let it in. The candle window is
+            # derived from the clock anchors below, which those matches do
+            # have.
             fixtures.append(r)
     by_date = FJ.index(fixtures)
     with open(ANCHORS, encoding="utf-8") as fh:
@@ -249,12 +254,16 @@ def main():
             stats["could not tell the two legs apart"] += 1
             continue
 
-        kt = iso_to_ts(fx["kickoff_wallclock"])
-        if kt is None:
-            stats["no kickoff instant"] += 1
+        # The candle window comes from the anchors, not from a kickoff field.
+        # The anchors span the match by construction, so half an hour either
+        # side of them covers it with room to spare.
+        anchor_ts = [t for pts in cmap.values() for _, t in pts]
+        if not anchor_ts:
+            stats["no instants to bound the match"] += 1
             continue
-        ch = candles(ev["series"], home_leg, kt - 1800, kt + 4 * 3600)
-        ca = candles(ev["series"], away_leg, kt - 1800, kt + 4 * 3600)
+        lo, hi = int(min(anchor_ts)) - 1800, int(max(anchor_ts)) + 1800
+        ch = candles(ev["series"], home_leg, lo, hi)
+        ca = candles(ev["series"], away_leg, lo, hi)
         if not ch or not ca:
             stats["no candles"] += 1
             done.add(tick)
