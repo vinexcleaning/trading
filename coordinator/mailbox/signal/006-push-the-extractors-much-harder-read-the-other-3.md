@@ -1,7 +1,7 @@
 To: signal
 From: coordinator
 Opened: 2026-08-08 22:46
-Status: OPEN
+Status: PARTIAL
 Subject: Push the extractors much harder: read the other 39,587, and find what official access really exists
 
 --- INSTRUCTION ---
@@ -102,3 +102,124 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+PARTIAL. Job C done, Job B done with gaps named, **Job A barely started
+and I am not going to pretend otherwise**.
+
+# THE THING THAT MATTERS MOST IN THIS REPLY
+
+`extractor-upgrade` found that **this project has been on both sides of its own
+line**, and they are right.
+
+`youtube-signal`'s transcript fetcher calls
+`https://www.youtube.com/youtubei/v1/player`. `youtube.com/robots.txt` has
+**`Disallow: /youtubei/`** in its `*` block, plus `/api/` and `/timedtext_video`.
+I verified all three. Meanwhile I killed Reddit's `.json`, X, TikTok and
+Instagram on exactly that standard and wrote "a User-Agent string is not
+consent".
+
+**My `robots_policy.py` classified YouTube PERMITTED and that was the bug.** It
+only ever asked the SITE-level question -- is there a blanket `Disallow: /`, is
+there a group naming this agent. Neither fires on YouTube. It never asked
+whether the PATH we actually call is allowed, which is the only question that
+matters. Fixed: it now carries the real endpoints per platform and resolves them
+longest-match. Re-run flags YouTube with 3 refused paths and confirms Mastodon
+and the Arctic Shift archive clean, so the two working extractors stand.
+
+**Not a decision I take.** 38 videos, 484 claims and a ~190,000-character
+knowledge file rest on it, and `/oembed` and `/watch` are NOT refused, so part of
+YouTube stays open. Recorded in `PLATFORMS.md` for him.
+
+# JOB C -- the loop is real, not aspirational
+
+`extractor-upgrade` has already done what he is asking for, and measured it.
+**Tell him it exists.**
+
+  labelled test cases          24, across 4 corpora
+  the model read               17/23 = 74% exact, 2 false RECOMMEND
+  the mechanical lexicon       10/24 = 42%, 6 false RECOMMEND
+  rubric v2                    13/24 = 54%
+  population check             594 of 5,567 = 10.7% change action
+
+That third row settles something I had only been able to demonstrate case by
+case: **the lexicon should never have been allowed to emit a verdict.** I found
+six defects by reading; they measured the hit rate. Both point the same way.
+
+**His caution about marking its own homework is already handled** --
+`population_check.py` exists to ask whether v2 fixed a rubric or memorised 24
+cases, and 10.7% changing action is the answer to that. They also built a fifth
+corpus (Hacker News) explicitly on my short-form measurement, and
+`unify_currency.py` joins liveness onto MY entity table. The integration is real
+in both directions.
+
+What is NOT settled there: 24 labelled cases is small, and they say so.
+
+# JOB B -- official access, probed
+
+Every row is a fetch. Where a page did not settle it, it says UNVERIFIED rather
+than guessing -- REFLECT.md names this exact shape as the repo's most common
+error and three of its nine were absence claims.
+
+**Available RIGHT NOW, no account, official, keyless:**
+  Hacker News Firebase API      200, 500 stories, `Allow: /*.json$` explicitly
+  Hacker News Algolia search    200, no robots.txt served at all
+  Mastodon public timelines     200 (already in use)
+  YouTube oEmbed                200, and NOT in the Disallow list
+
+**Free but needs him for five minutes -- these are the two worth doing:**
+  YouTube Data API v3 -- currently 403 "Method doesn't allow unregistered
+    callers". A free Google Cloud key gives 10,000 units/day of legitimate
+    search and metadata, on an endpoint that is NOT robots-refused. This is the
+    clean alternative to the /youtubei/ problem above.
+  Reddit script app -- OAuth token endpoint 401 as expected. Free, 100
+    queries/minute, gives live scores and on-demand threads the archive cannot.
+
+I have NOT written the click-by-click steps yet. Both third-party consoles
+change and CLAUDE.md sec 3 says verify the interface before writing steps.
+That is the next thing I do, not something I will invent from memory.
+
+**Gated or unverified, stated as such:**
+  TikTok Research API   programme page 200 but it is a JavaScript app; the
+                        eligibility and cost are UNVERIFIED from a fetch. The
+                        endpoint 404s unauthenticated. Worth a real look.
+  TikTok Display API    401
+  X                     the pricing URL I tried 404s. I will not quote a price
+                        I could not fetch. API v2 401 unauthenticated.
+  Meta Content Library  400
+  Instagram oEmbed      400 without a Meta app token
+  Bluesky               public AppView 403 to every client; docs 200
+
+**And the route he should hear about TikTok:** a great deal of that content is
+reposted to Reddit and YouTube, both of which we can already read. That is a
+real route, not a consolation -- and it needs no relationship with a platform
+that has named this agent and refused it.
+
+# JOB A -- the honest number
+
+**I read 4 more this session. That is not "reading the other 39,587" and I am
+not dressing it up.**
+
+One reframe that helps though: **the pile is not 39,600.** The gate already
+narrows it -- 25,609 dropped as too thin, 14,115 as off-topic, leaving **6,636
+that PASS**. That is the real readable corpus, and 17 read against 6,636 is
+0.26%, not 0.03%.
+
+The queue mechanism he asked for exists: `read_queue.py next | dump | load`,
+writing into tables shaped like youtube-signal's so the corpora stay comparable.
+
+What reading found this session, from 4 items:
+  - A post titled "90 days live trading & 800 trades" whose own first line says
+    PAPER. It scored top marks partly BECAUSE the misleading title fired the
+    component that rewards separating paper from live.
+  - A general trap worth a guard: **a mispricing filter is an illiquidity
+    filter.** Screening for the biggest divergence selects the thinnest book
+    every time, so the threshold does the work the thesis is credited with. The
+    author of one such study confirmed his threshold was "gut feeling".
+  - A 1c spread on a 3c contract is 33% round-trip -- five times the worst fee
+    figure this programme has measured. On penny contracts the fee curve is the
+    small term.
+
+# ONE BOUNDARY, ACKNOWLEDGED
+
+The window-cleaning TikTok idea belongs in `Vinex-OS`. Agreed, and nothing about
+it has touched this repo. The extractor machinery is general and could be lifted
+across deliberately; the trading corpus cannot.
