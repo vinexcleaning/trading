@@ -1,0 +1,205 @@
+THE GAP: WHAT HAPPENS, WHAT KALSHI CHARGES, AND THE DIFFERENCE
+==============================================================================
+
+Prices: 10878 minute-readings from 206 matches inside Kalshi's
+69-day window, read at every displayed minute whether or not
+anything had just happened.
+
+Rates: 18456 matches, 2022-2024 only. Not the ten-year
+average -- comebacks late in a one-goal game became more common
+after 2022 and the ten-year number would understate them.
+
+**These are two different sets of matches.** A fair price built
+from the rates is a hypothesis about 2026, not a measurement.
+
+==============================================================================
+1. IS THERE ANYTHING TO BUY AT ALL?
+==============================================================================
+
+Before any edge: how often was anyone bidding on the losing
+team, so that a bet against them could actually be placed?
+
+Bigger is better. Zero means the trade does not exist.
+
+ minute  readings   a market existed   you could pay 97 or less
+----------------------------------------------------------------
+     10        53          87 in 100                  64 in 100
+     15        69          84 in 100                  74 in 100
+     20        88          83 in 100                  67 in 100
+     25       103          83 in 100                  71 in 100
+     30       119          87 in 100                  73 in 100
+     35       121          83 in 100                  64 in 100
+     40       124          80 in 100                  60 in 100
+     45       136          82 in 100                  60 in 100
+     50       147          78 in 100                  55 in 100
+     55       155          74 in 100                  54 in 100
+     60       156          66 in 100                  49 in 100
+     65       160          60 in 100                  44 in 100
+     70       157          56 in 100                  33 in 100
+     75       157          51 in 100                  18 in 100
+     80       157          41 in 100                  13 in 100
+     85       155          30 in 100                   4 in 100
+     89       159           9 in 100                   0 in 100
+
+==============================================================================
+2. THE GAP AT 1-0
+==============================================================================
+
+'Really happens' is out of 100 matches, 2022-2024.
+'Worth' is what betting against them is worth, in cents.
+'Charged' is the middle of what Kalshi actually wanted.
+'After fee' is worth minus charged minus the fee.
+Positive means you were being paid to take it.
+
+ minute  really happens   matches   worth   charged  readings   after fee
+--------------------------------------------------------------------------
+     10          15.89      3392   84.1c     93.0c        43      -9.35c
+     15          15.30      4680   84.7c     91.5c        54      -7.34c
+     20          14.99      5572   85.0c     89.0c        63      -4.67c
+     25          13.86      6097   86.1c     89.0c        70      -3.54c
+     30          13.17      6501   86.8c     91.0c        84      -4.74c
+     35          12.39      6689   87.6c     92.0c        80      -4.91c
+     40          11.28      6784   88.7c     92.0c        71      -3.79c
+     45           9.87      6604   90.1c     93.0c        68      -3.33c
+     50           8.94      6431   91.1c     93.0c        66      -2.40c
+     55           7.80      6092   92.2c     94.0c        63      -2.19c
+     60           6.77      5759   93.2c     95.0c        59      -2.10c
+     65           5.61      5452   94.4c     96.0c        54      -1.88c
+     70           4.56      5105   95.4c     96.0c        48      -0.83c
+     75           3.49      4762   96.5c     98.0c        42      -1.62c
+     80           2.33      4513   97.7c     98.0c        31      -0.46c
+     85           1.32      4153   98.7c     99.0c        22      -0.39c
+
+Readings are minutes, not matches -- one match contributes
+a reading at every minute it sat in this state, so these
+are the same matches seen repeatedly. Never add them up.
+
+==============================================================================
+2. THE GAP AT 2-1
+==============================================================================
+
+'Really happens' is out of 100 matches, 2022-2024.
+'Worth' is what betting against them is worth, in cents.
+'Charged' is the middle of what Kalshi actually wanted.
+'After fee' is worth minus charged minus the fee.
+Positive means you were being paid to take it.
+
+ minute  really happens   matches   worth   charged  readings   after fee
+--------------------------------------------------------------------------
+     45          10.03      1197   90.0c     94.0c        15      -4.42c
+     50           9.20      1359   90.8c     94.0c        21      -3.59c
+     55           7.80      1640   92.2c     94.5c        26      -2.67c
+     60           6.41      1887   93.6c     94.0c        25      -0.81c
+     65           5.05      2158   94.9c     96.0c        27      -1.32c
+     70           3.94      2335   96.1c     97.0c        26      -1.14c
+     75           2.80      2497   97.2c     98.0c        27      -0.94c
+     80           2.00      2605   98.0c     98.0c        23      -0.13c
+     85           1.13      2741   98.9c     98.0c        17       0.73c
+
+Readings are minutes, not matches -- one match contributes
+a reading at every minute it sat in this state, so these
+are the same matches seen repeatedly. Never add them up.
+
+==============================================================================
+2. THE GAP AT 2-0
+==============================================================================
+
+'Really happens' is out of 100 matches, 2022-2024.
+'Worth' is what betting against them is worth, in cents.
+'Charged' is the middle of what Kalshi actually wanted.
+'After fee' is worth minus charged minus the fee.
+Positive means you were being paid to take it.
+
+ minute  really happens   matches   worth   charged  readings   after fee
+--------------------------------------------------------------------------
+     20           4.33       646   95.7c     93.0c         9       2.21c
+     25           4.65       968   95.4c     94.5c        14       0.49c
+     30           4.59      1243   95.4c     95.5c        16      -0.39c
+     35           4.46      1480   95.5c     96.0c        16      -0.73c
+     40           3.95      1723   96.1c     95.5c        20       0.25c
+     45           2.89      2009   97.1c     95.0c        21       1.78c
+     50           2.41      2154   97.6c     97.0c        21       0.38c
+     55           1.64      2311   98.4c     98.0c        20       0.22c
+     60           1.33      2401   98.7c     98.0c        15       0.53c
+     65           0.87      2415   99.1c     98.0c        10       0.99c
+
+Readings are minutes, not matches -- one match contributes
+a reading at every minute it sat in this state, so these
+are the same matches seen repeatedly. Never add them up.
+
+==============================================================================
+3. THE STRENGTH SPLIT, WHERE IT IS BIGGEST
+==============================================================================
+
+One goal up, the 25th minute. The user's own hypothesis, and
+it is larger here than late in the match.
+
+        leader        trailer  really happens   matches   worth   charged  readings
+----------------------------------------------------------------------------------
+     top third      top third          14.06       768   85.9c     87.0c        10
+     top third   middle third           7.76       825   92.2c     89.0c         9
+     top third   bottom third           6.20       742   93.8c     94.0c         8
+  middle third      top third          20.93       578   79.1c         -         4
+  middle third   middle third          13.46       587   86.5c         -         4
+  middle third   bottom third          11.58       665   88.4c         -         3
+  bottom third      top third          23.91       460   76.1c         -         3
+  bottom third   middle third          19.89       553   80.1c         -         4
+  bottom third   bottom third          14.58       480   85.4c         -         4
+       unknown        unknown          14.84       182   85.2c     93.0c        16
+
+A blank price means fewer than 8 readings existed in that box.
+
+==============================================================================
+4. THE OBJECTION THAT COULD HAVE FAKED ALL OF THIS
+==============================================================================
+
+Sections 2 and 3 compare a rate averaged over 23 competitions
+against prices that came from whichever were in season. They
+are not the same competitions:
+
+    fifa.world                 3145 readings   28.9%
+    fifa.friendly              2782 readings   25.6%
+    usa.nwsl                   1385 readings   12.7%
+    mex.1                      1141 readings   10.5%
+    chi.1                       927 readings    8.5%
+    usa.1                       905 readings    8.3%
+    col.1                       593 readings    5.5%
+
+**More than half is the World Cup and international friendlies,
+and there is no European league in it at all.** A friendly is
+barely the same sport -- six substitutions and nobody trying --
+so an average that includes ordinary league football could be
+flattering or damning here purely by mixture.
+
+So: every reading is re-compared against ITS OWN competition's
+rate at that exact minute and scoreline, 2022-2024. No averaging
+across competitions happens at all.
+
+    readings compared        3758
+    dropped, own competition thin  3318
+    middle result           -0.84c per contract
+    average result          +0.96c per contract
+    readings that made money 1620 of 3758 (43 in 100)
+
+ minute  readings   middle result
+----------------------------------
+     10        22          -8.14c
+     15        39          -3.65c
+     20        45          -3.16c
+     25        49          -1.56c
+     30        58          -2.60c
+     35        56          -3.68c
+     40        52          -1.73c
+     45        54          -0.83c
+     50        58          -1.25c
+     55        56          -1.08c
+     60        53          -0.79c
+     65        50          -0.17c
+     70        50          +0.36c
+     75        51          -0.82c
+     80        33          +0.35c
+     85        23          +0.40c
+
+This is the number to believe over sections 2 and 3, because it
+is the only one where the football and the price come from the
+same competition.

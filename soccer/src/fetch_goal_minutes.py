@@ -56,6 +56,9 @@ PRIORITY = [
     "usa.usl.1", "usa.usl.l1", "usa.nwsl",
     "eng.1", "esp.1", "ita.1", "ger.1", "uefa.champions",
     "fra.1", "uefa.europa", "fifa.world", "fifa.cwc", "uefa.europa.conf",
+    # See backfill_espn.py -- the qualifying rounds are where Kalshi's European
+    # book actually is right now, and they are a different league code.
+    "uefa.champions_qual", "uefa.europa_qual",
 ]
 
 

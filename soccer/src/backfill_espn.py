@@ -66,6 +66,14 @@ LEAGUES = [
     # the Champions League ARE bettable, which soccer/dataset.md and
     # reports/tape_soccer_scan.json between them managed to miss.
     "fra.1", "uefa.europa", "fifa.world", "fifa.cwc", "uefa.europa.conf",
+    # THE QUALIFYING ROUNDS ARE A SEPARATE ESPN LEAGUE CODE, and missing them
+    # was a real gap rather than a tidy one. Kalshi has 66 settled Champions
+    # League events inside its candle window as of 2026-08-09; ESPN's
+    # `uefa.champions` returns ZERO fixtures for 1 Jul - 8 Aug and
+    # `uefa.champions_qual` returns exactly 66. Without these two codes the
+    # price sample contains no European football at all, which was about to be
+    # written up as "Kalshi has no European league in the window".
+    "uefa.champions_qual", "uefa.europa_qual",
 ]
 START = date(2015, 1, 1)
 END = date.today()

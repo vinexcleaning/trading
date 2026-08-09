@@ -1,0 +1,66 @@
+DOES THE PRICE MOVE AS FAR FOR A WEAK TEAM'S GOAL?
+==============================================================================
+
+The goal that opens the scoring, 20th to 35th minute,
+priced two minutes later at what you would actually PAY to back
+that team -- not the middle of the market.
+
+**The short answer: this window cannot answer it.** The numbers
+are below and the group sizes are why.
+
+  the leader was  goals   you pay  they really win   matches   left over
+--------------------------------------------------------------------------
+       top third     18     81.0c            72.6%      1562      -9.48c
+    middle third      8     80.0c            64.9%      1179     -16.22c
+    bottom third     10     55.5c            59.6%       944      +2.37c
+         unknown     11     43.0c            60.7%       206     +15.98c
+
+'Left over' is what the football says it is worth, minus what
+you pay, minus the fee. Positive would mean you were being paid
+to take it.
+
+==============================================================================
+WHY NONE OF THOSE NUMBERS SHOULD BE ACTED ON
+==============================================================================
+
+**Eight to eighteen goals per group.** One or two matches move
+the answer by ten cents. The last column swings from about minus
+sixteen to about plus sixteen across four groups. That is what
+noise looks like, not a pattern.
+
+**0 more goals had no tradeable price at all** -- nobody
+offering, or nobody bidding. Those are counted here and excluded
+from the medians. Leaving them in was the defect in the first
+version of this file: they dragged every group toward the
+ceiling and produced a table in which the market looked neatly
+calibrated. See the note at the top of the file.
+
+**The two halves are different sets of matches.** The win rates
+are 2022-2024 across every competition; the prices are a few
+dozen goals from a 69-day 2026 window that is more than half
+World Cup and international friendlies, with no European league
+in it at all.
+
+**The 'unknown' row is the worst and is left in on purpose.**
+Those are mostly friendlies and World Cup ties where the strength
+measure has no reading -- which is exactly where the market knows
+the teams and this table does not.
+
+==============================================================================
+WHAT WOULD ACTUALLY ANSWER IT
+==============================================================================
+
+A season of prices in a competition where both sides are ranked
+and the book is deep -- the Premier League and the Champions
+League. That is what the recorder in `kalshi-market-scan` is
+collecting now, and it is the reason this work is paused.
+
+**The football half needs no redoing.** A top-third side that
+goes one up between the 20th and 35th minute wins 72.6 times in
+100 on 1,562 matches; a bottom-third side wins 59.6 times in 100
+on 944. Those are solid. Only the price is missing.
+
+WHAT THIS DOES NOT DO. It attaches no outcome to any price. A
+price that moves 'too far' is only a mistake if the team it moved
+against actually comes back, and that is a separate test on data
+not yet looked at.
