@@ -484,7 +484,12 @@ def main():
 
     section_by_minute_and_lead(cells, out)
     section_scorelines(cells, out)
-    section_strength(cells, out, minute=80)
+    # The strength grid at three different minutes rather than one. With tens
+    # of thousands of matches there is enough to afford it, and the question
+    # "does being the better side protect you" is not obviously the same answer
+    # at 70 minutes as at 85.
+    for minute in (70, 80, 85):
+        section_strength(cells, out, minute=minute)
     section_by_competition(cells, out, minute=80)
     section_breakeven(out)
     section_sanity(matches, out)
