@@ -245,7 +245,29 @@ def main():
                     pass
 
     order = {lg: i for i, lg in enumerate(PRIORITY)}
-    todo = [m for m in matches if m["espn_id"] not in done]
+    # SKIP MATCHES ALREADY KNOWN TO HAVE NO TIMELINE. Failures are recorded in
+    # the gaps file rather than the output file, so without this every run
+    # re-fetches them: the 2026-08-09 qualifier run spent about twenty minutes
+    # re-asking for ~8,250 matches that had already been asked four times each.
+    #
+    # This is only safe because it was measured: 26 genuinely-empty matches
+    # retried four times each recovered 0 (SO012), and the empty rate does not
+    # move with concurrency. Pass --retry-gaps to ask again anyway.
+    skip = set()
+    if "--retry-gaps" not in sys.argv and os.path.exists(GAPS):
+        with open(GAPS, encoding="utf-8") as gh:
+            for line in gh:
+                try:
+                    g = json.loads(line)
+                except ValueError:
+                    continue
+                if str(g.get("reason", "")).startswith("no_timeline"):
+                    skip.add(g.get("espn_id"))
+        if skip:
+            print(f"  skipping {len(skip)} matches already known to have no "
+                  f"timeline (--retry-gaps to ask again)", flush=True)
+    todo = [m for m in matches
+            if m["espn_id"] not in done and m["espn_id"] not in skip]
     todo.sort(key=lambda m: (order.get(m["league"], 99), m["date"]))
 
     # `--limit N` fetches a spread-out sample instead of everything. It exists

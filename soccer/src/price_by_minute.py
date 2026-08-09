@@ -44,6 +44,7 @@ sys.path.insert(0, os.path.join(ROOT, "..", "market-selection", "src"))
 import kalshi_api as K       # noqa: E402
 import teammatch as TM       # noqa: E402
 import clock_map as CM       # noqa: E402
+import fixture_join as FJ    # noqa: E402
 
 GOALS = os.path.join(DATA, "goal_minutes.jsonl")
 ANCHORS = os.path.join(DATA, "clock_anchors.jsonl")
@@ -143,7 +144,7 @@ def nearest(cs, ts, tol=CANDLE_TOL):
 
 
 def main():
-    fixtures, anchors = {}, {}
+    fixtures, anchors = [], {}
     with open(GOALS, encoding="utf-8") as fh:
         for line in fh:
             try:
@@ -152,7 +153,8 @@ def main():
                 continue
             if not r.get("kickoff_wallclock"):
                 continue
-            fixtures[(r["date"][:10], TM.pair_key(r["home"], r["away"]))] = r
+            fixtures.append(r)
+    by_date = FJ.index(fixtures)
     with open(ANCHORS, encoding="utf-8") as fh:
         for line in fh:
             try:
@@ -204,17 +206,9 @@ def main():
             stats["unparseable title"] += 1
             continue
 
-        key = (date, TM.pair_key(a, b))
-        fx = fixtures.get(key)
+        fx, why = FJ.find(by_date, date, a, b)
         if fx is None:
-            for delta in (1, -1):
-                alt = datetime.fromordinal(d.toordinal() + delta)
-                fx = fixtures.get((alt.strftime("%Y-%m-%d"), key[1]))
-                if fx:
-                    stats["joined on a +/-1 day shift"] += 1
-                    break
-        if fx is None:
-            stats["no ESPN fixture"] += 1
+            stats[f"no ESPN fixture: {why}"] += 1
             continue
 
         anc = anchors.get(fx["espn_id"])
@@ -230,16 +224,28 @@ def main():
         if len(L) < 3:
             stats["fewer than 3 legs"] += 1
             continue
-        subs = [s for s in L if s and s.lower() not in ("tie", "draw")]
-        roster = [fx["home"], fx["away"]]
+        # Leg titles carry a prefix on some series -- Kalshi's Champions League
+        # qualifying legs are "Reg Time: Fenerbahce", not "Fenerbahce". Left
+        # alone, every one of those matches was thrown away as "could not tell
+        # the two legs apart". The prefix is also a useful fact in its own
+        # right: these markets settle on REGULATION TIME, which is what
+        # build_comeback_table already scores, so the two agree by luck rather
+        # than by design and now by evidence.
         home_leg = away_leg = None
-        for s in subs:
-            got, _, _ = TM.resolve_against_roster(s, roster)
-            if got == fx["home"]:
-                home_leg = L[s]
-            elif got == fx["away"]:
-                away_leg = L[s]
-        if not home_leg or not away_leg or home_leg == away_leg:
+        best_h = best_a = 0.0
+        for s, ticker in L.items():
+            if not s:
+                continue
+            name = s.split(":", 1)[1].strip() if ":" in s else s
+            if name.lower() in ("tie", "draw"):
+                continue
+            sh, sa = FJ.score(name, fx["home"]), FJ.score(name, fx["away"])
+            if sh > sa and sh > best_h:
+                home_leg, best_h = ticker, sh
+            elif sa > sh and sa > best_a:
+                away_leg, best_a = ticker, sa
+        if (not home_leg or not away_leg or home_leg == away_leg
+                or min(best_h, best_a) < FJ.THRESHOLD):
             stats["could not tell the two legs apart"] += 1
             continue
 
@@ -282,7 +288,15 @@ def main():
                 stats["no candle at that minute"] += 1
                 continue
             fh.write(json.dumps({
-                "event": tick, "league": ev["league"], "date": date,
+                # The ESPN fixture's own competition, NOT the one the Kalshi
+                # series maps to. They differ exactly where it matters:
+                # KXUCLGAME events in July and August are qualifying rounds,
+                # which ESPN files under `uefa.champions_qual`. Recording the
+                # series' league would look up the wrong competition's comeback
+                # rate in gap_table and compare a qualifier's price against the
+                # group stage's football.
+                "event": tick, "league": fx["league"],
+                "kalshi_series": ev["series"], "date": date,
                 "espn_id": fx["espn_id"], "minute": minute,
                 "h": h, "a": a_,
                 "home_bid": qh[0], "home_ask": qh[1],
