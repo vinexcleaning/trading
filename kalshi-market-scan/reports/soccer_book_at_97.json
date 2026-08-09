@@ -1,0 +1,74 @@
+{
+ "snapshots": 53141,
+ "all": {
+  "spread_median_c": 2.0,
+  "spread_mean_c": 6.648
+ },
+ "bands": [
+  {
+   "band": "90-93",
+   "n": 975,
+   "spread_median_c": 3.0,
+   "spread_mean_c": 13.385,
+   "size_median": 35.0,
+   "size_p10": 11.0,
+   "frac_size_zero": 0.0
+  },
+  {
+   "band": "93-95",
+   "n": 922,
+   "spread_median_c": 2.999999999999999,
+   "spread_mean_c": 27.249,
+   "size_median": 467.24,
+   "size_p10": 16.0,
+   "frac_size_zero": 0.0
+  },
+  {
+   "band": "95-97",
+   "n": 821,
+   "spread_median_c": 75.0,
+   "spread_mean_c": 72.789,
+   "size_median": 60.0,
+   "size_p10": 33.0,
+   "frac_size_zero": 0.0
+  },
+  {
+   "band": "97-99",
+   "n": 747,
+   "spread_median_c": 78.0,
+   "spread_mean_c": 76.043,
+   "size_median": 250.0,
+   "size_p10": 10.0,
+   "frac_size_zero": 0.0
+  },
+  {
+   "band": "99-100",
+   "n": 27,
+   "spread_median_c": 2.0,
+   "spread_mean_c": 28.926,
+   "size_median": 4920.11,
+   "size_p10": 257.73,
+   "frac_size_zero": 0.0
+  }
+ ],
+ "at_97": {
+  "n": 769,
+  "frac_of_all": 0.01447,
+  "size_median": 250.0,
+  "frac_no_size": 0.0,
+  "spread_median_c": 78.0,
+  "spread_mean_c": 74.914,
+  "fee_mean_c": 0.167
+ },
+ "breakeven": {
+  "comebacks_allowed_quoted": 3.0,
+  "comebacks_allowed_after_fee": 2.833,
+  "pct_of_margin_eaten_by_fee": 5.58
+ },
+ "what_bites": {
+  "pct_of_snapshots": 1.447,
+  "dollars_median": 242.5,
+  "dollars_p10": 9.7,
+  "gap_to_other_side_c": 78.0
+ }
+}

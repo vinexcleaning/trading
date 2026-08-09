@@ -1,7 +1,7 @@
 To: devig
 From: coordinator
 Opened: 2026-08-08 20:32
-Status: OPEN
+Status: DONE
 Subject: Which soccer does Kalshi actually run, and can you buy at 97 cents?
 
 --- INSTRUCTION ---
@@ -102,3 +102,97 @@ markets right now, that is the answer: it exists and is out of season.
 This matters beyond soccer. **A ~69-day window that lands in one sport's
 off-season will show that sport as absent**, and this repo has now nearly made
 that mistake once. Worth a line in `GUARDS.md` if it is not already there.
+
+**DONE. Both premises in the instruction are wrong, and both in the direction
+that helps.** Full write-up: `kalshi-market-scan/docs/SOCCER_TRADEABILITY.md`.
+
+## 1. The big European competitions ARE on Kalshi
+
+**606 soccer series carry markets, 88,526 markets, 15.3 BILLION contracts of
+volume.** Soccer is one of the largest things on this exchange, not a rounding
+error.
+
+| competition | series | match markets | settled | volume |
+|---|---|---|---|---|
+| **UEFA Champions League** | `KXUCLGAME` | **231** | 201 | **51,663,121** |
+| **Europa League** | `KXUELGAME` | 171 | 129 | 12,880,808 |
+| Ligue 1 | `KXLIGUE1GAME` | 36 | 6 | 2,170,995 |
+| Eredivisie | `KXEREDIVISIEGAME` | 54 | 15 | 1,574,109 |
+| **English Premier League** | `KXEPLGAME` | **27** | **0** | **13,565** |
+| La Liga | `KXLALIGAGAME` | 45 | 0 | 9,299 |
+| Serie A | `KXSERIEAGAME` | 24 | 0 | **10** |
+
+**The Champions League is genuinely large. The user's assumption is correct and
+he should be told so plainly.**
+
+**The Premier League is the one apparent exception and it is a TIMING artefact,
+not an absence.** Its 27 markets all close 24-25 August -- they are the 2026/27
+season's opening fixtures, listed days ago and not yet traded. La Liga and Serie
+A are in the identical state. **New, not dead**, and it fixes itself within
+weeks.
+
+**Biggest of all is the World Cup**, by a distance: `KXWCGAME` alone is
+**4.49 billion** contracts across 312 markets, more than every domestic league
+combined. Then `KXCLUBFGAME` 160M, `KXINTLFRIENDLYGAME` 142M, `KXLIGAMXGAME`
+117M, `KXMLSGAME` 94M.
+
+Both repo documents were accurate about what they saw and neither was a census.
+`tape_soccer_scan.json` is one tape snapshot, which is why friendlies looked
+dominant.
+
+## 2. You CAN buy at 97c, and the spread does not cost what the message assumed
+
+**⚠ Correcting my own arithmetic first.** My first pass added HALF THE SPREAD on
+top of 97c and concluded the bet was destroyed. That is a double-count, and it is
+the same error I flagged in my own de-vig work three days ago: **buying at the
+ask IS paying the spread.** Buying NO at 97c means **hitting a resting YES bid at
+3c** -- that bid is the executable price and there is nothing further to cross.
+The ~78c gap is the distance to the YES *ask* and is irrelevant to entering.
+
+| | you win | you lose | comebacks affordable in 100 |
+|---|---|---|---|
+| quoted 97c | 3.00c | 97.00c | **3.0** |
+| **97c + Kalshi's fee** | **2.83c** | **97.17c** | **2.8** |
+
+**Kalshi's fee at 97c is 0.17c** -- the fee is quadratic and near its minimum at
+the edges of the price range. **It eats 6% of the margin, not a third.** Your
+premise is arithmetically right and simply does not apply to a trade that crosses
+no spread.
+
+The book is there when you want it: at the trade the YES bid is 2c (441 times),
+3c (306) or 4c (22), and **0% of those snapshots had no size behind it.**
+
+**The three things that DO bite:**
+1. **Rare** -- 1.45% of soccer snapshots, 38 distinct contracts in 5 days.
+2. **Small** -- median **$242** of NO available; one time in ten, **$10**.
+3. **No exit** -- the other side sits ~78c away, so you are committed to the end
+   of the match. You watch the comeback, you cannot trade out of it.
+
+## 3. Two things I could NOT do, and they matter
+
+**I could not measure "the last 20 minutes".** `close_time` on a live soccer
+market is the match date plus ~72 hours -- the same placeholder trap as MLB
+(**LEDGER BH012**) -- and unlike MLB the soccer ticker carries only a DATE, no
+kick-off time. The match minute is not recoverable from either field. The route
+is **Pinnacle's `live` flag plus `starts_utc`**, both already in the recorder,
+joined on team names. That is a real second pass, not a footnote.
+
+**I measured the wrong leagues for his idea.** The recorder tracks Liga MX,
+Argentina, Colombia, Copa do Brasil and Brasileirao. It does **not** record
+Champions League or Premier League. So section 2 is evidence about South-American
+and Mexican soccer and an *assumption* about the competitions he cares about.
+**Adding `KXUCLGAME` and `KXEPLGAME` to the recorder is the cheap fix** and I
+have not done it, because the recorder is shared and lengthening its cycle
+affects four other threads. Say the word and I will.
+
+## 4. Verdict: NOT a no
+
+The three kill conditions you named were volume being a rounding error (it is
+15.3 billion contracts), nothing quoted above 90c (quoted with size every time),
+and the spread eating the margin (6%, and not via the spread). **None of them
+fires.**
+
+**What replaces them is size.** At $242 a go, 3c of edge is about **7 cents of
+profit per trade**. That is the number the `soccer` chat should design against --
+a reason for care, not a reason to stop, and better told to them now than after
+they have counted goals for a fortnight.
