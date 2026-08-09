@@ -33,16 +33,22 @@ fail.count = 0  # type: ignore[attr-defined]
 
 def check_ledger_parses() -> None:
     rows, read, missing = ledger.all_rows()
-    if len(rows) < 250:
-        fail(f"only {len(rows)} ledger claims parsed. There were 342 when this "
-             f"was written. A parser that silently reads less makes every "
+    if len(rows) < 500:
+        fail(f"only {len(rows)} ledger claims parsed. There were 596 after the "
+             f"parser was widened on 2026-08-09. A parser that silently "
+             f"reads less makes every "
              f"'has this been tried' answer more confident and less correct.")
     if missing:
         fail(f"ledger file(s) listed but not found: {missing}. The search is "
              f"smaller than it claims to be.")
-    unknown = [r for r in rows if ledger.status_of(r) == "?"]
-    if len(unknown) > len(rows) * 0.05:
-        fail(f"{len(unknown)} of {len(rows)} rows have no readable STATUS. "
+    # Only rows that HAVE a status column can fail to parse one. A table
+    # without the column is not a parse failure, and counting it as one fired
+    # this canary on 133 correctly-read rows.
+    have = [r for r in rows if "status" in r]
+    unknown = [r for r in have if ledger.status_of(r) == "?"]
+    if have and len(unknown) > len(have) * 0.05:
+        fail(f"{len(unknown)} of {len(have)} rows WITH a status column have no "
+             f"readable status. "
              f"A column shift usually causes this -- check for an unescaped "
              f"pipe inside a cell.")
 

@@ -56,7 +56,7 @@ import mail  # noqa: E402
 
 TEMPLATE = HERE / "idea_template.md"
 
-MAX_ROW_HITS = 10
+MAX_ROW_HITS = 12
 MAX_TEXT_HITS = 8
 WRAP = 74
 
@@ -364,7 +364,18 @@ def report(idea: str) -> tuple[str, str]:
     buckets: list[tuple[str, int, list[dict]]] = []
     ranked = sorted(hits, key=lambda sr: -sr[0])
     for w in words:
-        in_claim = [r for _, r in ranked if mentions(ledger.claim_of(r).lower(), w)]
+        # Within a word's bucket, prefer claims where the word appears EARLY.
+        # Position is a decent proxy for the claim being ABOUT that word, and
+        # ordering the bucket by overall score instead let a row that scored
+        # well on a different, rarer word take both slots. Widening the ledger
+        # from 342 claims to 596 exposed this: B023 -- the one row this whole
+        # file exists to surface -- fell to twelfth and out of every bucket.
+        def _pos(r):
+            c = ledger.claim_of(r).lower()
+            i = c.find(stem(w))
+            return i if i >= 0 else 10_000
+        in_claim = sorted([r for _, r in ranked
+                           if mentions(ledger.claim_of(r).lower(), w)], key=_pos)
         anywhere = [r for _, r in ranked if mentions(row_text(r), w)]
         total = len(anywhere)
         if not total:
@@ -375,7 +386,7 @@ def report(idea: str) -> tuple[str, str]:
                 continue
             pick.append(r)
             shown.add(id(r))
-            if len(pick) >= 2:
+            if len(pick) >= 3:
                 break
         buckets.append((w, total, pick))
 
