@@ -282,6 +282,52 @@ arriving in the last 7–10, on correlated events. That is the shape the
 
 ---
 
+## 0e. Three sources disagree about stop losses, and the disagreement is the finding
+
+This repo's position is settled and stated in `CLAUDE.md` §9b: **stops make it
+worse.** Measured on the user's own bot in `bot-forensics`, stop-and-re-enter
+turned **−2.29¢ into −9.36¢** per contract, and *"selling a 90-cent contract at
+40 cents locks in the loss the strategy was relying on recovering."*
+
+Reading turned up a second source agreeing and a third flatly contradicting it:
+
+| source | what it measured | verdict on stops |
+|---|---|---|
+| **this repo** (`bot-forensics`) | a real bot's real trades, buying favourites | **harmful** — −2.29¢ → −9.36¢ |
+| Hyperliquid copy bot (`/r/algotrading/1v56b7h`) | every stopout re-scored against its max adverse excursion | **harmful** — **8 of 9 would have recovered** |
+| SPY short-vol grid (`/r/options/1sy0plj`) | 96 cells, 7 years of 1-minute chains, **16,024 trades** | **the stop IS the strategy** — same cell, same fills, same period: **+5,439% with, −100% without** |
+
+### They are all right, and the reconciliation is worth more than any of them
+
+**It turns on whether the left tail is bounded.**
+
+- **Buying a contract** — the tennis bot, copy-trading a holder — has a floor.
+  It can only go to zero, and drawdowns mean-revert because the thing you bought
+  is still the thing you bought. A stop **realises** a loss the position was
+  going to recover, and then you pay the spread again to get back in. This is
+  exactly what `bot-forensics` measured, and exactly the 8-of-9 result.
+- **Selling premium** — short vol, credit spreads — has **no floor**. One tail
+  event takes the account to zero. The stop is not a tuning parameter, it is the
+  only thing standing between the strategy and ruin. Hence −100% without it.
+
+**So "do stop losses help?" has no general answer, and this repo has been
+carrying one.** §9b's rule is right *for the strategies this repo trades* and
+would be actively dangerous if lifted to a premium-selling strategy. The
+sentence that needs adding is not a correction, it is a **scope**: *stops hurt
+when your downside is bounded and your drawdowns mean-revert; stops are survival
+when your downside is not.*
+
+### The same post also puts a denominator on something the repo asserts
+
+`kalshi-inplay-bot/backtest/HIGH_SWEEP_RERUN.md` calls the optimistic fill model
+*"the single easiest way to fake a profitable backtest"*. That is now measured:
+**mid-fill backtests overstate returns by 30–60%**, and switching to
+post-a-limit-and-wait flipped **half the winning cells negative** across a
+96-cell grid. Their honest fill model — post at `combo_ask + $0.04`, 20–25% fill
+rate, ~12 minute average wait — lands **4–7 cents worse than mid, every trade.**
+
+---
+
 ## 1. Copy trading: the leak is exit fidelity, not entry latency
 
 `/r/algotrading/comments/1v56b7h/` · 43 points · 24 comments
