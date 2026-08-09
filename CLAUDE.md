@@ -91,6 +91,19 @@ everyone knows it. **Silence about it is the problem, not the unpushed work.**
 Rules for the block:
 
 - **No acronyms** unless you define them in the same sentence.
+- If a result looks good, say **how confident you are and what would make you
+  doubt it**. A good number with no stated failure mode is not a finding.
+- **If his instruction was wrong, say so.** He would rather be corrected than
+  agreed with. This has already been load-bearing: he was told there were 9
+  copies of the fee formula and there were 17; he was told 2 guarded the
+  rounding bug and 6 did.
+- **Flag judgment calls as his to make** — not as facts, and not as things you
+  quietly decided.
+- Never write "should I continue?" See §2.
+
+**Above the block, be as technical as you like.** He skims it. Verbose output
+costs him nothing and he does not read it, so **never truncate analysis to save
+space**. Only the block has to be readable.
 
 ### Plain words, or he cannot argue back — and that is the real cost
 
@@ -137,19 +150,6 @@ raised repeatedly by an earlier chat. **Raise a risk once, clearly. If he says
 no, that is the answer** — record it and never bring it up again unasked.
 Re-raising a closed decision reads as not listening, and it spends the
 credibility needed for the next thing that actually matters.
-- If a result looks good, say **how confident you are and what would make you
-  doubt it**. A good number with no stated failure mode is not a finding.
-- **If his instruction was wrong, say so.** He would rather be corrected than
-  agreed with. This has already been load-bearing: he was told there were 9
-  copies of the fee formula and there were 17; he was told 2 guarded the
-  rounding bug and 6 did.
-- **Flag judgment calls as his to make** — not as facts, and not as things you
-  quietly decided.
-- Never write "should I continue?" See §2.
-
-**Above the block, be as technical as you like.** He skims it. Verbose output
-costs him nothing and he does not read it, so **never truncate analysis to save
-space**. Only the block has to be readable.
 
 ---
 
@@ -744,7 +744,8 @@ as the checklist:
 - **The user decides the unresolved ones.** The Referee never resolves a real
   disagreement — that is the whole reason he asked for this.
 
-Run `py -3 coordinatoreflect.py --file <draft>` for the mechanical half and
+Run `py -3 coordinator
+eflect.py --file <draft>` for the mechanical half and
 work the checklist for the half that matters.
 
 **The evidence this exists on: nine errors in one session, and eight had the
