@@ -7,7 +7,7 @@ reproduce with `python src/robots_policy.py` and `python src/probe_platforms.py`
 |---|---|---|---|---|
 | **Reddit** | `reddit_fetch.py` | via archive | **yes — full posts + comments** | **WORKING · 39,633 posts, 12,846 comments** |
 | **Mastodon** | `mastodon_fetch.py` | **yes** | **yes — full post text** | **WORKING · 5,870+ posts** |
-| **YouTube** | *(sibling `youtube-signal`)* | yes | yes — transcripts | working, another project |
+| **YouTube** | *(sibling `youtube-signal`)* | **site yes, ENDPOINT NO** | yes — transcripts | ⚠ **see below** |
 | TikTok | — | **NO — names this agent** | (caption available, moot) | **refused** |
 | X / Twitter | — | no — `Disallow: /` | no — API 401, oEmbed 404 | **refused + closed** |
 | Instagram | — | no policy served | no — login wall | **closed** |
@@ -24,6 +24,38 @@ yourself into a scraper:
    thumbnail score nothing.
 
 ---
+
+## ⚠ YouTube — this project has been on both sides of its own line
+
+**Found by `extractor-upgrade`, verified here, and it is a real inconsistency.**
+
+This file classified YouTube **PERMITTED**, because `youtube.com/robots.txt` has
+no `Disallow: /` in its `*` block and names no AI agent. Both true. But the
+checker only ever asked the **site-level** question, and the `*` block contains:
+
+```
+Disallow: /youtubei/          Disallow: /api/          Disallow: /timedtext_video
+```
+
+`youtube-transcript-api` — the library behind `youtube-signal`'s entire corpus —
+calls **`https://www.youtube.com/youtubei/v1/player`** (`_settings.py:2`).
+
+**So the transcript pipeline runs on a `Disallow`ed endpoint**, while this same
+project killed Reddit's `.json`, X, TikTok and Instagram on exactly that
+standard and wrote *"a User-Agent string is not consent"*. `extractor-upgrade`
+put it plainly: *"the project has been on one side of a line it drew itself on
+the other side of."* They are right.
+
+**`robots_policy.py` is fixed** — it now checks the specific paths this
+programme calls, longest-match, and prints every refused one. Re-running it
+flags YouTube with 3 refused paths, and confirms Mastodon and the Arctic Shift
+archive are clean at path level too, so the two working extractors stand.
+
+**What this is NOT: a decision.** The stakes are 38 videos read, 484 claims and
+a ~190,000-character knowledge file, and `/oembed` and `/watch` are *not*
+refused, so parts of YouTube remain open. **This is the user's call, and the
+options are not equivalent.** It is recorded here so the inconsistency is
+visible rather than resting on nobody having checked.
 
 ## TikTok — the one that nearly got built
 

@@ -39,6 +39,37 @@ recollection.
 > Left in place rather than deleted, because deleting a wrong claim is how
 > somebody re-derives it.
 
+> # ⛔ SECOND RETRACTION — my league list was built on two known-false premises
+>
+> This document opens by saying Kalshi runs *"mostly international friendlies …
+> **not** the Premier League, not the Champions League"*. I took that from the
+> job description. **`coordinator/REFLECT.md` had already recorded both as
+> errors** — its table, rows 3 and 4:
+>
+> - *"Kalshi has no Premier League or Champions League"* → **false. 231
+>   Champions League markets, 51.7 million contracts.** Caught by `devig`.
+> - *"Kalshi soccer is mostly international friendlies"* → **false. That
+>   recording window was the international break before the World Cup.** Caught
+>   by `soccer`.
+>
+> So I excluded the European competitions from the coverage probe on a premise
+> the repo already knew was wrong. **Re-probed, and it makes the answer better,
+> not worse:**
+>
+> | competition | goal minutes |
+> |---|---|
+> | **Premier League** (`eng.1`) | **strong 2015–2024**, every goal with a minute |
+> | Spain, Italy, Germany, France | present with minutes wherever matches fell on the sample dates |
+> | **Champions League** (`uefa.champions`) | **0 matches on all five sample dates — and that proves nothing.** Mid-August is not the UCL season. Re-probe on a September–May midweek. |
+>
+> Across both runs: **602 goals, 602 carrying a minute.** The completeness
+> result is now stronger and covers 21 competitions.
+>
+> **The Champions League row is the lesson repeating.** "No coverage" from a
+> sample of dates when the competition does not play is the same shape as the
+> error I just inherited — a window that could not have shown the thing being
+> called absent. Stated as untested, not as a gap.
+
 ## The short version ~~(retracted — see above)~~
 
 **You do not need a new data source. You are already downloading the goal times

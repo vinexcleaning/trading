@@ -59,6 +59,47 @@ AI_COHORT = (
     "diffbot", "omgili", "timpibot", "youbot", "amazonbot",
 )
 
+# The endpoints this programme actually calls, per platform. A blanket verdict
+# is not enough and this project learned that the hard way: YouTube was
+# classified PERMITTED here because its `*` block has no `Disallow: /` and no
+# group names this agent — while `youtube.com/robots.txt` carries
+# `Disallow: /youtubei/`, which is exactly the endpoint `youtube-transcript-api`
+# calls. `extractor-upgrade` found it and was right.
+#
+# "Is the site crawlable" and "is the path we call allowed" are different
+# questions, and only the second one matters.
+PATHS_WE_CALL = {
+    "youtube": ["/youtubei/v1/player", "/api/timedtext", "/timedtext_video",
+                "/oembed", "/watch"],
+    "reddit": ["/r/algotrading/hot.json", "/r/algotrading/.rss", "/comments/"],
+    "tiktok": ["/oembed", "/tag/kalshi", "/discover"],
+    "x": ["/i/api/", "/kalshi"],
+    "instagram": ["/p/", "/api/v1/"],
+    "facebook": ["/facebook", "/ajax/"],
+    "mastodon": ["/api/v1/timelines/tag/trading", "/api/v1/timelines/public"],
+    "bluesky": ["/xrpc/app.bsky.feed.searchPosts"],
+    "arctic_shift": ["/api/posts/search", "/api/comments/search"],
+}
+
+
+def path_verdicts(star_rules, paths):
+    """Longest-match Allow/Disallow, the way a crawler is supposed to read it."""
+    out = []
+    for p in paths:
+        best, best_len = "allowed (no rule)", -1
+        for r in star_rules:
+            kind, _, pat = r.partition(":")
+            pat = pat.strip().rstrip("*")
+            if not pat:
+                continue
+            if p.startswith(pat) and len(pat) > best_len:
+                best_len = len(pat)
+                best = ("REFUSED by " if kind.strip().lower() == "disallow"
+                        else "allowed by ") + r.strip()
+        out.append((p, best))
+    return out
+
+
 SITES = {
     "tiktok": "https://www.tiktok.com/robots.txt",
     "instagram": "https://www.instagram.com/robots.txt",
@@ -170,8 +211,17 @@ def main():
         c = classify(txt) if status == 200 else {
             "verdict": f"HTTP_{status}", "matched_group": "", "rule": "",
             "star_rules": [], "detail": txt[:120]}
-        rows.append({"platform": name, "url": url, "status": status, **c})
-        print(f"  {name:<14} {status:<4} {c['verdict']:<18} {c['detail'][:70]}")
+        pv = path_verdicts(c.get("star_rules") or [],
+                           PATHS_WE_CALL.get(name, []))
+        refused = [p for p, v in pv if v.startswith("REFUSED")]
+        rows.append({"platform": name, "url": url, "status": status,
+                     "paths": pv, "paths_refused": refused, **c})
+        flag = f"  ⚠ {len(refused)} PATH(S) REFUSED" if refused else ""
+        print(f"  {name:<14} {status:<4} {c['verdict']:<18} "
+              f"{c['detail'][:52]}{flag}")
+        for p, v in pv:
+            if v.startswith("REFUSED"):
+                print(f"        {p:<32} {v}")
         time.sleep(1.0)
 
     out = os.path.join(db.REPORTS, "T4d_robots_policy.md")
@@ -185,12 +235,21 @@ def main():
                  "explicitly and disallows everything. Reading its permissive "
                  "`*` block as consent would mean not identifying as what we "
                  "are.\n\n")
-        fh.write("| platform | verdict | the group that binds us | the rule | build? |\n")
-        fh.write("|---|---|---|---|---|\n")
+        fh.write("| platform | verdict | the group that binds us | the rule | "
+                 "paths WE call that are refused | build? |\n")
+        fh.write("|---|---|---|---|---|---|\n")
         for r in rows:
+            refused = r.get("paths_refused") or []
             fh.write(f"| {r['platform']} | **{r['verdict']}** | "
-                     f"{r['matched_group'] or '—'} | `{r['rule'][:70] or '—'}` | "
-                     f"{BUILD.get(r['verdict'], 'NO')} |\n")
+                     f"{r['matched_group'] or '—'} | `{r['rule'][:60] or '—'}` | "
+                     f"{'**' + ', '.join(refused) + '**' if refused else '—'} | "
+                     f"{'NO — path refused' if refused else BUILD.get(r['verdict'], 'NO')} |\n")
+        fh.write("\n> **A blanket verdict is not enough.** YouTube's `*` block "
+                 "has no `Disallow: /` and names no AI agent, so the site-level "
+                 "verdict is PERMITTED — while `Disallow: /youtubei/` refuses "
+                 "the exact endpoint `youtube-transcript-api` calls. "
+                 "`extractor-upgrade` found that; this checker had missed it "
+                 "because it only asked the site-level question.\n")
         fh.write("\n## Detail\n\n")
         for r in rows:
             fh.write(f"### {r['platform']} — {r['verdict']}\n\n{r['detail']}\n\n")
