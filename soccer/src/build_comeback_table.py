@@ -219,7 +219,20 @@ def tally(matches):
     return cells
 
 
-def write_csv(cells, path):
+MIN_MATCHES_FOR_REPORT = 30
+
+
+def write_csv(cells, path, min_matches=0):
+    """Write the grid. `min_matches` trims cells too thin to mean anything.
+
+    THE FULL GRID DOES NOT GO IN `reports/`. That directory is committed and
+    this repo is PUBLIC, and the full grid is minute x scoreline x 16 strength
+    pairs x 25 competitions -- hundreds of thousands of rows, most of them
+    holding two or three matches. It goes to `data/`, which is gitignored. The
+    committed copy is trimmed to cells with at least `min_matches` behind them,
+    which is also the only version worth a human opening.
+    """
+    rows = 0
     with open(path, "w", encoding="utf-8", newline="") as fh:
         w = csv.writer(fh)
         w.writerow(["minute", "leader_goals", "trailer_goals",
@@ -229,9 +242,13 @@ def write_csv(cells, path):
         for key in sorted(cells, key=lambda k: (k[6], k[1], -k[2], k[3], k[4], k[5])):
             _, minute, lead, trail, lt, tt, lg = key
             k, n = cells[key]
+            if n < min_matches:
+                continue
             lo, hi = wilson(k, n)
             w.writerow([minute, lead, trail, lt, tt, lg, n, k,
                         f"{k/n*100:.2f}", f"{lo*100:.2f}", f"{hi*100:.2f}"])
+            rows += 1
+    return rows
 
 
 # ----------------------------------------------------------------- reporting
@@ -434,8 +451,10 @@ def main():
 
     cells = tally(matches)
     os.makedirs(REP, exist_ok=True)
+    full_path = os.path.join(DATA, "comeback_table_full.csv")
     csv_path = os.path.join(REP, "comeback_table.csv")
-    write_csv(cells, csv_path)
+    n_full = write_csv(cells, full_path)
+    n_trim = write_csv(cells, csv_path, MIN_MATCHES_FOR_REPORT)
 
     leagues = Counter(m["league"] for m in matches)
     years = Counter(m["date"][:4] for m in matches)
@@ -472,7 +491,11 @@ def main():
 
     out.append("")
     out.append("=" * 78)
-    out.append("Every cell, at every minute, is in reports/comeback_table.csv.")
+    out.append(f"reports/comeback_table.csv -- {n_trim} cells, every one with at")
+    out.append(f"least {MIN_MATCHES_FOR_REPORT} matches behind it. This is the one to open.")
+    out.append(f"data/comeback_table_full.csv -- all {n_full} cells including the")
+    out.append("thin ones. Not committed: most of it is cells holding two or")
+    out.append("three matches, and this repo is public.")
     out.append("=" * 78)
 
     txt = "\n".join(out)
