@@ -33,6 +33,28 @@ also the right one, because **every reference-price strategy on this exchange
 has to beat the same null**: if Kalshi's own price is already calibrated, a
 sharper reference buys nothing.
 
+> ### ⚠ CORRECTION 2026-08-09 — the word "known" below is doing too much work
+>
+> **This is the file that makes MLB the negative control, so the caveat belongs
+> here and not only in its sibling.** The 0.37¢ figure is
+> **[M011](../LEDGER.md#m011)**, whose status is **SUGGESTIVE**: **26 game sides
+> = 13 games, from ONE snapshot, against DraftKings — a retail book, not a sharp
+> one.** Its own author wrote that caveat, and it sat in an unmerged
+> `LEDGER_ADDITIONS.md` where no ledger check could see it. It is also the
+> *corrected* form of **M002**, a retraction that at n = 4 games said the
+> opposite ("6 of 8 sides beat the cost bar").
+>
+> **The control's role is unaffected and the design does not change.** MLB being
+> efficient is now corroborated by three independent measurements that did not
+> exist when this file was written — T012 on tennis (n=809, r=0.9878), B027
+> (0 of 10 tradeable price bands), and `RESULTS_DEVIG_WHERE.md` on MLB itself
+> (1,460 paired observations, largest venue disagreement 2.77¢ against a 2.75¢
+> cost). **What was wrong is the word "known" resting on 13 games.**
+>
+> Copied here from `PREREGISTRATION_DEVIG.md` §4.2 at the `reopen` chat's
+> request. Nothing below is edited — a pre-registration that changes after
+> results exist is worthless.
+
 **A negative control family is included by design.** MLB moneyline is *known*
 efficient (0.37¢ vs de-vigged DraftKings, 0 of 26 over the bar). Every test
 below runs on it too. **If a strategy "works" on MLB moneyline, the strategy is
