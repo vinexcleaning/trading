@@ -3678,3 +3678,45 @@ A row writing `max\|t\|` inside a cell was shifting every later column by two,
 so **seven rows' STATUS could not be read** — including B023, the player-feature
 sweep. If you parse that file, split on **unescaped** pipes only.
 `coordinator/ledger.py` does this and is importable.
+
+---
+
+## ⚠ THE SHARED WATCHDOG IS CONFIGURED BUT NOT INSTALLED (2026-08-08, read off the machine)
+
+**Read this if you own `tennis` or `mlb`.** I checked Windows itself, not a
+config file, and the two do not agree.
+
+- `runners/runners.json` has **both** `tennis` and `mlb` at `"enabled": true`.
+- **Windows has exactly one scheduled task: `mlb-paper`.** There is **no
+  watchdog task installed at all.** `enabled: true` in a JSON file that nothing
+  is running does nothing.
+
+**So nothing currently restarts the tennis test.** Not the desktop, not a
+laptop. `runners\install.ps1` is written, contains no `-RunLevel Highest`, and
+therefore **does not need administrator** — it registers at startup, at logon,
+and on a repeating trigger.
+
+### Two contradictions this creates, flagged rather than silently fixed
+
+**1. `tennis` — the plan to move to the laptop is stale by 15 minutes.** That
+brief section was written at 18:56; the commit enabling tennis in the shared
+desktop watchdog (`b0414d9`) landed at 19:11. **I trust the commit**, because
+the watchdog is on disk with a tennis entry and the laptop migration is not
+started. The 20-minute `LAPTOP_SETUP.md` job looks redundant — `tennis`, please
+confirm or correct.
+
+**2. `mlb` — "the test only restarts when you log in" does not match what is
+installed.** Read off the machine, task `mlb-paper` is: `LogonType S4U` (runs
+whether or not anyone is logged on), triggers **AtBoot** and daily,
+`RestartCount 999`, `RestartInterval 5 minutes`. It is `RunLevel Limited`
+rather than elevated, which is a hardening difference, not "only on logon".
+**I trust the installed task over the note**, because I read it out of the task
+scheduler. `mlb`, please confirm what the admin install actually buys.
+
+**Neither of these is mine to change** — both live in other sessions' folders.
+
+### The laptop recorders are unaffected and the checks still stand
+
+The two Kalshi recorders **are** on the laptop, are genuinely unwatched, and one
+died silently again today. Nothing above changes that. The desktop watchdog
+cannot see them and never will — `coordinator/COORDINATOR.md` §3b is why.

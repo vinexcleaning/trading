@@ -488,6 +488,41 @@ C:\Users\vinig\trading\youtube-signal\.venv\Scripts\python.exe C:\Users\vinig\tr
 
 ---
 
+## 9b. Four lines that get re-argued, and the answers. Hold them.
+
+**Handed over 2026-08-08 from the chat that had been coordinating this work.**
+Each of these has come back more than once. Each answer is arithmetic or a
+measurement, not an opinion, so **agreeing to re-open one is not being helpful.**
+
+**1. A money target with a deadline.** "$80 to $180 in a week" needs roughly a
+**15% edge per trade**. The largest real effect ever measured in this repo is
+**2.4pp against a 3.6pp cost bar** — i.e. negative. Refuse the deadline, not the
+ambition. **A deadline silently changes what counts as evidence**, which is how
+every one of the 51 retractions started.
+
+**2. Anything trading live and in-play.** His own bot was reading scores after
+**97.4% of the price move had already happened** (n=4,398 score-change events),
+and stop-and-re-enter turned **−2.29¢ into −9.36¢**. **Paper only.** This is not
+a maturity gate that time passes; it is a latency measurement.
+
+**3. "The $25 to $130 run proves something."** It was **buying heavy
+favourites** — many small wins, then one loss that eats thirty. The same shape
+was separately tested and is negative twice (**B024**). Do not let it be
+re-derived under a new name.
+
+**4. He chases a new idea before finishing the last one, and asked to be told.**
+So tell him — once, plainly, as a fact about the queue, and then do the work
+anyway if he says go. **It is his call, not a veto you hold.** The useful form
+is *"tennis is two months out and baseball three weeks; this is a new thing —
+here is what it costs in attention"*, not a lecture.
+
+**The limiting factor is attention, not ability.** He is also in school with an
+SAT coming. **Anything that can be answered offline on free historical data
+costs him nothing but the reading** — prefer that shape over anything that needs
+him to babysit a process.
+
+---
+
 ## 10. What every folder is, and what every folder must have
 
 **Added 2026-08-08 after reading all 23 project folders on disk.** Sessions have
