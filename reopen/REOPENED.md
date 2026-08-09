@@ -1,6 +1,7 @@
 # REOPENED.md — which closed threads died on evidence, and which died on something else
 
 **As of 2026-08-08.** Written by the `reopen` chat, from mailbox message 001.
+**Corrected 2026-08-09 — see [the corrections](#corrections-2026-08-09-the-first-three-reopens-were-worked-and-two-of-them-shrank) at the foot of this file. Three of the thirteen changed, and two of them shrank.**
 
 **The job:** the user said *"I've been feeling that there's some stuff that we
 closed for the wrong reason."* This reads every claim in every ledger and sorts
@@ -62,14 +63,14 @@ did not have it".
 |---|---|---|---|---|
 | **M027** — "no free data source covering ITF tennis" | Six sources probed on 2026-08-02, all dead ends. Recorded as **settled**. | **2 — data** | Nothing to run. **B021 already refuted it on 2026-08-06** with a free key returning 7,786 ITF tournaments. But `market-selection/SHORTLIST.md` still gives this as the reason the exchange's **highest-volume tennis family** gets no entry, and the sub-ledger still says settled. The shortlist decision has to be made again. | an afternoon |
 | **C022** — crypto market making | Recorded in the main ledger as **settled, no edge**, citing a file whose own verdict section reads *"Not yet reached"*. | **4 — too small**, and **1 — a bug** before that | The project's later file (`crypto/MM_RESULTS_MAKER.md`, 2026-08-07, 658 events over 8 days ending 2026-07-31) says the cost of being the passive side is about **half a cent** against a gross margin of about **one cent**, and *"the question is not settled against market making, it is unresolved"*. **73 days** of tape are retrievable against the 8 used. Pull them and re-run. | one paced pull, one re-run |
-| **S023** — "the fade side loses in every configuration" | A dedupe bug voided the event set underneath it. Marked broken, **never re-run**. | **1 — a bug** | Re-run it on the fixed dedupe. Half of the sentence *"tennis set-1: no edge in either direction"* currently rests on arithmetic that was expected rather than measured. | one re-run |
+| **S023** — "the fade side loses in every configuration" | A dedupe bug voided the event set underneath it. Marked broken, **never re-run**. | **1 — a bug** | Re-run it on the fixed dedupe. Half of the sentence *"tennis set-1: no edge in either direction"* currently rests on arithmetic that was expected rather than measured. ⚠ **2026-08-09: this is blocked on the LAPTOP, not on the tennis chat.** `set1_overshoot/data` does not exist on this desktop and the recorder is registered as "nobody has ever confirmed this is running". | one re-run, **on the laptop** |
 | **C023** — hold a crypto contract to settlement | Recorded in the ledger with the single word **"negative"**. | **4 — too small** | I opened the committed output (`crypto/reports/hold_settle.txt`, 25 May–30 Jul 2026, four assets, 146–250 events each) rather than the row. It says **tie** in 40 of its 44 price cells, with ranges of plus-or-minus 5 to 15 cents against a cost of 1 to 2 cents. Bitcoin at 5 cents reads **+2.9 cents**, its bottom edge one hundredth of a cent below zero. That is not a negative result; it is an unmeasured one. Same tape pull as C022 fixes it. | shares C022's pull |
-| **S021** — "the tennis line cannot be resolved with the sample available" | An honest power statement, written **2026-08-01**. | **4 — too small** | It says it needs about **3,970 matches** and that the recorder gathers about **1,900 a week**. That was a week ago. Count what has accrued and re-run if it clears. | one count, then one re-run |
+| **S021** — "the tennis line cannot be resolved with the sample available" | An honest power statement, written **2026-08-01**. | **4 — too small** | ⚠⚠ **WORKED 2026-08-09 AND WITHDRAWN AS A REOPEN — see the corrections at the foot of this file.** The two numbers are in different units (354 qualifying events a week, not 1,900), and more data cannot help anyway: the effect is **2.42 out of 100** against a cost of **3.61 out of 100**. The bucket version needs **61 weeks** of recording. ~~Count what has accrued and re-run if it clears.~~ **S018 is the tennis item that matters, not this.** | ~~one count~~ **pointless by arithmetic** |
 | **T002 / B023** — the player-model data window | Features from one provider stop at 2026-06-02 and 85% of markets are after that; the player-feature sweep then returned nothing on **29 days** of form, where the typical player appears about three times. | **2 — data**, feeding **4 — too small** | **$9.99** buys 43 months of point-by-point history including ITF. It replaces the frozen source and re-powers the sweep in the same purchase. Already named in the 2026-08-06 audit and not bought. | $9.99 and one rebuild |
 | **S018** — "match label coverage cannot be raised" | Two sources: one paid tier's cap, one site's 7-day window. | **2 — data** | Probe a third and a fourth. The signal chat found free soccer goal-time data this week that nobody thought existed, which is the same shape of mistake. | a few hours |
 | **M017** — Colombian, Peruvian, Korean and Chilean closing lines | One site serves a **wrong-country file** under those codes — Colombia returns Poland. | **2 — data** | That kills that one site for those leagues. It does not kill the leagues. Probe others before they stay out of the soccer comeback table. | a few hours |
 | **S022** — the retirement add-back cost | Same void event set as S023. Marked broken, never re-run. | **1 — a bug** | One re-run. Small, and unlikely to move anything. | one re-run |
-| **BH014** — the recorder read the first 60 tickers | It probed 60 tickers in an **undocumented server order** while the family listed 85 to 104. Fixed 2026-08-06. | **1 — a bug** | Nobody has said which earlier conclusions read that truncated output. Name them. | a reading pass |
+| **BH014** — the recorder read the first 60 tickers | It probed 60 tickers in an **undocumented server order** while the family listed 85 to 104. Fixed 2026-08-06. | **1 — a bug** | ⚠ **WORKED 2026-08-09 AND MOSTLY CLEARED.** I guessed the de-vig cost bar read that output; it does not — the bar is fee plus slippage with **no spread term**, so the "de-vig is not reachable on MLB" conclusion is untouched. What remains is one re-measurement: the **2.0¢ median / 7.0¢ p90** spread figures came from cycles where some tickers got as few as **1** snapshot, server-chosen. | **drops to a re-measurement** |
 | **C016** — "the cheap wings are not tradeable" | **61 minutes** of one price ladder on one day. | **3 — one version** | Re-check across many days of recorded books instead of one hour. | one query |
 | **M025** — Kalshi versus DraftKings on player props | One free feed publishes prop prices **one side only**, so the comparison was **cancelled as unanswerable**. | **2 — data** | Check whether any other free feed publishes both sides. | a few hours |
 | **CH074** — set-score and parlay markets | Closed by an **arithmetic argument** and one worked example. | **3 — one version** | The test that argument proposed — comparing the two set-score prices against the match price at prices you could really pay — was never run. | one analysis run |
@@ -241,3 +242,104 @@ allowed to be fair.
 >
 > Both cases are real. **It is your call, and it is the only thing in this file
 > that is.**
+
+---
+
+# CORRECTIONS 2026-08-09 — the first three reopens were worked, and two of them shrank
+
+The user said **go**. Three of the thirteen could be worked from this chat
+without touching another chat's folder, because they needed a fact established
+rather than a test re-run. **All three moved, and two moved against me.** They
+are marked inline in the table above by this section rather than deleted.
+
+## 1. S021 — I called it "the cheapest reopen in the whole audit". That was wrong.
+
+**What I said:** the row needs about **3,970** matches and the recorder gathers
+about **1,900 a week**, so the sample it lacked has probably arrived.
+
+**Three things wrong with that, in rising order of importance.**
+
+**(a) The two numbers are in different units.** The 3,970 counts *qualifying
+set-1 events*, the same unit as the 3,436 it already had. The 1,900 counts *all
+matches*. Over the study window, 3,436 qualifying events accrued in 68 days —
+**354 a week, not 1,900.** So the wait was about a week and a half from
+2026-08-01, not two days. This is the unit mistake this repo keeps making, and
+it is sitting inside the row that warns about sample size.
+
+**(b) Reaching 3,970 does not open a trade, and I should have seen that
+immediately.** The measured undershoot is **2.42 out of every 100 risked**. The
+cost of trading it is **3.61 out of every 100**. More data makes the 2.42 sharper.
+It never makes 2.42 bigger than 3.61. **Ninety-nine times out of a hundred that
+sentence is the whole answer, and I wrote a reopen instead.**
+
+**(c) What more data would genuinely buy is the buckets — and the arithmetic
+says no.** The only live version of this idea is that some *specific* slice has
+an effect big enough to clear 3.61. Right now those tests cannot see anything
+under about 9 to 10. Detection sharpens with the square root of the sample, so:
+
+| test | matches now | smallest it can see | matches needed to see 3.6 | at ~354 qualifying a week |
+|---|---|---|---|---|
+| S005, 25 time and tier buckets (worst) | 3,436 | ~9.0 | ~21,500 | **~61 weeks** |
+| S005, best bucket | 3,436 | ~3.7 | ~3,630 | ~10 weeks |
+| S006, 10 margin buckets | 479 | ~9.9 | ~3,620 **label-verified** | see below |
+
+**S006 is the interesting one.** Its 479 matches are the label-verified subset —
+**13.9%** of the universe. Getting to 3,620 label-verified matches by waiting
+means ~26,000 matches passing through, about **74 weeks**. Getting there by
+**raising label coverage** is `S018`, which is on the list already and checked
+exactly two sources.
+
+> **So the corrected finding is stronger than the closure it was attacking, and
+> it points the other way.** The tennis bucket line cannot be resolved by
+> waiting — a year of recording, on the recorder's own accrual rate. **The only
+> thing that moves it is label coverage, which makes S018 the tennis item that
+> matters and S021 an also-ran.** The directional prior held for the 52nd time,
+> this time on my own report.
+
+## 2. S022 / S023 — real, but nobody can run them from this machine
+
+`set1_overshoot/data` **does not exist on this desktop.** The study's recorded
+depth and candles live on the **laptop**, under `C:\Users\gianf\`, and are
+gitignored, which `CLAUDE.md` §8 says to expect.
+
+And `coordinator/runners.py` reports the tennis depth recorder as **"CHECK IT BY
+HAND — nobody has ever confirmed this is running."** Nothing on this machine can
+see it: no shared drive, no heartbeat.
+
+**So the two genuine bug-closures in tennis are not blocked on the tennis chat.
+They are blocked on the laptop**, and so is every question about how much has
+accrued since 2026-08-01. That is a physical-access job, not an analysis job.
+
+## 3. BH014 — I asked the wrong question, and the answer is mostly reassuring
+
+I asked which conclusions read the truncated 60-ticker recorder output. **I
+guessed the de-vig cost bar did, and it does not.** The bar is
+`fee(ask) + slippage` — the pre-registration says in as many words that there is
+**no spread term**, because buying at the ask already pays the spread. Both terms
+are independent of which tickers the recorder sampled. **The "de-vig is not
+reachable on MLB" conclusion is untouched.**
+
+`RESULTS_DEVIG.md` had also already checked the neighbouring case and said so:
+the old MLB control ran on *settled* markets, so the time-field trap did not
+void it.
+
+**What is still genuinely touched, and still unstated:** the **2.0¢ median and
+7.0¢ p90 spread** figures came from 214 cycles in which per-ticker snapshot
+counts ran **from 1 to a median of 94**, with the server choosing which markets
+were starved. Those figures are context rather than load-bearing — but they are
+the correction that replaced an earlier 1.0¢ reading, and they have not been
+re-measured since the fix on 2026-08-06.
+
+**Net: BH014 drops from a reopen to a one-line re-measurement.**
+
+## What this does to the count
+
+| | was | **now** |
+|---|---|---|
+| REOPEN — a test to re-run | 13 | **12**, and one of the twelve (S021) is downgraded to *pointless by arithmetic* |
+| — of which blocked on the laptop, not on a chat | — | **2** (S022, S023) |
+| RELABEL — a sentence to rewrite | 16 | **17** (BH014 moves across) |
+
+**Three worked, two shrank, none grew.** That is the same asymmetry this repo has
+recorded 51 times, and it is the first evidence that this chat's own output
+behaves like everything else here.

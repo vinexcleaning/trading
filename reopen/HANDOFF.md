@@ -1,9 +1,9 @@
 # HANDOFF — reopen
 
 <!-- COORDINATOR-STATE
-doing: nothing running - the first pass over all 342 recorded claims is finished and filed
-left: re-audit after the owning chats answer, and audit the three folders that have no ledger rows once someone ledgers them
-needs: yes - reopen thirteen threads now, or finish the soccer table first? Both cases are in reopen/REOPENED.md and it is the only thing in there I cannot decide
+doing: nothing running - the audit is filed, the user said go, and the three items this chat could work without touching another folder are worked
+left: the other chats execute their mail; two tennis items are blocked on the laptop and nobody has confirmed that recorder is alive
+needs: yes - two things only the user can do: go to the laptop and check record_depth.py is running, and decide on the $9.99 tennis history purchase
 -->
 
 **As of 2026-08-08.** Written by the session that took mailbox message 001.
@@ -45,6 +45,24 @@ Every one of the 313 calls, with its reason, is in
 | `coordinator` | `001` | `ledger.py` reads 3 of 5 ledger files; three folders still have no rows; `mail.py` cannot record who sent a message |
 
 **Nothing here is blocked on those replies.** They are other chats' work.
+
+## 2026-08-09 — the user said "go". What changed.
+
+Three of the thirteen could be worked from this chat, because they needed a fact
+established rather than a test re-run. **All three moved. Two moved against me.**
+Full detail at the foot of [REOPENED.md](REOPENED.md).
+
+| item | was | now |
+|---|---|---|
+| **S021** | "the cheapest reopen in the audit" | **withdrawn.** The two numbers are in different units (354 qualifying events a week, not 1,900), and more data cannot help regardless: the effect is 2.42 out of 100 against a 3.61 cost. The bucket version needs **61 weeks** of recording. |
+| **S018** | fourth on the list | **first for tennis.** S006's floor is limited by label coverage, not by time — raising coverage is the only lever that moves it, and that closure checked two sources. |
+| **BH014** | a reading pass | **mostly cleared.** I guessed the de-vig cost bar read the truncated output; it does not — the bar is fee plus slippage with no spread term. One re-measurement remains. |
+| **S022 / S023** | tennis's job | **blocked on the laptop.** `set1_overshoot/data` is not on this desktop, and `runners.py` reports the depth recorder as never confirmed running. |
+
+Follow-up mail filed: `tennis` **007**, `devig` **011**, both marked read-before.
+
+**Revised counts: 12 reopens (one of them, S021, now pointless by arithmetic),
+17 relabels, 2 of the 12 blocked on physical access to the laptop.**
 
 ## What is left for this chat
 

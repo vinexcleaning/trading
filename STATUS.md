@@ -4098,3 +4098,64 @@ competitions, 2015–2024), and the user's own team-strength hypothesis, which i
 real and ordered — top-third leading is caught 2.8 per 100 at the 70th minute,
 bottom-third leading 7.1. **The held-out 2025–2026 years were never opened**, so
 they remain clean for whatever comes after the European season has data.
+
+---
+
+## Desktop, 2026-08-09 — the user said "go" on the thirteen reopens; three were worked and two shrank
+
+The `reopen` chat worked the three items that needed a **fact established**
+rather than a test re-run. Detail: [reopen/REOPENED.md](reopen/REOPENED.md),
+corrections section. **Two of the three moved against the audit's own report.**
+
+### 1. S021 is withdrawn — waiting for more tennis data cannot work
+
+The row reads *"needs about 3,970; accrues about 1,900 a week"*. **Those are
+different units.** The 3,970 counts qualifying set-1 events, the same unit as the
+3,436 it has; the 1,900 counts all matches. **3,436 qualifying events arrived in
+68 days — 354 a week, not 1,900.**
+
+**And it does not matter, because more data cannot open the trade.** The effect
+is **2.42 out of 100** against a cost of **3.61 out of 100**. Detection sharpens
+with the square root of the sample, so the only live version — a specific bucket
+big enough to clear 3.61 — needs:
+
+| test | matches now | smallest it can see | needed to see 3.6 | at ~354/week |
+|---|---|---|---|---|
+| S005, 25 time/tier buckets (worst) | 3,436 | ~9.0 | ~21,500 | **~61 weeks** |
+| S006, 10 margin buckets | 479 label-verified | ~9.9 | ~3,620 label-verified | **~74 weeks** at 13.9% coverage |
+
+> **The reopen closes the thread harder than the closure did.** And it promotes
+> **S018** (label coverage, closed after checking exactly two sources) to the
+> first tennis item, because coverage — not time — is the only lever on S006.
+
+### 2. S022 / S023 are blocked on the LAPTOP, not on the tennis chat
+
+**`set1_overshoot/data` does not exist on this desktop.** The recorded depth and
+candles are on the laptop under `C:\Users\gianf\`, gitignored, exactly as
+`CLAUDE.md` §8 warns. And `coordinator/runners.py` reports the tennis depth
+recorder as **"CHECK IT BY HAND — nobody has ever confirmed this is running."**
+
+**So every question about the fade-side re-run and about how much has accrued
+since 2026-08-01 needs someone physically at the laptop.**
+
+### 3. BH014 is mostly cleared — the de-vig cost bar does not read the truncated recorder
+
+I suspected the **2.75¢** MLB cost bar was built on a spread measured from a
+starved recorder, which would have dropped it under Pinnacle's **2.01** overround
+and flipped BH011 from *structurally dead* to *reachable*. **It is not.**
+`PREREGISTRATION_DEVIG.md` §2.3 is `fee(ask) + slippage`, with *"No half-spread
+term — buying at the ask is paying the spread."* **BH011 stands.**
+
+What remains is one re-measurement, not a reading pass: the **2.0¢ median /
+7.0¢ p90** touch spread came from 214 cycles where per-ticker snapshot counts ran
+**min 1, p25 25, median 94**, server-chosen, and has not been re-measured since
+the 2026-08-06 fix.
+
+### Revised counts
+
+**12 reopens** (one of them, S021, now pointless by arithmetic), **17 relabels**,
+and **2 of the 12 blocked on physical access to the laptop**. Follow-up mail:
+`tennis` **007**, `devig` **011**, both marked read-before.
+
+> **Three worked, two shrank, none grew.** Same asymmetry as the other 51
+> corrections, this time on the audit's own output.
