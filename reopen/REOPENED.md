@@ -423,3 +423,53 @@ work was already done and I had not looked in the right place.
    still one probe.
 5. **Nothing here re-ran anyone's analysis.** Every "stands" in the table above
    still rests on reading, not on reproducing.
+
+
+---
+
+# THE FIRST REOPEN TO PAY, 2026-08-09 — S018 is REFUTED by the tennis chat
+
+Recorded here within hours of the promotion, because a reopen nobody acted on is
+worth the same as one nobody found, and this one was acted on.
+
+**The chain:** withdrawing S021 (waiting cannot work) is what promoted **S018**
+(label coverage, closed after two sources) to the first tennis item. The tennis
+chat took mailbox 007 and **refuted the closure the same afternoon** — commit
+`8ca40df`.
+
+**What they found.** `tennis-data.co.uk` publishes **one workbook per season**
+carrying, per match, the date, both players, surface, round, and **games won by
+each player in every set**. That is exactly the set-1 margin S006 buckets on.
+Free, weekly, and **because the files are per-season the plus-or-minus-7-day
+objection that closed S018 does not apply at all** — it reaches back years.
+
+Measured on S006's own window, 25 May – 26 Jul 2026: **1,062 labels against the
+479 S006 used.**
+
+**Their own three limits, which are the reason this is honest:**
+
+1. The labels are not yet joined — the join rate needs the laptop universe.
+2. **Main tour only.** No Challenger, no ITF, against a live Kalshi pool that is
+   73–87% ITF.
+3. **1,062 is 29% of the ~3,620 needed.** It moves the smallest visible effect
+   from about **9.9** to about **6.6** — against a cost bar of 3.61.
+
+> **Their words, and the right ones: "REFUTED, not resolved. Shortens the wait,
+> does not end it."**
+
+**A free extra they found in the same file:** `PSW`/`PSL` are **Pinnacle closing
+prices**, historical and already joined to results — the de-vig reference `devig`
+and `mlb` have been looking for.
+
+## What this settles about the audit itself
+
+**Category 2 — "the data wasn't available" — is the category that pays.** Both
+worked examples are now confirmed: the ITF absence claim was false (B021), and
+the tennis label absence claim was false (this). **Two for two, on closures that
+had each checked two or three sources and then written the sentence as though it
+were about the world.**
+
+**And it is still not an edge.** The floor moves from 9.9 to 6.6 against a 3.61
+bar. The thread is more measurable than it was this morning and it is not
+resolved. That is the fourth thing this audit has produced that shrank on
+contact, and the first that shrank *after* someone acted on it.

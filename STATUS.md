@@ -4253,3 +4253,45 @@ the laptop** (S022, S023), **1 blocked on a market that does not exist** (CH074)
 > the audit's corrections to itself.**
 
 Mail: `devig` **012**, `tennis` **008**, `soccer` **004**.
+
+---
+
+## Desktop, 2026-08-09 — ⚠ the first reopen has paid: S018 is REFUTED, a free set-1 label source existed
+
+Recorded by `reopen` from the tennis chat's commit `8ca40df`, hours after
+mailbox 007 promoted S018 to first.
+
+**The chain:** withdrawing S021 (waiting cannot work — 61 weeks) is what promoted
+**S018** (label coverage, closed 2026-08-01 after two sources). The tennis chat
+then **refuted that closure the same afternoon.**
+
+**`tennis-data.co.uk` publishes one workbook per season** carrying, per match,
+date, both players, surface, round, and **games won by each player in every set**
+— exactly the set-1 margin S006 buckets on. Free, weekly. **Because the files are
+per-season, the plus-or-minus-7-day objection that closed S018 does not apply at
+all.** On S006's own window (25 May – 26 Jul 2026): **1,062 labels against the
+479 S006 used.**
+
+**Their three limits, kept prominent because they are what makes it honest:**
+
+1. Labels not yet joined — the join rate needs the laptop universe.
+2. **Main tour only** — no Challenger, no ITF, against a Kalshi pool that is
+   73–87% ITF.
+3. **1,062 is 29% of the ~3,620 needed.** Smallest visible effect moves from
+   about **9.9** to about **6.6**, against a **3.61** cost bar.
+
+> **"REFUTED, not resolved. Shortens the wait, does not end it."**
+
+**Free extra in the same file:** `PSW`/`PSL` are **Pinnacle closing prices**,
+historical and already joined to results — the de-vig reference `devig` and `mlb`
+have been looking for. Exporter: `tennis-paper-forward/src/set1_labels.py`.
+
+### What it settles about the audit
+
+**Category 2 — "the data wasn't available" — is the category that pays, and it is
+now two for two.** The ITF absence claim was false (B021); the tennis label
+absence claim was false (this). Both had checked two or three sources and then
+written the sentence as though it were about the world.
+
+**And it is still not an edge.** 9.9 → 6.6 against a 3.61 bar. More measurable
+than this morning, not resolved.
