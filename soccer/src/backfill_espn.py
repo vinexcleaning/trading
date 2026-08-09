@@ -57,6 +57,15 @@ LEAGUES = [
     # big European competitions -- not seen per-game on Kalshi yet, included
     # because they are the ones the user actually knows
     "eng.1", "esp.1", "ita.1", "ger.1", "uefa.champions",
+    # ---- ADDED 2026-08-08 after checking Kalshi directly rather than trusting
+    # the two documents in this repo, which both undercounted badly. Kalshi
+    # settles per-game markets on ALL of these: KXEPLGAME, KXUCLGAME,
+    # KXUELGAME, KXSERIEAGAME, KXLALIGAGAME, KXBUNDESLIGAGAME, KXLIGUE1GAME,
+    # KXWCGAME, KXCLUBWCGAME, KXCOPADOBRASILGAME, plus the ten South/Central
+    # American and US series already listed above. So the Premier League and
+    # the Champions League ARE bettable, which soccer/dataset.md and
+    # reports/tape_soccer_scan.json between them managed to miss.
+    "fra.1", "uefa.europa", "fifa.world", "fifa.cwc", "uefa.europa.conf",
 ]
 START = date(2015, 1, 1)
 END = date.today()

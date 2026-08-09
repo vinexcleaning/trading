@@ -55,6 +55,7 @@ PRIORITY = [
     "fifa.friendly", "uru.1", "per.1", "ecu.1", "chi.1",
     "usa.usl.1", "usa.usl.l1", "usa.nwsl",
     "eng.1", "esp.1", "ita.1", "ger.1", "uefa.champions",
+    "fra.1", "uefa.europa", "fifa.world", "fifa.cwc", "uefa.europa.conf",
 ]
 
 

@@ -353,6 +353,57 @@ def section_by_competition(cells, out, minute=80):
     out.append("columns above, these counts may be added up.")
 
 
+def section_sanity(matches, out):
+    """The naive benchmark, in a form a football fan can check by eye.
+
+    Everything in this report is derived from replayed timelines. If the replay
+    is wrong, the comeback rates are wrong in a way that still looks completely
+    normal. So the same replay is asked a question whose answer is already
+    common knowledge: how often does the home team win? Anyone who watches
+    football knows it is a bit under half, with draws around a quarter. If these
+    come out at 30% or 70%, nothing else on this page should be believed.
+    """
+    out.append("")
+    out.append("=" * 78)
+    out.append("6. A CHECK YOU CAN DO IN YOUR HEAD")
+    out.append("=" * 78)
+    out.append("")
+    out.append("Everything above comes from replaying matches minute by minute.")
+    out.append("If that replay is broken, the comeback numbers would be wrong")
+    out.append("AND would still look perfectly reasonable. So here is the same")
+    out.append("replay answering something you already know the answer to:")
+    out.append("how often does the home team win?")
+    out.append("")
+    out.append("If these are not roughly 'home wins a bit under half, draws")
+    out.append("about a quarter', something is broken and nothing above counts.")
+    out.append("")
+    out.append(f"{'competition':>22s} {'matches':>9s} {'home wins':>10s} "
+               f"{'draws':>8s} {'away wins':>10s}")
+    out.append("-" * 62)
+    per = defaultdict(Counter)
+    for m in matches:
+        c = per[m["league"]]
+        c["n"] += 1
+        if m["reg_h"] > m["reg_a"]:
+            c["h"] += 1
+        elif m["reg_h"] < m["reg_a"]:
+            c["a"] += 1
+        else:
+            c["d"] += 1
+        t = per["ALL"]
+        t["n"] += 1
+        t["h" if m["reg_h"] > m["reg_a"] else
+          ("a" if m["reg_h"] < m["reg_a"] else "d")] += 1
+    for lg in ["ALL"] + sorted((k for k in per if k != "ALL"),
+                               key=lambda x: -per[x]["n"]):
+        c = per[lg]
+        out.append(f"{lg:>22s} {c['n']:>9d} {pct(c['h'], c['n']):>9s}% "
+                   f"{pct(c['d'], c['n']):>7s}% {pct(c['a'], c['n']):>9s}%")
+    out.append("")
+    out.append("(These are results at 90 minutes, so a cup tie decided in extra")
+    out.append("time counts as the draw it was at 90.)")
+
+
 def section_breakeven(out):
     out.append("")
     out.append("=" * 78)
@@ -417,6 +468,7 @@ def main():
     section_strength(cells, out, minute=80)
     section_by_competition(cells, out, minute=80)
     section_breakeven(out)
+    section_sanity(matches, out)
 
     out.append("")
     out.append("=" * 78)
