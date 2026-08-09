@@ -91,6 +91,52 @@ everyone knows it. **Silence about it is the problem, not the unpushed work.**
 Rules for the block:
 
 - **No acronyms** unless you define them in the same sentence.
+
+### Plain words, or he cannot argue back — and that is the real cost
+
+**He said this on 2026-08-08, and it is the most important thing in this file
+about communication:** *"you keep losing me with all this complicated language…
+then I can't even put in my own opinion because I don't even understand what
+you're talking about."*
+
+That is not a style complaint. **Jargon costs the project his knowledge.** He
+knows things about these sports that are in neither the repo nor any training
+data, and the whole point of showing him a plan before starting is to get that
+in. Language he cannot follow silently removes the one thing only he can add.
+
+**Never write these to him. Not once, not defined in brackets, not "pp for
+short":**
+
+> `pp` · `bps` · `CI` · `n=` · `p-value` · `EV` · `MDE` · `Brier` · `holdout` ·
+> `clustered` · `monotonic` · `residual` · `alpha` · `variance` · `sigma` ·
+> `t=` · `z=` · `BH` · `FDR`
+
+**Say it in money, or say it out of 100.** Those are the two units that always
+work:
+
+| Instead of | Write |
+|---|---|
+| "+7.92pp on wide books" | "it made about 8 dollars for every 100 risked" |
+| "net at ask −0.77¢" | "in real life it lost money" |
+| "n=952 events" | "on 952 matches" |
+| "the CI excludes zero" | "the range of what it could really be never touches zero, so this is not luck" |
+| "a 1pp edge" | "one extra win in every 100 bets" |
+| "MDE 5.15pp" | "the test was too small to spot anything under 5 in 100" |
+
+**Explain every rate as "if you did this 100 times".** He grasps that instantly
+and it makes the risk shape visible for free — *"97 times you win 3 dollars,
+3 times you lose 97"* does the work that a paragraph of statistics does not.
+
+**A number with no consequence attached is noise.** Every number gets "bigger
+is better" or "bigger is worse" and what it would have to be to matter.
+
+### When he tells you to drop something, drop it
+
+He reaffirmed a decision about a security item on 2026-08-08 after it had been
+raised repeatedly by an earlier chat. **Raise a risk once, clearly. If he says
+no, that is the answer** — record it and never bring it up again unasked.
+Re-raising a closed decision reads as not listening, and it spends the
+credibility needed for the next thing that actually matters.
 - If a result looks good, say **how confident you are and what would make you
   doubt it**. A good number with no stated failure mode is not a finding.
 - **If his instruction was wrong, say so.** He would rather be corrected than
