@@ -1,9 +1,9 @@
 # HANDOFF.md — soccer
 
 <!-- COORDINATOR-STATE
-doing: fetching goal minutes for ~10 years of soccer, 19 competitions, so a comeback table can exist at all
-left: build the descriptive comeback table once the fetch lands; hold back 2025-2026 untouched
-needs: yes - the comeback plan is written and waiting on a go/no-go, and on whether he wants league position or the pre-match price as the team-strength column
+doing: downloading goal minutes for ~10 years across 24 competitions; the table code is written and tested and runs the moment the data lands
+left: run the table on the full data and report it; the Kalshi price column is still a separate job on the recent slice only
+needs: no
 -->
 
 **As of 2026-08-08.** Written by the session that took mailbox message 001.
@@ -13,22 +13,41 @@ needs: yes - the comeback plan is written and waiting on a go/no-go, and on whet
 ## Where this got to
 
 The mail asked for a full comeback lookup table: every minute, every scoreline,
-every Kalshi-bettable competition. **The plan is written and this session is
-paused on it**, per `CLAUDE.md` §2 — a new idea gets a plan and a wait, not a
-head start on the analysis.
+every Kalshi-bettable competition. The plan was written, the user said **go**,
+and the work is running. He did not answer the one question in the plan — league
+position or pre-match price for team strength — so the conservative option was
+taken and logged in `DECISIONS.md`.
 
-What was **not** paused is the data collection, because every version of the
-question needs the same input and it takes hours. See `DECISIONS.md` for that
-call.
+**The analysis code is written, tested and validated end to end on a 475-match
+sample.** It is waiting on data, not on design.
 
 ## What is running right now
 
-| Job | What it does | Where it writes |
-|---|---|---|
-| `src/backfill_espn.py` | 13,414 week-windows, 19 competitions, 2015 → today. Fixture list and final scores. About 4 hours. Resumable — a kill costs one window. | `soccer/data/espn_history/matches.jsonl` and `_progress.json` |
-| `src/fetch_goal_minutes.py` | Chained to run when the above finishes. One ESPN match-summary call per fixture, 4 workers. Pulls **the minute of every goal**. Resumable. | `soccer/data/goal_minutes.jsonl` |
+A single chained job, launched 2026-08-08. Every stage is resumable, read-only,
+unauthenticated, and writes its own log in `soccer/reports/`.
 
-Logs: `soccer/reports/backfill_run.log`, `soccer/reports/goal_minutes_run.log`.
+| Stage | What it does | Log |
+|---|---|---|
+| `backfill_espn.py` | 13,414 week-windows, 2015 → today. Fixture list and final scores. ~4 h. | `backfill_run.log` |
+| `backfill_espn.py` again | Picks up the 5 competitions added after checking Kalshi (Ligue 1, Europa League, World Cup, Club World Cup, Conference League). Only new windows. | `backfill_run2.log` |
+| `fetch_goal_minutes.py` | One ESPN match-summary call per fixture, 8 workers. **The minute of every goal.** | `goal_minutes_run.log` |
+| `fetch_goal_minutes.py` again | Picks up the fixtures from the second backfill. | `goal_minutes_run2.log` |
+| `build_strength.py` | How good each team was on the day. Runs its own no-lookahead check and fails loudly. | `strength_run.log` |
+| `build_comeback_table.py` | The table. | `table_run.log` |
+
+`soccer/reports/pipeline.log` prints `PIPELINE_COMPLETE` when all of it is done.
+
+## The analysis code, and what each piece is responsible for
+
+| Script | What it does |
+|---|---|
+| `src/build_strength.py` | Team strength: points per game over a rolling 20 matches in that competition, ranked against everyone active in the last 120 days, cut into thirds. **Not** a season table — see `DECISIONS.md` for why that was thrown away. Includes `test_no_lookahead()`, which rebuilds a sample independently and asserts agreement. |
+| `src/build_comeback_table.py` | Replays every match minute by minute and asks, for each minute someone was ahead, whether the side behind went on to win in regulation. Writes `reports/comeback_table.txt` and a full-grid `reports/comeback_table.csv`. |
+| `tests/test_comeback_logic.py` | 11 tests of the replay against matches whose answer is known by hand — a draw is not a comeback, extra time does not count, the leader can change sides, stoppage goals sit at minute 90. |
+| `tests/test_paper_only.py` | The structural paper-only guard. |
+
+Run the tests with `py -3 soccer/tests/test_comeback_logic.py` — there is no
+pytest on this machine's `py -3`.
 
 **Neither is in a runner registry.** They are one-off collection jobs, not
 standing background tests, so they are deliberately not in `runners/runners.json`
@@ -65,13 +84,15 @@ session's artifacts are not on this machine — `data/` is gitignored repo-wide.
 Everything is being re-fetched rather than assumed present. Reports in
 `soccer/reports/` are committed and survived; the data behind them did not.
 
-**Kalshi's per-game soccer list is not settled.** `soccer/dataset.md` names 5
-competitions; `soccer/reports/tape_soccer_scan.json` shows 10, dominated by
-international friendlies. Those two do not contradict each other so much as
-sample different weeks — see the BRIEF section for why the friendlies number is
-probably a June artifact. The `devig` chat was asked for the definitive list. A
-direct probe of Kalshi's open events on 2026-08-08 got rate-limited and then
-connection-reset after 2,200 events; it found season-long Premier League,
-Champions League, La Liga and Bundesliga markets but **no per-game soccer series
-open at that moment**. That is not evidence they do not exist — August is
-between seasons for several of these.
+**Kalshi's per-game soccer list is now settled for existence** — see
+[kalshi_soccer_series.md](kalshi_soccer_series.md). 20 series, including the
+Premier League and the Champions League, which neither repo document mentioned.
+The "mostly international friendlies" reading of `tape_soccer_scan.json` was a
+calendar artifact of the pre-World-Cup international break.
+
+**Liquidity is NOT settled and is not mine.** A series existing is not a market
+you can get filled in — that distinction is the whole of B024. Still `devig`'s.
+
+**Do not query Kalshi's `/events` endpoint in a tight loop.** An unpaced scan on
+2026-08-08 was rate-limited after 2,200 events and then had the connection reset
+by the host. One second between calls was fine.

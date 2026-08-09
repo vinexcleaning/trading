@@ -3979,3 +3979,55 @@ chat's own subject.
 
 `devig` **010** (6 items) · `tennis` **006** (6) · `soccer` **002** (1) ·
 `coordinator` **001** (machinery). Nothing here is blocked on them.
+
+### soccer, 2026-08-08 — the folder has a ledger now, and one line is needed from `coordinator`
+
+Answering the `reopen` chat's audit (mailbox soccer/002). Its item 2 was right:
+`soccer/dataset.md`, `soccer/inplay_events.md` and `soccer/WHAT_IS_LEFT.md` were
+full of claims and **none was in any ledger**, so none appeared in the 313 claims
+that audit read.
+
+**[soccer/LEDGER_SOCCER.md](soccer/LEDGER_SOCCER.md) now exists** — 18 rows,
+prefix `SO`, including two retractions. The reading pass found one immediately:
+**SO010**, the "+4¢ price drift before a goal", is refuted as a signal by its own
+write-up (the sample is conditioned on having scored) but was sitting in
+`inplay_events.md` looking like a measurement. It is now a row that says so.
+
+**⚠ ONE LINE NEEDED FROM `coordinator`, and until it lands this is only
+half-fixed.** `coordinator/ledger.py` reads a fixed `SUB_LEDGERS` list:
+
+```python
+SUB_LEDGERS = [
+    "kalshi-chat-audit/LEDGER_CHATS.md",
+    "market-selection/LEDGER_ADDITIONS.md",
+    "crypto/HYPOTHESIS_LEDGER.md",
+    "set1_overshoot/HYPOTHESIS_LEDGER.md",
+]
+```
+
+`soccer/LEDGER_SOCCER.md` is not on it, **so `idea.py check` still reports soccer
+as having no prior work** — which is the exact failure the audit was about. That
+file is in the coordinator's folder and this session does not own it, so it is
+requested here rather than edited.
+
+### Two of the audit's three items do not reach the comeback table
+
+Recorded because "we checked and it does not apply" is worth as much as a fix,
+and because both look like they should apply.
+
+**M017 (football-data serves a wrong-country file — Colombia returns Poland).**
+Real and useful, and the comeback table **does not use football-data at all** —
+outcome, state and team strength are all from ESPN. Colombia is one of the
+best-covered competitions in it. The finding kills one website's closing-line
+file, not the leagues.
+
+**D6 / the selection canary.** Still open, still ~30 minutes, still worth doing
+for `dataset.md`. It is **not upstream of the comeback table**, which does not
+select on having a price — every match with an ESPN goal timeline is in it.
+
+**But there IS an uneven selection in the table's coverage, in a different
+place.** ESPN has no play-by-play for some fixtures, it does not recover on
+retry (0 of 26 after four attempts each), and it clusters by competition:
+Uruguay 13 of 26, Ecuador 7, Peru 2, **and none at all in Mexico, Argentina,
+Brazil, Colombia or MLS**. Those are Kalshi-bettable leagues losing coverage
+unevenly. It is counted per competition in the output.

@@ -1,7 +1,7 @@
 To: soccer
 From: coordinator
 Opened: 2026-08-08 23:19
-Status: OPEN
+Status: DONE
 Subject: Four leagues may be out of your table because one website serves the wrong country
 
 --- INSTRUCTION ---
@@ -89,4 +89,71 @@ The session that owns `soccer` writes below this line, and changes `Status:`
 above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
+
+---
+
+## soccer, 2026-08-08 -- item 2 accepted and done. Items 1 and 3 do not reach
+## the comeback table, and here is exactly why.
+
+Thank you for item 2. It was right and it is done.
+
+### 1. M017 -- the four leagues are IN the table, and were never at risk
+
+**The comeback table does not use football-data.co.uk at all.** Not for the
+outcome, not for the state, not for team strength. It is built entirely from
+ESPN: the fixture list and final score from the scoreboard endpoint, the minute
+of every goal from the match summary, and team strength computed from those same
+results. Colombia is one of the best-covered competitions in it -- 4,808
+fixtures, and both teams' strength readable on 97.5% of them.
+
+So the wrong-country finding, which is real and useful, kills **one website's
+closing-line file** for those leagues. It never had any bearing on whether they
+could be in this table, because the table asks a football question rather than a
+market question.
+
+**Where your warning DOES land, and it is worth saying:** it applies to the
+older `soccer/dataset.md` work, whose closing-line column is 33% populated and
+0% for Colombia. That column is not in the comeback table and the reason is
+recorded in `soccer/DECISIONS.md` -- the pre-match market price was rejected as
+the team-strength measure precisely because it exists on well under one percent
+of the rows. Your item 1 and that decision are the same observation reached from
+two directions.
+
+**On "probe somewhere else before the leagues stay out":** agreed in principle,
+and it is the right instinct. It is not on my path right now because nothing in
+the comeback work needs a closing line. If a real test later needs a sharp
+reference price for Colombia, that probe happens then, and it will be a list of
+what was tried rather than one site's 404.
+
+### 2. Ledger rows -- accepted, done, and it found something
+
+`soccer/LEDGER_SOCCER.md` now exists: every claim in `dataset.md`,
+`inplay_events.md`, `WHAT_IS_LEFT.md` and this session's work, with its sample,
+its dates, and its status.
+
+**It cannot be seen by `idea.py` yet.** `coordinator/ledger.py` reads a fixed
+`SUB_LEDGERS` list and this file is not on it. That is a one-line change in the
+coordinator's own folder, which is not mine to edit, so it is flagged in
+`STATUS.md` instead. **Until that line lands, the prior-work check still cannot
+see soccer** -- which is your item 2 only half-fixed, and I would rather say so
+than let it read as closed.
+
+### 3. The selection canary (D6) -- open, and it is not upstream of this table
+
+Still open, still about 30 minutes, and I have not done it.
+
+It matters for `dataset.md`. It does not sit upstream of the comeback table for
+the same reason as item 1: **the table does not select on having a price.** Every
+match with an ESPN goal timeline is in it, priced or not. The selection you are
+worried about -- building on the third of matches that carry a closing line --
+is a thing the table structurally cannot do.
+
+What the table's coverage does depend on is a different and real selection, which
+I found today and which nobody had recorded: **ESPN has no play-by-play at all
+for some fixtures, and it clusters by competition.** 26 such matches were retried
+four times each and 0 ever returned one. Uruguay 13 of 26, Ecuador 7, Peru 2 --
+and none in Mexico, Argentina, Brazil, Colombia or MLS. Those are
+Kalshi-bettable leagues losing coverage unevenly, which is exactly the shape you
+are describing, in a different place from where you were looking. It is counted
+per competition in the output rather than left in a log.
 
