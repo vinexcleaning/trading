@@ -81,3 +81,24 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+
+---
+
+# AMENDMENT, same day — the missing-leagues claim was probably a SEASON artifact
+
+**The user caught this and he is right.** The message above says the recorded
+tape shows no Premier League and no Champions League. **That recording window is
+2026-05-24 to 2026-08-04 — the European off-season.** Those competitions were
+not being played, so their absence says nothing about whether Kalshi lists them.
+
+His words: *"I'd be really doubtful if there'd never been any type of Champions
+League betting on Kalshi, because that would just make no sense to me."*
+
+**So do not report which leagues Kalshi runs from a summer sample.** Ask the API
+for the SERIES list, which persists whether or not a competition is in season,
+and check for European club competitions by name. If a series exists but has no
+markets right now, that is the answer: it exists and is out of season.
+
+This matters beyond soccer. **A ~69-day window that lands in one sport's
+off-season will show that sport as absent**, and this repo has now nearly made
+that mistake once. Worth a line in `GUARDS.md` if it is not already there.

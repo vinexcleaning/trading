@@ -569,6 +569,115 @@ him to babysit a process.
 
 ---
 
+## 9c. THE STRATEGY PIPELINE — how every Kalshi idea gets worked
+
+**Given by the user on 2026-08-08, in his own words, and it applies to every
+strategy in this repo, not just the one that prompted it.** He described the
+whole method unprompted. It is written here rather than in a project folder
+because it is how *all* of this work is supposed to run.
+
+**The division of labour he set, and it is accurate:** he supplies the idea, the
+creativity, the parameters worth trying, and the domain knowledge — which team
+does what, which competition behaves differently, what "friendly" actually
+means. **He can also log into a site on request.** Everything else — finding
+data, building it, testing it, auditing it — is ours. His goal is to type
+`next` and read a result.
+
+### Step 1 — Find the data, and go far further than feels necessary
+
+**"If you can't find data because there's a paywall, look for a way around —
+and I'm not talking about getting past the paywall. Find another website that
+provides the same type."** Exhaust free sources before reporting a blocker. The
+extractors in `signal-github`, `youtube-signal` and `social-signal` exist for
+exactly this and are under-used.
+
+**A blocker is only a blocker once you have listed what you tried.** Report the
+sources checked, what each covers, how far back, and what it costs.
+
+### Step 2 — Write down ALL the parameters BEFORE looking at any result
+
+Not just the obvious ones. His own list for the soccer case: **the minute (60,
+65, 70, 75, 80 — every one, not a favourite), the scoreline (1-0 and 2-0 are
+different bets), the league, the two teams, formation, how they are playing,
+what people are saying online, and how often that team has thrown away a
+lead.** Then go and find the data for them.
+
+**Thinking of the parameters first is what makes the test honest.** A parameter
+added after seeing results is a different thing entirely and has to be labelled
+as such.
+
+### Step 3 — General first, then specific, and expect the general one to be flat
+
+**"Realistically, on the general statistics, you probably won't find an edge."**
+He is right and it is the correct expectation. The general number — every match
+ever played — averages away exactly the pockets that matter. Report it anyway:
+it is the benchmark everything else is measured against.
+
+**The edge, if any, lives in the specific slices.** Per competition, per team,
+per situation.
+
+### Step 4 — Build the backtest with a fake control in it
+
+**"Usually you wanna put a fake control in there to make sure that everything
+works."** He described a placebo arm from first principles. Do it: run the same
+machinery over data with the answer shuffled out of it. If the pipeline finds an
+edge in noise, the pipeline is broken and every number it produced is void.
+`crypto`'s `L4-A` is the worked example — synthetic data with no edge in it,
+and the pipeline correctly found nothing.
+
+### Step 5 — Fees, and the real price you would have paid
+
+Never the middle price. **`common/kalshi_fees.py` is the only fee
+implementation** and a test enforces that. Note that the fee is much smaller at
+extreme prices than this repo's habitual "3.6 to 4.8 cents" — at 97 cents held
+to settlement it is **0.20 cents**. Quoting the habitual number at the wrong
+price is itself an error.
+
+### Step 6 — Self-audit, because the recorded failure is concluding too early
+
+Before reporting, attack your own result. Where could it be an artifact? What
+would a hostile reader say? **51 retractions in this repo, every one shrinking
+an edge, none ever growing one.**
+
+### Step 7 — Never kill an idea without listing what you did NOT test
+
+**This is his warning and it is now a rule:** *"if you narrow down one path too
+much and you end up killing it, it could have worked another way."*
+
+There is real tension between this and Step 6, and both are right. The
+resolution:
+
+> **Slicing is fine for LOOKING. It is not fine for CONCLUDING.** Look at
+> everything; conclude only on data held back and not yet looked at.
+
+And, mechanically: **every negative result must end with a list of the versions
+it did not test.** Not a caveat sentence — an actual list. That is what turns
+*"soccer comebacks don't work"* into *"we tested 1-0 and 2-0 at five minutes
+across nine competitions and did not test: the two teams' identities, formation,
+whether the leading team has thrown leads before, or anything in the European
+season."*
+
+**Without that list a dead idea looks completely dead, and this repo has
+already killed a live idea that way** — a sweep over price features was used to
+close a question about individual players. See §2.
+
+### Step 8 — When a login or a payment is needed, ask properly
+
+Give numbered steps, name the exact button, say what he should see. And when
+something costs money, **give him the arithmetic, not the request**: what the
+free tier allows, what the paid tier costs, and what it would have to be worth
+to be justified. He decides. He never enters a credential on our say-so.
+
+### Standing background work, between his ideas
+
+**"In the meantime you should be looking through all the ones we've already
+tried, thinking of new strategies, testing them, getting these ready for me."**
+Idle time goes on: re-reading `LEDGER.md` for ideas killed on a technicality
+rather than on evidence, and preparing the next thing so he only has to say
+`next`.
+
+---
+
 ## 10. What every folder is, and what every folder must have
 
 **Added 2026-08-08 after reading all 23 project folders on disk.** Sessions have

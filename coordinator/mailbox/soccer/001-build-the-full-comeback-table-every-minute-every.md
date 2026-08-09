@@ -128,3 +128,66 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+
+---
+
+# AMENDMENT, same day — the user's own words on the shape of the bet
+
+## 1. Why the bet is safer than it first looks, and it is the point of the idea
+
+At 1-0 down, the trailing team must score **twice** to beat us — one goal only
+brings a draw, and we win on a draw. **That is the whole reason he thought of
+it.** At 2-0 down they need three. So run **both 1-0 and 2-0**; his instinct is
+that 2-0 is the safer bet and 1-0 the riskier one, and he wants to see both
+rather than assume.
+
+## 2. Run every minute, not a chosen one
+
+His words: *"look at the sixtieth minute, sixty-fifth minute, seventieth minute,
+seventy-fifth minute."* The table has a row for each. Do not pick a favourite.
+
+## 3. Parameters he wants considered, beyond minute and score
+
+Written down before you look at any result, per `CLAUDE.md` §9c step 2:
+
+- the two teams specifically, not just the league;
+- league position, or the pre-match price as a proxy for strength;
+- **formation and how the teams are playing**;
+- **how often this team has thrown away a lead before** — his phrase was "how
+  many times has this team bottled a win";
+- what people are saying online (the `signal` chat has extractors for this).
+
+Not all of these have data. **List the ones you could not get, and say so** —
+that list is a deliverable, not an excuse.
+
+## 4. The European season, which changes the league question
+
+The tape shows mostly international friendlies and small South American leagues
+because it was recorded **2026-05-24 to 08-04, the European off-season.** The
+Champions League and the Premier League were not being played. **Do not conclude
+they are unavailable.** The `devig` chat has been asked for the series list.
+
+## 5. Friendlies, in his words, and he knows this ground
+
+*"Friendlies are a different animal. Friendlies are where you'll see the first
+place in the Premier League lose to the last place in the Championship. But
+there's also money to be made there still."*
+
+Take that literally as a design instruction: **league position is close to
+meaningless in a friendly** and any team-strength feature must be allowed to
+behave differently there. It also means friendlies may be where the price is
+worst — teams are unpredictable and nobody serious is pricing a Tuesday
+friendly. **Report friendlies as their own group throughout. Never pool them
+with competitive matches.**
+
+## 6. A fake control, and it is required
+
+Run the whole pipeline once over data with the outcomes shuffled. If it finds an
+edge in noise, every number it produced is void. `crypto`'s `L4-A` is the worked
+example. The user asked for this himself, unprompted.
+
+## 7. If the answer is no, say what you did NOT test
+
+`CLAUDE.md` §9c step 7. A negative result ends with an actual list of the
+versions never tried, not a caveat sentence. **A dead idea with no such list
+looks completely dead, and this repo has already killed a live idea that way.**
