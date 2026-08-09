@@ -1,30 +1,38 @@
 # HANDOFF.md — soccer
 
 <!-- COORDINATOR-STATE
-doing: downloading goal minutes for ~10 years across 24 competitions; the table code is written and tested and runs the moment the data lands
-left: run the table on the full data and report it; the Kalshi price column is still a separate job on the recent slice only
+doing: the comeback table is BUILT on 56,173 matches 2015-2024; measuring what Kalshi actually charges in those states
+left: the user picks one pocket from the table, then the pre-registered test runs on the held-out 2025-2026 years
 needs: no
 -->
 
-**As of 2026-08-08.** Written by the session that took mailbox message 001.
+**As of 2026-08-09.** Written by the session that took mailbox messages 001 and 002.
 
 ---
 
 ## Where this got to
 
 The mail asked for a full comeback lookup table: every minute, every scoreline,
-every Kalshi-bettable competition. The plan was written, the user said **go**,
-and the work is running. He did not answer the one question in the plan — league
+every Kalshi-bettable competition. **It is built.** 56,173 matches, 23
+competitions, 2015-01-01 to 2024-12-31, with 2025 onward held back and never
+opened. `reports/comeback_table.txt` is the write-up; `reports/comeback_table.csv`
+is 39,930 cells.
+
+The user said **go** without answering the one question in the plan — league
 position or pre-match price for team strength — so the conservative option was
 taken and logged in `DECISIONS.md`.
 
-**The analysis code is written, tested and validated end to end on a 475-match
-sample.** It is waiting on data, not on design.
+**Headline, and the warning that must travel with it.** One goal down, the team
+behind comes back and wins 4.0 times per 100 at the 70th minute, 1.7 at the 80th,
+0.4 at the 89th. At 97 cents the break-even is 2.80. **That is not an edge.**
+There is no Kalshi price in the table at all — the 97 cents is the user's
+assumption. `src/price_at_state.py` is measuring the real one, and B024 is the
+standing reminder that this is exactly how a number dies.
 
-## What is running right now
+## The pipeline that produced it (all finished)
 
-A single chained job, launched 2026-08-08. Every stage is resumable, read-only,
-unauthenticated, and writes its own log in `soccer/reports/`.
+Every stage is resumable, read-only, unauthenticated, and writes its own log in
+`soccer/reports/`. Re-run any of them and they pick up where they stopped.
 
 | Stage | What it does | Log |
 |---|---|---|
@@ -61,17 +69,21 @@ py -3 soccer/src/fetch_goal_minutes.py report
 
 ## What the next session picks up
 
-1. **Read `soccer/reports/goal_minutes_coverage.txt` first.** It says how many
-   matches have a goal timeline that actually adds up to the final score. A
-   match whose timeline disagrees with its score is unusable and is dropped, not
-   repaired.
-2. **Do not build the table until the user has answered the plan.** The open
-   questions are in `coordinator/mailbox/soccer/001-*.md` under the reply line
-   and in the BRIEF section.
-3. **Nothing is pre-registered yet, on purpose.** The table is descriptive. A
-   pre-registration (`soccer/PREREGISTRATION_COMEBACK.md`) gets written only
-   when the user picks a cell to test properly, and it gets committed before the
-   first result on the held-out years exists.
+1. **Read `reports/goal_minutes_coverage.txt` first.** Coverage is severely
+   uneven. Uruguay lost 99.0% of its matches, Copa do Brasil and Ecuador about
+   half, Peru four in ten. Twelve competitions lost essentially nothing.
+2. **The user picks ONE pocket from the table.** That choice is his and it is
+   the point of the exercise. Do not pick one for him and do not rank the cells.
+3. **`PREREGISTRATION_COMEBACK.md` was committed before any comeback number
+   existed** — check the git log, and if that is not true, disregard the file.
+   It allows one pocket and one test, on the held-out years, with six named ways
+   to drop the idea.
+4. **`src/price_at_state.py`** measures what Kalshi charges, read at the exact
+   wallclock of a goal so nothing has to be interpolated. Its output is
+   `reports/price_at_state.txt`. Matches it touches are excluded from the
+   held-out test set in advance.
+5. **`LEDGER_SOCCER.md` needs one line from `coordinator`** to be visible to
+   `idea.py` — `ledger.py`'s `SUB_LEDGERS` list. Requested in `STATUS.md`.
 
 ## Three things that will waste your time if you do not know them
 
