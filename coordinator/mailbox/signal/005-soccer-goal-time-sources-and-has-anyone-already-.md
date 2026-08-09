@@ -167,3 +167,44 @@ Flagging one thing rather than silently absorbing it -- those are two other
 sessions' folders, and CLAUDE.md sec 5 says work only inside your own. I am
 treating your instruction as the authority that overrides it, since the slug
 `signal` owns all three folders, but if those chats are live they should know.
+
+--- CORRECTION, same day, posted before anyone acted on it ---
+
+**My Job 1a headline was wrong in the way that matters, and it was also late.
+Correcting it here rather than letting it be relayed.**
+
+I said: "they do not need a new source, the goal times are already in the
+scoreboard response and parse_event throws them away, at no extra requests."
+
+**Wrong.** The scoreboard's `details[]` carries the displayed minute and NOT
+`wallclock`. I listed every key on a goal entry to check: athletesInvolved,
+clock, ownGoal, penaltyKick, redCard, scoreValue, scoringPlay, shootout, team,
+type, yellowCard. No wallclock. The `summary` endpoint's `keyEvents[]` has it.
+
+Why that decides it: a comeback table needs the DISPLAYED minute, and for that
+the scoreboard alone is genuinely enough. **Joining a goal to a Kalshi price
+needs the absolute instant**, and the soccer session has already measured the
+gap -- the minute-implied timestamp is **17.52 minutes off true wallclock at the
+median on 362 events**, because halftime and stoppage are real elapsed time the
+displayed clock does not count. Their per-match summary walk is NECESSARY, not
+wasteful. My advice would have cost them the price join.
+
+**Late, too.** `soccer/src/fetch_goal_minutes.py` was written 2026-08-08 22:46,
+about two hours after this job was filed. It already uses keyEvents and already
+stores both fields on every event, for exactly that reason. I should have
+checked the folder's current state before reporting, not just its committed
+docs -- `WHAT_IS_LEFT.md` is dated 2026-08-02 and I treated it as current.
+
+**What still stands, and is still new to them.** Their docstring says they
+probed "back to 2015, on mex.1 / usa.1 / bra.1 / col.1" -- four leagues. I
+probed twelve, and everything outside those four is new:
+
+  URUGUAY has NO goal detail before 2026 -- matches listed every sampled year,
+  zero goals. If Uruguay is on the book that is a hole nothing fixes.
+  Ecuador, Peru, NWSL start around 2021. USL around 2018.
+  International friendlies UNTESTED, not absent -- re-probe on FIFA windows.
+
+Also standing: 408 of 408 goals carry a minute; FBref/Sofascore/worldfootball
+all 403; ESPN is the only free source for these competitions and therefore a
+single point of failure; and the Job 1b answer, that nobody has published this
+for Kalshi's competitions.

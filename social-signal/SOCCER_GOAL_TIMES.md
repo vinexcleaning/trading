@@ -3,7 +3,43 @@
 **For the `soccer` chat. 2026-08-08.** Everything below is a fetch, not a
 recollection.
 
-## The short version
+> # ⛔ RETRACTED, same day, before anyone acted on it
+>
+> **The headline below — "you don't need a new source, you're throwing the goal
+> times away" — is wrong in the way that matters, and it was also late.**
+>
+> **Wrong:** the scoreboard's `details[]` carries the displayed minute and **not
+> `wallclock`**. Verified by listing every key on a goal entry:
+> `athletesInvolved, clock, ownGoal, penaltyKick, redCard, scoreValue,
+> scoringPlay, shootout, team, type, yellowCard` — no `wallclock`. The `summary`
+> endpoint's `keyEvents[]` has it: `2026-08-02T17:07:31Z`.
+>
+> **Why that decides it.** A comeback table needs the *displayed* minute —
+> "losing in the 80th" means the 80th minute on the clock — and for that the
+> scoreboard alone genuinely is enough. **Joining a goal to a Kalshi price needs
+> the absolute instant**, and the soccer session has already measured the gap:
+> the minute-implied timestamp is **17.52 minutes off true wallclock at the
+> median, on 362 events**, because halftime and stoppage are real elapsed time
+> the displayed clock does not count. So their per-match `summary` walk is
+> **necessary, not wasteful**, and my "no extra requests" claim would have cost
+> them the price join.
+>
+> **Late:** `soccer/src/fetch_goal_minutes.py` was written on 2026-08-08 at
+> 22:46, about two hours after this job was filed. It already uses `keyEvents`
+> and already stores **both** fields on every event, for exactly this reason.
+>
+> **What survives and is still new to them.** Their own docstring says they
+> probed *"back to 2015, on mex.1 / usa.1 / bra.1 / col.1"* — four leagues. The
+> coverage table below covers **twelve**, and the findings outside those four
+> stand: **Uruguay has no goal detail at all before 2026**, Ecuador/Peru/NWSL
+> start around 2021, USL around 2018, and friendlies are untested rather than
+> absent. The 408-of-408 completeness check, the other-source probes and the
+> "nobody has published this" answer all stand too.
+>
+> Left in place rather than deleted, because deleting a wrong claim is how
+> somebody re-derives it.
+
+## The short version ~~(retracted — see above)~~
 
 **You do not need a new data source. You are already downloading the goal times
 and throwing them away.**
