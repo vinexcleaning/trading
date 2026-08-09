@@ -230,6 +230,58 @@ size and uptime, and the merge windows go to bots in milliseconds.
 
 ---
 
+## 0d. A candidate 13th guard: **a mispricing filter is an illiquidity filter**
+
+`/r/algotrading/comments/1rsj22d/` · 60 points · 53 comments
+
+The post is an LLM-versus-Polymarket divergence strategy — enter when the
+model's probability differs from the market by ≥15%, exit next day, €10,000 per
+agent, 60 days, paper only. The value is entirely in one 9-point reply, which
+takes it apart three ways and produces a mechanism this repo does not have
+written down anywhere:
+
+> **"the 15% divergence threshold is likely doing more work than the LLM
+> rationality thesis — it's essentially filtering for the most mispriced, least
+> liquid markets where paper fills are most unrealistic."**
+
+**Screening for the biggest mispricing selects for the thinnest book, every
+time.** The filter and the thesis are confounded by construction: whatever
+explanatory story sits on top, the trades you actually take are the ones nobody
+else wanted. That is the same shape as the `youtube-signal` finding — a
+demonstrated mispriced prop with **~$60 of liquidity** — and as this repo's own
+recurring conclusion that the edge is real *because* nobody is looking, which is
+precisely why nobody can size into it. It has never been stated as a *test* you
+can run before trusting a screen.
+
+**The candidate guard:** for any strategy selected by a threshold on
+mispricing, divergence or edge, report the **liquidity distribution of the
+selected set against the unselected set**. If the selected markets are
+systematically thinner, the threshold is doing the work and the thesis is
+unfalsified rather than supported.
+
+*Not added to `GUARDS.md` unilaterally — that file is a curated, numbered,
+repo-wide asset and this session does not own it. Flagged here and in
+`STATUS.md` for whoever does.*
+
+### And a number that dwarfs the fee work
+
+> **"a 1¢ bid/ask spread on a 3¢ market is 33% round-trip cost"**
+
+This programme has carefully established that fees hurt cheap contracts
+disproportionately — about **2% on a 69¢ contract against ~6% on an 18¢ one**.
+At **3¢ the spread alone is 33%**, which is five times the worst fee figure and
+an order of magnitude above the typical one. **On penny contracts the fee curve
+is the small term.** Any cost bar built from fees alone will be wildly optimistic
+exactly where a mispricing screen sends you — which is the previous point,
+arriving from the other direction.
+
+Third objection from the same reply, worth keeping as a reading habit: the
+equity curve is **flat noise for ~50 of the 60 days** with the whole return
+arriving in the last 7–10, on correlated events. That is the shape the
+"delete the top five trades" stress test exists to catch.
+
+---
+
 ## 1. Copy trading: the leak is exit fidelity, not entry latency
 
 `/r/algotrading/comments/1v56b7h/` · 43 points · 24 comments
