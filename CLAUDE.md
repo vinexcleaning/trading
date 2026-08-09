@@ -668,6 +668,69 @@ something costs money, **give him the arithmetic, not the request**: what the
 free tier allows, what the paid tier costs, and what it would have to be worth
 to be justified. He decides. He never enters a credential on our say-so.
 
+### Sizing, and the coin-flip analogy he has rejected — both his points, 2026-08-08
+
+**He pushed back on the coin-flip analogy and he is substantially right. Stop
+using it.** It oversells randomness and it insults the work: *"we're not
+flipping coins, this is genuinely active games."* True. Real structure exists —
+a Champions League comeback is genuinely a different event from a Peruvian
+league one.
+
+**The narrow claim the analogy was reaching for is still true, so make it
+narrowly.** The luck is not in the matches. It is in **which slice you picked,
+out of the thousands you looked at.** Use an example from his own world, not
+coins:
+
+> Right now 16 tennis bots and 16 baseball bots are running. Even if not one of
+> them has any edge at all, **the best of the 16 will still look good** — because
+> it is the best of 16. That is the entire point, and it is live in his own
+> project.
+
+**And answer his real question, which is fair:** he says if a backtest keeps
+making money he will run it, whether or not anyone can explain why. That is a
+legitimate position and the answer is not "explain the mechanism". It is:
+
+> **The test is not "why does it work". The test is "does it still work on
+> games you did not use to find it".** That is cheap, it is not philosophical,
+> and it is the only thing that separates a real pattern from a lucky slice.
+
+### Sizing — where he is right, and the one place it will hurt him
+
+**He is right that sizing matters and right that under-betting a real edge
+wastes it.** Two of his points are correct and measured:
+
+1. **Bigger orders genuinely cost less in fees.** Kalshi rounds the fee up per
+   *order*. Measured with `common/kalshi_fees.py` at 97 cents: **one order of
+   100 contracts costs 21 cents; ten orders of ten costs 30; a hundred single
+   orders costs 100.** He asked whether sizing affects fees — it does, in his
+   favour, by up to 5×.
+2. **Taking one or two dollars repeatedly while risking little wastes an edge
+   you have paid to find.**
+
+**Where it goes wrong, and this needs saying every time it comes up:** sizing
+**cannot create an edge**. Betting $100 once and $10 ten times have exactly the
+same expected result. What changes is the chance of losing everything:
+
+| Win chance each time | Betting everything, chance you still have money after 10 bets | after 20 |
+|---|---|---|
+| 90% | **35%** | 12% |
+| 95% | **60%** | 36% |
+
+**Even with a genuinely good edge** — say the true rate is 92% and the price is
+90 cents, worth 2 cents a contract — the arithmetic says bet about **20% of the
+bankroll, not 100%**, and betting everything leaves a **43%** chance of still
+having money after 10 bets.
+
+**His own record is the evidence.** The $25→$130 run was exactly this shape:
+many small wins, then one loss that ate thirty (§9b). He is describing the
+method that already blew up once, and he made real money with it right up until
+it did.
+
+**On stop losses:** measured on his own bot in `bot-forensics` —
+stop-and-re-enter turned **−2.29 cents into −9.36 cents** per contract. Selling
+a 90-cent contract at 40 cents locks in the loss the strategy was relying on
+recovering.
+
 ### Standing background work, between his ideas
 
 **"In the meantime you should be looking through all the ones we've already
