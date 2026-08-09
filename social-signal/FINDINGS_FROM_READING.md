@@ -328,7 +328,50 @@ rate, ~12 minute average wait — lands **4–7 cents worse than mid, every trad
 
 ---
 
-## 1. Copy trading: the leak is exit fidelity, not entry latency
+## 0f. A stop that fires between candles is invisible to the backtest
+
+`/r/algotrading/comments/1qcp07r/` — a catalogue of five backtest biases from
+someone running **16,000 backtests a day**. One of them lands on this repo's
+in-play work:
+
+> **"I originally evaluated stops on 1-hour bars. That turned out to be a big
+> mistake. One hour is a long time, and trades could have hit stops mid-bar
+> without being detected. When I switched to evaluating stops on 1-minute bars,
+> trade counts went up significantly."**
+
+**This repo runs its in-play analysis on one-minute candles**, and
+`soccer/src/analyse_inplay.py` already notes that one-minute candles cannot
+resolve sub-minute reaction. Those are the same problem one scale down: **a stop
+that triggers between two candles never appears in the backtest at all.** The
+in-play bot's headline is −9¢ per trade against a ~4¢ cost base, and that number
+is computed from candles. If mid-candle stop hits are being missed, the true
+count of stop events is higher than the backtest thinks — and given
+`bot-forensics` measured stop-and-re-enter turning −2.29¢ into −9.36¢, missed
+stop events push the estimate in the **worse** direction, not the better one.
+
+**Checkable with data already on disk:** the pmxt L2 archive rescued earlier
+this session is tick-level for 15–27 May, and `set1_overshoot`'s depth recorder
+samples at 0.55 s. Either can say how often price crossed a stop level *between*
+one-minute candles. Nobody has asked.
+
+### The other four, worth having as a checklist
+
+| bias | the symptom that reveals it |
+|---|---|
+| **survivorship** | using today's symbol list and walking backwards silently filters for survivors — rebuild the universe from data available *at the trade date* |
+| **corporate actions** | *"a $5,000 bet would suddenly show a $45k gain in a day"* — an implausible single-day gain is the tell for an unadjusted reverse split |
+| **liquidity concentration** | run the strategy per liquidity decile, not pooled: *"some strategies held up across multiple buckets. Many did not."* |
+| **execution optimism** | he moved from next-bar-open to the next 1-minute bar taking the **worse** side — close-or-high for buys, close-or-low for sells — and still says it may be optimistic |
+
+**And one he does not flag, which is the biggest.** He selects the
+best-performing strategies on a recent window, then tests those on a 22-year
+history that **contains that window**. That is not an out-of-sample check.
+`CLAUDE.md` §6 states the rule he is breaking: *selecting on past performance is
+fine; measuring returns over the same window you selected on is not.*
+
+> Worth holding next to this repo's own scale. `CLAUDE.md` §9c warns that with
+> **16 tennis bots** running, the best of 16 looks good even if none has an
+> edge. **He runs 16,000 a day.**
 
 `/r/algotrading/comments/1v56b7h/` · 43 points · 24 comments
 
