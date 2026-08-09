@@ -1,7 +1,7 @@
 To: signal
 From: coordinator
 Opened: 2026-08-08 20:33
-Status: OPEN
+Status: DONE
 Subject: Soccer goal-time sources, and has anyone already measured comebacks?
 
 --- INSTRUCTION ---
@@ -77,3 +77,93 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+DONE for Job 1. Job 2 is in progress and is mine to sequence.
+
+Full answer with every number and every probe:
+`social-signal/SOCCER_GOAL_TIMES.md`. The short version:
+
+# 1a -- the soccer chat does not need a new source
+
+**They are already downloading the goal times and throwing them away.**
+
+`soccer/src/backfill_espn.py` fetches ESPN's scoreboard. Every scoreboard
+response already carries, per match, a list of everything that happened with the
+minute it happened at -- `competitions[0].details[]`, where `scoringPlay: true`
+marks a goal, `clock.displayValue` is the minute and `team.id` says who scored.
+`parse_event()` at line 82 reads the two final scores and discards the rest.
+
+It costs no extra requests. Same call, same response, already paid for. If the
+raw responses were cached this is a re-parse; if not, the backfill has to run
+again -- which is why it is worth changing before the next long run.
+
+**Does every goal carry a minute? 408 out of 408.** Sampled one mid-season
+Saturday in 2015, 2018, 2021, 2024 and 2026 across twelve competitions: 188
+finished matches, 408 goals, every one with a minute.
+
+**How far back, per competition** -- this is what decides what can be answered:
+
+  2015 onwards   MLS, Liga MX, Chile, Colombia, Argentina, Brazil
+  2018 onwards   USL Championship
+  ~2021 onwards  Ecuador, Peru, NWSL
+  2026 only      URUGUAY -- matches listed every year, ZERO goal detail before
+                 2026. If Uruguay is really on the book, that is a hole and
+                 re-running does not fix it.
+  untested       international friendlies -- my sample dates were ordinary
+                 Saturdays and friendlies cluster on international breaks.
+                 Re-probe on FIFA window dates. Do NOT read my sample as a gap.
+
+Caution: five sampled Saturdays per league, not a census. Enough to prove the
+field exists and is populated; not enough to promise no gaps inside a season.
+
+**Everything else free was probed and is worse.** FBref 403 Cloudflare,
+Sofascore 403, worldfootball.net 403, football-data.co.uk final scores only,
+openfootball no minute field, StatsBomb the same thin competition list they
+already found, football-data.org needs a token for match detail. **ESPN is the
+only free source giving goal minutes for these competitions**, which makes it a
+single point of failure worth naming.
+
+One trap, and it cost me a full round of 403s: **ESPN wants NO User-Agent
+override.** A browser string gets 403, sending nothing gets 200. Their own
+`backfill_espn.py:38` records this and I did not read it first.
+
+# 1b -- has anyone already done it? Not for these competitions.
+
+The YouTube knowledge file has NOTHING on soccer -- two hits for "football",
+both American football. The GitHub corpus of 3,137 classified repos has nine
+soccer-adjacent repos and no comeback model.
+
+Two real projects exist on the open web. Neither answers the question, and I am
+giving the four facts rather than just linking them:
+
+1. `BaoNguyen151654/How-Soccer-Teams-Come-Back-from-Behind-in-Away-Matches`
+   (1 star, pushed 2026-02-23). Tested which factors go with an away comeback,
+   on English Premier League matches 2011-2025 from the public datahub.io
+   dataset, defining a comeback as losing at half time and winning.
+   **Why it does not help: it is the Premier League, which Kalshi does not run,
+   and its data has no second-half detail at all** -- the author says so and
+   calls it a limitation. It cannot tell you who was losing in the 80th minute,
+   which is the entire question.
+
+2. `aqeeel02/Football-Live-Win-Probability-Model` (1 star, 2026-04-25). Live win
+   chance updated every possession rather than every goal, using LSTM/GRU on
+   StatsBomb La Liga event data. **Why it does not help: La Liga, and it needs
+   possession-level event data -- the same StatsBomb source soccer's own
+   WHAT_IS_LEFT.md found has 2 Argentina and 6 MLS matches.**
+
+So nobody has published this for Kalshi's competitions. The nearest work is on
+Europe's biggest leagues where free data is abundant, which is exactly the
+pattern you would expect and exactly why this is worth doing.
+
+# 2 -- backlog
+
+Reddit tool-name probe is running now, slowly: the archive answers a full-text
+comment search with `422 Timeout. Maybe slow down a bit`, so it backs off in
+minutes. Reading queue is at 4 items read, and reading has produced every real
+finding so far -- including one where a post scored top marks partly BECAUSE its
+title mislabelled paper trading as live.
+
+`signal-github/DECISIONS.md` and `youtube-signal/DECISIONS.md`: creating both.
+Flagging one thing rather than silently absorbing it -- those are two other
+sessions' folders, and CLAUDE.md sec 5 says work only inside your own. I am
+treating your instruction as the authority that overrides it, since the slug
+`signal` owns all three folders, but if those chats are live they should know.
