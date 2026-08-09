@@ -275,6 +275,39 @@ Keep the narrow set — `kalshi`, `polymarket`, `predictionmarket(s)`, `trading`
 `algotrading`, `quant`, `sportsbetting`, `betting`, `finance`, `optionstrading`.
 The rest cost 35 minutes of somebody's bandwidth and bought nothing.
 
+### The same mistake again, and this time it cost 4.2 hours
+
+The Reddit tool probe searched the archive for 42 product names and finished in
+**15,227 seconds — 4.2 hours, of which 7,864 seconds was spent asleep in 422
+backoffs.** 562 calls, **82 of them refused with "Timeout. Maybe slow down a
+bit"**. Yield: 1,923 posts.
+
+The terms it searched were the problem:
+
+| term | rows | what it really is |
+|---|---|---|
+| `trading` | 1,200 | first token of *"Trading Kit / traderdev"* |
+| `prediction` | 1,200 | first token of *"Prediction Quant"* |
+| `agents` | 406 | from `polymarket/agents` |
+| `jonathan` | 222 | from *"Jonathan Becker prediction-market microstructure repo"* |
+| `backtest`, `scipy` | 308 | generic words |
+
+`probe_terms_from_entities()` takes the **first token** of a multi-word entity
+name. For product names that is usually an English word, so a volunteer archive
+was asked to full-text scan for *"trading"* across six subreddits.
+
+**The fix is self-calibrating and costs nothing: ask the local corpus first.**
+`_is_distinctive()` now rejects any term already appearing in more than 0.5% of
+the 60,833 local posts — if it is that common locally, a remote search cannot
+surface anything the offline pass would miss.
+
+**Three retrieval failures in a row, all the same shape:** broad Mastodon tags,
+first-token product names, and before them the unscoped comment search. Each
+time the instinct was *widen the net*, and each time the answer was
+**specificity**. `youtube-signal` measured this once already — 70% on-topic for
+narrow venue queries against 50% for broad ones — and this project has now paid
+for the lesson twice more.
+
 ---
 
 ## How to run them

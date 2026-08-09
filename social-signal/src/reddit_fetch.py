@@ -76,6 +76,29 @@ GENERIC_TERMS = {
 }
 
 
+def _is_distinctive(con, term: str, ceiling: float = 0.005) -> bool:
+    """Is this term specific enough to be worth a remote search?
+
+    **Measured the hard way.** The first tool probe ran 4.2 hours, spent 2.2 of
+    them asleep in 422 backoffs, and returned 1,923 posts — mostly matching the
+    word *"trading"*. The terms it searched were `trading`, `prediction`,
+    `agents`, `backtest`, `jonathan`, `scipy`: the **first token** of multi-word
+    entity names like "Trading Kit / traderdev" and "Jonathan Becker
+    prediction-market microstructure repo". Those are English words, not tool
+    names, and a volunteer archive was asked to full-text scan for them 42 times.
+
+    The guard is self-calibrating and costs nothing: **ask the local corpus
+    first.** A term already appearing in more than `ceiling` of local posts is a
+    common word — searching for it remotely cannot surface anything the offline
+    pass would miss. Only genuinely rare strings are worth someone else's CPU.
+    """
+    total = con.execute("SELECT COUNT(*) c FROM rd_posts").fetchone()["c"] or 1
+    hits = con.execute(
+        "SELECT COUNT(*) c FROM rd_posts WHERE lower(title||' '||"
+        "COALESCE(selftext,'')) LIKE ?", (f"%{term.lower()}%",)).fetchone()["c"]
+    return (hits / total) <= ceiling
+
+
 def probe_terms_from_entities(con, max_terms=40):
     """Every entity a promoter pushed that no independent source corroborated,
     plus anything the join marked as contradicted. These are exactly the names
@@ -96,6 +119,14 @@ def probe_terms_from_entities(con, max_terms=40):
         cand = cand.strip("'\"“”‘’.,")
         if (len(cand) < MIN_TERM_LEN or cand in GENERIC_TERMS or cand in seen
                 or not any(c.isalpha() for c in cand)):
+            continue
+        # A multi-word product name yields its first token, and that token is
+        # usually an English word. Ask the local corpus before asking the
+        # archive — see `_is_distinctive`.
+        if " " in name and not _is_distinctive(con, cand):
+            seen.add(cand)
+            print(f"    skip '{cand}' — too common locally to be worth a "
+                  f"remote search", flush=True)
             continue
         seen.add(cand)
         terms.append((cand, r["verdict"]))
