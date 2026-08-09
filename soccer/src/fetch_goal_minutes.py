@@ -38,15 +38,15 @@ ROOT = os.path.join(HERE, "..")
 DATA, REP = os.path.join(ROOT, "data"), os.path.join(ROOT, "reports")
 SRC = os.path.join(DATA, "espn_history", "matches.jsonl")
 OUT = os.path.join(DATA, "goal_minutes.jsonl")
-PROG = os.path.join(DATA, "goal_minutes_progress.json")
+GAPS = os.path.join(DATA, "goal_minutes_gaps.jsonl")
 SITE = "https://site.api.espn.com/apis/site/v2/sports/soccer"
 
 # See the note in backfill_espn.py. ESPN 403s a browser-shaped or unknown
 # User-Agent since 2026-08-08; requests' own default is served. Do not add one.
 UA = {}
 
-WORKERS = 4
-PACE = 0.10          # per worker, so ~40 requests/sec/4 -> well under any cap
+WORKERS = 8
+PACE = 0.05
 MAX_TRIES = 4
 
 # Kalshi-bettable first, so a run stopped early still answers the real question.
@@ -96,19 +96,74 @@ def parse_minute(disp):
         return None, None
 
 
-def fetch_one(m):
-    """One fixture -> a row with every goal and red card, or None."""
-    r = get(f"{SITE}/{m['league']}/summary", {"event": m["espn_id"]})
-    if r is None or r.status_code != 200:
-        return None, "http"
-    try:
-        d = r.json()
-    except ValueError:
-        return None, "unparseable"
+def fetch_one(m, empty_retries=1):
+    """One fixture -> a row with every goal and red card, or None.
 
-    ke = d.get("keyEvents") or []
-    if not ke:
-        return None, "no_keyevents"
+    AN EMPTY TIMELINE IS A REAL GAP IN ESPN, NOT A THROTTLE. This was measured
+    twice and the first reading was wrong, so both are recorded:
+
+      * First guess: 152 of 700 matches came back with no keyEvents, and three
+        hand-picked "missing" ones had 21, 23 and 18 events when re-fetched. It
+        looked like ESPN serving stub bodies under concurrency. That comparison
+        was broken -- the fixture file was still being appended to, so those
+        three had never been requested at all.
+      * Measured properly: the empty rate is 10-17% at ONE worker, four workers
+        and eight workers alike, so concurrency is not the cause. Then 26
+        genuinely-empty matches were retried four times each with a second
+        between: 0 of 26 ever returned a timeline. Checking the raw response,
+        `commentary`, `header.details` and the boxscore are all empty too.
+
+    So ESPN simply has no play-by-play for some fixtures, and it CLUSTERS BY
+    COMPETITION -- Uruguay, Ecuador, Peru and cup ties, none in Mexico,
+    Argentina, Brazil, Colombia or MLS. That is a coverage fact the report has
+    to state out loud, because those are Kalshi-bettable leagues.
+
+    One retry is kept because it costs almost nothing. Every failure is written
+    to a gaps file so the loss can be counted per competition instead of
+    vanishing.
+    """
+    d = None
+    for attempt in range(empty_retries + 1):
+        r = get(f"{SITE}/{m['league']}/summary", {"event": m["espn_id"]})
+        if r is None or r.status_code != 200:
+            return None, "http"
+        try:
+            d = r.json()
+        except ValueError:
+            return None, "unparseable"
+        if d.get("keyEvents"):
+            break
+    if not d or not d.get("keyEvents"):
+        # A 0-0 with no timeline costs nothing -- there are no goals to place
+        # and the match was level throughout, so it belongs in no cell anyway.
+        # A 4-2 with no timeline is a genuine loss. The two are counted apart.
+        hg, ag = m.get("home_goals"), m.get("away_goals")
+        if hg == 0 and ag == 0:
+            return None, "no_timeline_but_goalless"
+        return None, "no_timeline_and_had_goals"
+    ke = d["keyEvents"]
+
+    # Identify the two sides FROM THIS RESPONSE, by team id, not by name.
+    # The scoreboard and the summary do not always use the same display name --
+    # bra.1 calls the same club "Athletico-PR" in one and "Athletico
+    # Paranaense" in the other, which sent 15 goals in the first sample to
+    # neither side and broke 8 matches. Ids agree where names do not.
+    hdr = ((d.get("header") or {}).get("competitions") or [{}])[0]
+    home_id = away_id = None
+    home_nm = away_nm = None
+    home_sc = away_sc = None
+    for c in hdr.get("competitors") or []:
+        t = c.get("team") or {}
+        try:
+            sc = int(c.get("score")) if c.get("score") not in (None, "") else None
+        except (TypeError, ValueError):
+            sc = None
+        if c.get("homeAway") == "home":
+            home_id, home_nm, home_sc = t.get("id"), t.get("displayName"), sc
+        elif c.get("homeAway") == "away":
+            away_id, away_nm, away_sc = t.get("id"), t.get("displayName"), sc
+    if not home_id or not away_id:
+        return None, "no_team_ids"
 
     kick = None
     for e in ke:
@@ -125,7 +180,8 @@ def fetch_one(m):
         if not (is_goal or is_red):
             continue
         minute, stoppage = parse_minute((e.get("clock") or {}).get("displayValue"))
-        team = (e.get("team") or {}).get("displayName")
+        tid = (e.get("team") or {}).get("id")
+        side = "home" if tid == home_id else ("away" if tid == away_id else None)
         evs.append({
             "kind": "red_card" if is_red else "goal",
             "detail": typ.get("text"),
@@ -133,7 +189,11 @@ def fetch_one(m):
             "stoppage": stoppage,
             "minute_raw": (e.get("clock") or {}).get("displayValue"),
             "wallclock": e.get("wallclock"),
-            "team": team,
+            # `side` is the field everything downstream uses. The name is kept
+            # only so a human reading the file can tell what happened.
+            "side": side,
+            "team_id": tid,
+            "team": (e.get("team") or {}).get("displayName"),
             # ESPN marks own goals and penalties in the type text; keep the raw
             # text so a later pass can split them without re-fetching 70k pages.
             "own_goal": "own goal" in txt,
@@ -144,10 +204,14 @@ def fetch_one(m):
         "espn_id": m["espn_id"],
         "league": m["league"],
         "date": m["date"],
-        "home": m["home"],
-        "away": m["away"],
-        "home_goals": m.get("home_goals"),
-        "away_goals": m.get("away_goals"),
+        # Identity and score taken from the SAME response as the timeline, so
+        # the integrity check compares like with like. The scoreboard's own
+        # names and scores are kept alongside for cross-reference.
+        "home": home_nm, "away": away_nm,
+        "home_id": home_id, "away_id": away_id,
+        "home_goals": home_sc, "away_goals": away_sc,
+        "sb_home": m["home"], "sb_away": m["away"],
+        "sb_home_goals": m.get("home_goals"), "sb_away_goals": m.get("away_goals"),
         "kickoff_wallclock": kick,
         "events": evs,
     }, "ok"
@@ -180,6 +244,19 @@ def main():
     todo = [m for m in matches if m["espn_id"] not in done]
     todo.sort(key=lambda m: (order.get(m["league"], 99), m["date"]))
 
+    # `--limit N` fetches a spread-out sample instead of everything. It exists
+    # so the table-building code downstream can be validated end to end on a few
+    # hundred matches before several hours are committed to the full run. It
+    # samples EVENLY across the sorted list rather than taking the first N,
+    # because the first N would be one league in one era and would not exercise
+    # the cases that break things.
+    if "--limit" in sys.argv:
+        n = int(sys.argv[sys.argv.index("--limit") + 1])
+        if n < len(todo):
+            step = len(todo) / n
+            todo = [todo[int(i * step)] for i in range(n)]
+        print(f"  --limit: sampling {len(todo)} matches evenly", flush=True)
+
     print(f"{len(matches)} completed fixtures on disk", flush=True)
     print(f"  {len(done)} already fetched, {len(todo)} to go", flush=True)
     if not todo:
@@ -193,6 +270,7 @@ def main():
     stats = Counter()
     t0 = time.time()
     fh = open(OUT, "a", encoding="utf-8", buffering=1)
+    gh = open(GAPS, "a", encoding="utf-8", buffering=1)
 
     def worker():
         while True:
@@ -205,6 +283,16 @@ def main():
                 stats[why] += 1
                 if row is not None:
                     fh.write(json.dumps(row) + "\n")
+                else:
+                    # Every failure is recorded, so "what could you NOT get"
+                    # is answerable per competition instead of being a number
+                    # that only existed in a console log.
+                    gh.write(json.dumps({
+                        "espn_id": m["espn_id"], "league": m["league"],
+                        "date": m["date"], "reason": why,
+                        "home_goals": m.get("home_goals"),
+                        "away_goals": m.get("away_goals"),
+                    }) + "\n")
                 n = sum(stats.values())
                 if n % 250 == 0:
                     el = time.time() - t0
@@ -220,6 +308,7 @@ def main():
     for t in ts:
         t.join()
     fh.close()
+    gh.close()
 
     print(f"\nDONE in {(time.time()-t0)/60:.1f} min  {dict(stats)}", flush=True)
     report()
@@ -248,12 +337,24 @@ def report():
             per[lg]["goals"] += len(goals)
             per[lg]["goals_no_minute"] += sum(1 for g in goals if g["minute"] is None)
             per[lg]["reds"] += sum(1 for e in r["events"] if e["kind"] == "red_card")
-            # THE INTEGRITY CHECK THAT MATTERS: do the goals in the timeline add
-            # up to the final score? If they do not, the match cannot be placed
-            # on a minute-by-minute timeline and must be dropped, not patched.
+            # THE INTEGRITY CHECK THAT MATTERS: replay the timeline and see
+            # whether it reproduces the final score PER TEAM. Checking only the
+            # total would pass a timeline that had the right number of goals on
+            # the wrong sides -- which is exactly the failure an own goal would
+            # cause if ESPN credited it to the offending team. (It does not:
+            # probed on 40 matches, 32 with goals, all 32 reconstruct exactly,
+            # including 5 own goals. Own goals are credited to the BENEFITING
+            # team. This check is what keeps that true if ESPN ever changes it.)
             hs, as_ = r.get("home_goals"), r.get("away_goals")
+            h = sum(1 for g in goals if g.get("side") == "home")
+            a = sum(1 for g in goals if g.get("side") == "away")
+            unattributed = len(goals) - h - a
+            if r.get("sb_home_goals") is not None and hs is not None:
+                if (r["sb_home_goals"], r["sb_away_goals"]) != (hs, as_):
+                    per[lg]["scoreboard_disagrees_with_summary"] += 1
+            per[lg]["goals_unattributed"] += unattributed
             if hs is not None and as_ is not None:
-                if len(goals) == (hs + as_):
+                if h == hs and a == as_ and unattributed == 0:
                     per[lg]["timeline_agrees"] += 1
                 else:
                     per[lg]["timeline_disagrees"] += 1
@@ -261,26 +362,66 @@ def report():
     lines = []
     lines.append(f"{n_rows} match rows with a timeline\n")
     lines.append(f"{'league':22s} {'matches':>8s} {'goals':>7s} {'no_min':>7s} "
-                 f"{'reds':>6s} {'agrees':>8s} {'disagrees':>10s} {'first':>6s} {'last':>6s}")
+                 f"{'unattr':>7s} {'reds':>6s} {'agrees':>8s} {'disagrees':>10s} "
+                 f"{'first':>6s} {'last':>6s}")
     for lg in sorted(per, key=lambda x: -per[x]["matches"]):
         ys = sorted(years[lg])
         p = per[lg]
         lines.append(f"{lg:22s} {p['matches']:8d} {p['goals']:7d} "
-                     f"{p['goals_no_minute']:7d} {p['reds']:6d} "
+                     f"{p['goals_no_minute']:7d} {p['goals_unattributed']:7d} "
+                     f"{p['reds']:6d} "
                      f"{p['timeline_agrees']:8d} {p['timeline_disagrees']:10d} "
                      f"{ys[0]:>6s} {ys[-1]:>6s}")
     tot = Counter()
     for lg in per:
         tot.update(per[lg])
     lines.append("")
+    lines.append(f"scoreboard and summary disagree on the final score for "
+                 f"{tot['scoreboard_disagrees_with_summary']} matches")
     lines.append(f"TOTAL matches {tot['matches']}, goals {tot['goals']}, "
-                 f"goals with no readable minute {tot['goals_no_minute']}")
-    lines.append(f"timeline agrees with final score on {tot['timeline_agrees']} "
-                 f"matches, disagrees on {tot['timeline_disagrees']} "
+                 f"goals with no readable minute {tot['goals_no_minute']}, "
+                 f"goals credited to neither side {tot['goals_unattributed']}")
+    lines.append(f"timeline reproduces the final score PER TEAM on "
+                 f"{tot['timeline_agrees']} matches, fails on "
+                 f"{tot['timeline_disagrees']} "
                  f"({tot['timeline_disagrees']/max(tot['matches'],1)*100:.1f}%)")
+    # ---- WHAT COULD NOT BE GOT, per competition. This is the half of coverage
+    # ---- that normally never gets written down.
+    if os.path.exists(GAPS):
+        gap = defaultdict(Counter)
+        with open(GAPS, encoding="utf-8") as fh:
+            for line in fh:
+                try:
+                    g = json.loads(line)
+                except ValueError:
+                    continue
+                gap[g["league"]][g["reason"]] += 1
+        lines.append("")
+        lines.append("WHAT ESPN HAS NO TIMELINE FOR -- the gaps, per competition")
+        lines.append("")
+        lines.append("A match ESPN has no play-by-play for cannot be placed on a")
+        lines.append("minute-by-minute timeline at all. Retrying does not help:")
+        lines.append("26 such matches were retried four times each and 0 ever")
+        lines.append("returned one. A 0-0 costs nothing (no goals to place, the")
+        lines.append("match was level throughout). Anything else is a real loss.")
+        lines.append("")
+        lines.append(f"{'competition':22s} {'got':>7s} {'lost (had goals)':>18s} "
+                     f"{'0-0, harmless':>15s} {'% lost':>8s}")
+        for lg in sorted(set(list(gap) + list(per)),
+                         key=lambda x: -gap[x]["no_timeline_and_had_goals"]):
+            got = per[lg]["matches"]
+            lost = gap[lg]["no_timeline_and_had_goals"]
+            free = gap[lg]["no_timeline_but_goalless"]
+            denom = got + lost
+            lines.append(f"{lg:22s} {got:7d} {lost:18d} {free:15d} "
+                         f"{lost/max(denom,1)*100:7.1f}%")
+
     lines.append("")
-    lines.append("A match whose goal timeline does not add up to its final score "
+    lines.append("A match whose goal timeline does not reproduce its final score "
                  "is UNUSABLE for a comeback table and is dropped, not repaired.")
+    lines.append("Note: knockout ties are EXPECTED to fail this check when they go "
+                 "to extra time, because ESPN's final score includes it. The table "
+                 "builder handles those separately rather than dropping them.")
     txt = "\n".join(lines)
     print("\n" + txt)
     os.makedirs(REP, exist_ok=True)
