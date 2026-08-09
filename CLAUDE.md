@@ -741,10 +741,25 @@ many small wins, then one loss that ate thirty (§9b). He is describing the
 method that already blew up once, and he made real money with it right up until
 it did.
 
-**On stop losses:** measured on his own bot in `bot-forensics` —
-stop-and-re-enter turned **−2.29 cents into −9.36 cents** per contract. Selling
-a 90-cent contract at 40 cents locks in the loss the strategy was relying on
-recovering.
+**On stop losses — and this rule is SCOPED, which it was not when it was first
+written here.** Corrected 2026-08-09 after the `signal` chat read three
+independent sources that disagreed with each other.
+
+- **Where the loss is capped, a stop hurts.** Buying a Kalshi contract has a
+  floor — the worst case is what you paid — and drawdowns mean-revert, so a stop
+  realises a loss the position was going to recover *and* you pay the spread
+  twice. Measured on his own bot: stop-and-re-enter turned **−2.29 cents into
+  −9.36 cents** per contract. A stranger's copy-trading bot re-scored every
+  stop-out and found **8 of 9 would have recovered**.
+- **Where the loss is NOT capped, the stop is the only thing between the
+  strategy and ruin.** A third source — 96 configurations, 7 years, 16,024
+  trades on option spreads — found the same setup made **+5,439% with a stop**
+  and was **wiped out entirely without one**, on one bad day.
+
+**All three are right, and it turns on whether the downside has a floor.**
+Everything this repo currently trades has one, so the first bullet is the live
+rule here. **Stated generally it is actively dangerous** — and it was stated
+generally until reading caught it.
 
 ### Step 6b — the Critic and the Referee, before anything reaches him
 
@@ -759,9 +774,22 @@ as the checklist:
 - **The user decides the unresolved ones.** The Referee never resolves a real
   disagreement — that is the whole reason he asked for this.
 
-Run `py -3 coordinator
-eflect.py --file <draft>` for the mechanical half and
-work the checklist for the half that matters.
+**Two commands, and BOTH run before anything reaches him.** He asked on
+2026-08-09 whether the Referee was running too. It was not — the Critic had
+been run once and the Referee never.
+
+```bash
+py -3 coordinator\reflect.py --file <draft>
+py -3 coordinator\reflect.py --referee
+```
+
+**Any report carrying a finding ends with the Referee's three lists** — what
+stands · what is downgraded, written out in its new wording · what is genuinely
+unresolved and is his to decide. **An empty third list is said out loud, not
+left off.**
+
+**A Critic with no Referee produces a pile of objections and no decision**,
+which is how a Critic gets quietly ignored.
 
 **The evidence this exists on: nine errors in one session, and eight had the
 same cause — read ONE source, concluded, stated it confidently.** Not one was a

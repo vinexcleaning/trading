@@ -3594,7 +3594,7 @@ was yours to switch on.
 What this means for you, all of it:
 
 - `runners/runners.json` now has `mlb` with `enabled: true` and
-  `windowless: true`. It runs `srcun.py` under **`pythonw.exe`**, so it has no
+  `windowless: true`. It runs `src\run.py` under **`pythonw.exe`**, so it has no
   console window.
 - **Your own `mlb-paper/deploy/` scripts are untouched and still work.** Do not
   use both schedulers at once - two tasks watching one runner is pointless,
@@ -3602,7 +3602,7 @@ What this means for you, all of it:
 - The watchdog **cannot stop anything**. It has no `Stop-Process`, no
   `taskkill`, and a test fails the build if either appears. It only ever starts
   what is missing.
-- Its liveness check matches on `srcun.py` **and** the folder name. If you
+- Its liveness check matches on `src\run.py` **and** the folder name. If you
   ever change how `run.py` is invoked, update `match` in the registry or the
   watchdog will think it is down and start a second copy - which your lock will
   refuse, so the failure is noisy rather than damaging.

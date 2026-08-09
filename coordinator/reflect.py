@@ -105,6 +105,44 @@ RULES = [
     ),
 ]
 
+REFEREE_FORM = """==========================================================================
+THE REFEREE -- three lists, and the third one is not optional
+==========================================================================
+
+  The Critic attacked it. Now say what actually survives. Nothing else goes
+  in here: no summary, no restatement, no "on balance". Three lists.
+
+1. STANDS
+   Survived the attack. For each: the claim, and the ONE thing that makes it
+   survive -- the sample, the second source, the arithmetic.
+
+   -
+
+2. DOWNGRADED
+   Still true but weaker than it was written. For each: the old wording, the
+   NEW wording, and what forced the change. Rewrite it here, do not just
+   note that it needs rewriting.
+
+   - was:
+     now:
+     because:
+
+3. FOR THE USER -- genuinely unresolved
+   Where the work and the attack disagree and neither wins on evidence.
+   State BOTH positions fairly enough that he can pick without reading
+   either in full.
+
+   - the question:
+     one side says:
+     the other says:
+     what would settle it:
+
+--------------------------------------------------------------------------
+  THE REFEREE NEVER RESOLVES A REAL DISAGREEMENT. That is his, and it is the
+  reason he asked for this. An empty list 3 means you checked and found none
+  -- say that out loud rather than leaving it blank.
+"""
+
 NEGATIVE_RESULT = re.compile(
     r"\b(no edge|does not work|doesn't work|found nothing|null result|"
     r"not profitable|fails to|no effect)\b", re.I)
@@ -153,8 +191,13 @@ def main() -> int:
     ap.add_argument("--file", help="the draft to scan")
     ap.add_argument("--checklist", action="store_true",
                     help="print the part a script cannot do")
+    ap.add_argument("--referee", action="store_true",
+                    help="print the three lists the Referee owes, as a form")
     a = ap.parse_args()
 
+    if a.referee:
+        print(REFEREE_FORM)
+        return 0
     if a.checklist or not a.file:
         if CHECKLIST.exists():
             print(CHECKLIST.read_text(encoding="utf-8"))
