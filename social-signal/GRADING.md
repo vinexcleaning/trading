@@ -118,6 +118,36 @@ table those are opposite conclusions.
 **Recorded, not patched.** The fix is architectural (store a post-only score
 beside the thread score) rather than a pattern tweak, and it is untested.
 
+### And one worse, where the mislabelling itself scored the points
+
+A post titled **"90 days live trading & 800 trades"** whose body opens *"an
+update on our live **paper** trading results"* — the 800 trades are paper and
+live money had only just been set up. It scored **S=10 B=4 H=2 →
+ABSORB_AND_RECOMMEND**.
+
+| component | came from | the span |
+|---|---|---|
+| **S2 +2** *distinguishes backtest/theory from live/actual* | **the title** | *"days live trading & 800 trades"* |
+| **S3 +2** *states a sample size* | **the title** | *"90 days live trading & 800 trades"* |
+| **H3 +2** *a claim carrying n AND period AND capital* | **a COMMENT** | *"800 trades over 90 days is solid data"* |
+| S1, S4, S5 | comments | — |
+
+**The component that exists to reward separating paper from live fired on the
+sentence that conflates them.** The sample-size component credited a paper
+denominator presented as live. And an honesty credit came from a *reader
+praising the author*.
+
+Meanwhile the most damning fact in the thread scored nothing at all. Two
+commenters independently asked whether the 15-percentage-point threshold was
+fixed before the run, and the author replied: **"Nop no big testing upfront.
+Gut feeling."** The single parameter selecting every trade was never
+pre-registered — and it is an illiquidity filter (see
+`FINDINGS_FROM_READING.md` §0d).
+
+**Six of ten substance points and both honesty points came from either the
+misleading title or from commenters.** This is the clearest evidence in the
+project that the mechanical score cannot carry a verdict.
+
 ### Nothing was patched in response
 
 Tuning patterns until they fire correctly on the handful you happened to read is
