@@ -76,13 +76,14 @@ refinement of this work; it is the first real test of it.
 
 ## What is settled, and what it rests on
 
-**The football half stands.** `reports/comeback_table.txt`, 56,173 matches, 23
-competitions, 2015-01-01 → 2024-12-31, with 2025 onward held back and never
-opened. `reports/comeback_table.csv` is the full 39,930-cell grid.
+**The football half stands.** `reports/comeback_table.txt`, **56,927 matches, 26
+competitions**, 2015-01-01 → 2024-12-31, with 2025 onward held back and never
+opened. `reports/comeback_table.csv` is the full grid.
 
 One goal down, the team behind comes back and wins **9.8 per 100 at half time,
-4.0 at the 70th minute, 1.7 at the 80th, 0.4 at the 89th.** The exact scoreline
-matters more than the gap: at the 80th minute 1-0 is 1.7 and 3-2 is 2.8.
+4.0 at the 70th minute, 1.7 at the 80th, 0.4 at the 89th** — but those are
+TEN-YEAR AVERAGES. **In 2022-2024 the 80th-minute number is 2.3, not 1.7**, and
+the rise is late-only (see SO030). Quote the modern number.
 
 **The user's own hypothesis about team strength is real and ordered.** At the
 70th minute, a top-third side one goal up is caught 2.8 times per 100; a
@@ -90,11 +91,12 @@ bottom-third side one goal up is caught 7.1. He stated that shape before any dat
 existed. It is the one dimension in this work that was predicted rather than
 found.
 
-**The price half is where it dies, subject to the limitation at the top.** Of 149
-moments at the 70th minute or later, 79.2% had **nobody bidding on the losing
-side at all** — nothing to buy below 100 — and only 7 were at 97 cents or less.
-Of those 7, **four were 2-1 and two were 3-2**, the highest-comeback scorelines
-on the table. The cheap price and the safe state did not co-occur.
+**The price half is where it dies.** 645 matches priced at every minute:
+a market existed **93 in 100 at the 15th minute** and **16 in 100 at the 89th**.
+Competition-matched per reading, the middle result is **−0.40c per contract**,
+stable whether a comparison needs 40 matches of history behind it or 200.
+**Champions League qualifying, the only European book here, came in at −2.61c,
+second worst of ten.**
 
 **The held-out years were never opened.** `PREREGISTRATION_COMEBACK.md` was
 committed before any comeback number existed; check the git log, and if that is
@@ -109,9 +111,12 @@ premise failed first. 2025–2026 remains clean.
 reads as though the whole idea is dead.** It is not. These are untested, not
 disproved:
 
-1. **Stale scorelines** — the top of this file. The single most important one.
-2. **The European season.** No Premier League or Champions League price data
-   worth the name. This is what the wait is for.
+1. **The Champions League and Premier League GROUP STAGE.** Qualifying is
+   measured; the deep book starts in September and is untouched. This is the
+   one that matters and it is what the `devig` recorder is for.
+2. **The Premier League at all.** `KXEPLGAME` has 200 settled events but the
+   last is 2026-05-24, so **zero** fall inside Kalshi's ~69-day candle window.
+   Nothing could be measured, and that is a venue limit, not a gap to fill.
 3. **The two teams' identities.** The table has strength *tiers*, never clubs.
    "Atlético at home protecting a 1-0" is a different bet and was not asked.
 4. **Whether a team has thrown away leads before.** The user named this
@@ -128,9 +133,13 @@ disproved:
 10. **Uruguay, and the half-covered competitions** — Ecuador, Peru, Copa do
     Brasil, NWSL. See SO024; Uruguay lost 99.0% of its timelines and Kalshi
     lists it.
-11. **Lower prices earlier in a match.** 88 cents at minute 15 was measured with
-    strength collapsed. With a strength filter it was never looked at.
-12. **2025 and 2026.** Deliberately unopened.
+11. **The strength dimension crossed with price.** The gap table collapses
+    strength; only 120 of 572 Champions League qualifying matches get a reading
+    on both sides anyway, because those teams play too few ties. Fixing that
+    needs each club's DOMESTIC form — a new source per country.
+12. **The other legs.** Only the trailing team's NO was priced.
+13. **2025 and 2026.** Deliberately unopened, and the pre-registered test has
+    still never run.
 
 ---
 
