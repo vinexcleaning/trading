@@ -258,3 +258,59 @@ example. The user asked for this himself, unprompted.
 `CLAUDE.md` §9c step 7. A negative result ends with an actual list of the
 versions never tried, not a caveat sentence. **A dead idea with no such list
 looks completely dead, and this repo has already killed a live idea that way.**
+
+---
+
+# AMENDMENT 2, 2026-08-09 — the user found a real flaw in the tasking, before you started
+
+**His words:** *"You keep coming to me with this 97 to 3 ratio. What games are
+97 to 3? Games are constantly changing. As the clock ticks closer to the end,
+yeah, there's a point where it enters 97 to 3, but there are times when it's 90
+to 10, times when it's 85 to 15 because there's still time left. I don't know
+where the 97 to 3 is coming from."*
+
+**He is right and the 97c figure has no basis.** It came from an illustration in
+a handoff note and was carried forward without being questioned. It is one price
+at one instant, not a property of the bet.
+
+## What this changes about the table
+
+**The price and the minute are two views of the same variable.** With a 1-0 lead
+the price walks toward 100 as the clock runs down. So a table keyed only on the
+minute answers half the question.
+
+**Key the table on BOTH, and treat the PRICE as the one that decides whether
+there is a trade.** The thing that matters is:
+
+> **At each price Kalshi actually offers, what is the true rate?**
+
+Because the edge may exist at one price and not another. If at 85c the true rate
+is 90 in 100, that is a 5-cent edge and a real trade. If at 97c the true rate is
+exactly 97 in 100, there is nothing there. **Those two facts can both be true in
+the same dataset, and a minute-keyed table would average them together and show
+nothing.**
+
+## Concretely
+
+- Run the full price range, not a favourite: **80, 85, 90, 95, 97, 99** and
+  whatever else the book actually quotes.
+- For every cell report **three things**: how often the trailing team really came
+  back, what the price was, and the gap between them in cents.
+- **The gap is the deliverable.** Everything else is scaffolding.
+- Where a price is not recoverable — and `devig` reports the match minute is not
+  derivable from Kalshi's fields without joining Pinnacle's live flag — say so,
+  and report the true rate alone with the price column marked missing.
+
+## Also confirmed for you, from his question
+
+**The bet is one contract, not two legs.** On Kalshi's 3-way soccer market you
+buy **NO on the trailing team**, which pays if the leading team wins **or** it
+ends level. There is no second leg and therefore no risk of the two prices
+moving apart between fills. `soccer/inplay_events.md` confirms the three-leg
+structure ("the tie leg and the opponent's leg").
+
+**One thing to confirm before any result is trusted:** does the contract settle
+on the 90 minutes, or after extra time and penalties? It does not matter for
+league fixtures. It decides everything for cup ties — Copa do Brasil and the
+Champions League knockouts — because there a "draw" is not a final outcome.
+**Report cup ties separately until this is answered.**
