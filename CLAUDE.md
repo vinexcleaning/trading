@@ -731,6 +731,33 @@ stop-and-re-enter turned **−2.29 cents into −9.36 cents** per contract. Sell
 a 90-cent contract at 40 cents locks in the loss the strategy was relying on
 recovering.
 
+### Step 6b — the Critic and the Referee, before anything reaches him
+
+**Asked for on 2026-08-09.** Step 6 says self-audit. That was too vague to hold,
+so it is now three named roles with [`coordinator/REFLECT.md`](coordinator/REFLECT.md)
+as the checklist:
+
+- **The Critic** hunts only for what is wrong, missing or narrowed. **It is not
+  allowed to be fair.** "On balance this seems reasonable" is a failed critique.
+- **The Referee** produces three lists: what stands, what is downgraded and to
+  what wording, and what is genuinely unresolved.
+- **The user decides the unresolved ones.** The Referee never resolves a real
+  disagreement — that is the whole reason he asked for this.
+
+Run `py -3 coordinatoreflect.py --file <draft>` for the mechanical half and
+work the checklist for the half that matters.
+
+**The evidence this exists on: nine errors in one session, and eight had the
+same cause — read ONE source, concluded, stated it confidently.** Not one was a
+reasoning failure. All of them were sourcing failures, and every single one was
+caught by a second source rather than by being careful. Three were absence
+claims ("Kalshi has no Champions League") and all three were wrong.
+
+**His own words for the failure the Critic exists to catch:** *"you were so
+focused on the 97/3 that you might have completely gone past other stuff that
+might have worked."* A single illustrative number silently became the definition
+of a strategy, and nobody asked "what about 85 cents" until he did.
+
 ### Standing background work, between his ideas
 
 **"In the meantime you should be looking through all the ones we've already
