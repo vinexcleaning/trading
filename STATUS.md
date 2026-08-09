@@ -4031,3 +4031,37 @@ retry (0 of 26 after four attempts each), and it clusters by competition:
 Uruguay 13 of 26, Ecuador 7, Peru 2, **and none at all in Mexico, Argentina,
 Brazil, Colombia or MLS**. Those are Kalshi-bettable leagues losing coverage
 unevenly. It is counted per competition in the output.
+
+### soccer, 2026-08-09 — the comeback idea is answered: NO, and the price is why
+
+Full write-ups: [soccer/reports/comeback_table.txt](soccer/reports/comeback_table.txt)
+and [soccer/reports/price_vs_rate.txt](soccer/reports/price_vs_rate.txt). Claims
+are `SO019`–`SO028` in [soccer/LEDGER_SOCCER.md](soccer/LEDGER_SOCCER.md).
+
+**The football half is solid and stands.** 56,173 matches, 23 competitions,
+2015–2024. One goal down, the trailing team comes back and wins **4.0 per 100 at
+the 70th minute, 1.7 at the 80th, 0.4 at the 89th**. The user's own pre-stated
+hypothesis about team strength is visible and monotonic — at the 70th minute,
+top-third leading is 2.8 per 100 against bottom-third leading at 7.1.
+
+**The price half kills it, and not marginally.** 544 priced moments read at the
+exact wallclock of a goal. At the 70th minute or later, on 149 moments:
+**79.2% have nobody bidding on the losing side at all** — nothing to buy below
+100. 99c on 11.4%. **97c or less on 7 moments of 149.**
+
+**The mechanism, which is the part worth carrying to other projects.** Of those
+7 late cheap moments, **4 were 2-1 and 2 were 3-2** — the highest-comeback
+scorelines on the table. Where the rate genuinely is 1.7, the price is 99 or the
+book is empty. **The cheap price and the safe state never co-occur.** The market
+charges less exactly where the risk is greater.
+
+**⚠ This is the third time in this repo** (after B024, and K015/W011) that a
+number was real on the underlying thing and gone at the tradeable price. It cost
+one session rather than a project **because the price was measured before
+anything was built on it.** Worth generalising: `devig`, `tennis`, `mlb` — if a
+result depends on an assumed price, measure the price first, not last.
+
+**The held-out years are UNOPENED.** `soccer/PREREGISTRATION_COMEBACK.md` was
+committed before any comeback number existed and the test it describes **never
+ran**, because the premise failed first. 2025–2026 soccer is clean for a
+different question.
