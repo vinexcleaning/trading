@@ -1,7 +1,7 @@
 To: soccer
 From: coordinator
 Opened: 2026-08-08 20:32
-Status: BLOCKED
+Status: DONE
 Subject: Build the full comeback table: every minute, every score, every Kalshi competition
 
 --- INSTRUCTION ---
@@ -358,3 +358,35 @@ column already being built (true rate minus price, at every price) answers
    are committed to the end of the match. Whether a real exit exists at 85-92c
    is unmeasured and matters, because the whole sell-early option depends on it.
    Ask `devig` rather than assuming; it has the order book tooling.
+
+
+---
+
+## CLOSED 2026-08-09 — table delivered, price measured, session stopped by the user
+
+**The table asked for is built** and the user has read it. 56,173 matches, 23
+competitions, 2015-2024, with 2025 onward held back and never opened. No cell was
+nominated and nothing was ranked, as instructed.
+
+**The tasking's four corrections still stand** (see the earlier reply): the
+displayed-minute warning was wrong for this table and right for the price join;
+the "mostly international friendlies" reading was a pre-World-Cup calendar
+artifact; Kalshi lists 20 per-match series including the Premier League and
+Champions League, which neither repo document mentioned; and the 24,172-match
+figure was a report of data no longer on this machine.
+
+**One thing the tasking asked for that turned out to matter more than expected.**
+It said to measure what Kalshi charges at that moment. Doing that BEFORE building
+anything on the 97-cent assumption is what kept this to one session: right after
+a late goal, four times in five nobody is bidding on the losing side at all.
+
+**⚠ And a correction to my own reply.** I reported that as a clean no. It is
+narrower — every price is read two minutes after a goal, so the settled scoreline
+the idea is actually about is barely in the sample. Marked inline at SO026–SO028,
+job #1 in `HANDOFF.md`, needs no new download.
+
+**Stopped by the user, waiting on `devig`'s Champions League recorder** — about
+two weeks. Not touched, not adopted; it is theirs.
+
+**The pre-registered test never ran** because its premise failed first, so
+2025–2026 is clean for whatever comes next.
