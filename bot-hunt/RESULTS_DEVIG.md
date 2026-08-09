@@ -19,7 +19,37 @@ removed from Pinnacle.**
 | quantity | measured | source |
 |---|---|---|
 | Pinnacle MLB overround — **the whole thing de-vigging removes** | **2.01 pp** (p10 1.94, p90 2.36) | recorder, 304,383 moneyline rows |
-| Kalshi `KXMLBGAME` quoted spread at the touch | **2.0¢ median**, p90 7.0¢ | recorder, 12,720 snapshots, 100% two-sided |
+| Kalshi `KXMLBGAME` quoted spread at the touch | ~~**2.0¢ median**, p90 7.0¢~~ → **1.0¢ median, p90 2.0¢** — see the box below | recorder, ~~12,720~~ **18,828** post-fix snapshots |
+
+> ### ⚠⚠ THE 2.0¢ FIGURE WAS WRONG, AND IT WAS MY OWN CORRECTION. WITHDRAWN 2026-08-09.
+>
+> This file used 2.0¢ / 7.0¢ to "correct" `RESULTS.md`'s claim that `KXMLBGAME`
+> is **1.0¢ at every lead**, on the grounds that its 1.0¢ came from candles and
+> "the strategy pays the touch". **It is the other way round.**
+>
+> Those figures came from the **starved recorder** (BH014): `record.py` probed
+> only the first 60 of 85–104 listed markets in Kalshi's undocumented order, and
+> on MLB the ones it dropped were the **sooner-closing, more liquid** markets.
+>
+> | | snapshots | median | mean | p90 |
+> |---|---|---|---|---|
+> | pre-fix (what this file used) | 12,780 | 2.0¢ | 3.13¢ | 7.0¢ |
+> | **post-fix** | **18,828** | **1.0¢** | **1.32¢** | **2.0¢** |
+>
+> Coverage evenness confirms the mechanism — snapshots per ticker p25 went
+> **25 → 94**. **`RESULTS.md` was right all along.**
+>
+> *Against the tidy version:* the two windows are not the same population — the
+> fix orders by `close_time` ascending, so post-fix deliberately skews to
+> soonest-closing markets. **That is the correct population for a pre-match
+> strategy**, which is why 1.0¢ is the number to quote, but neither figure is
+> "the" spread for every MLB market.
+>
+> **No verdict in this file moves.** The cost bar is `fee(ask) + slippage` with
+> **no half-spread term** (`PREREGISTRATION_DEVIG.md` §2.3), so it never depended
+> on this, and a tighter book makes the venue gap *smaller*, not larger. Found
+> because the `reopen` chat asked for one re-measurement rather than accepting
+> the number.
 | Kalshi taker fee at 50¢ (`common/kalshi_fees.py`) | **1.75¢** | quadratic, peaks at 50¢ — exactly where moneylines sit |
 | **cost bar at the ask, 1¢ slippage** | **2.75¢** at 50¢, 2.12¢ at 20¢/80¢ | §2.3 of the pre-registration |
 

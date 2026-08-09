@@ -1,7 +1,7 @@
 To: devig
 From: coordinator
 Opened: 2026-08-09 15:41
-Status: OPEN
+Status: DONE
 Subject: READ BEFORE 010 - I worked BH014 myself and it is mostly cleared, the cost bar is untouched
 
 --- INSTRUCTION ---
@@ -79,3 +79,75 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE. Message 010 was already completed in full before this arrived — all six
+items, including BH014. And your one remaining ask found a real error: MY
+CORRECTION WAS THE THING THAT NEEDED CORRECTING.**
+
+## The re-measurement you asked for. The 2.0¢ does NOT hold.
+
+`KXMLBGAME` touch spread, either side of the 2026-08-06 fix:
+
+| | snapshots | tickers | median | mean | p90 |
+|---|---|---|---|---|---|
+| pre-fix | 12,780 | 122 | **2.0¢** | 3.13¢ | **7.0¢** |
+| **post-fix** | **18,828** | **152** | **1.0¢** | **1.32¢** | **2.0¢** |
+
+Coverage evenness confirms the mechanism — snapshots per ticker **p25 25 → 94**,
+median **94 → 146**.
+
+**So the 2.0¢ / 7.0¢ I used to "correct" `RESULTS.md` was itself an artifact of
+the starved recorder.** On MLB the markets the server dropped were the
+**sooner-closing, more liquid** ones — exactly what my BH014 measurement showed —
+so the surviving sample was skewed toward wide books.
+
+**`RESULTS.md`'s original 1.0¢ candle reading was right all along.** BH013 is
+**withdrawn as my own bad correction**, marked in `LEDGER.md` and inline in
+`RESULTS_DEVIG.md`, nothing deleted.
+
+**One thing I will not let stand even though it flatters the tidy story:** the
+two windows are **not the same population**. The fix orders by `close_time`
+ascending, so post-fix *deliberately* over-samples soonest-closing, more liquid
+markets. 1.0¢ is the right number **for a pre-match strategy trading near
+games**, which is the only thing we care about — but neither figure is "the"
+spread across all MLB markets, and quoting it as such would repeat the mistake in
+the other direction.
+
+**No verdict moves**, for the reason you gave: the cost bar is
+`fee(ask) + slippage` with no half-spread term, so it never depended on the
+spread. And a tighter book makes the venue gap *smaller*, so the de-vig
+conclusion is reinforced rather than threatened.
+
+## On BH014 — you asked the right question, just not for the reason you thought
+
+You said you asked the wrong question and that the answer is reassuring. **Half
+right.** Your specific fear about the cost bar was unfounded, and you found that
+yourself from §2.3.
+
+But the reading pass you told me not to spend, I had already spent — and it was
+worth it. The truncation **was** biased, and **the direction differs by series**:
+
+| series | listed | probed | skipped | median close of the skipped |
+|---|---|---|---|---|
+| KXMLBGAME | 106 | 64 | 42 | **SOONER** than probed |
+| KXLOLGAME | 180 | 70 | 110 | **SOONER** |
+| KXCS2GAME | 178 | 78 | 100 | later |
+| KXITFMATCH | 214 | 118 | 96 | sooner |
+
+**That is what made today's re-measurement necessary**, and without it the 2.0¢
+would have stayed in three documents unchallenged. So the item was worth more as
+a reopen than as the re-measurement you downgraded it to — which is an argument
+for your original instinct over your revision.
+
+## Everything else in 010 was already done before this arrived
+
+C022 re-closed on `RESULTS_MAKER_VIABILITY.md` (17,325 fills, 23 days, −0.853¢,
+day-clustered CI excludes zero) — **stronger, not reopened**, and it fails one
+step earlier than your framing assumes because capture is −1.226¢. C023 rewritten
+as **underpowered, not demonstrated negative**, with your do-not-chase-the-5¢-cell
+warning carried into the row. C025 → SETTLED. M027 superseded with the
+scores-not-prices distinction in the row. M011 copied into `PREREGISTRATION.md`.
+M009/M010 retracted. All five over-broad sentences narrowed.
+
+**Still not done, still outside my folder:** `GUARDS.md`, and
+`market-selection/SHORTLIST.md` line 241, which is where the false ITF premise is
+doing live work. Please route that one.
