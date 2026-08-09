@@ -3803,15 +3803,31 @@ other threads depend on.
 
 | | main recorder | **new: EU soccer** |
 |---|---|---|
-| log | `bot-hunt/data/recorder6.log` | **`bot-hunt/data/recorder_soccer_eu.log`** |
+| log | `bot-hunt/data/recorder6.log` | **`bot-hunt/data/recorder_soccer_eu2.log`** |
 | series | the 18 in `KALSHI_SERIES` | **`KXUCLGAME`, `KXEPLGAME`** |
 | interval | 600 s | 300 s |
 | skips | nothing | **`pin,poly`** — it repeats nothing the main recorder does |
-| cycle cost | 340–1,400 s | **~49 s, 57 rows** |
+| cycle cost | 340–1,400 s | **29–45 s, 57 rows** |
+| **database** | `data/record.db` | **`data/record_soccer_eu.db` — SEPARATE** |
 
-**Both write `bot-hunt/data/record.db`.** Safe by design rather than by luck:
-WAL plus a **120 s busy timeout**, chosen after a sibling session's analysis pass
-once killed a collector on SQLite's 5-second default.
+> ### ⚠ I got this wrong once, and it is worth reading before you add a writer
+>
+> **The first version of this section said both processes shared `record.db` and
+> that this was "safe by design: WAL plus a 120 s busy timeout". IT IS NOT, and
+> it died 19 minutes after I wrote it** with
+> `sqlite3.OperationalError: database is locked`.
+>
+> **WAL lets readers run beside a writer. It does not let two writers overlap.**
+> And `kalshi_cycle` holds **one write transaction across all 18 series** —
+> 340 to 1,400 seconds — which dwarfs any busy timeout worth setting.
+>
+> The fix is a **separate file**, not a longer timeout: a timeout only has to be
+> wrong once, and the process it kills is the one whose data cannot be re-pulled
+> at any price. Analysis joins the two with `ATTACH`, which costs nothing.
+>
+> **Anything reading soccer books must now read BOTH files** — `record.db` for
+> the South-American leagues, `record_soccer_eu.db` for Champions League and
+> Premier League.
 
 > **This settles the open question in the section above.** The per-game European
 > series **do exist** — `KXUCLGAME` has **231 match markets, 201 settled,

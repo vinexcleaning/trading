@@ -376,11 +376,30 @@ def main() -> None:
     # analysis pass killed a collector on SQLite's 5-second default.
     ap.add_argument("--series", default="",
                     help="comma list overriding KALSHI_SERIES for this process")
+    # ⚠ --db ADDED 2026-08-09 AFTER THE SECOND RECORDER DIED IN 19 MINUTES.
+    #
+    # I claimed in STATUS.md that two processes sharing record.db was "safe by
+    # design: WAL plus a 120 s busy timeout". IT IS NOT, and it failed with
+    # `sqlite3.OperationalError: database is locked` before the first cycle
+    # completed. WAL lets readers run beside a writer; it does NOT let two
+    # writers overlap. And `kalshi_cycle` holds ONE write transaction across all
+    # 18 series -- 340 to 1,400 seconds -- which dwarfs any busy timeout worth
+    # setting.
+    #
+    # The fix is a separate file, not a longer timeout: a timeout only has to be
+    # wrong once, and the thing it kills is the process whose data cannot be
+    # re-pulled at any price. Analysis joins the two with ATTACH, which costs
+    # nothing.
+    ap.add_argument("--db", default="",
+                    help="write to this sqlite file instead of data/record.db")
     args = ap.parse_args()
-    global KALSHI_SERIES
+    global KALSHI_SERIES, DB
     if args.series:
         KALSHI_SERIES = [s.strip() for s in args.series.split(",") if s.strip()]
         print(f"series overridden: {KALSHI_SERIES}", flush=True)
+    if args.db:
+        DB = Path(args.db)
+        print(f"db overridden: {DB}", flush=True)
     skip = {s.strip() for s in args.skip.split(",") if s.strip()}
 
     con = connect()

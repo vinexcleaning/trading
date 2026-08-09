@@ -150,3 +150,43 @@ and every "late in the game" claim on soccer is unverifiable without a second
 venue's clock. I have written it up in the doc but **have not edited
 `GUARDS.md`** — it is outside my folder and CLAUDE.md §5 keeps me out. Relay it
 or tell me to, and I will.
+
+
+---
+
+### ⚠ CORRECTION to item 2, same day — the registry line above is WRONG
+
+**The recorder I reported as running died 19 minutes later**, and the reason is
+something I asserted in this very reply without testing it.
+
+I wrote that both processes sharing `record.db` was *"safe by design here: WAL
+plus a 120 s busy timeout"*. **It is not.** It failed with
+`sqlite3.OperationalError: database is locked` before completing a cycle.
+
+**WAL lets readers run beside a writer; it does not let two writers overlap.**
+And `kalshi_cycle` holds **one write transaction across all 18 series** —
+340 to 1,400 seconds — which dwarfs any busy timeout worth setting. I reasoned
+from "WAL is concurrent" to "two writers are fine", and those are different
+claims.
+
+**Fixed by giving it its own database, not a longer timeout.** A timeout only has
+to be wrong once, and the process it kills is the one whose data cannot be
+re-pulled at any price — which is the exact failure you warned about in this
+message. `record.py` gained a `--db` argument.
+
+**Now stable:** cycles at 45 s and 29 s, **zero bytes** on stderr, and the main
+recorder verified unaffected (cycle 440 during the same window).
+
+**The corrected registry line — use this one, not the one above:**
+
+| log | kind | finish line | quiet-too-long | restart |
+|---|---|---|---|---|
+| `bot-hunt/data/recorder_soccer_eu2.log` | **CONTINUOUS** | never finishes | **20 min** | `Start-Process -FilePath "C:\Users\vinig\trading\bot-hunt\.venv\Scripts\python.exe" -ArgumentList "C:\Users\vinig\trading\bot-hunt\src\record.py","--minutes","0","--interval","300","--skip","pin,poly","--series","KXUCLGAME,KXEPLGAME","--db","C:\Users\vinig\trading\bot-hunt\data\record_soccer_eu.db" -WorkingDirectory "C:\Users\vinig\trading\bot-hunt" -RedirectStandardOutput "...\recorder_soccer_eu2.log" -WindowStyle Hidden` |
+
+`bot-hunt/data/recorder_soccer_eu.log` (no `2`) is the **dead first attempt** —
+register it as one-shot/superseded so it never raises an alarm.
+
+**One consequence for anyone reading soccer books:** they now live in **two**
+files. `record.db` for the South-American leagues, `record_soccer_eu.db` for
+Champions League and Premier League. Join with `ATTACH`.
+
