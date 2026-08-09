@@ -365,7 +365,22 @@ def main() -> None:
                     help="seconds between cycles")
     ap.add_argument("--once", action="store_true")
     ap.add_argument("--skip", default="", help="comma list: pin,kalshi,poly")
+    # ADDED 2026-08-09 (mailbox 009). Lets a SECOND recorder process cover extra
+    # Kalshi series without touching the main loop's timing. The instruction was
+    # explicit: do not lengthen the cycle for the other four threads. A recorder
+    # going quiet is this repo's most expensive recurring failure -- three silent
+    # deaths so far, and that data cannot be bought back at any price.
+    #
+    # Both processes write the same SQLite file, which is safe here and by
+    # design: WAL plus a 120 s busy timeout, chosen after a sibling session's
+    # analysis pass killed a collector on SQLite's 5-second default.
+    ap.add_argument("--series", default="",
+                    help="comma list overriding KALSHI_SERIES for this process")
     args = ap.parse_args()
+    global KALSHI_SERIES
+    if args.series:
+        KALSHI_SERIES = [s.strip() for s in args.series.split(",") if s.strip()]
+        print(f"series overridden: {KALSHI_SERIES}", flush=True)
     skip = {s.strip() for s in args.skip.split(",") if s.strip()}
 
     con = connect()

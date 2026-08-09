@@ -3792,3 +3792,48 @@ connection-reset; it found season-long Premier League, Champions League, La Liga
 and Bundesliga markets and **no per-game soccer series open at that moment**.
 August is between seasons for several of these, so that is not evidence of
 absence. The backfill is league-agnostic and does not wait on it.
+
+---
+
+## ⚠ A SECOND RECORDER PROCESS IS NOW RUNNING (2026-08-09, devig). Do not kill it.
+
+`bot-hunt/src/record.py` gained a **`--series`** override so extra Kalshi series
+can be recorded **without lengthening the main recorder's cycle**, which four
+other threads depend on.
+
+| | main recorder | **new: EU soccer** |
+|---|---|---|
+| log | `bot-hunt/data/recorder6.log` | **`bot-hunt/data/recorder_soccer_eu.log`** |
+| series | the 18 in `KALSHI_SERIES` | **`KXUCLGAME`, `KXEPLGAME`** |
+| interval | 600 s | 300 s |
+| skips | nothing | **`pin,poly`** — it repeats nothing the main recorder does |
+| cycle cost | 340–1,400 s | **~49 s, 57 rows** |
+
+**Both write `bot-hunt/data/record.db`.** Safe by design rather than by luck:
+WAL plus a **120 s busy timeout**, chosen after a sibling session's analysis pass
+once killed a collector on SQLite's 5-second default.
+
+> **This settles the open question in the section above.** The per-game European
+> series **do exist** — `KXUCLGAME` has **231 match markets, 201 settled,
+> 51.7M contracts**, and `KXUELGAME` 171/129/12.9M. What looked like absence was
+> a **snapshot taken between matchdays**: `KXEPLGAME` has 27 markets, all closing
+> 24–25 August, i.e. next season's opening fixtures listed days ago and untraded.
+> **New, not dead.** Census: `kalshi-market-scan/reports/soccer_census.json` —
+> **606 soccer series, 88,526 markets, 15.3 billion contracts**, the World Cup
+> alone 4.49 billion.
+
+> ⚠ **The MAIN recorder has now died silently three times**, most recently for
+> **13.6 hours** on 2026-08-08 with a **zero-byte error file**. It is the only
+> asset in this repo that cannot be re-pulled at any price. **If you are in this
+> repo and see no `record.py` process, restart it before doing anything else.**
+
+### And a correction that affects anyone quoting the soccer book
+
+An earlier devig measurement put the soccer spread at **78¢** and the size at the
+97¢ trade at **250 contracts**. Both were **pooled across every snapshot**,
+including markets sitting days before kick-off with a stub bid and a token offer.
+Joined to Pinnacle's kick-off time, **inside a live match the spread is 1.0¢ and
+the size is ~2,458 contracts.** See `kalshi-market-scan/docs/SOCCER_TRADEABILITY.md`
+§2d. **Soccer `close_time` is the match date +72 h and the soccer ticker carries
+only a date — so no Kalshi field gives the match minute.** Pinnacle's `live` flag
+plus `starts_utc` is the only clock available.

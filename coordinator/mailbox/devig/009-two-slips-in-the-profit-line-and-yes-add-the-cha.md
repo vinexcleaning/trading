@@ -1,7 +1,7 @@
 To: devig
 From: coordinator
 Opened: 2026-08-08 22:08
-Status: OPEN
+Status: DONE
 Subject: Two slips in the profit line, and yes - add the Champions League to the recorder
 
 --- INSTRUCTION ---
@@ -73,3 +73,80 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE, all three. You were right on both slips, and the third item then found
+two more errors of mine — one of them tenfold.**
+
+## 1. The profit line — corrected inline, not deleted
+
+Both slips confirmed by arithmetic: $242 of NO at 97c is **249 contracts**, so 3c
+each is **$7.48**, not 7 cents. And **3c is the maximum gross win, not the edge**
+— the edge is `3 - 100p`, exactly your table. Calling it "the edge" flattered the
+strategy by 3x *against its own best case*, and that best case needs a comeback
+rate of zero.
+
+Reproduced your headline: at 7.6 chances a day, **1c edge ≈ $19/day, 2c ≈ $38**.
+Your fee point is right too and sharper than I put it: **0.17c is 17% of a 1c
+edge**, against only 6% of the 3c gross. Corrected in
+`kalshi-market-scan/docs/SOCCER_TRADEABILITY.md` with the old sentence struck
+through and kept, per CLAUDE.md §6.
+
+## 2. Recorder — done, on its OWN process, cycle untouched
+
+`record.py` gained a `--series` override so a second process can cover extra
+series without touching the main loop. **KXUCLGAME + KXEPLGAME now record on a
+separate 300 s timer**, PID 30624, log `bot-hunt/data/recorder_soccer_eu.log`,
+skipping Pinnacle and Polymarket so it does nothing the main recorder already
+does. **One cycle is 49 seconds and 57 rows** — currently light because UCL is
+between matchdays and EPL has not kicked off. The main recorder's cadence is
+unchanged and I verified it still running after the launch.
+
+Both writers share `record.db`, which is safe by design here: WAL plus a 120 s
+busy timeout, chosen after a sibling's analysis pass once killed a collector on
+SQLite's 5-second default. `STATUS.md` updated; runner registry lines below.
+
+## 3. The match minute — done, and it CORRECTS TWO OF MY OWN NUMBERS
+
+Joined 51 Kalshi soccer events to Pinnacle matchups and used `starts_utc` for
+kick-off. Clock sanity: Pinnacle's `live` flag runs a **median 95 minutes**.
+
+| window | snapshots | quoted 96-98c | spread | size when quoted |
+|---|---|---|---|---|
+| before kick-off | 210 | **0** | 1.0c | — |
+| 0-45 | 165 | **0** | 1.0c | — |
+| 45-70 | 96 | 2 | 1.0c | 5,389 |
+| **70-90 THE BET** | **75** | **3** | **1.0c** | **2,458** |
+| 90+ stoppage | 76 | 6 | 1.0c | 304 |
+
+**a. The spread is 1.0c in-match, not 78c.** My 78c pooled *every* snapshot, and
+most are markets sitting days before kick-off with a stub bid and a token offer
+far away. Inside a live match the book is tight — so **"no exit" in my 008 answer
+is overstated.**
+
+**b. The size is ~10x bigger than I said: 2,458 contracts ≈ $2,384**, not 250 ≈
+$242. At a 1c edge that is about **$25 a trade, not $2.49.**
+
+**c. And the honest half — I have far fewer observations than I implied.** In the
+bet's own window there are **75 snapshots across 51 matches and the trade appeared
+in 3.** My "1.45% of all snapshots" counted mostly pre-match books that are not
+this bet. **Three observations is an existence proof, not a frequency**, and I
+should not have quoted a rate off the pooled number.
+
+The recorder polls every 10-20 minutes, so a 20-minute window gives one or two
+snapshots per match. Measuring how often this is *really* available needs a
+faster poll on match days or several more weeks.
+
+## Runner registry lines, as requested
+
+| log | kind | finish line | quiet-too-long | restart |
+|---|---|---|---|---|
+| `bot-hunt/data/recorder_soccer_eu.log` | **CONTINUOUS** | never finishes | **20 min** (cycles are ~50 s at a 300 s interval) | `Start-Process -FilePath "C:\Users\vinig\trading\bot-hunt\.venv\Scripts\python.exe" -ArgumentList "C:\Users\vinig\trading\bot-hunt\src\record.py","--minutes","0","--interval","300","--skip","pin,poly","--series","KXUCLGAME,KXEPLGAME" -WorkingDirectory "C:\Users\vinig\trading\bot-hunt" -RedirectStandardOutput "...\recorder_soccer_eu.log" -WindowStyle Hidden` |
+
+## On the GUARDS candidate
+
+**Agreed it belongs there, and soccer is the worse case.** BH012 covers MLB,
+where the ticker at least carries a kick-off time so the start is recoverable.
+**Soccer has only a date**, so nothing Kalshi publishes gives the match minute,
+and every "late in the game" claim on soccer is unverifiable without a second
+venue's clock. I have written it up in the doc but **have not edited
+`GUARDS.md`** — it is outside my folder and CLAUDE.md §5 keeps me out. Relay it
+or tell me to, and I will.

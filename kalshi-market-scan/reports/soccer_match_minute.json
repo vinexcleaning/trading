@@ -1,0 +1,35 @@
+{
+ "joined": 51,
+ "buckets": {
+  "before kick-off": {
+   "snapshots": 210,
+   "quoted_96_98": 0,
+   "spread_median_c": 1.0,
+   "size_median_at_97": 0.0
+  },
+  "0-45 first half": {
+   "snapshots": 165,
+   "quoted_96_98": 0,
+   "spread_median_c": 1.0,
+   "size_median_at_97": 0.0
+  },
+  "45-70": {
+   "snapshots": 96,
+   "quoted_96_98": 2,
+   "spread_median_c": 1.0,
+   "size_median_at_97": 5388.63
+  },
+  "70-90 THE BET": {
+   "snapshots": 75,
+   "quoted_96_98": 3,
+   "spread_median_c": 1.0,
+   "size_median_at_97": 2457.95
+  },
+  "90+ stoppage": {
+   "snapshots": 76,
+   "quoted_96_98": 6,
+   "spread_median_c": 1.0,
+   "size_median_at_97": 304.1
+  }
+ }
+}

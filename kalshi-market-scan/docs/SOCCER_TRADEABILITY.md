@@ -118,6 +118,49 @@ no spread.
 
 ---
 
+## 2d. ⚠ THE MATCH-MINUTE PASS — and it corrects two numbers in §2a–2c
+
+**2026-08-09.** `scripts/soccer_match_minute.py` →
+`reports/soccer_match_minute.json`. Joined 51 Kalshi soccer events to Pinnacle
+matchups on team names, and used **Pinnacle's `starts_utc`** for kick-off. Sanity
+check on the clock: Pinnacle's `live` flag runs a **median 95 minutes**, which is
+a real match.
+
+| match window | snapshots | quoted at 96–98¢ | spread (median) | size when quoted |
+|---|---|---|---|---|
+| before kick-off | 210 | **0** | 1.0¢ | — |
+| 0–45 first half | 165 | **0** | 1.0¢ | — |
+| 45–70 | 96 | 2 | 1.0¢ | 5,389 |
+| **70–90 — THE BET** | **75** | **3** | **1.0¢** | **2,458** |
+| 90+ stoppage | 76 | 6 | 1.0¢ | 304 |
+
+**Two things in §2a–2c are wrong and this table is why.**
+
+> **1. The spread is 1.0¢ in-match, not 78¢.** The 78¢ figure came from pooling
+> *every* snapshot, and most of those are markets sitting days before kick-off
+> with a stub bid and a token offer far away. **Inside a live match the book is
+> tight.** So "no exit" in §2c is overstated — there *is* a two-sided market
+> while the match is on.
+>
+> **2. The size is about ten times bigger than I said.** In the bet's own window
+> the median resting size is **2,458 contracts ≈ $2,384**, not 250 ≈ $242. At a
+> 1¢ edge that is roughly **$25 a trade**, not $2.49.
+
+**And one thing gets worse, which is the honest half:**
+
+> **I have far fewer real observations of this trade than §2c implied.** In the
+> 70–90 minute window there are **75 snapshots across 51 matches, and the trade
+> was available in 3 of them.** The "1.45% of all snapshots" in §2a counted
+> mostly pre-match books that are not the bet at all. **Three observations
+> establishes almost nothing** — it is a existence proof, not a frequency.
+
+**Why the recorder cannot do better right now:** it polls every ~10–20 minutes,
+so a 20-minute window yields one or two snapshots per match. Measuring how often
+this trade is *really* available needs either a faster poll on match days or
+several more weeks at the current rate.
+
+---
+
 ## 3. What this does NOT settle, stated plainly
 
 1. **I could not measure "the last 20 minutes", and it is worth knowing why.**
@@ -145,7 +188,42 @@ rounding error (it is 15.3 billion contracts), nothing quoted above 90¢ (it is
 quoted, with size, every time), and the spread eating the margin (it eats 6%,
 and not through the spread).
 
-**What replaces them as the real constraint is size: $242 a go.** At that
-ticket, 3¢ of edge is **7 cents of profit per trade** before you are wrong once.
-That is the number the `soccer` chat should design against, and it is the reason
-to be careful rather than the reason to stop.
+**What replaces them as the real constraint is size: $242 a go.**
+
+> ### ⚠ CORRECTED 2026-08-09 (mailbox 009). Two slips in one sentence.
+>
+> **The sentence below said: *"At that ticket, 3¢ of edge is 7 cents of profit
+> per trade."* Both halves are wrong.**
+>
+> **1. The units are out by a hundred.** $242 of NO at 97¢ is **249 contracts**,
+> so 3¢ each is **$7.48**, not 7 cents.
+>
+> **2. The worse one: 3¢ is NOT the edge. It is the maximum possible gross
+> win** — what you collect only if the trailing team *never* comes back. The
+> edge is what survives the comebacks, and it is `3 − 100p`:
+>
+> | trailing team really wins… | edge per contract | per $242 trade |
+> |---|---|---|
+> | never | +3.00¢ | +$7.48 |
+> | 1 time in 100 | +2.00¢ | +$4.99 |
+> | **2 times in 100** | **+1.00¢** | **+$2.49** |
+> | 3 times in 100 | 0.00¢ | nothing |
+> | 4 times in 100 | **−1.00¢** | **−$2.49** |
+>
+> **Calling 3¢ "the edge" makes the strategy look three times better than its own
+> best case, and that best case needs a comeback rate of exactly zero.**
+>
+> **The honest headline:** at 38 opportunities in 5 days — about 7.6 a day — a
+> **1¢ edge is roughly $19 a day** and a **2¢ edge about $38**. Kalshi's 0.17¢
+> fee takes **17% of a 1¢ edge**, which is a far bigger bite than the 6% it takes
+> out of the 3¢ gross.
+>
+> **And whether the edge is 1¢, 0¢ or negative is exactly what the `soccer` chat
+> is measuring.** Nothing here says it is positive.
+
+~~At that ticket, 3¢ of edge is **7 cents of profit per trade** before you are
+wrong once.~~ **Superseded by the box above — kept, not deleted, per CLAUDE.md
+§6, because deleting a wrong number is how someone re-derives it.**
+
+The size figure is the number the `soccer` chat should design against, and it is
+the reason to be careful rather than the reason to stop.
