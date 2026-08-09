@@ -1,9 +1,9 @@
 # HANDOFF — reopen
 
 <!-- COORDINATOR-STATE
-doing: nothing running - the audit is filed, the user said go, and the three items this chat could work without touching another folder are worked
-left: the other chats execute their mail; two tennis items are blocked on the laptop and nobody has confirmed that recorder is alive
-needs: yes - two things only the user can do: go to the laptop and check record_depth.py is running, and decide on the $9.99 tennis history purchase
+doing: nothing running - all thirteen reopens have been worked as far as this chat can take them without writing in another folder
+left: five actionable jobs sit with devig and the user; three are blocked (two on the laptop, one on a Kalshi series with no markets)
+needs: yes - two things only the user can do: go to the laptop and check record_depth.py is running, and decide on the $9.99 livetennisapi history purchase which answers three tennis questions at once
 -->
 
 **As of 2026-08-08.** Written by the session that took mailbox message 001.
@@ -104,3 +104,39 @@ read sceptically — which is why the 29 are split into 13 that ask for work and
 16 that ask for a sentence, and why every call is written down rather than
 summarised. The Critic section of [REOPENED.md](REOPENED.md) attacks this chat's
 own report and is not allowed to be fair to it.
+
+## 2026-08-09, second pass — the remaining ten worked
+
+Evidence: [reports/probe_notes.md](reports/probe_notes.md),
+`reports/retention_check.json`, `src/check_retention.py`.
+
+| item | outcome |
+|---|---|
+| **C022 / C023** | **Stands, and sized.** Fourth measurement of Kalshi's tape boundary: still **2026-05-25**, now **76 days** old, unmoved while apparent age went 69 → 71 → 73 → 76. **~76 days retrievable against the 8 used — about 9.5×.** Not time-critical. Re-refutes M009/M010 again. |
+| **M025** | **Strengthened.** `bot-hunt/reports/pinnacle_probe.json` (committed 2026-08-04) holds a free two-sided MLB player prop — *Justin Foscue Total Bases*, Over 0.5 −125 / Under 0.5 −106, max stake $500. The "unanswerable with free data" claim is false. **Caveat: 7.0 out of 100 overround against 2.01 on the moneyline, a $500 limit, and it is one prop.** |
+| **M017** | **Withdrawn.** `soccer/data-sources.md` had already probed thirteen sources with content hashes. Better evidence than the row I flagged. |
+| **C016** | **Downgraded to a relabel.** Its source document already carries a paragraph limiting it to the far wings. |
+| **CH074** | **Blocked for a new reason.** `KXATPTOTALSETS` exists as a series and returns **0 markets**, open or settled, while `KXATPMATCH` returns 10 and 200+ on the same query. |
+| **T002 + S018** | **One purchase.** `livetennisapi` history plan, $9.99, Jan 2023 – Jul 2026, point-by-point, including ITF. Answers T002, S018 and B023. |
+
+**Counts: 9 reopens — 5 actionable, 2 blocked on the laptop, 1 blocked on a
+market that does not exist, and 19 relabels.** Removed across both passes:
+**S021, BH014, M017, C016**.
+
+Mail: `devig` **012**, `tennis` **008**, `soccer` **004**.
+
+### The finding that matters most about this chat's own method
+
+**M017 was a wrong reopen, and the reason is the hole this audit named.**
+`soccer` has no ledger rows; this audit read ledgers; so the answer to one of my
+own reopens sat in a folder no ledger-based check can see. **Within a day of
+writing that the unledgered folders were a hole, the hole produced a false
+finding here.** That is the strongest argument available for ledgering the three
+remaining folders, and it is an argument against this chat's own output.
+
+### Running tally
+
+**Seven of the thirteen have been worked. Four shrank, one grew, two stand.** The
+one that grew — M025 — grew into *"the absence claim is false"*, not into
+*"there is money here"*. **No correction in this repo has yet revealed a larger
+edge, and that now includes this chat's corrections to itself.**

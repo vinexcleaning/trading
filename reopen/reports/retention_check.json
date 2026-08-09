@@ -1,0 +1,50 @@
+{
+  "probed_utc": "2026-08-09T20:51:23Z",
+  "pinned_boundary": "2026-05-25",
+  "pinned_age_days_today": 76,
+  "prior_measurements": [
+    "2026-08-02 (69d)",
+    "2026-08-04 (71d)",
+    "2026-08-06 (73d)"
+  ],
+  "rows": [
+    {
+      "date": "2026-05-22",
+      "age_days": 79,
+      "trades": 0
+    },
+    {
+      "date": "2026-05-23",
+      "age_days": 78,
+      "trades": 0
+    },
+    {
+      "date": "2026-05-24",
+      "age_days": 77,
+      "trades": 0
+    },
+    {
+      "date": "2026-05-25",
+      "age_days": 76,
+      "trades": 100
+    },
+    {
+      "date": "2026-05-26",
+      "age_days": 75,
+      "trades": 100
+    },
+    {
+      "date": "2026-05-27",
+      "age_days": 74,
+      "trades": 100
+    },
+    {
+      "date": "2026-05-28",
+      "age_days": 73,
+      "trades": 100
+    }
+  ],
+  "verdict": "BOUNDARY AT OR NEAR 2026-05-25",
+  "detail": "UNMOVED from 2026-05-25 across a fourth measurement.",
+  "caveat": "A fixed boundary is not a promise. Three -- now four -- points establish it is not rolling NOW. The mechanism is unknown and a fixed boundary can vanish in one step."
+}

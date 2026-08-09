@@ -67,13 +67,13 @@ did not have it".
 | **C023** — hold a crypto contract to settlement | Recorded in the ledger with the single word **"negative"**. | **4 — too small** | I opened the committed output (`crypto/reports/hold_settle.txt`, 25 May–30 Jul 2026, four assets, 146–250 events each) rather than the row. It says **tie** in 40 of its 44 price cells, with ranges of plus-or-minus 5 to 15 cents against a cost of 1 to 2 cents. Bitcoin at 5 cents reads **+2.9 cents**, its bottom edge one hundredth of a cent below zero. That is not a negative result; it is an unmeasured one. Same tape pull as C022 fixes it. | shares C022's pull |
 | **S021** — "the tennis line cannot be resolved with the sample available" | An honest power statement, written **2026-08-01**. | **4 — too small** | ⚠⚠ **WORKED 2026-08-09 AND WITHDRAWN AS A REOPEN — see the corrections at the foot of this file.** The two numbers are in different units (354 qualifying events a week, not 1,900), and more data cannot help anyway: the effect is **2.42 out of 100** against a cost of **3.61 out of 100**. The bucket version needs **61 weeks** of recording. ~~Count what has accrued and re-run if it clears.~~ **S018 is the tennis item that matters, not this.** | ~~one count~~ **pointless by arithmetic** |
 | **T002 / B023** — the player-model data window | Features from one provider stop at 2026-06-02 and 85% of markets are after that; the player-feature sweep then returned nothing on **29 days** of form, where the typical player appears about three times. | **2 — data**, feeding **4 — too small** | **$9.99** buys 43 months of point-by-point history including ITF. It replaces the frozen source and re-powers the sweep in the same purchase. Already named in the 2026-08-06 audit and not bought. | $9.99 and one rebuild |
-| **S018** — "match label coverage cannot be raised" | Two sources: one paid tier's cap, one site's 7-day window. | **2 — data** | Probe a third and a fourth. The signal chat found free soccer goal-time data this week that nobody thought existed, which is the same shape of mistake. | a few hours |
-| **M017** — Colombian, Peruvian, Korean and Chilean closing lines | One site serves a **wrong-country file** under those codes — Colombia returns Poland. | **2 — data** | That kills that one site for those leagues. It does not kill the leagues. Probe others before they stay out of the soccer comeback table. | a few hours |
+| **S018** — "match label coverage cannot be raised" | Two sources: one paid tier's cap, one site's 7-day window. | **2 — data** | **PROMOTED to the first tennis item**, because S006's floor is bound by label coverage rather than by elapsed time. ⚠ **2026-08-09: this is the SAME $9.99 as T002** — `livetennisapi`'s history plan covers January 2023 to July 2026, point-by-point, including ITF. One purchase, three answers. | **$9.99, shared with T002** |
+| **M017** — Colombian, Peruvian, Korean and Chilean closing lines | One site serves a **wrong-country file** under those codes — Colombia returns Poland. | **2 — data** | ⚠⚠ **WITHDRAWN 2026-08-09.** `soccer/data-sources.md` had already probed **thirteen** sources with content hashes and reached a better-evidenced version of the same absence: Colombia has no free closing line, Peru/Ecuador/Uruguay 404. ~~Probe others.~~ **I flagged this without reading the folder whose whole job that week was this question — because that folder has no ledger rows and this audit read ledgers.** | **already done** |
 | **S022** — the retirement add-back cost | Same void event set as S023. Marked broken, never re-run. | **1 — a bug** | One re-run. Small, and unlikely to move anything. | one re-run |
 | **BH014** — the recorder read the first 60 tickers | It probed 60 tickers in an **undocumented server order** while the family listed 85 to 104. Fixed 2026-08-06. | **1 — a bug** | ⚠ **WORKED 2026-08-09 AND MOSTLY CLEARED.** I guessed the de-vig cost bar read that output; it does not — the bar is fee plus slippage with **no spread term**, so the "de-vig is not reachable on MLB" conclusion is untouched. What remains is one re-measurement: the **2.0¢ median / 7.0¢ p90** spread figures came from cycles where some tickers got as few as **1** snapshot, server-chosen. | **drops to a re-measurement** |
-| **C016** — "the cheap wings are not tradeable" | **61 minutes** of one price ladder on one day. | **3 — one version** | Re-check across many days of recorded books instead of one hour. | one query |
-| **M025** — Kalshi versus DraftKings on player props | One free feed publishes prop prices **one side only**, so the comparison was **cancelled as unanswerable**. | **2 — data** | Check whether any other free feed publishes both sides. | a few hours |
-| **CH074** — set-score and parlay markets | Closed by an **arithmetic argument** and one worked example. | **3 — one version** | The test that argument proposed — comparing the two set-score prices against the match price at prices you could really pay — was never run. | one analysis run |
+| **C016** — "the cheap wings are not tradeable" | **61 minutes** of one price ladder on one day. | **3 — one version** | ⚠ **DOWNGRADED TO A RELABEL 2026-08-09.** `MORNING_REPORT.md` §0000 already carries a *"Refinement, so this is not overstated"* paragraph confining it to the far wings, and the conclusion is reached independently by the C6 withdrawal. ~~Re-check across many days.~~ The row just needs to say "one event's final hour". | **minutes** |
+| **M025** — Kalshi versus DraftKings on player props | One free feed publishes prop prices **one side only**, so the comparison was **cancelled as unanswerable**. | **2 — data** | ⚠⚠ **WORKED 2026-08-09 — THE ABSENCE CLAIM IS FALSE.** `bot-hunt/reports/pinnacle_probe.json`, committed since 2026-08-04, holds a free unauthenticated **two-sided** MLB player prop: *Justin Foscue Total Bases*, Over 0.5 at −125, Under 0.5 at −106, max stake $500. **But read the caveat at the foot of this file** — the overround is **7.0 out of 100** against 2.01 on the moneyline, and it is one prop. | the compare is a real job |
+| **CH074** — set-score and parlay markets | Closed by an **arithmetic argument** and one worked example. | **3 — one version** | ⚠ **WORKED 2026-08-09 — BLOCKED, for a different reason than the one on file.** The series exists (**`KXATPTOTALSETS`, "ATP Total Sets"**) and returns **0 markets, open or settled**, while `KXATPMATCH` returns 10 open and 200+ settled on the same query. The test needs a market that has been minted zero times in the window. | **not runnable today** |
 
 ### Sixteen more that need a sentence rewritten, not a test re-run
 
@@ -343,3 +343,83 @@ re-measured since the fix on 2026-08-06.
 **Three worked, two shrank, none grew.** That is the same asymmetry this repo has
 recorded 51 times, and it is the first evidence that this chat's own output
 behaves like everything else here.
+
+---
+
+# SECOND PASS 2026-08-09 — the remaining ten worked. Four more moved.
+
+Evidence for everything below: **[reports/probe_notes.md](reports/probe_notes.md)**
+and `reports/retention_check.json`. Nothing in another chat's folder was written
+to. Two live probes were run — a retention check and a Kalshi series query —
+because **whether a closure is true is this chat's job**, even when the fix is
+someone else's.
+
+| item | what changed |
+|---|---|
+| **C022 / C023** | **Stands, and is now sized.** Fourth measurement of Kalshi's tape boundary: still exactly **2026-05-25**, now **76 days** old, unmoved while its apparent age went 69 → 71 → 73 → 76. So **~76 days are retrievable against the 8 used** — about **9.5× the evidence** for one paced download. **Not time-critical.** Also re-refutes M009/M010 a fourth time. |
+| **M025** | **Strengthened, and it is the best new find of the audit.** `bot-hunt/reports/pinnacle_probe.json` — committed in this repo since 2026-08-04 — contains a **free, unauthenticated, two-sided MLB player prop**: *Justin Foscue Total Bases*, Over 0.5 at −125, Under 0.5 at −106, category `Player Props`, max stake $500. M025 was **cancelled as "unanswerable with free data"** on the strength of **one** feed. ⚠ **Read the caveat below before getting interested.** |
+| **M017** | **WITHDRAWN.** `soccer/data-sources.md` had already probed **thirteen** sources with content hashes and concluded Colombia has no free closing line and Peru/Ecuador/Uruguay return 404. Better evidence than the row I flagged, and it was on disk when I flagged it. |
+| **C016** | **Downgraded to a relabel.** It is one event's final 61 minutes — but `MORNING_REPORT.md` §0000 already carries a *"Refinement, so this is not overstated"* paragraph limiting it to the far wings, and the conclusion is reached independently by the C6 withdrawal. The row just needs to say "one event's final hour". |
+| **CH074** | **Blocked, for a different reason than the one on file.** The decomposition series exists — **`KXATPTOTALSETS`, "ATP Total Sets"** — and returns **0 markets, open or settled**. The same query gives `KXATPMATCH` 10 open and 200+ settled, so the query is right and the series is empty. The test is not runnable today because the market has been minted zero times in the window. |
+| **T002 + S018** | **Collapsed into one purchase.** `livetennisapi`'s history plan, **$9.99**, **43 monthly periods, January 2023 to July 2026, point-by-point, including ITF**. It answers the player-model data window, the label-coverage closure, and B023's 29-day null. |
+
+## The M025 caveat, because two-sided is not the same as useful
+
+**For it:** BH011 killed the baseball de-vig with *"the cost bar is larger than
+the entire vig it removes"* — a **2.75¢** bar against a **2.01** overround. On
+this prop the overround is **7.0 out of 100**, three and a half times larger, so
+the per-side correction de-vigging applies is about **3.5** rather than about 1.
+**That arithmetic does not transfer from the moneyline to props**, and using it
+there would be exactly the "one version tested" mistake this audit is about.
+
+**Against it:** a book quoting **7 out of 100** with a **$500** maximum stake is
+telling you it is not confident. Pinnacle's moneyline is a sharp reference; its
+props, on this evidence, are a different instrument. That has to be established,
+not assumed.
+
+**And the limit: this is one prop.** It kills the absence claim. It says nothing
+about edge.
+
+## What the count is now
+
+| | at first writing | after 08-08 | **after 08-09** |
+|---|---|---|---|
+| REOPEN — a test to re-run | 13 | 12 | **9** |
+| — actionable now | — | — | **5** (M027 · C022+C023 · M025 · T002+S018) |
+| — blocked on the laptop | — | 2 | **2** (S022, S023) |
+| — blocked on a market that does not exist | — | — | **1** (CH074) |
+| RELABEL — a sentence to rewrite | 16 | 17 | **19** |
+
+**Removed from the reopen list across both passes: S021, BH014, M017, C016.**
+Two were withdrawn because the reopen closed the thread harder; two because the
+work was already done and I had not looked in the right place.
+
+> **Seven of the thirteen have now been worked. Four shrank, one grew, two
+> stand.** The one that grew — M025 — grew into *"the absence claim is false"*,
+> not into *"there is money here"*. **Still not one correction in this repo has
+> revealed a larger edge, and this audit is now part of that record rather than
+> an exception to it.**
+
+## The Critic, on this second pass
+
+1. **M017 is the whole audit's own failure mode, executed by the audit.** I
+   flagged an absence claim without reading the folder whose entire job that
+   week was that question. My defence — that `soccer` has no ledger rows and
+   this audit read ledgers — **is the finding, not the excuse.** It means the
+   unledgered-folder hole is not theoretical; it cost a wrong reopen inside 24
+   hours.
+2. **The M025 find is one prop from one saved sample.** The probe artifact keeps
+   two sample entries per endpoint. I have not established how many of
+   Pinnacle's 1,920 free baseball markets are props, how many are two-sided, or
+   whether any of them line up with a Kalshi prop market. **"Free two-sided prop
+   prices exist" is what the evidence supports. Nothing more.**
+3. **The retention probe reads the tape as a whole with no ticker filter.** That
+   is deliberate — a per-ticker probe can read zero because that market did not
+   trade — but it means I have shown trades exist on those dates, not that any
+   *particular* series is retrievable back to them.
+4. **`KXATPTOTALSETS` returning zero is an absence claim of mine.** One query
+   shape, one moment. It could be a series that mints seasonally. I checked the
+   query against a series that does return data, which is the minimum, and it is
+   still one probe.
+5. **Nothing here re-ran anyone's analysis.** Every "stands" in the table above
+   still rests on reading, not on reproducing.

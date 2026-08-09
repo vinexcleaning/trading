@@ -4159,3 +4159,97 @@ and **2 of the 12 blocked on physical access to the laptop**. Follow-up mail:
 
 > **Three worked, two shrank, none grew.** Same asymmetry as the other 51
 > corrections, this time on the audit's own output.
+
+---
+
+## Desktop, 2026-08-09 (second pass) — the remaining reopens worked; two more removed, one strengthened
+
+`reopen/` finished working every one of its thirteen as far as an auditing chat
+can take them. Evidence: [reopen/reports/probe_notes.md](reopen/reports/probe_notes.md)
+and `reopen/reports/retention_check.json`. **Two live probes were run** — a
+retention check and a Kalshi series query — because whether a closure is *true*
+is that chat's job even when the fix is someone else's.
+
+### 1. Kalshi's tape boundary re-measured a fourth time — still 2026-05-25
+
+| date | age today | trades |
+|---|---|---|
+| 2026-05-24 | 77 d | **0** |
+| **2026-05-25** | **76 d** | **100** |
+| 2026-05-28 | 73 d | 100 |
+
+**Unmoved while its apparent age went 69 → 71 → 73 → 76 days.** BH009 confirmed a
+fourth time; **M009 and M010 refuted a fourth time** and still stated as SETTLED
+in `market-selection/LEDGER_ADDITIONS.md`.
+
+**Consequence for C022/C023: ~76 days of tape are retrievable against the 8 used
+by `MM_RESULTS_MAKER` — about 9.5× the evidence for one paced download, and the
+reopen is not time-critical.** (`crypto/data/trade_tape.db` is 1.27 GB and its
+log ends `KXBTC15M … 658 events, 2026-07-24 .. 2026-07-31` — that *is* the 8 days.)
+
+### 2. ⚠ M025 — free TWO-SIDED player props exist, and the artifact is in this repo
+
+`market-selection` M024 recorded **0** prop entries carrying both sides and M025
+was **CANCELLED as "unanswerable with free data"**, both measured on **one** feed.
+**`bot-hunt/reports/pinnacle_probe.json`, committed 2026-08-04, contains a free
+unauthenticated two-sided MLB player prop** — `category: "Player Props"`,
+*Justin Foscue Total Bases*, **Over 0.5 at −125, Under 0.5 at −106**, maxRiskStake
+**$500**. "Total Bases" is one of the exact types M023 lists on the Kalshi side.
+
+**Both readings, because they point opposite ways:**
+
+- **For.** BH011 killed the moneyline de-vig on *"the cost bar is larger than the
+  entire vig it removes"* — 2.75¢ against **2.01**. This prop's overround is
+  **7.0 out of 100**, 3.5× larger, so the per-side correction is ~3.5 not ~1.
+  **That arithmetic does not transfer from moneyline to props.**
+- **Against.** 7.0 out of 100 with a **$500** cap is a book saying it is not
+  confident. Its moneyline is a sharp reference; its props are a different
+  instrument and that must be shown, not assumed.
+- **And it is ONE prop** from two saved sample entries. **The finding is "the
+  absence claim is false", not "there is money here."**
+
+### 3. Two more reopens removed
+
+- **M017 — WITHDRAWN.** `soccer/data-sources.md` had already probed **thirteen**
+  sources with sha256 content hashes and reached a better-evidenced version of
+  the same absence (Colombia has no free closing line; Peru/Ecuador/Uruguay 404).
+- **C016 — downgraded to a wording fix.** `crypto/MORNING_REPORT.md` §0000
+  already carries a *"Refinement, so this is not overstated"* paragraph confining
+  it to the far wings.
+
+### 4. CH074 is blocked for a checkable new reason
+
+`KXATPTOTALSETS` ("ATP Total Sets") **exists as a series and returns 0 markets,
+open or settled**, while `KXATPMATCH` returns 10 open and 200+ settled on the
+same query. The decomposition test needs a market Kalshi has minted zero times
+inside the window.
+
+### 5. T002 and S018 are the same $9.99
+
+`livetennisapi`'s history plan — **43 monthly periods, January 2023 to July 2026,
+point-by-point, including ITF** (`bot-forensics/FINDINGS_T7.md`). One purchase
+answers the player-model data window, the tennis label-coverage closure **and**
+B023's 29-day null. **It is a payment, so it is the user's.**
+
+### ⚠ The finding that is about this repo's method, not any result
+
+**M017 was a WRONG reopen, and the cause is the hole the audit itself named.**
+`soccer` has no rows in any ledger; the audit read ledgers; so the answer to one
+of its own reopens sat in a folder no ledger-based check can see. **Within a day
+of writing that the unledgered folders were a hole, the hole produced a false
+finding.** That is the strongest available argument for ledgering `soccer`,
+`polymarket-tennis-copy` and `ptis-polymarket` — and it is an argument against
+the auditing chat's own output.
+
+### Where the thirteen stand
+
+**9 reopens: 5 actionable** (M027 · C022+C023 · M025 · T002+S018), **2 blocked on
+the laptop** (S022, S023), **1 blocked on a market that does not exist** (CH074).
+**19 relabels.** Removed across both passes: **S021, BH014, M017, C016**.
+
+> **Seven of the thirteen worked. Four shrank, one grew, two stand.** The one
+> that grew grew into *"the absence claim is false"*, not into an edge. **Still
+> no correction in this repo has revealed a larger effect, and that now includes
+> the audit's corrections to itself.**
+
+Mail: `devig` **012**, `tennis` **008**, `soccer` **004**.
