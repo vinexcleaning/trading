@@ -314,3 +314,47 @@ on the 90 minutes, or after extra time and penalties? It does not matter for
 league fixtures. It decides everything for cup ties — Copa do Brasil and the
 Champions League knockouts — because there a "draw" is not a final outcome.
 **Report cup ties separately until this is answered.**
+
+---
+
+# AMENDMENT 3, 2026-08-09 — the exit rule falls out of the same table
+
+**His question:** *"If we get in at 80 and it's going up 92, 93, 94, at what
+point is it best to sell? Would it be better to just hold it out or better to
+sell? MAKE SURE YOU CONSIDER FEES."*
+
+**Fees considered, and they are not what decides it.** Computed with
+`common/kalshi_fees.py`, entering at 80c:
+
+| sell at | exit fee | you keep | hold instead and win |
+|---|---|---|---|
+| 90c | 0.63c | 8.25c | 18.88c |
+| 92c | 0.52c | 10.36c | 18.88c |
+| 95c | 0.33c | 13.55c | 18.88c |
+| 97c | 0.20c | 15.68c | 18.88c |
+
+**Every exit fee is under a cent.** The fee is quadratic and near its minimum at
+the edges, so it is not the deciding term at any price in this range.
+
+**What decides it:** selling at price X gets you X minus the exit fee for
+certain. Holding gets you 100 times the true rate. So:
+
+> **Hold if the true rate is above the price minus the exit fee. Sell if it is
+> not.** At 92c that threshold is 91.5 in 100; at 97c it is 96.8 in 100.
+
+**Which means the exit rule needs no new work — it is the same table.** The gap
+column already being built (true rate minus price, at every price) answers
+"should I buy" when it is positive and "should I sell" when it turns negative.
+**Report it as one table serving both.**
+
+**Two things to add to the write-up because of this:**
+
+1. **The edge at entry does not carry.** Buying at 80c because the true rate is
+   85 in 100 says nothing about whether to hold at 92c. That is a fresh
+   comparison against a fresh price. Say this explicitly — it is the thing most
+   likely to be got wrong in live use.
+2. **Check whether selling is even possible.** `devig` reports that at 97c the
+   other side sits about 78c away, so **there is no exit at the top end** — you
+   are committed to the end of the match. Whether a real exit exists at 85-92c
+   is unmeasured and matters, because the whole sell-early option depends on it.
+   Ask `devig` rather than assuming; it has the order book tooling.
