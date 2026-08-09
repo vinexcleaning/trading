@@ -774,6 +774,30 @@ focused on the 97/3 that you might have completely gone past other stuff that
 might have worked."* A single illustrative number silently became the definition
 of a strategy, and nobody asked "what about 85 cents" until he did.
 
+### Run as long as you can without him — his attention is the scarce thing
+
+**2026-08-09:** *"Each individual chat should try and work autonomously for as
+long as possible, so we don't have to be constantly doing this process of going
+back and forth."*
+
+This sharpens §2 rather than changing it. **The pause for a new idea stays** —
+that is where his sport knowledge gets in. Everything after it does not.
+
+Concretely, before you stop and ask:
+
+- **Have you exhausted the free routes?** A blocker reported without the list of
+  what was tried is not a blocker.
+- **Could you answer it yourself by running something?** Reading a script and
+  inferring is how eight of the nine errors in `coordinator/REFLECT.md`
+  happened.
+- **Is it genuinely his?** A login, a payment, a decision that changes
+  direction. If not, take the conservative option, log it in `DECISIONS.md`,
+  and keep going.
+- **Can you park it and do the rest?** A blocked branch never stops the others.
+
+**When you do surface something, batch it.** One list, at the end, with the
+exact window and the exact words — never a question at a time.
+
 ### Standing background work, between his ideas
 
 **"In the meantime you should be looking through all the ones we've already
