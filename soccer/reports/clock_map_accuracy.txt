@@ -1,0 +1,32 @@
+HOW ACCURATE IS THE CLOCK MAP
+==============================================================================
+
+Each anchor was hidden in turn and its real instant predicted
+from the others. This is the error, in minutes.
+
+  anchors tested        24159
+  refused to guess      1535
+  median error          0.13 min
+  9 in 10 within        0.62 min
+  99 in 100 within      1.12 min
+  worst                 112.77 min
+  within 1 minute       98.8%
+  within 2 minutes      99.6%
+
+by how far the nearest surviving anchor was:
+  gap to nearest anchor      tested   median err   9 in 10 within
+  0-2 min                     19271        0.10m            0.58m
+  3-5 min                      3173        0.28m            0.67m
+  6-10 min                     1525        0.32m            0.76m
+  over 10 min                   190        0.28m            0.68m
+
+COMPARE: SO009 measured `kickoff + displayed minute` at a
+median of 17.52 minutes out, on 362 events. That method walks
+through halftime and through every minute of stoppage. This
+one never leaves the half it is in.
+
+WHAT THIS DOES NOT SAY. It measures how well the map places a
+minute ESPN also timestamped. Minutes with no nearby anchor
+are refused rather than guessed, so the errors above are the
+errors of the readings actually taken -- but a match with
+sparse anchors contributes fewer readings, not worse ones.
