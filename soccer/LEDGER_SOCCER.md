@@ -76,6 +76,26 @@ these numbers existed — check the git log, and if it was not, disregard it.
 | **SO024** | **ESPN's timeline coverage is severely uneven across Kalshi-bettable leagues.** | `reports/goal_minutes_coverage.txt` | 75,016 fixtures attempted, **58,109** with a timeline | **uru.1 99.0% lost** (30 usable of ~3,300) · bra.copa_do_brazil 49.0% · ecu.1 49.4% · per.1 38.6% · usa.nwsl 27.8% · fifa.friendly 14.1% · **0.0–0.1% for mex.1, usa.1, bra.1, arg.1, col.1, chi.1, eng.1, esp.1, ita.1, ger.1, uefa.champions, usa.usl.1** | **SETTLED** — Uruguay is effectively absent from this table and Kalshi lists it. Extends SO012 to the full sample |
 | **SO025** | The replayed timeline reproduces the final score per team on **99.4%** of matches. | same | 58,109 matches | 327 dropped for disagreeing, 5 for an unreadable minute, 29 for a goal credited to neither side; 140 knockout ties where extra time changed the score, scored on the regulation result | **SETTLED** |
 
+## The price, 2026-08-09 — and it closes the question
+
+| ID | Claim in plain English | Artifact | n + unit | Effect | STATUS |
+|---|---|---|---|---|---|
+| **SO026** | **The 97-cent price the whole idea rests on does not exist late in a match.** | `reports/price_vs_rate.txt` §1, `src/price_at_state.py` | **149 priced moments** at the 70th minute or later, read at the exact wallclock of a goal + 2 min, paying the ask | **79.2% of the time nobody is bidding on the losing side at all**, so there is nothing to buy below 100. 99c on 11.4%, 98c on 4.7%, **97c or less on 4.7% — 7 moments of 149** | **SETTLED** — this does not depend on the rate table at all, and it is the answer |
+| **SO027** | At the price actually charged, **every state loses money.** | `reports/price_vs_rate.txt` §2 | 29 state-bands with ≥5 priced moments | **29 of 29 lose.** e.g. 70–79 min 1-0: pay 99c, survives 0.93 per 100, actually 2.83. 10–19 min 1-0: pay 86c, survives 12.68, actually 15.48 | **SUGGESTIVE, directional only** — the rates are 2015–2024 all competitions and the prices are a few hundred moments from a 69-day window. Different populations, deliberately not averaged |
+| **SO028** | **The mechanism: the cheap price and the safe scoreline never co-occur.** | `reports/price_vs_rate.txt` §3 | the 7 late moments at ≤97c | 4 are **2-1**, 2 are **3-2**, 1 is 1-0 — i.e. the scorelines with the *highest* comeback rates (3-2 at the 80th is 2.8 per 100 against 1-0's 1.7). Where the rate is genuinely 1.7, the price is 99 or there is no market | **SETTLED as a mechanism** — the market charges less exactly where the risk is greater, which is what a working market does. n=7 is small; the 79.2%-no-market figure is what carries the conclusion |
+
+**Verdict on the idea: NO.** Not "too small to tell" and not "needs more data" —
+the assumed price is absent in the states that matter. **The pre-registered test
+was never run**, because its premise did not survive contact with the order book.
+`PREREGISTRATION_COMEBACK.md` stands unused and the held-out years 2025–2026
+remain unopened, which is the correct outcome and leaves them clean for a
+different question.
+
+**This is B024 happening a third time** (after B024 itself and K015/W011): a
+number that is real on the football and gone at the price you can trade. It cost
+one session rather than a project, because the price was measured before anything
+was built on it.
+
 ### ⚠ What SO019–SO022 do NOT say, and the trap sitting right next to them
 
 **1.8 comebacks per 100 at the 80th minute is below the 2.80 that a 97-cent

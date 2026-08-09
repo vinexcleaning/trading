@@ -1,0 +1,109 @@
+WHAT KALSHI CHARGES vs WHAT ACTUALLY HAPPENS
+==============================================================================
+
+1. DOES THE 97-CENT PRICE EVEN EXIST?
+
+The whole idea assumes you can pay about 97 cents to make 3.
+Across all 544 priced moments, what you would actually pay:
+
+    100 -- nobody bidding on the losing side at all        229   42.1%
+    99                                                      63   11.6%
+    98                                                      36    6.6%
+    97                                                      32    5.9%
+    95-96                                                   38    7.0%
+    90-94                                                   52    9.6%
+    under 90                                                94   17.3%
+
+A price of 100 is not the market charging 100. It means no one
+is bidding for the losing team at all, so there is nothing to
+buy at any price under 100. You cannot trade it.
+
+Late in the match -- the 70th minute or later, which is the
+whole point of the idea -- on 149 moments:
+
+    100                                                    118   79.2%
+    99                                                      17   11.4%
+    98                                                       7    4.7%
+    97 or less                                               7    4.7%
+
+==============================================================================
+2. STATE BY STATE
+==============================================================================
+
+'Can afford' is the most comebacks per 100 the price survives.
+'Really happens' is what happened, 2015-2024, all competitions.
+If 'really happens' is the bigger number, the bet loses money.
+
+  minute   score  moments  you pay  can afford  really happens   matches        
+------------------------------------------------------------------------------
+     0-9     1-0       48      94c        6.07           15.94      5139   LOSES
+   10-19     1-0       42      86c       12.68           15.48     14148   LOSES
+   10-19     2-0       12      99c        0.93            5.49      1112   LOSES
+   20-29     1-0       39      90c        9.37           14.00     18725   LOSES
+   20-29     2-0       14      99c        0.93            4.46      2848   LOSES
+   30-39     1-0       13      92c        7.48           12.25     20480   LOSES
+   30-39     2-0       15      99c        0.93            3.94      4538   LOSES
+   30-39     3-0        5     100c        0.00            1.05       762   LOSES
+   40-49     1-0       25      92c        7.48            9.84     20111   LOSES
+   40-49     2-0       17      99c        0.93            2.48      6123   LOSES
+   40-49     2-1       20      94c        5.14           10.07      3474   LOSES
+   40-49     3-0        9     100c        0.00            0.43      1395   LOSES
+   40-49     3-1        5      99c        0.93            2.76       651   LOSES
+   50-59     1-0       16      96c        4.20            7.77     18727   LOSES
+   50-59     2-0       13     100c        0.00            1.59      7029   LOSES
+   50-59     2-1       14      96c        4.20            7.82      4899   LOSES
+   50-59     3-0        7     100c        0.00            0.15      1993   LOSES
+   50-59     3-1        5     100c        0.00            2.22      1172   LOSES
+   60-69     1-0       10      96c        4.20            5.25     16824   LOSES
+   60-69     2-0        8     100c        0.00            0.81      7364   LOSES
+   60-69     2-1       12      98c        2.33            5.47      6413   LOSES
+   60-69     3-0        8     100c        0.00            0.04      2589   LOSES
+   60-69     3-1        5     100c        0.00            1.39      1872   LOSES
+   70-79     1-0        5      99c        0.93            2.83     14611   LOSES
+   70-79     2-0        7     100c        0.00            0.31      7400   LOSES
+   70-79     2-1       11      98c        1.86            2.87      7549   LOSES
+   70-79     3-1        8     100c        0.00            0.51      2564   LOSES
+   80-89     2-1       11     100c        0.00            0.98      8344   LOSES
+   80-89     3-1        8     100c        0.00            0.03      3154   LOSES
+
+**29 of 29 states lose money at the price actually charged.**
+
+==============================================================================
+3. THE MECHANISM -- why, rather than just that
+==============================================================================
+
+Every moment at the 70th minute or later where 97 cents or less
+was actually available:
+
+    2026-06-03  fifa.friendly        min  73  1-0  pay 96c
+    2026-07-24  chi.1                min  74  2-1  pay 96c
+    2026-07-22  usa.1                min  75  2-1  pay 96c
+    2026-06-24  fifa.world           min  76  2-1  pay 97c
+    2026-07-25  chi.1                min  81  3-2  pay 97c
+    2026-08-01  usa.nwsl             min  85  3-2  pay 97c
+    2026-07-16  mex.1                min  90  2-1  pay 97c
+
+    by scoreline: 2-1: 4, 3-2: 2, 1-0: 1
+
+**The cheap price and the safe scoreline never happen at the
+same time.** When Kalshi will sell at 97 cents late in a match,
+it is a 2-1 or a 3-2 -- the scorelines with the HIGHEST comeback
+rates on the whole table. Where the rate really is 1.7 in 100
+(one goal up, 80th minute), the price is 99 or there is no
+market at all.
+
+The market is not leaving money on the table. It is charging
+less exactly where the risk is greater, which is what a working
+market does.
+
+==============================================================================
+WHAT THIS DOES NOT SETTLE
+==============================================================================
+
+The rates are 2015-2024 across every competition; the prices are
+a few hundred moments from Kalshi's ~69-day window. Those are
+different populations and the per-state comparison in part 2 is
+directional, not a measurement of profit.
+
+Part 1 does not depend on that, and part 1 is the answer: the
+price the idea was built on is not there late in a match.
