@@ -35,9 +35,29 @@ ROOT = os.path.join(HERE, "..")
 DATA, REP = os.path.join(ROOT, "data"), os.path.join(ROOT, "reports")
 OUT = os.path.join(DATA, "espn_history")
 SITE = "https://site.api.espn.com/apis/site/v2/sports/soccer"
-UA = {"User-Agent": "Mozilla/5.0 (soccer-research/1.0)"}
+# ESPN (Akamai) began returning 403 to any Mozilla/... or unknown custom
+# User-Agent on 2026-08-08. Measured: "Mozilla/5.0 (soccer-research/1.0)"
+# -> 403, "soccer-research/1.0" -> 403, curl/8.4.0 -> 200, requests' own
+# default -> 200. Sending no override is what works; do not "fix" this by
+# adding a browser string back.
+UA = {}
 
-LEAGUES = ["mex.1", "arg.1", "bra.1", "col.1", "usa.1", "bra.copa_do_brazil"]
+# The six original leagues, plus every competition Kalshi was seen quoting
+# per-game in reports/tape_soccer_scan.json, plus the four big European leagues
+# and the Champions League. Kalshi's definitive per-game list is not settled
+# (asked of the devig chat 2026-08-08), so the rule here is: fetch anything that
+# could plausibly be on the book, because a fixture list is cheap and a missing
+# league costs a re-run. Every slug below was probed and returns 200.
+LEAGUES = [
+    # confirmed in soccer/dataset.md
+    "mex.1", "arg.1", "bra.1", "col.1", "usa.1", "bra.copa_do_brazil",
+    # seen quoted per-game on Kalshi in the 2026-05-24..06-11 tape
+    "fifa.friendly", "uru.1", "per.1", "ecu.1", "chi.1",
+    "usa.usl.1", "usa.usl.l1", "usa.nwsl",
+    # big European competitions -- not seen per-game on Kalshi yet, included
+    # because they are the ones the user actually knows
+    "eng.1", "esp.1", "ita.1", "ger.1", "uefa.champions",
+]
 START = date(2015, 1, 1)
 END = date.today()
 STEP = 7

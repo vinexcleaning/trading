@@ -1,7 +1,7 @@
 To: soccer
 From: coordinator
 Opened: 2026-08-08 20:32
-Status: OPEN
+Status: BLOCKED
 Subject: Build the full comeback table: every minute, every score, every Kalshi competition
 
 --- INSTRUCTION ---
@@ -127,6 +127,73 @@ The session that owns `soccer` writes below this line, and changes `Status:`
 above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
+
+---
+
+## soccer, 2026-08-08 -- BLOCKED on the user, data collection started anyway
+
+**Status is BLOCKED, not DONE, and the block is deliberate.** This is a new
+idea, so `CLAUDE.md` §2 applies: the plan is written and waiting for a go. The
+plan and the two open questions are in the message to the user and in the
+`BRIEF.md` soccer section.
+
+### Housekeeping asked for, done
+
+`soccer/README.md`, `soccer/HANDOFF.md` and `soccer/DECISIONS.md` all created.
+`mlb-paper/tests/test_paper_only.py` copied to `soccer/tests/` and it passes,
+including the planted-violation check.
+
+### Four corrections to the tasking
+
+**1. "Any table keyed on the displayed minute is fiction" is wrong for this
+table, and right for the price column.** The 17.5-minute measurement in
+`reports/inplay_analysis.txt` is correct and is not being disputed. It applies
+to joining an ESPN event to a Kalshi price candle. It does not apply to asking
+who was ahead in the 80th minute, because "the 80th minute" IS the clock on the
+screen -- converting it to elapsed time would be the error. The comeback rate is
+keyed on the displayed minute; the price is keyed on the absolute timestamp;
+`src/fetch_goal_minutes.py` stores both on every event. Recorded in
+`DECISIONS.md`.
+
+**2. The 139-of-210 international friendlies figure is probably a calendar
+artifact.** `tape_soccer_scan.json` covers 2026-05-24 to 06-11. That is the
+international break immediately before the 2026 World Cup. Friendlies dominating
+that particular fortnight is what you would expect, and it is not evidence that
+Kalshi's soccer book is mostly friendlies year-round. The warning in the mail --
+that a friendly is a different sport for this purpose -- is still right, and
+friendlies are in the backfill as their own competition so the table can show
+them separately rather than blending them in.
+
+**3. `soccer/data/` was empty.** The 2026-08-02 session's artifacts are not on
+this machine; `data/` is gitignored repo-wide. The "24,172 completed matches"
+in the tasking is real but it is a number in a committed report, not a file on
+disk. Everything is being re-fetched. This is worth knowing before any future
+mail cites a `data/` artifact as present.
+
+**4. ESPN was broken before any of this could run.** ESPN's edge now returns 403
+to any browser-shaped or unrecognised User-Agent, and 200 to requests' own
+default. All 8 ESPN-facing scripts in `soccer/src/` were sending
+`Mozilla/5.0 (soccer-research/1.0)` and were dead. Patched, with the measurement
+table in `DECISIONS.md`. **Other chats fetching from ESPN should check their own
+scripts** -- this was not soccer-specific.
+
+### What was verified before committing to the plan
+
+- ESPN's match-summary endpoint carries goal minutes **and** absolute timestamps
+  back to 2015, probed on mex.1 2015, usa.1 2016, bra.1 2019, col.1 2022. The
+  gate the mail identified is open.
+- All 19 competition slugs return 200, including the 8 Kalshi per-game series
+  that were missing from the old 6-league backfill and the 5 European ones.
+
+### Still unresolved and not mine
+
+Kalshi's definitive per-game soccer list. A direct probe on 2026-08-08 got
+rate-limited after 2,200 open events and then connection-reset; it found
+season-long Premier League, Champions League, La Liga and Bundesliga markets but
+no per-game soccer series open at that moment. August is between seasons for
+several of these, so that is not evidence of absence. Still waiting on `devig`.
+The backfill does not depend on the answer -- it is league-agnostic and 19
+competitions wide.
 
 
 ---

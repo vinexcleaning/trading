@@ -3720,3 +3720,75 @@ scheduler. `mlb`, please confirm what the admin install actually buys.
 The two Kalshi recorders **are** on the laptop, are genuinely unwatched, and one
 died silently again today. Nothing above changes that. The desktop watchdog
 cannot see them and never will — `coordinator/COORDINATOR.md` §3b is why.
+
+---
+
+## soccer, 2026-08-08 — a new chat, and ESPN was broken for everybody
+
+The `soccer` folder now has an owner (chat slug `soccer`, mailbox message 001).
+It had no `README.md`, no `HANDOFF.md` and no `DECISIONS.md`; all three exist
+now, and `mlb-paper/tests/test_paper_only.py` is copied into `soccer/tests/`
+and passing.
+
+### ⚠ ESPN 403s browser-shaped User-Agents — check your own scripts
+
+This is the part other sessions need. Measured 2026-08-08 on the same URL
+within one minute:
+
+| User-Agent sent | Result |
+|---|---|
+| `Mozilla/5.0 (soccer-research/1.0)` | **403** |
+| `Mozilla/5.0 (Windows NT 10.0; …) Chrome/126` | **403** |
+| `Mozilla/5.0` | **403** |
+| `soccer-research/1.0` | **403** |
+| `curl/8.4.0` | **200** |
+| requests' own default (no override) | **200** |
+
+Pretending to be a browser is what gets blocked. All 8 ESPN-facing scripts in
+`soccer/src/` were sending a `Mozilla/…` string and were **completely dead** —
+not degraded, 403 on every call. They now send no override. **If your project
+fetches from `site.api.espn.com`, check it.** `mlb/` and `market-selection/`
+both do.
+
+### ⚠ `soccer/data/` was empty on the desktop
+
+The 2026-08-02 session's artifacts — the ESPN back-catalogue, the joined
+dataset, the in-play events — are **not on this machine**. `data/` is
+gitignored repo-wide, the committed `soccer/reports/*` survived, and the data
+behind them did not. Nothing was lost that cannot be re-fetched, and it is
+being re-fetched. Worth knowing before anyone cites a number from
+`soccer/reports/` as if the file behind it is on disk.
+
+### What is running
+
+`src/backfill_espn.py` (13,414 week-windows, 19 competitions, 2015 → today,
+≈4 h), chained into `src/fetch_goal_minutes.py`. Both resumable, both
+read-only, both unkeyed. **Deliberately not added to either runner registry** —
+they are one-off collection jobs, not standing background tests.
+
+### The state of the work
+
+**Paused on the user**, per `CLAUDE.md` §2 — the comeback question is a new
+idea, the plan is written, and it is waiting for a go. Data collection was
+started anyway because every version of the question needs the same input;
+that call is logged in `soccer/DECISIONS.md`.
+
+### One correction to the tasking
+
+Mailbox 001 says a comeback table keyed on the displayed match minute is
+fiction, citing the measured 17.5-minute gap between the displayed minute and
+real elapsed time (362 events, `soccer/reports/inplay_analysis.txt`). **That
+measurement is right and applies to price joins, not to this table.** "1-0 up
+in the 80th minute" is a statement about the clock on the screen; converting it
+to elapsed time would be the error. Comeback rate → displayed minute. Kalshi
+price at that moment → absolute timestamp. Both are stored on every event so
+neither column can borrow the other's key.
+
+### Not mine, still open
+
+Kalshi's definitive per-game soccer series list, asked of `devig`. A direct
+probe on 2026-08-08 was rate-limited after 2,200 open events and then
+connection-reset; it found season-long Premier League, Champions League, La Liga
+and Bundesliga markets and **no per-game soccer series open at that moment**.
+August is between seasons for several of these, so that is not evidence of
+absence. The backfill is league-agnostic and does not wait on it.

@@ -22,7 +22,12 @@ HERE = os.path.dirname(__file__)
 ROOT = os.path.join(HERE, "..")
 DATA, REP = os.path.join(ROOT, "data"), os.path.join(ROOT, "reports")
 SITE = "https://site.api.espn.com/apis/site/v2/sports/soccer"
-UA = {"User-Agent": "Mozilla/5.0 (soccer-research/1.0)"}
+# ESPN (Akamai) began returning 403 to any Mozilla/... or unknown custom
+# User-Agent on 2026-08-08. Measured: "Mozilla/5.0 (soccer-research/1.0)"
+# -> 403, "soccer-research/1.0" -> 403, curl/8.4.0 -> 200, requests' own
+# default -> 200. Sending no override is what works; do not "fix" this by
+# adding a browser string back.
+UA = {}
 LO, HI = "2026-05-24", "2026-06-12"
 
 
