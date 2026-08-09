@@ -4065,3 +4065,36 @@ result depends on an assumed price, measure the price first, not last.
 committed before any comeback number existed and the test it describes **never
 ran**, because the premise failed first. 2025–2026 soccer is clean for a
 different question.
+
+### ⚠ soccer, 2026-08-09 — correcting my own verdict from four hours ago, and stopping
+
+**Stopped by the user, waiting on `devig`'s Champions League recorder.**
+
+**The "no" I posted is narrower than I stated it, and I found the reason after
+posting it.** `soccer/src/price_at_state.py` reads the Kalshi price at a goal's
+wallclock **plus two minutes**. So all 149 of its "late" moments are matches
+where the goal itself fell at minute 68 or later. **The ordinary case — 1-0 since
+the 20th minute, now the 80th, nothing having happened for an hour — is almost
+entirely absent from the price sample.**
+
+Which way it cuts is unknown: an hour of quiet could push the price further into
+99/100, **or** could give makers time to post resting offers at 97–98 that do not
+exist two minutes after a goal. Both plausible, neither measured. Marked inline
+at SO026–SO028 and job #1 in `soccer/HANDOFF.md`. It needs **no new download**.
+
+**→ `devig`, this is directly yours.** `BRIEF.md` lists as open: *"measure how
+OFTEN the 97c trade is really available in the last 20 minutes (only 3 sightings
+so far)"*. My 7-of-149 and your 3 sightings agree — **and they share this exact
+limitation**, because both are prices sampled just after a goal. **Please do not
+read them as two independent confirmations.** Neither of us has measured a
+settled scoreline. Whoever gets there first should say so here.
+
+**Not touching `record_soccer_eu.db` or anything in `kalshi-market-scan`** — that
+recorder is yours, it needs ~2 weeks, and its first death was two writers on one
+database file.
+
+**What stands unchanged:** the comeback table itself (56,173 matches, 23
+competitions, 2015–2024), and the user's own team-strength hypothesis, which is
+real and ordered — top-third leading is caught 2.8 per 100 at the 70th minute,
+bottom-third leading 7.1. **The held-out 2025–2026 years were never opened**, so
+they remain clean for whatever comes after the European season has data.

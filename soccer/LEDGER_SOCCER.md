@@ -84,7 +84,30 @@ these numbers existed — check the git log, and if it was not, disregard it.
 | **SO027** | At the price actually charged, **every state loses money.** | `reports/price_vs_rate.txt` §2 | 29 state-bands with ≥5 priced moments | **29 of 29 lose.** e.g. 70–79 min 1-0: pay 99c, survives 0.93 per 100, actually 2.83. 10–19 min 1-0: pay 86c, survives 12.68, actually 15.48 | **SUGGESTIVE, directional only** — the rates are 2015–2024 all competitions and the prices are a few hundred moments from a 69-day window. Different populations, deliberately not averaged |
 | **SO028** | **The mechanism: the cheap price and the safe scoreline never co-occur.** | `reports/price_vs_rate.txt` §3 | the 7 late moments at ≤97c | 4 are **2-1**, 2 are **3-2**, 1 is 1-0 — i.e. the scorelines with the *highest* comeback rates (3-2 at the 80th is 2.8 per 100 against 1-0's 1.7). Where the rate is genuinely 1.7, the price is 99 or there is no market | **SETTLED as a mechanism** — the market charges less exactly where the risk is greater, which is what a working market does. n=7 is small; the 79.2%-no-market figure is what carries the conclusion |
 
-**Verdict on the idea: NO.** Not "too small to tell" and not "needs more data" —
+### ⚠ SO026–SO028 are narrower than first reported, and this was found after reporting
+
+**Every price in `price_at_state.py` is read at a goal's wallclock plus two
+minutes.** So all 149 "late" moments are matches where the goal itself happened
+at minute 68 or later. **The ordinary case the idea is about — 1-0 since the 20th
+minute, now the 80th, nothing having happened for an hour — is almost entirely
+absent from the price sample.**
+
+A book two minutes after a late goal is not the same book as one that has sat on
+a scoreline for an hour, and which way it cuts is **not known**: an hour of quiet
+could settle the price further into 99/100, or could give market makers time to
+post resting offers at 97–98 that do not exist right after a goal. Both are
+plausible. Neither was measured.
+
+**The honest form of SO026 is therefore:** *right after a late goal, the
+97-cent trade is available 7 times in 149. In a settled late scoreline,
+unmeasured.* SO027 and SO028 inherit the same restriction.
+
+Fixing it needs no new download — the same 69-day Kalshi candle window answers
+it by sampling a fixed displayed minute regardless of when the last goal fell.
+It is job #1 in `HANDOFF.md`.
+
+**Verdict on the idea: NO for the states measured, and UNMEASURED for the
+states the idea is actually about.** Not "too small to tell" and not "needs more data" —
 the assumed price is absent in the states that matter. **The pre-registered test
 was never run**, because its premise did not survive contact with the order book.
 `PREREGISTRATION_COMEBACK.md` stands unused and the held-out years 2025–2026
