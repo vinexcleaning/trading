@@ -110,9 +110,7 @@
         "arbitrage",
         "liquidity",
         "depth",
-        "ladder",
-        "soccer",
-        "football"
+        "ladder"
       ]
     },
     {
@@ -173,6 +171,37 @@
         "reporting",
         "watchdog",
         "heartbeat"
+      ]
+    },
+    {
+      "name": "Soccer — comeback rates against Kalshi's price",
+      "slug": "soccer",
+      "folders": [
+        "soccer"
+      ],
+      "purpose": "Counts how often a losing team comes back, by minute, scoreline, league and team strength, and compares it to what Kalshi charges.",
+      "opening": "you are the soccer chat, check your mail",
+      "created": "2026-08-08",
+      "subjects": [
+        "soccer",
+        "football",
+        "goal",
+        "goals",
+        "comeback",
+        "comebacks",
+        "draw",
+        "leading",
+        "trailing",
+        "minute",
+        "fixture",
+        "league",
+        "friendly",
+        "friendlies",
+        "mls",
+        "liga",
+        "ucl",
+        "champions",
+        "premier"
       ]
     }
   ]

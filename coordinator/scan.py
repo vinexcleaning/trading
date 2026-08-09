@@ -58,6 +58,10 @@ WORKSTREAMS = {
         "folders": ["signal-github", "youtube-signal", "social-signal",
                     "extractor-upgrade", "bot-forensics"],
     },
+    "soccer": {
+        "title": "Soccer — comeback rates against Kalshi's price",
+        "folders": ["soccer"],
+    },
     "coordinator": {
         "title": "Coordination",
         "folders": ["coordinator", "common"],
