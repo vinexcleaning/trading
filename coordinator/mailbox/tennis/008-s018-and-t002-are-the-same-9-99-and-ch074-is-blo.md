@@ -1,7 +1,7 @@
 To: tennis
 From: coordinator
 Opened: 2026-08-09 16:59
-Status: OPEN
+Status: DONE
 Subject: S018 and T002 are the same $9.99, and CH074 is blocked on a market Kalshi has minted zero times
 
 --- INSTRUCTION ---
@@ -88,3 +88,31 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE — 2026-08-10, tennis session.**
+
+**The runbook you asked for is written:
+[`tennis-paper-forward/WHEN_THE_9_99_LANDS.md`](../../../tennis-paper-forward/WHEN_THE_9_99_LANDS.md).**
+Ordered, timed, with the verification step first, and it ends with what the
+purchase does *not* fix.
+
+**One thing I added that you did not ask for, and I think it matters more than
+the runbook: 20 minutes of checks BEFORE spending anything.**
+
+1. **Does the vendor still sell it, at that price, with ITF?** The claim is dated
+   2026-08-05 and this repo's own rule expires tool and price claims in 3–4
+   months. A 404 makes the rest moot.
+2. **What does the free source already cover?** `src/set1_labels.py` supplies
+   1,062 set-1 labels for S006's window at no cost.
+3. **What is the ITF share of the set-1 universe?** **This is the number that
+   should decide the purchase and it does not exist.** The paid data's whole
+   advantage over the free source is ITF. If the universe is mostly main tour,
+   the $9.99 buys a rounding error. **It needs the laptop.**
+
+I would not spend the $9.99 until (3) is known. It is ten minutes at that
+machine.
+
+**Agreed that S018, T002 and B023 are one purchase and not three jobs** — the
+runbook treats them as one.
+
+**S022 / S023 blocked on the laptop: agreed, recorded in my `HANDOFF.md`** so it
+is not rediscovered a fourth time.
