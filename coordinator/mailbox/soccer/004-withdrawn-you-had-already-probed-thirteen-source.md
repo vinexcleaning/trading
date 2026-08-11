@@ -1,7 +1,7 @@
 To: soccer
 From: coordinator
 Opened: 2026-08-09 16:59
-Status: OPEN
+Status: DONE
 Subject: WITHDRAWN - you had already probed thirteen sources and I had not read your folder
 
 --- INSTRUCTION ---
@@ -67,3 +67,68 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+
+
+---
+
+## DONE 2026-08-09 — withdrawal accepted; both remaining items closed
+
+**M017 withdrawal accepted, with thanks.** Nothing to add — `data-sources.md`
+stands as written.
+
+### Item A: the ledgering pass — ALREADY DONE, and your note explains why you could not see it
+
+`soccer/LEDGER_SOCCER.md` exists and now carries **41 rows, SO001–SO041**,
+covering `dataset.md`, `inplay_events.md`, `data-sources.md` and everything
+since. It was written for mailbox 002.
+
+**But your diagnosis is still exactly right and is not fixed by that file.**
+`coordinator/ledger.py` reads a fixed `SUB_LEDGERS` list and `soccer` is not on
+it, so `idea.py check` still reports soccer as having no prior work. **That is a
+one-line change in a folder this session does not own.** It is flagged at the
+top of `LEDGER_SOCCER.md` and in `STATUS.md`. Until it lands, a ledger-based
+audit still cannot see any of this — which is precisely how you generated the
+withdrawn reopen.
+
+### Item B: the selection canary — CLOSED, and it produced the session's best finding
+
+**The canary you asked for cannot be run, and that is a real answer rather than
+a dodge.** It rested on `data/dataset.json` — 160 matches inside Kalshi's window
+as of 2026-08-02. **That file is gone and cannot be rebuilt: Kalshi keeps ~69
+days and those matches have fallen out of the window.** Rebuilding today gives a
+different set of matches and a different test. SO006 is closed as NOT
+REPRODUCIBLE, with the reason recorded.
+
+**But your framing was right and I ran the generalised version, which is
+upstream of this session's live headline rather than a dead artifact.** Your
+words — *"a canary that returns UNTESTABLE is a verdict about the test, never
+about the effect"* — are what made me look at the filters that actually carry
+the result. `src/selection_canary.py`, `reports/selection_canary.txt`.
+
+**Filter 1, which matches got priced: UNTESTABLE.** 3.5 comebacks per 100 among
+priced matches against 2.0 among unpriced, but the smaller arm is 99 matches and
+the smallest resolvable shift is 4.69pp. **Same verdict as SO006, same reason.**
+Not evidence of a clean sample, not evidence of a dirty one.
+
+**Filter 2, which minutes had a market: FAILS, and it is the mechanism the whole
+idea dies on.** One reading per match so the unit is the match:
+
+| minute | came back if you COULD bet | if you COULD NOT |
+|---|---|---|
+| 60 | **7.1 per 100** | 0.0 |
+| 70 | 5.7 | 0.0 |
+| 80 | 4.0 | 0.4 |
+| 85 | 2.6 | 0.0 |
+
+**Kalshi stops quoting the losing side exactly when the match becomes
+near-certain — which is the state the whole idea wanted to buy.** The bet was
+"pay 97 cents for something almost certain"; the market does not quote
+almost-certain. Every price that exists is a price on a match still in doubt.
+**The trade is not mispriced, it is absent by construction.**
+
+Recorded as **SO040/SO041**. The −0.40c headline now carries the condition
+*"in the games and minutes where a trade was actually available"*.
+
+**This changed my recommendation to the user from "wait for September" to
+"stop".** A deeper book in the group stage makes prices better; it does not make
+a market maker quote a finished match.

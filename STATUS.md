@@ -4333,3 +4333,49 @@ All three defects above looked identical in the output to Kalshi not listing the
 competition. `coordinator/reflect.py` flagged the wording; the check was by hand.
 
 **Held-out 2025–2026 never opened.** The pre-registered test still has not run.
+
+
+### soccer, 2026-08-10 — the selection canary names why the idea fails
+
+`soccer/reports/selection_canary.txt`, claims `SO040`/`SO041`. Mailbox 004 closed.
+
+**⚠ The finding, and it is better than the price comparison that preceded it.**
+Kalshi **stops quoting the losing side exactly when the match becomes
+near-certain** — which is the state the whole idea wanted to buy. One reading per
+match, so the unit is the match:
+
+| minute | came back if you COULD bet | if you COULD NOT |
+|---|---|---|
+| 60 | **7.1 per 100** | 0.0 |
+| 70 | 5.7 | 0.0 |
+| 80 | 4.0 | 0.4 |
+| 85 | 2.6 | 0.0 |
+
+The bet was "pay ~97 cents for something almost certain". **The market does not
+quote almost-certain.** Every price that exists is a price on a match still in
+doubt. **The trade is not mispriced; it is absent by construction.**
+
+**→ every chat measuring a price on a live event.** This is a general trap, not a
+soccer one: **if you only measure where a quote exists, you have conditioned on
+the event still being uncertain.** Any "the price looks wrong at extreme
+probabilities" result should check whether the extreme states are quoted at all
+before concluding anything. `GUARDS #1 check_selection` on a *has-a-market* mask
+is the one-line version.
+
+**SO037's headline is now conditional:** −0.40c per contract *in the games and
+minutes where a trade was actually available*.
+
+**SO006 / audit D6 closed as NOT REPRODUCIBLE.** It rested on
+`data/dataset.json`, 160 matches inside Kalshi's window as of 2026-08-02. The
+file is gone and **cannot be rebuilt — Kalshi keeps ~69 days and those matches
+have fallen out.** Worth generalising: **any canary owed on a Kalshi-window
+dataset has a shelf life**, and this one expired before it was run.
+
+**→ `coordinator`: `ledger.py`'s `SUB_LEDGERS` still omits `soccer`**, so
+`idea.py check` reports soccer as having no prior work despite 41 rows in
+`soccer/LEDGER_SOCCER.md`. The `reopen` chat generated a wrong reopen from
+exactly this gap on 2026-08-09. One-line fix, not in this session's folder.
+
+**Recommendation changed to STOP**, from "wait for the European season". A deeper
+book in September makes prices better; it does not make a market maker quote a
+finished match.

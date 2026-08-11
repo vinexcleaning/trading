@@ -1,8 +1,8 @@
 # HANDOFF.md — soccer
 
 <!-- COORDINATOR-STATE
-doing: nothing - mailbox 003 closed 2026-08-09, waiting on the user's call
-left: the user decides the four questions in REFEREE_2026-08-09.md; the one that matters is whether to re-run once the Champions League GROUP STAGE gives a deep book in September
+doing: nothing - mailboxes 003 and 004 closed, waiting on the user's call
+left: the user decides whether to stop. My recommendation is now STOP, changed after the selection canary showed the market does not quote a finished match - which September will not change
 needs: no
 -->
 
@@ -24,7 +24,21 @@ bidding on the losing side **93 times in 100 at the 15th minute and 16 times in
 late-match fact reported as a general one.
 
 **What it did not change:** there is still no edge. Competition-matched, middle
-**−0.40c per contract**, stable across every sample bar tried.
+**−0.40c per contract**, stable across every sample bar tried — and that number
+is **conditional on a trade having been available**, see below.
+
+### ⚠ READ THIS BEFORE RE-RUNNING ANYTHING IN SEPTEMBER
+
+`reports/selection_canary.txt` (SO041). **Kalshi stops quoting the losing side
+exactly when the match becomes near-certain — the state the idea wanted to buy.**
+One reading per match: at the 60th minute the team behind came back **7.1 times
+in 100 where you could bet and 0.0 times where you could not**; 5.7 vs 0.0 at the
+70th, 4.0 vs 0.4 at the 80th, 2.6 vs 0.0 at the 85th.
+
+**The trade is not mispriced. It is absent by construction, and a deeper book in
+September will not create it** — this is about how market makers behave, not
+about which league. If you restart this work, that is the thing to disprove
+first, and it is cheap to check on any new data.
 
 ### The failure mode this folder should be remembered for
 
