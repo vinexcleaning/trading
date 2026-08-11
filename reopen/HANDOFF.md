@@ -1,9 +1,9 @@
 # HANDOFF — reopen
 
 <!-- COORDINATOR-STATE
-doing: nothing running - all thirteen reopens have been worked as far as this chat can take them without writing in another folder
-left: five actionable jobs sit with devig and the user; three are blocked (two on the laptop, one on a Kalshi series with no markets)
-needs: yes - two things only the user can do: go to the laptop and check record_depth.py is running, and decide on the $9.99 livetennisapi history purchase which answers three tennis questions at once
+doing: nothing running - the replies are in, four of my calls were overturned and corrected, and 219 newly-readable claims are named as unaudited
+left: audit the 219 claims ledger.py can now see, starting with kalshi-inplay-bot's 95 (the live-money bot's own audit)
+needs: yes - three for the user: check record_depth.py on the laptop, decide the $9.99 livetennisapi history, and say yes or no to tennis widening its running pre-registered test so the set-score comparison can run
 -->
 
 **As of 2026-08-08.** Written by the session that took mailbox message 001.
@@ -140,3 +140,57 @@ remaining folders, and it is an argument against this chat's own output.
 one that grew — M025 — grew into *"the absence claim is false"*, not into
 *"there is money here"*. **No correction in this repo has yet revealed a larger
 edge, and that now includes this chat's corrections to itself.**
+
+## 2026-08-09, the replies — four of my calls were wrong
+
+`devig`, `tennis` and `soccer` all answered. Full detail at the foot of
+[REOPENED.md](REOPENED.md).
+
+**Overturned, and all four are mine:**
+
+1. **BH011 — I hardened a retracted claim.** I listed it "leave alone" quoting
+   the vig-bound argument, which `devig` had retracted on 2026-08-07 before my
+   message. The overround does not bound the edge. **It also voids my own M025
+   argument**, which used the same premise — M025 survives only as *"the absence
+   claim is false"*.
+2. **C022 — withdrawn.** `crypto/RESULTS_MAKER_VIABILITY.md` (08-08) closed it
+   on evidence the day before I called it a reopen: 17,325 fills, 1,161 events,
+   23 days, net −0.853¢, interval excludes zero. I read the 08-07 file and did
+   not open the 08-08 one.
+3. **CH074 — my "zero markets" was one query.** `KXATPSETWINNER` has 112 open
+   and 200+ settled; `KXWTASETWINNER` 104 and 200+. It is runnable, and `tennis`
+   can also do it forward. **An absence claim from one source, in this chat.**
+4. **S021 — my "count the recorder" ask conflated two recorders.** `tennis`
+   counted 362 and correctly refused to apply it; different market, window and
+   recorder. The `K015 = W011` trap, and they caught it.
+
+**Paid:** C023 (row rewritten UNDERPOWERED, my warning carried verbatim) ·
+S018 (refuted, free per-season label source) · BH014 (the re-measurement I
+under-valued **withdrew BH013**) · M027 and all four sentences.
+
+**Error rate on worked items: 4 wrong of 8. Hold that against everything else
+here.**
+
+## The denominator moved
+
+`coordinator` fixed `ledger.py` (`aaf5e06`) — *"read 342 claims and there were
+596, idea.py was under-reading by 43%"*. It now reads six files: **532 distinct
+claims against the 313 audited.**
+
+The coverage check **failed loudly rather than reporting a stale count**. The
+219 unaudited are now listed in `classify_closures.py` with a reason each:
+
+| file | rows | note |
+|---|---|---|
+| `set1_overshoot/HYPOTHESIS_LEDGER.md` | 97 | expect overlap with S001–S025 |
+| `kalshi-inplay-bot/audit/LEDGER.md` | 95 | **highest value — the live-money bot's own audit** |
+| `crypto/HYPOTHESIS_LEDGER.md` | 27 | expect overlap with C001–C027 |
+
+**That is the next pass and it is the whole job now.**
+
+Also reported to `coordinator`: the widened parse reads five filename cells from
+a prose table as claim ids, so 596/538 is overstated by five; and
+`soccer/LEDGER_SOCCER.md` (which `soccer` created from my message) is still not
+on the `SUB_LEDGERS` list, so `idea.py` remains blind to soccer.
+
+Mail: `devig` **013**, `tennis` **009**, `coordinator` **002**.

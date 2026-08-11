@@ -111,11 +111,16 @@ C: dict[str, tuple[str, str]] = {
     "C020": (E, ""),
     "C021": (E, "path/streak: every CI that excludes zero is negative, 250 "
              "events, entry at ask and exit at bid"),
-    "C022": ("FLOOR", "LEDGER says SETTLED (null). The project's own final "
-             "document (MM_RESULTS_MAKER, 2026-08-07) says the opposite: "
-             "adverse selection ~0.5c against a ~1.0c gross margin, 'not "
-             "settled against market making, it is unresolved'. Began as a BUG "
-             "closure too -- the blocker was M001, which was a parse error."),
+    # WITHDRAWN 2026-08-09. crypto/RESULTS_MAKER_VIABILITY.md (2026-08-08)
+    # closed this on evidence a day before I called it a reopen, and I did not
+    # open it -- 17,325 fills, 1,161 events, 23 days of replayed KXBTCD book,
+    # net -0.853c/contract, CI [-1.632, -0.185] clustered on days, excludes
+    # zero. Capture alone is -1.226c, so it fails one step earlier than my
+    # "0.5c against 1.0c" framing assumed: there is no spread being captured.
+    # Same error as M017 -- I stopped one document short.
+    "C022": (E, "closed on evidence 2026-08-08: 17,325 fills, 1,161 events, "
+             "23 days, net -0.853c/contract, interval excludes zero. My reopen "
+             "read the 08-07 file and missed the 08-08 one. WITHDRAWN."),
     "C023": ("FLOOR", "LEDGER's effect column says 'negative'. The artifact "
              "says TIE in 40 of 44 price cells, with ranges +/-5 to 15c against "
              "a 1-2c cost bar, and BTC at 5c is +2.93c [-0.01, +6.13]."),
@@ -271,7 +276,20 @@ C: dict[str, tuple[str, str]] = {
               "RETRIEVABLE KALSHI EVENTS (152 against a 481 bar). That is a "
               "statement about Kalshi's tape, not about soccer, and free "
               "historical soccer data goes back a decade."),
-    "BH011": (E, "structural: a 2.75c cost bar against a 2.01pp total vig"),
+    # CORRECTED 2026-08-09 by the devig chat. My original note repeated the
+    # vig-bound argument -- "the cost bar is larger than the entire vig it
+    # removes" -- which devig had RETRACTED on 2026-08-07, before I wrote it.
+    # The overround is what you STRIP to estimate fair value; it does not bound
+    # the edge. If Kalshi's ask sat 8c below de-vigged fair, the edge would be
+    # 8c on a 2pp-overround market. An audit that hardens a retracted claim is
+    # the one failure this exercise cannot afford, and I did it.
+    # The CONCLUSION survives on a measurement, which is what to quote:
+    # 1,460 paired observations on 30 games, largest venue disagreement
+    # anywhere 2.77c against a 2.75c cost.
+    "BH011": (E, "closed on a measurement -- 1,460 paired observations on 30 "
+              "games, largest venue disagreement 2.77c against a 2.75c cost. "
+              "NOT on the vig-bound argument, which devig retracted 2026-08-07 "
+              "and which this audit wrongly repeated."),
     "BH012": (N, "time-field fact"), "BH013": (N, "correction"),
     "BH014": ("BUG", "the recorder probed the first 60 tickers in Kalshi's "
               "undocumented listing order while the family listed 85-104. "
@@ -367,6 +385,46 @@ C: dict[str, tuple[str, str]] = {
 
 REOPEN_CATS = {"BUG", "DATA", "NARROW", "FLOOR"}
 
+# ---------------------------------------------------------------------------
+# DEFERRED -- claims this audit has NOT read, named out loud.
+#
+# On 2026-08-09 the coordinator fixed `ledger.py` (commit aaf5e06) after this
+# chat reported it was reading 3 of the 5 files it listed. It now reads SIX and
+# returns 596 rows / 538 distinct claims, against the 342 / 313 the first pass
+# audited. `idea.py` -- the tool that exists so nobody says "we tried that"
+# from memory -- had been blind to 43% of the archive.
+#
+# That is good news, and it leaves 225 claims unaudited. They are listed here
+# rather than quietly dropped: the coverage check still FAILS on a claim that
+# is neither classified nor from a file named below, so the only way to leave
+# something out is to write down that you did and why.
+# Parser noise, not claims. The widened parse picks up the FIRST COLUMN of two
+# prose tables in LEDGER.md as if it were a claim id -- the M011 "eight places"
+# citation table at line 494, whose first column is a filename, and the grouped
+# retraction row that carries CH001-CH020 by reference (all twenty of which are
+# classified individually). Reported to `coordinator`: it means the new
+# 596/538 headline is overstated by five.
+NOISE: dict[str, str] = {
+    "where": "header cell of the M011 citation table, LEDGER.md:494",
+    "PREREGISTRATION.": "filename cell in that table",
+    "PREREGISTRATION_": "filename cell in that table",
+    "RESULTS_CROSSVEN": "filename cell in that table",
+    "PRIOR_ART.md, SH": "filename cell in that table",
+    "CH001–CH020": "a grouping row; all twenty are classified individually",
+}
+
+DEFERRED: dict[str, str] = {
+    "set1_overshoot/HYPOTHESIS_LEDGER.md":
+        "the full 97-row set-1 hypothesis grid. Newly readable 2026-08-09. "
+        "Expect heavy overlap with S001-S025, which are audited.",
+    "kalshi-inplay-bot/audit/LEDGER.md":
+        "122 rows, and the highest-value of the three -- it is the live-money "
+        "bot's own audit. The first pass named this file as one the parser did "
+        "not read; it is now readable and still unaudited.",
+    "crypto/HYPOTHESIS_LEDGER.md":
+        "27 rows. Expect heavy overlap with C001-C027, which are audited.",
+}
+
 # For every claim NOT closed on evidence: what to actually do about it.
 #
 #   RELABEL  the measurement is fine or unfixable; the ROW is wrong. No test is
@@ -384,11 +442,6 @@ ACTION: dict[str, tuple[str, str, str, str]] = {
              "B021 already made the call that refutes it -- nothing needs "
              "running, but the shortlist decision does need remaking.",
              "an afternoon"),
-    "C022": ("REOPEN", "devig",
-             "Pull more days of the KXBTC15M/KXBTCD trade tape (73 days are "
-             "retrievable, 8 were used) and re-run the maker mark-to-settlement "
-             "with day-clustering. The project says it needs weeks of days.",
-             "one paced pull plus one re-run"),
     "S023": ("REOPEN", "tennis",
              "Re-run p2_fade.py on the outcome-independent dedupe. Half of 'no "
              "edge in either direction' currently rests on a void event set.",
@@ -410,15 +463,20 @@ ACTION: dict[str, tuple[str, str, str, str]] = {
              "re-powers B023 at the same time.",
              "$9.99 and one rebuild"),
     "S018": ("REOPEN", "tennis",
-             "Two sources were probed for match labels. The signal chat's "
-             "extractors have since found goal-time data nobody thought was "
-             "free. Probe a third and fourth.",
-             "a few hours"),
-    "M017": ("REOPEN", "soccer",
-             "football-data.co.uk serves the wrong country for Colombia, Peru, "
-             "Korea and Chile. That kills one source, not the leagues. Probe "
-             "others before those leagues stay out of the comeback table.",
-             "a few hours"),
+             "✅ PAID 2026-08-09. tennis-data.co.uk publishes one workbook PER "
+             "SEASON carrying games won by each player in every set -- free, "
+             "reaching back years, so the +/-7-day objection that closed this "
+             "never applied. 1,062 labels on S006's own window against the 479 "
+             "it used. REFUTED, not resolved: main tour only against a 73-87% "
+             "ITF pool, and it moves the smallest visible effect 9.9 -> 6.6 "
+             "against a 3.61 bar.",
+             "done -- the join and the ITF gap remain"),
+    "M017": ("RELABEL", "soccer",
+             "WITHDRAWN. soccer/data-sources.md had already probed thirteen "
+             "sources with content hashes, and the comeback table does not use "
+             "that website at all -- Colombia is one of its best-covered "
+             "competitions, 4,808 fixtures. My reopen was wrong twice over.",
+             "nothing"),
     "M025": ("REOPEN", "devig",
              "One book's free feed was one-sided, so props were CANCELLED as "
              "unanswerable. Check whether any other free feed publishes both "
@@ -429,10 +487,14 @@ ACTION: dict[str, tuple[str, str, str, str]] = {
              "than the 61 minutes of 2026-08-01 that closed it.",
              "one query over recorded books"),
     "CH074": ("REOPEN", "tennis",
-              "Run the residual test it proposed: P(2-0) + P(2-1) against "
-              "P(match) at executable prices. The idea was closed by an "
-              "argument and one example.",
-              "one analysis run"),
+              "⚠ MY 'blocked, zero markets' CALL WAS WRONG. I probed "
+              "KXATPTOTALSETS (genuinely empty) and generalised to the whole "
+              "idea -- an absence claim from one query, in an audit about "
+              "absence claims from too few sources. KXATPSETWINNER has 112 "
+              "open and 200+ settled; KXWTASETWINNER 104 and 200+. Runnable "
+              "historically AND forward on tennis's live recorder.",
+              "one analysis run; forward version needs the user's OK because "
+              "it widens a running pre-registered test"),
     "BH014": ("REOPEN", "devig",
               "State which earlier bot-hunt conclusions read the truncated "
               "60-ticker recorder output before it was fixed on 2026-08-06.",
@@ -498,13 +560,21 @@ def main() -> int:
     seen: set[str] = set()
     out = []
     missing = []
+    deferred: list[tuple[str, str]] = []
+    noise: list[str] = []
     for r in rows:
         rid = (r.get("_id") or "").strip()
         if rid in seen:
             continue
         seen.add(rid)
         if rid not in C:
-            missing.append(rid)
+            src = r.get("_file", "")
+            if rid in NOISE:
+                noise.append(rid)
+            elif src in DEFERRED:
+                deferred.append((rid, src))
+            else:
+                missing.append(rid)
             continue
         cat, note = C[rid]
         act, owner, settle, cost = ACTION.get(rid, ("", "", "", ""))
@@ -553,7 +623,14 @@ def main() -> int:
     print("files read:")
     for f in files:
         print("  ", f)
-    print(f"\ndistinct claims covered: {len(out)}  (coverage check PASSED)\n")
+    print(f"\ndistinct claims in the ledgers: "
+          f"{len(out) + len(deferred)}   (coverage check PASSED)")
+    print(f"  audited                      {len(out)}")
+    print(f"  DEFERRED, named not dropped  {len(deferred)}")
+    for f in DEFERRED:
+        n = sum(1 for _, s in deferred if s == f)
+        print(f"     {n:4d}  {f}")
+    print(f"  parser noise, not claims     {len(noise)}\n")
     order = [N, E, "FLOOR", "DATA", "NARROW", "BUG"]
     for k in order:
         print(f"  {counts.get(k, 0):4d}  {k}")

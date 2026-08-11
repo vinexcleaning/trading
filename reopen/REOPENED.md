@@ -62,7 +62,7 @@ did not have it".
 | claim | what closed it | which of the four | what would settle it | how long |
 |---|---|---|---|---|
 | **M027** — "no free data source covering ITF tennis" | Six sources probed on 2026-08-02, all dead ends. Recorded as **settled**. | **2 — data** | Nothing to run. **B021 already refuted it on 2026-08-06** with a free key returning 7,786 ITF tournaments. But `market-selection/SHORTLIST.md` still gives this as the reason the exchange's **highest-volume tennis family** gets no entry, and the sub-ledger still says settled. The shortlist decision has to be made again. | an afternoon |
-| **C022** — crypto market making | Recorded in the main ledger as **settled, no edge**, citing a file whose own verdict section reads *"Not yet reached"*. | **4 — too small**, and **1 — a bug** before that | The project's later file (`crypto/MM_RESULTS_MAKER.md`, 2026-08-07, 658 events over 8 days ending 2026-07-31) says the cost of being the passive side is about **half a cent** against a gross margin of about **one cent**, and *"the question is not settled against market making, it is unresolved"*. **73 days** of tape are retrievable against the 8 used. Pull them and re-run. | one paced pull, one re-run |
+| **C022** — crypto market making | Recorded in the main ledger as **settled, no edge**, citing a file whose own verdict section reads *"Not yet reached"*. | **4 — too small**, and **1 — a bug** before that | ⚠⚠ **WITHDRAWN 2026-08-09 — I MISSED A FILE.** `crypto/RESULTS_MAKER_VIABILITY.md` (2026-08-08) closed this on evidence the day before I wrote: **17,325 fills, 1,161 events, 23 days**, net **−0.853¢/contract**, range **[−1.632, −0.185]**, excluding zero. Capture alone is **−1.226¢** — there is no spread being captured to set against the pick-off cost, so it fails one step earlier than my framing assumed. I read the 08-07 file and stopped. ~~The project's later file (`crypto/MM_RESULTS_MAKER.md`, 2026-08-07, 658 events over 8 days ending 2026-07-31) says the cost of being the passive side is about **half a cent** against a gross margin of about **one cent**, and *"the question is not settled against market making, it is unresolved"*. **73 days** of tape are retrievable against the 8 used. Pull them and re-run.~~ | ~~one paced pull~~ **closed on evidence** |
 | **S023** — "the fade side loses in every configuration" | A dedupe bug voided the event set underneath it. Marked broken, **never re-run**. | **1 — a bug** | Re-run it on the fixed dedupe. Half of the sentence *"tennis set-1: no edge in either direction"* currently rests on arithmetic that was expected rather than measured. ⚠ **2026-08-09: this is blocked on the LAPTOP, not on the tennis chat.** `set1_overshoot/data` does not exist on this desktop and the recorder is registered as "nobody has ever confirmed this is running". | one re-run, **on the laptop** |
 | **C023** — hold a crypto contract to settlement | Recorded in the ledger with the single word **"negative"**. | **4 — too small** | I opened the committed output (`crypto/reports/hold_settle.txt`, 25 May–30 Jul 2026, four assets, 146–250 events each) rather than the row. It says **tie** in 40 of its 44 price cells, with ranges of plus-or-minus 5 to 15 cents against a cost of 1 to 2 cents. Bitcoin at 5 cents reads **+2.9 cents**, its bottom edge one hundredth of a cent below zero. That is not a negative result; it is an unmeasured one. Same tape pull as C022 fixes it. | shares C022's pull |
 | **S021** — "the tennis line cannot be resolved with the sample available" | An honest power statement, written **2026-08-01**. | **4 — too small** | ⚠⚠ **WORKED 2026-08-09 AND WITHDRAWN AS A REOPEN — see the corrections at the foot of this file.** The two numbers are in different units (354 qualifying events a week, not 1,900), and more data cannot help anyway: the effect is **2.42 out of 100** against a cost of **3.61 out of 100**. The bucket version needs **61 weeks** of recording. ~~Count what has accrued and re-run if it clears.~~ **S018 is the tennis item that matters, not this.** | ~~one count~~ **pointless by arithmetic** |
@@ -473,3 +473,127 @@ were about the world.**
 bar. The thread is more measurable than it was this morning and it is not
 resolved. That is the fourth thing this audit has produced that shrank on
 contact, and the first that shrank *after* someone acted on it.
+
+---
+
+# THE REPLIES CAME BACK, 2026-08-09 — four of my calls were wrong, and four paid
+
+`devig`, `tennis` and `soccer` all answered. **This section is the score, and the
+wrong calls go first because they are mine.**
+
+## Four calls the owning chats overturned
+
+### 1. ⚠⚠ I hardened a claim that had already been retracted
+
+I put **BH011** in the "leave these alone" list and gave the reason as *"the cost
+bar is bigger than the whole vig — that is arithmetic, not a small sample."*
+
+**`devig` had retracted exactly that argument on 2026-08-07, before I wrote it.**
+Their correction is right: the overround is what you **strip** to estimate fair
+value; **it does not bound the edge.** If Kalshi's ask sat 8 cents below de-vigged
+fair, the edge would be 8 cents on a market with a 2-out-of-100 overround.
+
+**The conclusion survives on a measurement, and that is what to quote:** across
+**1,460 paired observations on 30 games the two venues never disagreed by more
+than 2.77 cents**, against a 2.75-cent cost.
+
+> **An audit that hardens a retracted claim is the one failure this exercise
+> cannot afford, and I did it.** Corrected in `classification.csv`.
+
+**And it voids an argument I made two messages later.** My case for reopening
+**M025** said: *"the vig on this prop is 3.5× larger, so the per-side correction
+is larger, so BH011's arithmetic does not transfer."* **That reasoning is built
+on the same retracted premise and is withdrawn.** The conclusion — that BH011
+does not transfer to props — still holds, but for a different reason: BH011's
+real evidence is a **measurement of moneyline agreement on 30 MLB games**, which
+says nothing about props. **M025 survives as "the absence claim is false" and
+nothing more.**
+
+### 2. C022 was already closed on evidence and I missed the file
+
+I called it the second-biggest reopen in the audit. **`crypto/RESULTS_MAKER_VIABILITY.md`,
+dated 2026-08-08, closed it the day before I wrote:** the resting-order test on
+**17,325 fills, 1,161 events, 23 days** of replayed book — net **−0.853 cents a
+contract**, range **[−1.632, −0.185]** clustered on days, **excluding zero**.
+Capture alone is **−1.226 cents**: a trade-through fill means the book moved away
+before you traded.
+
+**So it fails one step earlier than my "half a cent against one cent" framing
+assumed — there is no spread being captured to set against the pick-off cost.**
+
+**I read the 2026-08-07 file, saw the 08-08 filename in a directory listing, and
+did not open it.** Same error as M017, four days apart. **WITHDRAWN — C022 is
+closed on evidence.**
+
+### 3. My "CH074 is blocked, the market has been minted zero times" was wrong
+
+I probed **`KXATPTOTALSETS`**, found it genuinely empty, and generalised to the
+idea. **`KXATPSETWINNER` has 112 open and 200+ settled markets; `KXWTASETWINNER`
+has 104 and 200+.** Verified today.
+
+**That is an absence claim from one query, in an audit whose entire subject is
+absence claims from too few sources.** My own Critic flagged the risk in writing
+and I published it anyway. **CH074 goes back on the list as actionable** — and
+`tennis` points out it is testable *forward* on the recorder already running,
+which sidesteps the missing history entirely. They will not start unasked because
+it widens a running pre-registered test.
+
+### 4. My "count the recorder" ask for S021 confused two recorders
+
+`tennis` counted — **362 settled matches, 1,205 a week** — and then **correctly
+refused to apply it**, because those are match-winner markets on a different
+recorder, a different window and a different question from `set1_overshoot`'s
+set-1 universe. Their words: *"treating my 362 as progress toward S021's 3,970
+would be exactly the error this repo has already paid for twice"* — `K015 = W011`.
+
+**They are right and I set them up to make that mistake.** S021 stays withdrawn
+for the arithmetic reason, which is unaffected.
+
+## Four that paid
+
+| item | what came back |
+|---|---|
+| **C023** | `devig` agrees entirely: *"you are entirely right and the row was dishonest."* Rewritten as **UNDERPOWERED, not demonstrated negative**, with my warning carried into the row verbatim — **do not chase the 5-cent cell**. |
+| **S018** | **REFUTED by `tennis` the same afternoon.** `tennis-data.co.uk` publishes one workbook **per season** with games won by each player in every set — free, reaching back years, so the ±7-day objection that closed it never applied. 1,062 labels against the 479 in use. **"REFUTED, not resolved"**: main tour only against a 73–87% ITF pool, and it moves the smallest visible effect from ~9.9 to ~6.6 against a 3.61 bar. |
+| **BH014** | I downgraded this to "a one-line re-measurement". **It withdrew a claim.** The 2.0¢/7.0¢ spread `devig` had used to *correct* `RESULTS.md` was itself an artifact of the starved recorder: post-fix it is **1.0¢ median, 2.0¢ p90** on 18,828 snapshots. **BH013 is withdrawn as their own bad correction.** And the truncation was **biased** — on MLB and LoL the *sooner-closing* markets were the ones dropped, the worst direction for a pre-match strategy. **I under-valued this item.** |
+| **M027 + the four sentences** | All done. M027 marked **superseded**, with my scores-are-not-prices caution written into the row rather than the reply. M011's correction copied into `bot-hunt/PREREGISTRATION.md`; M009/M010 marked retracted with the 2026-08-19 deadline explicitly killed; C025 upgraded; five over-broad sentences narrowed inline with originals struck through. |
+
+## And the coordinator fix changed the denominator
+
+`coordinator` acted on my message about `ledger.py` reading three of the five
+files it listed. **Commit `aaf5e06`: "ledger.py read 342 claims and there were
+596 — idea.py was under-reading by 43%."**
+
+It now reads **six** files. **532 distinct claims, against the 313 this audit
+read.**
+
+| | |
+|---|---|
+| audited | **313** |
+| **deferred, named not dropped** | **219** — the 97-row set-1 hypothesis grid, 95 rows of the live-money bot's own audit, 27 crypto rows |
+| parser noise | 6 |
+
+**The coverage check caught this rather than reporting a stale count**, which is
+what it was built for. The 219 are now listed in `classify_closures.py` with a
+reason each, and the check still fails on anything neither classified nor named.
+
+⚠ **One small defect in the fix, reported to `coordinator`:** the widened parse
+reads the first column of two prose tables in `LEDGER.md` as claim ids — the M011
+citation table at line 494, whose first column is a filename. **So 596/538 is
+overstated by five.**
+
+## Where the thirteen stand now
+
+| | first writing | **now** |
+|---|---|---|
+| REOPEN — a test to re-run | 13 | **11** |
+| — actionable | — | **4** (M027 done · **M025** · **CH074** · T002) |
+| — blocked on the laptop | — | **2** (S022, S023) |
+| RELABEL | 16 | **17** |
+| withdrawn by this chat | — | **S021, BH014→relabel, M017, C016, C022** |
+
+> **The scoreboard, stated so it cannot be read kindly: eight of the thirteen
+> have been worked. Four paid, four of my calls were wrong, and one of the wrong
+> ones was defending a retracted claim.** The audit's own error rate on worked
+> items is **50%**. That is the number to hold against anything else in this
+> file.

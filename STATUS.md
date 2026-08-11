@@ -4379,3 +4379,82 @@ exactly this gap on 2026-08-09. One-line fix, not in this session's folder.
 **Recommendation changed to STOP**, from "wait for the European season". A deeper
 book in September makes prices better; it does not make a market maker quote a
 finished match.
+
+---
+
+## Desktop, 2026-08-09 — the replies to the reopen audit: four of its calls were wrong, four paid
+
+`devig`, `tennis` and `soccer` all answered. Full detail:
+[reopen/REOPENED.md](reopen/REOPENED.md). **The wrong calls are listed first
+because they belong to the auditing chat.**
+
+### ⚠⚠ The audit hardened a claim that had already been retracted
+
+`reopen` put **BH011** in its "leave alone" list and gave the reason as *"the
+cost bar is bigger than the whole vig — that is arithmetic."* **`devig` had
+retracted that argument on 2026-08-07, before the message was written.** The
+overround is what you **strip** to estimate fair value; **it does not bound the
+edge.**
+
+**The conclusion survives on a measurement and that is what to quote:** 1,460
+paired observations on 30 games, largest venue disagreement **2.77¢** against a
+**2.75¢** cost.
+
+**It also voids an argument `reopen` made two messages later.** Its case for
+M025 — *"the prop vig is 3.5× larger so there is more room"* — rests on the same
+retracted premise and is withdrawn. **M025 survives as one sentence: free
+two-sided prop prices exist, so "unanswerable with free data" was wrong.
+Nothing about edge.**
+
+### C022 is withdrawn — closed on evidence a day before it was reopened
+
+`crypto/RESULTS_MAKER_VIABILITY.md` (2026-08-08): the resting-order test on
+**17,325 fills, 1,161 events, 23 days** — net **−0.853¢/contract**, range
+**[−1.632, −0.185]**, excluding zero; capture alone **−1.226¢**, so there is no
+spread being captured to set against the pick-off cost. `reopen` read the 08-07
+file and did not open the 08-08 one.
+
+### CH074 is runnable — the "zero markets" finding was one query
+
+`KXATPTOTALSETS` is genuinely empty, but **`KXATPSETWINNER` has 112 open and
+200+ settled; `KXWTASETWINNER` 104 and 200+.** `tennis` can also run it forward
+on the live recorder. **It needs the user's yes, because it widens a running
+pre-registered test.**
+
+### What paid
+
+- **C023** — `devig`: *"you are entirely right and the row was dishonest."*
+  Rewritten **UNDERPOWERED, not demonstrated negative**, with the do-not-chase
+  warning on the 5¢ cell carried into the row verbatim.
+- **S018** — refuted by `tennis` the same afternoon (free per-season label
+  source). **"REFUTED, not resolved"** — 9.9 → 6.6 against a 3.61 bar.
+- **BH014** — the re-measurement `reopen` had *downgraded* to a one-liner
+  **withdrew BH013**: the 2.0¢/7.0¢ spread was itself the starved-recorder
+  artifact; post-fix **1.0¢ median / 2.0¢ p90** on 18,828 snapshots. And the
+  truncation was **biased** — on MLB and LoL the *sooner-closing* markets were
+  dropped.
+- **M027 and four sentences** — all done by `devig`, with the
+  scores-are-not-prices caution written into the row.
+
+### ⚠ The denominator moved: `ledger.py` was under-reading by 43%
+
+`coordinator` acted on `reopen`'s message. Commit `aaf5e06`: **"ledger.py read
+342 claims and there were 596."** It now reads six files — **532 distinct
+claims against the 313 audited.**
+
+`reopen`'s coverage check **failed loudly rather than reporting a stale count**.
+The 219 unaudited are named with a reason each; the largest is
+**`kalshi-inplay-bot/audit/LEDGER.md`, 95 rows — the live-money bot's own
+audit**, still unread by anyone.
+
+**Two small things still open in `coordinator/`:** the widened parse reads five
+filename cells from a prose table as claim ids (so 596/538 is overstated by
+five), and **`soccer/LEDGER_SOCCER.md` — which `soccer` created in response to
+this audit — is not on the `SUB_LEDGERS` list, so `idea.py` is still blind to
+soccer.**
+
+### The scoreboard
+
+**Eight of the thirteen worked. Four paid, four calls were wrong — an error rate
+of 50% on worked items.** That number belongs next to every other number this
+audit has produced.
