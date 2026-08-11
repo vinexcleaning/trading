@@ -4,12 +4,15 @@ Written 2026-08-02.
 
 ## Cheap and important
 
-1. **Close the selection canary.** It returned UNTESTABLE because the outcome
-   and the closing-line feature come from the same football-data row, leaving
-   no "without" arm. ESPN's final score is independent and present on all 160
-   matches. Re-run `check_selection` with the ESPN outcome. ~30 minutes.
-   **Until this is done we do not know whether the 33% of matches carrying a
-   closing line differ systematically from the 67% that do not.**
+1. ~~**Close the selection canary.**~~ **DONE 2026-08-09, and not the way this
+   entry expected.** The original test rested on `data/dataset.json` — 160
+   matches inside Kalshi's window as of 2026-08-02. That file is gone and
+   **cannot be rebuilt: Kalshi keeps ~69 days and those matches have fallen out
+   of the window.** Rebuilding today gives a different set of matches and a
+   different test, so the entry is closed as not reproducible rather than done.
+   The generalised question was run instead, on the two filters that are
+   actually load-bearing — see `reports/selection_canary.txt` and SO040/SO041.
+   **The second one FAILS and it is the mechanism the whole idea dies on.**
 2. **Join the features that already exist but are not on the rows**: head-to-head
    (`seasonseries`), league position (`standings`), last-five form
    (`lastFiveGames`), rest days and fixture congestion (derivable from ESPN

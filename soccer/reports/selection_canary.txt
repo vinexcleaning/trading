@@ -1,0 +1,100 @@
+SELECTION CANARY -- IS WHAT I COULD PRICE DIFFERENT FROM WHAT I COULD NOT?
+==============================================================================
+
+GUARDS #1 check_selection, on the two filters that this session's
+headline actually rests on.
+
+The canary that WAS asked for (audit D6, ledger SO006) cannot be
+re-run: it was built on data/dataset.json, 160 matches inside
+Kalshi's window as of 2026-08-02. That file is gone and cannot be
+rebuilt, because Kalshi keeps ~69 days and those matches have
+fallen out of it. Rebuilding today gives different matches and a
+different test. See the note at the top of this file.
+
+==============================================================================
+FILTER 1 -- WHICH MATCHES GOT PRICED  (state read at the 70th minute)
+==============================================================================
+
+528 in-window matches in competitions Kalshi lists
+had somebody ahead at the 70th minute.
+  priced     429
+  not priced 99
+
+[got a price] outcome rate: kept +0.0350 (n=429) vs dropped +0.0202 (n=99); diff +0.0148, z = +0.88, MDE = 4.69 pp  <-- UNTESTABLE: the smaller arm (99 rows) cannot resolve a 2.0 pp shift.
+
+In plain words: out of 100 matches with somebody a goal or more
+ahead at the 70th minute, the team behind came back
+and won **3.5 times among the matches I could price**
+and **2.0 times among the ones I could not**.
+
+==============================================================================
+FILTER 2 -- WHICH MINUTES HAD A MARKET
+==============================================================================
+
+Every minute inside a priced match where somebody was ahead,
+split by whether anyone was bidding on the losing side.
+
+  a market existed  19900 minute-readings
+  no market         8053
+
+**The unit here is the minute, not the match, and that is a
+weakness stated rather than hidden** -- one match contributes
+many minutes and they are not independent, so the z below is
+far more confident than the data warrants. The two RATES are
+the part to read.
+
+[a market existed] outcome rate: kept +0.0920 (n=19,900) vs dropped +0.0015 (n=8,053); diff +0.0905, z = +43.24, MDE = 0.59 pp  <-- THE FILTER SHIFTS CALIBRATION. It is selecting on something correlated with the outcome.
+
+In plain words: at minutes where you COULD have bet, the
+team behind went on to win **9.2 times in 100**.
+At minutes where nobody was bidding, **0.1 times in 100**.
+
+==============================================================================
+FILTER 2 AGAIN, ONE READING PER MATCH
+==============================================================================
+
+The same question with the unit fixed: each match contributes
+once, at a single minute, so nothing is counted repeatedly.
+
+ minute   could bet   could not   came back if you could   if you could not
+----------------------------------------------------------------------------
+     60         296         102                   7.1/100             0.0/100
+     70         264         155                   5.7/100             0.0/100
+     80         201         223                   4.0/100             0.4/100
+     85         152         264                   2.6/100             0.0/100
+
+Same answer with the unit corrected, so the size of it is not an
+artifact of counting one match many times.
+
+==============================================================================
+WHAT THIS MEANS FOR THE HEADLINE
+==============================================================================
+
+**Filter 1 is UNTESTABLE and that is the honest answer.** 3.5 per
+100 among priced matches against 2.0 among unpriced looks like a
+difference, but the unpriced arm is 99 matches and cannot resolve
+a shift that size. It is not evidence of a clean sample and it is
+not evidence of a dirty one. **It is the same verdict SO006 got,
+for the same reason: not enough matches on one side.**
+
+**Filter 2 FAILS, hard, and it was predicted before it was run.**
+Where somebody was bidding on the losing team, that team came
+back 9.2 times in 100. Where nobody was bidding, 0.1 times in
+100. That is not a small skew, it is two different populations.
+
+**And it is the mechanism, not a defect.** Kalshi stops quoting
+the losing side once the match is effectively over -- which is
+exactly the state the original idea wanted to buy. The bet was
+'pay 97 cents for something almost certain'. The market does not
+quote almost-certain, so the trade cannot be placed. Every price
+that exists is a price on a game still in doubt.
+
+**So the headline must be stated conditionally from now on:**
+*you overpay by about 0.4 cents a contract in the games and
+minutes where a trade was actually available* -- and those are
+games where the team behind wins about 9 times in 100, not the
+dead ones the idea was aimed at.
+
+This does not overturn the negative result. It sharpens what the
+negative result is about, and it is a stronger reason to stop
+than the price comparison was on its own.
