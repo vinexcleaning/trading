@@ -39,6 +39,7 @@ SUB_LEDGERS = [
     "crypto/HYPOTHESIS_LEDGER.md",
     "set1_overshoot/HYPOTHESIS_LEDGER.md",
     "kalshi-inplay-bot/audit/LEDGER.md",
+    "soccer/LEDGER_SOCCER.md",
 ]
 
 # Column names that mark a row as a claim even when the table has no ID column.
@@ -53,6 +54,10 @@ HEADER_HINTS = CLAIM_COLUMNS | {"id", "status", "result", "project", "phase",
                                 "n", "n_unit", "effect_ci", "unit"}
 
 ID_RE = re.compile(r"^\**([A-Z]{1,4}\d{2,4}[a-z]?)\**$")
+
+# What a claim id is NOT: a filename, a phrase, a list. Guard suggested by the
+# `reopen` chat after five filenames entered the archive as claims.
+NOT_AN_ID = re.compile(r"\.md|\s|,|/|\\")
 HEADING_RE = re.compile(r"^#{1,3}\s+(.*)$")
 
 
@@ -143,7 +148,17 @@ def rows(path: Path | None = None) -> list[dict]:
             # claim still has something a human can be pointed at.
             for key, value in zip(header, cells):
                 if key == "id" and value.strip():
-                    ident = plain(value)[:16]
+                    candidate = plain(value)[:16]
+                    # A filename is not a claim id. The M011 citation table at
+                    # LEDGER.md:494 has filenames in its first column, and
+                    # truncating them to 16 characters produced five fake
+                    # claims -- `PREREGISTRATION.`, `RESULTS_CROSSVEN`,
+                    # `PRIOR_ART.md, SH` and friends. Found by the `reopen`
+                    # chat auditing this parser's own output, which is the
+                    # only way a defect like this ever surfaces: the count
+                    # went UP, so it looked like the fix working.
+                    if not NOT_AN_ID.search(candidate):
+                        ident = candidate
                     break
             if not ident:
                 if not re.fullmatch(r"\**\d{1,4}\**", cells[0].strip()):
@@ -207,6 +222,18 @@ def status_of(row: dict) -> str:
         return m.group(1)
     if "retract" in (row.get("_section", "") + raw).lower():
         return "RETRACTED"
+    # A second vocabulary, and it is not a defect. crypto/HYPOTHESIS_LEDGER.md
+    # documents its own words in its own header — RUN (evaluated), PENDING
+    # (pre-registered, not yet run), CANCELLED — and the in-play bot audit uses
+    # SUPPORTED / REJECTED. **Mapping these onto the main vocabulary would be
+    # inventing a verdict the file never gave**, so they are returned as
+    # written. Recognising them matters because the "no readable status" canary
+    # exists to catch a COLUMN SHIFT, and 30 rows in another file's dialect
+    # look exactly like one.
+    m = re.search(r"\b(NOT SUPPORTED|UNDERPOWERED|WITHDRAWN|CONFIRMED|"
+                  r"SUPPORTED|REJECTED|PENDING|FIXED|RUN)\b", raw)
+    if m:
+        return m.group(1)
     return "?"
 
 
