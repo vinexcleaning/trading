@@ -1,9 +1,9 @@
 # HANDOFF — reopen
 
 <!-- COORDINATOR-STATE
-doing: nothing running - mailbox 002 is done, the live-money bot's 122 claims are audited
-left: soccer's 39 unread rows next, then the two hypothesis grids (deferred on expected overlap)
-needs: yes - kalshi-inplay-bot belongs to no chat and holds a live-money config with two gates fitted to ~25 and 137 observations. Either it gets an owner or the gates get a warning where a trader would see them
+doing: nothing running - soccer's 41 rows audited, 485 of 609 claims now read
+left: the two hypothesis grids (97 set-1, 27 crypto), deferred on expected overlap with rows already audited
+needs: yes - still the one from 2026-08-11: kalshi-inplay-bot belongs to no chat and holds a live-money config with two gates fitted to ~25 and 137 observations
 -->
 
 **As of 2026-08-08.** Written by the session that took mailbox message 001.
@@ -228,3 +228,40 @@ Both of the best findings in earlier passes came from opening an artifact
 instead.
 
 Mail: `coordinator` **003**.
+
+## 2026-08-11, second pass — soccer's 41 rows, and a header deciding what exists
+
+No new mail, so I took the next queued item. Timely: `soccer` was told to close
+the same day.
+
+**485 of 609 claims audited. 154 closures, 105 (68%) closed properly.** Only the
+two hypothesis grids remain deferred.
+
+**The soccer ledger is the most careful in the repo** — three self-retractions,
+one pre-publication; SO040 states its own detection floor and refuses to read it
+either way; SO039 declines to nominate its own best three of eleven. **One
+lapse: SO038 nominates the worst of eleven**, which is SO039's trap mirrored.
+
+**SO014 reaches three folders and I measured it rather than repeating it.** Same
+URL, same minute, four headers:
+
+| header | ESPN | Sofascore | ATP |
+|---|---|---|---|
+| browser-shaped | **403** | 403 | 200 → **403** |
+| bare product token | **403** | 403 | 403 |
+| `curl/8.4.0` | **200** | 403 | 403 |
+| none sent | **200** | 403 | 403 |
+
+- **ESPN: header-dependent, reproduced on both runs.** Eleven scripts in `mlb/`
+  and `market-selection/` send a blocked shape and are dead now.
+- **Sofascore: blocks all four.** M027's Sofascore failure is real.
+- **ATP: 200 then 403 on the same header a minute apart.** Rate-limited, not
+  header-dependent — and my first run would have had me publish the opposite.
+
+**It breaks my own M025 item**: run today, the prop probe 403s and reports "none
+found". Filed to `devig` before they act on it.
+
+Mail: `mlb` **007** (first ever), `devig` **016**, `soccer` **007**.
+
+**Standing weakness:** 41 rows read, one artifact measured. Better than the last
+pass, which measured none.

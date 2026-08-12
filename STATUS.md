@@ -4597,3 +4597,76 @@ wallets than chance predicts across 42,652. **C079** computes the null
 expectation at every delay and finds the edge dies inside 15 seconds. **C072**
 simulates the screen rather than the strategy. **C090** preserves invalidated
 runs instead of deleting them.
+
+---
+
+## Desktop, 2026-08-11 (second pass) — soccer's 41 claims audited, and one header is deciding what "exists"
+
+`reopen` had no new mail and took the next queued item: `soccer/LEDGER_SOCCER.md`
+— the file that exists because this audit found that folder had no ledger.
+Timely, since `soccer` was told to close the same day. Full write-up, Critic and
+Referee: [reopen/REOPENED.md](reopen/REOPENED.md).
+
+**485 of 609 claims audited. 154 closures examined, 105 — 68% — closed properly.**
+Only the two hypothesis grids remain deferred.
+
+### The soccer ledger is the most careful in the repo
+
+Three self-retractions, **one before publication**. **SO010** is marked *"REFUTED
+AS A SIGNAL by its own author"* because the sample was conditioned on having
+scored and no control was built. **SO040** prints its own detection floor — 4.69
+out of 100 against a 2.0 gap — and then writes *"not evidence of a clean sample
+and not evidence of a dirty one."* **SO039** declines to nominate its own three
+best-looking competitions.
+
+**One lapse: SO038** nominates *"the deepest European book is among the worst
+priced"* — **second worst of eleven** — while SO039 in the same table refuses
+best-of-eleven for exactly that reason. The discipline was applied to one tail
+and not the other.
+
+### ⚠⚠ SO014 reaches three folders, and it was re-measured rather than repeated
+
+Same URL, same minute, four headers:
+
+| header | ESPN | Sofascore | ATP archive |
+|---|---|---|---|
+| `Mozilla/5.0 (…-research/1.0)` | **403** | 403 | 200 → **403** |
+| bare product token | **403** | 403 | 403 |
+| `curl/8.4.0` | **200** | 403 | 403 |
+| no header sent | **200** | 403 | 403 |
+
+- **ESPN is header-dependent and reproduced on both runs.** **Eleven scripts in
+  `mlb/src/` and `market-selection/src/` send a blocked shape and are returning
+  nothing right now** — including the whole prop chain behind M023–M025 and
+  `check_tennis_live.py`, the six-source probe that produced **M027**, the ITF
+  absence claim B021 later refuted.
+- **Sofascore blocks all four**, twice. M027's Sofascore failure is **real**.
+- **ATP gave 200 then 403 to the same header a minute apart** — rate-limited, not
+  header-dependent.
+
+> **The generalisable result is worse than "use curl": on these three hosts the
+> header that works on one is blocked on another, and the reverse. Any
+> multi-source probe sending a single User-Agent manufactures at least one false
+> 403 whichever header it picks** — and a one-shot probe of a rate-limited host
+> returns a status code that is not a property of the host.
+
+**It breaks an item `reopen` filed itself.** The **M025** ask — count two-sided
+props from the free feed — **returns 403 and "none found" if run today**. Flagged
+to `devig` before they act on it.
+
+**Past results are not void**; they ran when the fetch worked. **The exposure is
+forward, and concentrated in any conclusion of the form "this feed does not carry
+X".**
+
+### Two smaller ones
+
+- **SO001 vs M018.** Free Pinnacle closing odds sit on **0 of 139 rows inside the
+  Kalshi window**, 100% in 2022 → **0.0% in 2026** — **T014's failure at a second
+  site**. M018 records that source as SETTLED with historical counts and reads as
+  though it is usable now. Both true; only one useful.
+- **SO006 was closed by retention, not evidence** — the matches fell out of the
+  ~69-day window before the canary could re-run. Correctly handled, and it is the
+  **second** answer that window has destroyed.
+
+Mail: `mlb` **007** (the first ever filed to that chat), `devig` **016**,
+`soccer` **007**.

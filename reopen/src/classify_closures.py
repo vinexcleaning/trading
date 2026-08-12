@@ -713,6 +713,139 @@ ACTION_INPLAY: dict[str, tuple[str, str, str, str]] = {
               "a design question, then forward time"),
 }
 
+SOCCER_FILE = "soccer/LEDGER_SOCCER.md"
+
+# soccer/LEDGER_SOCCER.md -- 41 rows, audited 2026-08-11. The file exists
+# because this audit told the soccer chat its folder had no ledger; two of its
+# rows (SO037, SO041) have since been merged into the root ledger and are
+# classified in C above.
+#
+# This is the most careful ledger in the repo. It retracts three of its own
+# claims, one of them BEFORE publication, and it names its own absence-claim
+# failure mode four times.
+C_SOCCER: dict[str, tuple[str, str]] = {
+    "SO001": ("DATA", "RETRACTED by its own author, and the retraction reaches "
+              "another folder: free Pinnacle closing odds are present on 0 of "
+              "139 rows INSIDE the Kalshi window, falling 100% in 2022 to 0.0% "
+              "in 2026. That is T014's failure at a second site. M018 records "
+              "the same source as SETTLED with historical counts and reads as "
+              "though the data is usable now."),
+    "SO002": (N, "retracted the same session, and the retraction is measured "
+              "rather than asserted"),
+    "SO003": (N, "dataset fact, with 480 knowability assertions"),
+    "SO004": (N, "SUGGESTIVE at 32 matches; direction reproduces T012 and M011 "
+              "on a third sport"),
+    "SO005": (N, "coverage fact"),
+    "SO006": ("FLOOR", "the selection canary returned UNTESTABLE with one arm "
+              "empty, and was then CLOSED AS NOT REPRODUCIBLE because the "
+              "matches fell out of Kalshi's ~69-day window. Correctly handled "
+              "-- they ran the generalised question instead (SO040/SO041) -- "
+              "but it is the second time retention has destroyed an answer "
+              "before anyone could check it."),
+    "SO007": (E, "229 goals from 130 fixtures, descriptive and clean"),
+    "SO008": (N, "UNVERIFIED at 26 red cards, with the floor effect named"),
+    "SO009": (E, "362 events carrying both clocks"),
+    "SO010": (N, "REFUTED AS A SIGNAL by its own author -- the sample is "
+              "conditioned on having scored and no control was built"),
+    "SO011": (E, "2,875 test matches, train/test split, and a positive control "
+              "that proves the test can detect a large improvement. Reproduces "
+              "the tennis Stage 0-5 result on a second sport."),
+    "SO012": (E, "0 of 26 empty matches recovered after four retries; the rate "
+              "is flat in concurrency, so it is a real coverage gap"),
+    "SO013": (N, "definitional, and recorded because the tasking asserted the "
+              "opposite"),
+    "SO014": ("BUG", "ESPN's edge returns 403 to browser-shaped User-Agents "
+              "and 200 to curl's -- so every ESPN script in that folder was "
+              "DEAD, NOT DEGRADED. The row itself notes mlb/ and "
+              "market-selection/ also fetch ESPN. VERIFIED BY THIS AUDIT "
+              "2026-08-11 and it reaches further than the row says."),
+    "SO015": (N, "existence fact, explicitly silent on liquidity"),
+    "SO016": (E, "the friendlies reading was a calendar artifact -- that "
+              "fortnight was the international break"),
+    "SO017": (N, "SUGGESTIVE on 4 probes"),
+    "SO018": (N, "a sanity benchmark on a sample"),
+    "SO019": (N, "descriptive, and it says the columns are one sample seen "
+              "repeatedly"),
+    "SO020": (N, "descriptive"), "SO021": (N, "descriptive, pre-stated shape"),
+    "SO022": (N, "descriptive"),
+    "SO023": (E, "the replay reproduces football's own base rates on 56,173 "
+              "matches -- the check that it is not lying"),
+    "SO024": (E, "coverage loss reported per competition rather than hidden; "
+              "Uruguay 99.0% lost and Kalshi lists it"),
+    "SO025": (E, "99.4% score reproduction, with every drop counted"),
+    "SO026": (N, "narrowed by its own author after reporting -- every price is "
+              "read two minutes after a goal, so the ordinary settled-scoreline "
+              "case is almost absent"),
+    "SO027": (N, "SUGGESTIVE, directional, two populations, deliberately not "
+              "averaged"),
+    "SO028": (N, "a mechanism on 7 moments; the 79.2% figure carries it"),
+    "SO029": (E, "24,159 anchors leave-one-out, and it explains why it does "
+              "not contradict SO009"),
+    "SO030": (N, "SUGGESTIVE, and the mechanism is offered as a hypothesis "
+              "rather than a designed test"),
+    "SO031": (E, "19,460 minute-readings; narrows SO026 and reverses where the "
+              "liquidity is"),
+    "SO032": (N, "SUGGESTIVE, two populations, explicitly not a profit "
+              "measurement"),
+    "SO033": (E, "names the limit of its own method -- an average historical "
+              "rate against a specific match's price cannot find edge"),
+    "SO034": (E, "UNTESTABLE HERE, with the football half solid and only the "
+              "price missing. Correctly labelled."),
+    "SO035": (N, "an absence claim RETRACTED BEFORE PUBLICATION -- the fourth "
+              "in this folder's history and the fourth to be wrong"),
+    "SO036": (E, "30,648 minute-readings, 645 matches, monotone across 17 "
+              "sampled minutes"),
+    "SO038": ("NARROW", "'the deepest European book is among the WORST priced' "
+              "is the second worst of ELEVEN competitions -- and SO039 in the "
+              "same table explicitly refuses to nominate the best three of "
+              "eleven for exactly that reason. The discipline was applied to "
+              "the positive tail and not the negative one. It also rests on "
+              "qualifying rather than the group stage, which the row says."),
+    "SO039": (N, "EXPLICITLY NOT NOMINATED -- best three of eleven, recorded so "
+              "nobody re-derives them as a discovery. Model behaviour."),
+    # SO037 and SO041 are ALSO merged into the root LEDGER.md and classified
+    # in C above; both copies need an entry because the key is (file, id).
+    "SO037": ("NOT-A-CLOSURE", "labelled SUGGESTIVE and conditional by its own "
+              "author -- two populations, and by SO041 the readings are "
+              "conditioned on the match still being in doubt."),
+    "SO041": ("EVIDENCE-PENDING", "the market does not quote the thing the "
+              "strategy wanted to buy. Predicted in writing before it was run, "
+              "and its own selection canary FAILS on the has-a-market mask, "
+              "which is the honest way round. THIS AUDIT HAS NOT VERIFIED IT."),
+    "SO040": (E, "UNTESTABLE and it says so with the number: the smallest gap "
+              "it could have seen is 4.69 out of 100 against a 2.0 gap. 'Not "
+              "evidence of a clean sample and not evidence of a dirty one.'"),
+}
+
+
+ACTION_SOCCER: dict[str, tuple[str, str, str, str]] = {
+    "SO014": ("REOPEN", "mlb",
+              "ESPN returns 403 to browser-shaped User-Agents. ELEVEN scripts "
+              "in mlb/ and market-selection/ fetch ESPN with exactly that "
+              "shape, and this audit re-measured it on 2026-08-11: "
+              "Mozilla/5.0 (...) 403, bare token 403, curl 200, no header 200. "
+              "Those scripts are dead right now, and several record a failure "
+              "as 'not found'.",
+              "one header change per script"),
+    "SO001": ("RELABEL", "devig",
+              "M018 says free Pinnacle closing lines 'genuinely exist' for "
+              "four leagues Kalshi trades, with historical match counts. "
+              "SO001 measured 0 of 139 inside the Kalshi window and 0.0% in "
+              "2026. Both are true; only one is useful. Say which.",
+              "minutes"),
+    "SO006": ("RELABEL", "soccer",
+              "Record that this was closed by RETENTION, not by evidence -- the "
+              "matches fell out of Kalshi's ~69-day window before the canary "
+              "could be re-run. It is the second answer this window has "
+              "destroyed.",
+              "minutes"),
+    "SO038": ("RELABEL", "soccer",
+              "Apply SO039's own discipline to the negative tail: second worst "
+              "of eleven is the same selection shape as best of eleven. Say "
+              "'not nominated' on both sides, or nominate neither.",
+              "minutes"),
+}
+
 REOPEN_CATS = {"BUG", "DATA", "NARROW", "FLOOR"}
 
 # ---------------------------------------------------------------------------
@@ -749,13 +882,6 @@ DEFERRED: dict[str, str] = {
     "set1_overshoot/HYPOTHESIS_LEDGER.md":
         "the full 97-row set-1 hypothesis grid. Newly readable 2026-08-09. "
         "Expect heavy overlap with S001-S025, which are audited.",
-    "soccer/LEDGER_SOCCER.md":
-        "43 rows, and they appeared BETWEEN this pass and the last one. The "
-        "soccer chat created this file on 2026-08-09 in answer to this audit, "
-        "and the coordinator has since added it to SUB_LEDGERS -- so the "
-        "prior-work check can finally see soccer. Unaudited, and it is the "
-        "obvious next pass: it is the newest work in the repo and the one "
-        "folder whose claims have never been cross-checked against anything.",
     "crypto/HYPOTHESIS_LEDGER.md":
         "27 rows. Expect heavy overlap with C001-C027, which are audited.",
 }
@@ -904,7 +1030,8 @@ def main() -> int:
             continue
         seen.add(key)
         src = r.get("_file", "")
-        table = C_INPLAY if src == INPLAY_FILE else C
+        table = (C_INPLAY if src == INPLAY_FILE
+                 else C_SOCCER if src == SOCCER_FILE else C)
         if rid not in table:
             if rid in NOISE:
                 noise.append(rid)
@@ -914,7 +1041,8 @@ def main() -> int:
                 missing.append(rid)
             continue
         cat, note = table[rid]
-        acts = ACTION_INPLAY if src == INPLAY_FILE else ACTION
+        acts = (ACTION_INPLAY if src == INPLAY_FILE
+                else ACTION_SOCCER if src == SOCCER_FILE else ACTION)
         act, owner, settle, cost = acts.get(rid, ("", "", "", ""))
         out.append({
             "id": rid,
@@ -932,12 +1060,13 @@ def main() -> int:
 
     seen_ids = {i for _, i in seen}
     extra = sorted(set(C) - seen_ids)
+    _all_actions = set(ACTION) | set(ACTION_INPLAY) | set(ACTION_SOCCER)
     unactioned = sorted(
-        rid for tbl in (C, C_INPLAY) for rid, (cat, _) in tbl.items()
-        if cat in REOPEN_CATS and rid not in ACTION
-        and rid not in ACTION_INPLAY)
+        rid for tbl in (C, C_INPLAY, C_SOCCER) for rid, (cat, _) in tbl.items()
+        if cat in REOPEN_CATS and rid not in _all_actions)
     orphan_actions = sorted((set(ACTION) - set(C))
-                            | (set(ACTION_INPLAY) - set(C_INPLAY)))
+                            | (set(ACTION_INPLAY) - set(C_INPLAY))
+                            | (set(ACTION_SOCCER) - set(C_SOCCER)))
 
     if missing or extra or unactioned or orphan_actions:
         print("COVERAGE FAILURE -- the audit does not cover every claim.")

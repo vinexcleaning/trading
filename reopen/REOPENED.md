@@ -807,3 +807,123 @@ file contributes the best examples in the repo:**
 > dormant and the gates get a warning comment where a trader would see it.
 > **I cannot decide this and neither can the coordinator — it is about money
 > that could move.**
+
+---
+
+# THE SOCCER LEDGER, 2026-08-11 — and one header is deciding what "exists"
+
+No new mail, so I took the next thing queued: `soccer/LEDGER_SOCCER.md`, 39
+unread rows. Timely — that chat has just been told to close, and its claims stay
+live in the ledger after it goes quiet.
+
+**Totals: 609 claims, 485 audited, 124 deferred (the two hypothesis grids).
+154 closures examined, 105 — 68% — closed properly.**
+
+## This is the most careful ledger in the repo, and that is the finding
+
+It retracts **three of its own claims**, one of them **before publication**. It
+labels `SO010` *"REFUTED AS A SIGNAL by its own author"* because the sample was
+conditioned on having scored and no control was built. `SO040` reports its own
+detection floor — *"4.69 out of 100 against a 2.0 gap"* — and then says the
+thing almost nobody says: **"not evidence of a clean sample and not evidence of
+a dirty one."** `SO039` refuses to nominate its own three best-looking
+competitions because best-of-eleven is what chance produces.
+
+**Nine of its rows are in my four categories; twenty-eight closed properly.**
+
+## ⚠ The one that reaches other folders — and I measured it rather than inferring
+
+**SO014:** ESPN's edge network returns **403 to browser-shaped User-Agents** and
+**200 to curl's**, so *every ESPN script in the soccer folder was **dead, not
+degraded***. The row notes that `mlb/` and `market-selection/` also fetch ESPN.
+
+**They do — eleven scripts, all using the blocked shape.** I re-measured today,
+same URL, same minute, four headers:
+
+| header | ESPN | Sofascore | ATP archive |
+|---|---|---|---|
+| `Mozilla/5.0 (market-selection-research/1.0)` | **403** | 403 | 200 → **403** |
+| `market-selection-research/1.0` (bare token) | **403** | 403 | 403 |
+| `curl/8.4.0` | **200** | 403 | 403 |
+| no header at all | **200** | 403 | 403 |
+
+**Three different answers, and they do not agree with each other.**
+
+- **ESPN is header-dependent and reproducible.** SO014 confirmed exactly. The
+  eleven scripts in `mlb/` and `market-selection/` are dead **right now**.
+- **Sofascore blocks all four**, on both runs. That failure in **M027** is real
+  and stands.
+- **ATP returned 200 to the browser header on my first run and 403 to the same
+  header a minute later.** Not header-dependent — **rate-limited or
+  intermittent.**
+
+> **The generalisable result, and it is worse than "use curl":** on these three
+> hosts, **the header that works on one is blocked on another, and the reverse.**
+> Any multi-source probe that sends a single User-Agent manufactures at least one
+> false 403 *whichever* header it picks. And a one-shot probe of a rate-limited
+> host returns a status code that is not a property of the host at all.
+
+**`market-selection/src/check_tennis_live.py` is exactly that probe** — six
+sources, one header — and it produced **M027, "No free data source covering ITF
+tennis was found"**, recorded SETTLED and later refuted by B021. Its ATP failure
+is **not reproducible**; its Sofascore failure is real.
+
+**And it lands on my own open item.** The **M025** reopen I filed asks `devig` to
+count two-sided player props from an ESPN feed. **Run today with the header
+that is in those scripts, it returns 403 and reports "none found"** — a false
+absence, from the audit that exists to catch false absences.
+
+> **I caught the instability only because I ran the probe twice.** My first run
+> would have had me write "ATP works with a browser header", which the second run
+> contradicted inside a minute.
+
+## Three more, smaller
+
+- **SO001 vs M018.** Free Pinnacle closing odds are on **0 of 139 rows inside
+  the Kalshi window**, falling from 100% in 2022 to **0.0% in 2026** — the same
+  failure as **T014** at a second site. **M018** records that source as
+  **SETTLED** with historical match counts and reads as though it is usable now.
+  Both are true; only one is useful.
+- **SO006** was closed by **retention**, not by evidence: the matches fell out of
+  Kalshi's ~69-day window before the canary could be re-run. Handled correctly —
+  they ran the generalised question instead — but it is the **second** answer
+  that window has destroyed.
+- **SO038** reports *"the deepest European book is among the WORST priced"* —
+  **second worst of eleven competitions**, while **SO039 in the same table
+  refuses to nominate the best three of eleven** for exactly that reason. **The
+  discipline was applied to the positive tail and not the negative one.**
+
+## The Critic and the Referee on this pass
+
+**Critic.**
+
+1. **I read 41 rows and one artifact** — the User-Agent behaviour, which I
+   measured myself. Everything else is the row's own word again.
+2. **My ATP conclusion changed between two runs one minute apart.** I have three
+   observations of that host and no idea what its policy is. Anything I say
+   about ATP is one probe dressed as a finding.
+3. **The eleven dead scripts are a code read, not a run.** I matched header
+   strings; I did not execute any of them and confirm a 403 in place.
+4. **"Most careful ledger in the repo" is my judgement across seven files**, and
+   it is the kind of praise that stops a reader looking. SO038 is a real lapse
+   inside it.
+5. **SO041 is the load-bearing soccer claim and I have not verified it.** It is
+   classified `EVIDENCE-PENDING` for that reason and should not be quoted as
+   audited.
+
+**Referee.**
+
+**STANDS** — ESPN's header dependence (measured twice, both runs agree); the
+eleven scripts using the blocked shape (grep, exact strings); Sofascore blocking
+all four (twice); SO001 against M018 (both numbers are in the two rows); SO038's
+asymmetry against SO039 (same table).
+
+**DOWNGRADED** —
+was: *"M027's ATP failure was a User-Agent artifact."*
+now: **"M027's ATP failure is not reproducible, and the host is unstable enough
+that neither run establishes anything. Its Sofascore failure is real."**
+because: the same header gave 200 then 403 within a minute.
+
+**FOR THE USER — none this pass.** I checked, and everything here is either
+measured or handed to a chat that owns it. **The open question is still the one
+from yesterday: does `kalshi-inplay-bot` get an owner.**

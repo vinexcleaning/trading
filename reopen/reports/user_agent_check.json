@@ -1,0 +1,87 @@
+{
+  "note": "Same URL, same minute, four User-Agents. Status codes only; no content was used.",
+  "prompted_by": [
+    "SO014 (soccer)",
+    "M027 (market-selection)"
+  ],
+  "results": {
+    "ESPN tennis scoreboard": {
+      "url": "https://site.api.espn.com/apis/site/v2/sports/tennis/atp/scoreboard",
+      "by_agent": {
+        "market-selection style": {
+          "user_agent": "Mozilla/5.0 (market-selection-research/1.0)",
+          "status": 403,
+          "first_bytes": null
+        },
+        "bare product token": {
+          "user_agent": "market-selection-research/1.0",
+          "status": 403,
+          "first_bytes": null
+        },
+        "curl": {
+          "user_agent": "curl/8.4.0",
+          "status": 200,
+          "first_bytes": 4096
+        },
+        "python-urllib default": {
+          "user_agent": null,
+          "status": 200,
+          "first_bytes": 4096
+        }
+      }
+    },
+    "Sofascore live tennis": {
+      "url": "https://api.sofascore.com/api/v1/sport/tennis/events/live",
+      "by_agent": {
+        "market-selection style": {
+          "user_agent": "Mozilla/5.0 (market-selection-research/1.0)",
+          "status": 403,
+          "first_bytes": null
+        },
+        "bare product token": {
+          "user_agent": "market-selection-research/1.0",
+          "status": 403,
+          "first_bytes": null
+        },
+        "curl": {
+          "user_agent": "curl/8.4.0",
+          "status": 403,
+          "first_bytes": null
+        },
+        "python-urllib default": {
+          "user_agent": null,
+          "status": 403,
+          "first_bytes": null
+        }
+      }
+    },
+    "ATP results archive": {
+      "url": "https://www.atptour.com/en/scores/results-archive",
+      "by_agent": {
+        "market-selection style": {
+          "user_agent": "Mozilla/5.0 (market-selection-research/1.0)",
+          "status": 403,
+          "first_bytes": null
+        },
+        "bare product token": {
+          "user_agent": "market-selection-research/1.0",
+          "status": 403,
+          "first_bytes": null
+        },
+        "curl": {
+          "user_agent": "curl/8.4.0",
+          "status": 403,
+          "first_bytes": null
+        },
+        "python-urllib default": {
+          "user_agent": null,
+          "status": 403,
+          "first_bytes": null
+        }
+      }
+    }
+  },
+  "header_dependent": [
+    "ESPN tennis scoreboard"
+  ]
+}
