@@ -93,9 +93,26 @@ asked to shut down `archive.pmxt.dev`, and we'll do so this week."* That is wher
 `social-signal/src/archive_inventory.py` therefore HEADs the file host hour by
 hour instead of trusting the listing.
 
-**Open decision for the user, with a clock on it:** copy the whole archive before
-it goes (~34.5 GB raw per 13 days, unrecoverable afterwards) or keep taking
-tennis only. Not decided by this session.
+**The inventory finished the same day, and we had less than half of it.** Every
+hour from 2026-02-20 to 2026-08-11 probed by HEAD request:
+
+| | hours |
+|---|---|
+| held | **312** |
+| **still there and NOT held** | **344** (28.2 GB raw) |
+| total the archive has ever held | **656** |
+
+**Bounded at both ends: nothing before 2026-05-14, nothing after 2026-06-11.**
+29 days total, and our window stopped at 27 May — so **the missing half is the
+later half**, covering the back end of the clay Grand Slam and the start of
+grass. The deepest tennis book of the year, and we had none of it.
+
+**Pulled 2026-05-13 → 06-12, same two prefixes, same filter, raw discarded.**
+That completes an already-agreed dataset rather than widening it; see
+`social-signal/DECISIONS.md` D22 for why those are different decisions.
+
+**Open decision for the user, with a clock on it:** whether to take **every other
+sport** before the host goes. Not decided by this session.
 
 ---
 

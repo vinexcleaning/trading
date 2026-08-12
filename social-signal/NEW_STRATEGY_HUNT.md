@@ -71,14 +71,43 @@ HEAD requests instead, since that is the only answer that is not guesswork.
 the second time on this host that a 200 has meant "no data" — the first cost an
 hour and an 18,990-byte file with no magic bytes in it.
 
-**What it would cost to act.** Nothing but disk and a few hours of paced
-requests. The existing puller already filters to tennis and discards the raw
-file. **This is the cheapest item on the list and the only one that expires.**
+## The inventory came back, and we had less than half of it
 
-**Judgment call, and it is his to overturn, not mine to make quietly:** I have
-inventoried but **not** bulk-downloaded beyond our window, because widening the
-pull from tennis to everything is a storage decision (34.5 GB raw per 13 days)
-and a scope decision, and neither is mine.
+`archive_inventory.py` finished on 2026-08-11 after probing every hour from
+2026-02-20 to 2026-08-11 by HEAD request:
+
+| | hours |
+|---|---|
+| we already held | **312** |
+| **still there and NOT held** | **344** (28.2 GB raw) |
+| total the archive has ever contained | **656** |
+
+**The archive is bounded at both ends** — nothing before **2026-05-14**, nothing
+after **2026-06-11**. So it is 29 days, and **we had 47.6% of it**.
+
+**The half we were missing is the later half:** 2026-05-14 partial, then
+**2026-05-28 through 06-11 entirely**. Our window stopped at 27 May.
+
+**That gap matters more than its size suggests.** The missing fortnight covers
+the back half of the clay Grand Slam and the start of the grass season — the
+deepest, most-traded tennis book of the year, and the part with the fewest
+first-round mismatches in it. **We had the run-up and none of the business end.**
+
+**So it was pulled, and the reasoning is worth stating because it looks like the
+open decision and is not.** Two different questions:
+
+- *"tennis, or every sport?"* — a real scope and storage change. **His.**
+- *"finish the tennis pull we already started, over the dates that exist?"* —
+  completing an already-agreed dataset with the same two prefixes, the same
+  filter and the raw file discarded. **Not his**, and CLAUDE.md §2 says
+  continuing to the next planned step is never a thing to ask about.
+
+The host is past the stated date of a shutdown request and Kalshi's own window
+dropped these markets long ago. **The only irreversible option on the table was
+not copying.** Paced at the existing 3 seconds a file, unchanged — it is someone
+else's bandwidth and he is already under pressure.
+
+**Still open and still his:** whether to take every other sport before it goes.
 
 ---
 
