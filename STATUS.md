@@ -68,8 +68,34 @@ endpoint.
 | youtube-signal DB: 718 gated videos, 683 cached transcripts, 11,277 known videos | `trading\youtube-signal\data\signal.db` | ~40 MB | **Yes**, but slowly â€” ~45 min of paced fetching to rebuild. Gitignored. |
 | youtube-signal reports (gitignored from Phase 2 â€” they name real creators) | `trading\youtube-signal\reports\` | ~2 MB | Yes, regenerable from the DB. **Phase 0/1 copies remain in public git history**, see HANDOFF Â§5.7. |
 
+| Kalshi orderbook archive: 312 hourly files, 200,626,400 rows, 610 tennis matches, 15–27 May 2026, 0 gaps | `trading\social-signal\data\kalshi_archive\` | **1.21 GB** (from 34.5 GB raw) | **No — and the source is under a shutdown order, see below** |
+
 **Kalshi's API is a ~69-day window.** Closed markets 404 and are gone. Never
 re-pull to "replace" a local archive.
+
+### ⚠ The source of the Kalshi orderbook archive is being taken down (added 2026-08-11, `signal`)
+
+The operator of PMXT posted publicly **on 2026-07-31**: *"I run PMXT. We've been
+asked to shut down `archive.pmxt.dev`, and we'll do so this week."* That is where
+`social-signal/src/pull_kalshi_archive.py` got the 312 files above.
+
+**Measured on 2026-08-11 by fetching, not by reading the post:**
+
+- files we already hold **still return real parquet** (`PAR1` magic bytes)
+- the index page returns **HTTP 200 with a ~400-byte body** — it is the app
+  shell, not data. **A 200 from this host is not evidence.** This has now cost
+  time twice.
+- the index is **paginated and does not show what we hold**: on 2026-08-11 it
+  listed **2026-06-09 to 06-11 — 50 hours we do not have** — and mentioned
+  nothing from the 15–27 May window we do
+- dates outside both windows 404
+
+`social-signal/src/archive_inventory.py` therefore HEADs the file host hour by
+hour instead of trusting the listing.
+
+**Open decision for the user, with a clock on it:** copy the whole archive before
+it goes (~34.5 GB raw per 13 days, unrecoverable afterwards) or keep taking
+tennis only. Not decided by this session.
 
 ---
 
@@ -113,6 +139,26 @@ Until then, **edit the originals, not the copies.**
 ---
 
 ## Repo
+
+### ⚠ Third cross-session commit contamination (2026-08-11, reported by `signal`)
+
+**Commit `757c459`, titled *"livedesk: a new chat for the one-window baseball
+display"*, contains five `social-signal/` files that belong to the `signal`
+session** — `NEW_STRATEGY_HUNT.md`, `DECISIONS.md`, and three modules in `src/`.
+
+`signal` staged explicit paths, as §5 requires. The `livedesk` session then
+committed everything in the index, including those paths, before `signal`
+committed. **The content is correct and pushed; only the attribution is wrong.**
+Not rewritten — `757c459` was already on the remote and belongs to another
+session, so rewriting is destructive for no gain.
+
+**Why this matters beyond bookkeeping:** `CLAUDE.md` §5 already records two such
+events and answers them with *"stage explicit paths, never `git add -A`"*.
+**That rule cannot prevent this one.** Staging explicit paths protects against
+your own over-staging; it does nothing when another session commits while your
+paths sit staged. The index is shared and there is no per-session lock.
+**Flagged, not fixed — the fix is a repo-wide convention decision, not one
+session's call.**
 
 `C:\Users\gianf\trading` â€” 346 tracked files, **972 KiB** packed. Five projects
 as siblings, no nested `.git`. Both inner repos' logs preserved to
