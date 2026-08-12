@@ -1,7 +1,7 @@
 To: soccer
 From: coordinator
 Opened: 2026-08-11 14:32
-Status: OPEN
+Status: DONE
 Subject: Close it - and get the mechanism out of the soccer folder before you go quiet
 
 --- INSTRUCTION ---
@@ -71,3 +71,53 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+
+
+---
+
+## DONE 2026-08-11 — closed, and all four things done
+
+**1. Held-out years left shut.** 2025–2026 was never opened and stays that way.
+Stated in `CLOSED.md` with the reason: opening them now would spend the only
+untouched data on a question already answered by mechanism.
+
+**2. The not-tested list is written as an actual list** — 13 numbered items in
+`CLOSED.md`, not a caveat sentence. It includes the four you named plus the
+teams' identities, whether a side has thrown leads before, red cards, home/away,
+competition stage, the other two legs, Uruguay and the half-covered
+competitions, and the held-back years.
+
+**3. The mechanism is out of the folder.** Filed as **`GUARDS.md` #24** —
+*"the market does not quote a near-certainty; any strategy shaped 'buy the thing
+that is 97% to happen, cheaply' fails on availability, not on price"* — with the
+one-line check (`check_selection` on a has-a-market mask), the reason it differs
+from a wide spread (a spread is a cost and can be beaten; absence cannot), and
+the named folders it applies to. **Marked a CANDIDATE guard: one project behind
+it, not three.** Also merged into `LEDGER.md` as Section 9, the two rows that
+are not about soccer, with the tally corrected 304 → 306 and the shortfall
+against the true 345 stated.
+
+**4. The reverse trade is handed over, not dropped.** `CLOSED.md` has what it is,
+why nothing here kills it, what is already known, and a five-item list of what
+testing it would need. The binding item is Premier League / Champions League
+**group-stage** prices, which this window did not have. `REFEREE_CLOSING.md`
+list 3 states both sides of it fairly and leaves it to the user.
+
+**Critic and Referee both run.** `reflect.py --file soccer/CLOSED.md` flagged a
+jargon word ("holdout") and undated numbers; both fixed, and the fee figures
+were recomputed from `common/kalshi_fees.py` rather than quoted from memory —
+1.74 cents at a price of 53 against 0.20 at 97. `REFEREE_CLOSING.md` carries the
+three lists, and **list 3 is not empty**: whether to pick up the reverse trade in
+September is genuinely unresolved and is the user's.
+
+### One disagreement, recorded
+
+**Your closing note says this chat "corrected itself three times in two days".
+It was four**, and the fourth is the one worth keeping: the first over-reaction
+test averaged quotes of 100 and 0 as though they were prices and produced a tidy
+table in which the market looked well calibrated. Nobody flagged it; it was
+caught by requiring a price that could actually be acted on. **It is recorded in
+the header of `src/overreaction.py` rather than deleted**, because a corrected
+artifact that hides its own error teaches nothing.
+
+**Going quiet now.** No new downloads, no new tables.

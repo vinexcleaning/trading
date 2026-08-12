@@ -20,12 +20,17 @@ asserts a number and no artifact backs it, the row says `NONE` and the status is
 | Status | Count |
 |---|---|
 | **RETRACTED** | **51** |
-| SETTLED | 175 |
-| SUGGESTIVE | 36 |
+| SETTLED | 176 |
+| SUGGESTIVE | 37 |
 | UNVERIFIED | 30 |
 | BROKEN | 11 |
 | CANCELLED | 1 |
-| **Total** | **304** |
+| **Total** | **306** |
+
+**Updated 2026-08-11**: **+2 rows** from `soccer`'s closure — Section 9. Only
+the two rows that are **not about soccer** are merged; the other 39 stay in
+`soccer/LEDGER_SOCCER.md`. **The count is 306 of a true 345**, because that file
+is invisible to `coordinator/ledger.py` until `SUB_LEDGERS` includes it.
 
 **Updated 2026-08-06 (second entry)**: **+43 rows** from the full-programme
 audit — **Section 8**, which merges `market-selection`'s 29 rows (they sat in an
@@ -608,6 +613,36 @@ Three that matter beyond their own project:
 > anywhere in this repo has ever revealed a larger effect.**
 
 ---
+
+## Section 9 — `soccer`, merged 2026-08-11 on closure
+
+**41 rows live in [`soccer/LEDGER_SOCCER.md`](soccer/LEDGER_SOCCER.md)
+(SO001–SO041) and are not duplicated here.** The two below are merged because
+they are **not about soccer** and because a ledger-based cross-check cannot
+currently see that file — `coordinator/ledger.py`'s `SUB_LEDGERS` list omits it,
+which is how the `reopen` chat generated a wrong reopen on 2026-08-09 against a
+question `soccer` had already answered.
+
+| ID | Claim in plain English | Project | n + unit | Effect | STATUS |
+|---|---|---|---|---|---|
+| **SO041** | **The market does not quote a near-certainty.** Any strategy shaped "buy the thing that is 97% to happen, cheaply" fails on **availability**, not on price. | soccer | **699 matches** priced at every displayed minute, Kalshi ~69-day window to 2026-08-09; **one reading per match** | trailing side came back **7.1 per 100 where a bet was possible vs 0.0 where it was not** (60th min); 5.7 vs 0.0 (70th); 4.0 vs 0.4 (80th); 2.6 vs 0.0 (85th). `check_selection` on a has-a-market mask **FAILs**. At the 89th minute a quote existed **16 times in 100**, and at ≤97c **1 in 100** | **SETTLED** — predicted in writing before it was run. Filed as **[GUARDS #24](GUARDS.md)**. **Does not improve with a deeper book:** a deeper book prices matches still in doubt, which are the ones the strategy did not want |
+| **SO037** | Kalshi's soccer price is **worse than the historical rate implies at essentially every minute**. | soccer | 15,216 readings matched to their OWN competition's 2022–2024 cell | middle **−0.40c per contract**; stable at −0.46/−0.40/−0.48/−1.23 as the bar rises 40→60→100→200 matches | **SUGGESTIVE, and conditional** — two populations (rates 2022–2024, prices a 2026 window), and by SO041 the readings are conditioned on the match still being in doubt. Reads: *−0.40c in the games and minutes where a trade was available* |
+
+**⚠ A retraction worth carrying repo-wide, because it is the fourth of its
+kind.** `soccer` was about to publish *"the price sample contains no European
+league at all"*. **False.** Kalshi had **66 settled Champions League events
+inside the candle window**; three separate defects were hiding them, each
+reporting "no fixture" — a wrong ESPN league code (`uefa.champions` returns 0
+for 1 Jul–8 Aug, `uefa.champions_qual` returns exactly 66), an exact-name join
+that matched 6 of 66, and a required `kickoff` field that 53 of 66 of those
+matches do not carry. **Three of three prior absence claims in this repo were
+also wrong.** A filter that drops rows silently becomes an absence claim.
+
+**Reusable outside soccer:** `soccer/src/fixture_join.py` joins a venue's event
+to a data provider's fixture and is validated by a second side that trusts no
+name — **does the team the venue SETTLED as winner match the one the provider
+records as winning? 57 of 57, 0 disagreements.** That is the **GUARDS #22**
+precision check, implemented.
 
 ## What is SETTLED enough to build on
 

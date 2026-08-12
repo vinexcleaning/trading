@@ -1001,6 +1001,85 @@ its own accumulator. It is the model.
 
 ---
 
+## 24. The market does not quote a near-certainty — availability, not price
+
+**Contributed by `soccer`, 2026-08-11**, on the closure of the late-comeback
+idea. **Candidate guard: it has one project behind it, not three.** It is filed
+here anyway because the next chat to propose this shape should hit it in five
+minutes rather than five days.
+
+### The shape it catches
+
+> **Any strategy of the form "buy the thing that is 97% to happen, cheaply".**
+
+Late-match favourites. Heavy pre-match favourites held to settlement. "Free
+money" ladders at the extreme ends of a book. They all reduce to the same
+sentence and they all fail the same way.
+
+### What was measured
+
+Kalshi soccer, 699 matches priced at **every displayed minute** (not only after
+goals), inside the ~69-day candle window ending 2026-08-09. For each match, one
+reading per minute, and the question: was anyone bidding on the losing side at
+all?
+
+| minute | trailing team came back, where a bet WAS possible | where it was NOT |
+|---|---|---|
+| 60 | **7.1 per 100** | 0.0 |
+| 70 | 5.7 | 0.0 |
+| 80 | 4.0 | 0.4 |
+| 85 | 2.6 | 0.0 |
+
+One reading per match, so the unit is the match. `GUARDS #1 check_selection` on
+a *has-a-market* mask returns **FAIL**.
+
+### The guard
+
+**A quote is not a constant of nature. It is a decision by a market maker who
+declines to quote when there is nothing left to be uncertain about.** So:
+
+1. **Before pricing a strategy at an extreme probability, measure how often a
+   tradeable quote exists there at all.** Not the spread — the existence. On
+   Kalshi soccer at the 89th minute it was **16 in 100**, and **1 in 100** at 97
+   cents or better.
+2. **If you only measure where a quote exists, you have conditioned your sample
+   on the event still being uncertain.** Every price you collected is a price on
+   an unsettled outcome, which is a different population from the one the
+   strategy was aimed at. That is a selection effect and it is invisible in the
+   output.
+3. **Report the availability rate next to the edge, always.** An edge measured
+   on 5% of moments is a statement about that 5%.
+
+### Why it is not the same as a wide spread
+
+A wide spread is a cost and can be beaten by patience or by a limit order.
+**Absence cannot.** There is no price at which the trade happens, so no amount
+of sizing, patience or fee optimisation reaches it. **A strategy killed this way
+does not get better with a deeper book** — a deeper book improves prices on
+matches still in doubt, which are the ones you did not want.
+
+### The cheap check
+
+```python
+# mask = "a tradeable quote existed at this moment"
+# y    = the realised outcome the strategy depends on
+leakguard.check_selection(mask, y, name="a market existed")
+```
+
+If that FAILs, the edge is conditional on quotability and must be stated that
+way. **Soccer's `−0.40c per contract` became `−0.40c in the games and minutes
+where a trade was actually available`, which is a materially different claim.**
+
+### Where it belongs
+
+Anywhere a strategy leans on extreme probabilities: `bot-hunt`'s de-vig work at
+the tails, `crypto`'s ladders at 1c and 99c, `mlb-paper` and
+`tennis-paper-forward` on heavy favourites, and any future revival of
+**B024** — "buy the heavy favourite", which died on a spread artifact and would
+meet this wall next.
+
+---
+
 ## The one-page version
 
 If you carry nothing else into the next project:

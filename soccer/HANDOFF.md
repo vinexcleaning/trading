@@ -1,10 +1,37 @@
 # HANDOFF.md — soccer
 
 <!-- COORDINATOR-STATE
-doing: nothing - mailboxes 003 and 004 closed, waiting on the user's call
-left: the user decides whether to stop. My recommendation is now STOP, changed after the selection canary showed the market does not quote a finished match - which September will not change
+doing: nothing - CLOSED 2026-08-11, folder dormant
+left: nothing. One live descendant (the reverse trade) is written up in CLOSED.md and needs Premier League / Champions League group-stage prices before it is worth anything
 needs: no
 -->
+
+# ⛔ THIS FOLDER IS CLOSED — 2026-08-11
+
+**Read [CLOSED.md](CLOSED.md) first.** It has the answer, the reason, the list
+of what was never tested, and the one live descendant.
+
+**The idea is dead for a reason that will not change with time or with a better
+league:** Kalshi stops quoting the losing side exactly when the match becomes
+near-certain, which is the state the idea wanted to buy. **The trade is not
+mispriced, it is absent by construction.** One reading per match: 7.1 comebacks
+per 100 at the 60th minute where a bet was possible against **0.0** where it was
+not. `reports/selection_canary.txt`, SO041, filed repo-wide as
+[GUARDS #24](../GUARDS.md).
+
+**Do not reopen it by re-running the tables.** If it reopens at all, it reopens
+at the untested list in `CLOSED.md`, and the **2025–2026 years have never been
+opened** — that is what would make a reopening worth anything.
+
+**The one live descendant is the reverse trade** — backing a side to hold on or
+come back, a cheap contract instead of a 97-cent one. Not supported by anything
+here and not ruled out either. What it would need is a five-item list in
+`CLOSED.md`; the binding item is Premier League / Champions League **group
+stage** prices, which did not exist in this window.
+
+**Everything below is the working detail of a finished piece of work.**
+
+---
 
 **As of 2026-08-09.** Written by the session that took mailbox messages 001 and
 002, then stopped on the user's instruction.

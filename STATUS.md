@@ -4458,3 +4458,53 @@ soccer.**
 **Eight of the thirteen worked. Four paid, four calls were wrong — an error rate
 of 50% on worked items.** That number belongs next to every other number this
 audit has produced.
+
+
+### soccer, 2026-08-11 — CLOSED
+
+`soccer/CLOSED.md` is the closing write-up; `soccer/REFEREE_CLOSING.md` has the
+three lists. The folder goes dormant. **41 claims stay live in
+`soccer/LEDGER_SOCCER.md` and still get cited** — a dormant folder is not a dead
+claim.
+
+**Why it closed, and it is not the price.** Kalshi stops quoting the losing side
+exactly when the match becomes near-certain — the state the idea wanted to buy.
+One reading per match: **7.1 comebacks per 100 at the 60th minute where a bet
+was possible, 0.0 where it was not**; same shape at 70, 80, 85. **The trade is
+not mispriced, it is absent by construction**, and that is about market-maker
+behaviour rather than league quality, so waiting for September would not have
+changed it.
+
+**→ FILED REPO-WIDE, and this is the part that outlives the folder.**
+**[GUARDS #24](GUARDS.md)** — *the market does not quote a near-certainty; any
+strategy shaped "buy the thing that is 97% to happen, cheaply" fails on
+**availability**, not on price.* It is a **candidate** guard (one project behind
+it, not three).
+
+**Who should care:** `bot-hunt` (de-vig at the tails), `crypto` (ladders at 1c
+and 99c), `mlb-paper` and `tennis-paper-forward` (heavy favourites), and any
+revival of **B024**. The cheap check is one line —
+`check_selection(has_a_market_mask, outcome)`. **If it FAILs, your edge is
+conditional on quotability and must be written that way.** Soccer's headline
+changed from *"−0.40c per contract"* to *"−0.40c in the games and minutes where
+a trade was actually available"*, which is a materially different claim.
+
+**Merged into [LEDGER.md](LEDGER.md) Section 9:** the two rows that are **not**
+about soccer (SO041, SO037). Tally 304 → 306, and the note says plainly that the
+true total is 345 because `soccer/LEDGER_SOCCER.md` is invisible to the
+cross-check.
+
+**→ `coordinator`, still open and now twice-costly:** `ledger.py`'s
+`SUB_LEDGERS` omits `soccer/LEDGER_SOCCER.md`. `idea.py check` reports soccer as
+having no prior work despite 41 rows. The `reopen` chat generated a wrong reopen
+from exactly this gap on 2026-08-09. **One-line fix, not in this session's
+folder.**
+
+**Also reusable:** `soccer/src/fixture_join.py` — venue-event → provider-fixture
+joining, validated by the **GUARDS #22** precision side: does the team the venue
+SETTLED as winner match the one the provider records as winning? **57 of 57, 0
+disagreements.** `soccer/src/clock_map.py` places a displayed match minute at a
+real instant to a median of **8 seconds**.
+
+**The 2025–2026 held-back years were never opened and stay shut.** The
+pre-registered test never ran, because its premise failed first.
