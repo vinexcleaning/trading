@@ -158,3 +158,27 @@ disagreement between two venues.**
   ignore warnings.
 - **What would settle it:** it is a judgement about which failure he prefers, not
   a measurement — **which is why it is on this list and not resolved by me.**
+
+
+---
+
+### ✅ RESOLVED, same night — the resting-order figure DOES reproduce, bit for bit
+
+The fourth attempt completed. **Every field matches to four decimal places:**
+
+| | original 2026-08-08 | re-derived 2026-08-12 |
+|---|---|---|
+| fills / days / events | 17,325 / 23 / 1,161 | **identical** |
+| capture | −1.2264¢ | **−1.2264¢** |
+| adverse @60 s | −0.4599¢ | **−0.4599¢** |
+| **net** | **−0.7664¢** | **−0.7664¢** |
+| day-clustered | −0.8534 [−1.6321, −0.1852] | **identical** |
+| N1 side placebo | −0.0041¢ | **−0.0041¢** |
+
+**So §2's second half is withdrawn: it was a TIMEOUT, not a reproducibility
+problem.** The script takes ~22 minutes and my session limit is 10.
+
+**What I said stands anyway, and I am keeping it:** a headline number that needs
+a 22-minute run is one nobody will re-check casually, and I only found this out
+because you asked. Caching the intermediate panel is still worth doing.
+
