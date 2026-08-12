@@ -1,7 +1,7 @@
 To: tennis
 From: coordinator
 Opened: 2026-08-11 23:14
-Status: OPEN
+Status: DONE
 Subject: 2,500 is PER BOT - so cut the bot count or admit the test cannot answer in two weeks
 
 --- INSTRUCTION ---
@@ -87,3 +87,89 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE — 2026-08-11, tennis session. The answer to his question is YES, it fits
+in two weeks — and I found a bug while checking, which is in the reply.**
+
+**One command, and it is the weekly routine you asked for:**
+`.venv\Scripts\python.exe -m src.plain_report`
+
+---
+
+## 1. IT FITS. Fewer bots is the lever and it works.
+
+At the current **130 finished matches a day**, and against the **4.79c** it
+really costs to get in and out (measured, not the 3.61c assumed):
+
+| bots judged at once | bets each needs | matches to watch | days from now |
+|---|---|---|---|
+| **1**, nominated in advance | 693 | 1,733 | **9** |
+| **3** | 779 | 1,948 | **11** |
+| 16 (tennis alone) | 1,129 | 2,823 | 18 |
+| **32 (today)** | 1,273 | 3,183 | **21** |
+
+**I was wrong when I said two months and I am correcting it.** Two things moved:
+the real cost bar is *higher* than assumed, and a bigger bar is *easier* to
+clear — you need less data to see a 4.79c edge than a 3.61c one. And the rate is
+130/day, not the 93 I estimated.
+
+**So he does not have to cut anything.** Even judging all 32, it lands in ~21
+days. Nominating one bot in advance buys ~12 days, and that is a real option —
+**but it must be nominated BEFORE looking at the table below**, or it is picking
+the winner after the race.
+
+## 2. WHERE IT STANDS, IN MONEY — 504 matches
+
+**All bots together: staked $37,486, lost $4,247 (−11.3%).** Every figure paper.
+
+Best three and worst three:
+
+| bot | bets | won | avg buy | made/lost | return |
+|---|---|---|---|---|---|
+| favourite__hold | 44 | 37 (84%) | 83c | **+$58.95** | **+10.97%** |
+| brief-led__hold | 230 | 106 (46%) | 43c | −$12.38 | −0.83% |
+| momentum__hold | 361 | 218 (60%) | 62c | −$67.63 | −5.99% |
+| … | | | | | |
+| brief-led__exit-once | 389 | 139 (36%) | 44c | −$367.85 | −15.20% |
+| momentum__exit-once | 704 | 206 (29%) | 63c | −$338.55 | −15.46% |
+
+**Only `control__no-trade` has never traded, which is its job.** All three
+`momentum` variants now trade — that bug was fixed on 08-07.
+
+**On the best one: if every bot were simply guessing at the market's own odds,
+the best of them would look at least this good about 77 times in 100.** It is
+not a finding. **And every single `hold` variant beats its `exit-once` and
+`free` siblings** — which is the archive's own result reappearing: the exit
+rules are what cost money.
+
+## 3. ⚠ THE TOURNAMENT-MIX QUESTION WAS RIGHT, AND IT UNCOVERED A BUG
+
+You asked what the sample is made of. It is **60% ITF, 32% Challenger, 8%
+ATP/WTA** — so a "tennis" result here is mostly a *lower-tier* result.
+
+Then the surface split read **160 matches on GRASS in August**, when the grass
+season ends in July. **Every one was a Challenger.**
+
+**Cause: `"halle"` matches inside `"C-halle-nger"`.** An unbounded substring, so
+every Challenger fell through to the grass rule. **183 of 1,142 briefs, 16%.**
+
+**This is the third time this repo has paid for unbounded substring matching** —
+T017 was retracted because "WTA" matched inside "Lowest temperature in Austin",
+and GUARDS #22 records "A Team" normalising to "a".
+
+Fixed, four regression tests, amendment **A8**. **The affected briefs are NOT
+rewritten** — a brief is the pre-decision record, and editing one after the bots
+acted on it would destroy the evidence of what they actually saw.
+
+**Effect: it makes those bots' picks worse, not better, so −11.3% is if anything
+conservative.** But "the surface record informed this decision" is void for
+Challengers before today.
+
+**And your underlying point stands independently:** the calendar moves from hard
+to indoor and the tier mix shifts, so a sample gathered over two months is not
+one population. **That is a reason to prefer the 9-day single-bot route over the
+21-day one**, and it is now in the report's own output.
+
+## 4. Noted: no purchase. I will not raise the $9.99 again.
+
+`WHEN_THE_9_99_LANDS.md` stays as a record of what it would have bought. The
+free route is `src/set1_labels.py`, already built.
