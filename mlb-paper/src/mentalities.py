@@ -296,8 +296,15 @@ def m1_starter(brief, window):
         elif abs(d) >= M1_MIN_DIVERGENCE_ER9:
             # The divergence is large but rests on too little pitching to mean
             # anything. Recorded so the decline is legible, never used.
-            f.append(f"form_divergence_IGNORED_only_{prior}_starts_"
-                     f"{rec_ip:.1f}ip")
+            #
+            # ⚠ The flag NAME carries no numbers, deliberately. A3's first
+            # version emitted `form_divergence_IGNORED_only_1_starts_5.1ip`,
+            # and `livedesk` (mailbox 009) is keying a duplicate-signal guard on
+            # these strings: the innings count moves between decision windows,
+            # so the identical bet produced a fresh key three times a day and
+            # their guard would silently never have fired. The counts belong in
+            # FIELDS, which are right below, not in an identifier.
+            f.append("form_divergence_IGNORED_insufficient_sample")
         if s.get("debut_or_near"):
             f.append("debut_or_near")
             runs -= sgn * M1_DEBUT_RUNS

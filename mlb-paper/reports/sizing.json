@@ -1,0 +1,97 @@
+{
+  "picks": 73,
+  "runs": 2000,
+  "arms": {
+    "flat-5": {
+      "real_ordering_final": 405.59,
+      "median_final": 405.59,
+      "worst_5pct": 405.59,
+      "best_5pct": 405.59,
+      "runs_below_50": 0,
+      "runs_below_50_pct": 0.0,
+      "runs_to_zero": 0,
+      "runs_to_zero_pct": 0.0,
+      "median_max_drawdown": 74.18,
+      "worst_single_game": -12.97,
+      "passes_rule": true
+    },
+    "flat-5-comp": {
+      "real_ordering_final": 416.59,
+      "median_final": 419.67,
+      "worst_5pct": 416.93,
+      "best_5pct": 422.59,
+      "runs_below_50": 0,
+      "runs_below_50_pct": 0.0,
+      "runs_to_zero": 0,
+      "runs_to_zero_pct": 0.0,
+      "median_max_drawdown": 102.85,
+      "worst_single_game": -45.03,
+      "passes_rule": true
+    },
+    "flat-20": {
+      "real_ordering_final": 569.87,
+      "median_final": 572.04,
+      "worst_5pct": 567.25,
+      "best_5pct": 578.9,
+      "runs_below_50": 141,
+      "runs_below_50_pct": 7.0,
+      "runs_to_zero": 0,
+      "runs_to_zero_pct": 0.0,
+      "median_max_drawdown": 755.23,
+      "worst_single_game": -3947.49,
+      "passes_rule": false
+    },
+    "half": {
+      "real_ordering_final": 1.95,
+      "median_final": 1.92,
+      "worst_5pct": 0.62,
+      "best_5pct": 3.54,
+      "runs_below_50": 2000,
+      "runs_below_50_pct": 100.0,
+      "runs_to_zero": 0,
+      "runs_to_zero_pct": 0.0,
+      "median_max_drawdown": 687.58,
+      "worst_single_game": -196197.71,
+      "passes_rule": false
+    },
+    "all-in": {
+      "real_ordering_final": 0.53,
+      "median_final": 0.24,
+      "worst_5pct": 0.02,
+      "best_5pct": 0.5,
+      "runs_below_50": 2000,
+      "runs_below_50_pct": 100.0,
+      "runs_to_zero": 45,
+      "runs_to_zero_pct": 2.2,
+      "median_max_drawdown": 439.22,
+      "worst_single_game": -802801.62,
+      "passes_rule": false
+    },
+    "kelly": {
+      "real_ordering_final": 294.58,
+      "median_final": 293.82,
+      "worst_5pct": 289.9,
+      "best_5pct": 296.87,
+      "runs_below_50": 126,
+      "runs_below_50_pct": 6.3,
+      "runs_to_zero": 0,
+      "runs_to_zero_pct": 0.0,
+      "median_max_drawdown": 448.88,
+      "worst_single_game": -1590.45,
+      "passes_rule": false
+    },
+    "kelly-half": {
+      "real_ordering_final": 363.54,
+      "median_final": 364.11,
+      "worst_5pct": 361.29,
+      "best_5pct": 366.89,
+      "runs_below_50": 0,
+      "runs_below_50_pct": 0.0,
+      "runs_to_zero": 0,
+      "runs_to_zero_pct": 0.0,
+      "median_max_drawdown": 196.1,
+      "worst_single_game": -244.4,
+      "passes_rule": false
+    }
+  }
+}
