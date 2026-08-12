@@ -144,7 +144,10 @@ a market existed **93 in 100 at the 15th minute** and **16 in 100 at the 89th**.
 Competition-matched per reading, the middle result is **−0.40c per contract**,
 stable whether a comparison needs 40 matches of history behind it or 200.
 **Champions League qualifying, the only European book here, came in at −2.61c,
-second worst of ten.**
+and the improvement that was expected there did not
+appear. **The words "second worst of ten" are withdrawn** — that is a rank
+pulled from a table, the same shape SO039 refuses to nominate. See the note in
+`LEDGER_SOCCER.md`.**
 
 **The held-out years were never opened.** `PREREGISTRATION_COMEBACK.md` was
 committed before any comeback number existed; check the git log, and if that is

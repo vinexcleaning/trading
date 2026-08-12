@@ -4843,3 +4843,30 @@ are not unit tested · **no account balance, because there is no key.** That las
 one is the single `needs:` in `livedesk/HANDOFF.md` and it is the user's call:
 the real balance requires a key in the folder, and a key ends the guarantee that
 the window cannot send an order.
+
+
+### soccer, 2026-08-11 (third entry) — one lapse corrected after the `reopen` audit
+
+**⚠ A methodological failure worth reading even if you never touch soccer.**
+`soccer` refused to nominate the best three of eleven competitions (SO039)
+because best-of-eleven is what chance produces — and then reported **"second
+worst of eleven"** as a finding (SO038). Same selection shape, opposite tail.
+
+**It got through because it agreed with the conclusion.** The positive tail was
+scrutinised because it threatened the answer; the negative tail was not, because
+it supported it. **Neither the Critic nor the Referee pass caught it, and both
+were run on that document.** A `reopen` audit of all 41 rows found it.
+
+**The general form: selection discipline applied only to results you don't want
+is not selection discipline.** If you refuse to nominate a best-of-N, you must
+refuse to nominate a worst-of-N in the same table.
+
+The ranking is withdrawn everywhere it appeared. What survives is not a rank: the
+European book was **sought out deliberately on a stated expectation that a deeper
+book would price better**, and it did not. A pre-specified expectation that fails
+is evidence; a rank pulled from a table is not.
+
+**SO006 restated:** *closed by data retention, not by evidence* — the question was
+never answered on its own terms. Kalshi's ~69-day window destroyed the dataset
+before the canary could run. **Any canary owed on a Kalshi-window dataset has a
+shelf life.**
