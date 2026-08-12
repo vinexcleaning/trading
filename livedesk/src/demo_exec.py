@@ -1,0 +1,250 @@
+"""Submitting an order to Kalshi's DEMO environment, and nowhere else.
+
+WHAT THIS IS
+    Kalshi's practice environment. **Fake money. Nothing here can move a real
+    dollar.** It exists so the whole loop -- propose, guard, submit, read back,
+    record -- gets exercised against the real API instead of only against a
+    local simulation.
+
+WHAT THIS IS NOT
+    Production order submission. That is a separate decision, it has been put
+    to the user in writing, and it is not what this file does.
+
+HOW "DEMO ONLY" IS ENFORCED, and it is structural rather than a label
+    1. The client is constructed with `demo=True` as a **literal** at the one
+       construction site below. Not a default, not a parameter, not read from
+       config, not from the environment.
+    2. **Before every single submission the effective base URL is checked** --
+       the host this client will actually call, not a flag someone set. If it
+       is not the demo host, it raises and no order goes out. A flag can be
+       wrong; the URL is what the packet goes to.
+    3. There is **no constant, parameter, environment variable or config key
+       anywhere in `livedesk/` that could switch this to production.** A future
+       session that wants production has to write new code, visibly, and delete
+       a test that says so.
+    4. **No credentials live in this repo.** The repo is public. The demo key
+       is read from outside it, by path, from the environment.
+
+WHY IT REUSES `kalshi_client.py` RATHER THAN SIGNING ITS OWN REQUESTS
+    RSA-PSS request signing is fiddly and already written and already used
+    against the real API. A second copy would drift, and this repo has a
+    written history of exactly that -- the fee formula reached seventeen
+    copies before a test stopped it (GUARDS #6). So the signing is theirs and
+    the environment check is ours.
+"""
+from __future__ import annotations
+
+import sys
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Optional
+from urllib.parse import urlsplit
+
+import killswitch
+
+# The ONLY host this module is willing to send an order to. Compared against
+# the URL the client will really call, immediately before every submission.
+DEMO_HOST = "external-api.demo.kalshi.co"
+
+# Where the sibling project that owns the signing code lives. Not on the path
+# by default -- imported lazily inside _client() so that merely importing this
+# module pulls in no networking, no cryptography and no credentials.
+_CLIENT_DIR = Path(__file__).resolve().parents[2] / "kalshi-inplay-bot"
+
+# How long to wait for a demo order to fill before recording it as resting.
+FILL_WAIT_SECONDS = 6.0
+
+
+class NotDemo(RuntimeError):
+    """The client is not pointed at the demo environment. Always fatal."""
+
+
+class Refused(RuntimeError):
+    """A guard said no. Carries a sentence written for him, not for a log."""
+
+
+@dataclass
+class Outcome:
+    """What ACTUALLY happened, which is not the same as what was asked for."""
+    state: str          # filled|partial|resting|rejected|cancelled|unknown
+    filled: float = 0.0
+    requested: int = 0
+    order_id: str = ""
+    message: str = ""
+    raw: dict = field(default_factory=dict)
+    at_utc: str = ""
+
+    @property
+    def is_working(self) -> bool:
+        """Money is committed in demo -- filled, part-filled, or sitting on
+        the book where it may still fill."""
+        return self.state in ("filled", "partial", "resting")
+
+    @property
+    def certain(self) -> bool:
+        return self.state != "unknown"
+
+
+def _now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def _client():
+    """The one construction site. `demo=True` is a LITERAL and must stay one.
+
+    `tests/test_paper_only.py` fails the build if this file ever gains a way
+    to pass anything else.
+    """
+    if str(_CLIENT_DIR) not in sys.path:
+        sys.path.insert(0, str(_CLIENT_DIR))
+    from kalshi_client import KalshiClient          # noqa: E402
+
+    client = KalshiClient(demo=True)                # <-- LITERAL. leave it.
+    verify_demo(client)
+    return client
+
+
+def verify_demo(client) -> str:
+    """Check the URL the client will really call. Raises NotDemo otherwise.
+
+    Deliberately reads `client.base` -- the string requests will be built from
+    -- rather than `client.demo`, which is only what somebody set. If the two
+    ever disagree, the URL is the truth and the flag is the lie.
+    """
+    base = getattr(client, "base", None)
+    if not base:
+        raise NotDemo("the client has no base URL at all, so there is no way "
+                      "to tell where an order would go. Refusing.")
+    host = urlsplit(str(base)).netloc
+    if host != DEMO_HOST:
+        raise NotDemo(
+            f"this would have gone to {host!r}, which is not the practice "
+            f"environment ({DEMO_HOST}). No order sent. This tool only ever "
+            f"places practice orders.")
+    return host
+
+
+def guards_ok(ledger, entry) -> None:
+    """Every existing guard, called rather than restated.
+
+    Two copies of a guard is how guards drift, so nothing here re-implements
+    a rule -- it asks the code that already owns it. Raises Refused with a
+    sentence he can act on.
+    """
+    # The kill switch is checked HERE, immediately before submitting, not at
+    # startup. A file dropped while the window is open must stop the next one.
+    if killswitch.disabled():
+        raise Refused(f"Turned off. {killswitch.reason()}")
+
+    stopped, why = ledger.stopped()
+    if stopped:
+        raise Refused(why)
+
+    # Guard 4 gates SUBMISSION, not only the display. It is the guard that
+    # caught his $32 problem, and a wrong running total makes every other
+    # guard read a wrong number.
+    state, msg = ledger.reconcile()
+    if state in ("disagree", "unchecked"):
+        raise Refused(msg)
+
+    capped = ledger.daily_block(entry.cost_usd)
+    if capped:
+        raise Refused(capped)
+
+    ok, why = ledger.may_bet(entry.game_key, entry.signal,
+                             next_cost_usd=entry.cost_usd)
+    if not ok:
+        raise Refused(why)
+
+
+def submit(ledger, entry, client=None) -> Outcome:
+    """Place ONE practice order for an entry the guards have cleared.
+
+    Never invents a fill. A successful HTTP response is not a fill -- that is
+    the exact mistake that put a phantom $3.77 in his ledger. The order is
+    read back and only what actually happened is recorded. **Unknown is a real
+    state and is recorded as unknown**, never quietly as filled.
+    """
+    guards_ok(ledger, entry)
+
+    own = client is None
+    if own:
+        client = _client()
+    else:
+        # An injected client still has to prove where it points. A test double
+        # that forgets to look like demo must fail exactly as production would.
+        verify_demo(client)
+
+    try:
+        resp = client.limit_buy(entry.ticker, entry.contracts, entry.price_c)
+    except PermissionError as exc:
+        # kalshi_client refuses ALL writes while `kalshi-inplay-bot/
+        # TRADING_DISABLED` exists -- and it does exist, from 2026-08-03.
+        # Reported as itself rather than swallowed. NOT worked around: that
+        # file is the tennis strategy's production kill switch and deleting it
+        # to make a practice order go through would re-arm real tennis orders.
+        raise Refused(
+            f"The shared Kalshi client is switched off, so nothing was sent. "
+            f"It says: {exc}. That switch belongs to the tennis bot and turning "
+            f"it off here would turn real tennis orders back on, so this tool "
+            f"will not touch it.") from exc
+    except Exception as exc:
+        return Outcome(state="rejected", requested=entry.contracts,
+                       message=f"Kalshi refused the practice order: {exc}",
+                       at_utc=_now())
+
+    order = (resp or {}).get("order") or resp or {}
+    order_id = str(order.get("order_id") or "")
+    if not order_id:
+        return Outcome(state="rejected", requested=entry.contracts,
+                       raw=resp or {}, at_utc=_now(),
+                       message="Kalshi accepted the request but gave back no "
+                               "order number, so there is nothing to check. "
+                               "Treat it as not placed and look at the demo "
+                               "site before trying again.")
+
+    # ---- read it back. this is the whole point. -----------------------
+    try:
+        filled, status = client.await_fill(order_id, FILL_WAIT_SECONDS)
+    except Exception as exc:
+        return Outcome(state="unknown", requested=entry.contracts,
+                       order_id=order_id, raw=resp or {}, at_utc=_now(),
+                       message=f"The practice order went in as {order_id} but "
+                               f"this tool could not read back what happened "
+                               f"to it ({exc}). It is NOT recorded as placed. "
+                               f"Check the demo site.")
+
+    return _classify(filled, status, order_id, entry.contracts, resp or {})
+
+
+def _classify(filled, status, order_id, requested, raw) -> Outcome:
+    status = str(status or "unknown").lower()
+    filled = float(filled or 0.0)
+    common = dict(filled=filled, requested=requested, order_id=order_id,
+                  raw=raw, at_utc=_now())
+    if filled >= requested > 0:
+        return Outcome(state="filled",
+                       message=f"Practice order filled: all {requested} "
+                               f"contracts.", **common)
+    if filled > 0:
+        return Outcome(state="partial",
+                       message=f"Practice order only PART filled: {filled:g} "
+                               f"of {requested}. The rest is still sitting on "
+                               f"the book.", **common)
+    if status in ("canceled", "cancelled"):
+        return Outcome(state="cancelled",
+                       message="The practice order was cancelled before it "
+                               "filled. Nothing is on.", **common)
+    if status in ("resting", "open", "pending", "executed"):
+        # 'executed' with zero fill is contradictory, so it is not called
+        # filled. Resting is the honest reading and the UI says to check.
+        return Outcome(state="resting",
+                       message=f"Practice order {order_id} is sitting on the "
+                               f"book unfilled at {requested} contracts. It "
+                               f"may fill later or not at all.", **common)
+    return Outcome(state="unknown",
+                   message=f"Kalshi came back with a state this tool does not "
+                           f"recognise ({status!r}), so nothing is being "
+                           f"assumed. Check the demo site for order "
+                           f"{order_id}.", **common)
