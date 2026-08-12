@@ -597,3 +597,213 @@ overstated by five.**
 > ones was defending a retracted claim.** The audit's own error rate on worked
 > items is **50%**. That is the number to hold against anything else in this
 > file.
+
+---
+
+# THE LIVE-MONEY LEDGER, 2026-08-11 — 122 claims nobody had read
+
+Mailbox 002 sent me to `kalshi-inplay-bot/audit/LEDGER.md` ahead of the two
+hypothesis grids, for the right reason: **it is the only project in this repo
+about money that actually moved.**
+
+**Running totals across everything audited: 446 of 609 claims read, 136 of them
+closed a line of work, and 91 — two thirds — were closed properly.** The 163
+still unread are named in `classify_closures.py` with a reason each.
+
+## ⚠ FIRST — my own tool had the bug this chat exists to catch
+
+**Thirty-four claim ids mean two different things depending on which file you
+are in.** `crypto` C010 is *"no model beats the Kalshi mid"* on 250 events. This
+ledger's C010 is *"a player model lost to the bookmaker"*. Same id, different
+claim, different project.
+
+**My classifier keyed on the id alone**, so it silently applied `crypto`'s
+verdicts to 27 of these rows and reported them as already-audited. **The audit of
+things-concluded-too-fast concluded too fast about its own coverage.** Fixed —
+it now keys on (file, id) — and reported to `coordinator`, because **`idea.py`
+searches the same merged view and has the same exposure**: a prior-work check for
+"C010" returns two unrelated claims.
+
+## The six findings
+
+### 1. The bug that blocked crypto for six days was already fixed here, three days earlier
+
+**C066:** the orderbook parser unwrapped a non-existent `"orderbook"` key, so
+every book snapshot for ~1.8 hours was an empty marker with correct row counts.
+**Diagnosed, quarantined, and covered by nine regression tests, on 2026-07-30.**
+
+**That is `M001`** — which `market-selection` re-discovered on **2026-08-02** and
+"independently reproduced on 85 markets", and which then sat as a stated blocker
+in the crypto market-making documents until **2026-08-06**.
+
+> **The fix was on disk with tests the entire time.** This is the clearest
+> measurement of what an unread ledger costs: six days of a blocked thread, and
+> a wrong premise repeated in three documents.
+
+### 2. The live bot's two gates are fitted to noise, and the bot is configured for real money
+
+| | |
+|---|---|
+| **C011** — the primary entry gate | a price-bucket table from **125 settled markets split five ways** — about **25 observations a bucket**, and the decisive bucket carries the account |
+| **C012** — the 38¢ stop | a "smooth optimum" across **137 matches** where **the entire range across every width tested is 2.3 cents**. The optimum is inside the noise. |
+| **C108** | `gui.py --live --bankroll 125 --stake-pct 5`, private key present, 5 open positions with resting take-profits |
+
+The ledger already marks both **BROKEN**. Trading is **off** and nothing is
+scheduled, so this is not an emergency — **it is a trap laid for whoever turns it
+back on.** The 14,162-market tape that would re-derive both is on disk.
+
+### 3. "Consensus copying is REJECTED" — on zero accepted entries
+
+**C088.** The main setting produced **0 accepted resolved entries in all five
+niches**, and the headline reads as a rejection. The ledger says so itself:
+*"the main setting is a null-by-no-data."*
+
+**That is category 4 in its purest form — a verdict with no measurement under
+it.** The unfiltered crypto control losing **$40.17 on $40** is real and damning;
+it should carry the sentence instead.
+
+### 4. Four claims marked "no artifact anywhere" whose artifacts exist one folder away
+
+| claim | what it says | where the answer is |
+|---|---|---|
+| **C009** | Kalshi tracks Betfair at r=0.9878 — *"no Betfair data, script or output anywhere on this machine"* | **T012**, n=809, SETTLED, same numbers |
+| **C010** | a player model lost to the bookmaker, artifact **NONE** | **T006**, SETTLED, same numbers |
+| **C117** | *"whether the tennis series charge maker fees is unrecorded anywhere and is the cheapest open question in the corpus"* | **S010**, **S025** and **M008** — answered three times over |
+| **C106b** | Kalshi tennis calibration, *"none preserved"* | **B027**, 6,519 events |
+
+**C009 is load-bearing:** it is the stated reason to expect no favourite-longshot
+bias on Kalshi. It has been carried as unverified while a settled version sat in
+`kalshi-tennis`.
+
+**And C042 is the third copy of the dead +7.05pp number** — `K015` = `W011`,
+recomputed from scratch at +2.09 and **−0.29 net**. Two projects had already
+killed it; this one still calls it the claim that reframes its whole
+copy-trading thread.
+
+### 5. The repo's biggest open lead has a prior measurement that failed, and nothing cites it
+
+The 2026-08-06 audit ranks **"measure weather's edge against the mid"** as item
+**#1** — *"the largest genuinely-unexplored lead in the repo"*. **C061** in this
+ledger says the same: unmeasured, blocked.
+
+**C096, a week earlier, in a project neither of them references, scored a
+weather model against the prices you would actually have paid, on 600 contracts
+held back and sealed — and the model LOST.** Its forecasts were wrong by
+**0.2048** where the market's were wrong by **0.1690**; lower is better, so the
+market won and it was not close. **C097** then mixed the two, 89% market and 11%
+weather, and the tiny improvement vanished once the test counted **each weather
+event once instead of each contract** — the range of what it could really be ran
+from slightly negative to slightly positive, so the gate did not pass.
+
+**This does not settle the question** — different family (daily temperature, not
+hourly ladders), different benchmark (ask, not mid), different model. **It
+changes the prior**, and it is worth reading before a recorder is committed to it.
+
+### 6. The real thesis was never tested, and the ledger says so
+
+**C106c**, in its own words: *"this reframes every negative result in P1. All of
+C001–C007 concern **price-visible** information, which the market prices
+correctly. None of it tests whether the market prices the **score** correctly."*
+
+**The forward tape built to test it ran for two days and stopped.**
+`tennis-paper-forward` is now recording live matches with a brief per match,
+which is the same shape.
+
+### Also: two known, unfixed defects feeding a frozen forward list
+
+**C082** — the follower model disagrees with the wallet's own outcome on **42.4%**
+of traded-out positions, and one affected wallet (**33.7%**) **is in the frozen
+follow list** while the forward verdict is **pooled**. **C083** — `holding_seconds`
+measures entry to a metadata finalisation timestamp, 160 hours on single
+matches, contaminating **100%** of the headline candidate's record. Both must be
+fixed **before** that forward record is ever scored.
+
+## What this ledger gets right, and it is most of it
+
+**91 of 136 closures across everything audited were closed properly, and this
+file contributes the best examples in the repo:**
+
+- **C027** is how a category-4 row should read: *"a null at n=25 markets, i.e.
+  very low power. It rules out a large edge, not an edge."*
+- **C077** — 42,652 wallets, one match = one call, **0 discoveries** and **fewer**
+  nominally-significant wallets than chance predicts.
+- **C079** — the edge is real and **dies inside 15 seconds**, with the null
+  expectation computed at each delay. That is the mechanism behind every negative
+  result above it.
+- **C072** simulates the **screen**, not the strategy. **C074** shows a gate
+  flipping a wallet from fail to pass with no record changing. **C090** preserves
+  invalidated runs instead of deleting them.
+- **C036** caught its own pseudo-replication: 2 distinct violations counted 55
+  times, and it says so.
+
+## The Critic and the Referee on the live-money pass
+
+### The Critic
+
+1. **I read 122 ledger rows, not 122 artifacts.** Every "closed on evidence"
+   above rests on what that row says about itself. The two biggest findings in
+   my earlier passes both came from opening an artifact instead — and I opened
+   **none** here.
+2. **C066 = M001 is the strongest claim in this section and it is an identity
+   argument, not a re-run.** I matched two descriptions of the same parse error
+   in two files. I did not verify that the fix in `kalshi-inplay-bot` would have
+   fixed `market-selection`'s reader, which is a different codebase.
+3. **"Nobody had read it" is an absence claim.** I infer it from the coordinator
+   saying so and from `ledger.py` not having parsed the file. Someone could have
+   read it without leaving a trace.
+4. **The weather point (C061 vs C096) is the one most likely to be over-read.**
+   Different family, different benchmark, different model, and I say so — but
+   the sentence "the biggest lead has a prior measurement that failed" will
+   travel further than the caveat attached to it.
+5. **My own ID-collision bug means every count I published before today was
+   computed on a table with 27 wrong entries.** The 313-claim pass was not
+   affected — those files have no collisions — but I did not verify that until
+   after I found the bug.
+6. **`nobody` owns three of the reopens.** `kalshi-inplay-bot` is in no chat's
+   folder list in `chats.json`. Filing a reopen to nobody is filing it nowhere.
+
+### The Referee
+
+**STANDS.**
+
+- **C066 = M001.** Two files describe the same parse error, three days apart,
+  and the second one says it was "independently reproduced". Whatever the fix
+  portability, the *diagnosis* existed and was not found.
+- **C011 and C012.** The ledger already calls both BROKEN; I added only the
+  consequence, which is C108 — the bot is configured for real money.
+- **C088.** "Rejected" against "0 accepted resolved entries" is the ledger's own
+  wording in both halves.
+- **The four cross-reference rows** (C009, C010, C117, C106b). Each names an
+  artifact as missing; each has a settled counterpart with matching numbers.
+- **The 91-of-136 count**, with the stated limit that it is row-level.
+
+**DOWNGRADED.**
+
+- was: *"the repo's biggest open lead has a prior measurement that failed"*
+  now: **"the repo's biggest open lead has a prior measurement, on a different
+  weather family against a different benchmark, that failed. It changes the
+  prior. It does not answer the question, and it should be read before a
+  recorder is committed, not instead of one."**
+  because: the Critic is right that the short version will travel and the
+  caveat will not.
+- was: *"122 claims nobody had read"*
+  now: **"122 claims that no tool could read and that nothing in the repo
+  cites"** — which is what I can actually show.
+
+**FOR THE USER — genuinely unresolved. One, and it is a real disagreement.**
+
+> **Does `kalshi-inplay-bot` belong to anybody?**
+>
+> **One side:** it is dormant, trading is off, and its claims are historical.
+> Leave it unowned and let the audit's notes stand as the record.
+>
+> **The other side:** it holds the live bot's two gates, both fitted to about
+> 25 and 137 observations, and a private key, and a config that says
+> `--live --bankroll 125`. **The next person to turn it on inherits both gates
+> and neither is flagged in the code.** Three of my reopens have `nobody` as
+> the owner because `chats.json` gives that folder to no chat.
+>
+> **What would settle it:** you assign the folder to a chat, or you say it stays
+> dormant and the gates get a warning comment where a trader would see it.
+> **I cannot decide this and neither can the coordinator — it is about money
+> that could move.**

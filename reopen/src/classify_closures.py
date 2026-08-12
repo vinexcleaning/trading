@@ -261,6 +261,19 @@ C: dict[str, tuple[str, str]] = {
              "and SHORTLIST.md still gives it as the reason the exchange's "
              "highest-volume tennis family has no entry."),
 
+    # ---- soccer, merged into the root ledger 2026-08-11 ----------------------
+    # The other 39 SO rows live in soccer/LEDGER_SOCCER.md and are deferred.
+    "SO041": ("EVIDENCE-PENDING", "the market does not quote the thing the "
+              "strategy wanted to buy: at the 89th minute a quote existed 16 "
+              "times in 100 and at 97c or better, 1 in 100. Predicted in "
+              "writing before it was run, and its own selection canary FAILS "
+              "on the has-a-market mask, which is the honest way round. 699 "
+              "matches, one reading each. THIS AUDIT HAS NOT VERIFIED IT -- it "
+              "is four days old and the folder's other 39 rows are unread."),
+    "SO037": (N, "labelled SUGGESTIVE and conditional by its own author -- two "
+              "populations, and by SO041 the readings are conditioned on the "
+              "match still being in doubt. Not a closure."),
+
     # ---- bot-hunt -----------------------------------------------------------
     "BH001": (N, "API fact"),
     "BH002": (E, "2,779 esports events, 0 cells above zero, 120 survive "
@@ -383,6 +396,323 @@ C: dict[str, tuple[str, str]] = {
     "CH128": (N, "power arithmetic"),
 }
 
+INPLAY_FILE = "kalshi-inplay-bot/audit/LEDGER.md"
+
+# The live-money bot's own audit, 122 claims, read 2026-08-11 on mailbox 002.
+#
+# It carries its OWN C001-C117 numbering, which collides with `crypto`'s: 34
+# ids mean two different claims depending on which file you are in. `crypto`
+# C010 is "no model beats the Kalshi mid" on 250 events; this C010 is "a player
+# model lost to the bookmaker". Keyed separately for that reason -- and until
+# today THIS TOOL had the bug, silently applying crypto's calls to 27 of these
+# rows. `idea.py` searches the same merged view and has the same exposure.
+C_INPLAY: dict[str, tuple[str, str]] = {
+
+    # -- P1, the live tennis bot ---------------------------------------------
+    "C001": (E, "14,162 settled markets = 7,081 matches, 60/40 holdout touched "
+             "once, random-entry control, slippage sweep. -9c against a ~4c "
+             "cost base, so the conclusion is arithmetic."),
+    "C002": (N, "the only positive number in P1, openly a train-set point "
+             "estimate with no interval"),
+    "C003": (E, "within-sample paired, consistent on holdout"),
+    "C004": (N, "cost arithmetic from 2.94M live candles"),
+    "C005": (N, "UNVERIFIED prose, no fill model"),
+    "C005b": (N, "UNVERIFIED, code corroborated -- R6 records it re-run "
+              "2026-08-05 into bot-forensics/out/"),
+    "C005c": (N, "same, re-run 2026-08-05"),
+    "C005d": (N, "a look-ahead trap caught, not a closure"),
+    "C006": (E, "the holdout was touched once and all three tuned configs "
+             "degraded 3.5-4.3c"),
+    "C007": (N, "sensitivity fact"),
+    "C008": (N, "a statement about the backtest; whether the live bot honours "
+             "it is openly not established"),
+    "C009": ("DATA", "'Kalshi tracks Betfair at r=0.9878, MAD 1.95c' is marked "
+             "UNVERIFIED -- 'no Betfair data, script or output anywhere on this "
+             "machine'. THE ARTIFACT EXISTS: it is T012 in the root ledger, "
+             "n=809, SETTLED, same numbers. Resolvable by cross-reference. And "
+             "it is load-bearing -- the stated reason to expect no "
+             "favourite-longshot bias on Kalshi."),
+    "C010": ("DATA", "'a player model lost to the bookmaker, Brier 0.2249 vs "
+             "0.2057, n=2,645', artifact NONE. It is T006, SETTLED, same "
+             "numbers. Resolvable by cross-reference."),
+    "C011": ("FLOOR", "THE LIVE BOT'S PRIMARY ENTRY GATE, fitted to 125 real "
+             "settled markets split into 5 price buckets -- about 25 "
+             "observations each. Already BROKEN, and the bot is configured for "
+             "real money (C108)."),
+    "C012": ("FLOOR", "the stop width, from a 'smooth optimum' across 137 "
+             "matches where the whole range across all widths is 2.3c. The "
+             "optimum is inside the noise band -- the same failure the "
+             "backtest's own Step 6 identified."),
+    "C013": (N, "UNVERIFIED, probably computable from views.pkl"),
+    "C014": (N, "UNVERIFIED"),
+    "C015": (N, "a safety fact, flagged as deserving a code read"),
+    "C016": (N, "a single incident"),
+    "C017": (N, "11 files of preserved input, method and conclusion lost"),
+
+    # -- P2, the exchange-wide scan ------------------------------------------
+    "C018": (N, "API fact"), "C019": (N, "fee correction"),
+    "C020": (N, "structural fact"), "C021": (N, "arithmetic"),
+    "C022": (N, "API fact"), "C023": (N, "flow composition fact"),
+    "C024": (N, "exchange fact"), "C025": (N, "rate limit"),
+    "C026": (N, "the power arithmetic that kills most of the exchange"),
+    "C027": (E, "and it states its own floor correctly: 'a null at n=25 "
+             "markets, i.e. very low power. It rules out a large edge, not an "
+             "edge.' This is how a category-4 row should read."),
+    "C028": (N, "retracted, and the file carries its own caveat field"),
+    "C029": (N, "retracted -- and still live in GO_NO_GO.md"),
+    "C030": (N, "the corrected version, small n, labelled SUGGESTIVE"),
+    "C031": (E, "102,716 candles; statistically real, economically dead"),
+    "C032": (E, "21 lags tested jointly"),
+    "C033": (N, "descriptive, well powered"),
+    "C034": (E, "a pre-specified prediction that failed and was reported as "
+             "failing"),
+    "C035": (N, "shape confirmation, not an edge"),
+    "C036": (N, "count BROKEN, conclusion SETTLED -- 2 distinct violations "
+             "counted 55 times, and the meta file said 17 while the prose said "
+             "52. Self-caught by this audit."),
+    "C037": (E, "phantom arb caught by a tiling check plus a regression test"),
+    "C038": (E, "independent corroboration from a different codebase"),
+    "C039": (N, "SUGGESTIVE, and the interval is openly called narrower than "
+             "the data supports"),
+    "C040": (N, "retracted, self-caught"),
+    "C041": (N, "SUGGESTIVE and openly contradicted by C064/C077"),
+    "C042": ("DATA", "the +7.05pp price-band claim whose location is recorded "
+             "as literally 'inline'. THIS IS THE THIRD COPY of K015 = W011, "
+             "which wallet-copy-study recomputed from scratch at +2.09pp and "
+             "-0.29pp net. Two projects had already killed it; this one still "
+             "carries it as the claim that reframes its whole copy-trading "
+             "thread."),
+    "C043": (N, "SUGGESTIVE, bucket ns are positions not settlements"),
+    "C044": (N, "a definition error found"),
+    "C045": (N, "a self-limiting caveat"),
+    "C046": (N, "point estimate sound, interval must be match-clustered"),
+    "C047": (N, "retracted, self-caught"),
+    "C048": (N, "retracted, self-caught"),
+    "C049": (N, "retracted -- and still live in GO_NO_GO.md:87-90"),
+    "C050": (E, "an honest reversal of an over-promise, stating its own power: "
+             "bucket ranges +/-11-29 out of 100, 0 of 7 Polymarket values "
+             "excluded"),
+    "C051": (N, "correctly worded as 'no positive evidence', not 'refuted'"),
+    "C052": (E, "1,376 settled markets, residual against price, correct unit. "
+             "The best-powered null in P2."),
+    "C053": (E, "structural -- no account identifier, so identity-level copy "
+             "trading on Kalshi is impossible. Closes a whole family."),
+    "C054": (N, "descriptive corroboration"),
+    "C055": (N, "a clever ground-truth fact"),
+    "C056": (E, "strict time split, leak assertion, clustered bootstrap over "
+             "settlement hours, after the 8,090 correction"),
+    "C057": (N, "retracted -- and still live in shortlist.md:113"),
+    "C058": (N, "the correction that reframes the weather thread"),
+    "C059": (N, "retracted -- and still live in shortlist.md and GO_NO_GO.md"),
+    "C060": (N, "SUGGESTIVE; the depth half rests on ~12 snapshots and the "
+             "author says so"),
+    "C061": ("NARROW", "'whether the weather model beats the mid is unmeasured "
+             "and blocked' -- while C096, in another project a week earlier, "
+             "measured a weather model against market ASKS and it LOST. "
+             "Different family and benchmark, so not a refutation. But the "
+             "root audit calls this the largest unexplored lead in the repo, "
+             "and neither it nor P2 cites C096."),
+    "C062": (N, "volume fact, self-corrected"),
+    "C063": (N, "prose says 3 positive-control detections, the JSON says 2. "
+             "PASS survives either way."),
+    "C064": (E, "self-caught mis-specification; adding a positive control "
+             "unprompted is the best methodological decision in the corpus"),
+    "C065": (N, "unit error caught by an assertion"),
+    "C066": ("BUG", "THE ORDERBOOK PARSER UNWRAPPED A NON-EXISTENT 'orderbook' "
+             "KEY -- diagnosed, quarantined and regression-tested here on "
+             "2026-07-30. THIS IS THE SAME BUG AS M001, which market-selection "
+             "re-discovered on 2026-08-02 and 'independently reproduced on 85 "
+             "markets', and which then blocked the crypto market-making thread "
+             "for six days. The fix was already on disk with 9 tests."),
+    "C067": (N, "internally inconsistent FDR claim, flagged"),
+    "C068": (E, "116 hypotheses, zero tradeable edges -- the headline"),
+
+    # -- P3, Polymarket tennis copy trading ----------------------------------
+    "C069": (N, "retracted, self-caught"),
+    "C070": (N, "an operational rule, not a measured relationship"),
+    "C071": (E, "structural"),
+    "C072": (E, "split-sample plus thousands of random re-deals -- it "
+             "simulates the SCREEN, not the strategy. The best-designed test "
+             "in the corpus."),
+    "C073": (N, "a multiple-comparisons decision"),
+    "C074": (E, "the luck bar depends on the pool it is computed over -- "
+             "tightening a gate flipped a wallet from fail to pass with no "
+             "record changing"),
+    "C075": (E, "tripled the data and every candidate got worse"),
+    "C076": (E, "volume and directionality are anti-correlated"),
+    "C077": (E, "42,652 wallets, one match = one call, 0 BH discoveries at 5% "
+             "and 10%, and FEWER p<0.05 wallets than chance predicts. The "
+             "strongest negative result in the entire corpus."),
+    "C078": (E, "the luck bar FELL as the sweep grew -- the signature of noise"),
+    "C079": (E, "the edge is real and dies inside 15 seconds, with the null "
+             "expectation computed per delay"),
+    "C080": (N, "three sample-size errors found and fixed"),
+    "C081": (N, "SUGGESTIVE and explicitly below its own pass mark"),
+    "C082": ("BUG", "KNOWN AND UNFIXED: the follower model disagrees with the "
+             "wallet's own outcome on 42.4% of traded-out positions, and one "
+             "affected wallet (33.7%) is IN THE FROZEN FOLLOW LIST while the "
+             "forward verdict is pooled. One contaminated wallet in four "
+             "corrupts it. Must be fixed before the forward record is scored."),
+    "C083": ("BUG", "KNOWN AND UNFIXED: holding_seconds measures entry to a "
+             "metadata finalisation timestamp -- 160 hours on single matches. "
+             "Contaminates 100% of the headline candidate's record."),
+    "C084": (N, "UNVERIFIED, openly unaudited"),
+    "C085": (N, "verified API constraints"),
+    "C086": (E, "correctly refuses to over-read its own null -- 823 of 1,164 "
+             "observations come from 1-minute bars that cannot resolve "
+             "sub-minute differences"),
+    "C109": (E, "removing the top 5% of trades collapses ROI to zero or "
+             "negative for all six finalists"),
+    "C110": (E, "the tail-risk trap: two losses in 181 trades, one loss "
+             "erasing 13.9 wins, while looking excellent on three metrics"),
+    "C111": (E, "convexity bias in mean-of-ROI, demonstrated by trimming"),
+    "C112": (N, "three defects, all flattering results"),
+    "C113": (E, "states its own limitation -- every historical copyable-ROI "
+             "figure is unfillability-tested"),
+    "C114": (N, "n=1 but structural"),
+    "C115": (E, "survivorship is not corrected and cannot be, said plainly"),
+    "C116": (N, "a design, with no drift event yet reviewed"),
+
+    # -- P4, PTIS -------------------------------------------------------------
+    "C087": (N, "the report labels itself 'insufficient evidence' and refuses "
+             "the positive cells"),
+    "C088": ("FLOOR", "'Broad leaderboard consensus copying is REJECTED' -- on "
+             "0 accepted resolved entries in all five niches. The ledger says "
+             "so itself: 'the main setting is a null-by-no-data.' A rejection "
+             "with no measurement under it. The unfiltered crypto control "
+             "losing $40.17 on $40 is real; the headline is not."),
+    "C089": (N, "SUGGESTIVE at n=26, and it independently corroborates C079"),
+    "C090": (E, "invalidated runs excluded and preserved -- the best "
+             "experiment hygiene in the corpus"),
+    "C091": (N, "nothing claimed"),
+    "C092": (N, "data-quality checks"),
+
+    # -- P5, weather ----------------------------------------------------------
+    "C093": (E, "47,163 of 47,187 contracts resolve exactly as the official "
+             "observation says"),
+    "C094": (N, "a leak-resistant pipeline design"),
+    "C095": (N, "engineering, explicitly not proof of tradeable profit"),
+    "C096": (E, "THE GATE FAILED: model 0.204805 vs market-ask 0.168963 on 600 "
+             "contracts, sealed test. The most consequential single result in "
+             "the corpus for weather -- and no other project references it."),
+    "C097": (E, "an event-clustered bootstrap, the correct unit, and the gate "
+             "does not pass"),
+    "C098": (N, "SUGGESTIVE and explicitly overridden by C096"),
+    "C099": (E, "all five exit policies lost on 28 independent events; the "
+             "7-event validation gain was rejected as a small-sample anomaly"),
+    "C100": (E, "three structurally different methods, all negative, against a "
+             "pre-declared gate"),
+    "C101": (E, "the decision that follows"),
+    "C102": (N, "a forward design with a stated promotion rule"),
+
+    # -- P6 and cross-cutting -------------------------------------------------
+    "C103": (N, "the export exists and what it contains"),
+    "C104": (N, "NEVER ATTEMPTED -- 'the largest completely untested item in "
+             "the corpus'. Not a wrong closure; a thread never opened, and it "
+             "is the same one as CH111."),
+    "C105": ("NARROW", "TWO DIFFERENT TENNIS COST BARS ARE IN CIRCULATION. P2 "
+             "uses 2.4c throughout and reports intervals that 'exclude the "
+             "2.4c bar'; P1 measured 4.14c on real books. Conclusions phrased "
+             "as 'clears the 2.4c bar' do not clear 4.14c, and the "
+             "price-matched copy-trading result clears 4.14 only marginally. "
+             "A THIRD bar now exists: tennis measured 4.79c forward on "
+             "2026-08-09."),
+    "C106": (N, "SETTLED for momentum, UNVERIFIED for buy-high and maker"),
+    "C106b": ("DATA", "'Kalshi tennis prices are calibrated to +/-2.1c in every "
+              "5c bucket, and cheap underdogs are slightly OVERpriced' -- no "
+              "artifact preserved. P2 spent a whole session on exactly this "
+              "question (C049/C050) without knowing a prior tennis-specific "
+              "measurement existed. B027 later answered it properly."),
+    "C106c": ("NARROW", "THE BIGGEST LIVE THREAD HERE, AND THE LEDGER NAMES IT "
+              "ITSELF: 'this reframes every negative result in P1. All of "
+              "C001-C007 concern PRICE-VISIBLE information, which the market "
+              "prices correctly. None of it tests whether the market prices "
+              "the SCORE correctly.' The forward tape built to test it ran for "
+              "two days and stopped."),
+    "C107": (N, "the fee float-dust defect, since consolidated repo-wide"),
+    "C117": ("DATA", "'whether the tennis series sit inside the 124 maker-fee "
+             "series is unrecorded anywhere and is the cheapest open question "
+             "in the corpus'. IT IS RECORDED: S010 (maker fee zero on "
+             "Challenger/ITF, 91% of the book), M008 (78 of 3,074 series) and "
+             "S025 (the two maker-fee tennis series hold 34.4% of volume on "
+             "5.8% of markets). Answered three times over, in another folder."),
+    "C108": (N, "a configuration fact -- and the reason C011 and C012 matter"),
+}
+
+ACTION_INPLAY: dict[str, tuple[str, str, str, str]] = {
+    "C011": ("REOPEN", "nobody",
+             "The live bot's entry gate is fitted to ~25 observations a bucket "
+             "and the bot is configured for real money. Either re-derive it on "
+             "the 14,162-market tape that already exists, or turn the gate "
+             "off. Trading is currently OFF, so this is not urgent -- it is a "
+             "trap laid for whoever turns it back on.",
+             "one re-run against data on disk"),
+    "C012": ("REOPEN", "nobody",
+             "Same for the 38c stop width: 137 matches, 2.3c of range across "
+             "every width tested. Re-derive or drop it.",
+             "one re-run"),
+    "C066": ("RELABEL", "coordinator",
+             "Record in the root LEDGER.md that M001's bug was already "
+             "diagnosed, quarantined and regression-tested here on 2026-07-30 "
+             "-- three days before it was re-discovered, and six days before "
+             "it stopped blocking crypto. The lesson is about discoverability, "
+             "not about the bug.",
+             "minutes"),
+    "C082": ("REOPEN", "nobody",
+             "The follower model disagrees with the wallet's own outcome on "
+             "42.4% of traded-out positions, and a contaminated wallet sits in "
+             "the frozen follow list feeding a POOLED forward verdict. Fix "
+             "before that record is ever scored.",
+             "a fix, then a rescore"),
+    "C083": ("RELABEL", "nobody",
+             "holding_seconds is entry-to-finalisation, not entry-to-match-end. "
+             "Mark every hold-duration figure in P3 as contaminated.",
+             "minutes"),
+    "C088": ("RELABEL", "nobody",
+             "Rewrite 'consensus copying is REJECTED' as 'produced no data' -- "
+             "0 accepted resolved entries is not a rejection. The crypto "
+             "control result stands on its own and should carry the sentence.",
+             "minutes"),
+    "C009": ("RELABEL", "coordinator",
+             "Point the row at T012 in the root ledger, which is the artifact "
+             "it says does not exist.",
+             "minutes"),
+    "C010": ("RELABEL", "coordinator",
+             "Point the row at T006.",
+             "minutes"),
+    "C042": ("RELABEL", "coordinator",
+             "Mark it RETRACTED and point at W011 / K015. Two projects had "
+             "already killed this number before this row was written.",
+             "minutes"),
+    "C106b": ("RELABEL", "tennis",
+              "Point at B027, which measured Kalshi tennis calibration "
+              "properly on 6,519 events.",
+              "minutes"),
+    "C117": ("RELABEL", "devig",
+             "Answer the 'cheapest open question in the corpus' by pointing at "
+             "S010, S025 and M008.",
+             "minutes"),
+    "C061": ("REOPEN", "devig",
+             "Before spending a recorder on weather-versus-the-mid -- the root "
+             "audit's top-ranked item -- read C096. A different project scored "
+             "a weather model against market asks on 600 sealed contracts and "
+             "LOST (0.2048 vs 0.1690), and its blend gate failed an "
+             "event-clustered bootstrap. Different family and benchmark, so it "
+             "does not settle the question. It changes the prior.",
+             "a reading pass before a recorder job"),
+    "C105": ("RELABEL", "coordinator",
+             "Three tennis cost bars are now in circulation -- 2.4c, 4.14c and "
+             "4.79c. Say which applies where, once, somewhere central.",
+             "minutes"),
+    "C106c": ("REOPEN", "tennis",
+              "The real thesis -- price diverges from score -- has never been "
+              "tested, and the ledger says every negative result in P1 is "
+              "about price-visible information only. The forward tape built "
+              "for it ran two days. tennis-paper-forward is now recording live "
+              "matches with a brief per match, which is the same shape.",
+              "a design question, then forward time"),
+}
+
 REOPEN_CATS = {"BUG", "DATA", "NARROW", "FLOOR"}
 
 # ---------------------------------------------------------------------------
@@ -414,13 +744,18 @@ NOISE: dict[str, str] = {
 }
 
 DEFERRED: dict[str, str] = {
+    # kalshi-inplay-bot/audit/LEDGER.md was deferred on 2026-08-09 and is now
+    # AUDITED -- see C_INPLAY above.
     "set1_overshoot/HYPOTHESIS_LEDGER.md":
         "the full 97-row set-1 hypothesis grid. Newly readable 2026-08-09. "
         "Expect heavy overlap with S001-S025, which are audited.",
-    "kalshi-inplay-bot/audit/LEDGER.md":
-        "122 rows, and the highest-value of the three -- it is the live-money "
-        "bot's own audit. The first pass named this file as one the parser did "
-        "not read; it is now readable and still unaudited.",
+    "soccer/LEDGER_SOCCER.md":
+        "43 rows, and they appeared BETWEEN this pass and the last one. The "
+        "soccer chat created this file on 2026-08-09 in answer to this audit, "
+        "and the coordinator has since added it to SUB_LEDGERS -- so the "
+        "prior-work check can finally see soccer. Unaudited, and it is the "
+        "obvious next pass: it is the newest work in the repo and the one "
+        "folder whose claims have never been cross-checked against anything.",
     "crypto/HYPOTHESIS_LEDGER.md":
         "27 rows. Expect heavy overlap with C001-C027, which are audited.",
 }
@@ -564,11 +899,13 @@ def main() -> int:
     noise: list[str] = []
     for r in rows:
         rid = (r.get("_id") or "").strip()
-        if rid in seen:
+        key = (r.get("_file", ""), rid)
+        if key in seen:
             continue
-        seen.add(rid)
-        if rid not in C:
-            src = r.get("_file", "")
+        seen.add(key)
+        src = r.get("_file", "")
+        table = C_INPLAY if src == INPLAY_FILE else C
+        if rid not in table:
             if rid in NOISE:
                 noise.append(rid)
             elif src in DEFERRED:
@@ -576,8 +913,9 @@ def main() -> int:
             else:
                 missing.append(rid)
             continue
-        cat, note = C[rid]
-        act, owner, settle, cost = ACTION.get(rid, ("", "", "", ""))
+        cat, note = table[rid]
+        acts = ACTION_INPLAY if src == INPLAY_FILE else ACTION
+        act, owner, settle, cost = acts.get(rid, ("", "", "", ""))
         out.append({
             "id": rid,
             "category": cat,
@@ -592,10 +930,14 @@ def main() -> int:
             "how_long": cost,
         })
 
-    extra = sorted(set(C) - seen)
-    unactioned = sorted(rid for rid, (cat, _) in C.items()
-                        if cat in REOPEN_CATS and rid not in ACTION)
-    orphan_actions = sorted(set(ACTION) - set(C))
+    seen_ids = {i for _, i in seen}
+    extra = sorted(set(C) - seen_ids)
+    unactioned = sorted(
+        rid for tbl in (C, C_INPLAY) for rid, (cat, _) in tbl.items()
+        if cat in REOPEN_CATS and rid not in ACTION
+        and rid not in ACTION_INPLAY)
+    orphan_actions = sorted((set(ACTION) - set(C))
+                            | (set(ACTION_INPLAY) - set(C_INPLAY)))
 
     if missing or extra or unactioned or orphan_actions:
         print("COVERAGE FAILURE -- the audit does not cover every claim.")
@@ -631,7 +973,7 @@ def main() -> int:
         n = sum(1 for _, s in deferred if s == f)
         print(f"     {n:4d}  {f}")
     print(f"  parser noise, not claims     {len(noise)}\n")
-    order = [N, E, "FLOOR", "DATA", "NARROW", "BUG"]
+    order = [N, E, "EVIDENCE-PENDING", "FLOOR", "DATA", "NARROW", "BUG"]
     for k in order:
         print(f"  {counts.get(k, 0):4d}  {k}")
     closures = sum(counts.get(k, 0) for k in order if k != N)

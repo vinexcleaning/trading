@@ -1,9 +1,9 @@
 # HANDOFF — reopen
 
 <!-- COORDINATOR-STATE
-doing: nothing running - the replies are in, four of my calls were overturned and corrected, and 219 newly-readable claims are named as unaudited
-left: audit the 219 claims ledger.py can now see, starting with kalshi-inplay-bot's 95 (the live-money bot's own audit)
-needs: yes - three for the user: check record_depth.py on the laptop, decide the $9.99 livetennisapi history, and say yes or no to tennis widening its running pre-registered test so the set-score comparison can run
+doing: nothing running - mailbox 002 is done, the live-money bot's 122 claims are audited
+left: soccer's 39 unread rows next, then the two hypothesis grids (deferred on expected overlap)
+needs: yes - kalshi-inplay-bot belongs to no chat and holds a live-money config with two gates fitted to ~25 and 137 observations. Either it gets an owner or the gates get a warning where a trader would see them
 -->
 
 **As of 2026-08-08.** Written by the session that took mailbox message 001.
@@ -194,3 +194,37 @@ a prose table as claim ids, so 596/538 is overstated by five; and
 on the `SUB_LEDGERS` list, so `idea.py` remains blind to soccer.
 
 Mail: `devig` **013**, `tennis` **009**, `coordinator` **002**.
+
+## 2026-08-11 — the live-money ledger, mailbox 002
+
+**All 122 claims in `kalshi-inplay-bot/audit/LEDGER.md` audited.** Write-up,
+Critic and Referee at the foot of [REOPENED.md](REOPENED.md).
+
+| | |
+|---|---|
+| distinct claims across 7 ledger files | **609** |
+| audited | **446** |
+| deferred, named with a reason | **163** (97 set-1 grid, 39 soccer, 27 crypto) |
+| closures examined | **136** |
+| **closed properly** | **91 — two thirds** |
+| reopens | **16** · relabels **27** |
+
+**Six findings:** C066 is M001, fixed here three days before it was
+re-discovered and six before it stopped blocking crypto · C011/C012, the live
+bot's two gates, fitted to ~25 and 137 observations while C108 shows a
+live-money config · C088, "REJECTED" on zero accepted entries · four
+"no artifact anywhere" claims with settled artifacts one folder away · C042, the
+third live copy of the dead +7.05pp number · C061 vs C096, the repo's top-ranked
+lead against a prior measurement in a project nobody cites.
+
+**And my own tool had the bug this chat exists to catch:** 34 claim ids mean two
+different claims depending on the file, and the classifier keyed on the id
+alone, silently applying `crypto`'s verdicts to 27 inplay rows. Fixed by keying
+on **(file, id)**. `idea.py` searches the same merged view and has the same
+exposure — filed as `coordinator` 003.
+
+**Standing weakness, unchanged:** this pass read 122 rows and **zero artifacts**.
+Both of the best findings in earlier passes came from opening an artifact
+instead.
+
+Mail: `coordinator` **003**.

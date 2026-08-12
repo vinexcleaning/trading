@@ -4508,3 +4508,92 @@ real instant to a median of **8 seconds**.
 
 **The 2025–2026 held-back years were never opened and stay shut.** The
 pre-registered test never ran, because its premise failed first.
+
+---
+
+## Desktop, 2026-08-11 — the live-money bot's 122 claims audited, and the cost of an unread ledger is now measured
+
+`reopen` took mailbox 002 and read `kalshi-inplay-bot/audit/LEDGER.md` — the only
+project in this repo about money that actually moved, and the one nothing could
+parse until 2026-08-09. Full write-up, Critic and Referee:
+[reopen/REOPENED.md](reopen/REOPENED.md).
+
+**Totals: 609 distinct claims across seven ledger files. 446 audited, 163
+deferred with a reason each, 5 parser noise. 136 closures examined, 91 — two
+thirds — closed properly.**
+
+### 1. ⚠ C066 IS M001. The fix was on disk, with nine tests, three days early.
+
+`kalshi-inplay-bot` **diagnosed, quarantined and regression-tested** the
+orderbook parse bug — a parser unwrapping a non-existent `"orderbook"` key,
+producing empty books with correct row counts — on **2026-07-30**.
+
+`market-selection` re-discovered it on **2026-08-02** and "independently
+reproduced it on 85 markets". It was still stated as a live blocker in the crypto
+market-making documents until **2026-08-06**.
+
+> **Six days of a blocked thread and a false premise in three documents, against
+> a fix that was already committed with nine regression tests.** This is the
+> clearest measurement in the repo of what an unreadable ledger costs.
+
+### 2. ⚠⚠ The live bot's two gates are fitted to noise, and the folder has no owner
+
+| | |
+|---|---|
+| **C011** — the **primary entry gate** | a price-bucket table from **125 settled markets split five ways** — about **25 observations a bucket**, and the decisive bucket carries the account |
+| **C012** — the **38¢ stop** | a "smooth optimum" across **137 matches** where **the entire range across every width tested is 2.3¢**. The optimum is inside the noise — the same failure the project's own Step 6 identified |
+| **C108** | `gui.py --live --bankroll 125 --stake-pct 5`, private key present, five open positions with resting take-profits |
+
+Both are already **BROKEN** in that ledger. **Trading is off and nothing is
+scheduled.** But `chats.json` assigns that folder to **no chat**, so three
+reopens have `nobody` as owner. **It is a trap for whoever turns it back on.**
+
+**This is the one thing the Referee would not resolve and it is with the user:**
+either the folder gets an owner, or the two gates get a warning where a trader
+would see them.
+
+### 3. "REJECTED" on zero accepted entries
+
+**C088** records *"broad leaderboard consensus copying is rejected"* — on **0
+accepted resolved entries in all five niches**. Its own text calls it *"a
+null-by-no-data"*. The unfiltered crypto control losing **$40.17 on $40** is the
+real result and should carry the sentence.
+
+### 4. Four "no artifact anywhere" claims whose artifacts are one folder away
+
+**C009** → **T012** (n=809) · **C010** → **T006** · **C117** → **S010/S025/M008**
+· **C106b** → **B027**. C009 is load-bearing: it is the stated reason to expect
+no favourite-longshot bias on Kalshi, and it has been carried as unverified while
+a settled version sat in `kalshi-tennis`. **And C042 is the third live copy of
+the dead +7.05pp number** (K015 = W011).
+
+### 5. The top-ranked lead has a prior measurement nothing cites
+
+The 2026-08-06 audit ranks **weather-versus-the-mid** as item #1. **C096**, a
+week earlier in a project neither it nor `kalshi-market-scan` references, scored
+a weather model against the prices you would actually have paid on **600 sealed
+contracts and it lost** — wrong by 0.2048 against the market's 0.1690, lower
+being better. **Different family, different benchmark, so it changes the prior
+rather than answering the question** — but it should be read before a recorder is
+committed to it.
+
+### ⚠ And the auditing chat's own tool had the bug it exists to catch
+
+**34 claim ids mean two different claims depending on the file** — `crypto` and
+`kalshi-inplay-bot` both number C001–C117. `crypto` C010 is *"no model beats the
+mid"*; inplay C010 is *"a player model lost to the bookmaker"*. **The classifier
+keyed on the id alone and silently applied crypto's verdicts to 27 inplay rows.**
+Fixed by keying on **(file, id)**.
+
+**`idea.py` searches the same merged view and has the same exposure** — a
+prior-work check for `C010` returns two unrelated claims. Filed as `coordinator`
+**003**.
+
+### What that ledger gets right, and it is most of it
+
+**C027** states its own power correctly — *"a null at n=25 markets… it rules out
+a large edge, not an edge."* **C077** reports **fewer** nominally-significant
+wallets than chance predicts across 42,652. **C079** computes the null
+expectation at every delay and finds the edge dies inside 15 seconds. **C072**
+simulates the screen rather than the strategy. **C090** preserves invalidated
+runs instead of deleting them.
