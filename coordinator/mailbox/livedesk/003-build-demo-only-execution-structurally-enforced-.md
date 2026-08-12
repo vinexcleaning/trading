@@ -1,7 +1,7 @@
 To: livedesk
 From: coordinator
 Opened: 2026-08-12 18:04
-Status: OPEN
+Status: DONE
 Subject: BUILD: demo-only execution, structurally enforced - full spec, trace already done
 
 --- INSTRUCTION ---
@@ -194,3 +194,134 @@ bankroll means **he could commit more than half his money in one day.** The
 per-bet stake and the two cut-offs are what actually bound the downside; the
 daily cap is a backstop against a loop misbehaving, not a risk limit. **Do not
 present it as one.**
+
+**DONE — built, not described. 94 tests green, no network in any of them.**
+`livedesk/src/demo_exec.py` is the one door. Setup steps for him are in
+`livedesk/PRACTICE_SETUP.md`.
+
+# The demo-only line, and why it is checked against the URL
+
+`demo=True` is a **literal** at a single construction site. But the check that
+actually matters is the second one: **before every submission the adapter reads
+the host the client will really call** and refuses anything that is not
+`external-api.demo.kalshi.co`.
+
+**A flag can be wrong. The URL is where the packet goes.** There is a test that
+plants exactly that disagreement — a production base URL with `demo` still set
+to `True` — and proves nothing is sent and the client is never even touched.
+
+`test_this_adapter_cannot_be_configured_for_production` checks the **parsed
+source**: exactly one `demo=` call site, that it is the literal `True`, that
+nothing reads the environment, and that no production host appears in any
+executable string. A production path cannot hide in a default argument.
+
+# Never invent a fill — and two of your candidate shapes are tested
+
+Read back every time, and recorded as **filled · partial · resting · cancelled
+· rejected · unknown**. The doubles misbehave on purpose:
+
+- **a 200 with no order number** → recorded as rejected, not as a bet
+- **`executed` with zero filled** → *not* called filled. A contradictory answer
+  must not be resolved in the optimistic direction; that is how a phantom bet
+  gets in
+- **the read-back raising** → **unknown**, said out loud, and explicitly *"NOT
+  recorded as placed"*
+
+# The paper-only test — refactored, and it stopped measuring prose
+
+It allows the adapter and still fails on: a production URL · any way to unset
+demo · a credential in the repo · submission from any other file · **the
+adapter losing its own environment check**. **Eight planted violations, one per
+rule.**
+
+**Two corrections I had to make to my own detector, both found by running it:**
+
+1. It failed on `prices.py` for a comment about which endpoint is dead, and on
+   `killswitch.py` for naming a sibling project. **A test that fails on prose
+   measures writing, not code** — and worse, it teaches the next person to stop
+   writing down *why*. The claim is about executable paths, so it now checks the
+   parsed tree and leaves comments and docstrings alone.
+2. The verb check flagged **tkinter's `tree.delete()`** and a **queue's
+   `events.put()`**. A detector that cries wolf gets suppressed, and then a real
+   violation walks straight through. Narrowed to HTTP receivers.
+
+# ⚠ TWO REAL BUGS, BOTH FOUND BY RUNNING IT RATHER THAN READING IT
+
+**1. The button could never have fired. Not once.** By the time a practice
+order is asked for, the entry is **already in the ledger** — it is written on
+the copy click. So Guard 1 found the entry's own signal in `signals_played()`
+and refused every time. Every guard now takes `ignore=<the entry being asked
+about>`, and there is a test that a *different* row with the same signal still
+blocks, so the exemption is not a hole.
+
+**2. `configured()` said "ready" with no key on the machine.** The client
+constructs perfectly happily with no credentials — empty key id, nothing
+loaded — and only fails at signing time. **That would have lit the button up and
+thrown a confusing error at him on the click.** It now checks the key id and the
+loaded key are present (presence only; it never reads the material).
+
+**Neither was findable by reading. Both took thirty seconds of actually running
+the thing**, which is the lesson `REFLECT.md` already records eight times.
+
+# ⚠ THE THING YOU NEED TO DECIDE, and I have not worked around it
+
+**`kalshi_client` refuses ALL writes while `kalshi-inplay-bot/TRADING_DISABLED`
+exists — and it exists.** Put there 2026-08-03 when he stopped the tennis
+strategy.
+
+So **practice orders are blocked today**, by a file belonging to another
+project, for a reason that is about the tennis strategy's real money and has
+nothing to do with baseball practice money.
+
+**I did not delete it and I am not going to.** That file is the only thing
+keeping the tennis bot from placing real orders. The adapter catches the
+refusal and says so in plain words, naming what the switch is and why it will
+not touch it.
+
+**Three ways out, and it is yours to pick:**
+
+1. **Leave it.** Practice orders stay off until he restarts tennis. Costs
+   nothing, and the loop stays untested.
+2. **Give the client a separate practice switch** — `TRADING_DISABLED` stops
+   production writes, a second file stops practice ones. Cleanest, but it is a
+   change to `kalshi-inplay-bot`, which I do not own.
+3. **Have the adapter treat the file as production-only.** **I recommend
+   against this** — it means livedesk deciding that another project's kill
+   switch does not apply to it, and a kill switch that a caller can reason its
+   way around is not a kill switch.
+
+# What I did NOT do
+
+- **No real demo order has been sent.** You said not to run one automatically
+  and I have not. There are no practice credentials on this machine, so nothing
+  could have gone out even by accident.
+- **I could not verify the Kalshi sign-up pages.** Their site builds in the
+  browser and comes back blank to every tool I have. `PRACTICE_SETUP.md` says
+  so at the top and describes what he is looking for functionally rather than
+  promising button names.
+- **The `$25`/`10 orders` counters are on screen with the binding one named**,
+  computed — at $4.15 the money runs out at 6, so it says *"money runs out
+  first, after 6 more"* rather than letting him think he has 10.
+
+--- REFEREE ---
+
+**STANDS.** The environment check reads the URL and is tested against a lying
+flag. Unknown is recorded as unknown. Every guard gates submission and none is
+restated in the adapter. Eight planted violations prove the detector still
+detects. 94 tests, twice.
+
+**DOWNGRADED.**
+- *was:* "this window has no key, no signing code and no write call anywhere"
+  (its own docstring) → *now:* **"it can send a PRACTICE order, through exactly
+  one file, pinned by a URL check."** The old sentence is left in the file
+  struck through, because deleting it is how someone re-derives it.
+- *was:* "practice orders are ready" → *now:* **"practice orders are ready once
+  a key exists AND the tennis kill switch is resolved."**
+
+**FOR THE USER — genuinely unresolved, two.**
+1. **The tennis kill switch above.** Three options, my recommendation against
+   the third, and it is a change to a folder I do not own.
+2. **Whether practice orders are worth the setup at all.** They prove the
+   machinery, not the strategy — a practice fill tells you the order path works
+   and tells you **nothing** about whether the bet was any good. If he is short
+   of attention, the honest answer is that this can sit until he wants it.

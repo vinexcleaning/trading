@@ -396,3 +396,90 @@ def test_the_tennis_kill_switch_is_reported_not_worked_around(led):
     msg = str(e.value)
     assert "nothing was sent" in msg
     assert "tennis" in msg and "will not touch it" in msg
+
+
+# ============ the entry must not block itself, which made the button dead
+
+def test_an_entry_already_in_the_ledger_does_not_block_its_own_practice_order(led):
+    """FOUND BY RUNNING IT, not by reading it.
+
+    By the time a practice order is asked for, the entry is ALREADY written to
+    the ledger -- that happens on the copy click. So Guard 1 saw the entry's
+    own signal in `signals_played()` and refused every single time. The button
+    could never have fired once.
+    """
+    e = _entry()
+    led.add(e)
+    _sync(led)
+    out = X.submit(led, e, client=FakeClient())
+    assert out.state == "filled", "an entry blocked its own practice order"
+
+
+def test_but_a_DIFFERENT_entry_with_the_same_signal_still_blocks(led):
+    """The self-exemption must not become a hole in Guard 1."""
+    led.add(_entry())
+    _sync(led)
+    other = _entry(ticker="T2")          # same signal, different row
+    with pytest.raises(X.Refused) as exc:
+        X.submit(led, other, client=FakeClient())
+    assert "already been taken" in str(exc.value)
+
+
+def test_the_entry_does_not_consume_its_own_daily_allowance(led, monkeypatch):
+    """Same bug in the daily caps: the entry is in today's count already, so
+    counting it again would make the last allowed bet refuse itself."""
+    from datetime import datetime
+    import ledger as L
+    now = datetime.now().astimezone().isoformat(timespec="seconds")
+    for i in range(L.MAX_ORDERS_PER_DAY - 1):
+        led.entries.append(_entry(game_key=f"g{i}", ticker=f"T{i}",
+                                  signal=f"s{i}", cost_usd=0.10,
+                                  confirmed_utc=now))
+    last = _entry(game_key="last", ticker="LAST", signal="slast",
+                  cost_usd=0.10, confirmed_utc=now)
+    led.entries.append(last)
+    _sync(led)
+    monkeypatch.setattr(L, "MAX_STAKE_PER_DAY_USD", 10_000.0)
+    out = X.submit(led, last, client=FakeClient())
+    assert out.state == "filled", "the tenth bet refused itself"
+
+
+def test_practice_is_not_offered_without_a_key(monkeypatch):
+    """Building the client succeeds with NO credentials at all -- empty key id,
+    no key loaded -- and only fails at signing time. That made `configured()`
+    answer 'ready' on a machine with no practice key, which would have lit the
+    button up and thrown a confusing error on the click."""
+    class NoKey:
+        base = DEMO_BASE
+        key_id = ""
+        _key = None
+    monkeypatch.setattr(X, "_client", lambda: NoKey())
+    ready, why = X.configured()
+    assert ready is False and "No practice key set up yet" in why
+
+    class KeyIdOnly:
+        base = DEMO_BASE
+        key_id = "abc"
+        _key = None
+    monkeypatch.setattr(X, "_client", lambda: KeyIdOnly())
+    ready, why = X.configured()
+    assert ready is False and "could not be loaded" in why
+
+    class Ready:
+        base = DEMO_BASE
+        key_id = "abc"
+        _key = object()
+    monkeypatch.setattr(X, "_client", lambda: Ready())
+    assert X.configured()[0] is True
+
+
+def test_configured_refuses_a_client_pointed_at_production(monkeypatch):
+    class Prod:
+        base = "https://external-api.kalshi.com/trade-api/v2"
+        key_id = "abc"
+        _key = object()
+    monkeypatch.setattr(X, "_client",
+                        lambda: (_ for _ in ()).throw(
+                            X.NotDemo("not the practice environment")))
+    ready, why = X.configured()
+    assert ready is False and "practice environment" in why

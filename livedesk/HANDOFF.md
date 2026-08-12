@@ -1,12 +1,12 @@
 # HANDOFF — livedesk
 
 <!-- COORDINATOR-STATE
-doing: nothing running; amendment 2 of mailbox 001 is implemented and the window is ready to open
-left: he opens it, types his Kalshi balance in once, and places one real bet so the ledger and the reconcile check get exercised with real money
-needs: no
+doing: nothing running; mailboxes 001, 002 and 003 are all built and replied to, 94 tests green
+left: he opens it and uses it; practice orders need a demo key (PRACTICE_SETUP.md) and are additionally blocked by the tennis bot's TRADING_DISABLED file
+needs: yes - the tennis kill switch blocks practice orders too. Leave it, add a separate practice switch to kalshi-inplay-bot, or something else? I will not delete it or reason around it.
 -->
 
-**As of 2026-08-12 05:45.** Built overnight from
+**As of 2026-08-12 21:00.** Built overnight from
 `coordinator/mailbox/livedesk/001` **and its amendment 2**, which I missed on
 the first pass. 46 tests green. Nothing is running in the background; the
 window does its own work while it is open.
@@ -94,3 +94,63 @@ strategy; nothing here recomputes it.
 - **009 — OPEN, not blocking.** Confirming my reading that the starter
   strategy has one signal per game by construction. I have shipped on that
   reading and it is one line to reverse.
+
+---
+
+# 2026-08-12 evening — mailboxes 002 and 003
+
+## 002, the hand-off — DONE
+
+After COPY & OPEN the card is replaced by numbered clicks for that page, and it
+stays until he says whether the bet went on. Button measured on the same pixel
+across ten card states.
+
+**The bigger fix was a guard of mine, not the page.** Guard 1 closed a signal on
+any entry including a void — so his three copied-and-voided games (Pittsburgh,
+Cleveland, Seattle) were closed for ever having never been bet. A void means no
+money was placed, so re-offering is not "the same bet twice". **One void now
+re-offers; a second closes it.** His three are live again.
+
+**That change created a crash and running it found it:** the same ticker can now
+appear twice, and the bets list keyed rows on ticker — the duplicate raised
+inside `_render` and would have taken the window down on his next click. Keyed
+on position now.
+
+## 003, practice orders — DONE
+
+`src/demo_exec.py`, the one door. `demo=True` as a literal, and **the host the
+client will really call is checked before every submission** — a flag can be
+wrong, the URL is where the packet goes. Never invents a fill: reads the order
+back and records filled / partial / resting / cancelled / rejected / **unknown**.
+
+`test_paper_only.py` refactored rather than deleted — allows the adapter, still
+fails on production URLs, on any way to unset demo, on credentials in the repo,
+on submission from elsewhere, and on the adapter losing its own check. Eight
+planted violations.
+
+**Two bugs found by running it, neither findable by reading:**
+- the practice button **could never have fired** — the entry is already in the
+  ledger by then, so Guard 1 saw its own signal and refused every time
+- `configured()` said "ready" with **no key on the machine**, because the client
+  constructs fine without credentials and only fails at signing
+
+## ⚠ NEEDS HIM: the tennis kill switch blocks practice orders
+
+`kalshi_client` refuses **all** writes while `kalshi-inplay-bot/TRADING_DISABLED`
+exists, and it does — from 2026-08-03. So practice orders are off today because
+of a file about the tennis strategy's real money.
+
+**I did not delete it and will not.** It is the only thing keeping the tennis bot
+from placing real orders. Options in the 003 reply; the decision is his.
+
+## What is still NOT done
+
+- **No real bet and no practice order has ever gone through this.** Everything
+  below the click is tested; the click itself has only been exercised with
+  doubles.
+- **The Kalshi web pages are still unverified** — their site builds in the
+  browser and returns nothing to any tool here. Both the hand-off card and
+  `PRACTICE_SETUP.md` say so and describe things functionally.
+- **The void rate has not been watched** since the hand-off fix. That is the
+  measurement that says whether the page was really the problem, and it needs
+  him to use it.

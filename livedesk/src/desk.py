@@ -8,16 +8,26 @@ WHAT IT DOES
     opens the right Kalshi page. **You place it.**
 
 WHAT IT DOES NOT DO, AND CANNOT
-    Send an order. There is no key in this folder, no signing code, and no
-    write call anywhere in this package. `tests/test_paper_only.py` walks
-    every file here and fails if any appears.
+    Send a REAL order. It can send a PRACTICE one -- Kalshi's demo
+    environment, fake money, where no real dollar can move -- and that is the
+    only kind of order any code here can produce.
+
+    ⚠ That sentence changed on 2026-08-12 (mailbox 003) and the old one is
+    left here on purpose because it is now false: it used to say "no key in
+    this folder, no signing code, no write call anywhere". There IS now a
+    write path, through exactly one file, `demo_exec.py`. What makes it safe
+    is not that it is absent but that it is pinned: the client is built with
+    `demo=True` as a literal, and the host it will really call is checked
+    before every submission. `tests/test_paper_only.py` fails the build on a
+    production URL, on any way to unset demo, on a credential inside the repo,
+    on submission from any other file, and on the adapter losing that check.
 
     The tennis app needed one-click because it was chasing live in-play
     events where seconds mattered. This is a PRE-GAME strategy: the bets go
     on hours before first pitch. The gap between "this window tells you
     exactly what to do" and "this window does it for you" is about twenty
-    seconds of typing, on a bet with hours of runway. Nothing can fire while
-    he is asleep.
+    seconds of typing, on a bet with hours of runway. Nothing that touches
+    real money can fire while he is asleep.
 
 THE BUTTON NEVER MOVES
     That is his one named complaint about the old app: "sometimes bars will
@@ -46,6 +56,7 @@ from tkinter import ttk, messagebox
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
+import demo_exec as DEMO                                 # noqa: E402
 import killswitch                                        # noqa: E402
 import picks as PICKS                                    # noqa: E402
 import prices as PRICES                                  # noqa: E402
@@ -588,8 +599,43 @@ class Desk(tk.Tk):
         tk.Frame(row, width=50).pack(side="left")
         tk.Button(row, text="I did NOT place it",
                   command=self._not_placed).pack(side="left")
-        tk.Label(row, text="this stays until you say which",
+        # Practice order. Fake money, real API -- it exercises the whole loop
+        # without any of it mattering. Only offered when a practice key is set
+        # up, and it never replaces the real hand-off above.
+        ready, why = DEMO.configured()
+        tk.Button(row, text="practice order", state=("normal" if ready
+                                                     else "disabled"),
+                  command=self._practice).pack(side="left", padx=(12, 0))
+        tk.Label(row, text=("practice = fake money" if ready
+                            else "practice not set up"),
                  fg="#666", font=("Segoe UI", 8)).pack(side="right", padx=6)
+
+    def _practice(self) -> None:
+        """Send this bet to Kalshi's PRACTICE environment. No real money."""
+        if self.pending is None:
+            return
+        e, p, bet = self.pending
+        try:
+            out = DEMO.submit(self.ledger, e)
+        except DEMO.Refused as exc:
+            self._alert(str(exc), "warn")
+            self._log(f"practice order refused: {exc}")
+            return
+        except DEMO.NotDemo as exc:
+            self._alert(str(exc), "error")
+            self._log(f"PRACTICE ORDER BLOCKED: {exc}")
+            return
+        except Exception as exc:
+            self._alert(f"The practice order could not be sent: {exc}", "error")
+            self._log(f"practice order error: {exc}")
+            return
+        self._log(f"practice order [{out.state}] {out.message}")
+        self._alert(out.message,
+                    "info" if out.state in ("filled", "partial") else "warn")
+        e.note = (f"practice order {out.order_id or '—'}: {out.state}"
+                  f" ({out.filled:g} of {out.requested})")
+        self.ledger.save()
+        self._render()
 
     def _placed(self) -> None:
         e, p, bet = self.pending

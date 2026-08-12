@@ -198,7 +198,7 @@ class Ledger:
             raise
 
     # ---- Guard 1 --------------------------------------------------------
-    def signals_played(self) -> set:
+    def signals_played(self, ignore=None) -> set:
         """Every signal that is closed for good.
 
         ⚠ CHANGED 2026-08-12, and it is a real change to Guard 1. It used to be
@@ -220,7 +220,11 @@ class Ledger:
         played = set()
         voids = {}
         for e in self.entries:
-            if not e.signal:
+            # `ignore` is the entry being asked ABOUT -- when the caller is
+            # re-checking a bet already written to the ledger, its own row must
+            # not be read as somebody else having taken it. Without this the
+            # practice-order button could never fire even once.
+            if not e.signal or e is ignore:
                 continue
             if e.status == "void":
                 voids[e.signal] = voids.get(e.signal, 0) + 1
@@ -229,33 +233,36 @@ class Ledger:
         return played | {s for s, n in voids.items()
                          if n >= MAX_VOIDS_BEFORE_CLOSED}
 
-    def positions_on_game(self, game_key: str) -> int:
+    def positions_on_game(self, game_key: str, ignore=None) -> int:
         return len([e for e in self.entries
-                    if e.game_key == game_key and e.counts_as_money])
+                    if e.game_key == game_key and e.counts_as_money
+                    and e is not ignore])
 
     def open_on_game(self, game_key: str) -> list:
         return [e for e in self.entries
                 if e.game_key == game_key and e.status == "open"]
 
     def may_bet(self, game_key: str, signal: str, price_now_c=None,
-                next_cost_usd: float = 0.0):
+                next_cost_usd: float = 0.0, ignore=None):
         """(allowed, reason). The reason is shown on the button, so it is
         written for him, not for a log."""
-        if signal and signal in self.signals_played():
+        if signal and signal in self.signals_played(ignore=ignore):
             return False, ("this exact bet has already been taken on this "
                            "game — same rule, same reason. One per signal.")
-        n = self.positions_on_game(game_key)
+        n = self.positions_on_game(game_key, ignore=ignore)
         if n >= MAX_POSITIONS_PER_GAME:
             return False, (f"you already have {n} bets on this game, which is "
                            f"the limit. Two is the most, whatever the reason.")
         if price_now_c is not None:
             for e in self.open_on_game(game_key):
+                if e is ignore:
+                    continue
                 if price_now_c < e.price_c:
                     return False, (
                         f"your open bet on this game is losing "
                         f"({e.price_c}c paid, {int(price_now_c)}c now). This "
                         f"tool never adds to a losing position.")
-        capped = self.daily_block(next_cost_usd or 0.0)
+        capped = self.daily_block(next_cost_usd or 0.0, ignore=ignore)
         if capped:
             return False, capped
         return True, ""
@@ -353,15 +360,15 @@ class Ledger:
                 out.append(e)
         return out
 
-    def daily_used(self):
+    def daily_used(self, ignore=None):
         """(orders today, dollars today). Raises rather than guess."""
-        rows = self._today_entries()
+        rows = [e for e in self._today_entries() if e is not ignore]
         return len(rows), round(sum(e.cost_usd for e in rows), 2)
 
-    def daily_block(self, next_cost_usd: float = 0.0):
+    def daily_block(self, next_cost_usd: float = 0.0, ignore=None):
         """Why today's caps forbid another bet, or None. Fails closed."""
         try:
-            n, spent = self.daily_used()
+            n, spent = self.daily_used(ignore=ignore)
         except ValueError as exc:
             return f"cannot count today's bets, so no bet: {exc}"
         if n >= MAX_ORDERS_PER_DAY:

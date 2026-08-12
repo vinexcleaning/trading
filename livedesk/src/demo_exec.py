@@ -125,6 +125,37 @@ def verify_demo(client) -> str:
     return host
 
 
+def configured():
+    """(ready, sentence). Whether a practice order could go out at all.
+
+    Asks by trying to BUILD the client, so the credential lookup stays inside
+    the client where it belongs and this file never reads a key, a path or an
+    environment variable itself. Building does not send anything.
+    """
+    try:
+        c = _client()
+    except NotDemo as exc:
+        return False, str(exc)
+    except Exception as exc:
+        return False, (f"Practice orders are not available yet: {exc}. The "
+                       f"window works exactly as before without them.")
+    # ⚠ Building the client is NOT enough. It constructs perfectly happily with
+    # no credentials at all -- empty key id, no key loaded -- and then fails
+    # only at signing time. That made this function answer "ready" on a machine
+    # with no practice key on it, which would have lit the button up and then
+    # thrown a confusing error at him on the click. Checked for PRESENCE only;
+    # nothing here reads the key material itself.
+    if not getattr(c, "key_id", ""):
+        return False, ("No practice key set up yet, so practice orders are "
+                       "off. Nothing is broken — PRACTICE_SETUP.md is the "
+                       "five minutes it takes.")
+    if getattr(c, "_key", None) is None:
+        return False, ("A practice key id is set but the key file itself "
+                       "could not be loaded, so nothing can be signed. See "
+                       "PRACTICE_SETUP.md step 4.")
+    return True, "Practice orders are ready. No real money can move."
+
+
 def guards_ok(ledger, entry) -> None:
     """Every existing guard, called rather than restated.
 
@@ -148,12 +179,15 @@ def guards_ok(ledger, entry) -> None:
     if state in ("disagree", "unchecked"):
         raise Refused(msg)
 
-    capped = ledger.daily_block(entry.cost_usd)
+    # `ignore=entry` throughout: this entry is normally ALREADY in the ledger
+    # by the time a practice order is asked for, and its own row must not be
+    # read as somebody else having taken the bet or spent the day's money.
+    capped = ledger.daily_block(entry.cost_usd, ignore=entry)
     if capped:
         raise Refused(capped)
 
     ok, why = ledger.may_bet(entry.game_key, entry.signal,
-                             next_cost_usd=entry.cost_usd)
+                             next_cost_usd=entry.cost_usd, ignore=entry)
     if not ok:
         raise Refused(why)
 
