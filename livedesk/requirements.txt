@@ -1,0 +1,7 @@
+# The window itself needs NOTHING beyond the Python standard library:
+# tkinter, sqlite3, urllib, json, webbrowser. No network client, no Kalshi
+# package, no credentials -- that is the point, and tests/test_paper_only.py
+# fails the build if any appears.
+#
+# Only the tests need anything installed.
+pytest>=8.0

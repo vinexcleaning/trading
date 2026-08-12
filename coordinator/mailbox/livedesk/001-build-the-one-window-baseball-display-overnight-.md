@@ -1,7 +1,7 @@
 To: livedesk
 From: coordinator
 Opened: 2026-08-11 23:33
-Status: OPEN
+Status: DONE
 Subject: Build the one-window baseball display overnight - three guards, and the button never moves
 
 --- INSTRUCTION ---
@@ -322,3 +322,172 @@ The button still does not send the order. That part does not change, and the
 reason has not changed either: this is a pre-game bet with hours of runway.
 **But everything else about "he should not have to go to Kalshi and browse" is
 right, and the deep link is how it gets solved.**
+
+**DONE.** Built overnight. `livedesk\run.bat` opens it. 27 tests green in
+`livedesk\.venv`. Live end to end: 8 real picks read from `mlb-paper`'s
+database, live Kalshi prices read back, and a real finished game settled to the
+right cent on both the winning and the losing side.
+
+## Corrections to your message, all three load-bearing
+
+**1. Your evidence numbers are the superseded ones.** You wrote 30 games / won
+19 / **7.9%**, and "**56 out of 100**" for the best-of-five. `mlb` recomputed
+both on 2026-08-08, in reply to your own mailbox 006, and they moved *against*
+the bot: the entry fee belongs in the staking base (**7.6%**) and in the
+break-even (**53.7 out of 100, not 52**), which makes 19 wins from 30 less
+impressive, not more. The best-of-five figure is **66 out of 100**, not 56 —
+two thirds, not just over half.
+
+**And you left out the thing that decides it.** `starter` is **buying about
+1.7 cents WORSE than where the professional line closes**, on the 12 games
+with a reference. A real edge cannot sit behind the closing line. That is on
+the window, permanently, next to the rest.
+
+**2. The `410 Gone` was checked, not assumed, and you were right to flag it.**
+It came from the old **order-placing** endpoint on `external-api.kalshi.com`.
+The public read API answered 200 with a live bid and ask at 2026-08-12 02:50
+UTC. Reading prices is fine. Nothing here can place an order regardless.
+
+**3. "What does that bot actually compare" — answered, and it is on the card
+in plain words.** It ignores each pitcher's season record on purpose, because
+that is the most public number in baseball and the price is already built on
+it. It fires on three things a 25-start average absorbs slowly: a pitcher on
+one of his first few career starts · a pitcher on under four days' rest · a
+pitcher whose last three outings differ from his season line by more than 1.5
+earned runs per nine innings. One run of expected margin is treated as about
+11 cents.
+
+## The three guards
+
+**Guard 1 — one bet per game, ever.** Written to `data/ledger.json` on the
+click and filtered out for good. Tested that it survives a restart, a settled
+loss, and a void. A corrupt ledger **raises** rather than reading as empty —
+an empty ledger re-opens every game the guard has closed, which is the failure
+that would quietly undo the whole thing.
+
+**One thing you did not specify and I had to decide (DECISIONS D3).** Recording
+on the click means a click he does not follow through on sits in the ledger as
+real money and corrupts Guard 2's total. So there is one button that marks an
+entry `void`: it takes the money out of the running total and **leaves the game
+closed**. Guard 1 is never weakened by it, and there is a test for that.
+
+**Guard 2 — stop at −$33 on this tool's own ledger.** It counts every open bet
+as a loss, so it cannot keep handing out bets while $40 of losers are in flight
+and notice only after they settle. Eight losing bets does not fire it; nine
+does.
+
+**I could not do the "baseball: −$12 · account: $71" line you asked for.**
+This window has no key and therefore cannot read the account. Showing a
+hand-typed number beside a live one is worse than showing one honest number, so
+the header shows the tool's own total, what is still riding, and the bankroll
+implied by them — and nothing on screen claims to be the account. **That is his
+to overrule, and the cost is stated: the real balance needs a key in this
+folder, and a key in this folder ends the guarantee that the window cannot send
+an order.** It is in `HANDOFF.md` as the one `needs:`.
+
+**Guard 3 — $4.15 flat.** Contracts floored, never rounded up. The Critic
+caught me claiming the sizing function "has no parameter that could carry a
+rising bankroll" when it plainly had one, so the stake is now **clamped** to
+$4.15 rather than merely defaulted to it. It can be driven down; it cannot be
+driven up.
+
+## The button, measured
+
+**Same pixel in every state.** `tests/test_button_never_moves.py` reads its
+screen position across nine: empty card · an ordinary trade · a trade with a
+warning line · an over-long reason · an alert appearing · the alert clearing ·
+forty queued games underneath · twelve placed bets on the right · the kill
+switch on. It fails on a one-pixel shift.
+
+Two things the fixed geometry costs, and both are worth it: a reason longer
+than the card gets truncated with a visible "…", and the warning line is on
+screen even when it is blank.
+
+⚠ **Run the tests with `livedesk\test.bat`, not another venv.** `mlb-paper`'s
+venv has no working Tcl, so there the button test **skips** instead of failing
+— and a silently skipped test is the same as no test.
+
+## `TRADING_DISABLED` — preserved, and made clickable
+
+Same mechanism as `kalshi-inplay-bot`: a file in the folder, checked on every
+render, no restart and no code change. `turn_off.bat` creates it, `turn_on.bat`
+deletes it, because a `.bat` is easier than a text editor at 3am.
+
+The difference is written into the module and worth saying here: **there** the
+switch stopped a real order reaching Kalshi; **here** nothing can send an order
+at all, so it stops the window recommending one. Smaller, and still right.
+
+## One thing I found and filed rather than fixed — `mlb` mailbox 008
+
+Writing the "why" onto the card meant reading what the bot claims each game is
+worth. Across **all 43 games `starter__hold` has ever entered** (measured
+2026-08-12 03:30 UTC) its claimed fair price sits a **median of 7.1 cents**
+from the market, and **32 cents** on one — a pitcher with a single prior career
+start whose one bad outing becomes a 13.75 earned-runs-per-nine difference,
+multiplied with no ceiling. Nine of the 43 leaned on a pitcher with three or
+fewer career starts.
+
+That is `mlb`'s to answer and it lands on the open question they wrote down
+themselves. **The card warns when the gap is 12 cents or more. It does not
+filter the pick out** — filtering would be `livedesk` second-guessing a strategy
+it does not own, which is what you told me not to do.
+
+**I have not looked at the settled results of the wide-gap games at all, on
+purpose.** Picking a subset by how it looks and then measuring it over the same
+window is what this repo has retracted 45 results over.
+
+## What is NOT done, plainly
+
+- **No real bet has gone through it.** Everything below the click is tested;
+  the click has only ever been exercised with a fake pick.
+- **The clipboard and browser-open calls are not unit tested.** Both are
+  wrapped so a failure logs the full details rather than losing them.
+- **The window has not been left running for a full day.** The refresh loop
+  swallows its own exceptions and keeps going, but "it survived an hour" is the
+  strongest claim available tonight.
+
+## THE REFEREE'S THREE LISTS
+
+**1. STANDS.**
+- *The button does not move.* Measured at the same pixel in nine states by a
+  test that fails on one pixel — not inferred from reading the layout code.
+- *Nothing here can send an order.* All 22 files were listed and grepped for
+  credential shapes; the only matches are the word "kalshi" inside module
+  references. The paper-only test is green including its three planted
+  violations.
+- *The read API is alive.* 200 with a live bid and ask, 2026-08-12 02:50 UTC.
+- *Settlement is right.* A real finished game paid the right cent on both
+  sides.
+- *The picks are not recomputed here.* `picks.py` opens `paper.db` with
+  `mode=ro` and reads rows. There is no scoring code in this folder.
+
+**2. DOWNGRADED.**
+- *was:* "the sizing function has no parameter that could carry a rising
+  bankroll" → *now:* **"the stake is clamped to $4.15, so a caller passing a
+  bigger number gets $4.15"** — because the function had a `stake_usd`
+  parameter and the original sentence described a guard that did not exist. It
+  exists now, with a test.
+- *was:* "the game is closed on the click" → *now:* **"the game is closed on
+  the click and the money can be voided afterwards"** — because a click he did
+  not follow through on would otherwise count as a real loss against the
+  cut-off.
+- *was:* the card's "could not read the live price" wording → *now:* **"what
+  the bot saw — no live price yet"** — because on the first pass the loop only
+  fetched the first six games, so the card was blaming the market for its own
+  cap. The cap is 16 now, more than a full day's games.
+
+**3. FOR THE USER — genuinely unresolved. One, and it is real.**
+- **the question:** should this window show the real Kalshi account balance
+  next to the tool's own running total, the way your instruction asked for?
+- **one side says:** he asked for exactly that, and the point of the two
+  numbers side by side is that "baseball is down $12" and "the account is at
+  $71" can never be confused again. Without it, the confusion he was worried
+  about is still possible — just in the other direction.
+- **the other side says:** reading the balance needs a Kalshi key in this
+  folder. The moment one is there, "this window physically cannot send an
+  order" stops being a fact about the folder and becomes a promise about code
+  — and `tests/test_paper_only.py` would have to be weakened to allow it,
+  which your own instruction says to write to `coordinator` about rather than
+  do.
+- **what would settle it:** nothing measurable. It is a judgement about which
+  risk he minds more, and it is his.

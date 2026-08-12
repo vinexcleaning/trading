@@ -4781,3 +4781,65 @@ competitions, these years"; a price move without "only where a real quote
 existed". **A number and its condition have to travel together.**
 
 **LEDGER.md tally 306 → 307** (SO042 added to Section 9).
+
+
+### livedesk, 2026-08-12 — the one-window baseball display exists, and it cannot place an order
+
+New folder `livedesk/`, new chat, mailbox 001 answered **DONE**. `livedesk\run.bat`
+opens it. **27 tests green** — run them with `livedesk\test.bat` and nothing else,
+because `mlb-paper`'s venv has no working Tcl and there the button test **skips
+rather than fails**.
+
+**What it is.** The tennis window he already uses (`kalshi-inplay-bot/gui.py`),
+pointed at baseball's starting-pitcher picks. One card: who, why in plain
+English, the price, the size in dollars and contracts, what he wins and loses,
+and the win rate it needs to break even. **The button copies the bet and opens
+the Kalshi page. He places it.** No key in the folder, no order code, paper-only
+test green including its three planted violations.
+
+**→ EVERY CHAT: the picks are READ, never recomputed.** `src/picks.py` opens
+`mlb-paper/data/paper.db` with `mode=ro` and reads `starter__hold` entry rows.
+There is no scoring code in `livedesk/`. If a pick is wrong it is wrong in
+`mlb-paper` and that is where it gets fixed. **This is the pattern to copy** —
+a second implementation of a strategy that drifts from the first is worse than
+no tool.
+
+**The three guards, all tested against real violations:** one bet per game ever
+(survives restart, a settled loss, and a void; a corrupt ledger raises rather
+than reading as empty) · stop everything at −$33 on the tool's own ledger,
+counting open bets as losses · $4.15 flat, **clamped** not defaulted.
+
+**The button was measured, not asserted.** Same pixel across nine card states,
+test fails on one pixel.
+
+**→ `mlb`: mailbox 008 filed, and it is about your open question.** Across all
+**43 games `starter__hold` has ever entered** (measured 2026-08-12 03:30 UTC),
+its claimed fair price sits a **median 7.1 cents** from the market, p90 13.2,
+**max 32.0**. The 32 is a pitcher with **one prior career start** whose single
+bad outing becomes a 13.75 earned-runs-per-nine difference, multiplied by 2.75
+cents with no ceiling. **Nine of the 43 leaned on a pitcher with three or fewer
+career starts.** Your own 006 reply said the 11-cents-per-run conversion might
+be too big; this says the *input* is uncapped too, and the two are different
+fixes that would both show as buying behind the closing line. `livedesk` warns
+on the card at 12 cents and **does not filter** — and has deliberately not
+looked at the settled results of those games.
+
+**→ EVERY CHAT: the mailbox's own evidence numbers were the superseded ones.**
+Mailbox 001 quoted **7.9%** and **56 out of 100**. `mlb` recomputed both on
+2026-08-08: **7.6%** and **66 out of 100**, because the entry fee belongs in
+the staking base and in the break-even (53.7, not 52). The window carries the
+corrected pair plus the closing-line finding (**buying ~1.7 cents worse than
+where the professional line closes**, 12 games) as a permanent, non-dismissible
+line at the bottom.
+
+**⚠ The `410 Gone` in his screenshot was NOT evidence the API is dead.** It came
+from the old **order-placing** endpoint on `external-api.kalshi.com`, in an
+early build of the tennis app. The public read API answered **200 with a live
+bid and ask at 2026-08-12 02:50 UTC**, and trap **C024** still holds — `yes_bid`
+and `yes_ask` are `None` on live markets; only the `_dollars` fields carry data.
+
+**Not done:** no real bet has gone through it · the clipboard and browser calls
+are not unit tested · **no account balance, because there is no key.** That last
+one is the single `needs:` in `livedesk/HANDOFF.md` and it is the user's call:
+the real balance requires a key in the folder, and a key ends the guarantee that
+the window cannot send an order.
