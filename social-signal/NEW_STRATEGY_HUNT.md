@@ -437,9 +437,19 @@ new edge; **it is a correction to the denominator under every existing edge.**
 
 **What it would cost us to test: an afternoon, and the data is already on disk.**
 The archive completed in item 1 is **662 hourly files, 29 consecutive days,
-2026-05-14 to 06-11, zero gaps**, carrying the full orderbook — both sides, every
-level. Spread by hour-of-day is a group-by. **The hourly file layout means the
-question is asked in exactly the shape the data is already stored in.**
+2026-05-14 to 06-11, zero gaps** — **280,896,781 rows, 795 matches with a real
+book.** Spread by hour-of-day is a group-by, and the hourly file layout means the
+question is asked in the shape the data is already stored in.
+
+**One structural thing to know before writing the query, because it cost me an
+hour.** 99.9% of the rows are `orderbook_delta`, not snapshots: 208,821
+snapshots against 280,687,960 deltas. **The book is not sitting in a column** —
+it is rebuilt by applying deltas to the last snapshot. My first census divided
+populated books by all rows and reported **"0.1% carry a real quote"**, which
+reads as a broken archive and is entirely an artifact of the wrong denominator.
+Against snapshots it is **89.8%**, which matches the 92% found independently on
+the original 312 files. **Anyone computing a spread here has to replay the
+deltas; reading the snapshot column alone throws away 99.9% of the data.**
 
 **Three ways it could produce a real-looking number that is wrong**, written
 before running it rather than after:

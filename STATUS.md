@@ -125,6 +125,30 @@ tradeable.** The archive snapshots settled markets too — a file recorded
 `social-signal/src/archive_census.py` therefore reports **matches SEEN** and
 **matches WITH A BOOK** separately. **Studies should use the second.**
 
+**Census over all 662 files, every row counted (2026-08-12):**
+
+| | |
+|---|---|
+| rows | **280,896,781** |
+| distinct matches **seen** | 802 |
+| distinct matches **with a book** | **795** ← use this |
+| orderbook snapshots | 208,821, of which **187,473 (89.8%) carry a real book** |
+| orderbook deltas | 280,687,960 (99.9% of all rows) |
+| ATP / WTA rows | 156,759,664 / 124,137,117 |
+
+**Read the 89.8% against SNAPSHOTS, not against rows.** The first run of this
+census divided populated books by *all* rows and reported **0.1%**, which looks
+like a broken archive and is nonsense: deltas carry `price`/`delta`/`side` and
+leave the book columns empty **by design**, because the book is rebuilt by
+applying deltas to the last snapshot. 89.8% is consistent with the independent
+92% found on the original 312 files.
+
+**Per-day matches with a live book** run 4 → 224 (peak 18 May) → a trough of 4
+on 4 June → back to 74 by 7 June. The decline through late May and the trough in
+early June is the shape of a Grand Slam draw halving each round, and the recovery
+is the grass season starting. **Any per-day analysis has to expect that shape
+rather than treat the quiet days as missing data.**
+
 **Open decision for the user, with a clock on it:** whether to take **every other
 sport** before the host goes. Not decided by this session.
 

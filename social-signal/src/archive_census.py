@@ -108,8 +108,17 @@ def main():
     print(f"  distinct matches SEEN           {len(seen):>14,}")
     print(f"  distinct matches WITH A BOOK    {len(with_book):>14,}   "
           f"<- use this one")
-    print(f"  rows carrying a real quote      {rows_with_book:>14,}   "
-          f"({rows_with_book / max(rows, 1) * 100:.1f}%)")
+    # **The denominator here is SNAPSHOTS, not rows, and getting that wrong
+    # produced a scary and meaningless number the first time this ran.**
+    # 99.9% of rows are `orderbook_delta`, which carry `price`/`delta`/`side`
+    # and leave `yes_bids`/`no_bids` empty by design — the book is rebuilt by
+    # applying deltas to the last snapshot. Dividing populated books by ALL
+    # rows said "0.1% carry a real quote", which reads as a broken archive and
+    # is purely an artifact of counting deltas as if they should hold a book.
+    snaps = events.get("orderbook_snapshot", 0)
+    print(f"  orderbook snapshots             {snaps:>14,}")
+    print(f"  ...of those, with a real book   {rows_with_book:>14,}   "
+          f"({rows_with_book / max(snaps, 1) * 100:.1f}%)   <- the real ratio")
     print(f"  event types                     {dict(events)}")
     print(f"  series                          {dict(series)}")
     print(f"{'=' * 72}")
