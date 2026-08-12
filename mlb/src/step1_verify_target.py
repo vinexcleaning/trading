@@ -27,7 +27,12 @@ import kalshi_api as K  # noqa: E402
 import costbar  # noqa: E402
 
 REP = os.path.join(HERE, "..", "reports")
-UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+UA = {"User-Agent": "curl/8.4.0"  # NOT a browser shape. ESPN's edge network
+    # returns 403 to browser-shaped agents and 200 to curl's -- measured
+    # 2026-08-08, four headers, same URL, same minute (reopen mailbox 007,
+    # soccer SO014, and re-measured here). A dead fetcher does not look
+    # dead; it looks like the data does not exist, and this repo has
+    # already produced four wrong absence claims that way.
                     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"}
 CORE = "https://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb"
 SITE = "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb"
