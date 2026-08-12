@@ -42,36 +42,36 @@ HEAVY = {".venv", "venv", "__pycache__", ".git", "data", "Data", "reports",
 # One workstream can span several folders -- de-vig does.
 WORKSTREAMS = {
     "tennis": {
-        "title": "Tennis — paper forward test",
+        "title": "TENNIS",
         "folders": ["tennis-paper-forward", "kalshi-tennis", "set1_overshoot"],
     },
     "mlb": {
-        "title": "Baseball — paper forward test",
+        "title": "BASEBALL",
         "folders": ["mlb-paper", "mlb"],
     },
     "devig": {
-        "title": "De-vig, weather and crypto market making",
+        "title": "BOOKMAKERS",
         "folders": ["bot-hunt", "kalshi-market-scan", "crypto", "market-selection"],
     },
     "signal": {
-        "title": "Signal hunting — GitHub, YouTube, social",
+        "title": "RESEARCH",
         "folders": ["signal-github", "youtube-signal", "social-signal",
                     "extractor-upgrade", "bot-forensics"],
     },
     "soccer": {
-        "title": "Soccer — comeback rates against Kalshi's price",
+        "title": "SOCCER",
         "folders": ["soccer"],
     },
     "reopen": {
-        "title": "Reopen — things closed for the wrong reason",
+        "title": "OLD IDEAS",
         "folders": ["reopen"],
     },
     "livedesk": {
-        "title": "Live desk — the one-window baseball trade display",
+        "title": "THE DESK",
         "folders": ["livedesk"],
     },
     "coordinator": {
-        "title": "Coordination",
+        "title": "DICTATOR",
         "folders": ["coordinator", "common"],
     },
 }

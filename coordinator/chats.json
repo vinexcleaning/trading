@@ -23,14 +23,14 @@
   ],
   "chats": [
     {
-      "name": "Tennis — paper forward test",
+      "name": "TENNIS",
       "slug": "tennis",
       "folders": [
         "tennis-paper-forward",
         "kalshi-tennis",
         "set1_overshoot"
       ],
-      "purpose": "Runs the live tennis paper test and everything about Kalshi tennis markets.",
+      "purpose": "Tennis paper test - 16 bots, no money.",
       "opening": "next",
       "created": "2026-08-07",
       "subjects": [
@@ -53,13 +53,13 @@
       ]
     },
     {
-      "name": "Baseball — paper forward test",
+      "name": "BASEBALL",
       "slug": "mlb",
       "folders": [
         "mlb-paper",
         "mlb"
       ],
-      "purpose": "Runs the live baseball paper test, 16 bots, watching closing-line value.",
+      "purpose": "Baseball paper test - 16 bots, no money. Runs the sizing experiment.",
       "opening": "next",
       "created": "2026-08-07",
       "subjects": [
@@ -78,7 +78,7 @@
       ]
     },
     {
-      "name": "De-vig, weather and crypto market making",
+      "name": "BOOKMAKERS",
       "slug": "devig",
       "folders": [
         "bot-hunt",
@@ -86,7 +86,7 @@
         "crypto",
         "market-selection"
       ],
-      "purpose": "Tests whether bookmaker prices, weather models or resting orders beat Kalshi.",
+      "purpose": "Do bookmaker prices beat Kalshi? Also weather and crypto.",
       "opening": "next",
       "created": "2026-08-07",
       "subjects": [
@@ -114,7 +114,7 @@
       ]
     },
     {
-      "name": "Signal hunting — GitHub, YouTube, social",
+      "name": "RESEARCH",
       "slug": "signal",
       "folders": [
         "signal-github",
@@ -123,7 +123,7 @@
         "extractor-upgrade",
         "bot-forensics"
       ],
-      "purpose": "Finds and grades what other people have already built and published.",
+      "purpose": "Reads GitHub, YouTube and Reddit to find what others have already built.",
       "opening": "next",
       "created": "2026-08-07",
       "subjects": [
@@ -152,13 +152,13 @@
       ]
     },
     {
-      "name": "Dictator — the chat you talk to",
+      "name": "DICTATOR",
       "slug": "coordinator",
       "folders": [
         "coordinator",
         "common"
       ],
-      "purpose": "Reports where everything is, checks ideas against past work, files instructions. Does no project work.",
+      "purpose": "This window. Reports, routes ideas, does no project work.",
       "opening": "where is everything at",
       "created": "2026-08-08",
       "subjects": [
@@ -174,12 +174,12 @@
       ]
     },
     {
-      "name": "Soccer — comeback rates against Kalshi's price",
+      "name": "SOCCER",
       "slug": "soccer",
       "folders": [
         "soccer"
       ],
-      "purpose": "Counts how often a losing team comes back, by minute, scoreline, league and team strength, and compares it to what Kalshi charges.",
+      "purpose": "Soccer comeback study. Closed - the market never quotes a near-certainty.",
       "opening": "you are the soccer chat, check your mail",
       "created": "2026-08-08",
       "subjects": [
@@ -205,12 +205,12 @@
       ]
     },
     {
-      "name": "Reopen — things closed for the wrong reason",
+      "name": "OLD IDEAS",
       "slug": "reopen",
       "folders": [
         "reopen"
       ],
-      "purpose": "Audits every closed claim in the ledger for threads killed by a bug, missing data, or a test too small to see the thing it declared absent.",
+      "purpose": "Re-checks ideas we closed, looking for ones killed by mistake.",
       "opening": "you are the reopen chat, check your mail",
       "created": "2026-08-08",
       "subjects": [
@@ -229,12 +229,12 @@
       ]
     },
     {
-      "name": "Live desk — the one-window baseball trade display",
+      "name": "THE DESK",
       "slug": "livedesk",
       "folders": [
         "livedesk"
       ],
-      "purpose": "Builds the on-screen window that shows the next baseball bet, its size, its guards and its own running profit and loss. Displays only - it never sends an order.",
+      "purpose": "The baseball window you look at. Shows the bet; you place it.",
       "opening": "you are the livedesk chat, check your mail",
       "created": "2026-08-11",
       "subjects": [
