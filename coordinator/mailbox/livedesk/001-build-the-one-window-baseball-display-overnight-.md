@@ -202,3 +202,123 @@ findings bear directly on this build:
 **So do not add a stop-loss that sells out of a position and re-enters.** His
 $50 cut-off is a STOP EVERYTHING switch, not a per-trade stop, and those are
 different. Build the first, not the second.
+
+---
+
+# AMENDMENT 2 — three changes, and the first one is the most important thing in this message
+
+## 1. ⚠ THE PROFIT NUMBER HAS BEEN WRONG BEFORE, BY ABOUT $32, AND NOBODY FOUND IT
+
+**His words, about the tennis bot:**
+
+> *"I went from like 130 to 160, yet the bot was showing that it was down like
+> two dollars. I would tell Claude to fix it, and it said yeah I fixed it, it's
+> truly down two dollars. But then how the fuck am I down two dollars if I've
+> made thirty dollars? And that was when I wasn't placing bets. That was purely
+> the bot."*
+
+**Read that twice. The account went UP $30 and the app said DOWN $2, with no
+human trades in between — so the two numbers disagreed by about $32 and the app
+was confidently wrong.** It was reported, "fixed", and stayed wrong.
+
+**This is not a display bug. It breaks the entire safety design.** The $50
+cut-off in this build watches the tool's own ledger. **A ledger that can be $32
+wrong is a cut-off that does not fire.**
+
+### The rule: RECONCILE OR REFUSE
+
+**Every time it updates, the tool computes its running total two ways:**
+
+1. **From its own ledger** — every position it proposed and he confirmed,
+   entry, exit, fees, settlement.
+2. **From the account** — the Kalshi balance now, minus the balance when the
+   session started, minus anything it knows he did himself.
+
+**If those two disagree by more than one dollar, the window does not show a
+profit figure at all. It shows the disagreement, in red, and stops proposing
+trades until it is resolved.**
+
+**A number that might be $32 wrong is worse than no number**, because he will
+act on it. Refusing to display is the correct behaviour and it is not a
+degradation.
+
+### Where to look first
+
+Do not guess at the cause — **go and find it in `kalshi-inplay-bot/`.** That is
+where the bug lived and `bot-forensics` has already reconstructed that bot's
+real trades against its own records. Candidates worth checking, in order:
+
+- **open positions marked at the current price while wins are only counted on
+  settlement** — that alone produces "up in cash, down on screen";
+- **fees counted twice**, or counted on the wrong side;
+- **a sign error on NO positions**, which are the majority here;
+- **settlements the account received that the app never recorded**, because it
+  only tracks what it proposed.
+
+**Whatever you find, write it in `DECISIONS.md` with the evidence.** If you
+cannot reproduce it, say so and build the reconcile-or-refuse check anyway —
+that check catches it whether or not anyone understands it.
+
+## 2. THE CUT-OFF IS RELATIVE, NOT A FIXED $30
+
+He is right and my version was wrong:
+
+> *"It can't be cut off at thirty, because let's say the bot keeps going and
+> makes three hundred, and then we lose thirty. That's only ten percent."*
+
+**Two rules, either one stops everything:**
+
+- **A hard floor: the Kalshi account below $50. Absolute, never moves.** That is
+  his real "I cannot afford to go under this" line.
+- **A trailing rule: the bot's own running total falls more than 35% below its
+  highest point.** From $83 that is a stop at about $54 — near his floor at the
+  start, and proportionate later. At $300 it would allow a $105 drawdown, which
+  is what he means by "thirty out of three hundred is only ten percent".
+
+**Show both on screen at all times, with how much room is left in each.**
+
+## 3. RE-ENTERING A GAME — HE IS RIGHT, AND MY RULE WAS TOO BLUNT
+
+> *"We should be allowed to reenter the same game if it's a different scenario…
+> the criteria has been met again. It's a different bet but it's the same game."*
+
+**Correct. The rule is ONE BET PER SIGNAL, not one bet per game.**
+
+What the guard actually has to stop is **the same signal firing repeatedly on
+one game** — which is what happened to him on tennis and is leverage on a single
+outcome dressed up as several trades.
+
+**So:**
+
+- A signal is identified by **which rule fired and the game state it fired on**.
+  The identical rule on the identical state is a duplicate and is blocked
+  forever.
+- **A genuinely different trigger may open a second position.**
+- **Hard cap of 2 positions per game**, whatever the reasoning. He said himself
+  he does not know whether this logic even applies to the baseball bot — so the
+  cap is what protects him from a rationalisation neither of you can see.
+- **NEVER add to a position that is currently losing.** That is averaging down,
+  it is what turns one bad game into the whole bankroll, and there is no
+  scenario where this tool should do it.
+
+**`mlb-paper` owns the signal definition. Ask them what counts as a distinct
+trigger rather than inventing one** — and if the starting-pitcher bot has only
+one trigger per game by construction, say so and the question disappears.
+
+## 4. IT SHOULD SURFACE ON ITS OWN — and his reason is a good one
+
+> *"I don't really wanna be on Kalshi, because then I start looking at other
+> games and I'm like oh maybe I'll bet this, and then I lose all my money."*
+
+**That is a real risk control and it should be respected.** The window watches,
+and when a trade qualifies it **raises itself to the front and makes a noise**.
+He does not go looking.
+
+**And when he clicks: open the exact market page for that one contract,
+deep-linked — not the Kalshi home page, not a browse view.** He lands on one
+market, places, leaves. **The whole point is that he never sees the other games.**
+
+The button still does not send the order. That part does not change, and the
+reason has not changed either: this is a pre-game bet with hours of runway.
+**But everything else about "he should not have to go to Kalshi and browse" is
+right, and the deep link is how it gets solved.**
