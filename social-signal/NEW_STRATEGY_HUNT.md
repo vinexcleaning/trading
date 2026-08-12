@@ -405,6 +405,90 @@ answer when a screenshot arrives.
 
 ---
 
+# 9. THE SPREAD HAS A TIMETABLE — AND WE JUST BOUGHT THE DATA TO CHECK IT
+
+**This is the find I would act on first, because the archive pull in item 1
+turned it from a nice idea into an afternoon's work.**
+
+**What it claims.** A premium seller ran a shadow book for 90 days against his
+broker's displayed profit, on **about 180 round trips**, logging what the screen
+said a position was worth against what he could actually close it for. Two
+findings. The first I had already recorded: **the gap scales with the number of
+legs** — 2–4 out of 100 on one leg, 8–12 on two, **15–22 on four**. The second I
+had not:
+
+> The bid-ask width follows a **consistent intraday pattern** — widest at the
+> open, compressing through the morning, **tightest roughly 10:30 to 12:30**,
+> widening in the afternoon, compressing again in the last hour.
+
+He moved his entries from 9:35 to the tight window and puts the saving at
+**10–15 cents per spread**. His total gap over 90 days was **just over $14,000 —
+more than double what he paid in commissions.**
+
+**Do we have anything on it?** Nothing in the 640 recorded claims on **spread
+width as a function of time of day**. The nearest, `C106c`, is about score-aware
+entry timing and never uses the words spread, width or time-of-day.
+
+**Why it matters here more than it does for him.** Every result this repo has
+ever produced is measured against a cost bar. If the bar **moves predictably
+with the clock**, then a strategy that failed by a cent or two did not
+necessarily fail — it may have been measured at the wrong hour. That is not a
+new edge; **it is a correction to the denominator under every existing edge.**
+
+**What it would cost us to test: an afternoon, and the data is already on disk.**
+The archive completed in item 1 is **662 hourly files, 29 consecutive days,
+2026-05-14 to 06-11, zero gaps**, carrying the full orderbook — both sides, every
+level. Spread by hour-of-day is a group-by. **The hourly file layout means the
+question is asked in exactly the shape the data is already stored in.**
+
+**Three ways it could produce a real-looking number that is wrong**, written
+before running it rather than after:
+
+1. **Tennis follows the sun, not the clock.** Kalshi times are UTC; a European
+   clay tournament and a US hard-court one put their matches in different hours.
+   An "11:00 is tight" result could just be "matches are being played at 11:00".
+   **Control: measure spread against minutes-to-start, not wall-clock hour.**
+2. **Settled markets have no spread and there are many of them.** The archive
+   carries January matches with empty books in May files. Including them would
+   make quiet hours look artificially wide or narrow depending on the fill rule.
+   **Control: the `matches WITH A BOOK` count, not `SEEN`.**
+3. **29 days is one seasonal slice** — the back of the clay swing into grass. A
+   pattern here is not a pattern in November.
+
+**And the honest limit on the source: it is one person, one instrument, one
+account.** SPX options are not Kalshi tennis, and a market-maker's intraday
+staffing pattern is exactly the kind of thing that does not transfer. **The idea
+is worth testing on our data; his number is not worth importing.**
+
+---
+
+# 10. TWO SOURCES THAT WERE ONE PERSON
+
+**A methodological finding about the corpus itself, and it changes how the
+counts should be read.**
+
+Item 9 arrived as `1rvk0d1`. I had already read `1rvk302` and recorded it as a
+separate item. **They are the same author posting the same experiment to two
+subreddits**, with different titles and partly different text — which is why the
+second one carried a finding the first did not.
+
+**Why this matters beyond bookkeeping.** The Critic's standing first question is
+*"how many independent sources?"*, and the whole reason the reading is worth
+anything is that a claim confirmed by two strangers is worth more than a claim
+asserted by one. **Cross-posting silently manufactures that second stranger.**
+
+**What I have done about it:** counted them as **one** source, and said so.
+`1rvk302` and `1rvk0d1` should be treated as a single observation everywhere
+they appear, including in the earlier claim that fill drag scales with leg count.
+
+**What I have NOT done:** swept the corpus for other duplicate pairs. That is a
+real gap — 60,833 posts collected across Reddit and Mastodon with no
+near-duplicate check, and every count I have reported treats each row as one
+voice. **Nobody should read the corpus counts as counts of people until that
+sweep is written.**
+
+---
+
 # WHAT I CUT, AND WHY
 
 **On-chain Polymarket trade history.** I had this ranked second — a free,
@@ -421,11 +505,13 @@ corpus may still be better than ours, but that is a tooling question, not a find
 
 | # | what | cost | why this order |
 |---|---|---|---|
-| 1 | **Finish the archive inventory and pull what we lack** | hours, free | The only item with a deadline. The operator has been asked to shut it down and the data cannot be re-obtained from Kalshi at any price. |
+| ~~0~~ | ~~**Pull the archive before it goes**~~ | — | **DONE 2026-08-12.** 662 hours, 29 days, zero gaps. This was the only item with a deadline. |
+| 1 | **Does the Kalshi tennis spread have a timetable?** (item 9) | an afternoon | The data is already on disk in exactly the shape the question needs, and it is not a new edge — it is a **correction to the cost bar under every existing result**. A strategy that failed by a cent may have been measured at the wrong hour. |
 | 2 | **Re-run C106b with multi-outcome events collapsed to one observation** | an afternoon | Uses data we already hold, upgrades a claim from UNVERIFIED, and either finds or clears an artifact in our own numbers. |
-| 3 | **Add a liquidity-tax column to backtests** | an afternoon | Applies to every result in the repo, not just this one. |
-| 4 | **Thinly-modelled sports on an exchange** | days | Genuinely new to the 638 claims. Needs the exchange version of the question, since his bookmaker route ends in account limiting. |
-| 5 | Structural-NO on Polymarket | ten minutes | Answered by arithmetic. Write it down so it is not re-derived a fourth time. |
+| 3 | **Add a liquidity-tax column to backtests** | an afternoon | Applies to every result in the repo, not just this one. Same family as item 1: both are about the price you actually pay rather than the one displayed. |
+| 4 | **A near-duplicate sweep over the corpus** | an afternoon | Item 10 found two "independent" sources that were one person cross-posting. **Until this runs, no corpus count is a count of people** — including the ones in this document. |
+| 5 | **Thinly-modelled sports on an exchange** | days | Not found in the 640 recorded claims. Needs the exchange version of the question, since his bookmaker route ends in account limiting. |
+| 6 | Structural-NO on Polymarket | ten minutes | Answered by arithmetic. Write it down so it is not re-derived a fourth time. |
 
 ---
 
