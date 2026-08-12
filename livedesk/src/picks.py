@@ -26,11 +26,16 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
+from ledger import signal_key                      # noqa: E402
+
 TRADING_ROOT = Path(__file__).resolve().parents[2]
 MLB_DB = TRADING_ROOT / "mlb-paper" / "data" / "paper.db"
 MLB_SRC = TRADING_ROOT / "mlb-paper" / "src"
 
 BOT = "starter__hold"
+# The unconstrained view of the same mentality. Not capped by entries, re-run
+# every tick, and the only thing that can retire a pick. See _changed_mind.
+SHADOW_BOT = "starter__shadow"
 
 # The 30-club code map belongs to mlb-paper and is imported rather than
 # retyped -- a second copy of it is how the Athletics broke a name join once.
@@ -56,6 +61,7 @@ class Pick:
     fair_c: float             # what the bot thinks it is worth
     why: list                 # plain-English lines
     warning: str              # '' or a sentence he must read
+    signal: str               # which rule fired on what state -- Guard 1
 
     @property
     def starts_local(self) -> datetime:
@@ -106,6 +112,21 @@ def _side_sentence(club: str, f: dict) -> Optional[str]:
         return None
     bits = []
     d = f.get("divergence_er9")
+
+    # mlb amendment A3, 2026-08-12: a divergence computed on too little
+    # pitching is recorded and NOT used. Say so out loud -- "the bot looked
+    # and decided it could not tell" is a different thing from "the bot found
+    # nothing", and only one of them is honest about a rookie.
+    ignored = next((x for x in flags
+                    if x.startswith("form_divergence_IGNORED")), None)
+    if ignored:
+        n = f.get("career_starts_prior")
+        bits.append(
+            f"{_poss(club)} starting pitcher looks very different lately from "
+            f"his season line, but the bot IGNORED that — he has only "
+            f"{n} career start(s) behind him, so there is not enough pitching "
+            f"there to read anything into.")
+
     if "form_divergence" in flags and d is not None:
         recent, season = f.get("recent_era"), f.get("season_era")
         better = d < 0
@@ -149,32 +170,50 @@ def _why(r: dict, backed: str, away_club: str, home_club: str) -> list:
 # pitcher with a tiny record being treated as if his one bad outing were a
 # whole season, and he should see that before clicking, not after.
 BIG_DISAGREEMENT_C = 12.0
+# `mlb` asked for this second trigger on 2026-08-12 and it is theirs, not mine:
+# "a pitcher with two starts is worth flagging even at a 6-cent gap, because
+# that is where the bot is thinnest." After their amendment A3 the enormous
+# gaps mostly stop appearing, so the gap alone would stop catching the thin
+# cases -- which are the ones that were wrong in the first place.
+THIN_PITCHER_STARTS = 3
+THIN_GAP_C = 6.0
+
+
+def _thin(r: dict):
+    """The fewest career starts either flagged pitcher has, or None."""
+    seen = []
+    for side in ("away", "home"):
+        f = (r.get("flags") or {}).get(side) or {}
+        if not (f.get("flags") or []):
+            continue
+        n = f.get("career_starts_prior")
+        if n is not None:
+            seen.append(int(n))
+    return min(seen) if seen else None
 
 
 def _warning(r: dict) -> str:
-    fair = r.get("fair_c")
-    price = r.get("price_c")
+    fair, price = r.get("fair_c"), r.get("price_c")
     if fair is None or price is None:
         return ""
     gap = abs(float(fair) - float(price))
-    if gap < BIG_DISAGREEMENT_C:
+    thin = _thin(r)
+    thin_hit = thin is not None and thin <= THIN_PITCHER_STARTS and gap >= THIN_GAP_C
+    if gap < BIG_DISAGREEMENT_C and not thin_hit:
         return ""
-    thin = []
-    for side in ("away", "home"):
-        f = (r.get("flags") or {}).get(side) or {}
-        n = f.get("career_starts_prior")
-        if n is not None and n <= 3:
-            thin.append(int(n))
     extra = ""
-    if thin:
-        n = min(thin)
-        extra = (f" It leans on a pitcher with only {n} career "
-                 f"{'start' if n == 1 else 'starts'}, so his 'recent form' is "
-                 f"one or two games.")
-    return (f"UNUSUAL — the bot says this should be {float(fair):.0f} cents; "
-            f"the market says {int(price)}. That is the bot calling the market "
-            f"badly wrong, not making a small correction." + extra
-            + " Be suspicious.")
+    if thin is not None and thin <= THIN_PITCHER_STARTS:
+        extra = (f" It rests on a pitcher with only {thin} career "
+                 f"{'start' if thin == 1 else 'starts'} — the thinnest ground "
+                 f"this bot ever stands on.")
+    if gap >= BIG_DISAGREEMENT_C:
+        head = (f"UNUSUAL — the bot says this should be {float(fair):.0f} "
+                f"cents; the market says {int(price)}. That is the bot calling "
+                f"the market badly wrong, not making a small correction.")
+    else:
+        head = (f"CAREFUL — the bot wants {float(fair):.0f} cents against the "
+                f"market's {int(price)}.")
+    return head + extra + " Be suspicious."
 
 
 # ---------------------------------------------------------------- the read
@@ -201,18 +240,59 @@ def source_age_minutes(db: Path = MLB_DB) -> Optional[float]:
         return None
 
 
-def pending_picks(db: Path = MLB_DB, min_hours_before: float = 0.25) -> list:
-    """Every starting-pitcher bet for a game that has not started yet.
+def _changed_mind(con) -> dict:
+    """game_key -> when `mlb-paper` last looked at that game and decided NOT
+    to trade it.
+
+    WHY THIS EXISTS, and it is not a nicety. `starter__hold` takes at most one
+    entry per game, so once it has entered, it never writes another row for
+    that game -- and a stale entry would sit on the card for ever. On
+    2026-08-12 that happened for real: `mlb` fixed a defect (their amendment
+    A3) which cut one game's claimed value from 99 cents to 71 and dropped it
+    below the cost bar, and the superseded entry was still on the card.
+
+    The SHADOW bot is the unconstrained view. It is not capped by entries, it
+    re-runs every tick, and every one of its 1,063 recorded rows says the same
+    thing: the mentality looked, had a real view, and decided the trade does
+    not clear its own cost bar. So a shadow row written AFTER our entry is
+    `mlb-paper` saying it no longer wants that bet.
+
+    This is still reading their published view, not recomputing it (D1).
+    """
+    out = {}
+    for r in con.execute(
+            "SELECT game_key, ts_utc, reasoning_json FROM decisions "
+            "WHERE bot=? AND kind='shadow' ORDER BY ts_utc", (SHADOW_BOT,)):
+        try:
+            j = json.loads(r["reasoning_json"])
+        except json.JSONDecodeError:
+            continue
+        # Only a row that actually says "no" retires anything. If a future
+        # shadow row ever records a PASS, it must not be read as a refusal.
+        if (j.get("detail") or {}).get("passes") is False:
+            out[r["game_key"]] = (r["ts_utc"], j.get("reason") or "no longer worth it")
+    return out
+
+
+def pending_picks(db: Path = MLB_DB, min_hours_before: float = 0.25,
+                  retired: Optional[list] = None) -> list:
+    """Every starting-pitcher bet for a game that has not started yet, that
+    `mlb-paper` has not since changed its mind about.
 
     `min_hours_before` keeps a game that is about to throw its first pitch off
     the card. This is a PRE-GAME tool; there is no speed requirement and no
     reason to be placing a bet ninety seconds before the anthem.
+
+    `retired` collects (matchup, reason) for anything dropped, so the window
+    can say "the bot has changed its mind about X" instead of a card silently
+    vanishing.
     """
     out = []
     with _connect(db) as con:
         rows = con.execute(
             "SELECT * FROM decisions WHERE bot=? AND kind='entry' "
             "ORDER BY ts_utc DESC LIMIT 400", (BOT,)).fetchall()
+        changed = _changed_mind(con)
 
     seen = set()
     now = datetime.now(timezone.utc)
@@ -223,6 +303,11 @@ def pending_picks(db: Path = MLB_DB, min_hours_before: float = 0.25) -> list:
         seen.add(gk)
         hours = (_parse(row["starts_utc"]) - now).total_seconds() / 3600.0
         if hours < min_hours_before:
+            continue
+        later = changed.get(gk)
+        if later and later[0] > row["ts_utc"]:
+            if retired is not None:
+                retired.append((_matchup(gk), later[1]))
             continue
         try:
             j = json.loads(row["reasoning_json"])
@@ -248,6 +333,7 @@ def pending_picks(db: Path = MLB_DB, min_hours_before: float = 0.25) -> list:
             fair_c=float(r.get("fair_c") or 0.0),
             why=_why(r, backed, _club(away_code), _club(home_code)),
             warning=_warning(r),
+            signal=signal_key(gk, backed, r.get("flags") or {}),
         ))
 
     # Soonest first pitch first. Deliberately NOT ranked by how good the bot

@@ -47,7 +47,8 @@ def _fake_pick(**over):
         side="YES", quoted_price_c=52,
         starts_utc="2099-08-12T22:40:00+00:00",
         decided_utc="2026-08-12T02:42:42+00:00", window="T-24h",
-        fair_c=58.4, why=["a short reason."], warning="")
+        fair_c=58.4, why=["a short reason."], warning="",
+        signal="2026-08-12:PIT@MIA|Miami Marlins|home:form_divergence")
     base.update(over)
     return P.Pick(**base)
 
@@ -77,10 +78,16 @@ def _root(tmp_path_factory):
 def app(_root, monkeypatch):
     """The same window, wound back to a clean state for each test."""
     _root.ledger.entries.clear()
+    # The balance and the peak persist on disk by design, so a test that sets
+    # one must not leak into the next.
+    _root.ledger.account_balance_usd = None
+    _root.ledger.account_checked_utc = None
+    _root.ledger.peak_total_usd = _root.ledger.account_start_usd
     _root.ledger.save()
     _root.picks = []
     _root.quotes = {}
     _root.skipped = set()
+    _root._announced = set()
     _root._clear_alert()
     _root._render()
     return _root
@@ -135,8 +142,8 @@ def test_the_button_holds_still_through_every_card_state(app, monkeypatch):
     assert _button_xy(app) == home, "clearing the alert moved the button"
 
     # 6. a long queue of other games underneath
-    app.picks = [_fake_pick(game_key=f"g{i}", ticker=f"T{i}-MIA")
-                 for i in range(40)]
+    app.picks = [_fake_pick(game_key=f"g{i}", ticker=f"T{i}-MIA",
+                            signal=f"sig{i}") for i in range(40)]
     app._render()
     assert _button_xy(app) == home, "the waiting list moved the button"
 
@@ -148,11 +155,26 @@ def test_the_button_holds_still_through_every_card_state(app, monkeypatch):
             team="Miami Marlins", matchup="a at b", side="YES", price_c=52,
             contracts=7, cost_usd=3.77, fee_usd=0.13, win_profit_usd=3.23,
             lose_usd=3.77, starts_utc="2026-08-12T22:40:00+00:00",
-            confirmed_utc="2026-08-12T02:00:00+00:00"))
+            confirmed_utc="2026-08-12T02:00:00+00:00", signal=f"done{i}"))
     app._render()
     assert _button_xy(app) == home, "the placed-bets list moved the button"
 
-    # 8. the kill switch
+    # 8. the reconcile bar disagreeing, which paints the header amber and puts
+    #    a long red sentence in the strip above the card
+    app.ledger.entries.clear()
+    app.ledger.entries.append(Entry(
+        game_key="settled", ticker="S1", event_ticker="E", team="X",
+        matchup="a at b", side="YES", price_c=52, contracts=7, cost_usd=3.77,
+        fee_usd=0.13, win_profit_usd=3.23, lose_usd=3.77,
+        starts_utc="2026-08-12T22:40:00+00:00",
+        confirmed_utc="2026-08-12T02:00:00+00:00", signal="settled",
+        status="won", pnl_usd=3.23, settled_utc="2026-08-01T00:00:00+00:00"))
+    app.ledger.set_account_balance(400.00)
+    assert app._blocked()[0] == "unreconciled"
+    app._render()
+    assert _button_xy(app) == home, "the reconcile warning moved the button"
+
+    # 9. the kill switch
     monkeypatch.setattr(killswitch, "SWITCH", Path(__file__))   # always exists
     app._render()
     assert _button_xy(app) == home, "the kill switch moved the button"
@@ -179,14 +201,7 @@ def test_the_button_is_dead_when_the_kill_switch_is_on(app, monkeypatch):
 
 def test_the_button_is_dead_once_the_cut_off_fires(app):
     from ledger import Entry
-    for i in range(9):
-        app.ledger.entries.append(Entry(
-            game_key=f"g{i}", ticker=f"T{i}", event_ticker="E",
-            team="X", matchup="a at b", side="YES", price_c=52, contracts=7,
-            cost_usd=3.77, fee_usd=0.13, win_profit_usd=3.23, lose_usd=3.77,
-            starts_utc="2026-08-12T22:40:00+00:00",
-            confirmed_utc="2026-08-12T02:00:00+00:00",
-            status="lost", pnl_usd=-3.77))
+    app.ledger.set_account_balance(49.00)      # under the absolute $50 floor
     app.picks = [_fake_pick()]
     assert app._blocked()[0] == "stopped"
     app._render()
@@ -201,13 +216,19 @@ def test_the_button_is_dead_once_the_cut_off_fires(app):
         assert str(b.cget("state")) == "disabled"
 
 
-def test_a_game_already_bet_is_never_offered(app):
+def test_a_signal_already_bet_is_never_offered(app):
+    """And a DIFFERENT signal on the same game still is -- that is his own
+    correction and the reason the guard moved from game to signal."""
     from ledger import Entry
+    p = _fake_pick()
     app.ledger.entries.append(Entry(
-        game_key="2026-08-12:PIT@MIA", ticker="X", event_ticker="E",
+        game_key=p.game_key, ticker="X", event_ticker="E",
         team="Miami Marlins", matchup="a at b", side="YES", price_c=52,
         contracts=7, cost_usd=3.77, fee_usd=0.13, win_profit_usd=3.23,
         lose_usd=3.77, starts_utc="2026-08-12T22:40:00+00:00",
-        confirmed_utc="2026-08-12T02:00:00+00:00", status="lost", pnl_usd=-3.77))
-    app.picks = [_fake_pick()]
-    assert app._available() == [], "a settled game came back around"
+        confirmed_utc="2026-08-12T02:00:00+00:00", signal=p.signal,
+        status="lost", pnl_usd=-3.77))
+    app.picks = [p]
+    assert app._available() == [], "a settled signal came back around"
+    app.picks = [_fake_pick(signal=p.signal + "|different-trigger")]
+    assert len(app._available()) == 1, "a different trigger must still be offered"

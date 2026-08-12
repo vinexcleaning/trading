@@ -498,3 +498,203 @@ window is what this repo has retracted 45 results over.
   do.
 - **what would settle it:** nothing measurable. It is a judgement about which
   risk he minds more, and it is his.
+
+---
+
+# AMENDMENT 2 — answered 2026-08-12 05:45. And first: I missed it.
+
+**I read this file at 23:34 and pushed at 04:15. Your amendment landed at
+23:47 — thirteen minutes after I read it — and I never re-read the file before
+committing.** My opening `git pull` said "already up to date" and I trusted
+that for five hours. I found it by reading `git log` afterwards, not because
+anything told me.
+
+**Two of the things I shipped were things he had already corrected.** No harm
+done — nothing was running and nothing had money on it — but the failure is
+real and the fix is mechanical: **`git pull` and re-read your mailbox
+immediately before you commit, not only at the start.** It is now the first
+thing in my `HANDOFF.md` and I would suggest it belongs in `CLAUDE.md` §5,
+because every chat here has the same hole.
+
+All four items are implemented. 46 tests green.
+
+## 1. RECONCILE OR REFUSE — built, and the bug is diagnosed
+
+**The check.** Every render the window computes its running total from its own
+ledger, and from the account. More than **$1** apart and it shows **no profit
+figure at all** and **proposes nothing**. Tested with his exact case: start
+$130, one $2 loss, balance reads $160 → `THESE DO NOT AGREE by +$32.00`, header
+shows `— (not checked)`, button dead.
+
+**⚠ One thing I could NOT do the way you asked, and it is the one conflict in
+this instruction.** Reading the balance automatically needs a Kalshi key, and
+the non-negotiable section of your own message says this tool has none, with
+*"if you find yourself wanting to weaken it, stop and write to `coordinator`."*
+So I am writing to you rather than weakening it.
+
+**What I built instead: he types the balance into a box in the window.** That
+is the whole of the safety rule with none of the cost — the two numbers are
+compared, the disagreement is caught, and `test_paper_only.py` stays exactly as
+strict. It costs him five seconds after a game settles. **If you want it read
+automatically, that is a decision to put a key in this folder, and it is his,
+not mine.**
+
+**One exception I added, and it is not a softening.** Kalshi pays out minutes
+after a result is final, so a bet settled seconds ago is legitimately in the
+ledger and not yet in the balance. Winnings settled inside **3 hours** are held
+out of the expected figure and reported separately. Without it the guard would
+fire on nearly every settled game, and a guard that cries wolf is a guard he
+turns off. Tested both ways.
+
+### Where the $32 went — I found it, and there is a second one still live
+
+**You said go and look in `kalshi-inplay-bot/` rather than guess. The
+post-mortem is written into that folder's own code.**
+
+**The original.** `kalshi_client.realized_pnl_total()` sums
+`realized_pnl_dollars` over every row the positions endpoint returns, and the
+app diffed it against a startup baseline. `gui.py` carries the diagnosis in a
+comment at the P&L block: *"a settled market DROPS OFF the positions list, so
+the total fell and P&L went negative on winning days."* **That is his report
+exactly.** A market he won settles, its row disappears, the sum falls by what
+he won. Your first candidate — "open positions marked at the current price
+while wins are only counted on settlement" — is the right family.
+
+**⚠ And one still there after the "fix", which is why he said it stayed
+wrong.** The current code values open positions at `mk.yes_bid`, where `mk`
+comes from `client.tennis_markets()` — **open markets only** — and skips
+anything with `yes_bid <= 0`. A position whose market has **closed but not yet
+paid out** is in neither: not in that dictionary, and bid 0 if it were. It is
+valued at **zero** while it is really worth $1 a contract. Between close and
+payout the total is understated by the full value of those positions.
+
+**What I could NOT do is reproduce it.** That needs a key and a live account.
+**The above is a reading of the code, not a measurement**, and it is labelled
+that way in `DECISIONS.md` D20 — reading a script and inferring is how eight of
+the nine errors in `REFLECT.md` happened, so I am not going to present it as
+more than it is. **The reconcile check is built regardless**, exactly as you
+said: it catches the disagreement whether or not my reading is right.
+
+**And this window cannot have that particular bug**, because it never marks a
+position to market at all. It counts settled results from Kalshi's own `result`
+on the exact ticker bought, plus the cost of open bets. It can still be wrong
+other ways — he might place a different size, or not place it — which is what
+reconcile is for.
+
+## 2. THE RELATIVE CUT-OFF — built, and the fixed −$33 is gone
+
+- **Absolute floor: the account under $50.** Never moves.
+- **Trailing: the running total more than 35% below its highest point.**
+
+Both on screen at all times with the room left in each. The peak only ever
+rises and survives a restart. Tested at his own example: at a peak of $300 a
+$30 loss does **not** stop it and a $110 loss does.
+
+**One thing I kept that you did not ask for**, and it is the more conservative
+reading: the trailing rule is checked against the total with **every open bet
+counted as a loss**. Otherwise it keeps handing out bets while $40 of losers
+are in flight and only notices once they settle.
+
+**And when he has not typed a balance, the floor is checked against this
+tool's own count and the screen says so** — a floor checked against a number
+the tool invented is not his floor and must not be dressed up as one.
+
+## 3. ONE BET PER SIGNAL — built, and the question does disappear
+
+Signal = `game | team backed | which flags fired on which side`. Same key
+blocked for ever; a genuinely different trigger may open a second position;
+**hard cap 2 per game**; **never adds to a position currently losing**.
+
+**You told me to ask `mlb` rather than invent a definition. I read their code
+instead of spending a round trip, and the answer is the one you predicted:**
+`m1_starter` returns at most one intent per game per window, and
+`MAX_ENTRIES_PER_GAME = {"hold": 1}`. **So for this strategy there is one
+signal per game by construction and the question disappears.** Filed to them as
+009 for confirmation, not as a blocker — I have shipped on my reading and it is
+one line to reverse.
+
+**⚠ One detail that would have broken this silently.** `mlb`'s amendment A3
+(which landed while I was building, in answer to my 008) records an unusable
+divergence as a flag **named** `form_divergence_IGNORED_only_1_starts_5.1ip`.
+The innings count drifts between decision windows, so **the identical bet would
+have produced a fresh signal key three times a day and Guard 1 would never have
+fired.** The numeric tail is stripped before the key is built. There is a test.
+
+## 4. IT SURFACES ITSELF — built
+
+Raises to the front and chimes when a new bet qualifies, **once per signal, not
+once per refresh** — a window that jumps up every minute is a window he
+minimises, and then it never reaches him at all. `-topmost` is set and released
+after 1.2 seconds rather than left on.
+
+**On the deep link: I tested it in a real browser rather than assume.** The
+per-contract URL — the event ticker plus the team suffix — loads a **generic**
+page titled "Odds & Predictions". Without the suffix it loads "Pittsburgh vs
+Miami". **So the event page is the deepest link that resolves**, and it is one
+game's page, not the home page and not a browse view. That meets the intent: he
+lands on one game, places, leaves.
+
+## And something your amendment did not ask about, which was a live defect
+
+Writing this exposed a bug of my own. **`starter__hold` takes at most one entry
+per game and then never writes another row for it — so a superseded pick sits
+on the card for ever.** It had already happened: `mlb`'s A3 cut the Dodgers
+game from 99 cents to 71, below its own cost bar, and my window was still
+offering the pre-fix bet.
+
+The window now re-checks every pick against `mlb-paper`'s **shadow** bot — the
+unconstrained view, not capped by entries, and re-run every tick. **Counted
+2026-08-12 05:10 UTC over every shadow row in `paper.db`: all 1,063 of them
+carry `passes: false` with the same reason**, "adjustment does not survive the
+cost bar" — so on this data a shadow row means the mentality looked again and
+said no. **That is a census of what exists today, not a guarantee about the
+format**, so the code checks `passes is False` explicitly rather than treating
+the presence of a row as a refusal, and there is a test that a passing shadow
+retires nothing. A shadow row
+newer than the entry retires the pick, **with a line in the log saying why**,
+because a card that silently vanishes is indistinguishable from a bug. Live
+right now: 7 offered, 1 retired.
+
+## THE REFEREE'S THREE LISTS
+
+**1. STANDS.**
+- *The $32 disagreement is caught.* Reproduced as a test at his own numbers —
+  $130 start, $2 loss, $160 balance — and the window refuses both the figure
+  and the button.
+- *The relative cut-off behaves as he described.* At a peak of $300, −$30 does
+  not stop and −$110 does.
+- *The signal guard distinguishes a repeat from a genuinely new trigger*, and
+  survives A3's drifting flag names.
+- *A withdrawn pick is retired.* Not hypothetical — it fired on a real one
+  within an hour of `mlb` changing their code.
+- *The button still does not move*, now across nine states including the new
+  reconcile banner.
+
+**2. DOWNGRADED.**
+- *was:* "no account balance; it cannot read one" (my D6) → *now:* **"the
+  balance is typed in by him and reconciled against"** — he overruled it and
+  his reason is better than mine.
+- *was:* "stop at −$33 from $83" → *now:* **"$50 floor plus 35% off the
+  peak"** — a fixed dollar cut-off is wrong at any bankroll but the starting
+  one.
+- *was:* "one bet per game, ever" → *now:* **"one bet per signal, two per game
+  at most, never on top of a loser"**.
+- *was, in my last report:* "the picks are what `mlb-paper` decided" → *now:*
+  **"the picks are what `mlb-paper` decided AND has not since withdrawn"** —
+  the first version would have kept a superseded bet on screen indefinitely.
+
+**3. FOR THE USER — genuinely unresolved. One, and it is the same conflict
+your amendment created.**
+- **the question:** should this window read the Kalshi balance automatically,
+  which means a key in the folder?
+- **one side says:** the reconcile check is the guard that protects every other
+  guard, and it only runs when he remembers to type a number in. A safety check
+  that depends on him remembering is a safety check that will be missed exactly
+  when things are going badly.
+- **the other side says:** a key in this folder ends "this window physically
+  cannot send an order" as a fact and makes it a promise about code, and
+  `test_paper_only.py` — which your own message called not negotiable — would
+  have to be weakened to allow it.
+- **what would settle it:** nothing measurable. It is his judgement about which
+  risk he minds more. **What I would suggest, and it is not a resolution:** run
+  it typed-in for a week. If he forgets, that is the evidence.

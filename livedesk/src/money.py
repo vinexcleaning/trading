@@ -29,11 +29,11 @@ STAKE_PCT = 5.0
 # ledger.py is what bounds the downside, not the stake.
 STAKE_USD = round(BANKROLL_START * STAKE_PCT / 100.0, 2)     # $4.15
 
-# --- Guard 2 -------------------------------------------------------------
-# Stop everything when THIS TOOL's own running total is down this much. Not
-# the account balance: he can move the account himself and that must never be
-# read as the strategy failing.
-CUTOFF_LOSS_USD = 33.00
+# Guard 2 -- the cut-off -- lives in ledger.py, not here. It was a fixed
+# -$33 until he corrected it on 2026-08-12: "It can't be cut off at thirty,
+# because let's say the bot keeps going and makes three hundred, and then we
+# lose thirty. That's only ten percent." It is now an absolute $50 floor plus
+# a 35% trailing drop, and both need the ledger to compute.
 
 
 @dataclass(frozen=True)

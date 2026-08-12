@@ -14,8 +14,8 @@ To turn it off: `livedesk\turn_off.bat`. To turn it back on: `turn_on.bat`.
 ## What it is
 
 It is the tennis window he already uses (`kalshi-inplay-bot/gui.py`), pointed
-at baseball's starting-pitcher picks instead of live tennis, with the three
-things he asked for built in and tested.
+at baseball's starting-pitcher picks instead of live tennis, with every guard
+he asked for built in and tested by breaking it on purpose.
 
 **It does not send an order.** There is no key in this folder, no signing
 code, and no write call anywhere in it. `tests/test_paper_only.py` walks every
@@ -30,26 +30,48 @@ on a bet with hours of runway. Nothing can fire while he is asleep.
 
 The button copies the bet to the clipboard and opens the right Kalshi page.
 
-## The three guards
+## The four guards
 
-**Guard 1 — one bet per game, ever.** The moment you click, that game is
-written to `data/ledger.json` and never offered again. Not this session, not
-after a restart, not after it wins, not after it loses. His words about the
-old app: *"it would keep repeating bets, so it would make me bet a lot on the
-same games, which actually worked out in our favour with the wins, but then it
-would also work against us in the losses."*
+**Guard 1 — one bet per SIGNAL.** Not per game. He corrected that himself and
+he was right: *"We should be allowed to reenter the same game if it's a
+different scenario… It's a different bet but it's the same game."* What has to
+be stopped is the same rule firing again on the same state, which is what
+happened to him on tennis: *"it would keep repeating bets… which actually
+worked out in our favour with the wins, but then it would also work against us
+in the losses."* So: the same signal is blocked for ever, a genuinely different
+trigger may open a second position, **two per game is the hard limit**, and it
+**never adds to a position that is currently losing**.
 
-**Guard 2 — stop everything at −$33, on this tool's own ledger.** Not on the
-account balance. He spotted the hole himself: *"there might be a chance it
-dips to fifty because I'm the reason it dipped to fifty, and it had nothing to
-do with baseball."* Nothing in `ledger.py` can reach the network or read a
-broker, so nothing he does to the account can trip it. It counts every open
-bet as a loss, so it cannot keep handing out bets while $40 of losers are
-still in flight.
+**Guard 2 — two cut-offs, either one stops everything.** An **absolute floor**
+at $50 in the account, which never moves. And a **trailing rule**: the running
+total more than 35% below its highest point. From $83 that is $53.95; at a peak
+of $300 it allows a $105 drawdown, which is his point — *"let's say the bot
+keeps going and makes three hundred, and then we lose thirty. That's only ten
+percent."* Both are on screen with the room left in each. The trailing rule
+counts every open bet as a loss, so it cannot keep betting while $40 of losers
+are in flight.
 
 **Guard 3 — $4.15 a bet, flat.** 5% of $83. It does not grow when he is
-winning; `size_bet()` takes no argument that could carry a rising bankroll.
-The paper bots drifted from 3 contracts to 25 on their own.
+winning: the stake is **clamped**, so a caller passing a bigger number still
+gets $4.15. The paper bots drifted from 3 contracts to 25 on their own.
+
+**Guard 4 — reconcile or refuse, and this is the one that protects the others.**
+The profit figure on the tennis app was once about **$32 wrong** — his account
+went $130 to $160 while it said he was down $2, with no trades of his own in
+between. It was reported, "fixed", and stayed wrong. **The cut-off watches that
+figure, so a ledger that can be $32 out is a cut-off that does not fire.**
+
+So the window computes its running total two ways: from its own ledger, and
+from the Kalshi balance you type into the box at the top. **If they differ by
+more than a dollar it shows no profit figure at all and proposes nothing** until
+it is sorted. A number that might be $32 wrong is worse than no number, because
+you will act on it. (What that bug actually was, with the lines of code:
+[DECISIONS.md](DECISIONS.md) D20.)
+
+**The balance is TYPED IN, not read.** Reading it automatically needs a Kalshi
+key, and a key in this folder would end the guarantee that the window cannot
+send an order. Typing it costs five seconds after a game settles and keeps
+`tests/test_paper_only.py` exactly as strict.
 
 **And the kill switch.** A file called `TRADING_DISABLED` in this folder. If
 it is there, the button is dead. No flag, no restart, no code change — the
@@ -96,6 +118,25 @@ not more.
 He decided to run it knowing all of that. **That is his call, and the line
 stays at the bottom of the window every time he clicks.**
 
+## It comes to you
+
+When a new bet qualifies the window raises itself to the front and chimes —
+**once per bet, not once per refresh**. His reason is a real risk control:
+*"I don't really wanna be on Kalshi, because then I start looking at other
+games and I'm like oh maybe I'll bet this, and then I lose all my money."* The
+button then opens **that one game's page**, not the home page and not a browse
+view.
+
+## A pick can be withdrawn, and you are told
+
+`starter__hold` takes at most one bet per game and then never writes another
+row for it — so a superseded pick would sit on the card for ever. On
+2026-08-12 that happened: `mlb` fixed a defect that cut one game's claimed
+value from 99 cents to 71, below its own cost bar, and the old pick was still
+being offered. The window now re-checks every pick against `mlb-paper`'s newest
+unconstrained view and **drops it, with a line in the log saying why**, if the
+strategy no longer wants it.
+
 ## The unusual-pick warning
 
 When the bot claims a game is worth 12 cents or more away from what the market
@@ -103,9 +144,15 @@ says, the card carries a warning. That is not the bot making a small
 correction; it is the bot calling the market badly wrong, and it is almost
 always one pitcher with a tiny record being treated as if one bad outing were
 a whole season. **3 of the 8 picks live on 2026-08-12 carried it** — one of
-them leaning on a pitcher with a single career start. Filed to `mlb` as
-mailbox 008. The warning does not filter anything out; filtering would be this
-folder second-guessing a strategy it does not own.
+them leaning on a pitcher with a single career start. Filed to `mlb` as mailbox
+008; **they found it was a rule and not one pitcher** (one third of an inning
+qualified as "recent form") and fixed it in their amendment A3.
+
+At their request there is now a second trigger: **a pitcher with 3 or fewer
+career starts warns at a 6-cent gap**, because after A3 the huge gaps mostly
+stop appearing and the gap alone would stop catching the thin cases. The
+warning does not filter anything out; filtering would be this folder
+second-guessing a strategy it does not own.
 
 ## The layout, and the one rule above all others
 

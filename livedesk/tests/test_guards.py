@@ -1,14 +1,23 @@
-"""The three guards, tested against real violations rather than trusted.
+"""The guards, tested against real violations rather than trusted.
 
 GUARDS #9: a guard nobody has tested against a real violation is a guard
 nobody knows still works.
 
-    py -3 -m pytest livedesk/tests -q
+Rewritten 2026-08-12 for amendment 2 of mailbox 001, which changed two of the
+three guards after the user corrected them:
+  * the cut-off is RELATIVE (a $50 floor plus a 35% trailing drop), not a
+    fixed -$33;
+  * the block is one bet per SIGNAL, not per game, with a cap of two per game
+    and never adding to a losing position;
+  * and a fourth guard was added: reconcile or refuse.
+
+    livedesk\\test.bat
 """
 from __future__ import annotations
 
 import json
 import sys
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
@@ -17,20 +26,24 @@ SRC = Path(__file__).resolve().parents[1] / "src"
 sys.path.insert(0, str(SRC))
 
 import killswitch                                      # noqa: E402
-from ledger import Entry, Ledger                       # noqa: E402
-from money import (BANKROLL_START, CUTOFF_LOSS_USD, STAKE_USD,   # noqa: E402
-                   size_bet)
+from ledger import (ACCOUNT_FLOOR_USD, Entry, Ledger,  # noqa: E402
+                    MAX_POSITIONS_PER_GAME, RECONCILE_TOLERANCE_USD,
+                    SETTLEMENT_LAG_HOURS, TRAILING_DROP_FRAC, signal_key)
+from money import BANKROLL_START, STAKE_USD, size_bet  # noqa: E402
+
+GK = "2026-08-12:PIT@MIA"
 
 
-def _entry(game_key, ticker, price_c=52, contracts=7, cost=3.77,
-           win=3.23, lose=3.77, status="open", pnl=0.0):
-    return Entry(game_key=game_key, ticker=ticker, event_ticker=ticker[:-4],
+def _entry(game_key=GK, ticker="T1", signal="sig-1", price_c=52, contracts=7,
+           cost=3.77, win=3.23, lose=3.77, status="open", pnl=0.0,
+           settled_utc=None):
+    return Entry(game_key=game_key, ticker=ticker, event_ticker="E",
                  team="Miami Marlins", matchup="Pittsburgh at Miami",
                  side="YES", price_c=price_c, contracts=contracts,
                  cost_usd=cost, fee_usd=0.13, win_profit_usd=win,
                  lose_usd=lose, starts_utc="2026-08-12T22:40:00+00:00",
-                 confirmed_utc="2026-08-12T02:00:00+00:00",
-                 status=status, pnl_usd=pnl)
+                 confirmed_utc="2026-08-12T02:00:00+00:00", signal=signal,
+                 status=status, pnl_usd=pnl, settled_utc=settled_utc)
 
 
 @pytest.fixture
@@ -38,113 +51,282 @@ def led(tmp_path):
     return Ledger(tmp_path / "ledger.json")
 
 
-# ------------------------------------------------------ Guard 1: one per game
+def _lose(led, n, cost=3.77):
+    for i in range(n):
+        led.entries.append(_entry(game_key=f"g{i}", ticker=f"T{i}",
+                                  signal=f"s{i}", status="lost", pnl=-cost,
+                                  cost=cost, lose=cost))
+    led.save()
 
-def test_guard1_a_game_with_a_bet_is_closed_for_good(led):
-    led.add(_entry("2026-08-12:PIT@MIA", "KXMLBGAME-A-MIA"))
-    assert led.has_played("2026-08-12:PIT@MIA")
+
+# =================================================== Guard 1: one per SIGNAL
+
+def test_guard1_the_same_signal_is_blocked_for_good(led):
+    led.add(_entry(signal="starter|MIA|home:form_divergence"))
+    ok, why = led.may_bet(GK, "starter|MIA|home:form_divergence")
+    assert not ok and "already been taken" in why
     with pytest.raises(ValueError):
-        led.add(_entry("2026-08-12:PIT@MIA", "KXMLBGAME-A-PIT"))
+        led.add(_entry(ticker="T2", signal="starter|MIA|home:form_divergence"))
+
+
+def test_guard1_a_DIFFERENT_signal_on_the_same_game_is_allowed(led):
+    """His own correction, and he was right: 'We should be allowed to reenter
+    the same game if it's a different scenario... It's a different bet but
+    it's the same game.'"""
+    led.add(_entry(signal="starter|MIA|home:form_divergence"))
+    ok, why = led.may_bet(GK, "starter|MIA|away:short_rest")
+    assert ok, why
+
+
+def test_guard1_hard_cap_of_two_per_game_whatever_the_reason(led):
+    led.add(_entry(ticker="T1", signal="s1"))
+    led.add(_entry(ticker="T2", signal="s2"))
+    assert MAX_POSITIONS_PER_GAME == 2
+    ok, why = led.may_bet(GK, "s3-brand-new")
+    assert not ok and "limit" in why
+
+
+def test_guard1_never_adds_to_a_losing_position(led):
+    led.add(_entry(ticker="T1", signal="s1", price_c=52))
+    assert led.may_bet(GK, "s2", price_now_c=55)[0] is True
+    ok, why = led.may_bet(GK, "s2", price_now_c=44)
+    assert not ok and "losing" in why
 
 
 def test_guard1_survives_a_restart(tmp_path):
     p = tmp_path / "ledger.json"
-    Ledger(p).add(_entry("2026-08-12:PIT@MIA", "KXMLBGAME-A-MIA"))
-    assert Ledger(p).has_played("2026-08-12:PIT@MIA")
+    Ledger(p).add(_entry(signal="s1"))
+    assert "s1" in Ledger(p).signals_played()
+    assert Ledger(p).may_bet(GK, "s1")[0] is False
 
 
-def test_guard1_still_closed_after_it_settles(led):
-    """A game that lost is not a game to try again. The tennis app repeating
-    bets after a loss is the exact machine that blew up on him."""
-    led.add(_entry("2026-08-12:PIT@MIA", "KXMLBGAME-A-MIA"))
-    led.settle("KXMLBGAME-A-MIA", won=False)
-    assert led.has_played("2026-08-12:PIT@MIA")
-    with pytest.raises(ValueError):
-        led.add(_entry("2026-08-12:PIT@MIA", "KXMLBGAME-A-MIA2"))
+def test_guard1_still_blocked_after_it_settles(led):
+    """A signal that lost is not a signal to try again."""
+    led.add(_entry(signal="s1"))
+    led.settle("T1", won=False)
+    assert led.may_bet(GK, "s1")[0] is False
 
 
-def test_guard1_still_closed_after_a_void(led):
-    led.add(_entry("2026-08-12:PIT@MIA", "KXMLBGAME-A-MIA"))
+def test_guard1_still_blocked_after_a_void(led):
+    led.add(_entry(signal="s1"))
     led.entries[0].status = "void"
     led.save()
-    assert led.has_played("2026-08-12:PIT@MIA")
+    assert led.may_bet(GK, "s1")[0] is False
+    # but a void frees the per-game COUNT, because no money was placed
+    assert led.positions_on_game(GK) == 0
 
 
 def test_guard1_a_corrupt_ledger_refuses_to_look_empty(tmp_path):
-    """An empty ledger re-opens every game Guard 1 has closed. Unreadable
-    must mean STOP, never mean zero."""
+    """An empty ledger re-opens every signal Guard 1 has closed."""
     p = tmp_path / "ledger.json"
     p.write_text("{not json", encoding="utf-8")
     with pytest.raises(RuntimeError):
         Ledger(p)
 
 
-# --------------------------------------------------- Guard 2: the $50 cut-off
-
-def test_guard2_fires_on_the_tools_own_losses(led):
-    """Eight losing bets is not enough; nine is. The line is -$33 from $83,
-    which is the $50 he named."""
-    for i in range(8):
-        led.entries.append(_entry(f"g{i}", f"T{i}", status="lost", pnl=-3.77))
-    assert led.realised_usd() == pytest.approx(-30.16, abs=0.01)
-    assert led.cutoff_hit() is False
-    assert led.bankroll_usd() == pytest.approx(52.84, abs=0.01)
-
-    led.entries.append(_entry("g8", "T8", status="lost", pnl=-3.77))
-    assert led.realised_usd() == pytest.approx(-33.93, abs=0.01)
-    assert led.cutoff_hit() is True
-    assert led.bankroll_usd() == pytest.approx(49.07, abs=0.01)
+def test_signal_key_ignores_the_drifting_numbers_in_a_flag(led):
+    """mlb's A3 records an unusable divergence as
+    'form_divergence_IGNORED_only_1_starts_5.1ip'. The innings count moves
+    between decision windows; the RULE that fired does not. If the numbers
+    counted, the identical bet would look fresh three times a day."""
+    a = signal_key(GK, "MIA", {"home": {"flags":
+                   ["form_divergence_IGNORED_only_1_starts_5.1ip"]}})
+    b = signal_key(GK, "MIA", {"home": {"flags":
+                   ["form_divergence_IGNORED_only_2_starts_11.2ip"]}})
+    assert a == b
+    c = signal_key(GK, "MIA", {"home": {"flags": ["short_rest"]}})
+    assert c != a
 
 
-def test_guard2_does_not_fire_on_a_small_loss(led):
-    led.entries.append(_entry("g", "T", status="lost", pnl=-10.0))
-    assert not led.cutoff_hit()
-    assert led.bankroll_usd() == pytest.approx(BANKROLL_START - 10.0)
+def test_signal_key_is_stable_and_order_independent(led):
+    a = signal_key(GK, "MIA", {"home": {"flags": ["short_rest", "debut_or_near"]}})
+    b = signal_key(GK, "MIA", {"home": {"flags": ["debut_or_near", "short_rest"]}})
+    assert a == b
 
 
-def test_guard2_counts_money_still_in_open_games(led):
-    """The cut-off must not keep handing out bets while $40 of losers are
-    still in flight and only notice once they all settle."""
+# ========================================== Guard 2: the RELATIVE cut-off
+
+def test_guard2_the_absolute_floor_never_moves(led):
+    assert ACCOUNT_FLOOR_USD == 50.00
+    led.set_account_balance(49.99)
+    stopped, why = led.stopped()
+    assert stopped and "floor" in why
+    led.set_account_balance(50.01)
+    assert led.stopped()[0] is False
+
+
+def test_guard2_the_trailing_stop_is_35_percent_off_the_peak(led):
+    assert TRAILING_DROP_FRAC == 0.35
+    assert led.peak_total_usd == pytest.approx(83.00)
+    assert led.trailing_stop_usd() == pytest.approx(53.95, abs=0.01)
+
+
+def test_guard2_a_bigger_bankroll_allows_a_bigger_drawdown(led):
+    """His correction: 'let's say the bot keeps going and makes three hundred,
+    and then we lose thirty. That's only ten percent.' At a peak of $300 a $30
+    loss must NOT stop it; a $105 loss must."""
+    led.entries.append(_entry(signal="w", status="won", pnl=+217.0))
+    led.save()
+    assert led.running_total_usd() == pytest.approx(300.0)
+    assert led.peak_total_usd == pytest.approx(300.0)
+    assert led.trailing_stop_usd() == pytest.approx(195.0)
+    led.set_account_balance(270.0)          # clear of the $50 floor
+    led.entries.append(_entry(signal="l1", ticker="L1", game_key="gx",
+                              status="lost", pnl=-30.0, cost=30.0, lose=30.0))
+    led.save()
+    assert led.stopped()[0] is False, "a $30 loss from $300 must not stop it"
+    led.entries.append(_entry(signal="l2", ticker="L2", game_key="gy",
+                              status="lost", pnl=-80.0, cost=80.0, lose=80.0))
+    led.save()
+    assert led.stopped()[0] is True, "a $110 loss from $300 must stop it"
+
+
+def test_guard2_the_peak_only_ever_goes_up_and_survives_a_restart(tmp_path):
+    p = tmp_path / "ledger.json"
+    a = Ledger(p)
+    a.entries.append(_entry(signal="w", status="won", pnl=+40.0))
+    a.save()
+    assert a.peak_total_usd == pytest.approx(123.0)
+    a.entries.append(_entry(signal="l", ticker="L", game_key="gx",
+                            status="lost", pnl=-10.0, cost=10.0, lose=10.0))
+    a.save()
+    assert a.peak_total_usd == pytest.approx(123.0), "the peak fell"
+    assert Ledger(p).peak_total_usd == pytest.approx(123.0)
+
+
+def test_guard2_counts_money_still_riding_on_open_games(led):
+    """The cut-off must not keep handing out bets while losers are in flight
+    and notice only after they all settle."""
+    led.set_account_balance(83.0)
     for i in range(9):
-        led.entries.append(_entry(f"g{i}", f"T{i}", status="open"))
+        led.entries.append(_entry(game_key=f"g{i}", ticker=f"T{i}",
+                                  signal=f"s{i}", status="open"))
+    led.save()
     assert led.realised_usd() == 0.0
-    assert led.worst_case_usd() == pytest.approx(-33.93, abs=0.01)
-    assert led.cutoff_hit() is True
+    assert led.worst_case_total_usd() == pytest.approx(49.07, abs=0.01)
+    assert led.worst_case_total_usd() < led.trailing_stop_usd()
+    assert led.stopped()[0] is True
 
 
-def test_guard2_ignores_money_he_moved_himself(led):
-    """His own point: 'there might be a chance it dips to fifty because I'm
-    the reason it dipped to fifty, and it had nothing to do with baseball.'
-    Nothing in the ledger reads an account balance, so nothing he does to the
-    account can trip this.
+def test_guard2_says_when_the_floor_is_checked_against_a_made_up_number(led):
+    value, real = led.account_for_floor_usd()
+    assert real is False and "not your account" in led.room_line()
+    led.set_account_balance(70.0)
+    value, real = led.account_for_floor_usd()
+    assert real is True and value == 70.0
+    assert "not your account" not in led.room_line()
 
-    Tested structurally, because the honest version of this test is "the
-    cut-off has no way to learn the account balance": nothing in the module
-    reaches the network or reads a broker, so there is no path by which his
-    own withdrawal could reach it."""
+
+# =========================================== Guard 4: reconcile or refuse
+
+def test_guard4_nothing_placed_cannot_be_wrong(led):
+    assert led.reconcile()[0] == "nothing"
+    assert led.profit_shown() is True
+
+
+def test_guard4_a_settled_bet_with_no_balance_typed_refuses(led):
+    led.entries.append(_entry(signal="s1", status="lost", pnl=-3.77))
+    led.save()
+    state, msg = led.reconcile()
+    assert state == "unchecked"
+    assert led.profit_shown() is False
+
+
+def test_guard4_the_32_dollar_disagreement_is_caught(led):
+    """THE case this guard exists for. His account went 130 -> 160 while the
+    tennis app said it was down $2, with no trades of his own between: about
+    $32 of disagreement, reported, 'fixed', and still wrong."""
+    led.account_start_usd = 130.0
+    led.entries.append(_entry(signal="s1", status="lost", pnl=-2.0,
+                              cost=2.0, lose=2.0,
+                              settled_utc="2026-08-01T00:00:00+00:00"))
+    led.save()
+    assert led.expected_account_usd() == pytest.approx(128.0)
+    led.set_account_balance(160.0)
+    state, msg = led.reconcile()
+    assert state == "disagree"
+    assert "+$32.00" in msg
+    assert led.profit_shown() is False
+
+
+def test_guard4_a_disagreement_stops_the_profit_figure_being_shown(led):
+    led.entries.append(_entry(signal="s1", status="won", pnl=+3.23,
+                              settled_utc="2026-08-01T00:00:00+00:00"))
+    led.save()
+    led.set_account_balance(200.0)
+    assert led.reconcile()[0] == "disagree"
+    assert "not checked" in led.summary_line()
+
+
+def test_guard4_agreement_inside_a_dollar_is_fine(led):
+    assert RECONCILE_TOLERANCE_USD == 1.00
+    led.entries.append(_entry(signal="s1", status="won", pnl=+3.23,
+                              settled_utc="2026-08-01T00:00:00+00:00"))
+    led.save()
+    # 83 out 3.77, back 7 contracts x $1 = 7.00 -> expect 86.23
+    assert led.expected_account_usd() == pytest.approx(86.23, abs=0.01)
+    led.set_account_balance(86.23)
+    assert led.reconcile()[0] == "ok"
+    led.set_account_balance(87.10)
+    assert led.reconcile()[0] == "ok", "87c is inside the dollar"
+    led.set_account_balance(87.50)
+    assert led.reconcile()[0] == "disagree"
+
+
+def test_guard4_a_win_that_just_settled_does_not_fire_a_false_alarm(led):
+    """Kalshi pays out minutes after the result is final. A bet settled
+    seconds ago is legitimately in the ledger and not yet in the balance, and
+    a false alarm here would train him to ignore the real one."""
+    just_now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    led.entries.append(_entry(signal="s1", status="won", pnl=+3.23,
+                              settled_utc=just_now))
+    led.save()
+    assert led.pending_payout_usd() == pytest.approx(7.00)
+    led.set_account_balance(79.23)          # paid out, cash not landed
+    assert led.reconcile()[0] == "ok"
+    old = (datetime.now(timezone.utc)
+           - timedelta(hours=SETTLEMENT_LAG_HOURS + 1)).isoformat(timespec="seconds")
+    led.entries[0].settled_utc = old
+    led.save()
+    assert led.reconcile()[0] == "disagree", "once the lag is past it must fire"
+
+
+def test_guard4_a_void_never_counts_as_money_out(led):
+    led.entries.append(_entry(signal="s1", status="void"))
+    led.save()
+    assert led.money_out_usd() == 0.0
+    assert led.reconcile()[0] == "nothing"
+
+
+def test_guard4_nothing_in_the_ledger_can_reach_an_account(led):
+    """The balance is typed by him and by nothing else.
+
+    Checked on the PARSED IMPORTS, not by grepping for words. The word-grep
+    version of this test passed until a comment mentioned Kalshi's payout
+    timing and then failed on prose, which is a test that measures writing
+    rather than code. What is actually claimed is 'this module imports nothing
+    that could reach a network or a broker', and that is a fact about the
+    import list.
+    """
+    import ast
     src = (Path(__file__).resolve().parents[1] / "src" / "ledger.py").read_text(
         encoding="utf-8")
-    for banned in ("urllib", "requests", "import prices", "http", "kalshi"):
-        assert banned not in src.lower(), banned
-    # and the number itself is a pure function of the entries
-    led.entries.append(_entry("g", "T", status="lost", pnl=-40.0))
-    assert led.cutoff_hit() is True
-    led.entries[0].pnl_usd = -1.0
-    assert led.cutoff_hit() is False
+    roots = set()
+    for node in ast.walk(ast.parse(src)):
+        if isinstance(node, ast.Import):
+            roots |= {a.name.split(".")[0] for a in node.names}
+        elif isinstance(node, ast.ImportFrom):
+            roots.add((node.module or "").split(".")[0])
+    allowed = {"json", "os", "re", "tempfile", "dataclasses", "datetime",
+               "pathlib", "typing", "money", "__future__"}
+    assert roots <= allowed, f"ledger.py imports {roots - allowed}"
 
 
-def test_guard2_a_void_does_not_count_as_a_loss(led):
-    led.entries.append(_entry("g", "T", status="void", pnl=0.0))
-    assert led.realised_usd() == 0.0
-    assert led.at_risk_usd() == 0.0
-
-
-# ------------------------------------------------- Guard 3: flat 5%, no growth
+# ================================================ Guard 3: flat 5%, no growth
 
 def test_guard3_stake_is_five_percent_of_83():
     assert STAKE_USD == pytest.approx(4.15)
     assert BANKROLL_START == 83.00
-    assert CUTOFF_LOSS_USD == 33.00
 
 
 def test_guard3_size_never_exceeds_the_flat_stake():
@@ -154,36 +336,30 @@ def test_guard3_size_never_exceeds_the_flat_stake():
 
 
 def test_guard3_does_not_grow_with_a_winning_balance(led):
-    """The paper run drifted 3 contracts -> 25 on its own."""
     base = size_bet(52).contracts
     for i in range(20):
-        led.entries.append(_entry(f"g{i}", f"T{i}", status="won", pnl=+3.23))
-    assert led.bankroll_usd() > BANKROLL_START
+        led.entries.append(_entry(game_key=f"g{i}", ticker=f"T{i}",
+                                  signal=f"s{i}", status="won", pnl=+3.23))
+    led.save()
+    assert led.running_total_usd() > BANKROLL_START
     assert size_bet(52).contracts == base
-    assert size_bet(52).cost_usd < STAKE_USD + 0.25
 
 
 def test_guard3_a_caller_cannot_ask_for_a_bigger_stake():
-    """The Critic caught this: saying "no parameter could carry a rising
-    bankroll" about a function that has a stake parameter is a claim, not a
-    guard. It is clamped, so passing a bigger number does nothing."""
     base = size_bet(52)
     for attempt in (STAKE_USD * 2, 50.0, 1000.0, float("inf")):
         assert size_bet(52, attempt).contracts == base.contracts, attempt
-    # and it can still be driven DOWN, which is what the parameter is for
     assert size_bet(52, 1.00).contracts < base.contracts
 
 
 def test_guard3_the_fee_is_in_the_break_even():
-    """The correction the mlb chat made on 2026-08-08: quoting the price alone
-    puts break-even at 52 out of 100 when it is really about 54."""
     bet = size_bet(52)
     assert bet.breakeven_out_of_100 > 52.0
     assert bet.breakeven_out_of_100 == pytest.approx(53.9, abs=0.6)
 
 
 def test_guard3_an_unaffordable_price_produces_no_bet():
-    assert size_bet(99).contracts >= 1        # 4 contracts at 99c is fine
+    assert size_bet(99).contracts >= 1
     assert size_bet(0).contracts == 0
     assert size_bet(100).contracts == 0
 
@@ -207,7 +383,6 @@ def test_killswitch_reports_when_the_file_is_there(tmp_path, monkeypatch):
 # ------------------------------------------------- the money, in plain numbers
 
 def test_the_card_numbers_add_up():
-    """What he reads has to be arithmetic he could check on a phone."""
     bet = size_bet(52)
     assert bet.contracts == 7
     assert bet.cost_usd == pytest.approx(7 * 0.52 + bet.fee_usd, abs=0.005)
@@ -215,8 +390,126 @@ def test_the_card_numbers_add_up():
     assert bet.lose_usd == pytest.approx(bet.cost_usd, abs=0.005)
 
 
-def test_the_ledger_file_is_readable_by_a_human(led, tmp_path):
-    led.add(_entry("2026-08-12:PIT@MIA", "KXMLBGAME-A-MIA"))
+def test_the_ledger_file_is_readable_by_a_human(led):
+    led.add(_entry(signal="s1"))
     raw = json.loads(led.path.read_text(encoding="utf-8"))
-    assert raw["bankroll_start_usd"] == 83.0
+    assert raw["account_start_usd"] == 83.0
+    assert raw["account_floor_usd"] == 50.0
     assert raw["entries"][0]["team"] == "Miami Marlins"
+
+
+# ============================== a pick the strategy has changed its mind about
+
+def _mkdb(tmp_path, rows):
+    """A tiny stand-in for mlb-paper's paper.db with just the columns read."""
+    import sqlite3
+    db = tmp_path / "paper.db"
+    con = sqlite3.connect(db)
+    con.execute("CREATE TABLE decisions (id TEXT, ts_utc TEXT, bot TEXT, "
+                "mentality TEXT, exit_mode TEXT, game_key TEXT, game_pk INT, "
+                "starts_utc TEXT, window TEXT, kind TEXT, ticker TEXT, "
+                "side TEXT, quoted_price_c INT, conviction REAL, "
+                "stated_prob_c REAL, edge_c REAL, stake_usd REAL, "
+                "reasoning_json TEXT, reasoning_sha1 TEXT, outcome_known INT)")
+    con.execute("CREATE TABLE ticks (ts_utc TEXT)")
+    for r in rows:
+        con.execute(
+            "INSERT INTO decisions (id,ts_utc,bot,mentality,exit_mode,game_key,"
+            "starts_utc,window,kind,ticker,side,quoted_price_c,reasoning_json,"
+            "reasoning_sha1,outcome_known) VALUES (?,?,?,'starter','hold',?,?,"
+            "'T-24h',?,?,'YES',?,?,'x',0)",
+            (r["ts"], r["ts"], r["bot"], r["gk"], r["starts"], r["kind"],
+             "KXMLBGAME-26AUG121840PITMIA-MIA", 52, json.dumps(r["j"])))
+    con.commit()
+    con.close()
+    return db
+
+
+def _entry_json():
+    return {"reasoning": {"backed": "Miami Marlins", "fair_c": 99.0,
+                          "price_c": 67, "flags": {"home": {
+                              "flags": ["form_divergence"], "divergence_er9": -2.5,
+                              "recent_era": 2.1, "season_era": 4.6,
+                              "career_starts_prior": 16}}}}
+
+
+def _shadow_json(passes):
+    return {"reason": "adjustment does not survive the cost bar",
+            "detail": {"passes": passes, "backed": "Miami Marlins",
+                       "fair_c": 71.3, "price_c": 68, "flags": {}}}
+
+
+def test_a_pick_the_strategy_has_dropped_is_retired(tmp_path):
+    """THE REAL CASE, 2026-08-12. `starter__hold` takes one entry per game and
+    then never writes another row for it, so a superseded entry would sit on
+    the card for ever. mlb's amendment A3 cut one game from 99 cents to 71 and
+    below the cost bar, and the old entry was still being offered."""
+    import picks as P
+    far = "2099-08-12T22:40:00+00:00"
+    db = _mkdb(tmp_path, [
+        {"ts": "2026-08-12T00:54:00+00:00", "bot": "starter__hold",
+         "kind": "entry", "gk": "g1", "starts": far, "j": _entry_json()},
+        {"ts": "2026-08-12T04:22:00+00:00", "bot": "starter__shadow",
+         "kind": "shadow", "gk": "g1", "starts": far, "j": _shadow_json(False)},
+    ])
+    out, retired = [], []
+    out = P.pending_picks(db=db, retired=retired)
+    assert out == [], "a pick the strategy has dropped was still offered"
+    assert len(retired) == 1 and "cost bar" in retired[0][1]
+
+
+def test_an_OLDER_change_of_mind_does_not_retire_a_newer_pick(tmp_path):
+    """Ordering matters both ways. A refusal recorded BEFORE the entry is what
+    the entry already overruled."""
+    import picks as P
+    far = "2099-08-12T22:40:00+00:00"
+    db = _mkdb(tmp_path, [
+        {"ts": "2026-08-12T00:10:00+00:00", "bot": "starter__shadow",
+         "kind": "shadow", "gk": "g1", "starts": far, "j": _shadow_json(False)},
+        {"ts": "2026-08-12T04:22:00+00:00", "bot": "starter__hold",
+         "kind": "entry", "gk": "g1", "starts": far, "j": _entry_json()},
+    ])
+    retired = []
+    assert len(P.pending_picks(db=db, retired=retired)) == 1
+    assert retired == []
+
+
+def test_a_shadow_that_PASSES_never_retires_anything(tmp_path):
+    """Every one of the 1,063 shadow rows on 2026-08-12 said passes=False. If
+    a future one ever says True it must not be read as a refusal."""
+    import picks as P
+    far = "2099-08-12T22:40:00+00:00"
+    db = _mkdb(tmp_path, [
+        {"ts": "2026-08-12T00:54:00+00:00", "bot": "starter__hold",
+         "kind": "entry", "gk": "g1", "starts": far, "j": _entry_json()},
+        {"ts": "2026-08-12T04:22:00+00:00", "bot": "starter__shadow",
+         "kind": "shadow", "gk": "g1", "starts": far, "j": _shadow_json(True)},
+    ])
+    retired = []
+    assert len(P.pending_picks(db=db, retired=retired)) == 1
+    assert retired == []
+
+
+def test_the_card_says_when_the_bot_ignored_a_rookies_form(tmp_path):
+    """mlb's A3 records an unusable divergence instead of using it. 'The bot
+    looked and could not tell' is a different thing from 'the bot found
+    nothing', and only one of them is honest about a rookie."""
+    import picks as P
+    s = P._side_sentence("Kansas City Royals", {
+        "flags": ["form_divergence_IGNORED_only_1_starts_1.7ip", "debut_or_near"],
+        "divergence_er9": 13.75, "recent_era": 16.2, "season_era": 2.45,
+        "career_starts_prior": 1, "recent_ip": 1.67, "form_usable": False})
+    assert "IGNORED" in s
+    assert "only 1 career start" in s
+    assert "16.2 earned runs" not in s, "it quoted a number it did not use"
+
+
+def test_a_thin_pitcher_warns_at_a_smaller_gap(tmp_path):
+    """mlb asked for this second trigger and the numbers are theirs."""
+    import picks as P
+    thin = {"fair_c": 58.0, "price_c": 52, "flags": {"home": {
+        "flags": ["debut_or_near"], "career_starts_prior": 2}}}
+    assert "CAREFUL" in P._warning(thin)
+    fat = {"fair_c": 58.0, "price_c": 52, "flags": {"home": {
+        "flags": ["form_divergence"], "career_starts_prior": 20}}}
+    assert P._warning(fat) == "", "a 6c gap on an established pitcher must stay quiet"

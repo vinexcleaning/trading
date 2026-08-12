@@ -49,8 +49,9 @@ sys.path.insert(0, str(HERE))
 import killswitch                                        # noqa: E402
 import picks as PICKS                                    # noqa: E402
 import prices as PRICES                                  # noqa: E402
-from ledger import Entry, Ledger                         # noqa: E402
-from money import (BANKROLL_START, CUTOFF_LOSS_USD, STAKE_PCT,   # noqa: E402
+from ledger import (ACCOUNT_FLOOR_USD, Entry, Ledger,    # noqa: E402
+                    TRAILING_DROP_FRAC)
+from money import (BANKROLL_START, STAKE_PCT,            # noqa: E402
                    STAKE_USD, size_bet, usd)
 
 REFRESH_SECONDS = 60
@@ -95,13 +96,18 @@ class Desk(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Baseball desk — you place the bet, not this window")
-        self.geometry("1180x780")
-        self.minsize(1080, 720)
+        # Amendment 2 added two more fixed strips above the card (the balance
+        # box and the room line), so the window needs the height back or the
+        # waiting list is squeezed to nothing. Measured: 954 required.
+        self.geometry("1180x900")
+        self.minsize(1080, 800)
 
         self.ledger = Ledger()
         self.events: "queue.Queue[tuple]" = queue.Queue()
         self.picks: list = []
         self.skipped: set = set()          # this session only, not the ledger
+        self._announced: set = set()       # signals already raised and chimed
+        self._retired_said: set = set()    # games we have already said were dropped
         self.quotes: dict = {}             # ticker -> Quote
         self.source_age = None
         self.last_check = "—"
@@ -126,11 +132,7 @@ class Desk(tk.Tk):
         self.total_lbl = tk.Label(self.head, text="", bg=BG_HEAD, fg="white",
                                   font=("Segoe UI", 12, "bold"))
         self.total_lbl.pack(side="left", padx=16)
-        self.rules_lbl = tk.Label(
-            self.head, bg=BG_HEAD, fg="#d1fae5",
-            text=(f"started ${BANKROLL_START:.2f}  ·  ${STAKE_USD:.2f} a bet "
-                  f"({STAKE_PCT:.0f}%)  ·  stop at −${CUTOFF_LOSS_USD:.0f}  ·  "
-                  f"one bet per game, ever"))
+        self.rules_lbl = tk.Label(self.head, bg=BG_HEAD, fg="#d1fae5", text="")
         self.rules_lbl.pack(side="left", padx=10)
         self.pause_btn = tk.Button(self.head, text="pause", command=self._toggle)
         self.pause_btn.pack(side="right", padx=8, pady=4)
@@ -149,6 +151,33 @@ class Desk(tk.Tk):
                                   font=("Segoe UI", 10))
         self.alert_lbl.pack(fill="both", expand=True)
         self._alert_job = None
+
+        # The balance strip. Fixed height like everything above the button.
+        # This is the ONLY way an account number gets into this tool: he reads
+        # it off Kalshi and types it. Nothing here can fetch it, and that is
+        # what keeps "this window cannot send an order" a fact about the
+        # folder rather than a promise about code.
+        bar = tk.Frame(self, height=34, bg="#1f2937")
+        bar.pack(fill="x", side="top")
+        bar.pack_propagate(False)
+        tk.Label(bar, text="  What Kalshi says your balance is:  $",
+                 bg="#1f2937", fg="#e5e7eb",
+                 font=("Segoe UI", 10)).pack(side="left")
+        self.bal_var = tk.StringVar(value=(
+            f"{self.ledger.account_balance_usd:.2f}"
+            if self.ledger.account_balance_usd is not None else ""))
+        e = tk.Entry(bar, textvariable=self.bal_var, width=10,
+                     font=("Segoe UI", 11))
+        e.pack(side="left", padx=4, pady=4)
+        e.bind("<Return>", lambda _ev: self._set_balance())
+        tk.Button(bar, text="check", command=self._set_balance).pack(
+            side="left", padx=4, pady=3)
+        self.recon_lbl = tk.Label(bar, text="", bg="#1f2937", fg="#9ca3af",
+                                  anchor="w", font=("Segoe UI", 9))
+        self.recon_lbl.pack(side="left", fill="x", expand=True, padx=10)
+        self.room_lbl = tk.Label(self, text="", anchor="w", bg="#111827",
+                                 fg="#9ca3af", font=("Segoe UI", 9), padx=10)
+        self.room_lbl.pack(fill="x", side="top")
 
         # Packed from the BOTTOM before the body, so the body takes what is
         # left and the footer can never be pushed off or push anything up.
@@ -205,8 +234,9 @@ class Desk(tk.Tk):
 
         self._log("this window cannot send an order. it copies the bet and "
                   "opens the Kalshi page; you place it yourself.")
-        self._log(f"one bet per game, ever. {len(self.ledger.played_games())} "
-                  f"game(s) are already closed for good.")
+        self._log(f"one bet per signal, two per game at most. "
+                  f"{len(self.ledger.signals_played())} signal(s) are already "
+                  f"closed for good.")
 
     # --------------------------------------------------------------- pieces
     def _log(self, msg: str) -> None:
@@ -258,14 +288,49 @@ class Desk(tk.Tk):
         """Why the button is dead, or None. Checked in order of severity."""
         if killswitch.disabled():
             return ("off", killswitch.reason())
-        if self.ledger.cutoff_hit():
-            return ("stopped", self.ledger.cutoff_reason())
+        stopped, why = self.ledger.stopped()
+        if stopped:
+            return ("stopped", why)
+        # Guard 4. A number that might be $32 wrong is worse than no number.
+        state, msg = self.ledger.reconcile()
+        if state in ("disagree", "unchecked"):
+            return ("unreconciled", msg)
         return None
 
     def _available(self) -> list:
-        played = self.ledger.played_games()
-        return [p for p in self.picks
-                if p.game_key not in played and p.game_key not in self.skipped]
+        """Picks he could still act on. A pick whose signal has been taken, or
+        whose game is full, or whose game holds a losing bet, is gone -- and
+        `may_bet` says which so the card can explain itself."""
+        out = []
+        for p in self.picks:
+            if p.game_key in self.skipped:
+                continue
+            q = self.quotes.get(p.ticker)
+            ok, _ = self.ledger.may_bet(p.game_key, p.signal,
+                                        q.ask_c if q else None)
+            if ok:
+                out.append(p)
+        return out
+
+    def _set_balance(self) -> None:
+        raw = self.bal_var.get().strip().lstrip("$").replace(",", "")
+        if not raw:
+            self._alert("Type the number Kalshi shows, then press check.", "warn")
+            return
+        try:
+            value = float(raw)
+        except ValueError:
+            self._alert(f"'{raw}' is not a number.", "warn")
+            return
+        if value < 0 or value > 100000:
+            self._alert(f"${value:.2f} does not look like a Kalshi balance.",
+                        "warn")
+            return
+        self.ledger.set_account_balance(value)
+        state, msg = self.ledger.reconcile()
+        self._log(f"balance set to ${value:.2f} — {state}: {msg}")
+        self._alert(msg, "error" if state == "disagree" else "info")
+        self._render()
 
     # --------------------------------------------------------------- render
     def _render(self) -> None:
@@ -275,17 +340,30 @@ class Desk(tk.Tk):
             w.destroy()
 
         blocked = self._blocked()
-        colour = (BG_HEAD_OFF if blocked and blocked[0] == "off" else
-                  BG_HEAD_STOPPED if blocked else BG_HEAD)
+        kind = blocked[0] if blocked else ""
+        colour = {"off": BG_HEAD_OFF, "stopped": BG_HEAD_STOPPED,
+                  "unreconciled": "#78350f"}.get(kind, BG_HEAD)
         for widget in (self.head, self.mode_lbl, self.total_lbl, self.rules_lbl,
                        self.beat_lbl):
             widget.configure(bg=colour)
         self.mode_lbl.configure(
-            text=("  TURNED OFF  " if blocked and blocked[0] == "off" else
-                  "  STOPPED  " if blocked else "  YOU PLACE THE BET  "))
+            text={"off": "  TURNED OFF  ", "stopped": "  STOPPED  ",
+                  "unreconciled": "  NOT CHECKED  "}.get(
+                      kind, "  YOU PLACE THE BET  "))
         self.total_lbl.configure(text=self.ledger.summary_line())
+        self.rules_lbl.configure(
+            text=(f"${STAKE_USD:.2f} a bet ({STAKE_PCT:.0f}% of "
+                  f"${BANKROLL_START:.0f})  ·  one bet per signal, two per "
+                  f"game at most"))
         self.beat_lbl.configure(
             text=f"last checked {self.last_check}  (#{self.check_count})")
+
+        state, msg = self.ledger.reconcile()
+        self.recon_lbl.configure(
+            text=msg[:150],
+            fg={"disagree": "#fca5a5", "unchecked": "#fcd34d",
+                "ok": "#86efac"}.get(state, "#9ca3af"))
+        self.room_lbl.configure(text="  " + self.ledger.room_line())
 
         avail = self._available()
         if blocked:
@@ -294,6 +372,7 @@ class Desk(tk.Tk):
             self._dead_card(self._nothing_text())
         else:
             self._live_card(avail[0])
+            self._surface(avail[0])
 
         self._render_queue(avail[1:])
         self._render_tree()
@@ -316,6 +395,32 @@ class Desk(tk.Tk):
         bits.append("")
         bits.append("Most days it finds one or two. Leave this window open.")
         return "\n".join(bits)
+
+    def _surface(self, p) -> None:
+        """Come to the front and make a noise when a NEW bet qualifies.
+
+        His reason, and it is a real risk control rather than a convenience:
+        *"I don't really wanna be on Kalshi, because then I start looking at
+        other games and I'm like oh maybe I'll bet this, and then I lose all
+        my money."* So the window finds him; he does not go looking.
+
+        Once per signal. A window that raises itself on every refresh is a
+        window he minimises, and then it never reaches him at all.
+        """
+        if p.signal in self._announced:
+            return
+        self._announced.add(p.signal)
+        try:
+            self.deiconify()
+            self.lift()
+            # -topmost is set and released, not left on: a window that sits
+            # permanently over everything gets moved off the screen.
+            self.attributes("-topmost", True)
+            self.after(1200, lambda: self.attributes("-topmost", False))
+            self.bell()
+        except tk.TclError:
+            pass
+        self._log(f"NEW BET on screen: {p.team} — {p.matchup}")
 
     def _card_shell(self, title: str, title_colour: str = "black"):
         f = tk.LabelFrame(self.card, text=title, font=("Segoe UI", 10, "bold"),
@@ -434,8 +539,10 @@ class Desk(tk.Tk):
             self._alert(blocked[1], "error")
             self._render()
             return
-        if self.ledger.has_played(p.game_key):
-            self._alert(f"{p.matchup} already has a bet. One per game.", "warn")
+        q = self.quotes.get(p.ticker)
+        ok, why = self.ledger.may_bet(p.game_key, p.signal, q.ask_c if q else None)
+        if not ok:
+            self._alert(f"{p.matchup}: {why}", "warn")
             self._render()
             return
 
@@ -447,8 +554,10 @@ class Desk(tk.Tk):
             f"if it wins, ${bet.lose_usd:.2f} gone if it loses.\n\n"
             f"This window does NOT place it. It copies the details and opens "
             f"the page — you place it there.\n\n"
-            f"This game is then closed for good. It will never be offered "
-            f"again, win or lose.")
+            f"This exact bet is then closed for good. If the bot later finds a "
+            f"genuinely different reason on the same game it may offer once "
+            f"more — two per game is the hard limit, and never on top of a "
+            f"bet that is losing.")
         if not ok:
             return
 
@@ -479,7 +588,7 @@ class Desk(tk.Tk):
             team=p.team, matchup=p.matchup, side=p.side, price_c=bet.price_c,
             contracts=bet.contracts, cost_usd=bet.cost_usd, fee_usd=bet.fee_usd,
             win_profit_usd=bet.win_profit_usd, lose_usd=bet.lose_usd,
-            starts_utc=p.starts_utc,
+            starts_utc=p.starts_utc, signal=p.signal,
             confirmed_utc=datetime.now().astimezone().isoformat(timespec="seconds"),
             why=list(p.why)))
         self._log(f"COPIED {detail}")
@@ -530,18 +639,25 @@ class Desk(tk.Tk):
 
     def _work(self) -> None:
         age = PICKS.source_age_minutes()
-        found = PICKS.pending_picks()
+        retired = []
+        found = PICKS.pending_picks(retired=retired)
         self.events.put(("source", age))
         self.events.put(("picks", found))
+        # A card that silently vanishes is indistinguishable from a bug. Say
+        # it once per game, not on every refresh.
+        for matchup, why in retired:
+            if matchup not in self._retired_said:
+                self._retired_said.add(matchup)
+                self.events.put(("log", f"DROPPED {matchup} — the baseball bot "
+                                        f"has changed its mind: {why}"))
 
         # Live prices for what is actually on offer. One read per game, not
         # per rung -- there is one market per club and we hold at most one.
-        played = self.ledger.played_games()
         # Every game still on offer, not the first few: a card that says
         # "no live price" only because this loop stopped counting is a lie
         # about the market. MLB plays at most 15 a day and this is one small
         # GET each, once a minute.
-        wanted = [p for p in found if p.game_key not in played][:16]
+        wanted = [p for p in found if p.game_key not in self.skipped][:16]
         got = {}
         for p in wanted:
             try:
@@ -591,9 +707,10 @@ class Desk(tk.Tk):
                             f"{usd(e.pnl_usd)}. Running total for baseball: "
                             f"{usd(self.ledger.realised_usd())}.",
                             "info" if won else "warn")
-                        if self.ledger.cutoff_hit():
-                            self._alert(self.ledger.cutoff_reason(), "error")
-                            self._log(self.ledger.cutoff_reason())
+                        stopped, reason = self.ledger.stopped()
+                        if stopped:
+                            self._alert(reason, "error")
+                            self._log(reason)
                     dirty = True
                 elif kind == "checked":
                     self.last_check = rest[0]
