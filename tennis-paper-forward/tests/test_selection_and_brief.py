@@ -229,3 +229,51 @@ def test_the_after_break_control_is_a_matched_pair_not_a_baseline():
     assert abs(d["breakback_vs_control"]) > abs(d["breakback_delta"]), (
         "the controlled figure must be able to differ from the uncontrolled one, "
         "or the control is decorative")
+
+
+# --------------------------------------------------------------------------
+# The substring trap. Third time in this repo. GUARDS #22.
+# --------------------------------------------------------------------------
+
+def test_challenger_is_not_grass():
+    """"C-halle-nger" contains "halle".
+
+    Unbounded, that painted 160 settled Challenger matches as GRASS in August,
+    when the grass season ends in July. Nothing caught it: the field was
+    populated, the value was a legal surface, and the count looked plausible.
+    """
+    from src.kalshi_read import _SURFACE_HINTS
+    for name in ("Challenger Hamburg", "Challenger Todi", "Challenger Astana",
+                 "Challenger Lexington", "ATP Challenger Tour"):
+        hits = [s for pat, s in _SURFACE_HINTS if re.search(pat, name, re.I)]
+        assert "Grass" not in hits, f"{name!r} matched Grass: {hits}"
+
+
+def test_the_real_grass_venues_still_match():
+    """A boundary fix that breaks the true positives is not a fix."""
+    from src.kalshi_read import _SURFACE_HINTS
+    for name, want in (("Halle", "Grass"), ("Wimbledon", "Grass"),
+                       ("Eastbourne", "Grass"), ("Montreal", "Hard"),
+                       ("Hamburg", "Clay"), ("Roland Garros", "Clay")):
+        hits = [s for pat, s in _SURFACE_HINTS if re.search(pat, name, re.I)]
+        assert want in hits, f"{name!r} lost its {want} match: {hits}"
+
+
+def test_every_surface_pattern_is_word_bounded():
+    """Source-level, so a new venue added without boundaries fails the build."""
+    from src.kalshi_read import _SURFACE_HINTS
+    for pat, surf in _SURFACE_HINTS:
+        assert pat.startswith(r"\b") and pat.endswith(r"\b"), (
+            f"the {surf} pattern is not word-bounded: {pat[:40]}... "
+            f"An unbounded name matches inside other words - that is how "
+            f"Challenger became Grass.")
+
+
+def test_the_venue_key_strips_the_challenger_prefix():
+    """The other half of the same bug: 'Challenger Hamburg' missed the archive
+    index entirely, which is why it fell through to the regex table at all."""
+    from src.sackmann import venue_key
+    assert venue_key("Challenger Hamburg") == "hamburg"
+    assert venue_key("M25 Koksijde") == "koksijde"
+    assert venue_key("ATP Montreal") == "montreal"
+    assert venue_key("W75 Leipzig") == "leipzig"

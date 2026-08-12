@@ -118,10 +118,21 @@ _ROUND_WORDS = (
 # Surface by tournament name. Only entries we are confident about; anything
 # unmatched stays None and the brief says so rather than guessing. Guessing a
 # surface is exactly the kind of silent wrong answer GUARDS #13 is about.
+# EVERY ALTERNATIVE IS WORD-BOUNDED (\b ... \b).
+#
+# Without the boundaries, "halle" matched inside "C-halle-nger" and painted
+# **160 settled Challenger matches as GRASS in August**, when the grass season
+# ends in July. Nothing caught it: the field was populated, the value was a
+# legal surface, and the count looked plausible.
+#
+# This repo has already paid for exactly this bug. T017 was retracted because
+# "WTA" matched inside "Lowest temperature in Austin", and GUARDS #22 records
+# "A Team" normalising to "a" and matching almost everything. Substring
+# matching on names is a recall net, never a filter.
 _SURFACE_HINTS: tuple[tuple[str, str], ...] = (
-    (r"wimbledon|queen|halle|eastbourne|newport|mallorca|s-hertogenbosch|stuttgart open|bad homburg|birmingham|nottingham", "Grass"),
-    (r"roland garros|french open|monte.?carlo|madrid|rome|italian open|hamburg|barcelona|estoril|munich|umag|kitzbuhel|bastad|gstaad|santiago|buenos aires|rio de janeiro|cordoba|marrakech|houston", "Clay"),
-    (r"australian open|us open|indian wells|miami|montreal|toronto|cincinnati|shanghai|paris masters|rolex paris|tokyo|beijing|basel|vienna|dubai|acapulco|doha|rotterdam|marseille|delray|los cabos|winston|atlanta|washington|chengdu|hangzhou|metz|antwerp|stockholm|almaty|adelaide|brisbane|auckland|hong kong|montpellier|dallas|memphis|san diego|guadalajara|monterrey|merida|austin|charleston|bogota|cluj|linz|ningbo|seoul|osaka|tokyo|zhengzhou|wuhan|guangzhou|nur.?sultan|astana", "Hard"),
+    (r"\b(?:wimbledon|queens|halle|eastbourne|newport|mallorca|s-hertogenbosch|bad homburg|birmingham|nottingham)\b", "Grass"),
+    (r"\b(?:roland garros|french open|monte.?carlo|madrid|rome|italian open|hamburg|barcelona|estoril|munich|umag|kitzbuhel|bastad|gstaad|santiago|buenos aires|rio de janeiro|cordoba|marrakech|houston)\b", "Clay"),
+    (r"\b(?:australian open|us open|indian wells|miami|montreal|toronto|cincinnati|shanghai|paris masters|rolex paris|tokyo|beijing|basel|vienna|dubai|acapulco|doha|rotterdam|marseille|delray|los cabos|winston|atlanta|washington|chengdu|hangzhou|metz|antwerp|stockholm|almaty|adelaide|brisbane|auckland|hong kong|montpellier|dallas|memphis|san diego|guadalajara|monterrey|merida|austin|charleston|bogota|cluj|linz|ningbo|seoul|osaka|zhengzhou|wuhan|guangzhou|nur.?sultan|astana)\b", "Hard"),
 )
 
 

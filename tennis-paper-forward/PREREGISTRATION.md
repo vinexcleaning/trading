@@ -501,5 +501,42 @@ byte-identical to `POL.csv` at HTTP 200.
 
 ---
 
+### A8 — 2026-08-11. A surface bug painted every Challenger as GRASS. 16% of briefs.
+
+**Found by asking why 160 matches were on grass in August**, when the grass
+season ends in July. Not found by any test, and nothing flagged it: the field
+was populated, the value was a legal surface, and the count looked plausible.
+
+**Two compounding faults.** `venue_key` stripped `M15`/`W75` prefixes but not the
+word "Challenger", so "Challenger Hamburg" missed the archive's venue index
+entirely. It then fell through to the regex table — where **"halle" matched
+inside "C-halle-nger"** and returned Grass.
+
+**This is the third time this repo has paid for unbounded substring matching.**
+T017 was retracted because "WTA" matched inside "Lowest temperature in Austin";
+GUARDS #22 records "A Team" normalising to "a" and matching almost everything.
+
+**Scale:** 183 of 1,142 briefs (16%), **all Challenger**, 160 of them settled.
+
+**Fixed:** the prefix stripper handles Challenger/ATP/WTA/ITF, and every surface
+pattern is word-bounded. Four tests, including a source-level one that fails the
+build if a new venue is added without boundaries, and one asserting the real
+grass venues still match — a boundary fix that kills the true positives is not a
+fix.
+
+**The affected briefs are NOT rewritten.** A brief is the pre-decision record;
+editing one after the bots have acted on it would destroy the only evidence of
+what they actually saw. They keep the wrong value and this amendment is the
+correction.
+
+**Effect on the result:** the bots that read surface (favourite, brief-led,
+unconstrained) had a wrong surface record and wrong surface rating for 16% of
+briefs. **It makes their picks worse, not better**, so the headline — every bot
+losing, −11.3% overall — is if anything conservative. But any claim of the form
+"the surface record informed this decision" is void for Challenger matches
+before 2026-08-11, and the run's own surface-split analysis must exclude them.
+
+---
+
 *Each entry gets a date, a reason, and what it changed. The text above §10 is
 never edited.*

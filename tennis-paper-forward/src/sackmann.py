@@ -461,7 +461,11 @@ class Archive:
 # Surface, derived from the archive rather than from a hand-written table
 # --------------------------------------------------------------------------
 
-_LEVEL_PREFIX = re.compile(r"^\s*[MW]\d{2,3}\s+", re.I)
+# Strips BOTH shapes of prefix Kalshi uses. The first version handled only
+# "M15"/"W75" and not the word "Challenger", so every "Challenger Hamburg"
+# missed the archive index entirely and fell through to the regex table -
+# where it matched GRASS, because "C-halle-nger" contains "halle".
+_LEVEL_PREFIX = re.compile(r"^\s*(?:[MW]\d{2,3}|challenger|atp|wta|itf)\s+", re.I)
 _TRAILING_STATE = re.compile(r"\s+[A-Z]{2}$")
 
 
