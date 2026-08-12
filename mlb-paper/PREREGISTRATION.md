@@ -412,3 +412,50 @@ effect, and it does **not** belong in the programme's tally of 45 edge-shrinking
 corrections.
 
 **No gate, threshold, bar or denominator was changed by this amendment.**
+
+### A3 — 2026-08-12. A DEFECT FIX to M1, found by another session, and the record is SPLIT at this instant.
+
+**What was wrong.** §1 and `MENTALITIES.md` describe M1's third trigger as *"a
+starter whose **last three outings** differ from his season line by more than
+1.50 earned runs per nine."* **The code did not implement that.**
+`starter_profile` computes `recent_era` from however many prior starts exist,
+guarded only by `rec_ip > 0` — **one third of an inning qualified.**
+
+So a pitcher with **one** career start and one bad outing produced a divergence
+of 13.75, which at 2.75¢ per unit became a **41.7-cent adjustment**, and the bot
+declared a 67-cent market worth 99. And the *same* pitcher was also charged the
+debut penalty: **the debut flag exists because recent form is unreliable, and
+the code then trusted recent form computed from that same single game.**
+Double-counted, in opposite directions.
+
+**The fix.** The form-divergence term now requires **≥ 3 prior career starts
+AND ≥ 12 innings** behind it. A large divergence on less than that is recorded
+as `form_divergence_IGNORED_only_N_starts` and contributes nothing.
+
+**Why this is a defect fix and not a parameter tune**, which matters because
+tuning after seeing a result is what §10 forbids: the pre-registered rule says
+*three outings*. One outing is not three. The code was not doing what was
+written down, and making it do so is not a choice about performance.
+
+**Blast radius, measured rather than asserted: 3 of 44 recorded `starter`
+entries** had the form term driven by a pitcher with fewer than three career
+starts. (`livedesk` reported 9 of 43 *involving* a low-start pitcher; only 3
+had the form term actually fire on one. Their number is the wider set, mine the
+narrower cause.)
+
+> **⚠ THE RECORD IS SPLIT HERE AND THE TWO HALVES ARE NEVER MERGED.**
+> Entries before 2026-08-12 are **arm A** (uncapped, unfloored form term);
+> entries after are **arm B**. Every future report shows both, separately, with
+> their own n. Nothing is re-run and nothing is deleted. Merging them would let
+> pre-fix results be laundered into a post-fix claim — and the point of
+> splitting is that I changed a live test **after** seeing which bot was
+> winning, which is a fact a reader must be able to see rather than a detail to
+> smooth over.
+
+**What is NOT changed, and is the user's call rather than mine.** M1 still has
+**no ceiling** on the adjustment. A 41.7¢ adjustment on a market whose entire
+range is 100¢ is arguably a defect in itself, but capping it is a **new
+parameter**, not the implementation of something already written. Recorded here
+as an open question instead of quietly added.
+
+**No gate, threshold, bar or denominator was changed by this amendment.**

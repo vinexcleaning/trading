@@ -122,6 +122,10 @@ WIRE_ADJUDICATED = {
         "DERIBIT, not Kalshi -- open_interest is a live Deribit field",
     "crypto/src/deribit_pricer.py":
         "DERIBIT, not Kalshi -- open_interest is a live Deribit field",
+    "kalshi-market-scan/scripts/soccer_census.py":
+        "FALSE POSITIVE, checked 2026-08-12 -- line 70 sums the LIVE name "
+        "`m.get('volume_fp')`; the flagged reads at 84/91/97 are its own "
+        "accumulator row built at line 78. Correct code.",
     "bot-hunt/src/pull_kalshi_soccer.py":
         "reads candle dicts it built itself from *_fp names",
 }

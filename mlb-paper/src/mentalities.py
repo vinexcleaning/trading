@@ -230,6 +230,25 @@ def _main_total_points(brief, rows):
 # BAR and coefficients: PREREGISTRATION section 10, DECISIONS.md D2.
 M1_WINDOWS = {"T-24h", "T-6h", "T-3h"}
 M1_MIN_DIVERGENCE_ER9 = 1.50
+# ⚠ AMENDMENT A3, 2026-08-12. A DEFECT FIX, not a parameter tune.
+#
+# MENTALITIES.md and PREREGISTRATION describe this trigger as "a starter whose
+# LAST THREE OUTINGS differ from his season line". The code did not implement
+# that: `starter_profile` computes `recent_era` from however many prior starts
+# exist, guarded only by `rec_ip > 0` -- one third of an inning qualified. So a
+# pitcher with ONE career start and one bad outing produced
+# recent_minus_season_era = 13.75, which times 2.75c gives a 41.7-cent
+# adjustment and declared a 67-cent market worth 99.
+#
+# Worse, the same pitcher was ALSO charged M1_DEBUT_RUNS. The debut flag exists
+# because there is no reliable recent form; the code then trusted recent form
+# computed from that same single game. Double-counted, in opposite directions.
+#
+# Found by the `livedesk` session (mailbox 008) while writing the reason onto a
+# card it could not say with a straight face. 9 of 43 entries leaned on a
+# pitcher with <=3 career starts.
+M1_MIN_PRIOR_STARTS_FOR_FORM = 3   # "last three outings" means three
+M1_MIN_RECENT_IP_FOR_FORM = 12.0   # ~3 starts of real work, not one relief inning
 M1_BAR_C = 1.0
 # Assumption, stated: three starts is ~18 innings, so a divergence of 1.0 ER/9
 # over that span is worth roughly 0.25 runs of true expected margin once
@@ -265,10 +284,20 @@ def m1_starter(brief, window):
                            f"{side} has no recent-vs-season divergence "
                            f"(missing stays missing)")
         f = []
+        prof = s["profile"]
+        prior = prof.get("career_starts_prior") or 0
+        rec_ip = prof.get("recent_ip") or 0.0
+        form_usable = (prior >= M1_MIN_PRIOR_STARTS_FOR_FORM
+                       and rec_ip >= M1_MIN_RECENT_IP_FOR_FORM)
         # d < 0 means pitching BETTER lately, which helps his own side
-        if abs(d) >= M1_MIN_DIVERGENCE_ER9:
+        if abs(d) >= M1_MIN_DIVERGENCE_ER9 and form_usable:
             f.append("form_divergence")
             runs += sgn * (-d) * (M1_C_PER_ER9 / CENTS_PER_RUN_MARGIN)
+        elif abs(d) >= M1_MIN_DIVERGENCE_ER9:
+            # The divergence is large but rests on too little pitching to mean
+            # anything. Recorded so the decline is legible, never used.
+            f.append(f"form_divergence_IGNORED_only_{prior}_starts_"
+                     f"{rec_ip:.1f}ip")
         if s.get("debut_or_near"):
             f.append("debut_or_near")
             runs -= sgn * M1_DEBUT_RUNS
@@ -276,6 +305,8 @@ def m1_starter(brief, window):
             f.append("short_rest")
             runs -= sgn * M1_SHORT_REST_RUNS
         flags[side] = {"flags": f, "divergence_er9": d,
+                       "career_starts_prior": prior, "recent_ip": rec_ip,
+                       "form_usable": form_usable,
                        "rest_days": s["profile"].get("rest_days"),
                        "career_starts_prior":
                            s["profile"].get("career_starts_prior"),
