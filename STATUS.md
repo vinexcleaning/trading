@@ -4974,3 +4974,60 @@ only runs when he remembers to type his balance in. Reading it automatically
 needs a Kalshi key in `livedesk/`, which would end "this window physically
 cannot send an order" as a fact about the folder. Both sides are in
 `coordinator/mailbox/livedesk/001`, Referee list 3.
+
+### livedesk, 2026-08-12 evening — mailboxes 002 and 003 built, 94 tests green
+
+**002, the hand-off.** After COPY & OPEN the card is replaced by numbered clicks
+for that exact page — team row, green button, quantity, total, and what to
+IGNORE — and it stays until he says whether the bet went on. Button measured on
+the same pixel across ten card states.
+
+**→ The bigger fix was MY guard, not Kalshi's page.** Guard 1 closed a signal on
+any entry *including a void*, so his three copied-and-voided games were closed
+for ever having never been bet. **A void means no money was placed.** One void
+now re-offers, a second closes it. His three are live again.
+
+**That change created a crash and running it found it:** the same ticker can now
+appear twice and the bets list keyed its rows on ticker — the duplicate raised
+*inside `_render`*, which would have taken the window down on his next click.
+
+**003, practice orders.** `livedesk/src/demo_exec.py` is the one door.
+`demo=True` as a literal, and **the host the client will really call is checked
+before every submission** — a flag can be wrong, the URL is where the packet
+goes, and there is a test planting exactly that disagreement. Never invents a
+fill: reads back and records filled/partial/resting/cancelled/rejected/**unknown**.
+
+**→ EVERY CHAT: two bugs, neither findable by reading.** The practice button
+**could never have fired once** (the entry is already in the ledger, so Guard 1
+saw its own signal and refused every time), and `configured()` said "ready" with
+no key on the machine (the client constructs fine without credentials and only
+fails at signing). Thirty seconds of running it found both.
+
+**→ AND THE SAME LESSON ABOUT A DETECTOR.** `test_paper_only.py` was refactored,
+not deleted — it allows the adapter and still fails on production URLs, any way
+to unset demo, credentials in the repo, submission from elsewhere, or the
+adapter losing its own check (8 planted violations). But it first failed on
+**`prices.py` for a COMMENT** about a dead endpoint and on **`killswitch.py` for
+naming a sibling project**. A test that fails on prose measures writing, not
+code, and teaches the next person to stop writing down *why*. It now checks the
+parsed tree. The verb check also flagged **tkinter's `tree.delete()`** and a
+**queue's `events.put()`** — a detector that cries wolf gets suppressed, and then
+a real violation walks through.
+
+**⚠ NEEDS THE USER — and this one touches `kalshi-inplay-bot`, not me.**
+`kalshi_client` refuses **all** writes while `kalshi-inplay-bot/TRADING_DISABLED`
+exists, and it does, from 2026-08-03. **So practice orders are blocked today by
+a file about the TENNIS strategy's real money.** I did not delete it and will
+not — it is the only thing keeping that bot from placing real orders. Options
+are in `coordinator/mailbox/livedesk/003`; my recommendation is **against**
+livedesk deciding another project's kill switch does not apply to it, because a
+kill switch a caller can reason around is not a kill switch. **If `signal` or
+whoever owns `kalshi-inplay-bot` wants to add a separate practice switch, that
+is the clean fix and it is theirs to make.**
+
+**Still not done:** no real bet and no practice order has ever gone through this;
+Kalshi's own web pages remain unverified (their site builds in the browser and
+returns nothing to any tool here — both the hand-off card and
+`livedesk/PRACTICE_SETUP.md` say so rather than promising button labels); and the
+void rate has not been watched since the fix, which is the measurement that says
+whether the page was really the problem.
