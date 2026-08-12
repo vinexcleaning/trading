@@ -315,6 +315,67 @@ the worked example that the placebo arm catches real failures.
 
 ---
 
+# 7. A VENUE CLAIMING A SPREAD TWENTY TIMES TIGHTER THAN KALSHI
+
+**What it claims.** On one NFL game (Bills vs Dolphins, −11.5), a side-by-side of
+**SX Bet** against Kalshi: SX Bet's built-in cost **0.24%**, Kalshi's **5.14%**.
+If that were general it would matter more than any strategy in this document,
+because cost is the bar every result in this repo has to clear.
+
+**How many observations.** **One game, one line, one moment.** He converts both
+to a common basis and shows every number, which is more working than most posts
+carry — but the sample is one.
+
+**I re-did his arithmetic and it half-holds.** From his own figures, SX Bet's two
+sides imply 49.0% and 51.3%, summing to **100.3%** — so about **0.3% built-in
+cost**, close to his 0.24%. Kalshi's imply 49.6% and 53.9%, summing to
+**103.5%** — about **3.5%**, not the 5.14% he states. **He is comparing Kalshi
+after fees against SX Bet before them.** So the gap is real and large, but it is
+roughly **12× not 20×**, and it is smaller than he says.
+
+**Do we have anything on it? Nothing on SX Bet in the 640 recorded claims.** But
+`idea.py` surfaced something better than a match — a warning.
+
+**K006 is the precedent, and it is one of ours.** *"Depth at the touch collapses
+40× toward expiry (158→4 contracts)"* — **status RETRACTED**. The data was **1
+market, 3 minutes**. Re-run on 25 markets over 7 hours it was wrong in both
+size and direction: depth declined 2.7× not 40×, and never went thin.
+
+**That is exactly this post's shape.** A single snapshot of a single market,
+stated as a property of the venue. Our own most instructive retraction came from
+that shape, and it shrank on contact with a real sample — as all ~51 have.
+
+**What it would cost to test, and the reason I did not.** A fair comparison
+needs the same games sampled repeatedly at the same moments on both venues. What
+a one-shot number cannot show is **whether you can get size at that price** — a
+0.3% spread on a book two contracts deep is not a 0.3% spread. This repo has
+already recorded that edge and liquidity move against each other.
+
+**And there is a gate before any of it:** SX Bet is a crypto venue, and whether
+it is lawfully accessible to this user is a question for him, not a thing to
+assume from a Reddit post. **Logged, not pursued.**
+
+---
+
+# 8. THE "BEST OF 16 BOTS" POINT, MADE BY A STRANGER WITH BIGGER NUMBERS
+
+Not new — it is CLAUDE.md's own sizing argument — but it is the clearest
+statement of it I have seen and it is worth having in the user's own words'
+neighbourhood.
+
+His arithmetic: take **50,000 people placing 25 bets each, every one of them
+completely clueless, all at a true 50-50**. Then by chance alone about **2,000
+finish at 64 wins in 100**, about **500 at 72**, about **75 at 80**, and about
+**10 people finish at 88 or better**. *"Those are the guys selling courses."*
+
+**Why it belongs here.** This repo currently runs **16 tennis bots and 16
+baseball bots**. The user has already been told, correctly, that the best of 16
+will look good even if not one of them has any edge. This is the same point at a
+scale that makes it undeniable, and it costs nothing to keep as the standard
+answer when a screenshot arrives.
+
+---
+
 # WHAT I CUT, AND WHY
 
 **On-chain Polymarket trade history.** I had this ranked second — a free,
@@ -341,14 +402,21 @@ corpus may still be better than ours, but that is a tooling question, not a find
 
 # COUNTS
 
-**Reading, since the count of "13 threads read" was given:** 14 threads read
-closely, out of **7,411 that passed the gate** — not 39,600; the gate discards
+**Reading, since the count of "13 threads read" was given:** **16 threads read
+closely**, out of **7,411 that passed the gate** — not 39,600; the gate discards
 25,609 as too thin and 14,115 as off-topic before anything is read.
 
-**What the six new ones bought:** one live operational warning about our own
-data supply, one strategy shape absent from all 638 claims, one artifact
+**What the eight new ones bought:** one live operational warning about our own
+data supply, one strategy shape absent from all 640 claims, one artifact
 argument against a stranger's headline that also upgrades one of our own claims,
-one arithmetic kill, and two methods worth copying.
+two arithmetic kills, one venue worth a real comparison some day, and two
+methods worth copying.
+
+**Two of the eight were killed by our own ledger rather than by me** — the
+structural-NO result by arithmetic, and the SX Bet spread claim by **K006**, a
+retraction of ours built on the identical one-snapshot shape. That is the ledger
+paying for itself, and it is the argument for keeping `idea.py` in the loop on
+every candidate rather than only on the ones that feel familiar.
 
 **The data-source sweep returned a null, and it is reported as one.** 73,679
 posts and comments scanned for hosts named beside a word meaning *data*, minus
