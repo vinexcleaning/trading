@@ -1004,9 +1004,8 @@ its own accumulator. It is the model.
 ## 24. The market does not quote a near-certainty — availability, not price
 
 **Contributed by `soccer`, 2026-08-11**, on the closure of the late-comeback
-idea. **Candidate guard: it has one project behind it, not three.** It is filed
-here anyway because the next chat to propose this shape should hit it in five
-minutes rather than five days.
+idea. **Measured on SEVEN sports, not one** — see the cross-sport table below,
+which is why this is no longer only a soccer finding.
 
 ### The shape it catches
 
@@ -1049,6 +1048,32 @@ declines to quote when there is nothing left to be uncertain about.** So:
    output.
 3. **Report the availability rate next to the edge, always.** An edge measured
    on 5% of moments is a statement about that 5%.
+
+### It is market-maker behaviour, not one sport's quirk
+
+Measured 2026-08-11 on **284 settled Kalshi markets**, using only the price so
+that no sport knowledge is needed. *Near-certain* = somebody bidding 95c+.
+*Buyable* = an offer below 100 exists. The middling band is the control.
+
+| sport | buyable when NEARLY SURE | buyable when IN DOUBT |
+|---|---|---|
+| soccer | **29 in 100** | 100 in 100 |
+| basketball (women) | 31 in 100 | 100 in 100 |
+| basketball | 37 in 100 | 100 in 100 |
+| hockey | 51 in 100 | 100 in 100 |
+| baseball | 53 in 100 | 100 in 100 |
+| tennis (men) | 56 in 100 | 100 in 100 |
+| tennis (women) | 67 in 100 | 100 in 100 |
+
+**Every sport is buyable on all 33,802 of its middling minutes** — that perfect
+control is what makes the left column mean something, and it rules out "thin
+book". The soccer-specific explanation (a three-way market with a draw leg to
+lay off against) is dead: six of these sports have no draw leg and show the same
+shape. `soccer/reports/other_sports_probe.txt`.
+
+**Availability is necessary, not sufficient.** Soccer's book was a clean 100 in
+100 early in a match and the price was still bad. This guard says a trade may
+not exist; it never says one is good.
 
 ### Why it is not the same as a wide spread
 

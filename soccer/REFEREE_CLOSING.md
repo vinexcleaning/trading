@@ -93,3 +93,81 @@ sorting. **A closure is a finding and gets the same treatment.**
 **Nothing else is unresolved.** The closure itself is not in dispute: the
 mechanism is about market-maker behaviour rather than league quality, so waiting
 for September would not have changed it.
+
+
+---
+
+# The Referee on the post-mortem — 2026-08-11
+
+`reflect.py --file soccer/POSTMORTEM.md` ran first. **A post-mortem is exactly
+the document where a chat is tempted to be kind to itself**, so this is the
+sorting of that attack.
+
+## 1. STANDS
+
+- **The near-certainty gap is market-maker behaviour, not soccer.**
+  *What makes it survive:* **the control.** All seven sports are buyable on
+  **every one of 33,802 middling minutes** — 100 in 100, no exceptions — and
+  between 29 and 67 in 100 once the outcome is nearly sure. Same markets, same
+  day, minutes apart. A thin book cannot produce that shape, and the
+  soccer-specific explanation (the draw leg) is ruled out by six sports that
+  have no draw leg.
+
+- **Soccer was the worst sport to have tried this in.** 29 in 100, bottom of
+  eight rows. *What makes it survive:* it is a direct reading, not a model.
+
+- **The four corrections and their preventives.**
+  *What makes it survive:* each is checkable against the git history, and two of
+  the four were caught before anyone acted on them — one by `reflect.py` rather
+  than by care, which is stated as an argument for the tool and not for me.
+
+## 2. DOWNGRADED
+
+- **was:** "Tennis is where a near-certainty strategy should be attempted next."
+  **now:** "Tennis is where the **quote** survives furthest — 56 and 67 in 100
+  against soccer's 29. That is a statement about availability and not about
+  whether the price is any good."
+  **because:** soccer had a market early in a match too, at 93 in 100, and the
+  price was still bad. **Availability is necessary, not sufficient**, and
+  writing it the first way would have handed `tennis` a recommendation the data
+  does not support.
+
+- **was:** "Baseball has no clock."
+  **now:** "Baseball has no clock that ends the game — there has been a pitch
+  clock since 2023, but nothing runs the game out."
+  **because:** the first version was a confident wrong detail of exactly the
+  kind that costs credibility on everything around it.
+
+- **was:** the probe reads on quote availability at a given price.
+  **now:** the same, **with the standing caveat that it has no event state** — a
+  95-cent price may be a heavy pre-match favourite rather than a late
+  near-certainty.
+  **because:** the soccer version knew who was ahead and this one does not. It
+  is the right measurement for GUARDS #24 and the wrong one for anything about
+  game situations.
+
+## 3. FOR THE USER — genuinely unresolved
+
+**One, and it is new since the closure.**
+
+- **the question:** Tennis keeps quoting a near-certain outcome roughly twice as
+  often as soccer does. Is that worth the `tennis` chat's attention, or is it a
+  curiosity?
+- **one side says:** it is the single most promising lead this folder produced.
+  Soccer's idea died on availability; tennis has about twice the availability,
+  no draw leg to complicate the book, and an existing pipeline in
+  `tennis-paper-forward` that already knows match state. Checking it is days,
+  not weeks.
+- **the other side says:** nothing here says the tennis price is any good, and
+  the one sport where the price *was* measured — soccer — was bad wherever it
+  existed. The same 45-odd corrections in this repo all shrank an effect. Twice
+  as much of a trade that loses money is still a trade that loses money, and
+  `tennis` already has 16 bots running that would have to be paused for it.
+- **what would settle it:** tennis match state joined to per-minute Kalshi
+  quotes, then the same two questions soccer asked — how often is it buyable at
+  a near-certain price, and what is left after the fee. **It needs no new data
+  source**; both halves already exist in that folder.
+
+**Nothing else is unresolved.** The closure stands, and the post-mortem's own
+finding — that every one of the four corrections was a number that lost the
+condition it was measured under — is not in dispute.

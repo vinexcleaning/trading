@@ -120,6 +120,18 @@ these numbers existed — check the git log, and if it was not, disregard it.
 
 **So the −0.40c headline is conditional and must be stated that way:** *you overpay by about 0.4 cents a contract in the games and minutes where a trade was actually available.* SO037 is amended to carry that condition.
 
+## The post-mortem probe, 2026-08-11 — does it transfer?
+
+| ID | Claim in plain English | Artifact | n + unit | Effect | STATUS |
+|---|---|---|---|---|---|
+| **SO042** | **The near-certainty gap appears in every sport Kalshi runs per-game**, so it is market-maker behaviour rather than anything about soccer's three-way market. | `src/other_sports_probe.py`, `reports/other_sports_probe.txt` | **284 settled markets**, 7 sports, one-minute candles in the 5 h before close, measured 2026-08-11 | buyable when somebody bids 95c+: soccer **29 in 100**, women's basketball 31, basketball 37, hockey 51, baseball 53, men's tennis 56, women's tennis **67**. **Control at 40–70c: 100 in 100 in every sport, all 33,802 minutes** | **SETTLED for availability only.** The perfect control rules out thin books; six sports have no draw leg, killing the soccer-specific explanation. **Says nothing about price quality.** No event state — a 95c price may be a heavy pre-match favourite rather than a late near-certainty |
+
+**Soccer was the worst of the eight rows to have tried this in, and tennis the
+best** — quotes survive roughly twice as far into a near-certain state there.
+That is a lead for `tennis`, **not a recommendation**: availability is necessary
+and not sufficient, and soccer's book was a clean 100 in 100 early in a match
+with a bad price anyway.
+
 ### ⚠ SO026–SO028 are narrower than first reported, and this was found after reporting
 
 **Every price in `price_at_state.py` is read at a goal's wallclock plus two

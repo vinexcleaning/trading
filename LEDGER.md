@@ -20,16 +20,16 @@ asserts a number and no artifact backs it, the row says `NONE` and the status is
 | Status | Count |
 |---|---|
 | **RETRACTED** | **51** |
-| SETTLED | 176 |
+| SETTLED | 177 |
 | SUGGESTIVE | 37 |
 | UNVERIFIED | 30 |
 | BROKEN | 11 |
 | CANCELLED | 1 |
-| **Total** | **306** |
+| **Total** | **307** |
 
-**Updated 2026-08-11**: **+2 rows** from `soccer`'s closure — Section 9. Only
+**Updated 2026-08-11**: **+3 rows** from `soccer`'s closure — Section 9. Only
 the two rows that are **not about soccer** are merged; the other 39 stay in
-`soccer/LEDGER_SOCCER.md`. **The count is 306 of a true 345**, because that file
+`soccer/LEDGER_SOCCER.md`. **The count is 307 of a true 346**, because that file
 is invisible to `coordinator/ledger.py` until `SUB_LEDGERS` includes it.
 
 **Updated 2026-08-06 (second entry)**: **+43 rows** from the full-programme
@@ -627,6 +627,8 @@ question `soccer` had already answered.
 |---|---|---|---|---|---|
 | **SO041** | **The market does not quote a near-certainty.** Any strategy shaped "buy the thing that is 97% to happen, cheaply" fails on **availability**, not on price. | soccer | **699 matches** priced at every displayed minute, Kalshi ~69-day window to 2026-08-09; **one reading per match** | trailing side came back **7.1 per 100 where a bet was possible vs 0.0 where it was not** (60th min); 5.7 vs 0.0 (70th); 4.0 vs 0.4 (80th); 2.6 vs 0.0 (85th). `check_selection` on a has-a-market mask **FAILs**. At the 89th minute a quote existed **16 times in 100**, and at ≤97c **1 in 100** | **SETTLED** — predicted in writing before it was run. Filed as **[GUARDS #24](GUARDS.md)**. **Does not improve with a deeper book:** a deeper book prices matches still in doubt, which are the ones the strategy did not want |
 | **SO037** | Kalshi's soccer price is **worse than the historical rate implies at essentially every minute**. | soccer | 15,216 readings matched to their OWN competition's 2022–2024 cell | middle **−0.40c per contract**; stable at −0.46/−0.40/−0.48/−1.23 as the bar rises 40→60→100→200 matches | **SUGGESTIVE, and conditional** — two populations (rates 2022–2024, prices a 2026 window), and by SO041 the readings are conditioned on the match still being in doubt. Reads: *−0.40c in the games and minutes where a trade was available* |
+
+| **SO042** | **The near-certainty gap is market-maker behaviour, not a soccer quirk — it appears in every sport Kalshi runs per-game.** | soccer | **284 settled markets**, 7 sports, measured 2026-08-11 from one-minute candles in the 5 h before close | buyable when somebody bids 95c+: **soccer 29 in 100 · women's basketball 31 · basketball 37 · hockey 51 · baseball 53 · men's tennis 56 · women's tennis 67.** Control at 40–70c: **100 in 100 in every sport, on all 33,802 minutes** | **SETTLED for availability, and ONLY availability.** The perfect control rules out thin books; six of the seven have no draw leg, which kills the soccer-specific explanation. **It says nothing about whether any price is good** — soccer's book was 100 in 100 early and the price was still bad. Strengthens [GUARDS #24](GUARDS.md) from one sport to seven |
 
 **⚠ A retraction worth carrying repo-wide, because it is the fourth of its
 kind.** `soccer` was about to publish *"the price sample contains no European

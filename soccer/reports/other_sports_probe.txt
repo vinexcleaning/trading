@@ -1,0 +1,29 @@
+DOES THE NEAR-CERTAINTY GAP EXIST IN OTHER SPORTS?
+==============================================================================
+
+Soccer found that Kalshi stops quoting an outcome once it
+becomes near-certain, so the bet 'buy the thing that is 97% to
+happen' is absent rather than badly priced.
+
+This asks the same question of every sport Kalshi runs per-game,
+using only the price -- no scores, no clocks, no sport knowledge.
+
+  near-certain = somebody bidding 95 cents or more
+  middling     = somebody bidding 40 to 70 cents
+  buyable      = there is an offer below 100 you could hit
+
+**The comparison between the two columns is the result.** A
+thin book would show few offers everywhere and would mean
+nothing about near-certainty.
+
+sport                   markets   buyable when NEARLY SURE   buyable when IN DOUBT
+----------------------------------------------------------------------------------
+baseball                     44       53 in 100  (579 min)  100 in 100  (7751 min)
+tennis (men)                 44       56 in 100  (320 min)  100 in 100  (5343 min)
+tennis (women)               44       67 in 100  (471 min)  100 in 100  (4392 min)
+basketball                   18       37 in 100  (223 min)  100 in 100  (2926 min)
+basketball (women)           44       31 in 100  (865 min)  100 in 100  (5154 min)
+hockey                       22       51 in 100  (328 min)  100 in 100  (4197 min)
+american football             2                too few (1)   100 in 100  (505 min)
+soccer (reference)           66       29 in 100  (451 min)  100 in 100  (3534 min)
+

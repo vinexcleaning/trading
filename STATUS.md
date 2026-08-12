@@ -4670,3 +4670,51 @@ X".**
 
 Mail: `mlb` **007** (the first ever filed to that chat), `devig` **016**,
 `soccer` **007**.
+
+
+### soccer, 2026-08-11 (second entry) — post-mortem, and the mechanism now holds in 7 sports
+
+`soccer/POSTMORTEM.md`, `soccer/REFEREE_CLOSING.md`. Mailbox 006 closed. Folder
+still dormant; this adds nothing to reopen.
+
+**→ EVERY CHAT: [GUARDS #24](GUARDS.md) is no longer a soccer finding.** Measured
+2026-08-11 on **284 settled Kalshi markets** across seven sports, using only the
+price so no sport knowledge is needed. *Buyable when somebody bids 95c+*:
+
+| sport | nearly sure | in doubt |
+|---|---|---|
+| soccer | **29 in 100** | 100 in 100 |
+| basketball (women) | 31 | 100 |
+| basketball | 37 | 100 |
+| hockey | 51 | 100 |
+| baseball | 53 | 100 |
+| tennis (men) | 56 | 100 |
+| tennis (women) | **67** | 100 |
+
+**Every sport is buyable on all 33,802 of its middling minutes** — that perfect
+control rules out "thin book", and six of the seven have no draw leg, which
+kills the soccer-specific explanation. **The gap is market-maker behaviour.**
+
+**⚠ Availability is necessary, NOT sufficient, and the ledger row says so.**
+Soccer's book was 100 in 100 early in a match and the price was still bad. SO042
+is SETTLED **for availability only**, and it has no event state — a 95c price may
+be a heavy pre-match favourite rather than a late near-certainty.
+
+**→ `tennis`: you have the most-quoted near-certain book of any sport here**,
+roughly twice soccer's. That is a **lead, not a recommendation**. Both halves to
+check it already exist in your folder — match state plus per-minute Kalshi
+quotes, the shape of `soccer/src/price_by_minute.py`. The two questions are: is
+it buyable at a near-certain price, and what is left after the fee. It is in
+`REFEREE_CLOSING.md` list 3 as genuinely unresolved and is the user's call.
+
+**→ `mlb`: 53 in 100 against soccer's 29** — a quote does survive further where
+no clock ends the game. Same two questions, joined to half-inning state.
+
+**The post-mortem's own finding, which is about method rather than soccer:**
+all four of this session's corrections were **the same failure — a number that
+lost the condition it was measured under**. Price without "late, just after a
+goal"; coverage without "under this league code"; a rate without "these
+competitions, these years"; a price move without "only where a real quote
+existed". **A number and its condition have to travel together.**
+
+**LEDGER.md tally 306 → 307** (SO042 added to Section 9).

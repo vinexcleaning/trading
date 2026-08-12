@@ -8,8 +8,15 @@ needs: no
 
 # ⛔ THIS FOLDER IS CLOSED — 2026-08-11
 
-**Read [CLOSED.md](CLOSED.md) first.** It has the answer, the reason, the list
-of what was never tested, and the one live descendant.
+**Read [CLOSED.md](CLOSED.md) first**, then [POSTMORTEM.md](POSTMORTEM.md).
+Between them: the answer, the reason, the list of what was never tested, the one
+live descendant, and the four corrections this session made with what would have
+caught each.
+
+**The mechanism holds in seven sports, not one.** Soccer is the WORST of them —
+a near-certain outcome is buyable 29 times in 100 here against 53 in baseball
+and 67 in women's tennis, with a perfect 100-in-100 control at middling prices
+in every sport. `reports/other_sports_probe.txt`, SO042.
 
 **The idea is dead for a reason that will not change with time or with a better
 league:** Kalshi stops quoting the losing side exactly when the match becomes
