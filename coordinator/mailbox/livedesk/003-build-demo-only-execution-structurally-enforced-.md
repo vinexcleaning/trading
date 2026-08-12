@@ -141,3 +141,35 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+
+---
+
+# AMENDMENT — his numbers for Guard 5
+
+> *"Keep the 25 dollar fail but remove the 6 order max, make it like 10."*
+
+- `MAX_ORDERS_PER_DAY = 10`
+- `MAX_STAKE_PER_DAY_USD = 25.00` — unchanged
+
+**Both still fail closed if they cannot be determined.**
+
+## ⚠ Tell him what these two numbers do together, on the screen
+
+**At $4.15 a bet, the money cap binds first.** Six bets is $24.90; a seventh
+would be $29.05 and is refused. **So the order limit of 10 can never actually be
+reached while the stake is $4.15 and the daily money cap is $25.**
+
+That is not wrong — a belt and braces where one is tighter is fine, and the
+looser one starts mattering the moment either number changes. **But he should
+not think he has raised his daily ceiling from 6 to 10 when he has not.**
+
+**Show both counters with the room left in each**, the way Guard 2 already shows
+the floor and the trailing stop:
+
+```
+today: 3 of 10 orders  ·  $12.45 of $25.00  ·  money runs out first, at 6 bets
+```
+
+**That last clause is the useful part.** Say which cap will actually stop him,
+computed from the current numbers rather than hard-coded, so it stays true if
+any of the three constants change.
