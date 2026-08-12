@@ -111,6 +111,20 @@ grass. The deepest tennis book of the year, and we had none of it.
 That completes an already-agreed dataset rather than widening it; see
 `social-signal/DECISIONS.md` D22 for why those are different decisions.
 
+**Done, 2026-08-12.** 349 files fetched, 312 skipped as already held,
+**79,260,732 tennis rows kept from 28.5 GB streamed in and discarded**, 236
+minutes. One hour (`2026-05-28T11`) failed on a connection timeout and was
+re-fetched separately — **1,009,649 rows recovered, 0 failures on the retry.**
+
+**The archive as held is now complete and has no holes:** **662 hourly files,
+29 days, 2026-05-14 → 2026-06-11, 662 of 662 hours in the span, 0 gaps.**
+
+**⚠ A caveat for anyone using it: the raw match count overstates what is
+tradeable.** The archive snapshots settled markets too — a file recorded
+2026-05-27 carries `KXATPMATCH-26JAN03SACKYP` with an empty book on both sides.
+`social-signal/src/archive_census.py` therefore reports **matches SEEN** and
+**matches WITH A BOOK** separately. **Studies should use the second.**
+
 **Open decision for the user, with a clock on it:** whether to take **every other
 sport** before the host goes. Not decided by this session.
 
