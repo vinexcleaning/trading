@@ -173,3 +173,24 @@ today: 3 of 10 orders  ·  $12.45 of $25.00  ·  money runs out first, at 6 bets
 **That last clause is the useful part.** Say which cap will actually stop him,
 computed from the current numbers rather than hard-coded, so it stays true if
 any of the three constants change.
+
+---
+
+# AMENDMENT 2 — he raised the daily money cap
+
+> *"Raise the twenty five to fifty."*
+
+- `MAX_STAKE_PER_DAY_USD = 50.00`
+- `MAX_ORDERS_PER_DAY = 10` — unchanged
+
+**Now the two caps are close to balanced.** At $4.15 a bet, $50 allows 12 bets
+and the order limit stops him at 10 ($41.50). **So the ORDER cap now binds
+first, where before it was the money.** The on-screen line that names which cap
+will stop him must be computed, not hard-coded, exactly so it flips correctly
+when a constant changes like this.
+
+**Also worth putting in front of him:** $50 a day of stake against an $83
+bankroll means **he could commit more than half his money in one day.** The
+per-bet stake and the two cut-offs are what actually bound the downside; the
+daily cap is a backstop against a loop misbehaving, not a risk limit. **Do not
+present it as one.**
