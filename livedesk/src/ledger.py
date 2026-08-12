@@ -38,7 +38,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 
-from money import BANKROLL_START, usd
+from money import BANKROLL_START, STAKE_USD, usd
 
 LEDGER_PATH = Path(__file__).resolve().parents[1] / "data" / "ledger.json"
 
@@ -51,6 +51,14 @@ TRAILING_DROP_FRAC = 0.35      # 35% below the highest the running total reached
 
 # --- Guard 1 -------------------------------------------------------------
 MAX_POSITIONS_PER_GAME = 2
+# A bet he copied and then said he never placed is offered ONCE more. The
+# second void closes it for good. See signals_played() for why.
+MAX_VOIDS_BEFORE_CLOSED = 2
+
+# --- Guard 5: the daily caps, his numbers --------------------------------
+# "Keep the 25 dollar fail but remove the 6 order max, make it like 10."
+MAX_ORDERS_PER_DAY = 10
+MAX_STAKE_PER_DAY_USD = 25.00
 
 # --- Guard 4 -------------------------------------------------------------
 RECONCILE_TOLERANCE_USD = 1.00
@@ -119,7 +127,8 @@ class Entry:
     @property
     def counts_as_money(self) -> bool:
         """A void entry was never actually placed, so no money left the
-        account for it. It still closes its signal."""
+        account for it -- and since 2026-08-12 it does not close its signal
+        the first time either. See Ledger.signals_played()."""
         return self.status != "void"
 
     @property
@@ -190,9 +199,35 @@ class Ledger:
 
     # ---- Guard 1 --------------------------------------------------------
     def signals_played(self) -> set:
-        """Every signal this tool has ever acted on. Permanent, and a void
-        counts -- he saw that exact bet and dealt with it."""
-        return {e.signal for e in self.entries if e.signal}
+        """Every signal that is closed for good.
+
+        ⚠ CHANGED 2026-08-12, and it is a real change to Guard 1. It used to be
+        "any entry at all, including a void". That cost him three bets in one
+        evening: Pittsburgh, Cleveland and Seattle were all copied, he got lost
+        on the Kalshi page, came back and pressed "I did NOT place this" --
+        and all three games were then closed for ever having never been bet.
+
+        **A void means no money was placed.** Guard 1 exists to stop the same
+        bet going on twice, which is leverage on one outcome dressed up as
+        several trades. Re-offering something he never placed is not that, so
+        blocking it was the guard misfiring, not the guard working.
+
+        So: a signal is closed if any entry on it was really placed, or if it
+        has been voided TWICE. The second void closes it -- which stops a loop
+        where he copies, voids, copies, voids and eventually buys at a price
+        the bot never saw.
+        """
+        played = set()
+        voids = {}
+        for e in self.entries:
+            if not e.signal:
+                continue
+            if e.status == "void":
+                voids[e.signal] = voids.get(e.signal, 0) + 1
+            else:
+                played.add(e.signal)
+        return played | {s for s, n in voids.items()
+                         if n >= MAX_VOIDS_BEFORE_CLOSED}
 
     def positions_on_game(self, game_key: str) -> int:
         return len([e for e in self.entries
@@ -202,7 +237,8 @@ class Ledger:
         return [e for e in self.entries
                 if e.game_key == game_key and e.status == "open"]
 
-    def may_bet(self, game_key: str, signal: str, price_now_c=None):
+    def may_bet(self, game_key: str, signal: str, price_now_c=None,
+                next_cost_usd: float = 0.0):
         """(allowed, reason). The reason is shown on the button, so it is
         written for him, not for a log."""
         if signal and signal in self.signals_played():
@@ -219,6 +255,9 @@ class Ledger:
                         f"your open bet on this game is losing "
                         f"({e.price_c}c paid, {int(price_now_c)}c now). This "
                         f"tool never adds to a losing position.")
+        capped = self.daily_block(next_cost_usd or 0.0)
+        if capped:
+            return False, capped
         return True, ""
 
     def add(self, entry: Entry) -> None:
@@ -291,6 +330,76 @@ class Ledger:
                 f"{'' if real else ' (from this tool, not your account)'}"
                 f"   ·   35% off its best ${self.peak_total_usd:.2f} = stop at "
                 f"${stop_at:.2f}: ${max(0.0, worst - stop_at):.2f} of room")
+
+    # ---- Guard 5: the daily caps ----------------------------------------
+    def _today_entries(self):
+        """Everything really placed today, in HIS day, not UTC's.
+
+        Raises if a date cannot be read. That is deliberate: an unreadable
+        ledger must mean NO order, never an unlimited one.
+        """
+        today = datetime.now().astimezone().date()
+        out = []
+        for e in self.entries:
+            if not e.counts_as_money:
+                continue
+            t = _parse(e.confirmed_utc)
+            if t is None:
+                raise ValueError(
+                    f"entry {e.ticker} has no readable date "
+                    f"({e.confirmed_utc!r}), so today's total cannot be "
+                    f"counted and no order can be allowed")
+            if t.astimezone().date() == today:
+                out.append(e)
+        return out
+
+    def daily_used(self):
+        """(orders today, dollars today). Raises rather than guess."""
+        rows = self._today_entries()
+        return len(rows), round(sum(e.cost_usd for e in rows), 2)
+
+    def daily_block(self, next_cost_usd: float = 0.0):
+        """Why today's caps forbid another bet, or None. Fails closed."""
+        try:
+            n, spent = self.daily_used()
+        except ValueError as exc:
+            return f"cannot count today's bets, so no bet: {exc}"
+        if n >= MAX_ORDERS_PER_DAY:
+            return (f"you have made {n} bets today, which is the limit of "
+                    f"{MAX_ORDERS_PER_DAY}. Nothing more until tomorrow.")
+        if spent + next_cost_usd > MAX_STAKE_PER_DAY_USD + 1e-9:
+            return (f"you have put ${spent:.2f} in today and this one would "
+                    f"take it to ${spent + next_cost_usd:.2f}, over the "
+                    f"${MAX_STAKE_PER_DAY_USD:.2f} daily limit. Nothing more "
+                    f"until tomorrow.")
+        return None
+
+    def daily_line(self) -> str:
+        """Both counters and WHICH ONE will actually stop him.
+
+        At $4.15 a bet the money runs out at 6, so the limit of 10 orders can
+        never be reached. That is fine as a belt and braces, but he must not
+        think he raised his ceiling from 6 to 10 when he did not. Computed, so
+        it stays true if any of the three numbers change.
+        """
+        try:
+            n, spent = self.daily_used()
+        except ValueError as exc:
+            return f"today: cannot be counted, so no bets — {exc}"
+        left_money = MAX_STAKE_PER_DAY_USD - spent
+        stake = STAKE_USD if STAKE_USD > 0 else 0.01
+        bets_money_allows = int((left_money + 1e-9) / stake)
+        bets_count_allows = MAX_ORDERS_PER_DAY - n
+        if bets_money_allows < bets_count_allows:
+            which = (f"money runs out first, after {bets_money_allows} more"
+                     if bets_money_allows else "the money is gone for today")
+        elif bets_count_allows < bets_money_allows:
+            which = (f"the order count runs out first, after "
+                     f"{bets_count_allows} more")
+        else:
+            which = f"both run out together, after {bets_count_allows} more"
+        return (f"today: {n} of {MAX_ORDERS_PER_DAY} bets  ·  "
+                f"${spent:.2f} of ${MAX_STAKE_PER_DAY_USD:.2f}  ·  {which}")
 
     # ---- Guard 4: reconcile or refuse -----------------------------------
     def money_out_usd(self) -> float:

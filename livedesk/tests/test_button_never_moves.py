@@ -88,6 +88,7 @@ def app(_root, monkeypatch):
     _root.quotes = {}
     _root.skipped = set()
     _root._announced = set()
+    _root.pending = None
     _root._clear_alert()
     _root._render()
     return _root
@@ -100,8 +101,12 @@ def _button_xy(a):
 
     def walk(w):
         for c in w.winfo_children():
-            if isinstance(c, tk.Button) and (
-                    "KALSHI" in c.cget("text") or "TOO EXPENSIVE" in c.cget("text")):
+            # Every state's PRIMARY button, whatever it is called. The
+            # hand-off card's button is "I PLACED IT" and it has to land on
+            # the same pixel as "COPY & OPEN KALSHI".
+            if isinstance(c, tk.Button) and any(
+                    k in c.cget("text")
+                    for k in ("KALSHI", "TOO EXPENSIVE", "I PLACED IT")):
                 found.append((c.winfo_rootx(), c.winfo_rooty()))
             walk(c)
     walk(a.card)
@@ -232,3 +237,80 @@ def test_a_signal_already_bet_is_never_offered(app):
     assert app._available() == [], "a settled signal came back around"
     app.picks = [_fake_pick(signal=p.signal + "|different-trigger")]
     assert len(app._available()) == 1, "a different trigger must still be offered"
+
+
+def test_the_handoff_card_keeps_the_button_on_the_same_pixel(app):
+    """The click-by-click card (mailbox 002) replaces the trade card and must
+    not move the button -- he goes to Kalshi and back, and it is the same
+    button in the same place both times."""
+    from money import size_bet
+    p = _fake_pick()
+    app.picks = [p]
+    app._render()
+    home = _button_xy(app)
+
+    bet = size_bet(52)
+    from ledger import Entry
+    app.ledger.entries.append(Entry(
+        game_key=p.game_key, ticker=p.ticker, event_ticker=p.event_ticker,
+        team=p.team, matchup=p.matchup, side="YES", price_c=bet.price_c,
+        contracts=bet.contracts, cost_usd=bet.cost_usd, fee_usd=bet.fee_usd,
+        win_profit_usd=bet.win_profit_usd, lose_usd=bet.lose_usd,
+        starts_utc=p.starts_utc, signal=p.signal,
+        confirmed_utc="2026-08-12T20:00:00-04:00", why=list(p.why)))
+    app.pending = (app.ledger.entries[-1], p, bet)
+    app._render()
+    assert _button_xy(app) == home, "the hand-off card moved the button"
+
+    # and a big price move puts a long warning above it, which is the state
+    # that has broken this layout before
+    import prices as PRICES
+    app.quotes[p.ticker] = PRICES.Quote(
+        ticker=p.ticker, status="active", bid_c=70, ask_c=71,
+        ask_size=100.0, result="")
+    app._render()
+    assert _button_xy(app) == home, "the price-moved warning moved the button"
+    app.pending = None
+
+
+def test_guard6_a_second_click_while_one_is_pending_does_nothing(app):
+    """One click, one order. A double-click, a repeated callback or a stray
+    retry must not start a second."""
+    from money import size_bet
+    p = _fake_pick()
+    bet = size_bet(52)
+    from ledger import Entry
+    app.ledger.entries.append(Entry(
+        game_key=p.game_key, ticker=p.ticker, event_ticker=p.event_ticker,
+        team=p.team, matchup=p.matchup, side="YES", price_c=bet.price_c,
+        contracts=bet.contracts, cost_usd=bet.cost_usd, fee_usd=bet.fee_usd,
+        win_profit_usd=bet.win_profit_usd, lose_usd=bet.lose_usd,
+        starts_utc=p.starts_utc, signal=p.signal,
+        confirmed_utc="2026-08-12T20:00:00-04:00", why=list(p.why)))
+    app.pending = (app.ledger.entries[-1], p, bet)
+    before = len(app.ledger.entries)
+    app._confirm(_fake_pick(game_key="other", ticker="OTHER-X",
+                            signal="brand-new"), bet)
+    assert len(app.ledger.entries) == before, "a second bet was started"
+    app.pending = None
+
+
+def test_nothing_else_is_offered_while_one_is_out_being_placed(app):
+    from money import size_bet
+    p = _fake_pick()
+    app.picks = [p, _fake_pick(game_key="g2", ticker="T2-MIA", signal="s2")]
+    app._render()
+    from ledger import Entry
+    bet = size_bet(52)
+    app.ledger.entries.append(Entry(
+        game_key=p.game_key, ticker=p.ticker, event_ticker=p.event_ticker,
+        team=p.team, matchup=p.matchup, side="YES", price_c=bet.price_c,
+        contracts=bet.contracts, cost_usd=bet.cost_usd, fee_usd=bet.fee_usd,
+        win_profit_usd=bet.win_profit_usd, lose_usd=bet.lose_usd,
+        starts_utc=p.starts_utc, signal=p.signal,
+        confirmed_utc="2026-08-12T20:00:00-04:00", why=list(p.why)))
+    app.pending = (app.ledger.entries[-1], p, bet)
+    app._render()
+    titles = [c.cget("text") for c in app.card.winfo_children()]
+    assert any("DO THIS ON THE PAGE" in t for t in titles)
+    app.pending = None

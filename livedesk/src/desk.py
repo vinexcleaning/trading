@@ -108,6 +108,10 @@ class Desk(tk.Tk):
         self.skipped: set = set()          # this session only, not the ledger
         self._announced: set = set()       # signals already raised and chimed
         self._retired_said: set = set()    # games we have already said were dropped
+        # (entry, pick, bet) while he is over on Kalshi placing it. The card
+        # holds this state until he says whether it went on -- Guard 6, one
+        # click one order, and the reason the hand-off card cannot vanish.
+        self.pending = None
         self.quotes: dict = {}             # ticker -> Quote
         self.source_age = None
         self.last_check = "—"
@@ -363,10 +367,16 @@ class Desk(tk.Tk):
             text=msg[:150],
             fg={"disagree": "#fca5a5", "unchecked": "#fcd34d",
                 "ok": "#86efac"}.get(state, "#9ca3af"))
-        self.room_lbl.configure(text="  " + self.ledger.room_line())
+        self.room_lbl.configure(
+            text="  " + self.ledger.room_line()
+                 + "\n  " + self.ledger.daily_line())
 
         avail = self._available()
-        if blocked:
+        if self.pending is not None:
+            # Nothing else is offered while a bet is out being placed. One at
+            # a time, and it also means a second click cannot start a second.
+            self._placement_card()
+        elif blocked:
             self._dead_card(blocked[1])
         elif not avail:
             self._dead_card(self._nothing_text())
@@ -501,6 +511,115 @@ class Desk(tk.Tk):
         tk.Label(row, text="one bet per game — this game closes when you click",
                  fg="#666", font=("Segoe UI", 8)).pack(side="right", padx=6)
 
+    def _placement_card(self) -> None:
+        """The click-by-click hand-off, shown after COPY & OPEN.
+
+        HIS WORDS, and it is a real failure not a nicety: *"I go to click the
+        trade on Kalshi and it opens up, but then I get bombarded with a bunch
+        of different trades to make, and then I get confused. Right now this is
+        perfect, I can see everything. But when I go to click it, I get
+        bombarded by a bunch of different shit on Kalshi and I don't know what
+        to click."*
+
+        The card was doing its job; the hand-off was not. On 2026-08-12 he
+        copied Pittsburgh, Cleveland and Seattle and voided all three -- three
+        bets lost to a confusing page, not to indecision.
+
+        It stays on screen until he says which happened. He is looking at
+        Kalshi and then back at this, so it must not vanish.
+
+        ⚠ THE LABELS ARE FROM HIS SCREENSHOT, NOT FROM MY OWN READING OF THE
+        PAGE. Kalshi renders client-side and the page came back empty to every
+        tool I have. What IS verified, from Kalshi's own API on 2026-08-12: the
+        event this window links to has exactly TWO markets, one per team. So
+        "find the row with the team name, there are only two" is solid; the
+        exact button wording is his screenshot's and is written to survive
+        being slightly wrong.
+        """
+        e, p, bet = self.pending
+        f = self._card_shell(f"  DO THIS ON THE PAGE THAT JUST OPENED  ",
+                             title_colour="#1d4ed8")
+
+        q = self.quotes.get(p.ticker)
+        warn = ""
+        if q and q.ask_c and q.ask_c - bet.price_c >= 3:
+            warn = (f"CAREFUL — the price has gone UP to {q.ask_c} cents since "
+                    f"you clicked; you were shown {bet.price_c}. That is "
+                    f"against you. Buying now costs more and wins less. It is "
+                    f"fine to press \"I did NOT place it\" and let this one go.")
+        elif q and q.ask_c and bet.price_c - q.ask_c >= 3:
+            warn = (f"The price has come DOWN to {q.ask_c} cents since you "
+                    f"clicked; you were shown {bet.price_c}. That is in your "
+                    f"favour.")
+        tk.Label(f, text=self._fit([warn] if warn else [""], self.WARN_LINES),
+                 justify="left", anchor="nw", font=("Consolas", 9),
+                 fg=("#b45309" if warn else "black"), height=self.WARN_LINES
+                 ).pack(fill="x")
+
+        team = e.team.upper()
+        lines = [
+            "",
+            f"  1. Find the row that says      {team}",
+            f"     (there are only two rows — the two teams)",
+            "",
+            f"  2. Click the GREEN button on that row.",
+            f"     It says \"Yes\" and a price, about {bet.price_c}c.",
+            f"     The RED \"No\" button next to it is the OTHER team. Not that one.",
+            "",
+            f"  3. In the quantity box, type   {bet.contracts}",
+            "",
+            f"  4. Check the total says about  ${bet.cost_usd:.2f}",
+            "",
+            f"  5. Press the buy button to confirm.",
+            "",
+            "  IGNORE everything under headings like \"Spread and Total\",",
+            "  \"Team Totals\", or anything saying over/under. Those are",
+            "  different bets on the same game and are not this one.",
+        ]
+        tk.Label(f, text=self._fit(lines, self.CARD_BODY_LINES),
+                 justify="left", anchor="nw", font=("Consolas", 9),
+                 height=self.CARD_BODY_LINES).pack(fill="x")
+
+        row = tk.Frame(f)
+        row.pack(fill="x", pady=(6, 2))
+        tk.Button(row, text="I PLACED IT", width=30, bg="#166534", fg="white",
+                  font=("Segoe UI", 11, "bold"),
+                  command=self._placed).pack(side="left")
+        tk.Frame(row, width=50).pack(side="left")
+        tk.Button(row, text="I did NOT place it",
+                  command=self._not_placed).pack(side="left")
+        tk.Label(row, text="this stays until you say which",
+                 fg="#666", font=("Segoe UI", 8)).pack(side="right", padx=6)
+
+    def _placed(self) -> None:
+        e, p, bet = self.pending
+        self.pending = None
+        self._log(f"PLACED {e.team} {e.contracts} at {e.price_c}c "
+                  f"(${e.cost_usd:.2f})")
+        self._alert(f"Recorded. ${e.cost_usd:.2f} on {e.team}. Type your new "
+                    f"Kalshi balance in the box above when it updates.", "info")
+        self._render()
+
+    def _not_placed(self) -> None:
+        e, p, bet = self.pending
+        self.pending = None
+        e.status = "void"
+        e.note = "he pressed 'I did NOT place it' on the hand-off card"
+        self.ledger.save()
+        voids = len([x for x in self.ledger.entries
+                     if x.signal == e.signal and x.status == "void"])
+        again = voids < 2
+        self._log(f"NOT PLACED {e.team} — ${e.cost_usd:.2f} taken back out"
+                  + (". It will be offered once more." if again
+                     else ". Second time, so it is now closed for good."))
+        self._alert(
+            f"Taken back out. Nothing was bet." +
+            (" This one will come round again — it is offered once more."
+             if again else
+             " That is the second time on this bet, so it is now closed."),
+            "info")
+        self._render()
+
     def _render_queue(self, rest) -> None:
         if not rest:
             tk.Label(self.queue_frame, fg="#888", anchor="w", justify="left",
@@ -516,11 +635,16 @@ class Desk(tk.Tk):
                      ).pack(fill="x", padx=8, pady=1)
 
     def _render_tree(self) -> None:
+        # The row id is the entry's POSITION, not its ticker. It used to be the
+        # ticker, and that crashed the whole window the moment the same ticker
+        # appeared twice -- which became possible on 2026-08-12 when a voided
+        # bet started being offered once more. A duplicate id raises inside
+        # _render, so the window would have died on his next click.
         self.tree.delete(*self.tree.get_children())
-        for e in reversed(self.ledger.entries):
+        for i, e in reversed(list(enumerate(self.ledger.entries))):
             pl = (usd(e.pnl_usd) if e.status in ("won", "lost")
                   else ("—" if e.status == "void" else "open"))
-            self.tree.insert("", "end", iid=e.ticker, values=(
+            self.tree.insert("", "end", iid=str(i), values=(
                 e.game_key[5:], e.team[:16], f"${e.cost_usd:.2f}",
                 f"{e.price_c}c", e.status, pl))
 
@@ -534,13 +658,20 @@ class Desk(tk.Tk):
         self._render()
 
     def _confirm(self, p, bet) -> None:
+        if self.pending is not None:
+            # A double-click, a repeated callback or a stray retry must not
+            # produce two of anything.
+            self._alert("One at a time — finish telling me whether the last "
+                        "one went on.", "warn")
+            return
         blocked = self._blocked()
         if blocked:
             self._alert(blocked[1], "error")
             self._render()
             return
         q = self.quotes.get(p.ticker)
-        ok, why = self.ledger.may_bet(p.game_key, p.signal, q.ask_c if q else None)
+        ok, why = self.ledger.may_bet(p.game_key, p.signal,
+                                      q.ask_c if q else None, bet.cost_usd)
         if not ok:
             self._alert(f"{p.matchup}: {why}", "warn")
             self._render()
@@ -554,10 +685,9 @@ class Desk(tk.Tk):
             f"if it wins, ${bet.lose_usd:.2f} gone if it loses.\n\n"
             f"This window does NOT place it. It copies the details and opens "
             f"the page — you place it there.\n\n"
-            f"This exact bet is then closed for good. If the bot later finds a "
-            f"genuinely different reason on the same game it may offer once "
-            f"more — two per game is the hard limit, and never on top of a "
-            f"bet that is losing.")
+            f"Next the window shows you exactly what to click on that page. "
+            f"Come back and tell it whether the bet went on — if it did not, "
+            f"nothing is recorded and this one is offered once more.")
         if not ok:
             return
 
@@ -591,11 +721,12 @@ class Desk(tk.Tk):
             starts_utc=p.starts_utc, signal=p.signal,
             confirmed_utc=datetime.now().astimezone().isoformat(timespec="seconds"),
             why=list(p.why)))
+        self.pending = (self.ledger.entries[-1], p, bet)
         self._log(f"COPIED {detail}")
         self._log(f"opened {url}")
-        self._alert(f"Copied. Paste it on the Kalshi page and buy "
-                    f"{bet.contracts} at {bet.price_c}c. {p.matchup} is now "
-                    f"closed for good.", "info")
+        self._alert(f"Copied. The window now shows exactly what to click on "
+                    f"that page — follow it, then come back and say whether "
+                    f"it went on.", "info")
         self._render()
 
     def _void_selected(self) -> None:
@@ -603,23 +734,35 @@ class Desk(tk.Tk):
         if not sel:
             self._alert("Click a row in the list first.", "warn")
             return
-        for e in self.ledger.entries:
-            if e.ticker == sel[0] and e.status == "open":
-                if messagebox.askokcancel(
-                        "Mark as not placed?",
-                        f"{e.team} — {e.matchup}\n\n"
-                        f"This takes ${e.cost_usd:.2f} back out of the running "
-                        f"total, because you never actually placed it.\n\n"
-                        f"The game stays closed either way — it will not be "
-                        f"offered again."):
-                    e.status = "void"
-                    e.pnl_usd = 0.0
-                    e.note = "marked not placed by hand"
-                    self.ledger.save()
-                    self._log(f"voided {e.matchup} — not actually placed")
-                    self._render()
-                return
-        self._alert("That one is already settled or already voided.", "warn")
+        try:
+            e = self.ledger.entries[int(sel[0])]
+        except (ValueError, IndexError):
+            self._alert("Could not find that row — refresh and try again.",
+                        "warn")
+            return
+        if e.status != "open":
+            self._alert("That one is already settled or already voided.", "warn")
+            return
+        voids = len([x for x in self.ledger.entries
+                     if x.signal == e.signal and x.status == "void"])
+        again = voids + 1 < 2
+        if messagebox.askokcancel(
+                "Mark as not placed?",
+                f"{e.team} — {e.matchup}\n\n"
+                f"This takes ${e.cost_usd:.2f} back out of the running total, "
+                f"because you never actually placed it.\n\n"
+                + ("This bet will be offered ONCE more, since nothing was "
+                   "actually bet on it."
+                   if again else
+                   "This is the second time on this bet, so it is now closed "
+                   "for good.")):
+            e.status = "void"
+            e.pnl_usd = 0.0
+            e.note = "marked not placed by hand"
+            self.ledger.save()
+            self._log(f"voided {e.matchup} — not actually placed"
+                      + (". Offered once more." if again else ". Now closed."))
+            self._render()
 
     def _toggle(self) -> None:
         self.paused = not self.paused

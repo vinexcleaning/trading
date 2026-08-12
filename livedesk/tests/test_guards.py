@@ -27,8 +27,10 @@ sys.path.insert(0, str(SRC))
 
 import killswitch                                      # noqa: E402
 from ledger import (ACCOUNT_FLOOR_USD, Entry, Ledger,  # noqa: E402
-                    MAX_POSITIONS_PER_GAME, RECONCILE_TOLERANCE_USD,
-                    SETTLEMENT_LAG_HOURS, TRAILING_DROP_FRAC, signal_key)
+                    MAX_ORDERS_PER_DAY, MAX_POSITIONS_PER_GAME,
+                    MAX_STAKE_PER_DAY_USD, MAX_VOIDS_BEFORE_CLOSED,
+                    RECONCILE_TOLERANCE_USD, SETTLEMENT_LAG_HOURS,
+                    TRAILING_DROP_FRAC, signal_key)
 from money import BANKROLL_START, STAKE_USD, size_bet  # noqa: E402
 
 GK = "2026-08-12:PIT@MIA"
@@ -36,13 +38,13 @@ GK = "2026-08-12:PIT@MIA"
 
 def _entry(game_key=GK, ticker="T1", signal="sig-1", price_c=52, contracts=7,
            cost=3.77, win=3.23, lose=3.77, status="open", pnl=0.0,
-           settled_utc=None):
+           settled_utc=None, confirmed_utc="2026-08-12T02:00:00+00:00"):
     return Entry(game_key=game_key, ticker=ticker, event_ticker="E",
                  team="Miami Marlins", matchup="Pittsburgh at Miami",
                  side="YES", price_c=price_c, contracts=contracts,
                  cost_usd=cost, fee_usd=0.13, win_profit_usd=win,
                  lose_usd=lose, starts_utc="2026-08-12T22:40:00+00:00",
-                 confirmed_utc="2026-08-12T02:00:00+00:00", signal=signal,
+                 confirmed_utc=confirmed_utc, signal=signal,
                  status=status, pnl_usd=pnl, settled_utc=settled_utc)
 
 
@@ -107,12 +109,15 @@ def test_guard1_still_blocked_after_it_settles(led):
     assert led.may_bet(GK, "s1")[0] is False
 
 
-def test_guard1_still_blocked_after_a_void(led):
+def test_guard1_a_void_frees_the_per_game_count(led):
+    """No money was placed, so it does not use up one of his two per game.
+
+    ⚠ This test used to also assert the signal stayed BLOCKED after a void.
+    That was changed on 2026-08-12 -- see
+    test_a_void_offers_the_bet_once_more for why, and what it cost him."""
     led.add(_entry(signal="s1"))
     led.entries[0].status = "void"
     led.save()
-    assert led.may_bet(GK, "s1")[0] is False
-    # but a void frees the per-game COUNT, because no money was placed
     assert led.positions_on_game(GK) == 0
 
 
@@ -513,3 +518,114 @@ def test_a_thin_pitcher_warns_at_a_smaller_gap(tmp_path):
     fat = {"fair_c": 58.0, "price_c": 52, "flags": {"home": {
         "flags": ["form_divergence"], "career_starts_prior": 20}}}
     assert P._warning(fat) == "", "a 6c gap on an established pitcher must stay quiet"
+
+
+# ========================= the void that used to cost him the bet (mailbox 002)
+
+def test_a_void_offers_the_bet_once_more(led):
+    """2026-08-12: he copied Pittsburgh, Cleveland and Seattle, got lost on the
+    Kalshi page, came back and pressed "I did NOT place this" on all three --
+    and all three games were then closed for ever having never been bet.
+
+    A void means NO MONEY WAS PLACED. Guard 1 exists to stop the same bet going
+    on twice; re-offering something he never placed is not that."""
+    led.add(_entry(signal="s1"))
+    assert led.may_bet(GK, "s1")[0] is False, "not while it is open"
+    led.entries[0].status = "void"
+    led.save()
+    ok, why = led.may_bet(GK, "s1")
+    assert ok, f"a voided bet must come back once: {why}"
+
+
+def test_the_SECOND_void_closes_it_for_good(led):
+    """Otherwise he can copy, void, copy, void and eventually buy at a price
+    the bot never saw."""
+    assert MAX_VOIDS_BEFORE_CLOSED == 2
+    for i in range(2):
+        e = _entry(ticker=f"T{i}", signal="s1")
+        e.status = "void"
+        led.entries.append(e)
+    led.save()
+    ok, why = led.may_bet(GK, "s1")
+    assert not ok and "already been taken" in why
+
+
+def test_a_bet_really_placed_still_closes_it_immediately(led):
+    """The reopen must not weaken the guard for money that actually went on."""
+    led.add(_entry(signal="s1"))
+    led.settle("T1", won=False)
+    assert led.may_bet(GK, "s1")[0] is False
+
+
+def test_one_void_and_one_real_bet_still_closes_it(led):
+    led.entries.append(_entry(ticker="T0", signal="s1", status="void"))
+    led.entries.append(_entry(ticker="T1", signal="s1", status="open"))
+    led.save()
+    assert led.may_bet(GK, "s1")[0] is False
+
+
+# =================================================== Guard 5: the daily caps
+
+def _today(n=0):
+    from datetime import datetime as dt
+    return dt.now().astimezone().replace(microsecond=0).isoformat()
+
+
+def test_guard5_his_numbers(led):
+    assert MAX_ORDERS_PER_DAY == 10
+    assert MAX_STAKE_PER_DAY_USD == 25.00
+
+
+def test_guard5_the_money_cap_stops_him_before_the_order_cap(led):
+    """At $4.15 a bet, six bets is $24.90 and a seventh would be $29.05. So the
+    limit of 10 orders can never be reached. He must not think he raised his
+    ceiling from 6 to 10 when he did not."""
+    for i in range(6):
+        led.entries.append(_entry(game_key=f"g{i}", ticker=f"T{i}",
+                                  signal=f"s{i}", cost=4.15,
+                                  confirmed_utc=_today()))
+    led.save()
+    n, spent = led.daily_used()
+    assert n == 6 and spent == pytest.approx(24.90)
+    assert led.daily_block(4.15), "a seventh bet must be refused on money"
+    assert "daily limit" in led.daily_block(4.15)
+
+
+def test_guard5_says_WHICH_cap_will_actually_stop_him(led):
+    line = led.daily_line()
+    assert "0 of 10 bets" in line and "$0.00 of $25.00" in line
+    assert "money runs out first, after 6 more" in line
+
+
+def test_guard5_that_sentence_is_computed_not_hard_coded(led, monkeypatch):
+    """It has to stay true if any of the three numbers change."""
+    import ledger as L
+    monkeypatch.setattr(L, "MAX_STAKE_PER_DAY_USD", 500.0)
+    assert "order count runs out first, after 10 more" in led.daily_line()
+
+
+def test_guard5_fails_CLOSED_when_today_cannot_be_counted(led):
+    """An unreadable ledger means no bet, never an unlimited one."""
+    led.entries.append(_entry(signal="s1"))
+    led.entries[0].confirmed_utc = "not a date at all"
+    led.save()
+    with pytest.raises(ValueError):
+        led.daily_used()
+    msg = led.daily_block(4.15)
+    assert msg and "no bet" in msg
+    assert led.may_bet("other-game", "s-new")[0] is False
+
+
+def test_guard5_a_void_does_not_use_up_the_day(led):
+    """He never placed it, so it did not cost him a bet or a dollar."""
+    led.entries.append(_entry(signal="s1", status="void", cost=4.15,
+                              confirmed_utc=_today()))
+    led.save()
+    assert led.daily_used() == (0, 0.0)
+
+
+def test_guard5_yesterdays_bets_do_not_count_against_today(led):
+    led.entries.append(_entry(signal="s1", cost=4.15,
+                              confirmed_utc="2026-08-01T12:00:00-04:00"))
+    led.save()
+    assert led.daily_used() == (0, 0.0)
