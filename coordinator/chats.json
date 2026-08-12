@@ -227,6 +227,32 @@
         "technicality",
         "stale"
       ]
+    },
+    {
+      "name": "Live desk — the one-window baseball trade display",
+      "slug": "livedesk",
+      "folders": [
+        "livedesk"
+      ],
+      "purpose": "Builds the on-screen window that shows the next baseball bet, its size, its guards and its own running profit and loss. Displays only - it never sends an order.",
+      "opening": "you are the livedesk chat, check your mail",
+      "created": "2026-08-11",
+      "subjects": [
+        "livedesk",
+        "execution",
+        "executioner",
+        "gui",
+        "window",
+        "button",
+        "display",
+        "desk",
+        "live",
+        "order",
+        "orders",
+        "place",
+        "trade",
+        "app"
+      ]
     }
   ]
 }

@@ -327,6 +327,45 @@ names tools and links outward — which is what a discovery layer is for.
 4,604-window autopsy that r/Polymarket produced, and a future ranking that mixes
 the two platforms without splitting will be misled by the passage rate.
 
+## D19 — The hunting queue ranks on rigour, not on disagreement
+**2026-08-11.** Message 007 asked for the read queue to be ranked by *"could
+contradict a rule we hold"*. I recorded a disagreement instead of implementing
+it, and message 008 changed the emphasis again — to hunting for things never
+tried. Both point the same way, so `src/hunt_new.py` ranks on **a count bound to
+a unit, a cost side, a venue outside our recorded work, and a named data
+source**, minus selling language.
+
+**Why not rank on contradiction.** A queue that hunts for disagreement finds it
+whether or not it is there, and our own stance lexicon cannot tell a claim from
+a quoted claim — it once scored a post highly *because* the replies demolishing
+it added points. The two finds that did correct a rule were found by sample
+size, not by looking for a fight. Conservative reading taken: rank on the
+property, not on the conclusion.
+
+## D20 — The data-source sweep ranks distinct threads, never mentions
+**2026-08-11.** The first run of `src/hunt_data.py` put `sportsbook.link` top
+with **1,441 mentions — all from one thread**. That is one recommendation
+repeated, not 1,441 recommendations. Ranking switched to distinct threads with a
+floor of 3, and a news/blog host filter added, because articles constantly sit
+beside the word "data" and serve none. Same unit-of-observation rule this repo
+already applies to markets: 490,464 fills from 762 matches are 762 observations.
+
+## D21 — Inventory the PMXT archive by asking the host, not by reading the index
+**2026-08-11.** The operator posted on 2026-07-31 that he had been asked to shut
+`archive.pmxt.dev` down. Measured on 2026-08-11: files we already hold still
+return real parquet (`PAR1` magic bytes), but the **index page is a paginated
+app shell** — it listed 2026-06-09 to 06-11 and mentioned nothing from the
+15–27 May window we hold. Neither listing is the inventory, so
+`src/archive_inventory.py` HEADs the file host hour by hour instead.
+
+**Also recorded because it has now cost time twice:** this host returns **HTTP
+200 with a ~400-byte body** for URLs that serve nothing. A 200 is not evidence
+here; the magic bytes are.
+
+**What was NOT done, and it is his call not mine.** I inventoried but did not
+bulk-download beyond our existing window. Widening from tennis to everything is
+a storage decision (34.5 GB raw per 13 days) and a scope decision.
+
 ---
 
 ## Open audit items

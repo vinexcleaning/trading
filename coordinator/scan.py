@@ -66,6 +66,10 @@ WORKSTREAMS = {
         "title": "Reopen — things closed for the wrong reason",
         "folders": ["reopen"],
     },
+    "livedesk": {
+        "title": "Live desk — the one-window baseball trade display",
+        "folders": ["livedesk"],
+    },
     "coordinator": {
         "title": "Coordination",
         "folders": ["coordinator", "common"],
