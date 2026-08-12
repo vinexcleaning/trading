@@ -47,7 +47,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 import venues as V  # noqa: E402
+from common import kalshi_fields as KF  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
@@ -234,6 +236,27 @@ def kalshi_cycle(con: sqlite3.Connection, cid: int) -> None:
                                   "limit": 200}, "markets", max_pages=3))
         recs = []
         n_ok = n_two = 0
+        # ⚠ SCHEMA ASSERT, added 2026-08-12 during the machinery audit.
+        #
+        # GUARDS #13: a 200 and a row count are not a result. `assert_priced`
+        # has existed in `common/kalshi_fields.py` the whole time and **nothing
+        # in this repo called it** — I checked the entire tree. A guard nobody
+        # imports is documentation, not a guard.
+        #
+        # It is the ten-second version of the check that would have caught
+        # 3,979,927 null-priced trade rows before the SECOND fifty-minute pull,
+        # and the `orderbook` vs `orderbook_fp` bug that reported every book as
+        # empty for six days across three scripts.
+        #
+        # Once per series per cycle, on the FIRST market only — it is a schema
+        # assertion, not a row filter. Individually unpriced rows are still
+        # skipped and counted below, because "how many were unpriced" is itself
+        # a health number.
+        if mkts:
+            try:
+                KF.assert_priced(mkts[0], "market", where=f"{series} listing")
+            except KF.KalshiSchemaError as exc:
+                print(f"  ⚠ SCHEMA MOVED on {series}: {exc}", flush=True)
         # Names first, for every LISTED market — not only the 60 whose books
         # get probed — because a name is free once the listing is in hand and
         # the join needs the whole universe.
