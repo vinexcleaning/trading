@@ -122,9 +122,15 @@ livedesk\test.bat
 ```
 
 **Use that, not another venv.** `mlb-paper`'s venv has no working Tcl, so
-there the button test **skips** rather than fails — and a silently skipped
-test is the same as no test. `test.bat` runs `livedesk\.venv`, which has one,
-and prints the skip reasons.
+there the button test **skips** rather than fails — and a silently skipped test
+is the same as no test. `test.bat` runs `livedesk\.venv` and sets
+`LIVEDESK_REQUIRE_GUI=1`, which turns "no display" from a skip into a
+**failure**. That command cannot come back green with the button untested.
+
+This is not hypothetical. Creating and destroying a window per test made the
+*second* one fail to start about half the time, and it failed **as a skip** —
+so the run still read green while the test that matters had not run. The tests
+now share one window and reset it between cases.
 
 ## Files
 

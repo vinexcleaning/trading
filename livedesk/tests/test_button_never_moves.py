@@ -8,10 +8,18 @@ It is tested by MEASURING the button's screen position, not by asserting that
 the layout code looks careful. Every state below has, at some point in the
 tennis app's history, changed the height of something above the button.
 
-Skips itself if there is no display, so it does not break a headless run.
+ONE Tk root for the whole module, reused. Creating and destroying a root per
+test made the SECOND one fail to re-source `tk.tcl` about half the time, and it
+failed as a **skip** -- which is the worst outcome available, because a silently
+skipped test reads as a green run (GUARDS #9). One root, reset between tests.
+
+Set `LIVEDESK_REQUIRE_GUI=1` and a missing display is a FAILURE, not a skip.
+`test.bat` sets it, so the command a human runs can never come back green with
+the button untested.
 """
 from __future__ import annotations
 
+import os
 import sys
 import tkinter as tk
 from pathlib import Path
@@ -20,6 +28,13 @@ import pytest
 
 SRC = Path(__file__).resolve().parents[1] / "src"
 sys.path.insert(0, str(SRC))
+
+
+def _no_display(e):
+    if os.environ.get("LIVEDESK_REQUIRE_GUI"):
+        pytest.fail(f"LIVEDESK_REQUIRE_GUI is set and there is no usable "
+                    f"display, so the button test cannot run: {e}")
+    pytest.skip(f"no display: {e}")
 
 
 def _fake_pick(**over):
@@ -37,20 +52,38 @@ def _fake_pick(**over):
     return P.Pick(**base)
 
 
-@pytest.fixture
-def app(tmp_path, monkeypatch):
+@pytest.fixture(scope="module")
+def _root(tmp_path_factory):
+    """One window for the whole module. Built once, never destroyed until the
+    module ends."""
     import ledger as L
-    monkeypatch.setattr(L, "LEDGER_PATH", tmp_path / "ledger.json")
     import desk as D
-    monkeypatch.setattr(D, "Ledger", lambda *a, **k: L.Ledger(tmp_path / "ledger.json"))
+    path = tmp_path_factory.mktemp("livedesk") / "ledger.json"
+    L.LEDGER_PATH = path
     try:
         a = D.Desk()
-    except tk.TclError as e:                       # no display
-        pytest.skip(f"no display: {e}")
+    except tk.TclError as e:
+        _no_display(e)
     a.stop_flag.set()
     a.paused = True
     yield a
-    a.destroy()
+    try:
+        a.destroy()
+    except tk.TclError:
+        pass
+
+
+@pytest.fixture
+def app(_root, monkeypatch):
+    """The same window, wound back to a clean state for each test."""
+    _root.ledger.entries.clear()
+    _root.ledger.save()
+    _root.picks = []
+    _root.quotes = {}
+    _root.skipped = set()
+    _root._clear_alert()
+    _root._render()
+    return _root
 
 
 def _button_xy(a):

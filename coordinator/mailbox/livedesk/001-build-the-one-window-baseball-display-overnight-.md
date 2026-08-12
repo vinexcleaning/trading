@@ -405,7 +405,14 @@ screen even when it is blank.
 
 ⚠ **Run the tests with `livedesk\test.bat`, not another venv.** `mlb-paper`'s
 venv has no working Tcl, so there the button test **skips** instead of failing
-— and a silently skipped test is the same as no test.
+— and a silently skipped test is the same as no test. `test.bat` sets
+`LIVEDESK_REQUIRE_GUI=1`, which turns a missing display into a **failure**.
+
+**This bit me while writing it, and it is the reason the flag exists.** Creating
+and destroying a window per test made the *second* one fail to start about half
+the time, and it failed **as a skip** — so the suite still read "27 passed"
+while the one test that matters had not run. The tests now share a single
+window and reset it between cases. Five consecutive full runs, no skips.
 
 ## `TRADING_DISABLED` — preserved, and made clickable
 
