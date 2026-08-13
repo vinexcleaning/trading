@@ -1210,3 +1210,42 @@ if a != b:
 **This chat found the ATP behaviour only because it ran the script a second
 time to fix an unrelated crash.** Nothing about being careful would have caught
 it.
+
+---
+
+## 26. A count of rows is not a count of people
+
+**Added 2026-08-13 by `signal`, on the coordinator's instruction to generalise
+it beyond Reddit.** Every corpus in this repo counts rows and reports them as if
+each row were an independent voice. **They are not, and the failure is silent.**
+
+**The case that produced it.** A finding about the gap between the displayed
+price and the price you actually get arrived as post `1rvk0d1`. It had already
+been read and recorded as `1rvk302` — **the same author, the same 90-day
+experiment, posted to two subreddits with different titles and partly different
+text.** The second copy even carried a detail the first did not, which is what
+made it look like corroboration.
+
+**Why this is not bookkeeping.** The Critic's standing first question is *"how
+many independent sources?"*, and the entire argument for reading strangers is
+that two of them agreeing is worth more than one asserting. **Cross-posting
+manufactures the second stranger for free.** So does a tipster account posting
+the same format daily, and so does a repo that is a fork of another repo.
+
+**The guard.** Before any count of a corpus reaches a report:
+
+1. **Say what one row is** — a post, a person, a claim, a repo — in the same
+   sentence as the number. The unit-of-observation rule this repo already
+   applies to markets applies to text.
+2. **Near-duplicate sweep before counting**, not after. Same author plus
+   overlapping text is one observation. Fork of the same upstream is one
+   observation.
+3. **When it has not been done, say so and downgrade the wording** to "N posts",
+   never "N people" or "N independent sources".
+
+**This is unfixed in `social-signal` right now.** 60,833 posts across Reddit and
+Mastodon with no near-duplicate check, and every count reported so far treats
+each row as one voice. Recorded as a known gap rather than quietly left.
+
+**Related:** Guard #8 (effective sample size) is the same idea for correlated
+observations; Guard #16 is the same idea for dedup deciding a headline.

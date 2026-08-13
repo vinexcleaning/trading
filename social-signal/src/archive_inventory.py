@@ -21,7 +21,16 @@ needed:
 Uses HEAD, so nothing is downloaded. Paced, and it stops on repeated errors
 rather than hammering a host whose operator is already under pressure.
 
-    python src/archive_inventory.py --from 2026-03-01 --to 2026-08-11
+    python src/archive_inventory.py --venue kalshi --from 2026-03-01 --to 2026-08-11
+    python src/archive_inventory.py --venue polymarket --from 2026-02-01 --to 2026-08-13
+
+**The Polymarket host was found late and by accident**, which is worth
+recording. `signal-github/data/github.db` has carried a curated `data_sources`
+row all along — *"Polymarket historical L2 order book, free,
+https://r2v2.pmxt.dev, hourly archive from 2026-02-21 onward"*. The shutdown
+news lived in the Reddit corpus; the host lived in the GitHub corpus; **nobody
+joined them.** That join is what the cross-corpus work was built for and it did
+not fire, because it matches tool *names*, not hostnames.
 """
 from __future__ import annotations
 
@@ -34,13 +43,27 @@ import time
 import urllib.error
 import urllib.request
 
-HOST = "https://r2kalshi.pmxt.dev"
-NAME = "kalshi_orderbook_{d}T{h:02d}.parquet"
-HAVE_DIR = os.path.join(os.path.dirname(os.path.dirname(
-    os.path.abspath(__file__))), "data", "kalshi_archive")
-OUT = os.path.join(os.path.dirname(os.path.dirname(
-    os.path.abspath(__file__))), "reports", "ARCHIVE_INVENTORY.json")
+VENUES = {
+    # verified by fetching on 2026-08-13: both return PAR1 magic bytes
+    "kalshi": ("https://r2kalshi.pmxt.dev",
+               "kalshi_orderbook_{d}T{h:02d}.parquet"),
+    "polymarket": ("https://r2v2.pmxt.dev",
+                   "polymarket_orderbook_{d}T{h:02d}.parquet"),
+}
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UA = {"User-Agent": "Mozilla/5.0 (research inventory; contact via github)"}
+
+# Set by main() from --venue. Module-level so the helpers stay simple, but
+# never defaulted to one venue -- defaulting is how a Polymarket run would
+# silently inventory Kalshi and report a confident wrong answer.
+HOST = NAME = HAVE_DIR = OUT = None
+
+
+def use_venue(venue: str) -> None:
+    global HOST, NAME, HAVE_DIR, OUT
+    HOST, NAME = VENUES[venue]
+    HAVE_DIR = os.path.join(ROOT, "data", f"{venue}_archive")
+    OUT = os.path.join(ROOT, "reports", f"ARCHIVE_INVENTORY_{venue}.json")
 
 
 def head(url: str, timeout: int = 30):
@@ -68,10 +91,13 @@ def held_hours() -> set[str]:
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--venue", choices=sorted(VENUES), required=True)
     ap.add_argument("--from", dest="d0", default="2026-03-01")
     ap.add_argument("--to", dest="d1", default="2026-08-11")
     ap.add_argument("--pace", type=float, default=0.35)
     args = ap.parse_args()
+    use_venue(args.venue)
+    print(f"venue {args.venue}: {HOST}/{NAME.format(d='YYYY-MM-DD', h=0)}\n")
 
     d0 = dt.date.fromisoformat(args.d0)
     d1 = dt.date.fromisoformat(args.d1)

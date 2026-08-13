@@ -152,6 +152,42 @@ rather than treat the quiet days as missing data.**
 **Open decision for the user, with a clock on it:** whether to take **every other
 sport** before the host goes. Not decided by this session.
 
+### ⚠ There is a SECOND archive on the same domain, it is Polymarket, and it is 1.15 TB (found 2026-08-13, `signal`)
+
+**`signal-github/data/github.db` has carried this row in its curated
+`data_sources` table all along:** *"Polymarket historical L2 order book, free,
+`https://r2v2.pmxt.dev`, hourly archive from 2026-02-21 onward"*.
+
+**Nobody joined it to the shutdown news.** The shutdown post is in the Reddit
+corpus; the host is in the GitHub corpus; the cross-corpus join matches **tool
+names, not hostnames**, so it never fired. That is a real gap in the join, not
+an oversight by a person.
+
+**Probed 2026-08-13, one HEAD per day, nothing downloaded:**
+
+| | |
+|---|---|
+| status | **alive** — `polymarket_orderbook_{date}T{hh}.parquet` returns `PAR1` |
+| coverage | **2026-04-14 → 2026-08-09, 118 consecutive days, 0 gaps** |
+| size | **~406 MB per hour, ~9.7 GB per day, ~1.15 TB total** |
+
+**Two corrections to that curated row:** coverage starts **2026-04-14, not
+2026-02-21** (February and March 404), and it **stops on 2026-08-09** — four
+days before this probe, consistent with collection having ended.
+
+**This repo holds no Polymarket order book at all.** `wallet-copy-study` has
+on-chain *trades* (W017); that is a different thing from the book.
+
+**Why this one was NOT pulled, unlike the Kalshi gap.** The Kalshi completion
+was 28.5 GB and finished in four hours. **This is 1.15 TB to stream** — even
+filtered on the fly and discarded, the transfer alone is many hours to days of
+someone else's bandwidth. **That is a scope and cost decision, and it is the
+user's**, not a next planned step.
+
+**If it is wanted, the cheap shapes are:** a fixed window (one week is ~68 GB),
+or filter-on-the-fly to sports tickers only and discard the rest, exactly as
+`pull_kalshi_archive.py` already does for tennis.
+
 ---
 
 ## MUST NOT BE TOUCHED
