@@ -782,11 +782,165 @@ def edge_str(x: float) -> str:
     return f"{x:+.2f}c"
 
 
+class PreGameMentality(Mentality):
+    """Acts ONLY before the first ball. The one shape this repo has never tried.
+
+    WHY IT EXISTS
+        All five mentalities above are in-play: they read live ticks, price
+        movement over k ticks, stale-tick counts. And this repo has measured
+        in-play as a losing game for us - `bot-forensics`, 4,398 score-change
+        events, found **97.4% of the price move had already happened** by the
+        time the bot saw the new score. Meanwhile the only thing currently
+        winning anywhere here (`mlb-paper`'s starting-pitcher bot) is pre-game,
+        placed 14-22 hours out.
+
+        So the transferable idea is not the pitcher. It is the CLOCK.
+
+    WHAT IT DELIBERATELY DOES NOT USE, AND THIS IS THE WHOLE DESIGN DECISION
+        The obvious translation is "back a player whose RECENT FORM beats his
+        rating". **The data cannot support that and I measured it rather than
+        assuming.** The free archive freezes at 2026-06-01, so `form_last10` is
+        ten weeks stale. The free weekly source found for S018 refreshes ATP and
+        WTA only - 10% of this pool. And this project's own recorder, which does
+        cover every tier, holds **1.5 results per player, with 66% of players
+        appearing exactly once**. One result is not form.
+
+        A pre-game bot leaning on that would measure how stale the data is, not
+        whether the idea works.
+
+        So it uses only the brief fields that **do not decay over ten weeks**:
+        surface record, head-to-head, deciding-set record, serve and return
+        splits, and the after-break behaviour. A career surface record is the
+        same number today as it was in June. Recent form is the only field that
+        rots, and it is the only one left out.
+
+        When a current all-tier results source exists, form goes in and that is
+        a new arm, not an edit to this one.
+    """
+    name = "pre-game"
+    enter_at = 2.5
+
+    def _scheduled_start(self, brief: Brief):
+        raw = (brief.market or {}).get("expected_expiration")
+        if not raw:
+            return None
+        try:
+            return datetime.fromisoformat(str(raw).replace("Z", "+00:00"))
+        except ValueError:
+            return None
+
+    def consider(self, mv, brief, live, ticker, player, ask, spread):
+        c: list[Consideration] = []
+        blk, opp = self._side_block(brief, player), self._opp_block(brief, player)
+        c += self._data_penalty(brief, blk, opp)
+
+        start = self._scheduled_start(brief)
+        now = datetime.now(timezone.utc)
+        if start is None:
+            c.append(Consideration("no_start_time",
+                "this market carries no scheduled start, so there is no way to know "
+                "the match has not begun - and acting anyway would make this an "
+                "in-play bot wearing a pre-game label",
+                "against", 6.0))
+            return c, "no scheduled start"
+        if now >= start:
+            mins = (now - start).total_seconds() / 60.0
+            c.append(Consideration("already_started",
+                f"the match was due to start {mins:.0f} minutes ago. This disposition "
+                f"only bets before the first ball, because the whole reason it exists "
+                f"is that this repo measured 97.4% of the price move as already gone "
+                f"by the time a bot reacts in-play.",
+                "against", 6.0))
+            return c, "match already under way"
+
+        hours = (start - now).total_seconds() / 3600.0
+        c.append(Consideration("pre_game",
+            f"the match starts in {hours:.1f} hours, so this is a bet placed on "
+            f"settled public information rather than on a price that has already "
+            f"moved", "for", 1.0))
+
+        bar = hold_cost_cents(ask, spread)
+        fair = self._fair_for(brief, player)
+        if fair is None:
+            c.append(Consideration("no_fair_value",
+                "no rating is computable for this pair, so there is nothing to price "
+                "against", "against", 6.0))
+            return c, "no fair value"
+
+        edge = 100 * fair - ask - bar
+        c.append(Consideration("three_number_check",
+            f"edge = fair - price - cost = {100*fair:.1f} - {ask} - {bar:.2f} = "
+            f"{edge:+.2f}c", "for" if edge > 0 else "against",
+            min(4.0, abs(edge) / 2.0)))
+
+        # -- only the fields that do not rot in ten weeks --------------------
+        support = 0.0
+        surf, osurf = blk.get("surface") or {}, opp.get("surface") or {}
+        if _n(surf) >= 15 and _n(osurf) >= 15:
+            gap = (_v(surf) or 0) - (_v(osurf) or 0)
+            support += 1.0
+            c.append(Consideration("surface_record",
+                f"on {brief.surface}: {_pct(_v(surf))} over {_n(surf)} against "
+                f"{_pct(_v(osurf))} over {_n(osurf)}. A career surface record is the "
+                f"same number now as it was in June - this field does not go stale.",
+                "for" if gap > 0 else "against", min(1.5, abs(gap) * 6)))
+
+        d_me, d_op = blk.get("deciding_set") or {}, opp.get("deciding_set") or {}
+        if _n(d_me) >= 20 and _n(d_op) >= 20:
+            gap = (_v(d_me) or 0) - (_v(d_op) or 0)
+            support += 1.0
+            c.append(Consideration("third_set",
+                f"deciding sets: {_pct(_v(d_me))} over {_n(d_me)} against "
+                f"{_pct(_v(d_op))} over {_n(d_op)}",
+                "for" if gap > 0 else "against", min(1.2, abs(gap) * 5)))
+
+        h = brief.h2h or {}
+        if h.get("n", 0) >= 3:
+            support += 0.5
+            mine = h["a_wins"] if player == brief.player_a else h["b_wins"]
+            c.append(Consideration("head_to_head",
+                f"{mine} of {h['n']} previous meetings - a completed meeting stays "
+                f"completed, so this does not decay either",
+                "for" if mine * 2 > h["n"] else "against", 0.6))
+
+        sv, osv = blk.get("serve") or {}, opp.get("serve") or {}
+        if (sv.get("stat_matches") or 0) >= 20 and (osv.get("stat_matches") or 0) >= 20:
+            mine = _v(sv.get("bp_saved")) or 0
+            theirs = _v(osv.get("bp_saved")) or 0
+            support += 1.0
+            c.append(Consideration("serve_under_pressure",
+                f"saves {_pct(mine)} of break points against their {_pct(theirs)}, "
+                f"over {sv.get('stat_matches')} and {osv.get('stat_matches')} matches",
+                "for" if mine > theirs else "against", min(1.0, abs(mine - theirs) * 5)))
+
+        c.append(Consideration("form_deliberately_excluded",
+            "recent form is NOT used. The free archive freezes at 2026-06-01, the "
+            "weekly free source covers only the 10% of this pool that is ATP and WTA, "
+            "and this project's own recorder holds 1.5 results per player with 66% of "
+            "players appearing exactly once. One result is not form, and a bot leaning "
+            "on it would measure staleness rather than the idea.",
+            "neutral", 0.0))
+
+        if support < 2.0:
+            c.append(Consideration("thin_brief",
+                f"only {support:.1f} evidence blocks have enough matches behind them. "
+                f"A gap computed from a thin brief is a gap in the brief.",
+                "against", 2.0))
+
+        return c, f"{player} at {ask}c, {hours:.1f}h pre-match, edge {edge:+.2f}c."
+
+
 MENTALITIES: dict[str, Mentality] = {
     m.name: m for m in (FavouriteMentality(), UnderdogMentality(),
                         BriefLedMentality(), MomentumMentality(),
-                        UnconstrainedMentality())
+                        UnconstrainedMentality(), PreGameMentality())
 }
+
+# Mentalities that run in ONE exit mode rather than three. `pre-game` holds,
+# because §1 of the reply to mailbox 011 measured not-stopping beating stopping
+# 5 times out of 5 by 9.3 points - spending two more bot slots relearning that
+# would be waste, and every extra bot raises the bar for all of them.
+SINGLE_EXIT_MENTALITIES: dict[str, str] = {"pre-game": "hold"}
 
 # --------------------------------------------------------------------------
 # Exit modes
@@ -820,7 +974,9 @@ class Bot:
 def build_bots() -> list[Bot]:
     bots: list[Bot] = []
     for mname, m in MENTALITIES.items():
-        for ex in EXIT_MODES:
+        modes = ([SINGLE_EXIT_MENTALITIES[mname]] if mname in SINGLE_EXIT_MENTALITIES
+                 else list(EXIT_MODES))
+        for ex in modes:
             bots.append(Bot(name=f"{mname}__{ex}", mentality=m, exit_mode=ex))
     bots.append(Bot(name="control__no-trade", mentality=BriefLedMentality(),
                     exit_mode="hold", is_control=True))
@@ -828,10 +984,18 @@ def build_bots() -> list[Bot]:
 
 
 BOT_NAMES = [b.name for b in build_bots()]
-assert len(BOT_NAMES) == 16, BOT_NAMES
-assert len(MENTALITIES) == 5 and len(EXIT_MODES) == 3
-# 5 mentalities x 3 exit modes + 1 control. All sixteen are in the
-# multiple-testing denominator; see PREREGISTRATION.md.
+assert len(BOT_NAMES) == 17, BOT_NAMES
+assert len(MENTALITIES) == 6 and len(EXIT_MODES) == 3
+# 5 mentalities x 3 exit modes + `pre-game` in hold only + 1 control = 17.
+#
+# ⚠ `pre-game__hold` STARTED LATER THAN THE OTHER SIXTEEN and must never be
+# pooled backwards with them. Its arm begins on PRE_GAME_ARM_START; matches that
+# settled before that date are not its sample and judging it on them would be
+# reading a result it could not have produced. `mlb-paper` hit the same thing and
+# split the record the same way. The joint multiplicity count rises 32 -> 33 and
+# every previously reported figure is recomputed at the new count, per
+# JOINT_MULTIPLICITY rule 4.
+PRE_GAME_ARM_START = "2026-08-13"
 
 
 # --------------------------------------------------------------------------

@@ -277,3 +277,80 @@ def test_the_venue_key_strips_the_challenger_prefix():
     assert venue_key("M25 Koksijde") == "koksijde"
     assert venue_key("ATP Montreal") == "montreal"
     assert venue_key("W75 Leipzig") == "leipzig"
+
+
+# --------------------------------------------------------------------------
+# pre-game: the only mentality that must NOT act once the match is under way
+# --------------------------------------------------------------------------
+
+def _brief_with_start(delta_hours):
+    """A minimal brief whose scheduled start is delta_hours from now."""
+    from datetime import datetime, timedelta, timezone
+    from src.brief import Brief
+    start = (datetime.now(timezone.utc) + timedelta(hours=delta_hours)).isoformat()
+    return Brief(
+        event_ticker="E1", built_at="now", tour="atp", tier="ATP", series="KXATPMATCH",
+        tournament="Montreal", round="R32", surface="Hard",
+        surface_source="test", surface_meta={},
+        player_a="A Player", player_b="B Player",
+        a={"resolved": True}, b={"resolved": True},
+        h2h={"n": 0, "a_wins": 0, "b_wins": 0, "meetings": []},
+        market={"expected_expiration": start, "stale_book": False},
+        model={"elo_prob_a": 0.70}, staleness_days=3, archive_last_date=20260601,
+        coverage={}, warnings=[])
+
+
+def test_pre_game_refuses_once_the_match_has_started():
+    """The whole point of this mentality is the clock. If it can fire after the
+    first ball it is an in-play bot wearing a pre-game label - and this repo
+    measured 97.4% of the price move as already gone by then."""
+    from src.bots import PreGameMentality, LiveState, _score
+    m = PreGameMentality()
+    started = _brief_with_start(-0.5)          # began 30 minutes ago
+    cons, _ = m.consider(None, started, LiveState("E1", "E1-A"), "E1-A", "A Player", 60, 2)
+    assert any(c.tactic == "already_started" for c in cons)
+    assert _score(cons) < m.enter_at, "pre-game was willing to bet on a live match"
+
+
+def test_pre_game_refuses_when_there_is_no_start_time():
+    from src.bots import PreGameMentality, LiveState, _score
+    m = PreGameMentality()
+    b = _brief_with_start(5)
+    b.market["expected_expiration"] = None
+    cons, _ = m.consider(None, b, LiveState("E1", "E1-A"), "E1-A", "A Player", 60, 2)
+    assert any(c.tactic == "no_start_time" for c in cons)
+    assert _score(cons) < m.enter_at
+
+
+def test_pre_game_will_consider_a_match_that_has_not_started():
+    from src.bots import PreGameMentality, LiveState
+    m = PreGameMentality()
+    cons, _ = m.consider(None, _brief_with_start(6), LiveState("E1", "E1-A"),
+                         "E1-A", "A Player", 60, 2)
+    assert any(c.tactic == "pre_game" for c in cons), (
+        "pre-game refused a match six hours away - it can never trade")
+
+
+def test_pre_game_does_not_read_recent_form():
+    """Form is ten weeks stale for 90% of this pool. A pre-game bot leaning on
+    it would measure staleness, not the idea. Source-level so it cannot creep
+    back in."""
+    import ast
+    src = (ROOT / "src" / "bots.py").read_text(encoding="utf-8")
+    cls = next(n for n in ast.parse(src).body
+               if isinstance(n, ast.ClassDef) and n.name == "PreGameMentality")
+    fn = next(n for n in cls.body
+              if isinstance(n, ast.FunctionDef) and n.name == "consider")
+    stmts = fn.body[1:] if (fn.body and isinstance(fn.body[0], ast.Expr)) else fn.body
+    code = "\n".join(ast.unparse(s) for s in stmts)
+    for bad in ("form_last10", "form_last20", "form_last90d"):
+        assert bad not in code, (
+            f"PreGameMentality reads {bad!r}. That field is ten weeks stale for "
+            f"90% of this pool; using it makes the bot a staleness detector.")
+
+
+def test_the_single_exit_mentality_really_gets_one_bot():
+    from src.bots import BOT_NAMES
+    pg = [b for b in BOT_NAMES if b.startswith("pre-game")]
+    assert pg == ["pre-game__hold"], pg
+    assert len(BOT_NAMES) == 17
