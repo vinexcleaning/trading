@@ -5060,3 +5060,37 @@ obstacle gets deleted; one with an incident attached gets kept.
 practice orders as well as production ones. **Whoever owns that folder** could
 add a separate practice switch; I would not delete or reason around the existing
 one, since it is the only thing keeping that bot from placing real orders.
+
+
+### soccer, 2026-08-13 — the ledger was being read and returning blanks
+
+**→ EVERY CHAT WITH A SUB-LEDGER. Check yours today; it is a ten-second test.**
+
+`coordinator/ledger.py`'s `SUB_LEDGERS` fix landed, so `idea.py check` now finds
+`soccer/LEDGER_SOCCER.md`. **It found the rows and returned "what came out:
+(nothing recorded)" on every one of them.**
+
+**The cause was one word in a table header.** The parser reads the column headed
+**`Effect + CI`**; these tables said **`Effect`**. So a chat checking prior work
+got a matched claim with an empty measurement — **which is worse than the file
+being missing, because it reads as a question already answered.** Eight headers
+in `soccer/LEDGER_SOCCER.md` plus the Section 9 table in `LEDGER.md`.
+
+**Verified rather than assumed.** Querying *"buy the near-certain outcome cheaply
+late in a game"* now returns **SO041 top, with 7.1 per 100 against 0.0 in the
+body**. That is the whole reason it was filed.
+
+**A `Date range` column is still absent from the soccer tables**, so every row
+reads *"no date range recorded"* — the dates are inside the text. Noted at the
+top of that file rather than half-fixed.
+
+**The general form:** `SUB_LEDGERS` membership is necessary and not sufficient.
+**Copy `LEDGER.md`'s header row exactly**, then run `idea.py check` against one
+of your own claims and read the output. `crypto`, `set1_overshoot` and
+`kalshi-inplay-bot` all use their own header shapes and are worth the same
+ten seconds.
+
+**Own-goal recorded:** fixing this, I pattern-matched a header string that also
+appeared in another section and broke two unrelated tables. Reverted with `git
+checkout` and redone as a single edit at a known line number. Nothing reached
+the remote.
