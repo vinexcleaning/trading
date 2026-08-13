@@ -1,5 +1,61 @@
 # DECISIONS — livedesk
 
+> **⚠ STOOD DOWN 2026-08-13.** Another AI tool owns this folder's execution work
+> from mailbox 004. **The section immediately below is written for that tool.**
+> Everything after it is the original record, kept in order.
+
+---
+
+# THE SIX GUARDS AND WHAT EACH ONE PREVENTS
+
+**Read this before deleting anything that looks like an obstacle.**
+
+Every guard here exists because something went wrong with real money or real
+picks. **Not one of them is a precaution somebody imagined.** A guard whose
+reason is written down gets kept; a guard that looks like a speed bump gets
+deleted, so the reason is written down.
+
+| guard | where | what actually went wrong |
+|---|---|---|
+| **1. one bet per SIGNAL** | `ledger.py` `signals_played`, `may_bet` | The tennis app repeated bets on one game: *"it would keep repeating bets… which actually worked out in our favour with the wins, but then it would also work against us in the losses."* **Then the guard itself misfired** and closed three games he had never bet — see below. |
+| **2. the cut-off** | `ledger.py` `stopped` | The first version was a fixed −$33. He caught it: *"let's say the bot keeps going and makes three hundred, and then we lose thirty. That's only ten percent."* Now $50 floor + 35% off the peak. |
+| **3. flat $4.15** | `money.py` `size_bet` | The paper bots **drifted from 3 contracts to 25 on their own**. The stake is CLAMPED, not defaulted — the Critic caught that "no parameter could carry a bankroll" was false of a function that had one. |
+| **4. reconcile or refuse** | `ledger.py` `reconcile` | **His tennis profit figure was about $32 wrong** — account $130→$160 while the app said down $2. Reported, "fixed", still wrong. The cut-off watches that total, so a total that can be $32 out is a cut-off that does not fire. **It fired correctly on his first real bet.** |
+| **5. daily caps** | `ledger.py` `daily_block` | 10 orders / $25, his numbers. **Fails closed** — an uncountable day means no bet, never an unlimited one. |
+| **6. one click one order** | `desk.py` `_confirm`, `self.pending` | A double-click, repeated callback or retry must not produce two of anything. |
+| **kill switch** | `killswitch.py` | Checked immediately before every submission, not at startup — a file dropped while the window is open must stop the next one. |
+
+## ⚠ The three bets Guard 1 destroyed, because this is the one to understand
+
+On 2026-08-12 he copied **Pittsburgh, Cleveland and Seattle**, got lost on the
+Kalshi page, came back and pressed *"I did NOT place this"* on all three. Guard 1
+closed a signal on **any** entry including a void — so **all three games were
+shut for ever having never been bet.**
+
+**A void means no money was placed.** Guard 1 exists to stop the same bet going
+on twice; re-offering one he never placed is not that. It was the guard
+misfiring, not the guard working. One void now re-offers; a second closes it,
+which stops a copy-void-copy-void loop ending in a buy at a price the bot never
+saw.
+
+**That fix then caused a crash**: the same ticker can appear twice now, and the
+bets list keyed rows on ticker — the duplicate raised **inside `_render`** and
+would have killed the window on his next click. **Do not key anything on
+ticker.**
+
+## ⚠ And the one that no test could have caught
+
+**The practice-order button could never have fired.** The entry is already in
+the ledger by the time a practice order is asked for, so Guard 1 saw its own
+signal and refused every time. Every guard now takes `ignore=<the entry being
+asked about>` — with a test that a *different* row carrying the same signal
+still blocks, so the exemption is not a hole.
+
+**94 tests passed while that button was dead.** Run the window and click things.
+
+---
+
+
 Every judgment call taken without asking, and why. Built overnight
 2026-08-11/12 from `coordinator/mailbox/livedesk/001`.
 
