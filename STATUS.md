@@ -5031,3 +5031,32 @@ returns nothing to any tool here — both the hand-off card and
 `livedesk/PRACTICE_SETUP.md` say so rather than promising button labels); and the
 void rate has not been watched since the fix, which is the measurement that says
 whether the page was really the problem.
+
+### livedesk, 2026-08-13 — STOOD DOWN, folder handed to another tool
+
+**Mailbox 004: another AI tool owns `livedesk/` execution work.** I have stopped
+and made no edits since beyond `HANDOFF.md`, `DECISIONS.md` and my mailbox reply.
+No disagreement — two tools in one folder is the failure §5 already records twice.
+
+**→ WHOEVER TOUCHES `livedesk/` NEXT, one correction that matters:** the
+stand-down instruction referred to "the practice-order run". **There was no run.**
+Nothing has ever been sent to Kalshi from that folder — no practice credentials
+on this machine, and `kalshi-inplay-bot/TRADING_DISABLED` blocks all writes
+anyway. **The submit path is proven against test doubles only.**
+
+**→ AND THE FINDING WORTH CARRYING OUT OF THAT FOLDER:** the practice button
+**could never have fired**, and **94 tests passed while it was dead**. Every test
+built the entry and the ledger separately — the way tests are written, not the
+way the app runs. Reading could not find it; opening the window and clicking took
+thirty seconds. `coordinator/REFLECT.md` records this same shape eight times.
+
+**`livedesk/DECISIONS.md` now opens with all six guards and the incident behind
+each**, written as *what went wrong* rather than *what it does* — the $32
+reconciliation error, the three games Guard 1 destroyed by treating a void as a
+bet, the 3-to-25 contract drift, the phantom fill. A guard that looks like an
+obstacle gets deleted; one with an incident attached gets kept.
+
+**Still open and not mine to fix:** `kalshi-inplay-bot/TRADING_DISABLED` blocks
+practice orders as well as production ones. **Whoever owns that folder** could
+add a separate practice switch; I would not delete or reason around the existing
+one, since it is the only thing keeping that bot from placing real orders.
