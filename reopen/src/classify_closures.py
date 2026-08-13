@@ -263,6 +263,14 @@ C: dict[str, tuple[str, str]] = {
 
     # ---- soccer, merged into the root ledger 2026-08-11 ----------------------
     # The other 39 SO rows live in soccer/LEDGER_SOCCER.md and are deferred.
+    "SO042": ("EVIDENCE-PENDING", "the near-certainty gap generalises from "
+              "one sport to seven -- 284 settled markets, and the control at "
+              "40-70c is 100 in 100 on all 33,802 minutes, which rules out "
+              "'the book is just thin'. Six of the seven have no draw leg, "
+              "which kills the soccer-specific explanation. Carefully scoped "
+              "by its author to AVAILABILITY only, with no event state, so a "
+              "95c quote may be a pre-match favourite rather than a late "
+              "near-certainty. THIS AUDIT HAS NOT VERIFIED IT."),
     "SO041": ("EVIDENCE-PENDING", "the market does not quote the thing the "
               "strategy wanted to buy: at the 89th minute a quote existed 16 "
               "times in 100 and at 97c or better, 1 in 100. Predicted in "
@@ -808,6 +816,14 @@ C_SOCCER: dict[str, tuple[str, str]] = {
     "SO037": ("NOT-A-CLOSURE", "labelled SUGGESTIVE and conditional by its own "
               "author -- two populations, and by SO041 the readings are "
               "conditioned on the match still being in doubt."),
+    "SO042": ("EVIDENCE-PENDING", "the near-certainty gap generalises from "
+              "one sport to seven -- 284 settled markets, and the control at "
+              "40-70c is 100 in 100 on all 33,802 minutes, which rules out "
+              "'the book is just thin'. Six of the seven have no draw leg, "
+              "which kills the soccer-specific explanation. Carefully scoped "
+              "by its author to AVAILABILITY only, with no event state, so a "
+              "95c quote may be a pre-match favourite rather than a late "
+              "near-certainty. THIS AUDIT HAS NOT VERIFIED IT."),
     "SO041": ("EVIDENCE-PENDING", "the market does not quote the thing the "
               "strategy wanted to buy. Predicted in writing before it was run, "
               "and its own selection canary FAILS on the has-a-market mask, "
@@ -846,6 +862,68 @@ ACTION_SOCCER: dict[str, tuple[str, str, str, str]] = {
               "minutes"),
 }
 
+SET1_FILE = "set1_overshoot/HYPOTHESIS_LEDGER.md"
+CRYPTO_FILE = "crypto/HYPOTHESIS_LEDGER.md"
+
+# The last two files, audited 2026-08-11. BOTH ARE GRIDS, NOT CLAIM LISTS.
+#
+# `set1_overshoot/HYPOTHESIS_LEDGER.md` is 97 CELLS OF ONE SWEEP whose
+# conclusions are S001-S006, already audited. `crypto/HYPOTHESIS_LEDGER.md` is
+# the same shape for C001-C027, plus a long PENDING list that was never run.
+#
+# So the default here is NOT-A-CLOSURE with a stated reason -- a cell of a
+# sweep is not a claim that closed a line of work; the sweep's summary row is.
+# The named overrides below are the cells that say something the summary does
+# not. The deferral note predicted heavy overlap and that is what was found.
+_GRID = ("NOT-A-CLOSURE",
+         "a cell of a sweep, not a claim. The closure is the summary row "
+         "(S001-S006 / C001-C027), which is audited in C above.")
+
+C_SET1: dict[str, tuple[str, str]] = {f"row{i}": _GRID for i in range(1, 98)}
+C_SET1.update({
+    "row32": ("NOT-A-CLOSURE",
+              "`cpleak-10`, marked in its own note DELIBERATE LEAK, diagnostic "
+              "only -- a planted positive control sitting inside the grid. It "
+              "is the tightest interval in the table and it is supposed to be. "
+              "Good practice, and a trap for any script that reads the table "
+              "without the note column."),
+    "row85": ("NOT-A-CLOSURE",
+              "the label-verified reference cell. Its note carries `bar "
+              "+3.61pp MDE 5.71c` against a point estimate of +5.75 -- the "
+              "effect is the same size as the smallest thing the test could "
+              "see. This is S003, retracted."),
+    "row92": ("NOT-A-CLOSURE",
+              "the largest point estimate in the whole grid, +10.86 on n=99, "
+              "and its own note says `bar +3.66pp MDE 11.31c`. THE EFFECT IS "
+              "SMALLER THAN THE DETECTION FLOOR PRINTED BESIDE IT. Textbook "
+              "category 4, and the file states it itself."),
+})
+
+C_CRYPTO: dict[str, tuple[str, str]] = {}
+_crypto_run = {
+    "A2": "C001", "A1": "C002", "C8": "C003", "F1": "C004", "C9": "C005",
+    "C9-econ": "C006", "L4-A": "C007", "L4-B": "C008", "L4-B5": "C009",
+    "B1-M1": "C010", "B1-M2": "C010", "B1-M3": "C010", "B1-M3t": "C010",
+    "B1-ORD-a": "C011", "B1-ORD-b": "C012", "MIDCAL": "C013", "L4-C": "C009",
+}
+for _id, _same in _crypto_run.items():
+    C_CRYPTO[_id] = ("NOT-A-CLOSURE",
+                     f"a cell of the crypto sweep; the closure is {_same}, "
+                     f"audited in C above")
+
+# Everything else in that file is PENDING or CANCELLED -- pre-registered and
+# never run. Kept in the denominator on purpose, which is the honest choice.
+_pending = ["A3", "A4", "A5", "B1\u2013B6", "C1\u2013C10", "D1\u2013D5",
+            "E-A\u2013E-I", "M1\u2013M7", "L1\u2013L4", "C8-v2"]
+for _id in _pending:
+    C_CRYPTO[_id] = ("NOT-A-CLOSURE",
+                     "PRE-REGISTERED AND NEVER RUN, kept in the FDR "
+                     "denominator on purpose. Not a closure -- an open item. "
+                     "\u26a0 The list is stale: it still shows `E-C` "
+                     "maker/market-making as pending and 'the priority', and "
+                     "that thread was run and closed on 2026-08-08 "
+                     "(RESULTS_MAKER_VIABILITY, 17,325 fills).")
+
 REOPEN_CATS = {"BUG", "DATA", "NARROW", "FLOOR"}
 
 # ---------------------------------------------------------------------------
@@ -876,15 +954,11 @@ NOISE: dict[str, str] = {
     "CH001–CH020": "a grouping row; all twenty are classified individually",
 }
 
-DEFERRED: dict[str, str] = {
-    # kalshi-inplay-bot/audit/LEDGER.md was deferred on 2026-08-09 and is now
-    # AUDITED -- see C_INPLAY above.
-    "set1_overshoot/HYPOTHESIS_LEDGER.md":
-        "the full 97-row set-1 hypothesis grid. Newly readable 2026-08-09. "
-        "Expect heavy overlap with S001-S025, which are audited.",
-    "crypto/HYPOTHESIS_LEDGER.md":
-        "27 rows. Expect heavy overlap with C001-C027, which are audited.",
-}
+DEFERRED: dict[str, str] = {}
+# EMPTY AS OF 2026-08-11: all 611 claims across all seven ledger
+# files are classified. The two hypothesis grids were the last
+# deferral and they turned out to be cells of sweeps already
+# audited, exactly as the deferral note predicted.
 
 # For every claim NOT closed on evidence: what to actually do about it.
 #
@@ -1031,7 +1105,9 @@ def main() -> int:
         seen.add(key)
         src = r.get("_file", "")
         table = (C_INPLAY if src == INPLAY_FILE
-                 else C_SOCCER if src == SOCCER_FILE else C)
+                 else C_SOCCER if src == SOCCER_FILE
+                 else C_SET1 if src == SET1_FILE
+                 else C_CRYPTO if src == CRYPTO_FILE else C)
         if rid not in table:
             if rid in NOISE:
                 noise.append(rid)
@@ -1062,7 +1138,8 @@ def main() -> int:
     extra = sorted(set(C) - seen_ids)
     _all_actions = set(ACTION) | set(ACTION_INPLAY) | set(ACTION_SOCCER)
     unactioned = sorted(
-        rid for tbl in (C, C_INPLAY, C_SOCCER) for rid, (cat, _) in tbl.items()
+        rid for tbl in (C, C_INPLAY, C_SOCCER, C_SET1, C_CRYPTO)
+        for rid, (cat, _) in tbl.items()
         if cat in REOPEN_CATS and rid not in _all_actions)
     orphan_actions = sorted((set(ACTION) - set(C))
                             | (set(ACTION_INPLAY) - set(C_INPLAY))

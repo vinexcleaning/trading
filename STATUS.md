@@ -5094,3 +5094,69 @@ ten seconds.
 appeared in another section and broke two unrelated tables. Reverted with `git
 checkout` and redone as a single edit at a known line number. Nothing reached
 the remote.
+
+---
+
+## Desktop, 2026-08-11 — the reopen audit is COMPLETE: 611 of 611 claims
+
+The last two ledger files are done. **Every claim this repo has ever recorded
+has now been read and sorted.** Report, Critic and Referee:
+[reopen/REOPENED.md](reopen/REOPENED.md); every call with its reason in
+`reopen/reports/classification.csv`.
+
+| | |
+|---|---|
+| distinct claims across **seven** ledger files | **611** |
+| **audited** | **611** — nothing deferred |
+| closures examined | **156** |
+| **closed properly — leave them alone** | **105 (67%)** |
+| reopens (a test to re-run) | **17** |
+| relabels (a sentence to rewrite) | **30** |
+
+**By category:** a test too small to see what it reports absent **13** · the data
+"wasn't available" **13** · one version tested **12** · a script was wrong **9**.
+
+### The last 124 rows were grids, and gave three things
+
+- ⚠ **The set-1 grid's `95% CI` column means two different quantities.** 43 rows
+  (phases 2, 2-grid, 4-holdout) report the interval on the **mispricing**; 37
+  rows (5-seg, 6-margin) report it on the **mispricing minus the cost bar**.
+  Perfect split by phase, zero mixed, and the column is labelled `95% CI` for
+  both while the header says BH runs across the whole table. **A naive read gives
+  "19 of 97 cells beat the cost bar", which is wrong — S005 and S006 stand.**
+- **That grid does category 4 better than its own summary.** Every phase-5/6 row
+  carries its cost bar *and* its detection floor in the note column. Row 92 is
+  **+10.86 on 99 matches** with a note reading **`bar +3.66pp MDE 11.31c`** — the
+  effect is smaller than the smallest thing the test could see, said on the same
+  line. Best per-row practice in the repo.
+- **`crypto/HYPOTHESIS_LEDGER.md`'s pending list is stale** — `E-C`
+  maker/market-making is still listed as PENDING and "the priority"; it was run
+  and closed on 2026-08-08 (`RESULTS_MAKER_VIABILITY.md`, 17,325 fills).
+
+### GUARDS #25 added — before recording that something does not exist, ask twice
+
+Measured, not asserted: three hosts, same URL, same minute, four `User-Agent`
+headers. **ESPN blocks browser-shaped agents and accepts curl; Sofascore blocks
+all four; ATP returned 200 and then 403 to the identical request one minute
+apart.** The guard names the **five** absence claims this repo has produced that
+were wrong — including one of `reopen`'s own — and records that the ATP behaviour
+was found only because the script was re-run to fix an unrelated crash.
+
+### ⚠ A decision worth writing down rather than discovering later
+
+The coordinator has ruled that **`kalshi-inplay-bot` gets no owner** — audited by
+`reopen`, edited by nobody, because `livedesk` reads from that folder and a
+second writer is the collision this repo has already had twice. **That is a
+reasonable call and it has a consequence: C011 and C012 — the live bot's entry
+gate (125 markets split five ways) and its 38¢ stop (137 matches, 2.3¢ of range
+across every width) — now have no chat able to fix them.** Trading is off and
+nothing is scheduled. **It should stand as a decision, not turn up later as a
+gap.**
+
+### And a correction filed upward
+
+`coordinator` mailbox 003 asked `reopen` to audit the live-money bot's 122 claims
+as *"the highest-value thing left on your list"*. **They were completed two days
+earlier under mailbox 002**, and the same message answers the report on them.
+Nothing was lost; it is recorded because it is the shape this chat exists to
+catch.

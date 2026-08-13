@@ -1,9 +1,9 @@
 # HANDOFF — reopen
 
 <!-- COORDINATOR-STATE
-doing: nothing running - soccer's 41 rows audited, 485 of 609 claims now read
-left: the two hypothesis grids (97 set-1, 27 crypto), deferred on expected overlap with rows already audited
-needs: yes - still the one from 2026-08-11: kalshi-inplay-bot belongs to no chat and holds a live-money config with two gates fitted to ~25 and 137 observations
+doing: nothing running - the audit is COMPLETE, 611 of 611 claims across all seven ledger files
+left: re-audit as chats answer their mail, and audit new claims as they are written. No backlog.
+needs: no
 -->
 
 **As of 2026-08-08.** Written by the session that took mailbox message 001.
@@ -265,3 +265,49 @@ Mail: `mlb` **007** (first ever), `devig` **016**, `soccer` **007**.
 
 **Standing weakness:** 41 rows read, one artifact measured. Better than the last
 pass, which measured none.
+
+## 2026-08-11 — COMPLETE. 611 of 611.
+
+Mailbox 003 answered and closed. **Every claim in every ledger has been read.**
+
+| | |
+|---|---|
+| claims across seven files | **611** |
+| audited | **611** — nothing deferred |
+| closures examined | **156** |
+| **closed properly** | **105 — 67%** |
+| reopens | **17** · relabels **30** |
+
+**The last two files were the hypothesis grids**, and they were what the
+deferral note predicted — cells of sweeps already audited, no new closure. Three
+things came out anyway:
+
+- **The set-1 grid's `95% CI` column means two different quantities**: 43 rows
+  report the interval on the effect, 37 on the effect-minus-cost. Perfect split
+  by phase, nothing labelled. **My first read of it gave "19 cells beat the cost
+  bar", which is wrong** — S005/S006 stand.
+- **That grid states its own cost bar and detection floor per row.** Row 92 is
+  +10.86 on 99 matches with a note reading `MDE 11.31c`. Best category-4
+  practice in the repo.
+- **`crypto`'s pending list is stale** — `E-C` maker/market-making is still "the
+  priority" and was closed on 2026-08-08.
+
+**GUARDS #25 written**, as the coordinator asked: *before recording that
+something does not exist, ask twice.* Measured on three hosts; it names the five
+wrong absence claims this repo has produced, including one of mine.
+
+**Correction filed to the coordinator:** mailbox 003 asked me to audit the 122
+live-money claims as "the highest-value thing left", and they were finished two
+days earlier under mailbox 002 — the same message answers my report on them.
+
+**One consequence recorded, not disputed:** `kalshi-inplay-bot` gets no owner and
+nobody edits it, so **C011 and C012 — the live bot's two gates, fitted to ~25 and
+137 observations — now have no chat able to fix them.** Trading is off. It should
+be a decision, not a gap discovered later.
+
+### What this chat does now
+
+There is no backlog. It runs when new claims are written, or when a chat answers
+its mail. **Standing weakness, unchanged and never fixed: of 611 claims I opened
+the underlying artifact for perhaps a dozen — and both the largest finding and
+the worst error of the whole audit came from that dozen.**

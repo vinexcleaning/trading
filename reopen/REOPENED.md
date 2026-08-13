@@ -927,3 +927,121 @@ because: the same header gave 200 then 403 within a minute.
 **FOR THE USER — none this pass.** I checked, and everything here is either
 measured or handed to a chat that owns it. **The open question is still the one
 from yesterday: does `kalshi-inplay-bot` get an owner.**
+
+---
+
+# COMPLETE, 2026-08-11 — 611 of 611 claims audited
+
+The last two files were the hypothesis grids. **Both were what the deferral note
+predicted: cells of sweeps whose conclusions were already audited.**
+
+| | |
+|---|---|
+| distinct claims across **seven** ledger files | **611** |
+| **audited** | **611** |
+| deferred | **0** |
+| closures examined | **156** |
+| **closed properly** | **105 — 67%** |
+| reopens (a test to re-run) | **17** |
+| relabels (a sentence to rewrite) | **30** |
+
+## What the last 124 rows gave
+
+`set1_overshoot/HYPOTHESIS_LEDGER.md` is **97 cells of one sweep** whose
+conclusions are S001–S006. `crypto/HYPOTHESIS_LEDGER.md` is the same for
+C001–C027. **No new closure in either.** Three things worth recording:
+
+### 1. ⚠ The "95% CI" column means two different things in the same table
+
+I read the grid naively first and got **"19 of 97 cells beat the cost bar"**,
+which would have contradicted S005 and S006 outright. It is wrong, and the
+reason is worth writing down:
+
+| phase | rows | the interval is on |
+|---|---|---|
+| 2, 2-grid, 4-holdout | **43** | the **mispricing** |
+| 5-seg, 6-margin | **37** | the **mispricing minus the cost bar** |
+
+**A perfect split by phase, zero mixed.** Each convention is the right one for
+its own question — but the column is labelled `95% CI` for both, and the file
+header says Benjamini-Hochberg runs **across the entire table**. Anyone
+comparing that column down the page — a reader, or a script, as I did — is
+comparing two different quantities.
+
+**S005 and S006 stand.** Judged properly, no bucket clears.
+
+### 2. And the grid does category 4 better than the summary does
+
+Every phase-5 and phase-6 row carries its **own cost bar and its own detection
+floor in the note column**. The largest point estimate in the whole grid is row
+92 — **+10.86 on 99 matches** — and its own note reads **`bar +3.66pp MDE
+11.31c`**. **The effect is smaller than the smallest thing that test could
+see, and the file says so on the same line.** That is the best per-row
+category-4 practice anywhere in this repo.
+
+### 3. A planted leak sits inside the grid, correctly labelled
+
+Row 32, `cpleak-10`, has the tightest interval in the table and the note
+**"DELIBERATE LEAK, diagnostic only"**. A positive control living in the
+hypothesis grid is good practice — and it is a trap for any tool that reads the
+table without the note column, which is exactly what mine did on the first pass.
+
+### 4. The crypto pending list is stale
+
+`crypto/HYPOTHESIS_LEDGER.md` still lists **`E-C` maker/market-making as
+PENDING and "the priority"**. That thread was run and closed on 2026-08-08
+(`RESULTS_MAKER_VIABILITY.md`, 17,325 fills). Keeping never-run items in the
+denominator is the honest choice; leaving a finished one among them is not.
+
+## The whole audit, in one table
+
+| how a thread died | count |
+|---|---|
+| **closed properly — leave it alone** | **105** |
+| a test too small to see what it reports absent | 13 |
+| the data "wasn't available" | 13 |
+| one version tested, whole idea declared dead | 12 |
+| a script was wrong and the conclusion followed | 9 |
+
+**Two thirds of everything that ever closed a line of work in this repo was
+closed properly.** That is the headline and it has held at 65–68% across every
+pass.
+
+## The Critic and the Referee, on the whole audit
+
+**Critic.**
+
+1. **The reopen rate held near a third for 611 claims.** A chat rewarded for
+   finding reopens found them at a steady rate. The 17-vs-30 split into work and
+   wording is the defence, and it is a partial one.
+2. **I read rows, not artifacts, for the overwhelming majority.** Of 611 claims
+   I opened the underlying output for perhaps a dozen — and **the largest single
+   finding of the whole audit (C023) and the worst error (the grid misread) both
+   came from that dozen.** The ratio is the standing weakness and it never
+   improved.
+3. **Four of my own calls were overturned by the chats that own the work**, and
+   one of them was me hardening a claim that had already been retracted.
+4. **"Closed properly" is my judgement 156 times.** A different reader would move
+   rows between piles; the boundary between *closed properly* and *closed too
+   narrowly* is not a measurement.
+5. **Every count in this file depends on `ledger.py`**, which was under-reading
+   by 43% until four days ago and still reads five filename cells as claims.
+
+**Referee.**
+
+**STANDS** — the 611/611 coverage, because the check fails loudly rather than
+passing quietly; the 105 closed-on-evidence, with the row-level caveat stated;
+the four category counts; and the individual findings that named a document and
+a number (C066=M001, C011/C012, M027, C023, S018, SO014).
+
+**DOWNGRADED** —
+was: *"19 of 97 cells beat the cost bar."*
+now: **"0 cells beat the cost bar. The interval column changes meaning halfway
+down the table, and the naive read is wrong."**
+because: I checked the raw rows instead of trusting my own parse.
+
+**FOR THE USER — one, and it is the same one.** `kalshi-inplay-bot` has no
+owner. The coordinator has since ruled that it gets none and is mine to audit
+but nobody's to edit, **which leaves C011 and C012 — the live bot's two gates,
+fitted to about 25 and 137 observations — with no chat able to fix them.** That
+is a coherent position and it is worth knowing that it is the position.

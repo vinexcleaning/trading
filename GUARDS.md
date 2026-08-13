@@ -1141,3 +1141,72 @@ If you carry nothing else into the next project:
     every pull. Three sessions here have shipped this, and the third had the
     warning written down in front of it.
 
+
+---
+
+## 25. Before recording that something does not exist, ask twice
+
+**Contributed by `reopen`, 2026-08-11**, from auditing 611 claims across seven
+ledgers. Asked for by the coordinator after this chat caught itself.
+
+### The shape it catches
+
+> **Any sentence of the form "there is no X", written from a probe that ran
+> once.**
+
+This repo has now produced **five** of them and every one was wrong: "Kalshi has
+no Champions League", "Kalshi soccer is mostly friendlies", "no free ITF data
+source exists", "the price sample contains no European league", and — from this
+chat — "the set-score market has been minted zero times".
+
+### What was measured
+
+Three hosts, same URL, same minute, four different `User-Agent` headers:
+
+| header | ESPN | Sofascore | ATP archive |
+|---|---|---|---|
+| `Mozilla/5.0 (…-research/1.0)` | **403** | 403 | 200 → **403** |
+| bare product token | **403** | 403 | 403 |
+| `curl/8.4.0` | **200** | 403 | 403 |
+| none sent | **200** | 403 | 403 |
+
+**Three hosts, three different policies.** ESPN blocks browser-shaped agents and
+accepts curl. Sofascore blocks everything. **ATP returned 200 and then 403 to
+the identical request one minute apart** — it rations, and a single probe of it
+returns a number that is not a property of the host at all.
+
+### The guard
+
+1. **Run the probe twice, separated in time.** A rate limit, a warm cache and a
+   real absence are indistinguishable in one call. Ten seconds of patience
+   separates them.
+2. **Vary the one thing you did not think was a variable.** One header across
+   six hosts is one experiment, not six — and whichever header you pick, it will
+   be wrong for at least one of them.
+3. **A failure is not a finding.** Record the status code, never "not found".
+   `market-selection/src/check_tennis_live.py` probed six sources with one
+   header and wrote *"No free data source covering ITF tennis was found"*; that
+   became **M027**, recorded SETTLED, and **B021** refuted it four days later.
+4. **A dead fetcher does not look dead — it looks like the data is gone.**
+   Eleven scripts in two folders were returning nothing at all while reporting
+   normally. Assert content on the first object of every pull (GUARDS #15), and
+   assert it on the *probe* too, not only on the pipeline.
+
+### Why it earns a number of its own
+
+**GUARDS #12 already says a 404 never establishes death.** This is the weaker
+and commoner case: **a 200 that is really a 403, and a 403 that is really a
+queue.** #12 is about interpreting the answer. #25 is about not trusting a
+single ask.
+
+### The cheapest version
+
+```python
+a = probe(url); time.sleep(10); b = probe(url)
+if a != b:
+    raise AssertionError(f"{url} is not stable: {a} then {b}")
+```
+
+**This chat found the ATP behaviour only because it ran the script a second
+time to fix an unrelated crash.** Nothing about being careful would have caught
+it.
