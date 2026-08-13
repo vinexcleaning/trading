@@ -9,11 +9,18 @@ contain claims, and **none of them was in any ledger**, so none appeared in the
 repo's record on that is unusually blunt: ledgering a never-ledgered project has
 turned up a verdict-relevant defect **three times out of three**.
 
-**⚠ `coordinator/ledger.py` cannot see this file yet.** It reads a fixed
-`SUB_LEDGERS` list and this path is not on it, so `idea.py check` will still
-report soccer as having no prior work. That is a one-line change in the
-coordinator's folder, which this session does not own; it is flagged in
-`STATUS.md`. **Until it lands, item 2 of that audit is only half-fixed.**
+**✅ `coordinator/ledger.py` now reads this file** (landed by 2026-08-13), so
+`idea.py check` finds these 42 rows. Verified rather than assumed: querying
+*"buy the near-certain outcome cheaply late in a game"* returns **SO041 as the
+top hit with its numbers in it.**
+
+**Two header names are load-bearing and were wrong here until 2026-08-13.** The
+parser reads the column headed **`Effect + CI`**; these tables said `Effect`, so
+every row reported *"what came out: (nothing recorded)"* — the file was found and
+the finding was blank, which is worse than being missing because it looks
+answered. **A `Date range` column is still absent**, so every row reads *"no date
+range recorded"*; the dates live inside the text instead. Anyone copying this
+file as a template should copy `LEDGER.md`'s header exactly.
 
 Rows below 2026-08-08 were **read off existing write-ups, not recomputed**. Rows
 dated 2026-08-08 were measured this session.
@@ -31,7 +38,7 @@ dated 2026-08-08 were measured this session.
 
 ## Claims read off the 2026-08-02 write-ups
 
-| ID | Claim in plain English | Artifact | n + unit | Effect | STATUS |
+| ID | Claim in plain English | Artifact | n + unit | Effect + CI | STATUS |
 |---|---|---|---|---|---|
 | **SO003** | The joined soccer dataset is **160 matches** over 5 competitions, one row each, every feature carrying a "when was this knowable" stamp. | `dataset.md`, `src/build_dataset.py` | 160 matches | **480 knowability assertions, 0 violations** — after the guard caught a real defect in the first version (159 of 480 failed on `known_at == decision_at`) | **SETTLED** |
 | **SO004** | Kalshi's soccer price sits close to the consensus closing line. | `reports/kalshi_vs_book.json` | **32 matches** with both a de-vigged book price and a Kalshi mid | r = 0.9593; mean +0.47¢; **median \|gap\| 1.12¢** against a ~2.0¢ cost bar | **SUGGESTIVE** — n=32. Direction reproduces **T012** (tennis) and **M011** (MLB) on a third sport |
@@ -47,7 +54,7 @@ dated 2026-08-08 were measured this session.
 
 ## Measured this session, 2026-08-08
 
-| ID | Claim in plain English | Artifact | n + unit | Effect | STATUS |
+| ID | Claim in plain English | Artifact | n + unit | Effect + CI | STATUS |
 |---|---|---|---|---|---|
 | **SO012** | **ESPN has no play-by-play at all for some fixtures, and the gap clusters by competition.** | `src/fetch_goal_minutes.py`, `reports/goal_minutes_coverage.txt` | 26 empty matches retried 4× each; empty-rate trials at 1/4/8 workers | **0 of 26 ever recovered.** Rate 15.0% / 10.0% / 17.5% — flat in concurrency. Of 26: Uruguay 13, Ecuador 7, Peru 2, Copa do Brasil 2, friendlies 2, **and zero in mex.1 / arg.1 / bra.1 / col.1 / usa.1** | **SETTLED** — this is an uneven coverage loss across **Kalshi-bettable** leagues and is reported per competition, not hidden. Retracts SO002 |
 | **SO013** | The 17.5-minute clock error (SO009) **applies to price joins and not to a comeback table**. | `soccer/DECISIONS.md`, `src/fetch_goal_minutes.py` | — | "the 80th minute" is a statement about the clock on the screen, which IS the displayed minute; converting it to elapsed time would be the error. Both keys are stored on every event | **SETTLED** (definitional) — recorded because the tasking asserted the opposite and it is the kind of thing that gets silently reversed |
@@ -66,7 +73,7 @@ dated 2026-08-08 were measured this session.
 been looked at. `PREREGISTRATION_COMEBACK.md` was committed **before** any of
 these numbers existed — check the git log, and if it was not, disregard it.
 
-| ID | Claim in plain English | Artifact | n + unit | Effect | STATUS |
+| ID | Claim in plain English | Artifact | n + unit | Effect + CI | STATUS |
 |---|---|---|---|---|---|
 | **SO019** | **How often the team that is behind comes back and wins, one goal down.** | `reports/comeback_table.txt` §1 | **56,173 matches**, 23 competitions, 2015–2024. Unit = the match | minute 45 **9.9 per 100** · 60 6.6 · 70 4.1 · 75 2.9 · **80 1.8** · 85 1.0 · 88 0.5 · 89 0.4 | **DESCRIPTIVE** — the same matches recur at every minute, so the columns are one sample seen repeatedly, not independent ones |
 | **SO020** | **The exact scoreline is not the same as the goal gap.** | §2 | 80th minute | **1-0: 1.7** [1.5–2.0] on 13,662 · **2-1: 1.8** [1.5–2.1] on 7,980 · **3-2: 2.8** [2.1–3.7] on 1,507 · **2-0: 0.1** on 7,242 | **DESCRIPTIVE** — 3-2 is roughly 17× 2-0 at the same minute and the same "two goals of scoring already done" |
@@ -78,7 +85,7 @@ these numbers existed — check the git log, and if it was not, disregard it.
 
 ## The price, 2026-08-09 — and it closes the question
 
-| ID | Claim in plain English | Artifact | n + unit | Effect | STATUS |
+| ID | Claim in plain English | Artifact | n + unit | Effect + CI | STATUS |
 |---|---|---|---|---|---|
 | **SO026** | **The 97-cent price the whole idea rests on does not exist late in a match.** | `reports/price_vs_rate.txt` §1, `src/price_at_state.py` | **149 priced moments** at the 70th minute or later, read at the exact wallclock of a goal + 2 min, paying the ask | **79.2% of the time nobody is bidding on the losing side at all**, so there is nothing to buy below 100. 99c on 11.4%, 98c on 4.7%, **97c or less on 4.7% — 7 moments of 149** | **SETTLED** — this does not depend on the rate table at all, and it is the answer |
 | **SO027** | At the price actually charged, **every state loses money.** | `reports/price_vs_rate.txt` §2 | 29 state-bands with ≥5 priced moments | **29 of 29 lose.** e.g. 70–79 min 1-0: pay 99c, survives 0.93 per 100, actually 2.83. 10–19 min 1-0: pay 86c, survives 12.68, actually 15.48 | **SUGGESTIVE, directional only** — the rates are 2015–2024 all competitions and the prices are a few hundred moments from a 69-day window. Different populations, deliberately not averaged |
@@ -86,7 +93,7 @@ these numbers existed — check the git log, and if it was not, disregard it.
 
 ## Measured 2026-08-09, second session — every minute, and the price at each
 
-| ID | Claim in plain English | Artifact | n + unit | Effect | STATUS |
+| ID | Claim in plain English | Artifact | n + unit | Effect + CI | STATUS |
 |---|---|---|---|---|---|
 | **SO029** | **Any displayed minute can be placed on the real clock to within seconds**, which is what makes a price readable at a minute when nothing happened. | `src/clock_map.py`, `reports/clock_map_accuracy.txt` | **24,159 anchors** leave-one-out, 1,037 matches | median error **0.13 min**, **98.8% inside 1 min**, 99-in-100 inside 1.12 | **SETTLED** — does NOT contradict SO009, which measured `kickoff + displayed minute` (median 17.52 min out). Different method: this never crosses halftime |
 | **SO030** | **Comebacks late in a one-goal match became MORE common after 2022.** | `src/era_split.py`, `reports/era_split.txt` | 2015-2018 vs 2022-2024, thousands of matches per cell | 80th minute **1.3 → 2.3 per 100**, ranges do not overlap. Same at 75th, 85th, 89th. **Nothing changed between the 15th and 65th.** 34 of 38 comparisons overlap; the 4 that do not are all one-goal-up late and all move the same way | **SUGGESTIVE, and it moves a headline** — five substitutes became permanent in 2022, which fits the pattern being late-only. Not a designed test of that, so the mechanism is a hypothesis and the shift is the measurement |
@@ -100,7 +107,7 @@ these numbers existed — check the git log, and if it was not, disregard it.
 
 ## The full-match answer, 2026-08-09 — every minute, with the European book in it
 
-| ID | Claim in plain English | Artifact | n + unit | Effect | STATUS |
+| ID | Claim in plain English | Artifact | n + unit | Effect + CI | STATUS |
 |---|---|---|---|---|---|
 | **SO036** | **The market is there EARLY and gone LATE**, which is the opposite of where the original idea looked. | `reports/gap_table.txt` §1 | **30,648 minute-readings, 645 matches**, every minute 1-90 | somebody bidding on the losing side: **93 in 100 at the 10th–15th minute**, 92 at the 25th, 74 at the 60th, 47 at the 80th, **16 at the 89th**. Priced ≤97c: **83 in 100 at the 10th**, 19 at the 80th, **1 at the 89th** | **SETTLED** — supersedes SO026/SO031. Monotone decline across 17 sampled minutes |
 | **SO037** | **The price is worse than the football says, and it is worst early where the market actually is.** | `reports/gap_table.txt` §4 | 15,216 readings matched to their OWN competition's 2022-2024 cell | overall middle **−0.40c per contract**. Stable across bars: −0.46c at 40 matches, −0.40c at 60, −0.48c at 100, −1.23c at 200 | **SUGGESTIVE** — two populations (rates 2022-2024; prices a 69-day 2026 window). Not a profit measurement and not a realised outcome |
@@ -111,7 +118,7 @@ these numbers existed — check the git log, and if it was not, disregard it.
 
 ## The selection canary, 2026-08-09 — and it names why the idea fails
 
-| ID | Claim in plain English | Artifact | n + unit | Effect | STATUS |
+| ID | Claim in plain English | Artifact | n + unit | Effect + CI | STATUS |
 |---|---|---|---|---|---|
 | **SO040** | **Whether a match got priced at all cannot be checked against the outcome.** | `src/selection_canary.py`, `reports/selection_canary.txt` | **528 in-window matches** with somebody ahead at the 70th minute: 429 priced, **99 not** | comeback rate **3.5 per 100 priced vs 2.0 unpriced**, z=+0.88, **MDE 4.69pp against a 2.0pp gap** → **UNTESTABLE** | **UNTESTABLE, and that is the answer.** Same verdict as SO006 for the same reason — not enough matches in the smaller arm. Not evidence of a clean sample and not evidence of a dirty one |
 | **SO041** | **⚠ Kalshi stops quoting the losing side exactly when the match becomes near-certain — which is the state the whole idea wanted to buy.** | same | **one reading per match**, so the unit is the match, not the minute | at the 60th minute: **7.1 per 100 came back where you could bet, 0.0 where you could not.** 70th: 5.7 vs 0.0. 80th: 4.0 vs 0.4. 85th: 2.6 vs 0.0. Minute-level: 9.2 vs 0.1 on 19,900 vs 8,053 readings, z=+43 (inflated by the unit; the match-level table is the one to read) | **SETTLED — the mechanism.** Predicted in the file header before it was run |
@@ -122,7 +129,7 @@ these numbers existed — check the git log, and if it was not, disregard it.
 
 ## The post-mortem probe, 2026-08-11 — does it transfer?
 
-| ID | Claim in plain English | Artifact | n + unit | Effect | STATUS |
+| ID | Claim in plain English | Artifact | n + unit | Effect + CI | STATUS |
 |---|---|---|---|---|---|
 | **SO042** | **The near-certainty gap appears in every sport Kalshi runs per-game**, so it is market-maker behaviour rather than anything about soccer's three-way market. | `src/other_sports_probe.py`, `reports/other_sports_probe.txt` | **284 settled markets**, 7 sports, one-minute candles in the 5 h before close, measured 2026-08-11 | buyable when somebody bids 95c+: soccer **29 in 100**, women's basketball 31, basketball 37, hockey 51, baseball 53, men's tennis 56, women's tennis **67**. **Control at 40–70c: 100 in 100 in every sport, all 33,802 minutes** | **SETTLED for availability only.** The perfect control rules out thin books; six sports have no draw leg, killing the soccer-specific explanation. **Says nothing about price quality.** No event state — a 95c price may be a heavy pre-match favourite rather than a late near-certainty |
 

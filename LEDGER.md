@@ -623,7 +623,7 @@ currently see that file — `coordinator/ledger.py`'s `SUB_LEDGERS` list omits i
 which is how the `reopen` chat generated a wrong reopen on 2026-08-09 against a
 question `soccer` had already answered.
 
-| ID | Claim in plain English | Project | n + unit | Effect | STATUS |
+| ID | Claim in plain English | Project | n + unit | Effect + CI | STATUS |
 |---|---|---|---|---|---|
 | **SO041** | **The market does not quote a near-certainty.** Any strategy shaped "buy the thing that is 97% to happen, cheaply" fails on **availability**, not on price. | soccer | **699 matches** priced at every displayed minute, Kalshi ~69-day window to 2026-08-09; **one reading per match** | trailing side came back **7.1 per 100 where a bet was possible vs 0.0 where it was not** (60th min); 5.7 vs 0.0 (70th); 4.0 vs 0.4 (80th); 2.6 vs 0.0 (85th). `check_selection` on a has-a-market mask **FAILs**. At the 89th minute a quote existed **16 times in 100**, and at ≤97c **1 in 100** | **SETTLED** — predicted in writing before it was run. Filed as **[GUARDS #24](GUARDS.md)**. **Does not improve with a deeper book:** a deeper book prices matches still in doubt, which are the ones the strategy did not want |
 | **SO037** | Kalshi's soccer price is **worse than the historical rate implies at essentially every minute**. | soccer | 15,216 readings matched to their OWN competition's 2022–2024 cell | middle **−0.40c per contract**; stable at −0.46/−0.40/−0.48/−1.23 as the bar rises 40→60→100→200 matches | **SUGGESTIVE, and conditional** — two populations (rates 2022–2024, prices a 2026 window), and by SO041 the readings are conditioned on the match still being in doubt. Reads: *−0.40c in the games and minutes where a trade was available* |
