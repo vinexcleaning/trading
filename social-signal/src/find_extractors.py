@@ -58,23 +58,58 @@ QUERIES = [
 ]
 
 
-def search(q: str, per_page: int = 20):
+class SearchRefused(RuntimeError):
+    """The search did not happen. NOT the same as finding nothing."""
+
+
+def search(q: str, per_page: int = 20, retries: int = 1):
+    """Return the hit list, or raise `SearchRefused`.
+
+    **This used to return `[]` on a genuine empty result, on an HTTP error and
+    on a network error — three different worlds, one return value.** This
+    function's whole job is answering *"does an extractor for X already
+    exist?"*, which is an absence question, so a GitHub **403 rate-limit
+    refusal was indistinguishable from "no such tool exists"** and would have
+    been written up as one.
+
+    That is `GUARDS.md` #25, and the `reopen` audit aimed it at this folder
+    specifically: *"if any extractor records 'no results' without recording the
+    status code and a second attempt, it can manufacture exactly this."* It
+    could, and it did neither.
+
+    **Printing the error was not a fix.** Every count in every report is built
+    from the return value; a human reading a log later is not a data structure.
+    So the refusal now raises, and the caller has to decide what to write down.
+
+    Also: **one retry**, because the measurement behind #25 is that ATP
+    returned 200 and then 403 to the identical request a minute apart.
+    """
     url = ("https://api.github.com/search/repositories?"
            + urllib.parse.urlencode({"q": q, "per_page": per_page,
                                      "sort": "stars", "order": "desc"}))
     req = urllib.request.Request(url, headers={
         "User-Agent": UA, "Accept": "application/vnd.github+json"})
-    try:
-        with urllib.request.urlopen(req, timeout=45) as r:
-            return json.loads(r.read()).get("items") or []
-    except urllib.error.HTTPError as e:
-        print(f"    HTTP {e.code}: {e.read()[:160].decode('utf-8','replace')}")
-        return []
-    except Exception as e:  # noqa: BLE001
-        print(f"    {type(e).__name__}: {e}")
-        return []
-    finally:
-        time.sleep(PACE)
+    last = None
+    for attempt in range(retries + 1):
+        try:
+            with urllib.request.urlopen(req, timeout=45) as r:
+                payload = json.loads(r.read())
+                # An empty `items` here IS a real zero: the server answered.
+                return payload.get("items") or []
+        except urllib.error.HTTPError as e:
+            body = e.read()[:160].decode("utf-8", "replace")
+            last = f"HTTP {e.code}: {body}"
+            print(f"    {last}")
+        except Exception as e:  # noqa: BLE001
+            last = f"{type(e).__name__}: {e}"
+            print(f"    {last}")
+        finally:
+            time.sleep(PACE)
+        if attempt < retries:
+            print(f"    retrying once — a refusal and a real zero look "
+                  f"identical, so one attempt is not evidence")
+            time.sleep(PACE * 4)
+    raise SearchRefused(f"{q!r} was refused, not answered ({last})")
 
 
 def age_days(iso: str):
@@ -89,9 +124,19 @@ def age_days(iso: str):
 
 def main():
     rows = []
+    refused = []          # queries that were NOT answered — never counted as 0
     for bucket, q in QUERIES:
         print(f"  {bucket}: {q}", flush=True)
-        for it in search(q):
+        try:
+            hits = search(q)
+        except SearchRefused as e:
+            # **Recorded, not swallowed, and never merged into the results.**
+            # A refused query with 0 rows and an answered query with 0 rows are
+            # different facts, and only one of them supports "nothing exists".
+            print(f"    REFUSED — this query contributes NO evidence: {e}")
+            refused.append((bucket, q, str(e)))
+            continue
+        for it in hits:
             d = age_days(it.get("pushed_at"))
             rows.append({
                 "bucket": bucket,
@@ -125,6 +170,24 @@ def main():
                  "[61.9, 70.3] at 10–30 minutes. A tool that returns "
                  "**transcripts** would reopen that; one that returns a title "
                  "and a thumbnail would not.\n\n")
+        # **The refused queries go at the TOP, not in a footnote.** A reader
+        # who sees "0 results" for a bucket has to know whether the question
+        # was asked and answered, or never asked at all. GUARDS #25.
+        if refused:
+            fh.write(f"## ⚠ {len(refused)} of {len(QUERIES)} queries were "
+                     f"REFUSED, not answered\n\n")
+            fh.write("**These contribute no evidence in either direction.** A "
+                     "refused query returning nothing and an answered query "
+                     "returning nothing are different facts, and only the "
+                     "second one supports an absence claim.\n\n")
+            for bucket, q, err in refused:
+                fh.write(f"- **{bucket}** — `{q}` — {err}\n")
+            fh.write("\n")
+        else:
+            fh.write(f"**All {len(QUERIES)} queries were answered** (no "
+                     "refusals), so a bucket with no rows below means the "
+                     "search really did come back empty.\n\n")
+
         for bucket, _q in QUERIES:
             sel = [r for r in rows if r["bucket"] == bucket]
             if not sel:

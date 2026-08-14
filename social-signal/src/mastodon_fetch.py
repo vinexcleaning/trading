@@ -62,7 +62,10 @@ TAGS = ["trading", "algotrading", "quant", "kalshi", "polymarket",
 
 PACE = 1.5
 _TAG_RE = re.compile(r"<[^>]+>")
-STATS = {"calls": 0, "errors": 0, "rows": 0, "429s": 0}
+# `truncated` counts tags whose pagination was REFUSED part-way, as opposed to
+# running out of posts. A run with truncated > 0 has an INCOMPLETE corpus and
+# any "we found N posts about X" built on it is a floor, not a count.
+STATS = {"calls": 0, "errors": 0, "rows": 0, "429s": 0, "truncated": 0}
 
 
 def strip_html(s: str) -> str:
@@ -171,6 +174,18 @@ def main():
                 if max_id:
                     url += f"&max_id={max_id}"
                 rows = call(url)
+                # **`None` is a refusal; `[]` is the end of the results.**
+                # These used to both `break`, so a 429 or a timeout part-way
+                # through pagination silently truncated the harvest and was
+                # recorded as "that is all there was". GUARDS #25 — and this
+                # one is worse than a wrong absence claim in a report, because
+                # it quietly shrinks the corpus every later count is built on.
+                if rows is None:
+                    STATS["truncated"] = STATS.get("truncated", 0) + 1
+                    print(f"    !! {host} #{tag}: REFUSED mid-pagination after "
+                          f"{got} posts — this tag is INCOMPLETE, not exhausted",
+                          flush=True)
+                    break
                 if not rows:
                     break
                 got += store(con, rows, host, f"tag:{tag}", f"tag:{tag}")
