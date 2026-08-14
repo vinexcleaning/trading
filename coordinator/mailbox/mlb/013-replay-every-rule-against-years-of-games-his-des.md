@@ -118,3 +118,62 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+
+---
+
+# AMENDMENT — he restated the design and added the reasoning behind it
+
+**His words, and they sharpen job 2:**
+
+> *"The retrievable ones straight from Kalshi should be pretty much our source of
+> truth. The outside archive should also be pretty good because it's tracking
+> the Kalshi prices, but it could be delayed or something like that. Once we get
+> past the 76-day threshold we won't be able to compare any more. But if we
+> compare before and we see that it's accurate, we can assume it's probably
+> gonna be accurate after."*
+
+**That is the right logic and it is worth stating in the write-up in his own
+words.** Three sources, one truth, calibrate where truth exists, extrapolate
+where it does not.
+
+**His guess about the archive is also worth testing rather than assuming:** he
+expects it to track Kalshi closely but possibly with a lag. **So measure the lag,
+not just the gap.** If the archive is Kalshi's price from five minutes ago, that
+is a fixable offset. If it disagrees at random, it is not.
+
+# ⚠ THE WEAKNESS IN THE EXTRAPOLATION, AND IT MUST BE IN THE REPORT
+
+**"Accurate before, so probably accurate after" is an assumption, not a
+measurement**, and there is a specific reason to doubt it here:
+
+**The `devig` chat already found a bookmaker whose coverage went from everything
+in 2022 to nothing in 2026** (M018, football-data.co.uk soccer closing lines).
+**A source's relationship to reality is not constant over years.** Kalshi itself
+has grown enormously in that time, so its liquidity and pricing behaviour in
+2024 are not what they are now.
+
+**So the extrapolation cannot be checked directly — by definition, there is no
+truth to check it against out there.** What CAN be done, and should be:
+
+- **Measure whether the agreement is STABLE ACROSS the 76 days you do have.**
+  Split the window into halves or weeks and report the gap in each. **If it
+  drifts inside 76 days it will drift more outside them.** If it is flat across
+  the whole window, that is mild evidence it travels — mild, and say so.
+- **Report the agreement separately by market thickness.** Thin markets are
+  where substitutes fail, and old Kalshi was thinner than new Kalshi. If the
+  substitute only tracks well on liquid games, that is a warning about the past.
+- **State the assumption in one plain sentence in the headline**, not in a
+  footnote: *"everything before 2026-05-25 rests on the assumption that a
+  substitute measured over 76 days in 2026 behaves the same way in 2024, which
+  is not checkable."*
+
+**None of that kills the idea.** It is still the only route to a sample bigger
+than 47 games, and 47 is why nothing here can be settled. **It just has to be
+reported as a conditional result rather than a measured one.**
+
+# ⚠ RE-READ YOUR MAILBOX BEFORE YOU COMMIT
+
+This amendment landed AFTER he typed `next`. **The `livedesk` chat lost five
+hours of work to exactly this** — read the mailbox at 23:34, pushed at 04:15,
+and never re-read the file that had been amended thirteen minutes after it
+first looked. **Pull and re-read this file before you commit.**
