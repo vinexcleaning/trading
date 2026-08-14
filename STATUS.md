@@ -32,6 +32,7 @@ New ideas go in [INBOX.md](INBOX.md) first, before deciding where they belong.
 |---|---|---|
 | **Depth recorder (tennis)** | Running since 08-01 06:58. 79â€“120 markets, 0.55 s pacing, content-checked Ã—5/day at 98.8% non-empty. | Leave it. It is accruing the only asset that cannot be re-pulled. |
 | **15m opens recorder (crypto)** | Running since 08-01 13:42, `--hours 168`. | Leave it. |
+| **Cross-venue recorders (devig)** | **NOW WATCHDOGGED, 2026-08-14.** Both had died four times (2.5 h, 13.6 h, 19 h, and a machine reboot on 08-12 at 06:03) and were in **neither** runner registry — `CLAUDE.md` §10's "unwatched or unrestarted", and they were both. Added to `runners/runners.json` AND `coordinator/runners.json`; the existing task already fires **at startup and every ten minutes**, so the reboot case needed no new code. ⚠ `record.py` had **no single-instance lock**, which `runners/README.md` states as the precondition the watchdog's whole safety argument rests on — written and tested first. **Verified by killing the EU recorder and watching the watchdog bring it back** (54 rows, first cycle, no errors), not by reading the script. | Leave them. Nothing for a human to do on a reboot any more. |
 | ~~v3 structural-event backtest~~ | **RESOLVED 08-03 â€” CLEAN, the result stands.** See "Desktop, 2026-08-03" below. | None. |
 | ~~Desktop recorder integrity~~ | **RESOLVED 08-03 â€” no bug. The desktop already reads `*_dollars`/`*_fp`.** Tier B is unblocked. | None. |
 | ~~Live bot position-sizing bug~~ | **DIAGNOSED AND FIXED 08-03.** Not a sizing bug â€” a martingale. See below. | ~~Decide whether it trades at all~~ **DECIDED 08-03: it does not. Trading is OFF** â€” see "Live bot turned off" below. |
@@ -5241,3 +5242,67 @@ early exits fired on `CIN@CWS` (in 46¢, out 70¢, +$1.03 each). **They were
 TAKE-PROFITS, not stops — there have still been zero stop-loss firings**, so
 `tennis`'s 5-of-5 "not stopping wins" result is **un-replicated here, not
 contradicted**. Correcting before the original is quoted onward.
+
+---
+
+## Desktop, 2026-08-14 — delivery: 38 of the 47 findings were already filed, 9 were not, all are now
+
+`reopen` took mailbox 004, which asked it to file the audit's 47 findings to the
+owning chats on the assumption none had been. **It measured instead of
+complying.**
+
+| | before | **after** |
+|---|---|---|
+| reached the chat that owns them | 38 | **42** |
+| filed, but to the wrong chat | 2 | **0** |
+| **never filed anywhere** | **9** | **0** |
+| owner is `nobody` | 5 | 5 |
+
+**The nine were one coherent group and the cause was `reopen`'s own:** the
+live-money ledger's findings went to the coordinator and were never routed
+onward to the chats that own the consequence. Every other pass went direct.
+
+### Filed now, ranked by how much changes if the closure was wrong
+
+1. **C061 → `devig`.** The 2026-08-06 audit ranks **weather-versus-the-mid as
+   item #1 of ten**, *"the largest genuinely-unexplored lead in the repo"*.
+   **C096, in `weather-market-bot` a week earlier, scored a weather model against
+   the prices you would actually have paid on 600 sealed contracts and it lost —
+   wrong by 0.2048 against the market's 0.1690**, and C097's blend then failed an
+   event-clustered bootstrap. **Different family and benchmark, so it moves the
+   prior rather than answering the question — but nothing cites it.** Read before
+   a recorder is committed.
+2. **C106c → `tennis`.** The live bot's own ledger: *"all of C001–C007 concern
+   price-visible information… none of it tests whether the market prices the
+   score correctly."* The tape built for it ran two days.
+3. **C117, C106b, C009, C010** — four "no artifact anywhere" claims whose
+   artifacts sit one folder away (S010/S025/M008 · B027 · T012 · T006).
+4. **C066** — the parse bug fixed with nine tests on 2026-07-30, re-discovered
+   08-02, still blocking crypto on 08-06.
+5. **C082, C083** — no owner (below).
+6. **C105** — three tennis cost bars now circulating: **2.4¢, 4.14¢, 4.79¢**.
+7. **M015, B015** — misrouted, and lowest value.
+
+Messages: `devig` **019** · `tennis` **014** · `signal` **012** (first to that
+chat) · `coordinator` **005**.
+
+### ⚠ The five with no owner, recorded as a decision
+
+`C011`, `C012`, `C082`, `C083`, `C088` live in `kalshi-inplay-bot`, which is
+read-only by ruling — `livedesk` reads from it and a second writer is a collision
+this repo has had twice. **The consequence: the live bot's entry gate and stop
+width have no chat able to fix them, and C082 will silently corrupt any forward
+score ever run on that frozen follow list, because the verdict is pooled and one
+wallet in four is contaminated.** Trading is off. Raised once, recorded, closed.
+
+### New: `reopen/src/check_delivery.py`
+
+Greps every claim id against every message the chat has sent and **exits non-zero
+when any finding with an owner has not reached that owner.** Neither `reopen` nor
+the coordinator could see this from their own end, and both would have guessed
+wrong in opposite directions.
+
+> **Three of the four instructions this chat has received carried a premise that
+> was already out of date** — two asked for an audit that was finished, one for
+> filing that was 81% done. **Not a criticism of the coordinator, which cannot
+> see what it was not told. It is the argument for the check being a script.**

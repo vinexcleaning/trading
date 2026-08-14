@@ -1045,3 +1045,72 @@ owner. The coordinator has since ruled that it gets none and is mine to audit
 but nobody's to edit, **which leaves C011 and C012 — the live bot's two gates,
 fitted to about 25 and 137 observations — with no chat able to fix them.** That
 is a coherent position and it is worth knowing that it is the position.
+
+---
+
+# DELIVERY, 2026-08-14 — a finding nobody was told about is worth what one nobody found is
+
+Mailbox 004 asked this chat to file its 47 findings to the owning chats, on the
+reasonable assumption that they sat in this file and nowhere else.
+
+**They did not. 38 of the 47 had been filed days earlier.** I measured it rather
+than answering from memory — `reopen/src/check_delivery.py` greps every claim id
+against every message this chat has sent.
+
+| | before | **after** |
+|---|---|---|
+| reached the chat that owns them | 38 | **42** |
+| filed, but to the wrong chat | 2 | **0** |
+| **never filed anywhere** | **9** | **0** |
+| owner is `nobody` | 5 | 5 |
+
+**The nine that were missed are one coherent group, and the cause is mine:** they
+are the live-money ledger's findings, which I filed to the **coordinator** and
+never routed onward to the chats that own the consequence. Every other pass went
+to the owning chat directly.
+
+> **Neither of us could have known that without checking, and we would have
+> guessed wrong in opposite directions** — the coordinator assumed none were
+> filed; I would have said all were. That is why it is now a script that exits
+> non-zero, and not a thing anybody remembers.
+
+## Filed now, ranked by how much changes if the closure was wrong
+
+| rank | item | to | why it ranks there |
+|---|---|---|---|
+| **1** | **C061** | `devig` | The repo's own **#1-ranked lead** — weather against the mid — has a prior sealed-test failure (**C096**, model wrong by 0.2048 against the market's 0.1690 on 600 held-back contracts) that neither the audit which ranked it nor `kalshi-market-scan` cites. Different family and benchmark, so it changes the prior, not the answer. |
+| **2** | **C106c** | `tennis` | The live bot's ledger, about itself: *"all of C001–C007 concern price-visible information… none of it tests whether the market prices the score correctly."* The tape built to test it ran two days. |
+| **3** | **C117 · C106b · C009 · C010** | `devig`, `tennis`, coordinator | Four claims marked "no artifact anywhere" whose artifacts sit one folder away — S010/S025/M008, B027, T012, T006. |
+| **4** | **C066** | coordinator | The parse bug fixed with nine tests on 2026-07-30, re-discovered on 08-02, still blocking crypto on 08-06. |
+| **5** | **C082 · C083** | **nobody** | A wallet whose outcome disagrees with the follower model **42.4%** of the time sits in a **frozen follow list** feeding a **pooled** forward verdict. |
+| **6** | **C105** | coordinator | **Three** tennis cost bars now circulating: 2.4¢, 4.14¢, 4.79¢. |
+| **7** | **M015 · B015** | `devig`, `signal` | Misrouted, and lowest-value, respectively. |
+
+## The five with no owner, stated as a decision
+
+`C011`, `C012`, `C082`, `C083` and `C088` live in `kalshi-inplay-bot`, which the
+coordinator has ruled **gets no owner and is read-only** — a defensible call,
+since `livedesk` reads from that folder and a second writer is a collision this
+repo has already had twice.
+
+**The consequence, so it is chosen rather than discovered:**
+
+- **C011 and C012** — the live bot's entry gate (125 markets split five ways) and
+  its 38¢ stop (137 matches, 2.3 cents of range across every width tested) —
+  **have no chat able to fix them.** Trading is off and nothing is scheduled.
+- **C082** will **silently corrupt any forward score ever run on that frozen
+  list**, because the verdict is pooled and one wallet in four is contaminated.
+
+**Raised once, recorded, and not raised again.**
+
+## What this adds to the audit's own record
+
+**Three of the four mailbox instructions this chat has received contained a
+premise that was already out of date** — 002 and 003 both asked for an audit that
+was finished, and 004 asked for filing that was 81% done. Each time the correct
+move was to measure before complying.
+
+**That is the same failure this audit documents in the ledgers, occurring in the
+instructions about the audit.** It is not a complaint about the coordinator —
+it cannot see what it was not told, which is exactly the point. It is the
+argument for the check being a script.

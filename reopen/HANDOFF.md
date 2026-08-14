@@ -1,8 +1,8 @@
 # HANDOFF — reopen
 
 <!-- COORDINATOR-STATE
-doing: nothing running - the audit is COMPLETE, 611 of 611 claims across all seven ledger files
-left: re-audit as chats answer their mail, and audit new claims as they are written. No backlog.
+doing: nothing running - audit complete at 611/611, and all 42 findings with an owner have now reached that owner
+left: nothing queued. Re-run check_delivery.py and classify_closures.py when new claims or new mail appear
 needs: no
 -->
 
@@ -311,3 +311,31 @@ There is no backlog. It runs when new claims are written, or when a chat answers
 its mail. **Standing weakness, unchanged and never fixed: of 611 claims I opened
 the underlying artifact for perhaps a dozen — and both the largest finding and
 the worst error of the whole audit came from that dozen.**
+
+## 2026-08-14 — delivery. 38 of the 47 were already filed; the 9 that were not are now.
+
+Mailbox 004 asked for the findings to be filed, assuming none had been. **They
+had, mostly.** Measured with the new `src/check_delivery.py` rather than
+remembered.
+
+| | before | after |
+|---|---|---|
+| reached their owner | 38 | **42** |
+| misrouted | 2 | **0** |
+| never filed | **9** | **0** |
+| owner is `nobody` | 5 | 5 |
+
+**The nine were one group and the cause was mine** — the live-money ledger's
+findings went to the coordinator and were never routed onward.
+
+Filed: `devig` **019** (C061 ranked first), `tennis` **014** (C106c),
+`signal` **012** (first item to that chat), `coordinator` **005**.
+
+**`src/check_delivery.py` exits non-zero when any finding with an owner has not
+reached that owner.** That is the whole point of it: neither this chat nor the
+coordinator could tell from either end, and both would have guessed wrong in
+opposite directions.
+
+**The five ownerless items stay ownerless by decision** — `kalshi-inplay-bot` is
+read-only. C082 will corrupt any forward score ever run on its frozen follow
+list. Raised once, recorded, not raised again.
