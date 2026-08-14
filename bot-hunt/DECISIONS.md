@@ -159,3 +159,50 @@ Given up: completing task (a) in this turn. The Kalshi candlestick endpoint runs
 unauthenticated ceiling at 15 req/s and the standing rule is not to run a second
 heavy puller beside the recorder. Two heavy pullers were therefore **sequenced,
 not parallelised**, and the weather pull left running.
+
+## 2026-08-14 — the recorders got a watchdog, and Bovada taught us a new failure shape
+
+**D18. Registered both recorders with the shared watchdog, and wrote a
+single-instance lock FIRST because the watchdog's safety argument requires one.**
+Given up: nothing. The recorders had died four times (2.5 h, 13.6 h, 19 h, and a
+machine reboot on 2026-08-12 at 06:03) and were in **neither** runner registry,
+which `CLAUDE.md` §10 says leaves a job "either unwatched or unrestarted" — they
+were both. `runners/install.ps1` already registers a task that fires **at startup
+and every ten minutes**, so the reboot case is fixed by one registry entry and no
+new code.
+
+**But `runners/README.md` states the watchdog's entire safety case as a
+precondition on the runner, not on itself:** *"Every test already holds its own
+single-instance lock and refuses to start twice."* **`record.py` did not hold
+one.** Registering it as-is would have silently broken that argument, and the
+failure it invites has already happened here — two writers on one SQLite died
+with `database is locked` inside 19 minutes. So the lock was written first,
+keyed on the DATABASE rather than the process, because the two recorders write
+different files and both must be allowed to run.
+
+⚠ **One trap inside the lock, worth the line it costs:** the POSIX idiom for "is
+this pid alive", `os.kill(pid, 0)`, **maps to TerminateProcess on Windows** for
+any signal that is not a CTRL event. A liveness check written from muscle memory
+would have killed the recorder — the one process here whose data cannot be
+re-pulled at any price. It asks the kernel via `OpenProcess` instead.
+
+**Verified rather than assumed, because inferring from a script is how eight of
+the nine errors in `coordinator/REFLECT.md` happened:** the lock was tested three
+ways on a throwaway database (clean start releases it; a live holder blocks the
+second start **and survives it**; a dead pid's lock is taken over and says so),
+and then the EU recorder was **actually killed** and the watchdog **actually
+restarted it** — new process, 54 rows in its first cycle, no errors.
+
+**D19. Did NOT restart the main recorder to give it a lock file.** Given up:
+consistency between the two. It has been running since before the lock existed,
+the watchdog already detects it as alive, and restarting costs a cycle of tape
+against no benefit that is not already covered. It picks the lock up on its next
+restart.
+
+**D20. Backed the Bovada poller off from 5 minutes to 20 after making ourselves
+the problem.** Given up: a faster answer today. See `RESULTS_RETAIL_CENSUS.md` —
+after ~15 fetches in a few minutes the **control** endpoint stopped answering
+too, which is the signature of us being throttled rather than of an empty board.
+Polling a host that has just gone quiet, faster, is how a temporary throttle
+becomes a permanent block — and a blocked host then looks exactly like a dead
+route, which is the specific mistake this project keeps making.

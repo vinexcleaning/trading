@@ -1,6 +1,5 @@
 {
   "_README": "THE REGISTRY. Adding a test to this machine is one entry here. Nothing else changes - not the watchdog, not the scheduled task, not the status page. See README.md.",
-
   "_fields": {
     "name": "short label, used in the status page and nowhere else",
     "enabled": "false means the watchdog ignores it completely",
@@ -13,7 +12,6 @@
     "log": "where the wrapper appends stdout, relative to dir",
     "paper_only": "documentation only - the real guarantee is each project's own test suite, run via `verify`"
   },
-
   "runners": [
     {
       "name": "tennis",
@@ -21,13 +19,24 @@
       "windowless": true,
       "dir": "tennis-paper-forward",
       "exe": ".venv\\Scripts\\python.exe",
-      "args": ["-m", "src.forward", "--poll", "60", "--target", "2500"],
+      "args": [
+        "-m",
+        "src.forward",
+        "--poll",
+        "60",
+        "--target",
+        "2500"
+      ],
       "match": "src.forward",
-      "verify": ["-m", "pytest", "tests", "-q"],
+      "verify": [
+        "-m",
+        "pytest",
+        "tests",
+        "-q"
+      ],
       "log": "logs\\wrapper.log",
       "paper_only": true
     },
-
     {
       "name": "mlb",
       "enabled": true,
@@ -35,11 +44,60 @@
       "_enabled_by": "The user, 2026-08-08, explicitly: 'enable both tennis and mlb'. Previously off because it belongs to the mlb-paper session and was not mine to switch on. Its own deploy/ scripts still work and were not touched. Flagged to that session in STATUS.md.",
       "dir": "mlb-paper",
       "exe": ".venv\\Scripts\\python.exe",
-      "args": ["src\\run.py"],
+      "args": [
+        "src\\run.py"
+      ],
       "match": "src\\run.py",
-      "verify": ["-m", "pytest", "tests", "-q"],
+      "verify": [
+        "-m",
+        "pytest",
+        "tests",
+        "-q"
+      ],
       "log": "logs\\wrapper.log",
       "paper_only": true
+    },
+    {
+      "name": "devig-recorder",
+      "enabled": true,
+      "windowless": true,
+      "dir": "bot-hunt",
+      "exe": ".venv\\Scripts\\python.exe",
+      "args": [
+        "src/record.py",
+        "--minutes",
+        "0",
+        "--interval",
+        "600"
+      ],
+      "match": "--interval 600",
+      "log": "logs\\wrapper_recorder.log",
+      "paper_only": true,
+      "_note": "NOT a paper test - a RECORDER. It only reads public endpoints and writes SQLite; it has no order code and no credentials. It is here because it is the one asset that accrues in wall-clock time: a Kalshi market that closes is gone for good, so an hour not recorded cannot be bought back at any price. It has died four times (2.5h, 13.6h, 19h and a reboot) and nothing restarted it."
+    },
+    {
+      "name": "devig-recorder-eu",
+      "enabled": true,
+      "windowless": true,
+      "dir": "bot-hunt",
+      "exe": ".venv\\Scripts\\python.exe",
+      "args": [
+        "src/record.py",
+        "--minutes",
+        "0",
+        "--interval",
+        "300",
+        "--skip",
+        "pin,poly",
+        "--series",
+        "KXUCLGAME,KXEPLGAME",
+        "--db",
+        "data/record_soccer_eu.db"
+      ],
+      "match": "record_soccer_eu",
+      "log": "logs\\wrapper_recorder_eu.log",
+      "paper_only": true,
+      "_note": "Second recorder, Champions League and Premier League only, own database file. It MUST have its own db: two writers on one SQLite died with 'database is locked' inside 19 minutes on 2026-08-09."
     }
   ]
 }

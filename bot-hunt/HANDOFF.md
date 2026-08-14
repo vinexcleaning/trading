@@ -1,7 +1,7 @@
 <!-- COORDINATOR-STATE
-doing: running the crypto maker-viability test (M1) on 24 days of replayed Kalshi order book - does a resting order capture enough spread to cover the measured 0.5c pick-off cost
-left: finish the M1 run and write it up; the IMPROVE arm is void until a trade tape is joined to the book; MLB forecast test (Stage A) decides ~2026-09-06 on its own
-needs: no
+doing: nothing heavy running; both recorders are now registered with the shared watchdog, which restarts them at startup and every ten minutes - verified by killing one and watching it come back
+left: R1's day-one kill-test is waiting for Bovada's baseball board to populate (it was empty at 2am, which is normal for that hour); it answers whether the retail bookmaker disagrees with the sharp one at all, and needs no games to finish
+needs: yes - if that kill-test says the two bookmakers agree, R1 is dead and I stop; if it says they disagree, do you want R1 run in full?
 -->
 
 # HANDOFF.md — bot-hunt, session of 2026-08-04

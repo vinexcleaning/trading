@@ -1249,3 +1249,93 @@ each row as one voice. Recorded as a known gap rather than quietly left.
 
 **Related:** Guard #8 (effective sample size) is the same idea for correlated
 observations; Guard #16 is the same idea for dedup deciding a headline.
+
+---
+
+## 27. HTTP 200 with an empty body — absence of data and absence of access are the same bytes
+
+**Added 2026-08-14, measured, and it is Guard #25's sibling.** Guard #25 says
+*before recording that something does not exist, ask twice*. This is the specific
+network shape that makes asking once feel completely safe.
+
+### The shape it catches
+
+You request a feed. It answers **HTTP 200**. No error, no `429`, no
+`Retry-After`, no redirect. The body is **`[]`** — two bytes. Every check a
+careful person runs has passed: the host resolved, the connection succeeded, the
+status is success, the JSON parses. **The only honest reading of that response
+looks like "there is nothing there."**
+
+It is often false, and the false version is indistinguishable from the true one
+**at that endpoint**.
+
+### What was measured
+
+**2026-08-14, 05:39–06:00 UTC.** Bovada's baseball coupon returned 200 and a
+two-byte body for twenty minutes. Pinnacle's free feed, read in the same second,
+listed **twelve baseball games**, eleven of them starting later that day. So
+"Bovada lists no baseball" was **wrong**, and it was one sentence from becoming
+*"the retail-bookmaker route is dead"* — an idea that had already been blocked
+for six days on a different false absence.
+
+**The discriminator is a CONTROL ENDPOINT on the same host, in the same second:**
+
+| Bovada coupon | bytes | events |
+|---|---|---|
+| `baseball/mlb` | **2** | **0** |
+| `football/nfl` | 625,438 | 17 |
+| `tennis` | 1,926,596 | 160 |
+
+That is what tells the two apart, and nothing at the original endpoint can.
+
+**Then the same probe measured the other half.** After roughly fifteen fetches in
+a few minutes the **control** stopped answering too — so at that point the
+correct verdict flipped from "empty board" to "**we are the problem**". A checker
+without a control cannot see that flip either.
+
+### The guard
+
+**Never record an empty payload as an empty board until a control endpoint on
+the same host has returned a full one in the same pass.** Three states, not two:
+
+| control | subject | verdict |
+|---|---|---|
+| full | full | data |
+| **full** | **empty** | **genuinely empty — record it** |
+| **empty** | **empty** | **NO ACCESS — record nothing about the subject** |
+
+The third row is the whole point. It must **fail closed**: an unknown is not an
+absence, and "we could not tell" is a legitimate and much more useful entry in a
+ledger than a confident zero.
+
+Pick a control that is **on the same host, needs no credential, and is expected
+to be non-empty for reasons independent of the thing under test** — a different
+sport, a different region, a static index. A control that can plausibly be empty
+at the same time as the subject is not a control.
+
+### Why it earns a number of its own
+
+`reopen`'s audit found **13 of 156 closures were "the data was not available" and
+the data was.** Guard #23 covers the same error caused by reading a renamed
+field; Guard #25 covers it as a habit of mind. **Neither would have caught this
+one**, because nothing was misread and nothing was assumed — the feed really did
+say `[]`, and believing it was correct behaviour given the information at hand.
+The fix is not more care. It is **one more request**.
+
+### The other two shapes of the same failure, from the same afternoon
+
+1. **A permission check that fails OPEN.** The first robots-checker returned
+   "no robots file" on a non-200 and then **fetched anyway** — labelling a site
+   unrestricted when that site names our crawler and disallows everything, its
+   robots file merely 403ing to us as well. **A permission check that cannot read
+   the permission must never conclude permission.**
+2. **The wrong field name, for the third time in a week** (C024, M024, and a
+   retail census that read `competitors[].description` where the field is
+   `competitors[].name`). Every team came back empty and the join matched
+   nothing. **It was caught by arithmetic refusing to add up** — nine events with
+   two competitors each cannot also be one event with two named clubs — **not by
+   care.** So: put a cheap consistency identity next to any join, and let it be
+   the thing that fails.
+
+**Related:** Guard #23 (renamed fields), Guard #25 (ask twice before recording an
+absence), Guard #12 (the legacy-field trap).

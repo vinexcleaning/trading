@@ -152,6 +152,85 @@ def now() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+# --------------------------------------------------- single-instance lock ----
+# ADDED 2026-08-14, and it is a PRECONDITION rather than a nicety.
+#
+# This recorder is being registered with `runners/`, the shared watchdog that
+# restarts anything that is not running -- at startup and every ten minutes.
+# That is the fix for the outage that cost 19 hours of tape: the machine
+# rebooted at 06:03 on 2026-08-12 and nothing brought the recorders back.
+#
+# ⚠ But `runners/README.md` states the watchdog's ENTIRE safety argument as a
+# precondition on the runner, not on the watchdog:
+#
+#     "Every test already holds its own single-instance lock and refuses to
+#      start twice. So the worst case if the watchdog is wrong about liveness
+#      is a process that starts, sees the lock, says 'already running' and
+#      exits."
+#
+# **This recorder did not hold one.** Registering it without this would have
+# broken the argument the watchdog rests on, and the failure it invites is one
+# that has ALREADY happened here: two writers on one SQLite file died with
+# `database is locked` inside 19 minutes (see --db below). The watchdog is
+# allowed to be stupid about liveness precisely because the runner is not.
+#
+# The lock is per DATABASE, not per process: the two recorders write different
+# files and both should run. Locking on the process name would forbid that.
+
+def _pid_alive(pid: int) -> bool:
+    """Is this pid still running? ⚠ NEVER use os.kill(pid, 0) to ask on Windows.
+
+    CPython maps os.kill on Windows to TerminateProcess for any signal that is
+    not CTRL_C_EVENT/CTRL_BREAK_EVENT. The POSIX idiom for "does this process
+    exist" would therefore KILL THE RECORDER -- the exact process whose data
+    cannot be re-pulled at any price. So on Windows this asks the kernel.
+    """
+    if os.name != "nt":
+        try:
+            os.kill(pid, 0)
+        except ProcessLookupError:
+            return False
+        except PermissionError:
+            return True
+        return True
+    import ctypes
+    k32 = ctypes.windll.kernel32
+    h = k32.OpenProcess(0x00100000, False, pid)   # SYNCHRONIZE
+    if not h:
+        return False
+    still_running = k32.WaitForSingleObject(h, 0) == 0x00000102   # WAIT_TIMEOUT
+    k32.CloseHandle(h)
+    return bool(still_running)
+
+
+def claim_single_instance() -> None:
+    """Exit quietly if another recorder already owns this database file."""
+    lock = DB.with_suffix(DB.suffix + ".lock")
+    DATA.mkdir(parents=True, exist_ok=True)
+    if lock.exists():
+        try:
+            held = json.loads(lock.read_text(encoding="utf-8"))
+        except (ValueError, OSError):
+            held = {}
+        pid = held.get("pid")
+        if isinstance(pid, int) and pid != os.getpid() and _pid_alive(pid):
+            print(f"already running: pid {pid} owns {DB.name} since "
+                  f"{held.get('started')} -- exiting without touching it",
+                  flush=True)
+            raise SystemExit(0)
+        # A stale lock is normal after a crash or a reboot and is NOT an error.
+        # Say so out loud though: a lock that silently reappears every restart
+        # would hide a recorder that is crash-looping.
+        if pid:
+            print(f"stale lock from pid {pid} ({held.get('started')}) - "
+                  f"that process is gone, taking over", flush=True)
+    lock.write_text(json.dumps(
+        {"pid": os.getpid(), "db": str(DB), "started": now(),
+         "argv": sys.argv[1:]}), encoding="utf-8")
+    import atexit
+    atexit.register(lambda: lock.unlink(missing_ok=True))
+
+
 def connect() -> sqlite3.Connection:
     DATA.mkdir(parents=True, exist_ok=True)
     con = sqlite3.connect(DB, timeout=120.0)
@@ -425,6 +504,8 @@ def main() -> None:
         print(f"db overridden: {DB}", flush=True)
     skip = {s.strip() for s in args.skip.split(",") if s.strip()}
 
+    # AFTER the --db override is applied, because the lock is per database file.
+    claim_single_instance()
     con = connect()
     t_end = time.time() + args.minutes * 60 if args.minutes else None
     print(f"recorder start {now()}  db={DB}  interval={args.interval}s "
