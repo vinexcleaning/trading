@@ -5306,3 +5306,49 @@ wrong in opposite directions.
 > was already out of date** — two asked for an audit that was finished, one for
 > filing that was 81% done. **Not a criticism of the coordinator, which cannot
 > see what it was not told. It is the argument for the check being a script.**
+
+---
+
+## Desktop, 2026-08-14 — a claim written today, audited today
+
+`reopen` has no backlog, so it now audits claims **on arrival**. Its coverage
+check flagged one new row and it was opened the same day it was written.
+
+### M016b — the archive is real, "live updated" is not, and it does not help T002
+
+`market-selection` recorded `Tennismylife/TML-Database` today, **correctly
+labelled UNVERIFIED** because only the GitHub search listing had been seen.
+Opened 2026-08-14:
+
+| | |
+|---|---|
+| repo | **200**, 78 stars, not archived |
+| year files | **59**, `1968.csv` → `2026.csv` |
+| **last commit** | **2026-01-27** |
+| **`2026.csv`** | **137 matches, 2026-01-02 → 2026-01-17** |
+
+- **Its own description says "live updated". It has not moved in seven months.**
+- ⚠ **It does not relieve T002 — it is a step backwards.** T002 needs data past
+  **2026-06-02**; this ends **four and a half months earlier than the frozen
+  source it would replace**. The **$9.99** `livetennisapi` plan is still the only
+  thing that reaches past June.
+- **"NOT a Sackmann mirror" is unverified in the other direction** — the columns
+  are Sackmann's name for name, plus `indoor`. Identical columns prove nothing
+  either way, and the row asserts one way.
+- **Worth keeping:** a free ATP archive back to **1968**, which this repo does
+  not otherwise own.
+
+Filed to `devig` **020** and `tennis` **015** (do-not-chase).
+
+> **Fifth time this month a description disagreed with the thing it described** —
+> a vendor's page said 1,000 requests a day while its own `/usage` said 100
+> (B022); a website served 403 to one header and 200 to another; and today a
+> repository's summary of itself. **GUARDS #25 says ask twice. This is one step
+> along: the listing said one thing and the contents said another.**
+
+### State of the audit
+
+**612 of 612 claims audited. 157 closures, 105 (67%) closed properly. 43 of 43
+findings with an owner have reached that owner; 0 unfiled, 0 misrouted, 5
+ownerless by decision.** Of 22 messages sent, **18 answered** — `tennis` **006**
+is BLOCKED and correctly so.

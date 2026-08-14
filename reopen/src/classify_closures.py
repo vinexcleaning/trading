@@ -242,6 +242,16 @@ C: dict[str, tuple[str, str]] = {
     "M014": (N, "cost comparison fact"),
     "M015": ("DATA", "'deleted, not moved' -- B020 found a live mirror five "
              "days later."),
+    "M016b": ("DATA", "VERIFIED BY THIS AUDIT 2026-08-14, and the row was "
+              "right to call itself UNVERIFIED. The repo is real -- 200 OK, 78 "
+              "stars, not archived, 59 year-files back to 1968. But its own "
+              "description, 'a complete and LIVE UPDATED Database', is false: "
+              "last commit 2026-01-27 and 2026.csv holds 137 matches running "
+              "2026-01-02 to 2026-01-17. IT DOES NOT HELP T002, which needs "
+              "data past 2026-06-02 -- it ends four and a half months EARLIER "
+              "than the frozen source it was meant to replace. And 'NOT a "
+              "Sackmann mirror' is unverified in the other direction: the "
+              "columns are Sackmann's, name for name."),
     "M016": (N, "correctly labelled not-found rather than absent; B020 "
              "answered it"),
     "M017": ("DATA", "football-data.co.uk serves Poland for the Colombian code. "
@@ -972,6 +982,17 @@ DEFERRED: dict[str, str] = {}
 # chat writes NOTHING in those folders -- it files mail.
 ACTION: dict[str, tuple[str, str, str, str]] = {
     # id: (action, owner, what would settle it, how long)
+    "M016b": ("RELABEL", "devig",
+              "Move it off UNVERIFIED -- it has been checked. Record three "
+              "things: the archive is genuine and deep (1968-2026, 59 files); "
+              "its 'live updated' description is FALSE (last commit "
+              "2026-01-27, 2026 data ends 2026-01-17); and it therefore does "
+              "NOT relieve T002, ending four and a half months before the "
+              "frozen Sackmann mirror does. Also drop or qualify 'NOT a "
+              "Sackmann mirror' -- the schema is Sackmann's column for column, "
+              "which is not proof either way and is the opposite of what the "
+              "row asserts.",
+              "minutes"),
     "M027": ("REOPEN", "devig",
              "Strike the SETTLED absence claim and re-rank the tennis families. "
              "B021 already made the call that refutes it -- nothing needs "

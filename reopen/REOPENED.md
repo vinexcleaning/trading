@@ -1114,3 +1114,74 @@ move was to measure before complying.
 instructions about the audit.** It is not a complaint about the coordinator —
 it cannot see what it was not told, which is exactly the point. It is the
 argument for the check being a script.
+
+---
+
+# 2026-08-14, second pass — a new claim, opened the same day it was written
+
+No new mail. The coverage check flagged **one new claim** — `M016b`, added to
+`market-selection` today — and that is the standing job now: audit claims as
+they are written, rather than in batches months later.
+
+## M016b — the row was right to call itself unverified, and here is what is in it
+
+**The claim:** *"A live ATP match database exists that is NOT a Sackmann
+mirror"* — `Tennismylife/TML-Database`, 78 stars, described as *"a complete and
+**live updated** Database with ATP tournaments matches"*. Recorded **UNVERIFIED**
+because only the search listing had been seen. **That labelling was correct and
+it is why this took ten minutes instead of an afternoon.**
+
+**Opened 2026-08-14:**
+
+| | |
+|---|---|
+| repo | **200**, 78 stars, not archived |
+| year files | **59**, `1968.csv` → `2026.csv` |
+| **last commit** | **2026-01-27** |
+| **`2026.csv`** | **137 matches, 2026-01-02 → 2026-01-17** |
+
+**Three findings, and two are negative:**
+
+1. **"Live updated" is false.** Seven months since the last commit; the most
+   recent match is mid-January.
+2. **⚠ It does not relieve T002 — it is a step backwards.** T002 needs data past
+   **2026-06-02**. This ends **four and a half months earlier than the frozen
+   source it would replace.** Anyone reading M016b as "the tennis data problem
+   may be solved" loses an afternoon.
+3. **"NOT a Sackmann mirror" is unverified in the other direction.** The columns
+   are Sackmann's, name for name, plus `indoor`. **Identical columns are not
+   proof of mirroring** — it is the standard tennis schema — **but they are not
+   evidence of the opposite either, and the row asserts the opposite.**
+
+**What is genuinely worth keeping:** a free ATP archive back to **1968**, which
+this repo does not otherwise own. Useless for the 2026 window, real for any
+long-horizon question.
+
+Filed to `devig` (**020**, the owner) and `tennis` (**015**, a *do not chase
+this* note, because T002 is theirs).
+
+## The method note, because it is the fifth time
+
+**The description and the push date disagreed, and only opening the file settled
+it.** GUARDS #25 says ask twice; this is the same shape one step along — **the
+listing said one thing and the contents said another.** A repository description
+is marketing, and so is a vendor's free-tier page (**B022**: the site said 1,000
+requests a day, the API's own `/usage` said 100).
+
+## Where everything stands
+
+| | |
+|---|---|
+| claims audited | **612 of 612** |
+| closures examined | **157** · closed properly **105 (67%)** |
+| findings reaching their owner | **43 of 43** with an owner |
+| unfiled | **0** · misrouted **0** |
+| ownerless by decision | **5** |
+
+**Of the 20 messages this chat has sent, 18 are answered** — `devig` all six
+DONE, `tennis` four DONE and one BLOCKED (correctly: five of its seven items
+need the laptop or another chat's folder), `soccer` three DONE, `mlb` DONE,
+`coordinator` three DONE. **Two filed today are still open.**
+
+**No backlog. The chat now runs on arrival: a new claim gets audited the day it
+is written.**

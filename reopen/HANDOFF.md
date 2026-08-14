@@ -1,8 +1,8 @@
 # HANDOFF — reopen
 
 <!-- COORDINATOR-STATE
-doing: nothing running - audit complete at 611/611, and all 42 findings with an owner have now reached that owner
-left: nothing queued. Re-run check_delivery.py and classify_closures.py when new claims or new mail appear
+doing: nothing running - the chat now audits claims on arrival; M016b was written and checked the same day
+left: nothing queued. classify_closures.py flags new claims, check_delivery.py flags unrouted findings
 needs: no
 -->
 
@@ -339,3 +339,35 @@ opposite directions.
 **The five ownerless items stay ownerless by decision** — `kalshi-inplay-bot` is
 read-only. C082 will corrupt any forward score ever run on its frozen follow
 list. Raised once, recorded, not raised again.
+
+## 2026-08-14, second pass — auditing on arrival
+
+No new mail. The coverage check flagged **one new claim written today** and it
+was audited the same day. **That is the steady state now.**
+
+**M016b** — a free ATP database recorded as UNVERIFIED because only the search
+listing had been seen. Opened: **59 year-files back to 1968**, genuinely deep —
+but **last commit 2026-01-27 and 2026 data ends 2026-01-17**, so *"live updated"*
+is false, and **it does not relieve T002: it stops four and a half months before
+the frozen source it would replace.** Its columns are Sackmann's name for name,
+so *"NOT a Sackmann mirror"* is unverified in the other direction too.
+
+Filed: `devig` **020** (owner), `tennis` **015** (a do-not-chase note, since
+T002 is theirs).
+
+**Method note, fifth time this month:** the description and the push date
+disagreed and only opening the file settled it. GUARDS #25 says ask twice; this
+is one step along — **the listing said one thing, the contents said another.**
+
+### State
+
+| | |
+|---|---|
+| claims audited | **612 of 612** |
+| findings reaching their owner | **43 of 43** with an owner |
+| unfiled / misrouted | **0 / 0** |
+| ownerless by decision | **5** |
+| messages sent / answered | **22 / 18** |
+
+`tennis` **006** is BLOCKED and correctly so — five of its seven items need the
+laptop or another chat's folder.
