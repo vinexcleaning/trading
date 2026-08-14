@@ -227,13 +227,33 @@ def missing_words(row: dict, words: list[str]) -> list[str]:
     return [w for w in words if not mentions(hay, w)]
 
 
+def src_label(row: dict) -> str:
+    """A short name for the file a claim lives in.
+
+    Claim ids are unique WITHIN a ledger and collide ACROSS them -- 37 of them
+    do. Quoting an id without its file is how two different claims get treated
+    as one, which is the same failure as the duplicate-claim trap LEDGER.md
+    already records between projects.
+    """
+    f = row.get("_file", ledger.LEDGER_NAME)
+    if f == ledger.LEDGER_NAME:
+        return "main ledger"
+    return f.split("/")[0]
+
+
 def entry(marker: str, r: dict, words: list[str]) -> str:
     """One related claim, rendered so that 'we tried that' is not a possible
     reading of it. The last two fields are the ones that do that work."""
     status = ledger.status_of(r)
     proj = ledger.project_of(r) or "(project not recorded)"
     src = r.get("_file", ledger.LEDGER_NAME)
-    L = [f"  {marker} {r['_id']}  in {proj}   --   STATUS: {status}"]
+    # The id alone is NOT unique. 37 ids appear in more than one ledger --
+    # `C003` is a different claim in LEDGER.md and in the in-play bot's audit,
+    # and a reader told "C003 covers this" has no way to know which. Found by
+    # the `reopen` chat auditing this tool's output. So the id is always
+    # printed with the file it came from.
+    where = src_label(r)
+    L = [f"  {marker} {r['_id']} ({where})  in {proj}   --   STATUS: {status}"]
     L.append(field("WHAT WAS TESTED", ledger.claim_of(r)))
     L.append(field("THE DATA", get(r, "n_unit", "n") or "not recorded in this row"))
     L.append(field("MEASURED OVER", get(r, "date_range") or "no date range recorded"))
