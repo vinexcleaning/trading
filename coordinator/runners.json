@@ -26,7 +26,6 @@
     "             the last human check-in and the coordinator asks for one.",
     "restart:     what a human does. The coordinator never runs it."
   ],
-
   "runners": [
     {
       "id": "tennis-forward",
@@ -74,7 +73,9 @@
       "monitor": "heartbeat",
       "kind": "one-shot",
       "machine": "desktop",
-      "heartbeat": ["crypto/data/tape_pull.log"],
+      "heartbeat": [
+        "crypto/data/tape_pull.log"
+      ],
       "lock": null,
       "writes_every_minutes": 1,
       "stale_after_minutes": 30,
@@ -106,6 +107,40 @@
       "lock": null,
       "confirm_every_hours": 24,
       "restart": "ON THE LAPTOP: double-click runners\\check.bat. The recorder line to look for is record_15m_opens_v2.py. If it is missing, restart it with --hours 168."
+    },
+    {
+      "id": "devig-recorder",
+      "workstream": "devig",
+      "title": "Cross-venue tape recorder",
+      "plain_english": "Writes down Kalshi, Pinnacle and Polymarket prices every ten minutes. It only reads and saves; it cannot place an order and holds no credentials. This is the only thing here that cannot be caught up later - a Kalshi market that closes is gone for good.",
+      "monitor": "heartbeat",
+      "kind": "continuous",
+      "machine": "desktop",
+      "watchdog_name": "devig-recorder",
+      "heartbeat": [
+        "bot-hunt/data/record.db",
+        "bot-hunt/data/record.db-wal"
+      ],
+      "lock": "bot-hunt/data/record.db.lock",
+      "stale_after_minutes": 45,
+      "restart": "the watchdog restarts it within ten minutes and at startup; nothing for a human to do"
+    },
+    {
+      "id": "devig-recorder-eu",
+      "workstream": "devig",
+      "title": "Champions/Premier League recorder",
+      "plain_english": "The same recorder pointed only at the two European football competitions, every five minutes, writing to its own separate file.",
+      "monitor": "heartbeat",
+      "kind": "continuous",
+      "machine": "desktop",
+      "watchdog_name": "devig-recorder-eu",
+      "heartbeat": [
+        "bot-hunt/data/record_soccer_eu.db",
+        "bot-hunt/data/record_soccer_eu.db-wal"
+      ],
+      "lock": "bot-hunt/data/record_soccer_eu.db.lock",
+      "stale_after_minutes": 25,
+      "restart": "the watchdog restarts it within ten minutes and at startup; nothing for a human to do"
     }
   ]
 }
