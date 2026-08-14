@@ -88,6 +88,12 @@ def per_bot(state) -> dict:
             "return_pct": 100.0 * pnl / staked if staked else 0.0,
             "prices": prices,
             "qtys": [p["qty"] for p in closed],
+            # the fees this bot ACTUALLY paid, so the no-skill comparison can be
+            # made to pay them too. Without this the null is gross and the bot is
+            # net, and every bot looks worse than chance purely because it paid
+            # to trade - which would be an artefact dressed as a finding.
+            "fees": [p["entry_fee_cents"] + p.get("exit_fee_cents", 0.0)
+                     for p in closed],
         }
     return out
 
@@ -176,18 +182,50 @@ def main() -> int:
     live = {b: v for b, v in bots.items() if v and not b.startswith("control")}
     dead = [b for b, v in bots.items() if not v]
 
+    # THE NOISE BAND, printed beside every bot, because without it this table
+    # invites exactly the error this repo has made most often.
+    #
+    # For each bot: keep its real bets, real sizes and real prices, and redraw
+    # only the OUTCOME at the market's own odds - a bet at 70c wins 70 times in
+    # 100. That is what "no edge at all" looks like for THAT bot at ITS sample
+    # size. Measured on momentum__hold's 204 solo picks the band runs -13.7% to
+    # +14.5%, so a +1.96% result that looked like a lead happens 42 times in 100
+    # by chance.
+    rng_band = np.random.default_rng(SEED)
+    bands = {}
+    for b, v in live.items():
+        pr = np.array(v["prices"], dtype=float)
+        qt = np.array(v["qtys"], dtype=float)
+        fe = np.array(v["fees"], dtype=float)
+        stk = float(np.sum(pr * qt))
+        if stk <= 0:
+            continue
+        # the no-skill bot pays the SAME fees on the SAME trades
+        sims = np.array([
+            100.0 * (np.sum(np.where(rng_band.random(len(pr)) < pr / 100.0,
+                                     (100.0 - pr) * qt, -pr * qt)) - fe.sum()) / stk
+            for _ in range(4000)])
+        bands[b] = (float(np.percentile(sims, 5)), float(np.percentile(sims, 95)))
+
     print(" WHAT EACH BOT HAS DONE, BEST FIRST")
     print(" " + "-" * 76)
-    print(f" {'bot':26s} {'bets':>5s} {'won':>5s} {'won%':>6s} {'avg buy':>8s} "
-          f"{'staked':>9s} {'made/lost':>10s} {'return':>8s}")
+    print(f" {'bot':26s} {'bets':>5s} {'won%':>6s} {'avg buy':>8s} "
+          f"{'made/lost':>10s} {'return':>8s} {'pure-luck range':>18s} {'':>4s}")
     for b in sorted(live, key=lambda x: -live[x]["return_pct"]):
         v = live[b]
-        print(f" {b:26s} {v['bets']:5d} {v['won']:5d} {v['win_pct']:5.1f}% "
-              f"{v['avg_price']:7.0f}c ${v['staked_dollars']:8,.0f} "
-              f"${v['pnl_dollars']:9,.2f} {v['return_pct']:+7.2f}%")
+        lo, hi = bands.get(b, (float("nan"), float("nan")))
+        inside = "" if (math.isnan(lo) or not (lo <= v["return_pct"] <= hi)) else "  noise"
+        print(f" {b:26s} {v['bets']:5d} {v['win_pct']:5.1f}% "
+              f"{v['avg_price']:7.0f}c ${v['pnl_dollars']:9,.2f} "
+              f"{v['return_pct']:+7.2f}% {lo:+7.1f}% to {hi:+6.1f}%{inside}")
     if dead:
         print(f"\n NEVER TRADED: {', '.join(dead)}")
         print("   (the no-trade control never bets - that is its job)")
+
+    print("")
+    print(" 'pure-luck range' is where this bot would land 90 times in 100 if the")
+    print(" market price were exactly right and it had no idea at all. A return")
+    print(" inside that range is marked `noise` and means nothing yet.")
 
     tot_staked = sum(v["staked_dollars"] for v in live.values())
     tot_pnl = sum(v["pnl_dollars"] for v in live.values())
