@@ -67,7 +67,7 @@ signal.**
 2. **A `deferred` pick does NOT count against Guard 1.** The game stays open.
 3. **It re-enters the queue automatically once the blocking condition clears** —
    the balance is reconciled, cash frees up when a bet settles, the day rolls
-   over, the switch goes back on.
+   over.
 4. **It expires when the game starts.** After first pitch the bet cannot be
    placed at all, so at that point mark it `expired` with the reason, and do not
    silently re-offer it.
@@ -91,22 +91,6 @@ the strategy re-price them.
 
 **The two 2026-08-14 games have very likely started.** Those are gone and should
 be marked `expired`, not resurrected.
-
----
-
-## ⚠ SEPARATELY: AUTO-EXECUTION IS ON AND THE USER BELIEVES IT IS OFF
-
-His words, 2026-08-14: *"In regards to auto, don't even worry about that. It's
-there in case I ever want it. But for now, I have it off."*
-
-**Every one of those four notes begins `auto-exec refused`.** The auto path was
-running and attempting to place bets on its own. **It only failed to place
-because the reconciliation guard stopped it.**
-
-**Confirm the flag's real state, show it prominently in the window, and make it
-default to off on every start.** A setting the user believes is off and is not
-is worse than one he knows is on — and here it is the only thing standing
-between him and four unattended orders.
 
 ---
 
