@@ -19,6 +19,9 @@
     "  opening  the exact words to type in that window on a normal day.",
     "  subjects what this chat is ABOUT, in words an idea might use. Used to",
     "           route a new idea. Add words here rather than tuning code.",
+    "  window_title  what the window is ACTUALLY called on his screen. Refer to",
+    "                chats by THIS, never by the short name, when telling him",
+    "                where to type. He has nine windows and has not renamed them.",
     "  created  the date the chat was named."
   ],
   "chats": [
@@ -50,7 +53,8 @@
         "sackmann",
         "match",
         "matches"
-      ]
+      ],
+      "window_title": "Tennis paper trading forward test"
     },
     {
       "name": "BASEBALL",
@@ -75,7 +79,8 @@
         "ballpark",
         "moneyline",
         "dinger"
-      ]
+      ],
+      "window_title": "MLB paper-test mentalities and build"
     },
     {
       "name": "BOOKMAKERS",
@@ -111,7 +116,8 @@
         "liquidity",
         "depth",
         "ladder"
-      ]
+      ],
+      "window_title": "De-vig test feasibility"
     },
     {
       "name": "RESEARCH",
@@ -149,7 +155,8 @@
         "streamers",
         "wallet",
         "copy-trading"
-      ]
+      ],
+      "window_title": "Social signal extractors"
     },
     {
       "name": "DICTATOR",
@@ -171,7 +178,8 @@
         "reporting",
         "watchdog",
         "heartbeat"
-      ]
+      ],
+      "window_title": "Coordinator chat upgrade"
     },
     {
       "name": "SOCCER",
@@ -202,7 +210,8 @@
         "ucl",
         "champions",
         "premier"
-      ]
+      ],
+      "window_title": "Soccer chat mail check"
     },
     {
       "name": "OLD IDEAS",
@@ -226,7 +235,8 @@
         "abandoned",
         "technicality",
         "stale"
-      ]
+      ],
+      "window_title": "Reopen chat, check mail"
     },
     {
       "name": "THE DESK",
@@ -252,7 +262,8 @@
         "place",
         "trade",
         "app"
-      ]
+      ],
+      "window_title": "Livedesk chat mail check"
     }
   ]
 }
