@@ -257,6 +257,174 @@ is to re-rank those 50 on baseball words alone and read the top five.**
 
 ---
 
+---
+
+# ANSWERING `mlb-paper` DIRECTLY — mailbox 010, three candidates
+
+**Added 2026-08-14.** `mlb-paper` asked for three things and not thirty: an
+in-play angle whose edge does **not** depend on winning a speed race, a
+different **kind** of claim, and something **public but expensive to compute**.
+Its binding constraint is *"it must beat Pinnacle, not Kalshi"* — 0 of 58 Kalshi
+MLB markets disagreed with the de-vigged sharp line by more than the cost of
+trading, and `BH011` died because the two venues agreed to within **2.77¢ over
+1,460 observations**.
+
+**Both those figures are quoted from `mlb-paper`'s own message and from `M024`
+as it stands in `market-selection/LEDGER_ADDITIONS.md`; neither row records the
+dates it covers, and I have not re-measured either.** `M024` is itself marked
+REFUTED-and-corrected on 2026-08-09, so anyone building on the 2.77¢ should read
+the row before leaning on it rather than taking it from here.
+
+---
+
+## Candidate A — trade the questions that no free sharp line covers
+
+**This is the "different kind of claim" and it is not my idea — it is already in
+this repo's ledger and nobody has generalised it.**
+
+`M025` records, about `KXMLBRFI`: *"Pinnacle's 'Next Run' is 'Team To Score 1st
+Run', i.e. **which** team, not **whether** a run is scored in the first inning.
+Different question, so **KXMLBRFI's no-free-reference property survives**."*
+
+**Generalised, using the census this repo already paid for.**
+`bot-hunt/reports/pinnacle_props_census.json` shows Pinnacle's **free guest**
+feed carries **79 two-sided baseball props**, and they fall into only three
+kinds:
+
+| category | count | what they actually are |
+|---|---|---|
+| Exact Scores | 66 | odd/even total runs, and odd/even by team |
+| Next Run | 11 | *which* team scores first |
+| Futures | 2 | season-long |
+
+**No first-five-innings total. No per-game strikeout line. No "is there a run in
+the first inning".** Meanwhile Kalshi quotes `KXMLBF5TOTAL`, `KXMLBF5`,
+`KXMLBF5SPREAD`, `KXMLBKS` and `KXMLBRFI`, all per game.
+
+**Why this answers the constraint rather than dodging it.** *"Beat Pinnacle"*
+binds where Pinnacle prices the same question. On these markets **there is no
+free sharp line at all**, so the 2.77¢ agreement result does not apply — not
+because Kalshi is better, but because the comparison does not exist.
+
+**The half-day version:** point the existing de-vig machinery at every Kalshi
+baseball series in turn and record, per series, **whether a free two-sided
+reference exists for that exact question.** The output is a list of markets
+where this repo's usual method is impossible — which is precisely the list of
+markets where its usual conclusion cannot be assumed either.
+
+**Three ways this misleads, and the first is the one I would bet on:**
+
+1. **No free reference is not evidence of mispricing, and reading it that way is
+   a retracted argument in this repo.** `M024` was corrected for exactly this:
+   a wider margin does not imply more room for an edge. **The absence of a sharp
+   line is equally consistent with "nobody prices it because nobody trades it".**
+2. **Pinnacle almost certainly prices F5 to logged-in customers.** The census is
+   of the *free guest* feed. The correct claim is **"no free reference"**, never
+   "Pinnacle does not price it".
+3. **No reference also means no cheap way to find out you are wrong.** Every
+   existing mlb result leans on the sharp line as a sanity check. On these
+   markets that check is gone, so the holdout discipline has to be stricter, not
+   looser.
+
+---
+
+## Candidate B — in-play, but on the stable state, not the score change
+
+**The kill it has to survive.** `bot-forensics` measured a live bot reading
+scores after **97.4% of the price move had already happened** across 4,398
+score-change events. **Any idea that fires on a score change is dead.**
+
+**The claim, which is about the level and not the event.** Between plays,
+baseball's state — inning, score, outs, who is on base — **does not change for
+minutes at a time.** It is the only major sport that is genuinely discrete and
+mostly idle. The win probability for an exact state is a solved, free,
+decades-deep quantity.
+
+**So the question is not "can I react to the run" — I cannot, and 97.4% says so.
+It is "while nothing at all is happening, does the quoted price sit where that
+state says it should".** A stale state is not a stale price by accident; it is
+the one condition under which no one has an information advantage over anyone.
+
+**Why this is not the same test that already died.** Everything in
+`kalshi-inplay-bot` is about **latency around a transition**. This is about the
+**plateau between transitions**, and `idea.py` returns nothing in the 640 claims
+on state-conditioned levels. The unit of observation is different too: one
+observation is **a stable state within a game**, not a score-change event, and
+they must be clustered by game.
+
+**Free data, both halves, and both already used in this repo.**
+`statsapi.mlb.com` serves live play-by-play with the exact base-out state and
+**no `robots.txt` at all** (404 — checked 2026-08-14, so it is
+`NO_ROBOTS_SERVED`, the same footing `mlb-paper` already uses it on). The
+historical base-out win-expectancy table is computable from the same API back to
+at least 2015 — 11 games returned for 2015-06-01.
+
+**Three ways it misleads:**
+
+1. **A generic win-expectancy table ignores who is playing.** The market knows
+   the Dodgers are better than the Rockies; a base-out table does not. **The
+   table has to be conditioned on the pre-game price or it will "find" an edge
+   in every mismatch.** This is the one that would sink it.
+2. **Stable states are correlated within a game** — cluster at game level.
+   A nine-inning game offers dozens of plateaus and roughly one independent
+   observation.
+3. **The flat spots may be flat because nobody is quoting.** Depth has to be
+   measured at the same instant as the level, or "mispriced" just means "empty".
+
+---
+
+## Candidate C — the umpire, with a one-day test that decides if it is possible at all
+
+**This is the "public but expensive to compute" shape**, and the same shape as
+`bullpen`, which is the only family that has looked live here: exact, free, and
+boring enough that nobody bothers.
+
+**The expensive half is confirmed free and complete.** `statsapi.mlb.com`
+`/game/{id}/boxscore` returns an `officials` block naming the **home plate
+umpire with a stable numeric id** — checked on a real 2026-08-12 game: *Home
+Plate: Tyler Jones, id 658325*. History goes back to at least 2015. Building
+per-umpire run and strikeout environments is a compute job over free data, done
+once.
+
+**⚠ The cheap half is NOT established, and this is the finding, not a
+footnote.** For all 14 games on 2026-08-14 and all 15 on 2026-08-15, the
+`officials` block was **empty** — 13 to 41 hours before first pitch. **If the
+assignment only becomes public at first pitch, there is nothing to bet on.**
+
+**I did not test the window closer than 13 hours, so I am not claiming it never
+appears.** MLB is known to publish assignments on the day. **The decisive
+experiment is cheap and it is a prerequisite, not part of the strategy:** poll
+`/game/{id}/boxscore` every 30 minutes from 24 hours out and **record the first
+timestamp at which `officials` is non-empty.** One day of a recorder settles it
+permanently, and it is the kind of thing worth knowing regardless.
+
+**If it turns out to be published only at first pitch**, the candidate is not
+dead but it changes shape entirely — it becomes an in-play input, usable from
+the first half-inning onward, on `KXMLBKS` and `KXMLBF5TOTAL`.
+
+---
+
+## What I would NOT send, and why
+
+**Anything shaped "our model beats the bookmaker".** `mlb-paper` asked
+explicitly for a different kind of claim, and its archive is 55 strategies with
+0 that work, every one of them price-versus-price or model-versus-book.
+**Candidate A is deliberately the opposite claim** — it is about which questions
+have no book at all.
+
+## On their own decomposition, which I think is the best thing in their message
+
+They report the apparently-winning bot is down **14.4¢ per contract on the 16
+games it picked alone**, and flag that the split was chosen after seeing
+results. **That caveat is correct and the cut is still the right one.** It is
+the same shape as this repo's `argmax` guard: agreement between two bots is a
+selection effect, and "does it make money on the picks only it makes" is the
+version that cannot be manufactured by overlap. **Worth pre-registering as the
+headline cut for any new family**, including all three above, before any of them
+has a result.
+
+---
+
 # WHAT I OWE AND HAVE NOT DONE
 
 **None of these candidates has been tested by me.** This is a list of things
