@@ -41,19 +41,34 @@ beside it.
 |---|---|---|---|---|
 | Tennis — in-play | 8 | **0** | 6 | 2 |
 | Tennis — before the match | 6 | **0** | 4 | 2 |
-| Crypto | 9 | **0** | 7 | 2 |
+| Crypto | 9 | **0** | 8 | 1 |
 | Esports | 12 | **0** | 6 | 6 |
-| Baseball (MLB) | 4 | **0** | 1 | 3 |
+| Baseball (MLB) | 5 | **0** | 2 | 3 |
 | Soccer | 2 | **0** | 1 | 1 |
-| Weather | 2 | **0** | 0 | **2** |
+| Weather | 2 | **0** | **2** | 0 |
 | Copy trading | 9 | **0** | 7 | 2 |
 | Arbitrage | 3 | **0** | 3 | 0 |
-| **TOTAL** | **55** | **0** | **35** | **20** |
+| **TOTAL** | **56** | **0** | **39** | **17** |
 
-**Nothing works. Nothing has ever worked.** And the 20 "not enough data" rows
-are not hidden winners — 17 of them are strategies whose result was so uncertain
-that the honest answer is a shrug. **The three that are genuinely unfinished are
-weather (twice) and crypto market-making**, and those are on page 7 and page 3.
+**Nothing works. Nothing has ever worked.** And the 17 "not enough data" rows
+are not hidden winners — they are strategies whose result was so uncertain that
+the honest answer is a shrug.
+
+**⚠ UPDATED 2026-08-14. The three that were "genuinely unfinished" are now all
+finished, and all three are negative:**
+
+- **Weather, both rows.** The model was out-traded by thirty-year averages
+  (**+1.37¢**) and by a model that says 50% to everything and knows nothing
+  (**+1.01¢**), against its own **+0.43¢**. When a know-nothing clears your gate,
+  the gate is picking cheap prices, not good forecasts. **93 out of every 100
+  strikes on offer were priced 95–100 cents against a 46-in-100 win rate.**
+- **Crypto market-making.** **−0.85¢ per contract**, and the range of what it
+  could really be — **−1.63¢ to −0.19¢** — never touches zero. It loses money
+  before adverse selection is even reached.
+- **And one new row: the retail-bookmaker de-vig (page 5), dead on day one.**
+  A loose bookmaker with **2.25× the margin** of the sharpest book in world
+  sport agrees with it to **a fifth of a penny** once each one's margin is
+  removed. **0 of 11 games, twice.**
 
 ---
 ---

@@ -206,3 +206,17 @@ too, which is the signature of us being throttled rather than of an empty board.
 Polling a host that has just gone quiet, faster, is how a temporary throttle
 becomes a permanent block — and a blocked host then looks exactly like a dead
 route, which is the specific mistake this project keeps making.
+
+**D21. Took the conservative option on the queue rather than waiting for an
+answer.** I had asked whether to finish R1 or go straight at the newly-found
+player props. No answer came, so I finished R1 — it was already built, needed no
+settled games, and could only cost hours. **It died the same day.** Had I
+switched to the props first, R1 would still be open and the props would have been
+started on a premise (a fat margin means room) that R1 has now refuted for a
+third time. **The cheap thing that can end an idea goes first.**
+
+**D22. Did NOT write the prop de-vig pre-registration yet.** Given up: a head
+start. It is a NEW IDEA under `CLAUDE.md` §2, which says a new idea gets a plan
+and then a pause — and the plan is worth more after he has said whether he wants
+it, because he knows things about these sports that would change what the
+parameters are. **Writing it now would also make it look decided.**

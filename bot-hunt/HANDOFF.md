@@ -1,7 +1,7 @@
 <!-- COORDINATOR-STATE
-doing: nothing heavy running; both recorders are now registered with the shared watchdog, which restarts them at startup and every ten minutes - verified by killing one and watching it come back
-left: R1's day-one kill-test is waiting for Bovada's baseball board to populate (it was empty at 2am, which is normal for that hour); it answers whether the retail bookmaker disagrees with the sharp one at all, and needs no games to finish
-needs: yes - if that kill-test says the two bookmakers agree, R1 is dead and I stop; if it says they disagree, do you want R1 run in full?
+doing: nothing running except the two recorders, which now restart themselves via the shared watchdog
+left: nothing queued - R1 (retail bookmaker de-vig) finished on 2026-08-14 and is negative, so the queue is clear
+needs: yes - Pinnacle's free feed carries 62 two-sided player props joining to Kalshi on 10 strikeout pitchers and 13 home-run hitters. Every de-vig null here was measured on the game winner. Test the props next, or something else?
 -->
 
 # HANDOFF.md — bot-hunt, session of 2026-08-04

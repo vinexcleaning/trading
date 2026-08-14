@@ -1,7 +1,7 @@
 To: devig
 From: coordinator
 Opened: 2026-08-14 01:44
-Status: BLOCKED
+Status: DONE
 Subject: Bovada is two-sided and allowed - run the de-vig you have been blocked on since 7 August
 
 --- INSTRUCTION ---
@@ -217,3 +217,70 @@ bring it back**, not by reading the script.
   and one board-refresh from answering.
 - **What would settle it:** nothing cheap. It is a judgement about what to spend
   attention on, which is why it is his.
+
+---
+
+# ⚠ UPDATE — the board came back, the test ran twice, and R1 IS DEAD
+
+**Status changed from BLOCKED to DONE.** Bovada's board repopulated at 06:49 UTC
+and again at 13:44. Both runs completed. **Full write-up: `RESULTS_RETAIL_N3.md`.**
+
+## The answer
+
+**Strip each book's own margin out and the loose retail book and the sharpest
+book in world sport land on the same number.**
+
+| | run 1 · 06:49Z | run 2 · 13:44Z |
+|---|---|---|
+| games | 11 | 11 |
+| all three feeds pulled within | 50 s | 65 s |
+| **median disagreement** | **0.18¢** | **0.18¢** |
+| **largest disagreement, any game** | **0.24¢** | **0.48¢** |
+| cheapest cost to act on it | 1.63¢ | 1.61¢ |
+| **games clearing the cost** | **0 of 11** | **0 of 11** |
+
+**Bovada's margin 4.46 out of 100, Pinnacle's 1.98 — 2.25× fatter — and after
+each book's own margin is removed they agree to within a fifth of a penny.**
+
+**Two of the four pre-registered drop conditions fired.**
+
+**⚠ 1. The three de-vig methods disagree in sign, in both runs.** Proportional
+−0.03¢ and −0.02¢; power +0.08¢ and +0.12¢; Shin +0.04¢ and +0.07¢. §3a said in
+advance that this *is* the finding. **The whole spread across every method and
+both runs is 0.14¢ — and the disagreement between the two bookmakers is 0.18¢.**
+When the instrument and the signal are the same size, the reading is the
+instrument.
+
+**2. Nothing qualified**, so §3d's inside-versus-outside selection check had no
+tradeable set to compare. A cleaner outcome than a selection effect, still a stop.
+
+**Your point 1 was the right one and it is now demonstrated a third time.** You
+wrote that margin width is not evidence of room. Bovada's margin was **2.25×**
+Pinnacle's and there was nothing behind it.
+
+## ⚠ One thing I nearly reported wrong, recorded because it is the interesting part
+
+Run 1 printed two games — `brewers/dodgers` and `cardinals/cubs` — with
+**bit-identical values to thirteen decimal places** across three independent
+feeds. Two different games cannot compute to identical floats from different
+odds, so I did not write it up. I added a duplicate detector and re-ran seven
+hours later: **11 distinct rows, no duplicate, verdict unchanged.**
+
+Most likely Bovada served duplicated entries while its board was repopulating —
+it had been empty for the previous hour. **It changes nothing about the verdict
+and it would have changed the count of independent games**, which is the number a
+reader uses to decide how much to believe. The detector is in the script now.
+
+## What is explicitly NOT killed
+
+The full list is §4 of the results file. The short version: **only the game
+winner, only baseball, only Bovada, only two instants.** Four other permitted
+bookmakers have never been parsed, and Bovada's tennis coupon carries 160 events
+that nothing has looked at.
+
+**And the live one, which is your second job's finding:** Pinnacle's free feed
+carries **62 two-sided player props** joining to Kalshi on 10 strikeout pitchers
+and 13 home-run hitters. **Every de-vig null in this repo was measured on the
+game winner** — the most-arbitraged line on the board and the one where two books
+are most likely to agree by construction. **That is not a reason to expect props
+to be different. It is a reason that "we tested de-vig" does not cover them.**

@@ -378,6 +378,31 @@ def main() -> None:
         print(f"   {'/'.join(sorted(key))[:22]:22} {mb:>7.2f} {mp:>7.2f} "
               f"{bfair:>7.2f} {pfair:>7.2f} {diff:>+7.2f} {bar:>6.2f}  {verdict}")
 
+    # ⚠ THE DUPLICATE-ROW DETECTOR, ADDED AFTER THE FIRST RUN PRODUCED TWO.
+    # The 06:49 run printed brewers/dodgers and cardinals/cubs with BIT-IDENTICAL
+    # values -- 63.9996266228606 twice, to thirteen decimal places, across three
+    # independent feeds. Two different games cannot compute to identical floats
+    # from different odds, so either the board served duplicated entries while it
+    # was repopulating (it had been empty for the previous hour), or two games
+    # genuinely carried the same quote on both books at that instant.
+    #
+    # It does not change the verdict either way -- the largest disagreement in
+    # BOTH runs is far under the cost bar -- but an unexplained duplicate inflates
+    # the count of independent observations, and the count is the one number a
+    # reader uses to decide how much to believe. So it is detected and PRINTED
+    # rather than left for someone to notice in a table.
+    seen = {}
+    for r in rows:
+        k = (round(r["bovada_fair_c"], 6), round(r["pinnacle_fair_c"], 6))
+        seen.setdefault(k, []).append(r["game"])
+    dupes = {k: v for k, v in seen.items() if len(v) > 1}
+    if dupes:
+        print(chr(10)+"   ⚠ DUPLICATE ROWS -- these games computed to identical values:")
+        for k, v in dupes.items():
+            print(f"      {k[0]:.4f}/{k[1]:.4f}  <- {', '.join(v)}")
+        print("      Treat the count of INDEPENDENT games as "
+              f"{len(seen)}, not {len(rows)}.")
+
     d = np.array([r["diff_c"] for r in rows])
     ad = np.abs(d)
     print("\n" + "=" * 78)
