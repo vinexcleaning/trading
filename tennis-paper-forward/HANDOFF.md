@@ -1,5 +1,38 @@
 # HANDOFF — tennis-paper-forward
 
+## ⚠ C106c — A LIVE UNTESTED THESIS, WRITTEN HERE SO IT IS NOT LOST A THIRD TIME
+
+Recorded 2026-08-14 at the `reopen` chat's request. **Not being acted on**, and
+deliberately so — it would widen a running pre-registered test, which is exactly
+what I declined unasked on CH074.
+
+**The live bot's own ledger says this about itself:**
+
+> *"This reframes every negative result in P1. All of C001-C007 concern
+> **price-visible** information, which the market prices correctly. None of it
+> tests whether the market prices the **score** correctly."*
+
+**C001 is the strongest negative artifact in that corpus** — 14,162 settled
+markets, a holdout touched once, a random-entry control, about 9 cents lost per
+trade. **And it is a statement about price patterns only.**
+
+The idea it was taken to have killed — *"the price diverges from the score"*, an
+underdog wins a set and is still priced under 30 — **was never tested**, because
+the candlestick feed carries no score. The forward tape built to test it ran for
+two days and stopped.
+
+**Why it is written in THIS folder:** `tennis-paper-forward` records live matches
+with a brief each, which is the same shape as the tape that stopped. If anyone
+ever widens this test, this is the question worth widening it for.
+
+**The known obstacle, and it is why this is not a cheap reopen:** the score feed
+whose timing would be needed is accurate only to ±5-15 minutes at set end,
+described in that ledger as *"too loose for entry rules"*. It is also the feed
+this project refuses on `robots.txt` grounds (D3). **So this needs a score source
+that does not yet exist here, not merely a decision to try.**
+
+---
+
 ## ⚠ S022, S023 AND ANY set1_overshoot RE-RUN NEED THE LAPTOP, NOT THIS MACHINE
 
 Recorded here so it is not rediscovered a third time - the reopen chat and this
@@ -22,9 +55,9 @@ set-1 labels for S006's own window against the 479 it used. The join rate still
 needs the laptop.
 
 <!-- COORDINATOR-STATE
-doing: collecting on the desktop, 362 settled of 2,500; watchdog installed so both tests restart themselves after a power-off
-left: make both tests windowless (user closing the two consoles); then ~25 days of uptime. S018 refuted - join rate needs the laptop
-needs: yes - close the two visible console windows so the watchdog restarts them invisibly; and the $9.99 point-by-point purchase is still unspent
+doing: collecting on the desktop, 587 settled of 2,500, 17 bots incl. the new pre-game one; watchdog restarts everything after a power-off
+left: his dates choice (56 days / 11 days / stop at two weeks). favourite__hold earns nothing on its own picks - decomposition, 2026-08-14
+needs: yes - pick 56 days, 11 days or stop at two weeks. No purchase is wanted; he decided that and it is closed.
 -->
 
 **Built 2026-08-06, desktop `C:\Users\vinig`.** Running and accumulating.
