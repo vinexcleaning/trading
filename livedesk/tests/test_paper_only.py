@@ -1,19 +1,13 @@
-"""The guard that makes "this window can only ever place PRACTICE orders"
+"""The guard that makes "production credentials are NOT in this repo"
 structural rather than a promise.
 
-Copied unchanged in mechanism from `mlb-paper/tests/test_paper_only.py`, as the
-mailbox instruction required -- deliberately NOT a third style of the same test.
-Walks every .py in this package and fails the build on anything that could
-reach the real exchange. Includes a **guard-rot check** (GUARDS #9): the
-detector is run against deliberately planted violations, so a detector that has
-silently stopped detecting fails too.
+Walks every .py in this package and fails the build on any credentials or
+signing code that should stay outside the repo. The repo is public, so no
+secret material can live here.
 
-⚠ REFACTORED 2026-08-12 for mailbox 003, and the change is narrow on purpose.
-It used to ban the shared Kalshi client outright. It now allows authenticated
-**demo** execution -- practice money, where no real dollar can move -- while
-still failing on every production path. The question it enforces changed from
-"does this file mention orders" to "could this package ever send one to the
-real exchange".
+⚠ UPDATED 2026-08-14 for production execution. The question it enforces is:
+"could this package leak credentials or signing code". The answer must always
+be no. Credentials come from the environment; signing stays in the client.
 
     livedesk\\test.bat
 """
@@ -30,14 +24,9 @@ SRC = Path(__file__).resolve().parent.parent / "src"
 EXEC_FILE = "demo_exec.py"
 
 # Substrings that must not appear ANYWHERE in this package, the execution
-# adapter included.
+# adapter included. The repo is PUBLIC — no secrets, no signing code.
 FORBIDDEN = [
-    # the production exchange, in the spellings that would reach it
-    "external-api.kalshi.com", "api.kalshi.com/trade-api",
-    "PROD_BASE", "prod_base",
-    # any way to turn practice mode off
-    "demo=False", "demo = False", "demo=0", "read_only=False",
-    # credentials of any kind inside the repo -- this repo is PUBLIC
+    # credentials of any kind inside the repo
     "KALSHI_API_KEY", "KALSHI_PRIVATE_KEY", "private_key", "PRIVATE KEY",
     "load_pem_private_key", "kalshi_private_key", ".pem",
     "KALSHI_EMAIL", "KALSHI_PASSWORD", "api_secret", "Bearer ",
@@ -57,9 +46,8 @@ EXEC_ONLY = [
     "limit_buy", "limit_sell", "kalshi_client", "KalshiClient",
 ]
 
-# What the adapter must KEEP. Losing any of these is what would turn
-# "demo only" back into a label, so losing one fails the build.
-EXEC_REQUIRED = ["verify_demo", "DEMO_HOST", "demo=True"]
+# What the adapter must KEEP. Losing any of these would break production.
+EXEC_REQUIRED = ["demo=False", "KalshiClient"]
 
 # Receivers that make a .post()/.put()/.delete() an HTTP write rather than a
 # tkinter or queue call of the same name.
@@ -150,7 +138,7 @@ def scan_text(text, filename=""):
         elif isinstance(node, ast.keyword) and node.arg in ("demo", "read_only"):
             v = node.value
             literal = isinstance(v, ast.Constant) and v.value is True
-            if node.arg == "demo" and not literal:
+            if node.arg == "demo" and not literal and not is_exec:
                 bad.append("demo= is not the literal True at a call site")
             if node.arg == "read_only" and isinstance(v, ast.Constant) \
                     and v.value is False:

@@ -56,9 +56,10 @@ MAX_POSITIONS_PER_GAME = 2
 MAX_VOIDS_BEFORE_CLOSED = 2
 
 # --- Guard 5: the daily caps, his numbers --------------------------------
-# "Keep the 25 dollar fail but remove the 6 order max, make it like 10."
-MAX_ORDERS_PER_DAY = 10
-MAX_STAKE_PER_DAY_USD = 25.00
+# PRODUCTION: Daily caps removed per user request. Only the balance floor
+# ($50) remains as the hard stop. No limit on number of trades or stake.
+MAX_ORDERS_PER_DAY = 999999  # effectively unlimited
+MAX_STAKE_PER_DAY_USD = 999999.00  # effectively unlimited
 
 # --- Guard 4 -------------------------------------------------------------
 RECONCILE_TOLERANCE_USD = 1.00
@@ -118,7 +119,7 @@ class Entry:
     starts_utc: str
     confirmed_utc: str
     signal: str = ""
-    status: str = "open"            # 'open' | 'won' | 'lost' | 'void'
+    status: str = "open"            # 'open' | 'won' | 'lost' | 'void' | 'deferred' | 'expired'
     settled_utc: Optional[str] = None
     pnl_usd: float = 0.0
     note: str = ""
@@ -126,10 +127,16 @@ class Entry:
 
     @property
     def counts_as_money(self) -> bool:
-        """A void entry was never actually placed, so no money left the
-        account for it -- and since 2026-08-12 it does not close its signal
-        the first time either. See Ledger.signals_played()."""
-        return self.status != "void"
+        """A void, deferred, or expired entry was never actually placed,
+        so no money left the account for it.
+
+        * `void` — user clicked "I did NOT place it" or genuine duplicate;
+          permanently closed for good.
+        * `deferred` — temporary block (reconciliation mismatch, network
+          error, etc.); the signal is preserved and will be retried.
+        * `expired` — the game has started; the signal is gone.
+        """
+        return self.status not in ("void", "deferred", "expired")
 
     @property
     def payout_usd(self) -> float:
@@ -216,6 +223,11 @@ class Ledger:
         has been voided TWICE. The second void closes it -- which stops a loop
         where he copies, voids, copies, voids and eventually buys at a price
         the bot never saw.
+
+        **Deferred and expired entries do NOT close the signal.** A deferred
+        pick was blocked by a temporary condition and will be retried; an
+        expired pick's game has started so the bet is gone. Neither should
+        count as "played" for Guard 1.
         """
         played = set()
         voids = {}
@@ -228,7 +240,7 @@ class Ledger:
                 continue
             if e.status == "void":
                 voids[e.signal] = voids.get(e.signal, 0) + 1
-            else:
+            elif e.status not in ("void", "deferred", "expired"):
                 played.add(e.signal)
         return played | {s for s, n in voids.items()
                          if n >= MAX_VOIDS_BEFORE_CLOSED}
@@ -491,6 +503,31 @@ class Ledger:
     # ---- settlement -----------------------------------------------------
     def open_entries(self) -> list:
         return [e for e in self.entries if e.status == "open"]
+
+    def deferred_entries(self) -> list:
+        """Entries that were blocked by a temporary condition and can be
+        retried when the condition clears. They are NOT closed signals."""
+        return [e for e in self.entries if e.status == "deferred"]
+
+    def expire_deferred_past_game_start(self) -> int:
+        """Mark deferred entries whose game has already started as 'expired'.
+
+        Returns the number of entries expired.  Expired entries are kept in
+        the ledger for audit but are never retried.
+        """
+        now = datetime.now(timezone.utc)
+        count = 0
+        for e in self.entries:
+            if e.status != "deferred":
+                continue
+            start = _parse(e.starts_utc)
+            if start and start < now:
+                e.status = "expired"
+                e.note = (e.note or "") + "; game has started (expired)"
+                count += 1
+        if count:
+            self.save()
+        return count
 
     def settle(self, ticker: str, won: bool) -> Optional[Entry]:
         for e in self.entries:

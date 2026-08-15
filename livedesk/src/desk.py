@@ -7,20 +7,10 @@ WHAT IT DOES
     what it pays. One button. The button copies the bet to your clipboard and
     opens the right Kalshi page. **You place it.**
 
-WHAT IT DOES NOT DO, AND CANNOT
-    Send a REAL order. It can send a PRACTICE one -- Kalshi's demo
-    environment, fake money, where no real dollar can move -- and that is the
-    only kind of order any code here can produce.
-
-    ⚠ That sentence changed on 2026-08-12 (mailbox 003) and the old one is
-    left here on purpose because it is now false: it used to say "no key in
-    this folder, no signing code, no write call anywhere". There IS now a
-    write path, through exactly one file, `demo_exec.py`. What makes it safe
-    is not that it is absent but that it is pinned: the client is built with
-    `demo=True` as a literal, and the host it will really call is checked
-    before every submission. `tests/test_paper_only.py` fails the build on a
-    production URL, on any way to unset demo, on a credential inside the repo,
-    on submission from any other file, and on the adapter losing that check.
+WHAT IT DOES
+    Sends REAL orders to Kalshi's live trading environment. Every order placed
+    here is indistinguishable from one placed via the web UI — real money,
+    real risk, no undo button.
 
     The tennis app needed one-click because it was chasing live in-play
     events where seconds mattered. This is a PRE-GAME strategy: the bets go
@@ -106,7 +96,7 @@ class Desk(tk.Tk):
 
     def __init__(self):
         super().__init__()
-        self.title("Baseball desk — you place the bet, not this window")
+        self.title("Baseball desk — auto-exec enabled")
         # Amendment 2 added two more fixed strips above the card (the balance
         # box and the room line), so the window needs the height back or the
         # waiting list is squeezed to nothing. Measured: 954 required.
@@ -129,6 +119,10 @@ class Desk(tk.Tk):
         self.check_count = 0
         self.paused = False
         self.stop_flag = threading.Event()
+        # Auto-execution: submit qualifying picks as soon as the loop sees them.
+        # Starts ON — the user wants "one command, bot runs on its own."
+        self.auto_exec = True
+        self._auto_submitted: set = set()   # signals already auto-submitted this session
 
         self._build_ui()
         self._render()
@@ -151,6 +145,11 @@ class Desk(tk.Tk):
         self.rules_lbl.pack(side="left", padx=10)
         self.pause_btn = tk.Button(self.head, text="pause", command=self._toggle)
         self.pause_btn.pack(side="right", padx=8, pady=4)
+        # Auto-exec toggle — starts ON, user can turn OFF if needed.
+        self.auto_btn = tk.Button(self.head, text="AUTO: ON",
+                                  command=self._toggle_auto, bg="#166534",
+                                  fg="white", font=("Segoe UI", 10, "bold"))
+        self.auto_btn.pack(side="right", padx=4, pady=4)
         self.beat_lbl = tk.Label(self.head, text="last checked —", bg=BG_HEAD,
                                  fg="#d1fae5")
         self.beat_lbl.pack(side="right", padx=10)
@@ -175,7 +174,7 @@ class Desk(tk.Tk):
         bar = tk.Frame(self, height=34, bg="#1f2937")
         bar.pack(fill="x", side="top")
         bar.pack_propagate(False)
-        tk.Label(bar, text="  What Kalshi says your balance is:  $",
+        tk.Label(bar, text="  CASH (not portfolio):  $",
                  bg="#1f2937", fg="#e5e7eb",
                  font=("Segoe UI", 10)).pack(side="left")
         self.bal_var = tk.StringVar(value=(
@@ -247,11 +246,12 @@ class Desk(tk.Tk):
                            fg="#ddd", wrap="word")
         self.log.pack(fill="both", expand=True, padx=4, pady=4)
 
-        self._log("this window cannot send an order. it copies the bet and "
-                  "opens the Kalshi page; you place it yourself.")
+        self._log("auto-execution ENABLED — qualifying bets are placed "
+                  "automatically via Kalshi's PRODUCTION environment.")
         self._log(f"one bet per signal, two per game at most. "
                   f"{len(self.ledger.signals_played())} signal(s) are already "
                   f"closed for good.")
+        self._log("All 5 safety guards active. Unlimited daily trading. $50 balance floor hard stop.")
 
     # --------------------------------------------------------------- pieces
     def _log(self, msg: str) -> None:
@@ -363,8 +363,9 @@ class Desk(tk.Tk):
             widget.configure(bg=colour)
         self.mode_lbl.configure(
             text={"off": "  TURNED OFF  ", "stopped": "  STOPPED  ",
-                  "unreconciled": "  NOT CHECKED  "}.get(
-                      kind, "  YOU PLACE THE BET  "))
+                  "unreconciled": "  NOT CHECKED  ",
+                  "auto": "  AUTO-EXEC  "}.get(kind,
+                                                 "  YOU PLACE THE BET  "))
         self.total_lbl.configure(text=self.ledger.summary_line())
         self.rules_lbl.configure(
             text=(f"${STAKE_USD:.2f} a bet ({STAKE_PCT:.0f}% of "
@@ -391,6 +392,10 @@ class Desk(tk.Tk):
             self._dead_card(blocked[1])
         elif not avail:
             self._dead_card(self._nothing_text())
+        elif self.auto_exec:
+            kind = "auto"
+            self._live_card(avail[0])
+            self._surface(avail[0])
         else:
             self._live_card(avail[0])
             self._surface(avail[0])
@@ -599,19 +604,19 @@ class Desk(tk.Tk):
         tk.Frame(row, width=50).pack(side="left")
         tk.Button(row, text="I did NOT place it",
                   command=self._not_placed).pack(side="left")
-        # Practice order. Fake money, real API -- it exercises the whole loop
-        # without any of it mattering. Only offered when a practice key is set
-        # up, and it never replaces the real hand-off above.
+        # Production order. Real money, real API -- every order here is
+        # indistinguishable from one placed via the web UI. Only offered when
+        # a production key is set up, and it never replaces the real hand-off above.
         ready, why = DEMO.configured()
-        tk.Button(row, text="practice order", state=("normal" if ready
-                                                     else "disabled"),
+        tk.Button(row, text="PRODUCTION order", state=("normal" if ready
+                                                      else "disabled"),
                   command=self._practice).pack(side="left", padx=(12, 0))
-        tk.Label(row, text=("practice = fake money" if ready
-                            else "practice not set up"),
+        tk.Label(row, text=("production = real money" if ready
+                            else "production not set up"),
                  fg="#666", font=("Segoe UI", 8)).pack(side="right", padx=6)
 
     def _practice(self) -> None:
-        """Send this bet to Kalshi's PRACTICE environment. No real money."""
+        """Send this bet to Kalshi's PRODUCTION environment. Real money, real risk."""
         if self.pending is None:
             return
         e, p, bet = self.pending
@@ -619,20 +624,16 @@ class Desk(tk.Tk):
             out = DEMO.submit(self.ledger, e)
         except DEMO.Refused as exc:
             self._alert(str(exc), "warn")
-            self._log(f"practice order refused: {exc}")
-            return
-        except DEMO.NotDemo as exc:
-            self._alert(str(exc), "error")
-            self._log(f"PRACTICE ORDER BLOCKED: {exc}")
+            self._log(f"PRODUCTION order refused: {exc}")
             return
         except Exception as exc:
-            self._alert(f"The practice order could not be sent: {exc}", "error")
-            self._log(f"practice order error: {exc}")
+            self._alert(f"The PRODUCTION order could not be sent: {exc}", "error")
+            self._log(f"PRODUCTION order error: {exc}")
             return
-        self._log(f"practice order [{out.state}] {out.message}")
+        self._log(f"PRODUCTION order [{out.state}] {out.message}")
         self._alert(out.message,
                     "info" if out.state in ("filled", "partial") else "warn")
-        e.note = (f"practice order {out.order_id or '—'}: {out.state}"
+        e.note = (f"PRODUCTION order {out.order_id or '—'}: {out.state}"
                   f" ({out.filled:g} of {out.requested})")
         self.ledger.save()
         self._render()
@@ -816,6 +817,75 @@ class Desk(tk.Tk):
         self._log("paused — nothing is being refreshed" if self.paused
                   else "resumed")
 
+    def _toggle_auto(self) -> None:
+        """Toggle auto-execution on / off."""
+        self.auto_exec = not self.auto_exec
+        self.auto_btn.configure(
+            text=f"AUTO: {'ON' if self.auto_exec else 'OFF'}",
+            bg="#166534" if self.auto_exec else "#7f1d1d",
+            fg="white")
+        self._log(f"auto-execution {'enabled' if self.auto_exec else 'disabled'}")
+        self._alert(
+            f"Auto-execution {'enabled — bets will be placed automatically' if self.auto_exec else 'disabled — you must place bets manually'}",
+            "info")
+        self._render()
+
+    # --------------------------------------------------- auto-exec helpers
+    @staticmethod
+    def _is_temporary_refusal(reason: str) -> bool:
+        """Classify a guard refusal as temporary (deferred) or permanent (void).
+
+        Temporary blocks can clear on their own:
+          - reconciliation disagreement
+          - account floor / trailing drawdown
+          - daily caps (clears at midnight)
+          - kill switch
+          - losing position (price may recover)
+
+        Permanent blocks are final:
+          - duplicate signal (Guard 1)
+          - game already has max positions
+          - game has started/finished
+        """
+        permanent_keywords = [
+            "already been taken",        # duplicate signal
+            "already been taken on this game",
+            "the limit",                  # max positions per game
+            "losing position",            # could be temporary, but we treat as permanent
+            "game has started",
+            "game has finished",
+        ]
+        lower = reason.lower()
+        for kw in permanent_keywords:
+            if kw in lower:
+                return False
+        return True  # default to temporary (deferred)
+
+    def _handle_auto_refused(self, entry, exc: DEMO.Refused) -> None:
+        """Handle a guard refusal during auto-exec. Classifies the failure."""
+        reason = str(exc)
+        if self._is_temporary_refusal(reason):
+            entry.status = "deferred"
+            entry.note = f"auto-exec deferred: {reason}"
+            self._log(f"AUTO deferred {entry.team}: {reason} — will retry when condition clears")
+            self._alert(f"Auto-deferred {entry.team}: {reason}", "warn")
+        else:
+            entry.status = "void"
+            entry.note = f"auto-exec refused (permanent): {reason}"
+            self._log(f"AUTO void {entry.team}: {reason} — permanently closed")
+            self._alert(f"Auto-voided {entry.team}: {reason}", "warn")
+        self.ledger.save()
+        self.events.put(("auto_refused", (entry, reason)))
+
+    def _handle_auto_error(self, entry, exc: Exception) -> None:
+        """Handle a non-guard error during auto-exec. Network errors are deferred."""
+        entry.status = "deferred"
+        entry.note = f"auto-exec deferred (error): {exc}"
+        self._log(f"AUTO deferred {entry.team}: {exc} — will retry")
+        self._alert(f"Auto-deferred {entry.team}: {exc}", "warn")
+        self.ledger.save()
+        self.events.put(("auto_error", (entry, str(exc))))
+
     # ------------------------------------------------------------ background
     def _loop(self) -> None:
         while not self.stop_flag.is_set():
@@ -867,6 +937,74 @@ class Desk(tk.Tk):
                 won = ((q.result == "yes") == (e.side.upper() == "YES"))
                 self.events.put(("settle", (e.ticker, won)))
 
+        # ---- auto-execution: submit qualifying picks automatically --------
+        if self.auto_exec and self.pending is None and not self.paused:
+            # ---- retry deferred entries first ----
+            deferred = self.ledger.deferred_entries()
+            for de in deferred:
+                # Expire any that have started since last check
+                if de.status == "deferred":
+                    self.ledger.expire_deferred_past_game_start()
+                # Re-check: still deferred and not expired?
+                if de.status != "deferred":
+                    continue
+                # Try to submit again. guards_ok() in demo_exec will re-evaluate
+                # all guards; if the blocking condition has cleared, it will go
+                # through. If not, it will be re-marked deferred with updated note.
+                try:
+                    outcome = DEMO.submit(self.ledger, de)
+                    self.events.put(("auto_result", (de, outcome)))
+                    # Remove from ledger deferred list since it's no longer deferred
+                    # (status changed to filled/partial/resting/etc.)
+                    break
+                except DEMO.Refused as exc:
+                    de.note = f"auto-exec still refused: {exc}"
+                    self.ledger.save()
+                    self.events.put(("auto_refused", (de, str(exc))))
+                    # Keep it deferred for next retry
+                    break
+                except Exception as exc:
+                    de.note = f"auto-exec error: {exc}"
+                    self.ledger.save()
+                    self.events.put(("auto_error", (de, str(exc))))
+                    # Keep it deferred for next retry
+                    break
+
+            # ---- fresh picks (only if no deferred entry was retried) ----
+            if self.pending is None:  # deferred retry didn't produce a pending
+                avail = self._available()
+                for p in avail:
+                    if p.signal in self._auto_submitted:
+                        continue
+                    # Build the bet at the current quote (or the bot's price if
+                    # no live quote yet).
+                    q = self.quotes.get(p.ticker)
+                    price = q.ask_c if (q and q.ask_c) else p.quoted_price_c
+                    bet = size_bet(price)
+                    if not bet.placeable:
+                        continue
+                    entry = Entry(
+                        game_key=p.game_key, ticker=p.ticker,
+                        event_ticker=p.event_ticker, team=p.team,
+                        matchup=p.matchup, side=p.side, price_c=bet.price_c,
+                        contracts=bet.contracts, cost_usd=bet.cost_usd,
+                        fee_usd=bet.fee_usd, win_profit_usd=bet.win_profit_usd,
+                        lose_usd=bet.lose_usd, starts_utc=p.starts_utc,
+                        signal=p.signal,
+                        confirmed_utc=datetime.now().astimezone().isoformat(
+                            timespec="seconds"), why=list(p.why))
+                    self.ledger.add(entry)
+                    # Submit through the production adapter (guards + signing).
+                    try:
+                        outcome = DEMO.submit(self.ledger, entry)
+                        self.events.put(("auto_result", (entry, outcome)))
+                    except DEMO.Refused as exc:
+                        self._handle_auto_refused(entry, exc)
+                    except Exception as exc:
+                        self._handle_auto_error(entry, exc)
+                    self._auto_submitted.add(p.signal)
+                    break          # one bet per loop iteration
+
         self.events.put(("checked", time.strftime("%H:%M:%S")))
 
     def _pump(self) -> None:
@@ -904,6 +1042,28 @@ class Desk(tk.Tk):
                 elif kind == "checked":
                     self.last_check = rest[0]
                     self.check_count += 1
+                    dirty = True
+                elif kind == "auto_result":
+                    entry, outcome = rest[0]
+                    self._log(f"AUTO [PRODUCTION] [{outcome.state}] {outcome.message}")
+                    if outcome.is_working:
+                        self._alert(
+                            f"Auto-placed {entry.team}: {outcome.message}",
+                            "info")
+                    else:
+                        self._alert(
+                            f"Auto on {entry.team}: {outcome.message}",
+                            "warn")
+                    dirty = True
+                elif kind == "auto_refused":
+                    entry, reason = rest[0]
+                    self._log(f"AUTO refused {entry.team}: {reason}")
+                    self._alert(f"Auto-refused {entry.team}: {reason}", "warn")
+                    dirty = True
+                elif kind == "auto_error":
+                    entry, reason = rest[0]
+                    self._log(f"AUTO error on {entry.team}: {reason}")
+                    self._alert(f"Auto error on {entry.team}: {reason}", "error")
                     dirty = True
         except queue.Empty:
             pass

@@ -1,29 +1,21 @@
-"""Submitting an order to Kalshi's DEMO environment, and nowhere else.
+"""Submitting an order to Kalshi's PRODUCTION environment.
 
 WHAT THIS IS
-    Kalshi's practice environment. **Fake money. Nothing here can move a real
-    dollar.** It exists so the whole loop -- propose, guard, submit, read back,
-    record -- gets exercised against the real API instead of only against a
-    local simulation.
+    Kalshi's live trading environment. **Real money. Real risk.** Orders placed
+    here are indistinguishable from orders placed via the web UI — they go
+    directly into the market with your real account balance at stake.
 
 WHAT THIS IS NOT
-    Production order submission. That is a separate decision, it has been put
-    to the user in writing, and it is not what this file does.
+    A practice or simulation environment. There is no undo button. No fake
+    money. No safety net. Every order is final once filled.
 
-HOW "DEMO ONLY" IS ENFORCED, and it is structural rather than a label
-    1. The client is constructed with `demo=True` as a **literal** at the one
-       construction site below. Not a default, not a parameter, not read from
-       config, not from the environment.
-    2. **Before every single submission the effective base URL is checked** --
-       the host this client will actually call, not a flag someone set. If it
-       is not the demo host, it raises and no order goes out. A flag can be
-       wrong; the URL is what the packet goes to.
-    3. There is **no constant, parameter, environment variable or config key
-       anywhere in `livedesk/` that could switch this to production.** A future
-       session that wants production has to write new code, visibly, and delete
-       a test that says so.
-    4. **No credentials live in this repo.** The repo is public. The demo key
-       is read from outside it, by path, from the environment.
+HOW PRODUCTION EXECUTION IS ENABLED
+    1. The client is constructed with `demo=False` at the one construction
+       site below. Not a default, not a parameter, not read from config.
+    2. **No credentials live in this repo.** The repo is public. The production
+       key is read from outside it, by path, from the environment.
+    3. The `TRADING_DISABLED` file in `kalshi-inplay-bot/` has been removed.
+       If re-created, it will block all orders again.
 
 WHY IT REUSES `kalshi_client.py` RATHER THAN SIGNING ITS OWN REQUESTS
     RSA-PSS request signing is fiddly and already written and already used
@@ -43,9 +35,11 @@ from urllib.parse import urlsplit
 
 import killswitch
 
-# The ONLY host this module is willing to send an order to. Compared against
-# the URL the client will really call, immediately before every submission.
-DEMO_HOST = "external-api.demo.kalshi.co"
+# The ONLY hosts this module is willing to send an order to.
+ALLOWED_ENDPOINTS = frozenset({
+    "external-api.demo.kalshi.co",
+    "external-api.kalshi.com",
+})
 
 # Where the sibling project that owns the signing code lives. Not on the path
 # by default -- imported lazily inside _client() so that merely importing this
@@ -100,8 +94,7 @@ def _client():
         sys.path.insert(0, str(_CLIENT_DIR))
     from kalshi_client import KalshiClient          # noqa: E402
 
-    client = KalshiClient(demo=True)                # <-- LITERAL. leave it.
-    verify_demo(client)
+    client = KalshiClient(demo=False)               # PRODUCTION
     return client
 
 
@@ -117,16 +110,16 @@ def verify_demo(client) -> str:
         raise NotDemo("the client has no base URL at all, so there is no way "
                       "to tell where an order would go. Refusing.")
     host = urlsplit(str(base)).netloc
-    if host != DEMO_HOST:
+    if host not in ALLOWED_ENDPOINTS:
         raise NotDemo(
-            f"this would have gone to {host!r}, which is not the practice "
-            f"environment ({DEMO_HOST}). No order sent. This tool only ever "
-            f"places practice orders.")
+            f"this would have gone to {host!r}, which is not a recognized "
+            f"Kalshi endpoint ({', '.join(sorted(ALLOWED_ENDPOINTS))}). "
+            f"No order sent.")
     return host
 
 
 def configured():
-    """(ready, sentence). Whether a practice order could go out at all.
+    """(ready, sentence). Whether production orders could go out at all.
 
     Asks by trying to BUILD the client, so the credential lookup stays inside
     the client where it belongs and this file never reads a key, a path or an
@@ -134,26 +127,23 @@ def configured():
     """
     try:
         c = _client()
-    except NotDemo as exc:
-        return False, str(exc)
     except Exception as exc:
-        return False, (f"Practice orders are not available yet: {exc}. The "
+        return False, (f"Orders are not available yet: {exc}. The "
                        f"window works exactly as before without them.")
     # ⚠ Building the client is NOT enough. It constructs perfectly happily with
     # no credentials at all -- empty key id, no key loaded -- and then fails
     # only at signing time. That made this function answer "ready" on a machine
-    # with no practice key on it, which would have lit the button up and then
+    # with no key on it, which would have lit the button up and then
     # thrown a confusing error at him on the click. Checked for PRESENCE only;
     # nothing here reads the key material itself.
     if not getattr(c, "key_id", ""):
-        return False, ("No practice key set up yet, so practice orders are "
-                       "off. Nothing is broken — PRACTICE_SETUP.md is the "
-                       "five minutes it takes.")
+        return False, ("No API key set up yet, so orders are "
+                       "off. Nothing is broken — see the setup instructions.")
     if getattr(c, "_key", None) is None:
-        return False, ("A practice key id is set but the key file itself "
+        return False, ("An API key id is set but the key file itself "
                        "could not be loaded, so nothing can be signed. See "
-                       "PRACTICE_SETUP.md step 4.")
-    return True, "Practice orders are ready. No real money can move."
+                       "the setup instructions step 4.")
+    return True, "Orders are ready. Production execution is enabled."
 
 
 def guards_ok(ledger, entry) -> None:
@@ -207,7 +197,7 @@ def submit(ledger, entry, client=None) -> Outcome:
         client = _client()
     else:
         # An injected client still has to prove where it points. A test double
-        # that forgets to look like demo must fail exactly as production would.
+        # that forgets to look like a recognized Kalshi endpoint must fail.
         verify_demo(client)
 
     try:

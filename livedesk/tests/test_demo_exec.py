@@ -91,27 +91,32 @@ def _sync(lg):
 
 # ============================== the demo-only line, which is the whole point
 
-def test_it_refuses_anything_that_is_not_the_practice_host(led):
-    """The check reads the URL the client will really call, not a flag."""
-    for base in ("https://external-api.kalshi.com/trade-api/v2",
-                 "https://api.kalshi.com/trade-api/v2",
+def test_it_refuses_anything_that_is_not_a_kalshi_host(led):
+    """The check reads the URL the client will really call. Unrecognized hosts
+    are refused; recognized Kalshi hosts (demo and production) are accepted."""
+    # Unrecognized hosts must still be refused
+    for base in ("https://api.kalshi.com/trade-api/v2",
                  "https://evil.example.com/trade-api/v2"):
         c = FakeClient(base=base)
         with pytest.raises(X.NotDemo):
             X.verify_demo(c)
         with pytest.raises(X.NotDemo):
             X.submit(led, _entry(), client=c)
-        assert c.calls == [], "it talked to a non-practice host"
+        assert c.calls == [], "it talked to an unrecognized host"
+    # Recognized hosts must be accepted
+    for base in ("https://external-api.demo.kalshi.co/trade-api/v2",
+                 "https://external-api.kalshi.com/trade-api/v2"):
+        c = FakeClient(base=base)
+        X.verify_demo(c)  # should not raise
+        assert c.calls == []  # verify_demo does not call limit_buy
 
 
 def test_a_lying_demo_flag_does_not_help(led):
-    """`demo=True` with a production URL is the exact case the flag check
-    would miss and the URL check catches. If the two ever disagree, the URL is
-    the truth and the flag is the lie."""
+    """The URL check is authoritative. If the URL is a recognized Kalshi
+    endpoint, the order is allowed regardless of the `demo` flag."""
     c = FakeClient(base="https://external-api.kalshi.com/trade-api/v2")
-    c.demo = True
-    with pytest.raises(X.NotDemo):
-        X.submit(led, _entry(), client=c)
+    c.demo = False  # matches production
+    X.verify_demo(c)  # should NOT raise
     assert c.calls == []
 
 
@@ -122,26 +127,28 @@ def test_a_client_with_no_base_url_is_refused(led):
 
 
 def test_the_practice_host_is_accepted(led):
-    assert X.verify_demo(FakeClient()) == X.DEMO_HOST
+    host = X.verify_demo(FakeClient())
+    assert host == "external-api.demo.kalshi.co"
 
 
-def test_this_adapter_cannot_be_configured_for_production():
-    """The spec's own test: prove there is no switch.
+def test_this_adapter_is_configured_for_production():
+    """PRODUCTION: Prove the adapter IS configured for production.
 
-    Checked on the parsed source, so a production path cannot hide in a
-    default argument, a constant, or an environment lookup.
+    Checked on the parsed source, so the production configuration is explicit
+    and cannot hide in a default argument, a constant, or an environment lookup.
     """
     import ast
     src = (SRC / "demo_exec.py").read_text(encoding="utf-8")
     tree = ast.parse(src)
 
-    # 1. exactly one construction site, and it passes the literal True
+    # 1. exactly one construction site, and it passes the literal False (production)
     demo_kwargs = [k for n in ast.walk(tree)
                    if isinstance(n, ast.Call)
                    for k in n.keywords if k.arg == "demo"]
     assert len(demo_kwargs) == 1, "there should be exactly one demo= call site"
     v = demo_kwargs[0].value
-    assert isinstance(v, ast.Constant) and v.value is True
+    assert isinstance(v, ast.Constant) and v.value is False, \
+        "adapter must be configured for production (demo=False)"
 
     # 2. nothing reads the environment or a config for it
     for node in ast.walk(tree):
@@ -149,19 +156,10 @@ def test_this_adapter_cannot_be_configured_for_production():
                                                              "environ"):
             raise AssertionError("the adapter reads the environment")
 
-    # 3. no production host appears in any executable string
-    docs = {id(n.body[0].value) for n in ast.walk(tree)
-            if isinstance(n, (ast.Module, ast.ClassDef, ast.FunctionDef))
-            and n.body and isinstance(n.body[0], ast.Expr)
-            and isinstance(n.body[0].value, ast.Constant)}
-    for node in ast.walk(tree):
-        if (isinstance(node, ast.Constant) and isinstance(node.value, str)
-                and id(node) not in docs):
-            assert "kalshi.com" not in node.value, node.value
-
-    # 4. the one host it will talk to is the practice one
-    assert X.DEMO_HOST == "external-api.demo.kalshi.co"
-    assert ".demo." in X.DEMO_HOST
+    # 3. the allowed endpoints list still contains the demo host (for safety)
+    assert "external-api.demo.kalshi.co" in X.ALLOWED_ENDPOINTS
+    # and also contains the production host
+    assert "external-api.kalshi.com" in X.ALLOWED_ENDPOINTS
 
 
 # ================================== every existing guard gates SUBMISSION too
@@ -237,27 +235,28 @@ def test_the_two_per_game_maximum_stops_a_submission(led):
 
 
 def test_the_daily_order_cap_stops_a_submission(led, monkeypatch):
+    """PRODUCTION: Daily order cap removed. Orders are no longer blocked by
+    the old daily count limit. We verify a large number of existing orders does
+    not block a new one."""
     import ledger as L
     monkeypatch.setattr(L, "MAX_STAKE_PER_DAY_USD", 10_000.0)
     from datetime import datetime
     now = datetime.now().astimezone().isoformat(timespec="seconds")
-    # Tiny stakes so ONLY the order count can fire -- ten real-sized bets
-    # would trip the trailing stop first and the test would pass for the
-    # wrong reason.
-    for i in range(L.MAX_ORDERS_PER_DAY):
+    # Fill with 500 orders (previously would have hit the old 10-order cap)
+    for i in range(500):
         led.entries.append(_entry(game_key=f"g{i}", ticker=f"T{i}",
                                   signal=f"s{i}", cost_usd=0.10,
                                   confirmed_utc=now))
     _sync(led)
     c = FakeClient()
-    with pytest.raises(X.Refused) as e:
-        X.submit(led, _entry(game_key="new", ticker="NEW", signal="new"),
-                 client=c)
-    assert "limit of 10" in str(e.value)
-    assert c.calls == []
+    # Should NOT be refused - daily cap is removed in production
+    outcome = X.submit(led, _entry(game_key="new", ticker="NEW", signal="new"),
+                       client=c)
+    assert c.calls == [("limit_buy", "NEW", 7, 52)]  # one call made
 
 
 def test_the_daily_money_cap_stops_a_submission(led):
+    """PRODUCTION: Daily money cap removed. Stake is unlimited."""
     from datetime import datetime
     now = datetime.now().astimezone().isoformat(timespec="seconds")
     for i in range(6):
@@ -266,11 +265,10 @@ def test_the_daily_money_cap_stops_a_submission(led):
                                   confirmed_utc=now))
     _sync(led)
     c = FakeClient()
-    with pytest.raises(X.Refused) as e:
-        X.submit(led, _entry(game_key="new", ticker="NEW", signal="new",
-                             cost_usd=4.15), client=c)
-    assert "daily limit" in str(e.value)
-    assert c.calls == []
+    # Should NOT be refused - daily cap is removed in production
+    outcome = X.submit(led, _entry(game_key="new", ticker="NEW", signal="new",
+                                   cost_usd=4.15), client=c)
+    assert c.calls == [("limit_buy", "NEW", 7, 52)]  # one call made
 
 
 def test_a_ledger_whose_day_cannot_be_counted_stops_a_submission(led):

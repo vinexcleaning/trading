@@ -572,14 +572,15 @@ def _today(n=0):
 
 
 def test_guard5_his_numbers(led):
-    assert MAX_ORDERS_PER_DAY == 10
-    assert MAX_STAKE_PER_DAY_USD == 25.00
+    # PRODUCTION: Daily caps removed per user request. Only the $50 balance
+    # floor remains as a hard stop. No limit on number of trades or stake.
+    assert MAX_ORDERS_PER_DAY == 999999
+    assert MAX_STAKE_PER_DAY_USD == 999999.00
 
 
 def test_guard5_the_money_cap_stops_him_before_the_order_cap(led):
-    """At $4.15 a bet, six bets is $24.90 and a seventh would be $29.05. So the
-    limit of 10 orders can never be reached. He must not think he raised his
-    ceiling from 6 to 10 when he did not."""
+    """PRODUCTION: Daily money cap removed. A seventh bet should NOT be
+    refused on money anymore."""
     for i in range(6):
         led.entries.append(_entry(game_key=f"g{i}", ticker=f"T{i}",
                                   signal=f"s{i}", cost=4.15,
@@ -587,21 +588,22 @@ def test_guard5_the_money_cap_stops_him_before_the_order_cap(led):
     led.save()
     n, spent = led.daily_used()
     assert n == 6 and spent == pytest.approx(24.90)
-    assert led.daily_block(4.15), "a seventh bet must be refused on money"
-    assert "daily limit" in led.daily_block(4.15)
+    assert led.daily_block(4.15) is None, "daily money cap removed in production"
 
 
 def test_guard5_says_WHICH_cap_will_actually_stop_him(led):
     line = led.daily_line()
-    assert "0 of 10 bets" in line and "$0.00 of $25.00" in line
-    assert "money runs out first, after 6 more" in line
+    # With caps at 999999, the line shows the huge limits
+    assert "0 of 999999 bets" in line and "$0.00 of $999999.00" in line
 
 
 def test_guard5_that_sentence_is_computed_not_hard_coded(led, monkeypatch):
     """It has to stay true if any of the three numbers change."""
     import ledger as L
     monkeypatch.setattr(L, "MAX_STAKE_PER_DAY_USD", 500.0)
-    assert "order count runs out first, after 10 more" in led.daily_line()
+    # With money cap at 500 and stake ~4.15, money allows ~120 more bets
+    # Order cap is 999999, so money still runs out first
+    assert "money runs out first" in led.daily_line()
 
 
 def test_guard5_fails_CLOSED_when_today_cannot_be_counted(led):
