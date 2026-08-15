@@ -264,6 +264,34 @@
         "app"
       ],
       "window_title": "Livedesk chat mail check"
+    },
+    {
+      "name": "EXTRACTORS",
+      "slug": "extractors",
+      "folders": [
+        "extractor-apify"
+      ],
+      "purpose": "Pulls social data through paid vendors like Apify and tests which platforms are worth paying for.",
+      "opening": "you are the extractors chat, check your mail",
+      "created": "2026-08-14",
+      "subjects": [
+        "apify",
+        "vendor",
+        "scraper",
+        "scrapers",
+        "actor",
+        "actors",
+        "tiktok",
+        "instagram",
+        "twitter",
+        "bluesky",
+        "extractor",
+        "extractors",
+        "corpus",
+        "social",
+        "platform",
+        "platforms"
+      ]
     }
   ]
 }

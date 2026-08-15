@@ -171,3 +171,14 @@ bot-forensics/out/t6_features.csv
 tennis-paper-forward/data/
 tennis-paper-forward/logs/
 tennis-paper-forward/reports/
+
+# --- API tokens by shape, so a paste can never be committed --------------
+# Added 2026-08-14 after a token was pasted into a chat window. These catch a
+# credential saved under an innocent filename. Tokens belong OUTSIDE this repo
+# entirely; this is the backstop, not the rule.
+*apify*token*
+*apify*key*
+apify.txt
+*_token.txt
+*_key.txt
+keys/

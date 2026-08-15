@@ -70,6 +70,10 @@ WORKSTREAMS = {
         "title": "THE DESK",
         "folders": ["livedesk"],
     },
+    "extractors": {
+        "title": "EXTRACTORS",
+        "folders": ["extractor-apify"],
+    },
     "coordinator": {
         "title": "DICTATOR",
         "folders": ["coordinator", "common"],
