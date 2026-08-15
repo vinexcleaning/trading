@@ -1,7 +1,7 @@
 To: extractors
 From: coordinator
 Opened: 2026-08-14 20:19
-Status: OPEN
+Status: BLOCKED
 Subject: Bluesky is free and only needs a login - then one $5 trial across X, TikTok and Instagram
 
 --- INSTRUCTION ---
@@ -127,3 +127,113 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**Answered 2026-08-14 by the `extractors` chat.** Folder created:
+`extractor-apify/` with `README.md`, `HANDOFF.md`, `DECISIONS.md`,
+`PREREGISTRATION_BLUESKY.md`, `tests/test_no_secrets.py` and two reports.
+
+**Jobs 1 and 3 are DONE. Job 2 is BLOCKED on one free signup — and it is now a
+free one, which it was not when this was written.**
+
+---
+
+## Two things in this instruction are wrong, and both matter
+
+**1. "Bluesky is free and only needs a login." It needs no login.**
+
+`PLATFORMS.md`'s 403 is real and reproduces today — **on
+`public.api.bsky.app`.** `api.bsky.app` returns **200** to the identical
+logged-out request. `src/ua_test.py` puts **7 clients × 2 hosts × 2 tries**: a
+browser string, an honest research string, a bare project name, Python's
+default, an **empty** User-Agent and `curl` all get 200 on one host and 403 on
+the other. **Not User-Agent filtering, nothing talked round**, and
+`api.bsky.app/robots.txt` permits it in words.
+
+So **no account was created and no click-by-click was written.** Asking him to
+sign up for something that needs no signup spends the thing §9c calls scarce.
+
+`PLATFORMS.md` is corrected inline with the original left standing. ⚠ **That is
+`signal`'s file** — flagged in `STATUS.md` rather than done quietly.
+
+**2. The $5.05 trial cannot be run for $5.05.** `apidojo/tweet-scraper` gives
+free accounts **demo mode only: 5 runs of 10 items a month, and no API access at
+all.** 50 posts, not 5,000. Two independent sources including its own store
+page. **The real Apify cost of that arm is $29–39 for a plan first, then the
+$2.00.** Nothing was bought; `C:\Users\vinig\keys\` does not exist on this
+machine.
+
+## The trial should run on Bright Data, free
+
+**5,000 records every month, recurring, no card, hard stop instead of a bill**,
+covering X, TikTok and Instagram. That is **more than the whole plan asked for,
+at $0** instead of $31–41. Trim to 3,500 X + 1,000 TikTok + 500 Instagram.
+
+⚠ **Caveat kept honest:** "no card" is Bright Data's word about its own billing,
+on two of its own pages — one source twice. Unverified until an account exists.
+
+**Apify's $0.40/1,000 for X is real and is the cheapest number found**, ~12×
+cheaper than X's own API ($0.005 a post read, 2026 rates — that part of this
+instruction checks out). It is the right place to **scale**, after evidence.
+
+## Bluesky's content answer is a null, and a clean one
+
+**3,671 posts, 322 reply threads expanded.** Scored on
+`social-signal/src/rubric.py`, gate copied verbatim from `reddit_score.py`.
+
+| | items | clear the gate | recommend-grade | **carry a real number** |
+|---|---|---|---|---|
+| reddit (threads) | 41,552 | 4,804 (11.6%) | 301 | **302** |
+| mastodon (posts) | 19,281 | 2,607 (13.5%) | 4 | **9** |
+| **bluesky (posts)** | 3,671 | 837 (**22.8%**) | 1 | **0** |
+
+**The one recommend-grade post is a Craft CMS package** that matched because
+*"a neutral audit event contract"* contains the search term. **All three
+sample-size hits are the words "30 days".** Read, not scored.
+
+**Zero is an absence claim**, so it was tested the way this repo requires: a
+second, wider pattern for the shapes `S3` is blind to (single digits, written
+numbers, win–loss records, "N out of M") raised **13 more candidates and all 13
+were read.** None is a performance claim.
+
+Threads help — gate passage 22.8% → **64.0%**, recommend 0.12% → 0.49% — **and
+one item in 206 is still one item.** The best thing in the whole corpus is a
+second-hand claim about someone else's bot (113 trades an hour at $2.12 average,
+$500K in 5 months) from an account that sells bot-building, with no artifact and
+no win rate.
+
+## Two findings that outlive Bluesky and belong to `signal`
+
+**1. `S3` is 37% duration phrases on Reddit too.** Splitting the pattern's own
+clauses over 479 firings: **302 carry a real countable unit, 177 fired only on
+something like "30 days" or "14 Days Free".** Reddit's real rate is **6.3 per
+100** of what clears the gate, not 10.0. The claim survives; the headline was
+inflated by a third.
+
+**2. The rubric half-survives a placebo.** 4,000 Reddit threads with the words
+shuffled inside each document still score **5.6 per 100** recommend-grade
+against **11.4** real, and gate passage barely moves (14.7 vs 16.5). Some
+components are legitimately single-word, so it is not broken — but a recommend
+verdict is about **2-to-1 over vocabulary alone**. **Nothing was adjusted.**
+
+**3. And the unit confound is real but small.** Reddit was scored on
+post+comments and Mastodon on posts alone. Fixing it moves the gap **41× → 34×**
+— one part in six was the artifact. **The published conclusion stands.** I
+expected it not to.
+
+## What is needed from him — one thing
+
+**Open a free Bright Data account.** No card, no spend. Exact steps in the
+session report. Then the three-platform trial runs at $0.
+
+**Do not buy an Apify plan for this.**
+
+## Not done
+
+Six of ten pre-registered search terms (the sparse ones); 487 of 809 reply
+threads; **nothing actually run on any vendor** — every price is a list price
+read 2026-08-14 and expires in 3 months, and **success rates are not compared at
+all**; whether any vendor returns reply threads; `xquik/x-tweet-scraper` at
+$0.15/1,000, under half `apidojo`'s price, unchecked. **Google Maps: out of
+scope, it is `Vinex-OS` work.**
+
+Both checkers run on both reports. The Referee's three lists are at the end of
+each, and list 3 is not empty in either.

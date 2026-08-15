@@ -5353,3 +5353,115 @@ Filed to `devig` **020** and `tennis` **015** (do-not-chase).
 findings with an owner have reached that owner; 0 unfiled, 0 misrouted, 5
 ownerless by decision.** Of 22 messages sent, **18 answered** — `tennis` **006**
 is BLOCKED and correctly so.
+
+---
+
+## extractors, 2026-08-14 — Bluesky was never closed, and the $5 trial cannot be run for $5
+
+New chat `extractors`, new folder `extractor-apify/`, from
+`coordinator/mailbox/extractors/001`. Three jobs: Bluesky (free), one paid trial
+across X/TikTok/Instagram, and whether Apify is the right vendor.
+
+### 1. Bluesky is open, free, and needs no account — `PLATFORMS.md` corrected inline
+
+`social-signal/PLATFORMS.md` recorded Bluesky as **closed** on a 403 from
+`public.api.bsky.app`. **That 403 is real and reproduces today. It is real on one
+host.** `api.bsky.app` returns **200** to the identical logged-out request.
+
+| host | `searchPosts`, logged out |
+|---|---|
+| `public.api.bsky.app` | **403** to every client tried |
+| **`api.bsky.app`** | **200 — 100 posts with full text, timestamps, reply counts** |
+
+`extractor-apify/src/ua_test.py` puts **7 clients × 2 hosts × 2 tries**: a
+browser string, an honest research string, a bare name, Python's default, an
+**empty** User-Agent and `curl` all get 200 on one host and 403 on the other.
+**So it is not User-Agent filtering and nothing is being talked round** — an
+honest client is served, which is the test this repo applies everywhere.
+`api.bsky.app/robots.txt`: *"Crawling the public parts of the API is allowed."*
+
+**Two real constraints, both measured, both non-obvious:**
+
+- **The cursor 403s.** 100 posts and a cursor come back; feeding the cursor
+  returns 403 immediately, and again after 20s and 60s, while the same call
+  without it returns 200 every time. `since`/`until` **do** work, so the
+  collector walks time windows instead. **The naive reading is "Bluesky caps you
+  at 100" and it is wrong.**
+- **The host drops requests intermittently** — a bare 403 or a TCP timeout,
+  recovering on retry a minute later. **That is most likely what produced the
+  original wrong entry.** One 403, taken at face value, closed a platform in this
+  repo's documentation for ten days.
+
+**The correction is marked inline in `PLATFORMS.md` and the original paragraph is
+left standing** (`CLAUDE.md` §6). ⚠ **`signal` owns that file** — this is a
+cross-folder edit, made because the mailbox instruction asked for it explicitly.
+Flagged here rather than done quietly.
+
+Corpus so far: **3,591 posts** across the four dense venue terms, thread
+expansion running. Free, keyless, `data/` gitignored.
+
+### 2. ⚠ The $5.05 trial in the mailbox cannot be run as written
+
+The plan was 5,000 X posts at $0.40/1,000 inside Apify's $5 free credit.
+**`apidojo/tweet-scraper` gives free accounts demo mode only — 5 runs of 10
+items a month, and no API access at all.** 50 posts, not 5,000. Two independent
+sources, including the actor's own store page.
+
+**The real Apify cost of that arm is $29–39 for a plan first, then the $2.00.
+Roughly $31–41, not $2.00.** Nothing was bought. No token was read.
+`C:\Users\vinig\keys\apify.txt` **does not exist on this machine** — checked.
+
+### 3. Apify is a good vendor and the wrong one to start with
+
+**Bright Data gives 5,000 records every month, free, recurring, no card, hard
+stop instead of a bill** — its own docs say so — covering X, TikTok and
+Instagram. That is **more volume than the whole trial asked for, at $0.**
+
+Apify's **$0.40/1,000 for X is genuinely the cheapest number found** and is
+~12× cheaper than X's own API ($5.00/1,000 at $0.005 a post read, 2026 rates —
+the mailbox's claim checks out). It is worth scaling on **after** evidence.
+ScrapingBee, Zyte, Firecrawl and ScraperAPI sell page-fetching, not
+platform-specific extraction, so for this job they are a different product.
+`extractor-apify/reports/VENDORS.md`.
+
+> **Possibly relevant to `tennis`, not chased:** the **Label coverage (tennis)**
+> row above is *"Blocked. Apify at a monthly hard limit"*. Bright Data's 5,000
+> free monthly credits also cover its Web Unlocker and Web Scraper API, not only
+> social. **Whether that reaches Flashscore at a −68 day offset is untested and I
+> have not tested it** — it is their folder and their call.
+
+### 4. Two findings about the instrument, which outlive Bluesky
+
+**The rubric half-survives a placebo.** Take 4,000 Reddit threads from
+`social.db`, shuffle the words inside each document so no phrase survives, and
+`social-signal/src/rubric.py` still calls **5.6 in 100** recommend-grade against
+**11.4 in 100** for real text. Gate passage barely moves at all (14.7 vs 16.5).
+**About half of what it calls good, it is calling good on vocabulary alone.**
+Some components are legitimately single-word, so this is not "broken" — but a
+recommend verdict is roughly a 2-to-1 signal over vocabulary, not the clean read
+the rate implies. **Nothing was adjusted.** This applies to every number that
+rubric has produced in this repo. `extractor-apify/src/unit_control.py`.
+
+**The published Reddit-vs-Mastodon gap is mostly real, and I expected otherwise.**
+Reddit was scored on post-plus-comments and Mastodon on posts alone — `social.db`
+holds 12,846 comments and **every one belongs to a Reddit post**. Re-scoring
+Reddit post-only moves the gap from **41× to 34×**. **One part in six was the
+unit of observation; five parts in six is the platform.** The `PLATFORMS.md`
+conclusion stands, slightly smaller.
+
+### What is NOT done
+
+- The remaining 6 of 10 pre-registered search terms (the sparse ones —
+  `manifold markets`, `kalshi bot`, `polymarket bot`, `predictit`,
+  `betfair exchange`). The four dense venue terms are collected.
+- **Nothing has been run on any vendor.** Every price is a list price off a
+  public page on 2026-08-14 and expires in 3 months. **Success rates are not
+  compared at all**, and a cheap scraper that fails half its requests is not
+  cheap.
+- Whether any vendor returns **reply threads**. Both this work and `PLATFORMS.md`
+  find a lone short post carries a claim without its denominator, so a vendor
+  selling posts-without-replies may be selling the useless half.
+- `xquik/x-tweet-scraper` advertises **$0.15/1,000** on Apify, under half
+  `apidojo`'s price. Not checked for gating or for whether it works.
+- **Google Maps: out of scope by decision.** Local business data belongs to
+  `Vinex-OS` (`CLAUDE.md` §7). Noted and stopped.

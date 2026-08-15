@@ -12,7 +12,8 @@ reproduce with `python src/robots_policy.py` and `python src/probe_platforms.py`
 | X / Twitter | — | no — `Disallow: /` | no — API 401, oEmbed 404 | **refused + closed** |
 | Instagram | — | no policy served | no — login wall | **closed** |
 | Facebook | — | named, path-list only | **no — every endpoint 400** | **closed** |
-| Bluesky | — | yes | **no — 403 to every client** | **closed** |
+| ~~Bluesky~~ | ~~—~~ | ~~yes~~ | ~~**no — 403 to every client**~~ | ~~**closed**~~ |
+| **Bluesky** ⚠ **CORRECTED 2026-08-14** | `extractor-apify/src/bluesky_fetch.py` | **yes — robots says so in words** | **yes — full post text + reply threads** | **WORKING · free, no account** |
 | Threads | — | no policy served | not reached | closed |
 
 Two independent questions decide each row, and conflating them is how you talk
@@ -137,20 +138,73 @@ stated policy is not permission. Instagram's legacy keyless oEmbed now serves a
 login wall, and `graph.facebook.com/instagram_oembed` returns **400** without a
 Meta app token.
 
-## Bluesky — permitted, and it still says no
+## Bluesky — ⚠ **THIS SECTION WAS WRONG. Corrected 2026-08-14 by `extractor-apify`.**
 
-The only platform where robots and reality disagree in this direction.
-`robots.txt` permits everything, and the AT Protocol AppView is designed to be
-consumed publicly. But:
+**The correction first, then the original text, which is left standing because
+deleting a wrong number is how someone re-derives it.**
+
+**Bluesky is open, free, and needs no account.** The 403 below is real and
+reproduces today. It is real **on one host**. The AppView answers on another:
+
+| host | `app.bsky.feed.searchPosts`, logged out |
+|---|---|
+| `public.api.bsky.app` | **403** — to every client tried |
+| **`api.bsky.app`** | **200 — 100 posts, with full text, timestamps and reply counts** |
+
+The sentence *"403 to a research User-Agent and 403 to a browser User-Agent
+alike, so it is not UA filtering"* was correct and the conclusion drawn from it
+was not. `extractor-apify/src/ua_test.py` puts **seven clients against both
+hosts, twice each**: a browser string, an honest research string, a bare project
+name, Python's default, an **empty** User-Agent and `curl` all get **200** on
+`api.bsky.app` and all get **403** on `public.api.bsky.app`. **Nothing is being
+talked round** — an honest client is served, which is the whole test this file
+applies everywhere else.
+
+And `api.bsky.app/robots.txt` says it in words:
 
 ```
-public.api.bsky.app/xrpc/app.bsky.feed.searchPosts  ->  403 Forbidden
+# Crawling the public parts of the API is allowed. HTTP 429 ("backoff")
+# status codes are used for rate-limiting.
+User-agent: *
+Allow: /
 ```
 
-**403 to a research User-Agent and 403 to a browser User-Agent alike**, so it is
-not UA filtering and there is nothing to "fix" that would not be circumvention.
-Recorded as closed. Worth re-testing later — this one looks like infrastructure,
-not policy.
+**Two real constraints, both measured:**
+
+1. **The cursor does not work.** A search returns 100 posts and a cursor;
+   feeding that cursor back returns **403**, immediately and after waiting 20
+   and 60 seconds, while the same request without it returns 200 every time.
+   `since`/`until` **do** work, so the collector walks backwards in time in
+   windows instead.
+2. **The host drops requests intermittently** — a plain 403 or a bare TCP
+   timeout, recovering on retry a minute later. **That is very likely what
+   produced this section's original entry**: one 403, taken at face value,
+   closed a platform in this project's documentation for ten days.
+
+**Six of eleven routes answer logged out**, including account search, author
+feeds and thread reads. `extractor-apify/reports/BLUESKY.md` has the corpus and
+what it is worth.
+
+---
+
+### The original entry, left in place
+
+> ## Bluesky — permitted, and it still says no
+>
+> The only platform where robots and reality disagree in this direction.
+> `robots.txt` permits everything, and the AT Protocol AppView is designed to be
+> consumed publicly. But:
+>
+> ```
+> public.api.bsky.app/xrpc/app.bsky.feed.searchPosts  ->  403 Forbidden
+> ```
+>
+> **403 to a research User-Agent and 403 to a browser User-Agent alike**, so it is
+> not UA filtering and there is nothing to "fix" that would not be circumvention.
+> Recorded as closed. Worth re-testing later — this one looks like infrastructure,
+> not policy.
+
+**The last line was right.** It said re-test later. Nobody did for ten days.
 
 ## Reddit — refused at the site, permitted at the archive
 
