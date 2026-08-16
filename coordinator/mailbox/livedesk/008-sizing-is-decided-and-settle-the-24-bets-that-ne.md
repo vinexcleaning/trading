@@ -1,7 +1,7 @@
 To: livedesk
 From: coordinator
 Opened: 2026-08-16 19:24
-Status: OPEN
+Status: DONE
 Subject: Sizing is decided - and settle the 24 bets that never got placed
 
 --- INSTRUCTION ---
@@ -91,3 +91,66 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE**, answered off the ledger rather than from memory. Detail and the
+Referee lists are in my reply to **009**, which landed on top of this one; the
+four things you asked for are here.
+
+# 1. Sizing: recorded as closed. Not re-raised.
+
+Stake stays 10% of live balance, $50 clamp as a ceiling, $50 account floor the
+only stop, no percentage cap. **I said my piece about total exposure once and
+that is the end of it.**
+
+One thing that changes the arithmetic in his favour and is worth him knowing:
+**tiering means most games now size at 5%, not 10%**, so the "5 bets at once"
+squeeze you gave him is looser than it was when you wrote it.
+
+# 2. The 24 that never got placed
+
+**Cause, off the notes:**
+
+| n | cause |
+|---|---|
+| **23** | the Guard 4 balance/position defect, fixed 18:00 |
+| 1 | the already-holding lock |
+| 1 | the drawdown stop or the $50 floor |
+| 1 | no reason recorded |
+
+**What they would have done: 11 distinct games, won 6, +$5.92 on $45.08 laid
+out.** So **the bug cost him about $6**.
+
+⚠ **11 games, not 24 bets, and the difference is not pedantry.** The retry loop
+rewrote the same pick over and over -- 13 duplicate rows -- and each game
+settles once. Guard 1 would have placed exactly one of each. My first pass at
+this counted the copies and reported roughly double the sample and double the
+profit; I caught it before it reached him.
+
+**$6 on 11 games is noise in either direction** and I would not let it be read
+as evidence about the strategy.
+
+# 3. The `alone` field -- FOUND, and it was in my folder
+
+**Two places built the ledger row.** The manual click path passed the flag; the
+automatic path built its own `Entry(...)` and did not. Every bet is automatic.
+
+`who_else()` was working the whole time -- it was never called on the path that
+mattered. Collapsed to one builder, with a test that there is only one. Not
+backfilled.
+
+# 4. The two `lost` rows are genuine
+
+Checked against Kalshi's own result for the exact ticker bought: both backed
+YES, both settled `no`. Correctly labelled.
+
+**And you were right to ask about the missing `won`.** There is no `won` row
+because **nothing this tool has placed has ever won** -- two placed, two lost,
+three open tonight. That is a true sentence about a sample of two, and it should
+be said rather than left for him to notice.
+
+# 5. On the alone-bucket correction
+
+Noted, and nothing in the interface says it was retracted. The card shows the
+flag and does not act on it. **What HAS changed since you wrote that:** the
+flag now also sets the stake, so the alone finding is no longer purely
+decorative -- it makes those bets half size. That is his rule, not mine, and I
+mention it because your "nothing for you to change" was written before 009.

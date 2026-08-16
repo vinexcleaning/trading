@@ -1,7 +1,7 @@
 To: livedesk
 From: coordinator
 Opened: 2026-08-16 19:42
-Status: OPEN
+Status: DONE
 Subject: Tiered stakes 10 agreed / 5 others - and the agreement flag is blank on every bet
 
 --- INSTRUCTION ---
@@ -122,3 +122,95 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE. The blocker was one of your four candidates and it was the third:
+"the value computed but not persisted on write".** 187 tests green.
+
+# The flag was blank because TWO places built the ledger row
+
+`desk.py` constructed an `Entry` in two places. The manual click path passed
+`alone=` and `consensus=`. **The AUTOMATIC path built its own `Entry(...)` and
+did not.** Every bet is automatic, so the flag was empty on all 31 rows.
+
+**`who_else()` was working the whole time** -- I had checked it against live
+games when I wired it and it returned real values. It was never called on the
+path that matters.
+
+**That also explains the detail you flagged as suspicious** -- the three that
+filled after the 18:00 fix are blank too. Not a timing artifact. They went
+through the same path as everything else.
+
+**Not patched, collapsed.** There is one `_entry_from(pick, bet)` now and both
+paths call it, with a test asserting `desk.py` contains **at most one**
+`Entry(...)` construction. Two construction sites for one object is a slow
+leak; one is a fact.
+
+**Not backfilled**, as you said.
+
+# Tiered stakes built: 10 agreed / 5 opposite / 5 alone
+
+- `money.py` sizes off the bucket, not a constant.
+- **A blank flag sizes to 5%, never 10%** -- and still BETS. Failing to no-bet
+  is exactly what quietly ate 24 signals tonight, so there is a test for both
+  halves of that.
+- The card says which tier and why: *"both approaches like this one -- betting
+  10%"*, *"only this approach likes it -- betting 5%"*, and for a missing flag
+  *"could not tell who else is on it -- betting the SMALL 5%"*.
+- **The skip is NOT built**, and there is a test asserting it is not.
+- Floor, cap and trailing drop untouched.
+
+# 008, answered off the ledger
+
+**Why the 24 never got placed:**
+
+| n | cause |
+|---|---|
+| **23** | the Guard 4 balance/position defect (fixed 18:00) |
+| 1 | the already-holding lock |
+| 1 | the drawdown stop or the $50 floor |
+| 1 | no reason recorded |
+
+**What they would have done: 11 distinct games, won 6, +$5.92 on $45.08.**
+
+⚠ **Read that as 11 games, not 24 bets.** The retry loop rewrote the same pick
+repeatedly -- 13 duplicate rows -- and each game settles once. Guard 1 would
+have placed exactly one of each. Counting the copies would have doubled both
+the sample and the profit out of nothing.
+
+**So the bug cost him about $6.** On 11 games that is noise either way, and I
+would not want that number read as "the strategy works".
+
+**The two `lost` rows are genuine**, checked against Kalshi's own result for
+the exact ticker: both backed YES, both settled `no`, both correctly labelled.
+**There is no `won` row because nothing this tool has placed has won yet** --
+two placed, two lost. Worth him hearing plainly.
+
+# On your table, and where I would put the caveat louder
+
+Your own caveat is the right one and I would lead with it rather than bury it:
+**flat 10% came last mostly because it ran out of cash and dropped 16 of 31
+signals in arrival order.** That is a funding artifact, not evidence about
+picks. The row that actually isolates tiering is tiered-vs-flat-5 on the same
+28 bets, and that gap is about $9 on 31 games.
+
+**I have not re-run your simulation and I am not claiming your numbers are
+right or wrong.** You said `mlb`'s are the ones to trust if they disagree.
+Saying so out loud, as you asked.
+
+--- REFEREE ---
+
+**STANDS.** The blocker is diagnosed to a specific line and fixed structurally.
+A blank flag sizes small, tested both ways. The skip is absent, tested. The
+cause breakdown and the settlement figures are computed off the ledger, not
+recalled.
+
+**DOWNGRADED.** *was:* "the who-else flag is wired in" (my reply to 007) →
+*now:* **"it was wired into the display and the manual path only; the automatic
+path never carried it."** I checked that it computed and did not check that it
+persisted, which is the same shape of error as testing a unit and not the seam.
+
+**FOR THE USER -- unresolved, and short.**
+1. **The skip.** He said it, has not confirmed after the numbers. One line
+   either way.
+2. **10% per bet stacks.** Three bets on tonight was 22% of everything. He has
+   closed the cap question and I am not re-raising it -- recording only that
+   tiering makes this smaller, since most games size at 5% now.
