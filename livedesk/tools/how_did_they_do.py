@@ -119,6 +119,33 @@ def main() -> None:
         for e, why in unknown:
             print(f"    {e.game_key[5:]:<22} {e.team[:22]:<22} {why}")
 
+    # 008 asked for the causes, one line each, off the ledger not from memory.
+    import collections
+    why = collections.Counter()
+    for e in led.entries:
+        if e.status not in NEVER_PLACED:
+            continue
+        n = (e.note or "").lower()
+        if "do not agree" in n or "not match your account" in n:
+            why["Guard 4 balance/position mismatch (the defect fixed at 18:00)"] += 1
+        elif "already holding" in n:
+            why["the already-holding lock"] += 1
+        elif "already been taken" in n or "one per signal" in n:
+            why["duplicate of a bet already taken"] += 1
+        elif "floor" in n or "35%" in n or "stopped" in n:
+            why["the drawdown stop or the $50 floor"] += 1
+        elif "first pitch passed" in n:
+            why["game started while it was held back"] += 1
+        elif not n:
+            why["no reason recorded"] += 1
+        else:
+            why["something else"] += 1
+    print()
+    print("  WHY EACH ONE NEVER GOT PLACED")
+    print("  " + "-" * 74)
+    for reason, n in why.most_common():
+        print(f"    {n:>3}  {reason}")
+
     print()
     print("  READ THIS BEFORE THE NUMBER ABOVE:")
     print("  - these are recorded prices, not fills. A real order might not")

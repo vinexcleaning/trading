@@ -55,7 +55,9 @@ import prices as PRICES                                  # noqa: E402
 from ledger import (ACCOUNT_FLOOR_USD, Entry, Ledger,    # noqa: E402
                     TRAILING_DROP_FRAC)
 from money import (BANKROLL_START, MAX_STAKE_USD, STAKE_PCT,  # noqa: E402
-                   STAKE_USD, size_bet, stake_for, usd)
+                   STAKE_PCT_AGREED, STAKE_PCT_OTHER, STAKE_USD,
+                   bucket_for, size_bet, stake_for, stake_for_bucket,
+                   stake_pct_for, usd)
 
 REFRESH_SECONDS = 60
 # Longer than this since mlb-paper last wrote a tick and the picks are stale.
@@ -429,15 +431,41 @@ class Desk(tk.Tk):
         bits.append("Most days it finds one or two. Leave this window open.")
         return "\n".join(bits)
 
-    def _stake(self) -> float:
-        """What one bet may cost right now: 10% of his REAL balance.
+    def _entry_from(self, p, bet) -> Entry:
+        """Build the ledger row for a pick. THE ONLY PLACE THIS HAPPENS.
 
-        His instruction, 2026-08-16: "just make it ten percent stake of my
-        balance". Fails closed -- if the balance has never been read, this is
-        0.00 and nothing sizes, rather than falling back to a number the tool
-        made up.
+        ⚠ IT USED TO HAPPEN TWICE and the two copies drifted, which is exactly
+        the failure this collapses. The manual click path carried the
+        who-else flag; the automatic path built its own `Entry(...)` and did
+        not. Every bet is automatic, so **`alone` was empty on all 31 rows** --
+        including the three that filled after the flag was wired -- and the
+        sizing rule that reads that flag could not be switched on at all.
+
+        Two construction sites for one object is a slow leak. One is a fact.
         """
-        return stake_for(self.ledger.account_balance_usd)
+        return Entry(
+            game_key=p.game_key, ticker=p.ticker, event_ticker=p.event_ticker,
+            team=p.team, matchup=p.matchup, side=p.side, price_c=bet.price_c,
+            contracts=bet.contracts, cost_usd=bet.cost_usd,
+            fee_usd=bet.fee_usd, win_profit_usd=bet.win_profit_usd,
+            lose_usd=bet.lose_usd, starts_utc=p.starts_utc, signal=p.signal,
+            confirmed_utc=datetime.now().astimezone().isoformat(
+                timespec="seconds"),
+            why=list(p.why),
+            alone=p.alone, consensus=p.consensus)
+
+    def _stake(self, p=None) -> float:
+        """What one bet may cost right now, in the tier this pick is in.
+
+        His instruction, 2026-08-16: "ten percent on agreed games, five percent
+        on everything else". Fails closed -- if the balance has never been read
+        this is 0.00 and nothing sizes, rather than falling back to a number
+        the tool made up. And a MISSING who-else flag sizes small, never big.
+        """
+        if p is None:
+            return stake_for(self.ledger.account_balance_usd)
+        return stake_for_bucket(self.ledger.account_balance_usd,
+                                p.alone, p.consensus)
 
     def _surface(self, p) -> None:
         """Come to the front and make a noise when a NEW bet qualifies.
@@ -489,7 +517,7 @@ class Desk(tk.Tk):
     def _live_card(self, p) -> None:
         q = self.quotes.get(p.ticker)
         price = q.ask_c if (q and q.ask_c) else p.quoted_price_c
-        bet = size_bet(price, self._stake())
+        bet = size_bet(price, self._stake(p))
         start = p.starts_local.strftime("%a %d %b, %H:%M")
 
         f = self._card_shell(f"  {p.team}   —   {p.matchup}  ")
@@ -522,6 +550,19 @@ class Desk(tk.Tk):
             if p.alone:
                 lines.append("  (on its own picks so far this bot has LOST "
                              "money — worth knowing, not a reason to skip)")
+        # Which tier, and WHY, in words. He sized this rule himself and should
+        # be able to see it applied rather than take it on trust.
+        pct = stake_pct_for(p.alone, p.consensus)
+        tier = bucket_for(p.alone, p.consensus)
+        lines.append("")
+        lines.append({
+            "agreed": f"  both approaches like this one — betting {pct:.0f}%",
+            "opposite": f"  another approach took the OTHER side — betting "
+                        f"{pct:.0f}%",
+            "alone": f"  only this approach likes it — betting {pct:.0f}%",
+            "unknown": f"  could not tell who else is on it — betting the "
+                       f"SMALL {pct:.0f}%, never the big one",
+        }[tier])
         lines.append("")
         body = self._fit(lines, self.CARD_BODY_LINES - self.NUMBER_LINES)
         numbers = (
@@ -789,15 +830,7 @@ class Desk(tk.Tk):
         # LEAVING THE GAME CLOSED. Closing on the click is the whole of Guard 1;
         # closing only on a confirmed fill would let a hesitated click come
         # back around and become a second bet on the same game.
-        self.ledger.add(Entry(
-            game_key=p.game_key, ticker=p.ticker, event_ticker=p.event_ticker,
-            team=p.team, matchup=p.matchup, side=p.side, price_c=bet.price_c,
-            contracts=bet.contracts, cost_usd=bet.cost_usd, fee_usd=bet.fee_usd,
-            win_profit_usd=bet.win_profit_usd, lose_usd=bet.lose_usd,
-            starts_utc=p.starts_utc, signal=p.signal,
-            alone=p.alone, consensus=p.consensus,
-            confirmed_utc=datetime.now().astimezone().isoformat(timespec="seconds"),
-            why=list(p.why)))
+        self.ledger.add(self._entry_from(p, bet))
         self.pending = (self.ledger.entries[-1], p, bet)
         self._log(f"COPIED {detail}")
         self._log(f"opened {url}")
@@ -1027,19 +1060,10 @@ class Desk(tk.Tk):
                     # no live quote yet).
                     q = self.quotes.get(p.ticker)
                     price = q.ask_c if (q and q.ask_c) else p.quoted_price_c
-                    bet = size_bet(price, self._stake())
+                    bet = size_bet(price, self._stake(p))
                     if not bet.placeable:
                         continue
-                    entry = Entry(
-                        game_key=p.game_key, ticker=p.ticker,
-                        event_ticker=p.event_ticker, team=p.team,
-                        matchup=p.matchup, side=p.side, price_c=bet.price_c,
-                        contracts=bet.contracts, cost_usd=bet.cost_usd,
-                        fee_usd=bet.fee_usd, win_profit_usd=bet.win_profit_usd,
-                        lose_usd=bet.lose_usd, starts_utc=p.starts_utc,
-                        signal=p.signal,
-                        confirmed_utc=datetime.now().astimezone().isoformat(
-                            timespec="seconds"), why=list(p.why))
+                    entry = self._entry_from(p, bet)
                     self.ledger.add(entry)
                     # Submit through the production adapter (guards + signing).
                     try:

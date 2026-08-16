@@ -47,6 +47,61 @@ STAKE_USD = round(BANKROLL_START * 5.0 / 100.0, 2)           # $4.15
 MAX_STAKE_USD = 50.00
 
 
+# ⚠ TIERED STAKES, his decision 2026-08-16: "ten percent on agreed games, five
+# percent on everything else".
+#
+# He also said "and then we don't even bet on the alone games". THAT HALF IS
+# NOT BUILT and must not be. The coordinator has put the arithmetic to him and
+# he has not answered: skipping the alone games cuts him from 28 bets to 8 --
+# a better return on a much smaller amount of action. If he confirms it after
+# reading, it is one line on top of this.
+STAKE_PCT_AGREED = 10.0      # another approach took the same side
+STAKE_PCT_OTHER = 5.0        # it took the other side, OR nothing else is on it
+
+# The buckets, named so the card can say which one a bet is in.
+BUCKET_AGREED = "agreed"
+BUCKET_OPPOSITE = "opposite"
+BUCKET_ALONE = "alone"
+BUCKET_UNKNOWN = "unknown"
+
+
+def bucket_for(alone, consensus: str = "") -> str:
+    """Which tier this bet is in, from the who-else flag.
+
+    ⚠ AN UNKNOWN FLAG IS TREATED AS `alone`, WHICH IS THE SMALL STAKE. It must
+    never fail to the big one, and it must never fail to no-bet either -- that
+    would silently reproduce the 24 bets that went missing tonight when a guard
+    quietly refused everything.
+    """
+    if alone is None:
+        return BUCKET_UNKNOWN
+    if alone:
+        return BUCKET_ALONE
+    # Not alone: somebody else is on this game. Which side did they take?
+    text = (consensus or "").lower()
+    if "other side" in text or "oppose" in text:
+        return BUCKET_OPPOSITE
+    return BUCKET_AGREED
+
+
+def stake_pct_for(alone, consensus: str = "") -> float:
+    """The percentage this bet is sized at. Only `agreed` gets the big one."""
+    return (STAKE_PCT_AGREED if bucket_for(alone, consensus) == BUCKET_AGREED
+            else STAKE_PCT_OTHER)
+
+
+def stake_for_bucket(balance_usd, alone, consensus: str = "") -> float:
+    """What one bet may cost, given his balance and which tier it is in."""
+    pct = stake_pct_for(alone, consensus)
+    try:
+        balance = float(balance_usd)
+    except (TypeError, ValueError):
+        return 0.0
+    if balance <= 0:
+        return 0.0
+    return round(min(balance * pct / 100.0, MAX_STAKE_USD), 2)
+
+
 def stake_for(balance_usd) -> float:
     """What one bet is allowed to cost, given his real balance.
 
