@@ -34,6 +34,7 @@ from typing import Optional
 from urllib.parse import urlsplit
 
 import killswitch
+from ledger import _size as _size_of
 
 # The ONLY hosts this module is willing to send an order to.
 ALLOWED_ENDPOINTS = frozenset({
@@ -216,6 +217,30 @@ def guards_ok(ledger, entry) -> None:
                              next_cost_usd=entry.cost_usd, ignore=entry)
     if not ok:
         raise Refused(why)
+
+    # ⚠ THIRD LOCK, AND THE ONLY ONE THAT CANNOT BE FOOLED BY OUR OWN STATE.
+    #
+    # "Make sure that type of mistake doesn't happen again." -- him, after the
+    # desk put EIGHT orders on one Baltimore market because an entry's status
+    # never got updated and the retry loop kept picking it up.
+    #
+    # The other two locks are the entry's status and a session identity set.
+    # Both live inside this tool, and both were wrong or absent at some point
+    # tonight. This one asks HIS ACCOUNT: am I already holding this market? An
+    # account answer survives a restart, a status bug, a lost set, and a second
+    # copy of the window running. It is the only one of the three that could
+    # have stopped what actually happened.
+    held = 0.0
+    for r in (ledger.account_positions or []):
+        if str(r.get("ticker") or "") == entry.ticker:
+            held += abs(_size_of(r.get("position_fp")))
+    if held > 0:
+        raise Refused(
+            f"you are ALREADY holding {held:g} contracts of "
+            f"{entry.team} ({entry.ticker}). This tool will not add to a "
+            f"market it is already in. If that position is not from this bot, "
+            f"it still will not touch it.")
+
 
 
 def submit(ledger, entry, client=None) -> Outcome:

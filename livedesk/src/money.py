@@ -18,16 +18,49 @@ sys.path.insert(0, str(TRADING_ROOT))
 from common.kalshi_fees import fee_order_cents      # noqa: E402
 
 # --- Guard 3 -------------------------------------------------------------
-# The user set both of these. Bankroll is $83, not $100 -- he lost some of it
-# on his own tennis bets before this tool existed.
 BANKROLL_START = 83.00
-STAKE_PCT = 5.0
-# The flat dollar stake. Deliberately a CONSTANT and not a function of the
-# running balance: the paper bots drifted from 3 contracts to 25 on their own
-# and that is how a small edge turns into a large loss. It does not grow when
-# he is winning and it does not shrink when he is losing -- the cut-off in
-# ledger.py is what bounds the downside, not the stake.
-STAKE_USD = round(BANKROLL_START * STAKE_PCT / 100.0, 2)     # $4.15
+
+# ⚠ CHANGED 2026-08-16 ON HIS INSTRUCTION: "just make it ten percent stake of
+# my balance".
+#
+# It used to be a flat $4.15 -- 5% of a FIXED $83 -- and the reason is written
+# down: the paper bots drifted from 3 contracts to 25 on their own, and a
+# stake that grows with the balance is how a small edge becomes a large loss.
+# That reason has not gone away. He has heard it and decided, and it is his
+# money, so this is now a percentage of what he actually has.
+#
+# What the change really does: at $100 it bets $10 instead of $4.15, and if
+# the account doubles so does every bet. The downside is bounded by the cut-off
+# in ledger.py, not by the stake -- which matters MORE now, not less.
+STAKE_PCT = 10.0
+
+# The old flat figure, kept as the value used when nothing better is known.
+STAKE_USD = round(BANKROLL_START * 5.0 / 100.0, 2)           # $4.15
+
+# ⚠ AN ABSOLUTE CEILING ON ONE BET, and it is not decoration.
+#
+# `size_bet` used to clamp to a module CONSTANT, which made "no caller can ask
+# for more" true by construction. A percentage of a live balance cannot work
+# that way, so the clamp has to become an explicit number instead of
+# disappearing. Set equal to the daily cap: **one bet can never spend a whole
+# day's budget**, whatever the balance says, and whatever a caller passes.
+MAX_STAKE_USD = 50.00
+
+
+def stake_for(balance_usd) -> float:
+    """What one bet is allowed to cost, given his real balance.
+
+    **Fails closed.** An unknown or nonsense balance returns 0.00, which sizes
+    to no bet at all. The alternative -- falling back to some default -- is how
+    a tool keeps trading on a number it does not actually have.
+    """
+    try:
+        balance = float(balance_usd)
+    except (TypeError, ValueError):
+        return 0.0
+    if balance <= 0:
+        return 0.0
+    return round(min(balance * STAKE_PCT / 100.0, MAX_STAKE_USD), 2)
 
 # Guard 2 -- the cut-off -- lives in ledger.py, not here. It was a fixed
 # -$33 until he corrected it on 2026-08-12: "It can't be cut off at thirty,
@@ -53,18 +86,26 @@ class Bet:
 
 
 def size_bet(price_c: int, stake_usd: float = STAKE_USD) -> Bet:
-    """How many contracts $4.15 buys at this price, and what happens either way.
+    """How many contracts `stake_usd` buys at this price, and what happens
+    either way.
 
-    Contracts are floored, never rounded up: going over the flat stake to buy
-    one more contract is exactly the drift Guard 3 exists to stop.
+    Contracts are floored, never rounded up: going over the stake to buy one
+    more contract is exactly the drift Guard 3 exists to stop.
 
-    `stake_usd` exists so the tests can drive smaller sizes. It is CLAMPED to
-    STAKE_USD, not merely defaulted to it -- "the sizing function has no
-    parameter that could carry a rising bankroll" was a claim about a function
-    that plainly had one, and a caller passing a bigger number is the whole
-    failure mode Guard 3 describes. It cannot go up. It can go down.
+    ⚠ THE CLAMP MOVED, IT DID NOT GO AWAY. This used to clamp to the module
+    constant, which made "no caller can ask for more" true by construction.
+    Since the stake became a percentage of a live balance that is no longer
+    possible, so it now clamps to `MAX_STAKE_USD` -- an explicit absolute
+    ceiling equal to the daily cap. A caller passing a wrong or enormous number
+    still cannot spend more than one day's budget on one bet.
+
+    A nonsense stake sizes to no bet, rather than to a default one.
     """
-    stake_usd = min(float(stake_usd), STAKE_USD)
+    try:
+        stake_usd = float(stake_usd)
+    except (TypeError, ValueError):
+        return Bet(int(price_c), 0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    stake_usd = min(stake_usd, MAX_STAKE_USD)
     price_c = int(price_c)
     if price_c <= 0 or price_c >= 100 or stake_usd <= 0:
         return Bet(price_c, 0, 0.0, 0.0, 0.0, 0.0, 0.0)

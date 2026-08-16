@@ -54,8 +54,8 @@ import picks as PICKS                                    # noqa: E402
 import prices as PRICES                                  # noqa: E402
 from ledger import (ACCOUNT_FLOOR_USD, Entry, Ledger,    # noqa: E402
                     TRAILING_DROP_FRAC)
-from money import (BANKROLL_START, STAKE_PCT,            # noqa: E402
-                   STAKE_USD, size_bet, usd)
+from money import (BANKROLL_START, MAX_STAKE_USD, STAKE_PCT,  # noqa: E402
+                   STAKE_USD, size_bet, stake_for, usd)
 
 REFRESH_SECONDS = 60
 # Longer than this since mlb-paper last wrote a tick and the picks are stale.
@@ -375,9 +375,9 @@ class Desk(tk.Tk):
                                                  "  YOU PLACE THE BET  "))
         self.total_lbl.configure(text=self.ledger.summary_line())
         self.rules_lbl.configure(
-            text=(f"${STAKE_USD:.2f} a bet ({STAKE_PCT:.0f}% of "
-                  f"${BANKROLL_START:.0f})  ·  one bet per signal, two per "
-                  f"game at most"))
+            text=(f"${self._stake():.2f} a bet ({STAKE_PCT:.0f}% of your "
+                  f"${self.ledger.account_balance_usd or 0:.2f})  ·  one bet "
+                  f"per signal, two per game, never twice on one market"))
         self.beat_lbl.configure(
             text=f"last checked {self.last_check}  (#{self.check_count})")
 
@@ -429,6 +429,16 @@ class Desk(tk.Tk):
         bits.append("Most days it finds one or two. Leave this window open.")
         return "\n".join(bits)
 
+    def _stake(self) -> float:
+        """What one bet may cost right now: 10% of his REAL balance.
+
+        His instruction, 2026-08-16: "just make it ten percent stake of my
+        balance". Fails closed -- if the balance has never been read, this is
+        0.00 and nothing sizes, rather than falling back to a number the tool
+        made up.
+        """
+        return stake_for(self.ledger.account_balance_usd)
+
     def _surface(self, p) -> None:
         """Come to the front and make a noise when a NEW bet qualifies.
 
@@ -479,7 +489,7 @@ class Desk(tk.Tk):
     def _live_card(self, p) -> None:
         q = self.quotes.get(p.ticker)
         price = q.ask_c if (q and q.ask_c) else p.quoted_price_c
-        bet = size_bet(price)
+        bet = size_bet(price, self._stake())
         start = p.starts_local.strftime("%a %d %b, %H:%M")
 
         f = self._card_shell(f"  {p.team}   —   {p.matchup}  ")
@@ -1017,7 +1027,7 @@ class Desk(tk.Tk):
                     # no live quote yet).
                     q = self.quotes.get(p.ticker)
                     price = q.ask_c if (q and q.ask_c) else p.quoted_price_c
-                    bet = size_bet(price)
+                    bet = size_bet(price, self._stake())
                     if not bet.placeable:
                         continue
                     entry = Entry(

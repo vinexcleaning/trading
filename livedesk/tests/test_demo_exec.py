@@ -76,7 +76,7 @@ def led(tmp_path):
     return lg
 
 
-def _sync(lg):
+def _sync(lg, ignore=None):
     """Satisfy Guard 4 after a test has added entries by hand.
 
     Without this, Guard 4 fires first and every test below would pass for the
@@ -87,12 +87,16 @@ def _sync(lg):
     Since 2026-08-16 Guard 4 checks OPEN POSITIONS rather than the balance, so
     satisfying it means showing the account holding exactly the bets we have
     open.
+
+    `ignore` is the entry about to be SUBMITTED. Its ticker must NOT appear in
+    the account, because it has not been placed yet -- and the third lock
+    refuses to add to a market already held, which is the whole point of it.
     """
     lg.save()
     lg.set_account_balance(lg.expected_account_usd())
     lg.account_positions = [
         {"ticker": t, "position_fp": f"{n:.2f}"}
-        for t, n in lg._ours_open().items()]
+        for t, n in lg._ours_open(ignore=ignore).items()]
     return lg
 
 
@@ -453,7 +457,7 @@ def test_an_entry_already_in_the_ledger_does_not_block_its_own_practice_order(le
     """
     e = _entry()
     led.add(e)
-    _sync(led)
+    _sync(led, ignore=e)          # not placed yet, so not in his account
     out = X.submit(led, e, client=FakeClient())
     assert out.state == "filled", "an entry blocked its own practice order"
 
@@ -483,7 +487,7 @@ def test_the_entry_does_not_consume_its_own_daily_allowance(led, monkeypatch):
     last = _entry(game_key="last", ticker="LAST", signal="slast",
                   cost_usd=0.10, confirmed_utc=now)
     led.entries.append(last)
-    _sync(led)
+    _sync(led, ignore=last)
     out = X.submit(led, last, client=FakeClient())
     assert out.state == "filled", "the tenth bet refused itself"
 

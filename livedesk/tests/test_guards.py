@@ -365,11 +365,48 @@ def test_guard3_does_not_grow_with_a_winning_balance(led):
     assert size_bet(52).contracts == base
 
 
-def test_guard3_a_caller_cannot_ask_for_a_bigger_stake():
-    base = size_bet(52)
-    for attempt in (STAKE_USD * 2, 50.0, 1000.0, float("inf")):
-        assert size_bet(52, attempt).contracts == base.contracts, attempt
-    assert size_bet(52, 1.00).contracts < base.contracts
+def test_guard3_a_caller_cannot_ask_for_more_than_the_absolute_ceiling():
+    """⚠ THE CLAMP MOVED, IT DID NOT GO AWAY.
+
+    The stake is now 10% of his live balance (his instruction, 2026-08-16), so
+    it cannot be clamped to a module constant any more. It clamps to
+    MAX_STAKE_USD instead -- an explicit absolute ceiling set equal to the
+    daily cap, so **one bet can never spend a whole day's budget**, whatever a
+    caller passes.
+    """
+    from money import MAX_STAKE_USD, stake_for
+    assert MAX_STAKE_USD == 50.00
+    ceiling = size_bet(52, MAX_STAKE_USD)
+    for attempt in (MAX_STAKE_USD * 10, 1e9, float("inf")):
+        assert size_bet(52, attempt).contracts == ceiling.contracts, attempt
+    assert size_bet(52, 1.00).contracts < ceiling.contracts
+    # and nonsense sizes to no bet rather than a default one
+    assert size_bet(52, None).contracts == 0
+    assert size_bet(52, -5).contracts == 0
+
+
+def test_guard3_the_stake_is_ten_percent_of_his_real_balance():
+    """His instruction: "just make it ten percent stake of my balance"."""
+    from money import STAKE_PCT, stake_for
+    assert STAKE_PCT == 10.0
+    assert stake_for(100.24) == pytest.approx(10.02)
+    assert stake_for(500.00) == pytest.approx(50.00)
+
+
+def test_guard3_fails_CLOSED_when_the_balance_is_unknown():
+    """No balance means no bet, never a made-up default one."""
+    from money import stake_for
+    for bad in (None, "", 0, -1, "abc"):
+        assert stake_for(bad) == 0.0, bad
+    assert size_bet(52, stake_for(None)).contracts == 0
+
+
+def test_guard3_one_bet_can_never_exceed_a_whole_day(led):
+    """Even at a huge balance, one bet stops at the daily cap."""
+    from money import MAX_STAKE_USD, stake_for
+    import ledger as L
+    assert stake_for(1_000_000.0) == MAX_STAKE_USD
+    assert MAX_STAKE_USD <= L.MAX_STAKE_PER_DAY_USD
 
 
 def test_guard3_the_fee_is_in_the_break_even():
