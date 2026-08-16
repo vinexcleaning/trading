@@ -248,6 +248,18 @@ question anyone has to answer from memory.
 
 ---
 
+## Starting a REPLACEMENT dictator chat
+
+**A dictator chat runs out of usage eventually.** When it does, open a new
+window in the trading folder and say:
+
+> read coordinator/NEXT_DICTATOR.md then tell me where everything is at
+
+**That file is deliberately short.** It carries only what cannot be read off
+disk — how he works, what the last chat got wrong, and where the live money is.
+**Everything else the new chat reads for itself**, which is the point: a long
+handoff goes stale, and a chat that reads the repo cannot.
+
 ## 3. HOW TO TALK TO IT — exact words
 
 You never type a command. You type a sentence. These are the sentences.
