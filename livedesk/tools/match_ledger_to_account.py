@@ -58,6 +58,35 @@ def main() -> None:
     print()
 
     changed = 0
+
+    # ⚠ FIRST: bring back anything the account HOLDS that the ledger has
+    # written off. This direction was missing, and it is the one that mattered.
+    #
+    # A bug voided his live Baltimore position at zero contracts. This tool
+    # only walked `status == "open"` entries, so it found nothing to correct
+    # and cheerfully reported "0 corrected" while he was still holding 11
+    # contracts. The account is the truth in BOTH directions: it can tell us a
+    # bet shrank, and it can tell us a bet we wrote off is still very much on.
+    covered = {e.ticker for e in led.entries if e.status == "open"}
+    for e in led.entries:
+        if e.status not in ("void", "deferred", "expired"):
+            continue
+        real = held.get(e.ticker, 0.0)
+        if real <= 0 or e.ticker in covered:
+            continue
+        was = e.status
+        e.status = "open"
+        e.contracts = int(real)
+        e.cost_usd = round(e.contracts * e.price_c / 100.0 + e.fee_usd, 2)
+        e.lose_usd = e.cost_usd
+        e.win_profit_usd = round(e.contracts * 1.00 - e.cost_usd, 2)
+        e.note = (f"{e.note} | RESTORED from {was}: your account holds "
+                  f"{e.contracts} contracts").strip(" |")
+        covered.add(e.ticker)
+        changed += 1
+        print(f"  {e.team[:24]:<24} was {was} -> RESTORED as open, "
+              f"{e.contracts} contracts, ${e.cost_usd:.2f} riding")
+
     for e in led.entries:
         if e.status != "open":
             continue
