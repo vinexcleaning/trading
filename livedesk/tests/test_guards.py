@@ -229,12 +229,19 @@ def test_guard4_nothing_placed_cannot_be_wrong(led):
     assert led.profit_shown() is True
 
 
-def test_guard4_a_settled_bet_with_no_balance_typed_refuses(led):
+def test_guard4_a_settled_bet_no_longer_needs_a_typed_balance(led):
+    """⚠ RE-POINTED 2026-08-16. There used to be an 'unchecked' state: a bet
+    had settled, he had not typed his balance, and the window refused.
+
+    That is gone, and it should be. Guard 4 now watches OUR OWN open bets, and
+    a settled bet is not an open one. Making him type a number after every
+    settlement bought nothing — and the balance comparison it gated could
+    never pass anyway once he traded manually, which is what killed 11 bets.
+    """
     led.entries.append(_entry(signal="s1", status="lost", pnl=-3.77))
     led.save()
-    state, msg = led.reconcile()
-    assert state == "unchecked"
-    assert led.profit_shown() is False
+    assert led.reconcile()[0] == "nothing"
+    assert led.profit_shown() is True
 
 
 def test_guard4_the_32_dollar_disagreement_is_caught(led):
@@ -248,22 +255,24 @@ def test_guard4_the_32_dollar_disagreement_is_caught(led):
     led.save()
     assert led.expected_account_usd() == pytest.approx(128.0)
     led.set_account_balance(160.0)
-    state, msg = led.reconcile()
-    assert state == "disagree"
-    assert "+$32.00" in msg
-    assert led.profit_shown() is False
+    # It is SAID -- the arithmetic that would have caught the $32 still runs
+    # and still appears on screen...
+    assert "$32.00" in led.balance_note()
+    # ...but it no longer stops a bet, because his own trading produces a gap
+    # like this constantly and 11 bets died waiting for one to close.
+    assert led.reconcile()[0] == "nothing"
 
 
-def test_guard4_a_disagreement_stops_the_profit_figure_being_shown(led):
+def test_guard4_a_balance_gap_no_longer_stops_the_profit_figure(led):
     led.entries.append(_entry(signal="s1", status="won", pnl=+3.23,
                               settled_utc="2026-08-01T00:00:00+00:00"))
     led.save()
     led.set_account_balance(200.0)
-    assert led.reconcile()[0] == "disagree"
-    assert "not checked" in led.summary_line()
+    assert led.reconcile()[0] == "nothing"
+    assert "not checked" not in led.summary_line()
 
 
-def test_guard4_agreement_inside_a_dollar_is_fine(led):
+def test_the_balance_note_says_how_much_is_his_own(led):
     assert RECONCILE_TOLERANCE_USD == 1.00
     led.entries.append(_entry(signal="s1", status="won", pnl=+3.23,
                               settled_utc="2026-08-01T00:00:00+00:00"))
@@ -271,29 +280,35 @@ def test_guard4_agreement_inside_a_dollar_is_fine(led):
     # 83 out 3.77, back 7 contracts x $1 = 7.00 -> expect 86.23
     assert led.expected_account_usd() == pytest.approx(86.23, abs=0.01)
     led.set_account_balance(86.23)
-    assert led.reconcile()[0] == "ok"
+    assert "account for all of it" in led.balance_note()
     led.set_account_balance(87.10)
-    assert led.reconcile()[0] == "ok", "87c is inside the dollar"
-    led.set_account_balance(87.50)
-    assert led.reconcile()[0] == "disagree"
+    assert "account for all of it" in led.balance_note(), "87c is inside a dollar"
+    led.set_account_balance(120.00)
+    assert "not from this tool" in led.balance_note()
 
 
-def test_guard4_a_win_that_just_settled_does_not_fire_a_false_alarm(led):
-    """Kalshi pays out minutes after the result is final. A bet settled
-    seconds ago is legitimately in the ledger and not yet in the balance, and
-    a false alarm here would train him to ignore the real one."""
+def test_guard4_a_win_that_just_settled_is_still_held_back_from_the_note(led):
+    """Kalshi pays out minutes after the result is final, so a bet settled
+    seconds ago is legitimately in the ledger and not yet in the balance.
+
+    ⚠ This used to be the difference between a bet going out and not. Since
+    2026-08-16 it only affects the balance LINE, which is a display -- but the
+    arithmetic still has to be right or the line cries wolf, and a line that
+    cries wolf gets ignored just as a guard does."""
     just_now = datetime.now(timezone.utc).isoformat(timespec="seconds")
     led.entries.append(_entry(signal="s1", status="won", pnl=+3.23,
                               settled_utc=just_now))
     led.save()
     assert led.pending_payout_usd() == pytest.approx(7.00)
     led.set_account_balance(79.23)          # paid out, cash not landed
-    assert led.reconcile()[0] == "ok"
+    assert "accounts for all of it" not in led.balance_note()
+    assert "account for all of it" in led.balance_note()
     old = (datetime.now(timezone.utc)
            - timedelta(hours=SETTLEMENT_LAG_HOURS + 1)).isoformat(timespec="seconds")
     led.entries[0].settled_utc = old
     led.save()
-    assert led.reconcile()[0] == "disagree", "once the lag is past it must fire"
+    assert "not from this tool" in led.balance_note(), \
+        "once the lag is past the difference must show"
 
 
 def test_guard4_a_void_never_counts_as_money_out(led):
@@ -572,38 +587,40 @@ def _today(n=0):
 
 
 def test_guard5_his_numbers(led):
-    # PRODUCTION: Daily caps removed per user request. Only the $50 balance
-    # floor remains as a hard stop. No limit on number of trades or stake.
-    assert MAX_ORDERS_PER_DAY == 999999
-    assert MAX_STAKE_PER_DAY_USD == 999999.00
+    """⚠ THE CAPS ARE BACK, and this test is the record of why it matters.
+
+    They had been set to 999,999 orders and $999,999 a day — that is not a cap,
+    it is the cap removed — while orders were going out automatically. They are
+    9,999 orders and $50.00 a day again. The money one is what actually binds.
+    """
+    assert MAX_ORDERS_PER_DAY == 9999
+    assert MAX_STAKE_PER_DAY_USD == 50.00
 
 
 def test_guard5_the_money_cap_stops_him_before_the_order_cap(led):
-    """PRODUCTION: Daily money cap removed. A seventh bet should NOT be
-    refused on money anymore."""
-    for i in range(6):
+    """At $4.15 a bet, $50 runs out after 12. The order cap never gets near."""
+    for i in range(12):
         led.entries.append(_entry(game_key=f"g{i}", ticker=f"T{i}",
                                   signal=f"s{i}", cost=4.15,
                                   confirmed_utc=_today()))
     led.save()
     n, spent = led.daily_used()
-    assert n == 6 and spent == pytest.approx(24.90)
-    assert led.daily_block(4.15) is None, "daily money cap removed in production"
+    assert n == 12 and spent == pytest.approx(49.80)
+    msg = led.daily_block(4.15)
+    assert msg and "daily limit" in msg, "a 13th bet must be refused on money"
 
 
 def test_guard5_says_WHICH_cap_will_actually_stop_him(led):
     line = led.daily_line()
-    # With caps at 999999, the line shows the huge limits
-    assert "0 of 999999 bets" in line and "$0.00 of $999999.00" in line
+    assert "0 of 9999 bets" in line and "$0.00 of $50.00" in line
+    assert "money runs out first, after 12 more" in line
 
 
 def test_guard5_that_sentence_is_computed_not_hard_coded(led, monkeypatch):
     """It has to stay true if any of the three numbers change."""
     import ledger as L
-    monkeypatch.setattr(L, "MAX_STAKE_PER_DAY_USD", 500.0)
-    # With money cap at 500 and stake ~4.15, money allows ~120 more bets
-    # Order cap is 999999, so money still runs out first
-    assert "money runs out first" in led.daily_line()
+    monkeypatch.setattr(L, "MAX_STAKE_PER_DAY_USD", 500_000.0)
+    assert "order count runs out first, after 9999 more" in led.daily_line()
 
 
 def test_guard5_fails_CLOSED_when_today_cannot_be_counted(led):

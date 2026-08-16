@@ -4,20 +4,22 @@
 
 WHAT IT DOES
     Shows the next starting-pitcher bet, why it was picked, what it costs and
-    what it pays. One button. The button copies the bet to your clipboard and
-    opens the right Kalshi page. **You place it.**
+    what it pays.
 
-WHAT IT DOES
-    Sends REAL orders to Kalshi's live trading environment. Every order placed
-    here is indistinguishable from one placed via the web UI — real money,
-    real risk, no undo button.
+    ⚠ AND IT SENDS REAL ORDERS. Live Kalshi, real money, no undo. **AUTO
+    STARTS ON**, so opening this window starts placing bets by itself. The
+    button in the header turns that off.
 
-    The tennis app needed one-click because it was chasing live in-play
-    events where seconds mattered. This is a PRE-GAME strategy: the bets go
-    on hours before first pitch. The gap between "this window tells you
-    exactly what to do" and "this window does it for you" is about twenty
-    seconds of typing, on a bet with hours of runway. Nothing that touches
-    real money can fire while he is asleep.
+    ⚠ A SENTENCE THAT USED TO BE HERE AND IS NOW FALSE, left visible on
+    purpose because deleting it is how someone re-derives it: *"Nothing that
+    touches real money can fire while he is asleep."* That was true of the
+    hand-off build. It is not true of this one. With AUTO on, this window
+    places real bets with nobody watching.
+
+    What still limits it: $4.15 a bet, $50 a day, the $50 account floor, the
+    35% trailing stop, one bet per signal, two per game, and a kill switch
+    file. Those are in `ledger.py` and `DECISIONS.md` says what each one cost
+    to learn.
 
 THE BUTTON NEVER MOVES
     That is his one named complaint about the old app: "sometimes bars will
@@ -113,6 +115,7 @@ class Desk(tk.Tk):
         # holds this state until he says whether it went on -- Guard 6, one
         # click one order, and the reason the hand-off card cannot vanish.
         self.pending = None
+        self._account_read_ok = None   # so the first result is logged either way
         self.quotes: dict = {}             # ticker -> Quote
         self.source_age = None
         self.last_check = "—"
@@ -897,6 +900,16 @@ class Desk(tk.Tk):
             self.stop_flag.wait(REFRESH_SECONDS)
 
     def _work(self) -> None:
+        # Guard 4's input. READ ONLY -- two GETs, positions and balance. This
+        # is what re-pointed the guard on 2026-08-16: it used to compare the
+        # ledger against his WHOLE balance, which could never agree because he
+        # trades manually, so every signal deferred and 11 bets expired
+        # unplaced. It now checks that OUR OWN bets are in his account.
+        ok, said = DEMO.read_account(self.ledger)
+        if ok != self._account_read_ok:
+            self._account_read_ok = ok
+            self.events.put(("log", f"account: {said}"))
+
         age = PICKS.source_age_minutes()
         retired = []
         found = PICKS.pending_picks(retired=retired)

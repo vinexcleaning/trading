@@ -68,10 +68,24 @@ RECONCILE_TOLERANCE_USD = 1.00
 # expected figure and shown separately, rather than firing a false alarm that
 # would train him to ignore the real one.
 SETTLEMENT_LAG_HOURS = 3.0
+# How long after first pitch a bet should still be visible as an open position.
+# Beyond this it has probably settled and disappeared legitimately, so its
+# absence means nothing and is not reported as a disagreement.
+POSITION_LIVE_HOURS = 6.0
 
 
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def _size(v) -> float:
+    """Kalshi returns position size as a decimal STRING (`position_fp`), not a
+    number, and the plain `position` field is the one that is wrong. Trap C024
+    in this repo is exactly this family of mistake."""
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return 0.0
 
 
 def _parse(s):
@@ -144,8 +158,17 @@ class Entry:
 
 
 class Ledger:
-    def __init__(self, path: Path = LEDGER_PATH):
-        self.path = Path(path)
+    def __init__(self, path=None):
+        # ⚠ RESOLVED AT CALL TIME, NOT AS A DEFAULT ARGUMENT. It used to be
+        # `path: Path = LEDGER_PATH`, and a default argument is bound once when
+        # the function is defined -- so the GUI test's
+        # `ledger.LEDGER_PATH = <temp file>` did nothing, `Desk()` opened the
+        # REAL ledger, and the per-test fixture's `entries.clear()` + `save()`
+        # DELETED EVERY ENTRY OF HIS on 2026-08-16.
+        #
+        # 150 tests passed while that was happening, because nothing asserted
+        # where the tests were writing. There is now a test that does.
+        self.path = Path(path if path is not None else LEDGER_PATH)
         self.entries: list[Entry] = []
         # The Kalshi balance when this ledger began, and the last balance he
         # typed in. Both are his numbers; nothing here can read an account.
@@ -153,6 +176,9 @@ class Ledger:
         self.account_balance_usd: Optional[float] = None
         self.account_checked_utc: Optional[str] = None
         self.peak_total_usd: float = BANKROLL_START
+        # Last read of his OPEN POSITIONS, set by whoever fetched them. Never
+        # fetched here -- this module has no network and a test enforces that.
+        self.account_positions: list = []
         self.load()
 
     # ---- disk -----------------------------------------------------------
@@ -451,7 +477,105 @@ class Ledger:
         self.account_checked_utc = _now()
         self.save()
 
-    def reconcile(self):
+    # ---- Guard 4, RE-POINTED 2026-08-16 ---------------------------------
+    def _ours_open(self):
+        """Our open bets that the account should currently be showing.
+
+        Only bets on games inside the live window. Once a game has been over
+        for a while the position settles and legitimately disappears, and
+        "missing" would then mean nothing at all.
+        """
+        now = datetime.now(timezone.utc)
+        out = {}
+        for e in self.entries:
+            if e.status != "open":
+                continue
+            starts = _parse(e.starts_utc)
+            if starts and now > starts + timedelta(hours=POSITION_LIVE_HOURS):
+                continue
+            out[e.ticker] = out.get(e.ticker, 0) + e.contracts
+        return out
+
+    def reconcile_positions(self, rows):
+        """(state, message) from the account's OPEN POSITIONS, not its balance.
+
+        ⚠ THIS REPLACED A CHECK THAT COULD NEVER PASS, and the failure was
+        expensive. The old version compared this tool's ledger against his
+        whole Kalshi balance, which silently assumed every trade in the account
+        came from this tool. **He trades manually and always will** -- he has
+        said so twice. So the two sums could never agree, and every entry's
+        note recorded the same thing:
+
+            auto-exec deferred: THESE DO NOT AGREE by +$29.53...
+
+        **11 bets expired unplaced before anyone noticed.** The guard was not
+        protecting him from anything; it was eating every signal the tool
+        produced.
+
+        The question it asks now is narrower and actually answerable: **is each
+        bet I placed sitting in his account at the size I placed it?** Anything
+        on a ticker this tool never touched is his own business and is not
+        looked at.
+
+        This is a STRONGER guard, not a weaker one. Before, the worst it could
+        say was "something does not add up somewhere". Now it can say "the
+        Cleveland bet I placed is not in your account", which is a real problem
+        worth stopping for.
+        """
+        ours = self._ours_open()
+        if not ours:
+            return "nothing", "no open bets of its own to check"
+        held = {}
+        for r in (rows or []):
+            t = str(r.get("ticker") or "")
+            if t in ours:
+                held[t] = held.get(t, 0.0) + abs(_size(r.get("position_fp")))
+        problems = []
+        for ticker, want in sorted(ours.items()):
+            got = held.get(ticker, 0.0)
+            e = next((x for x in self.entries
+                      if x.ticker == ticker and x.status == "open"), None)
+            who = f"{e.team} ({e.matchup})" if e else ticker
+            if got <= 0:
+                problems.append(f"the {who} bet is NOT in your account at all")
+            elif abs(got - want) > 0.001:
+                problems.append(f"the {who} bet shows {got:g} contracts, "
+                                f"not the {want} it placed")
+        if problems:
+            return "disagree", (
+                "THIS TOOL'S OWN BETS DO NOT MATCH YOUR ACCOUNT: "
+                + "; ".join(problems)
+                + ". Nothing else in your account is being looked at. No more "
+                  "bets until this is sorted.")
+        n = len(ours)
+        return "ok", (f"all {n} of its own open bet{'s' if n != 1 else ''} are "
+                      f"in your account at the right size")
+
+    def balance_note(self) -> str:
+        """The old balance comparison, kept as a DISPLAY only.
+
+        It is genuinely informative -- it is how the $32 error would show up --
+        but it must never gate anything again, because his own trading moves it
+        and that is not a fault.
+        """
+        if self.account_balance_usd is None:
+            return "account balance not read yet"
+        exp = self.expected_account_usd()
+        diff = round(self.account_balance_usd - exp, 2)
+        if abs(diff) <= RECONCILE_TOLERANCE_USD:
+            return (f"account ${self.account_balance_usd:.2f}, and this tool's "
+                    f"own bets account for all of it")
+        return (f"account ${self.account_balance_usd:.2f}; {usd(diff)} of that "
+                f"is not from this tool — your own trades, which is expected")
+
+    def reconcile(self, rows=None):
+        """Guard 4. Delegates to the positions check -- see
+        reconcile_positions for why it is no longer the balance."""
+        if rows is None:
+            rows = self.account_positions
+        return self.reconcile_positions(rows)
+
+    def _reconcile_balance_old(self):
         """(state, message). One of:
 
         'nothing'   nothing has been placed, so the ledger cannot be wrong

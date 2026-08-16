@@ -146,6 +146,33 @@ def configured():
     return True, "Orders are ready. Production execution is enabled."
 
 
+def read_account(ledger, client=None):
+    """Fill the ledger's view of his account. READ ONLY -- two GETs.
+
+    `positions()` is the one that matters: it is what Guard 4 checks against
+    since 2026-08-16. `balance()` is a display, so the balance box fills itself
+    and he never types it again.
+
+    Returns (ok, sentence). Never raises at the caller: a window that dies
+    because the network blipped is worse than one that says so and carries on
+    with what it last knew.
+    """
+    try:
+        client = client or _client()
+        rows = client.positions(open_only=True)
+        ledger.account_positions = list(rows or [])
+        try:
+            ledger.set_account_balance(float(client.balance()))
+        except Exception:
+            pass                       # the balance is a display, not the check
+        return True, (f"read {len(ledger.account_positions)} open position(s) "
+                      f"from your account")
+    except Exception as exc:
+        return False, (f"could not read your account ({exc}). Guard 4 is using "
+                       f"the last reading it got, and will not approve a bet on "
+                       f"stale information.")
+
+
 def guards_ok(ledger, entry) -> None:
     """Every existing guard, called rather than restated.
 

@@ -121,6 +121,13 @@ def test_restart_guard1_blocks_via_submit_path(fresh_ledger, tmp_path):
 
     entry2 = _make_entry()
 
+    # Guard 4 is checked before Guard 1 and now watches our own OPEN POSITIONS,
+    # so the account has to be shown holding what the ledger says is open --
+    # otherwise this passes on the wrong refusal.
+    restart_ledger.account_positions = [
+        {"ticker": t, "position_fp": f"{n:.2f}"}
+        for t, n in restart_ledger._ours_open().items()]
+
     fake_client = type('FakeClient', (), {
         'base': 'https://external-api.demo.kalshi.co/trade-api/v2',
         'demo': True,

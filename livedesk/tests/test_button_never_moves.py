@@ -165,16 +165,18 @@ def test_the_button_holds_still_through_every_card_state(app, monkeypatch):
     assert _button_xy(app) == home, "the placed-bets list moved the button"
 
     # 8. the reconcile bar disagreeing, which paints the header amber and puts
-    #    a long red sentence in the strip above the card
+    #    a long red sentence in the strip above the card.
+    #    RE-POINTED 2026-08-16: a disagreement is now one of OUR bets missing
+    #    from his account, not a balance that does not add up.
+    from datetime import datetime as _dt, timedelta as _td, timezone as _tz
     app.ledger.entries.clear()
     app.ledger.entries.append(Entry(
-        game_key="settled", ticker="S1", event_ticker="E", team="X",
+        game_key="live", ticker="OURS-MISSING", event_ticker="E", team="X",
         matchup="a at b", side="YES", price_c=52, contracts=7, cost_usd=3.77,
         fee_usd=0.13, win_profit_usd=3.23, lose_usd=3.77,
-        starts_utc="2026-08-12T22:40:00+00:00",
-        confirmed_utc="2026-08-12T02:00:00+00:00", signal="settled",
-        status="won", pnl_usd=3.23, settled_utc="2026-08-01T00:00:00+00:00"))
-    app.ledger.set_account_balance(400.00)
+        starts_utc=(_dt.now(_tz.utc) + _td(hours=3)).isoformat(),
+        confirmed_utc="2026-08-12T02:00:00+00:00", signal="live"))
+    app.ledger.account_positions = []
     assert app._blocked()[0] == "unreconciled"
     app._render()
     assert _button_xy(app) == home, "the reconcile warning moved the button"

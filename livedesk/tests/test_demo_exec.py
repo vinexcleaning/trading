@@ -77,15 +77,22 @@ def led(tmp_path):
 
 
 def _sync(lg):
-    """Re-agree the balance after a test has added entries by hand.
+    """Satisfy Guard 4 after a test has added entries by hand.
 
     Without this, Guard 4 fires first and every test below would pass for the
     wrong reason -- which is worth saying out loud, because four of them did
     exactly that on the first run. The guards are checked in order of
     severity, so isolating one means satisfying the ones above it.
+
+    Since 2026-08-16 Guard 4 checks OPEN POSITIONS rather than the balance, so
+    satisfying it means showing the account holding exactly the bets we have
+    open.
     """
     lg.save()
     lg.set_account_balance(lg.expected_account_usd())
+    lg.account_positions = [
+        {"ticker": t, "position_fp": f"{n:.2f}"}
+        for t, n in lg._ours_open().items()]
     return lg
 
 
@@ -197,19 +204,26 @@ def test_the_cut_off_stops_a_submission(led):
 
 
 def test_a_reconcile_mismatch_stops_a_submission(tmp_path):
-    """Guard 4 gates submission, not only the display. It is the guard that
-    caught his $32 problem, and a wrong running total makes every other guard
-    read a wrong number."""
+    """Guard 4 gates submission, not only the display.
+
+    ⚠ RE-POINTED 2026-08-16. It used to be a balance mismatch; his own manual
+    trades made that fire constantly and 11 bets expired unplaced. A
+    disagreement now means one of OUR OWN bets is missing from his account,
+    which is a real problem worth stopping for.
+    """
+    from datetime import datetime as dt, timedelta as td, timezone as tz
     led = Ledger(tmp_path / "l.json")
-    led.entries.append(_entry(status="won", pnl_usd=3.23,
-                              settled_utc="2026-08-01T00:00:00+00:00"))
+    ours = _entry(ticker="OURS-MISSING", signal="s-open")
+    ours.starts_utc = (dt.now(tz.utc) + td(hours=3)).isoformat()
+    led.entries.append(ours)
     led.save()
-    led.set_account_balance(led.expected_account_usd() + 32.00)
+    led.account_positions = [{"ticker": "SOMETHING-HE-BOUGHT",
+                              "position_fp": "40.00"}]
     assert led.reconcile()[0] == "disagree"
     c = FakeClient()
     with pytest.raises(X.Refused) as e:
         X.submit(led, _entry(ticker="OTHER", signal="s2"), client=c)
-    assert "DO NOT AGREE" in str(e.value)
+    assert "DO NOT MATCH YOUR ACCOUNT" in str(e.value)
     assert c.calls == []
 
 
@@ -235,47 +249,78 @@ def test_the_two_per_game_maximum_stops_a_submission(led):
 
 
 def test_the_daily_order_cap_stops_a_submission(led, monkeypatch):
-    """PRODUCTION: Daily order cap removed. Orders are no longer blocked by
-    the old daily count limit. We verify a large number of existing orders does
-    not block a new one."""
+    """⚠ The order cap is BACK. It had been removed entirely.
+
+    Patched to a small number here rather than filling 9,999 rows -- the cap
+    being tested is the mechanism, not the specific figure, and the figure is
+    asserted in test_guard5_his_numbers.
+    """
     import ledger as L
     monkeypatch.setattr(L, "MAX_STAKE_PER_DAY_USD", 10_000.0)
+    monkeypatch.setattr(L, "MAX_ORDERS_PER_DAY", 10)
     from datetime import datetime
     now = datetime.now().astimezone().isoformat(timespec="seconds")
-    # Fill with 500 orders (previously would have hit the old 10-order cap)
-    for i in range(500):
+    for i in range(10):
         led.entries.append(_entry(game_key=f"g{i}", ticker=f"T{i}",
                                   signal=f"s{i}", cost_usd=0.10,
                                   confirmed_utc=now))
     _sync(led)
     c = FakeClient()
-    # Should NOT be refused - daily cap is removed in production
-    outcome = X.submit(led, _entry(game_key="new", ticker="NEW", signal="new"),
-                       client=c)
-    assert c.calls == [("limit_buy", "NEW", 7, 52)]  # one call made
+    with pytest.raises(X.Refused) as e:
+        X.submit(led, _entry(game_key="new", ticker="NEW", signal="new"),
+                 client=c)
+    assert "limit of 10" in str(e.value)
+    assert c.calls == []
 
 
 def test_the_daily_money_cap_stops_a_submission(led):
-    """PRODUCTION: Daily money cap removed. Stake is unlimited."""
+    """⚠ The cap is BACK. It had been set to $999,999 — i.e. removed — while
+    orders were going out automatically. It is $50.00 a day again."""
+    from datetime import datetime
+    import ledger as L
+    assert L.MAX_STAKE_PER_DAY_USD == 50.00
+    # A big bankroll, so the DAILY cap is what is being tested and neither the
+    # $50 floor nor the trailing stop fires first.
+    led.account_start_usd = 500.00
+    led.peak_total_usd = 500.00
+    now = datetime.now().astimezone().isoformat(timespec="seconds")
+    for i in range(12):                       # 12 x $4.15 = $49.80
+        led.entries.append(_entry(game_key=f"g{i}", ticker=f"T{i}",
+                                  signal=f"s{i}", cost_usd=4.15,
+                                  confirmed_utc=now))
+    _sync(led)
+    # Well clear of the $50 floor, so the DAILY cap is the thing being tested
+    # and not Guard 2 firing first.
+    led.set_account_balance(400.00)
+    c = FakeClient()
+    with pytest.raises(X.Refused) as e:
+        X.submit(led, _entry(game_key="new", ticker="NEW", signal="new",
+                             cost_usd=4.15), client=c)
+    assert "daily limit" in str(e.value)
+    assert c.calls == []
+
+
+def test_a_bet_inside_the_daily_cap_still_goes(led):
+    """And the cap must not block everything, or it is just an outage."""
     from datetime import datetime
     now = datetime.now().astimezone().isoformat(timespec="seconds")
-    for i in range(6):
+    for i in range(3):
         led.entries.append(_entry(game_key=f"g{i}", ticker=f"T{i}",
                                   signal=f"s{i}", cost_usd=4.15,
                                   confirmed_utc=now))
     _sync(led)
     c = FakeClient()
-    # Should NOT be refused - daily cap is removed in production
-    outcome = X.submit(led, _entry(game_key="new", ticker="NEW", signal="new",
-                                   cost_usd=4.15), client=c)
-    assert c.calls == [("limit_buy", "NEW", 7, 52)]  # one call made
+    out = X.submit(led, _entry(game_key="new", ticker="NEW", signal="new",
+                               cost_usd=4.15), client=c)
+    assert out.state == "filled"
+    assert [k[0] for k in c.calls] == ["limit_buy", "await_fill"]
 
 
 def test_a_ledger_whose_day_cannot_be_counted_stops_a_submission(led):
     """Fail closed. An unreadable ledger means no order, not an unlimited one."""
     bad = _entry(ticker="B", signal="sb", confirmed_utc="not a date")
     led.entries.append(bad)
-    led.save()
+    _sync(led)
     c = FakeClient()
     with pytest.raises(X.Refused) as e:
         X.submit(led, _entry(game_key="new", ticker="NEW", signal="new"),
@@ -428,8 +473,10 @@ def test_the_entry_does_not_consume_its_own_daily_allowance(led, monkeypatch):
     counting it again would make the last allowed bet refuse itself."""
     from datetime import datetime
     import ledger as L
+    monkeypatch.setattr(L, "MAX_ORDERS_PER_DAY", 10)
+    monkeypatch.setattr(L, "MAX_STAKE_PER_DAY_USD", 10_000.0)
     now = datetime.now().astimezone().isoformat(timespec="seconds")
-    for i in range(L.MAX_ORDERS_PER_DAY - 1):
+    for i in range(9):
         led.entries.append(_entry(game_key=f"g{i}", ticker=f"T{i}",
                                   signal=f"s{i}", cost_usd=0.10,
                                   confirmed_utc=now))
@@ -437,7 +484,6 @@ def test_the_entry_does_not_consume_its_own_daily_allowance(led, monkeypatch):
                   cost_usd=0.10, confirmed_utc=now)
     led.entries.append(last)
     _sync(led)
-    monkeypatch.setattr(L, "MAX_STAKE_PER_DAY_USD", 10_000.0)
     out = X.submit(led, last, client=FakeClient())
     assert out.state == "filled", "the tenth bet refused itself"
 
@@ -453,7 +499,7 @@ def test_practice_is_not_offered_without_a_key(monkeypatch):
         _key = None
     monkeypatch.setattr(X, "_client", lambda: NoKey())
     ready, why = X.configured()
-    assert ready is False and "No practice key set up yet" in why
+    assert ready is False and "No API key set up yet" in why
 
     class KeyIdOnly:
         base = DEMO_BASE
