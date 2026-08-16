@@ -73,6 +73,7 @@ def led(tmp_path):
     ONE guard it is about."""
     lg = Ledger(tmp_path / "ledger.json")
     lg.set_account_balance(lg.expected_account_usd())
+    lg.account_positions = []      # read, and empty -- not "never read"
     return lg
 
 

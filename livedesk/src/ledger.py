@@ -191,7 +191,11 @@ class Ledger:
         self.peak_total_usd: float = BANKROLL_START
         # Last read of his OPEN POSITIONS, set by whoever fetched them. Never
         # fetched here -- this module has no network and a test enforces that.
-        self.account_positions: list = []
+        #
+        # ⚠ None means NEVER READ, and that is different from read-and-empty.
+        # It was [] and an unread account looked like an emptied one, which
+        # voided a live $4.68 position on 2026-08-16.
+        self.account_positions = None
         self.load()
 
     # ---- disk -----------------------------------------------------------
@@ -560,6 +564,21 @@ class Ledger:
         Cleveland bet I placed is not in your account", which is a real problem
         worth stopping for.
         """
+        # ⚠ NEVER READ is not the same as READ AND EMPTY, and treating them
+        # alike VOIDED A REAL POSITION.
+        #
+        # `reconcile()` is called on every render, including the first one --
+        # before the background loop has ever spoken to Kalshi. With
+        # `account_positions` sitting at `[]`, an hours-old bet looked like a
+        # position he had sold, so it was adopted at zero contracts and marked
+        # void. He still held 11 contracts of Baltimore worth $4.68 while the
+        # window said "$0.00 riding on 0".
+        #
+        # `None` means never read. Nothing is adopted and nothing is judged on
+        # a reading that does not exist.
+        if rows is None:
+            return "unread", ("your account has not been read yet, so there "
+                              "is nothing to compare against")
         ours = self._ours_open(ignore=ignore)
         if not ours:
             return "nothing", "no open bets of its own to check"

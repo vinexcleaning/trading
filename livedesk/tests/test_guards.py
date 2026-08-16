@@ -50,7 +50,9 @@ def _entry(game_key=GK, ticker="T1", signal="sig-1", price_c=52, contracts=7,
 
 @pytest.fixture
 def led(tmp_path):
-    return Ledger(tmp_path / "ledger.json")
+    lg = Ledger(tmp_path / "ledger.json")
+    lg.account_positions = []      # read, and empty -- not "never read"
+    return lg
 
 
 def _lose(led, n, cost=3.77):

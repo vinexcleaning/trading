@@ -203,7 +203,10 @@ def guards_ok(ledger, entry) -> None:
     # NOT been placed yet, so without this it counts as one of our own open
     # bets missing from his account and refuses itself. See _ours_open.
     state, msg = ledger.reconcile(ignore=entry)
-    if state in ("disagree", "unchecked"):
+    if state in ("disagree", "unchecked", "unread"):
+        # "unread" blocks too: if his account has never been read we cannot
+        # verify anything, and betting on a reading we do not have is exactly
+        # what this guard exists to stop.
         raise Refused(msg)
 
     # `ignore=entry` throughout: this entry is normally ALREADY in the ledger
@@ -231,7 +234,7 @@ def guards_ok(ledger, entry) -> None:
     # copy of the window running. It is the only one of the three that could
     # have stopped what actually happened.
     held = 0.0
-    for r in (ledger.account_positions or []):
+    for r in (ledger.account_positions or []):   # None -> already refused above
         if str(r.get("ticker") or "") == entry.ticker:
             held += abs(_size_of(r.get("position_fp")))
     if held > 0:

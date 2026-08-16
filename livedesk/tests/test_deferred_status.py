@@ -72,6 +72,7 @@ def fresh_ledger(tmp_path):
     path = tmp_path / "ledger.json"
     lg = Ledger(path)
     lg.set_account_balance(lg.expected_account_usd())
+    lg.account_positions = []      # read, and empty -- not "never read"
     return lg
 
 

@@ -30,7 +30,12 @@ from ledger import Entry, Ledger, POSITION_LIVE_HOURS      # noqa: E402
 
 @pytest.fixture
 def led(tmp_path):
-    return Ledger(tmp_path / "ledger.json")
+    lg = Ledger(tmp_path / "ledger.json")
+    # An account reading EXISTS and is empty. `None` would mean "never read",
+    # which is a different state and must not be confused with it -- confusing
+    # them voided a live $4.68 position on 2026-08-16.
+    lg.account_positions = []
+    return lg
 
 
 def _pos(ticker, size):
@@ -270,3 +275,52 @@ def test_guards_ok_passes_the_entry_through_to_guard_4(led):
     led.account_positions = []
     led.set_account_balance(500.00)
     X.guards_ok(led, fresh)          # must NOT raise
+
+
+# ===== never read is not the same as read-and-empty ========================
+
+def test_an_UNREAD_account_never_voids_a_live_position(tmp_path):
+    """⚠ THIS VOIDED A REAL $4.68 POSITION on 2026-08-16.
+
+    `reconcile()` runs on every render, including the first one -- before the
+    background loop has ever spoken to Kalshi. With `account_positions` sitting
+    at `[]`, an hours-old bet looked like a position he had SOLD, so it was
+    adopted at zero contracts and marked void. He still held 11 contracts of
+    Baltimore while the window said "$0.00 riding on 0".
+    """
+    from datetime import datetime as dt, timedelta as td
+    led = Ledger(tmp_path / "l.json")
+    assert led.account_positions is None, "a fresh ledger has read nothing"
+    e = _open(led, "OURS", 11)
+    e.confirmed_utc = (dt.now().astimezone() - td(hours=4)).isoformat()
+    led.save()
+
+    state, msg = led.reconcile()
+    assert state == "unread"
+    assert e.status == "open", "an unread account voided a live position"
+    assert e.contracts == 11, "an unread account resized a live position"
+
+
+def test_a_read_and_EMPTY_account_still_adopts(tmp_path):
+    """The other half: once we HAVE looked and it really is empty, an old
+    position genuinely is gone and the record should follow."""
+    from datetime import datetime as dt, timedelta as td
+    led = Ledger(tmp_path / "l.json")
+    e = _open(led, "OURS", 11)
+    e.confirmed_utc = (dt.now().astimezone() - td(hours=4)).isoformat()
+    led.account_positions = []            # read, and empty
+    led.save()
+    assert led.reconcile()[0] == "ok"
+    assert e.status == "void"
+
+
+def test_an_unread_account_BLOCKS_a_submission(tmp_path):
+    """Fail closed. Betting on a reading we do not have is the thing this
+    guard exists to stop."""
+    import demo_exec as X
+    led = Ledger(tmp_path / "l.json")
+    led.set_account_balance(500.00)
+    e = _open(led, "NEW", 7)
+    with pytest.raises(X.Refused) as exc:
+        X.guards_ok(led, e)
+    assert "has not been read yet" in str(exc.value)
