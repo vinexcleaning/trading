@@ -150,6 +150,12 @@ class Entry:
     # evidence. INFORMATION ONLY -- nothing reads these to make a decision.
     alone: Optional[bool] = None
     consensus: str = ""
+    # Which stake tier this bet was sized in, recorded at entry and NEVER
+    # recomputed. 010 asked for this as a COUNTER, not a feature: when a bet is
+    # refused for lack of cash we can then count how often it was an `agreed`
+    # game that got starved, instead of arguing about it. Reserving cash to
+    # protect them was measured and cost $35 to save one game.
+    bucket: str = ""
 
     @property
     def counts_as_money(self) -> bool:

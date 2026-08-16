@@ -54,10 +54,10 @@ import picks as PICKS                                    # noqa: E402
 import prices as PRICES                                  # noqa: E402
 from ledger import (ACCOUNT_FLOOR_USD, Entry, Ledger,    # noqa: E402
                     TRAILING_DROP_FRAC)
-from money import (BANKROLL_START, MAX_STAKE_USD, STAKE_PCT,  # noqa: E402
-                   STAKE_PCT_AGREED, STAKE_PCT_OTHER, STAKE_USD,
-                   bucket_for, size_bet, stake_for, stake_for_bucket,
-                   stake_pct_for, usd)
+from money import (AGREED_EVIDENCE_GAMES, BANKROLL_START,   # noqa: E402
+                   MAX_STAKE_USD, STAKE_PCT, STAKE_PCT_AGREED,
+                   STAKE_PCT_OTHER, STAKE_USD, bucket_for, size_bet,
+                   stake_for, stake_for_bucket, stake_pct_for, usd)
 
 REFRESH_SECONDS = 60
 # Longer than this since mlb-paper last wrote a tick and the picks are stale.
@@ -452,7 +452,8 @@ class Desk(tk.Tk):
             confirmed_utc=datetime.now().astimezone().isoformat(
                 timespec="seconds"),
             why=list(p.why),
-            alone=p.alone, consensus=p.consensus)
+            alone=p.alone, consensus=p.consensus,
+            bucket=bucket_for(p.alone, p.consensus))
 
     def _stake(self, p=None) -> float:
         """What one bet may cost right now, in the tier this pick is in.
@@ -556,7 +557,12 @@ class Desk(tk.Tk):
         tier = bucket_for(p.alone, p.consensus)
         lines.append("")
         lines.append({
-            "agreed": f"  both approaches like this one — betting {pct:.0f}%",
+            # ⚠ The count goes on the card EVERY time the big tier fires, not
+            # once in a document. It rests on 3 games, so he should see that
+            # each time rather than take the extra size on trust.
+            "agreed": f"  both approaches like this one — betting {pct:.0f}%."
+                      f" Based on only {AGREED_EVIDENCE_GAMES} games so far,"
+                      f" so the bigger size is an experiment.",
             "opposite": f"  another approach took the OTHER side — betting "
                         f"{pct:.0f}%",
             "alone": f"  only this approach likes it — betting {pct:.0f}%",

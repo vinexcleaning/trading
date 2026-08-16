@@ -121,3 +121,64 @@ def test_the_skip_is_NOT_built():
     src = (SRC / "money.py").read_text(encoding="utf-8")
     assert stake_for_bucket(BAL, True, "NOBODY ELSE") > 0, (
         "the alone tier must still produce a stake, not a skip")
+
+
+# ================= mailbox 010: what must NOT be built, and what must be said
+
+def test_the_sample_behind_the_big_tier_is_on_the_card_every_time():
+    """⚠ THE 10% TIER RESTS ON THREE GAMES. He must see that each time it
+    fires, not once in a document.
+
+    `consensus.decompose()` will say 18 agreed games. That is the HINDSIGHT
+    number -- it counts games where the other bot arrived hours later. Live, at
+    the moment of entry, it is 3. Showing 18 would overstate the evidence six
+    times over."""
+    from money import AGREED_EVIDENCE_GAMES
+    assert AGREED_EVIDENCE_GAMES == 3
+    src = (SRC / "desk.py").read_text(encoding="utf-8")
+    agreed_line = [l for l in src.splitlines() if '"agreed":' in l]
+    assert agreed_line, "the agreed tier has no card line"
+    block = src[src.index('"agreed":'):src.index('"opposite":')]
+    assert "AGREED_EVIDENCE_GAMES" in block, (
+        "the card must show the sample count where the big tier fires")
+    assert "experiment" in block.lower()
+
+
+def test_no_cash_reserve_or_agreed_priority_exists():
+    """⚠ HE ASKED FOR THIS AND IT MUST NOT BE BUILT. Measured: reserving $20 to
+    protect agreed games rescues 1 of them and ends $35 WORSE, because it
+    blocks 8 alone bets and 2 opposite ones to do it."""
+    for name in ("money.py", "desk.py", "ledger.py", "demo_exec.py"):
+        src = (SRC / name).read_text(encoding="utf-8").lower()
+        for banned in ("reserve_usd", "cash_reserve", "agreed_priority",
+                       "reserve_for_agreed", "priority_bucket"):
+            assert banned not in src, f"{banned} appeared in {name}"
+
+
+def test_a_bet_is_never_upgraded_from_five_to_ten_after_the_fact():
+    """⚠ Of the 8 games where the other bot arrived later, it took the
+    OPPOSITE side 5 times. Topping up on a later 'agreement' means topping up
+    a position the other bot is betting against, more often than not.
+
+    The size is fixed when the entry is built. The retry path resubmits the
+    SAME entry object and never re-sizes it."""
+    src = (SRC / "desk.py").read_text(encoding="utf-8")
+    retry = src[src.index("---- retry deferred entries first ----"):]
+    retry = retry[:retry.index("---- fresh picks")]
+    assert "size_bet(" not in retry, (
+        "the retry path re-sizes a bet — a 5% bet could become 10% later")
+    assert "_stake(" not in retry
+
+
+def test_the_bucket_is_recorded_on_the_entry_for_counting():
+    """010 asked for a COUNTER, not a feature: record which tier a bet was in
+    so starvation of agreed games can be counted later rather than argued."""
+    from ledger import Entry
+    e = Entry(game_key="g", ticker="t", event_ticker="e", team="X",
+              matchup="a at b", side="YES", price_c=50, contracts=1,
+              cost_usd=1.0, fee_usd=0.0, win_profit_usd=1.0, lose_usd=1.0,
+              starts_utc="2099-01-01T00:00:00+00:00",
+              confirmed_utc="2026-08-17T00:00:00+00:00")
+    assert hasattr(e, "bucket")
+    src = (SRC / "desk.py").read_text(encoding="utf-8")
+    assert "bucket=bucket_for(" in src, "the builder must record the tier"

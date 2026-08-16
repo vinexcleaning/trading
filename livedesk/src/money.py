@@ -58,6 +58,21 @@ MAX_STAKE_USD = 50.00
 STAKE_PCT_AGREED = 10.0      # another approach took the same side
 STAKE_PCT_OTHER = 5.0        # it took the other side, OR nothing else is on it
 
+# ⚠ HOW THIN THE 10% TIER ACTUALLY IS, and it goes on the card every time.
+#
+# In the 31 out-of-sample games, the agreed bucket fired **3 times** and 2 got
+# placed. So the ~$9 that tiering appeared to add is TWO BETS.
+#
+# `consensus.decompose()` will say 18 agreed games, and that number is NOT the
+# one to show him: it classifies with hindsight, counting games where the other
+# bot arrived hours later. Live, at the moment of entry, it is 3. Showing 18
+# would overstate the evidence by six times.
+#
+# This is a fact about a FIXED window, so it does not go stale the way a running
+# count would. The 5% base is the well-supported part -- it is what takes him
+# from 15 bets to 28 -- and the 10% tier is a cheap experiment on a rare bucket.
+AGREED_EVIDENCE_GAMES = 3
+
 # The buckets, named so the card can say which one a bet is in.
 BUCKET_AGREED = "agreed"
 BUCKET_OPPOSITE = "opposite"
