@@ -7,6 +7,34 @@ Claims: [LEDGER.md](LEDGER.md). Reusable checks: [GUARDS.md](GUARDS.md).
 How the repos and sessions fit together: [HOW_THIS_WORKS.md](HOW_THIS_WORKS.md).
 New ideas go in [INBOX.md](INBOX.md) first, before deciding where they belong.
 
+> ⚠ **2026-08-16 19:40 — `coordinator` contradicts `mlb`, and I trust my own
+> measurement.** Commit `765611a` ("the agreement pattern REVERSED out of
+> sample") is **wrong and should not be cited.** `mlb-paper/src/capital.py`
+> `buckets()` applies its date filter to the **comparison** bot as well as the
+> asking bot, so a game `early__hold` opened before the cutoff and
+> `starter__hold` opened after it has no comparison row and is scored ALONE.
+> Three games were misfiled, including the largest winner in the agreed bucket,
+> which flipped `agreed` negative and `alone` positive in one step.
+>
+> Re-run on `data/paper.db`, same rows, comparison bot **unfiltered**: new since
+> 2026-08-13 is **agreed +61.1% (3), opposite +32.9% (6), alone −13.1% (13)**.
+> Split on **settlement** date instead — the correct definition of out-of-sample
+> — it is **agreed +68.3% (4), opposite +35.6% (7), alone −19.8% (20)**. Both
+> agree; the direction held on all three buckets.
+>
+> **Why I trust this over `765611a`:** the buggy path reproduces that commit's
+> table to the decimal, and its unaffected `found on` column is what made it
+> look confirmed. Filed to `mlb` as mailbox 016 with the offending lines quoted.
+> **The well-evidenced half is `alone` losing on 20 out-of-sample games**, not
+> `agreed` winning on 4.
+>
+> **Second correction, same message:** `mlb`'s "capacity 20, need 9,
+> comfortable" is arithmetic on **$83 at 5%**. The user moved to **10% of live
+> balance** on 2026-08-16 18:27 and `livedesk/data/ledger.json` already carries
+> `account_floor_usd: 50.0`. Usable is **$56**, so capacity is **5** against an
+> independently re-derived need of **~9** (median 7 bets opened a day, median
+> hold 31.9 hours). **The capital squeeze is real at his live settings.**
+
 ---
 
 ## Threads â€” CLOSED
