@@ -5465,3 +5465,59 @@ conclusion stands, slightly smaller.
   `apidojo`'s price. Not checked for gating or for whether it works.
 - **Google Maps: out of scope by decision.** Local business data belongs to
   `Vinex-OS` (`CLAUDE.md` §7). Noted and stopped.
+
+### livedesk, 2026-08-16 — back on. A test deleted his ledger; Guard 4 was eating every signal
+
+**→ EVERY CHAT, THE IMPORTANT ONE: my test suite DELETED his real ledger today**
+— every entry of his real money record — **while 150 tests passed.**
+
+The cause, in one line: `def __init__(self, path: Path = LEDGER_PATH)`.
+**A default argument is evaluated once, when the function is defined.** So the
+GUI test setting `ledger.LEDGER_PATH` to a temp file did nothing at all,
+`Desk()` opened the real file, and the per-test fixture wiped it. Recovered only
+because an unrelated repair script had written a backup minutes earlier —
+**luck, not design.** Fixed, plus a test that reads the real file before and
+after a full run and asserts it is byte-identical.
+
+**If your project writes to a real path, add a test that the real path was NOT
+written.** A green suite can be destroying the thing it exists to protect. Ours
+was, for four days.
+
+**Guard 4 was eating every signal.** It compared the ledger against his WHOLE
+Kalshi balance, which assumes every trade in the account came from the tool. He
+trades manually and always will, so it could never agree: **27 bets deferred, 11
+expired unplaced**, every note reading *"THESE DO NOT AGREE"*. Re-pointed to
+check only that OUR OWN open bets are in his account at the placed size, via
+read-only `positions()`. Strictly stronger — it can now name the missing bet
+instead of saying "something does not add up somewhere".
+
+**Ledger repaired** (`livedesk/tools/repair_006.py`, kept for audit): start and
+peak 83 → 106; 24 stuck entries on unstarted games deleted so the signals
+reopen; 3 marked expired. **Deleted rather than voided on purpose** — two voids
+closes a signal for good and 8 of those signals appear twice, so voiding would
+have destroyed exactly the bets the repair exists to return. All 11
+previously-expired were checked individually and every one was genuinely past
+first pitch, so there was no second bug.
+
+**⚠ WHAT THIS FOLDER NOW IS, because every page in it said otherwise:**
+`livedesk` **sends real orders to live Kalshi and AUTO starts ON.** Another tool
+built that at his direction while I was stood down 13–16 Aug. I did not build it
+and would not have (`coordinator/mailbox/coordinator/001`); what I maintain are
+the guards around it. Docs corrected with the false sentences left visible and
+marked rather than deleted.
+
+**Also restored** `kalshi-inplay-bot/TRADING_DISABLED` — but the premise that
+"nothing runs from that folder" is now incomplete: **livedesk runs on
+production, so that file blocks livedesk too.** Left restored as the
+conservative option; a livedesk-specific switch is the clean fix and is the
+user's call. **Whoever owns `kalshi-inplay-bot`, that is your change to make,
+not mine.**
+
+**Inherited work committed first**, as asked: daily caps had been set to
+**999,999 orders and $999,999 a day — i.e. removed — with orders going out
+automatically**. Back to 9,999 and $50.00, and the money one binds at 12 bets.
+
+**Not done:** mailbox 005 (the who-else-was-on-this-game caption) is still OPEN,
+and replied to as not-started rather than left looking silently skipped. And a
+live account read returns **401 Unauthorized**, so Guard 4 has no data yet and
+says so instead of pretending.
