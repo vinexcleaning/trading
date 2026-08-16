@@ -1,4 +1,19 @@
-"""Tests for the `deferred` / `expired` status system.
+"""
+# ⚠ INVERTED 2026-08-16. These tests asserted that a DEFERRED entry does NOT
+# close its signal, on the reasoning that a deferred pick "will be retried".
+# The reasoning is right and the conclusion was backwards.
+#
+# There are two paths: a retry loop that re-submits the existing deferred
+# entry, AND a fresh-pick path that creates a new entry for any signal not yet
+# played. With deferred excluded, BOTH ran every refresh -- so the retry
+# retried it and the fresh path made another one. It left THREE deferred
+# entries each for Miami, San Diego and Atlanta, at two different stake sizes,
+# from different rounds. He saw them stacked up in the window.
+#
+# A deferred entry IS a pending attempt at that signal, so it closes the
+# signal. Retrying is the retry loop's job. `expired` still does not close it,
+# because that game has started and nothing will be offered on it anyway.
+Tests for the `deferred` / `expired` status system.
 
 These cover the fix for the bug where temporary guard refusals permanently
 burned signals by writing them as `void`.  The fix introduces:
@@ -276,7 +291,9 @@ def test_signals_played_excludes_deferred(fresh_ledger):
     fresh_ledger.entries.append(e)
     fresh_ledger.save()
     played = fresh_ledger.signals_played()
-    assert "sig-deferred" not in played
+    assert "sig-deferred" in played, (
+        "a deferred entry must close its signal, or the fresh-pick path "
+        "creates another one every refresh — see the note at the top")
 
 
 def test_signals_played_excludes_expired(fresh_ledger):
@@ -373,11 +390,12 @@ def test_deferred_entry_that_clears_blocking_condition_gets_submitted(
 
     # Verify may_bet allows the fresh entry (deferred doesn't block)
     ok, why = fresh_ledger.may_bet("g-deferred", "sig-deferred")
-    assert ok, f"should allow fresh entry when only deferred exists: {why}"
+    assert not ok, ("a deferred entry must BLOCK a fresh duplicate — allowing "
+                    "it is what stacked up three entries per game")
 
     # Verify signals_played does NOT include the deferred signal
     played = fresh_ledger.signals_played()
-    assert "sig-deferred" not in played
+    assert "sig-deferred" in played
 
 
 def test_deferred_entry_that_stays_blocked_remains_deferred(fresh_ledger):
@@ -426,14 +444,15 @@ def test_restart_duplicate_deferred_signal_is_blocked(fresh_ledger, tmp_path):
 
     # Step 3: The deferred signal should NOT be in signals_played
     played = restart_ledger.signals_played()
-    assert "sig-deferred" not in played, (
-        "deferred should not close the signal; it should be re-offered")
+    assert "sig-deferred" in played, (
+        "the deferred entry must survive a restart so the retry loop can "
+        "pick it up")
 
     # Step 4: A fresh entry with the same signal should be allowed
     ok, why = restart_ledger.may_bet("g-deferred", "sig-deferred")
-    assert ok, (
-        f"fresh entry should be allowed after restart; deferred does not "
-        f"close the signal. got: {why}")
+    assert not ok, (
+        f"a deferred entry must still block a duplicate after a restart — "
+        f"otherwise every restart adds another copy. got: {why}")
 
     # Step 5: Verify the deferred entry is still there for retry
     deferred_list = restart_ledger.deferred_entries()

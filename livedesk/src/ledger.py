@@ -72,6 +72,12 @@ SETTLEMENT_LAG_HOURS = 3.0
 # Beyond this it has probably settled and disappeared legitimately, so its
 # absence means nothing and is not reported as a disagreement.
 POSITION_LIVE_HOURS = 6.0
+# How soon after WE placed a bet a mismatch means "the order did not land"
+# rather than "he has been trading". Inside this window a missing or short
+# position is a real problem and stops everything. Outside it, his account is
+# simply the truth and our record follows it -- he sells and trims by hand and
+# is entitled to, and a guard that deadlocks on that gets switched off.
+RECENT_PLACEMENT_MINUTES = 30.0
 
 
 def _now() -> str:
@@ -272,7 +278,21 @@ class Ledger:
                 continue
             if e.status == "void":
                 voids[e.signal] = voids.get(e.signal, 0) + 1
-            elif e.status not in ("void", "deferred", "expired"):
+            elif e.status != "expired":
+                # ⚠ `deferred` COUNTS. It was excluded on the reasoning that a
+                # deferred pick "will be retried" -- which is true, and is
+                # exactly why it must close the signal.
+                #
+                # There are TWO paths: a retry loop that re-submits the
+                # existing deferred entry, and a fresh-pick path that creates a
+                # new entry for any signal not yet played. With deferred
+                # excluded, both ran every cycle -- so the retry retried it AND
+                # the fresh path made another one. On 2026-08-16 that left
+                # THREE deferred entries each for Miami, San Diego and Atlanta,
+                # at two different stake sizes, from different refresh rounds.
+                #
+                # `expired` still does not close it: that game has started, so
+                # nothing will be offered on it anyway.
                 played.add(e.signal)
         return played | {s for s, n in voids.items()
                          if n >= MAX_VOIDS_BEFORE_CLOSED}
@@ -548,18 +568,63 @@ class Ledger:
             t = str(r.get("ticker") or "")
             if t in ours:
                 held[t] = held.get(t, 0.0) + abs(_size(r.get("position_fp")))
-        problems = []
+        problems, adopted = [], []
+        now = datetime.now(timezone.utc)
         for ticker, want in sorted(ours.items()):
             got = held.get(ticker, 0.0)
             e = next((x for x in self.entries
                       if x.ticker == ticker and x.status == "open"
                       and x is not ignore), None)
             who = f"{e.team} ({e.matchup})" if e else ticker
-            if got <= 0:
-                problems.append(f"the {who} bet is NOT in your account at all")
-            elif abs(got - want) > 0.001:
-                problems.append(f"the {who} bet shows {got:g} contracts, "
-                                f"not the {want} it placed")
+            if abs(got - want) <= 0.001:
+                continue
+
+            # ⚠ HOW LONG AGO DID WE PLACE IT? That is the whole question.
+            #
+            # Just placed and not there -> the order may not have landed, and
+            # that is worth stopping for. Placed a while ago and the size has
+            # moved -> **he sold some of it himself**, which he does and is
+            # entitled to. HIS ACCOUNT IS THE TRUTH; our record follows it.
+            #
+            # Blocking on the second case deadlocks the whole tool on his own
+            # trading. That is what the balance version of this guard did, and
+            # it cost 11 bets before anyone noticed. Doing it again by a
+            # different route would be worse, not better.
+            placed = _parse(e.confirmed_utc) if e else None
+            fresh = placed is not None and (
+                (now - placed).total_seconds() < RECENT_PLACEMENT_MINUTES * 60)
+            if fresh:
+                problems.append(
+                    f"the {who} bet was placed minutes ago and your account "
+                    + (f"does not show it at all"
+                       if got <= 0 else
+                       f"shows {got:g} contracts, not the {want} it sent"))
+            elif e is not None:
+                adopted.append((e, want, got))
+
+        # Adopt what the account says, and say so out loud. Silently rewriting
+        # his money record is not on; leaving it wrong deadlocks the tool.
+        for e, want, got in adopted:
+            e.contracts = int(got)
+            e.cost_usd = round(e.contracts * e.price_c / 100.0 + e.fee_usd, 2)
+            e.lose_usd = e.cost_usd
+            e.win_profit_usd = round(e.contracts * 1.00 - e.cost_usd, 2)
+            if e.contracts <= 0:
+                e.status = "void"
+                e.note = (f"{e.note} | gone from your account — "
+                          f"sold, or never filled").strip(" |")
+            else:
+                e.note = (f"{e.note} | resized {want} -> {e.contracts} to "
+                          f"match your account").strip(" |")
+        if adopted:
+            self.save()
+        if adopted and not problems:
+            bits = "; ".join(
+                (f"{e.team} is gone from your account" if e.contracts <= 0
+                 else f"{e.team} is {e.contracts} contracts, not {want}")
+                for e, want, got in adopted)
+            return "ok", (f"updated to match your account: {bits}. Your own "
+                          f"buying and selling is expected and is not a fault.")
         if problems:
             return "disagree", (
                 "THIS TOOL'S OWN BETS DO NOT MATCH YOUR ACCOUNT: "

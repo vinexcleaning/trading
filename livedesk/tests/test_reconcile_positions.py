@@ -74,12 +74,45 @@ def test_a_whole_account_of_his_own_trades_and_none_of_ours(led):
 
 # ------------------------------------------------------ what it DOES catch
 
-def test_one_of_OUR_bets_missing_is_a_disagreement(led):
+def test_a_JUST_PLACED_bet_missing_is_a_disagreement(led):
+    """A bet missing minutes after we sent it may not have landed. That stops
+    everything. An OLDER one is treated as him having sold it -- see
+    test_an_old_position_he_changed_himself_is_adopted_not_blocked."""
     _open(led, "OURS", 7)
     state, msg = led.reconcile_positions([_pos("HIS-OWN-BET", 40)])
     assert state == "disagree"
-    assert "NOT in your account" in msg
+    assert "does not show it at all" in msg
     assert "Miami Marlins" in msg, "it must name the bet, not just complain"
+
+
+def test_an_old_position_he_changed_himself_is_adopted_not_blocked(led):
+    """⚠ THE DEADLOCK THIS PREVENTS. He sold a Baltimore position down from 64
+    contracts to 11 by hand. The ledger said 10, the account said 11, and
+    Guard 4 blocked EVERY new bet for ever on a difference he had created
+    himself and was entitled to create.
+
+    His account is the truth. Our record follows it, loudly, and does not stop
+    the tool."""
+    from datetime import datetime as dt, timedelta as td
+    e = _open(led, "OURS", 10)
+    e.confirmed_utc = (dt.now().astimezone() - td(hours=4)).isoformat()
+    led.save()
+    state, msg = led.reconcile_positions([_pos("OURS", 11)])
+    assert state == "ok", msg
+    assert "updated to match your account" in msg
+    assert e.contracts == 11, "it must adopt the account's number"
+    assert "resized" in e.note, "and say so in the record"
+
+
+def test_an_old_position_he_sold_ENTIRELY_is_voided_not_blocked(led):
+    from datetime import datetime as dt, timedelta as td
+    e = _open(led, "OURS", 10)
+    e.confirmed_utc = (dt.now().astimezone() - td(hours=4)).isoformat()
+    led.save()
+    state, msg = led.reconcile_positions([])
+    assert state == "ok", msg
+    assert e.status == "void"
+    assert "gone from your account" in e.note
 
 
 def test_one_of_OUR_bets_at_the_wrong_size_is_a_disagreement(led):

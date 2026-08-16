@@ -219,6 +219,11 @@ def test_a_reconcile_mismatch_stops_a_submission(tmp_path):
     led = Ledger(tmp_path / "l.json")
     ours = _entry(ticker="OURS-MISSING", signal="s-open")
     ours.starts_utc = (dt.now(tz.utc) + td(hours=3)).isoformat()
+    # JUST placed. A bet missing minutes after we sent it may not have landed,
+    # and that stops everything. An OLDER one that has changed size is treated
+    # as him having sold it himself and is simply adopted -- he trades by hand
+    # and a guard that deadlocks on that is a guard that gets switched off.
+    ours.confirmed_utc = dt.now().astimezone().isoformat(timespec="seconds")
     led.entries.append(ours)
     led.save()
     led.account_positions = [{"ticker": "SOMETHING-HE-BOUGHT",

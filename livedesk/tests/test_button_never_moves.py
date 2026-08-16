@@ -175,7 +175,10 @@ def test_the_button_holds_still_through_every_card_state(app, monkeypatch):
         matchup="a at b", side="YES", price_c=52, contracts=7, cost_usd=3.77,
         fee_usd=0.13, win_profit_usd=3.23, lose_usd=3.77,
         starts_utc=(_dt.now(_tz.utc) + _td(hours=3)).isoformat(),
-        confirmed_utc="2026-08-12T02:00:00+00:00", signal="live"))
+        # JUST placed, so a missing position is a real problem and blocks.
+        # An older one is treated as him having sold it himself and is adopted.
+        confirmed_utc=_dt.now().astimezone().isoformat(timespec="seconds"),
+        signal="live"))
     app.ledger.account_positions = []
     assert app._blocked()[0] == "unreconciled"
     app._render()
