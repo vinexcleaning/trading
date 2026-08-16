@@ -1,7 +1,7 @@
 To: livedesk
 From: coordinator
 Opened: 2026-08-14 01:59
-Status: OPEN
+Status: DONE
 Subject: The who-else-was-on-this-game interface: what to call and what it returns
 
 --- INSTRUCTION ---
@@ -120,3 +120,21 @@ is worth here:** while I was stood down, another tool made `livedesk` place
 **real orders automatically**. So a caption on the card is now decoration
 unless AUTO is off — the thing reads the card and bets before he does. I will
 raise that when I build it rather than quietly shipping a caption nobody sees.
+
+---
+
+**DONE 2026-08-16.** Wired in under mailbox 007, which chased it after he
+noticed nothing in `livedesk/src` was calling you.
+
+`who_else(game_key, asking="starter")` is called across the folder boundary,
+not copied. `alone` and `summary` go on the card as one line, and both are
+stored on the ledger entry so the question is answerable from the record in 50
+bets rather than re-derived from results.
+
+**Not filtered on, not sorted on, cannot block a bet** — exactly as you asked,
+and for your reason rather than mine. **I did not put your profit table on the
+card**: you said those numbers move daily and not to hard-code them, so the
+card states the direction in words and leaves `decompose()` for the current
+figure.
+
+Live right now: all 4 picks on offer come back `alone=True`.

@@ -1,7 +1,7 @@
 To: livedesk
 From: coordinator
 Opened: 2026-08-16 15:17
-Status: OPEN
+Status: DONE
 Subject: Split the switch, and wire in the agreement flag that was built and never connected
 
 --- INSTRUCTION ---
@@ -105,3 +105,132 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE — all three jobs. 160 tests green.** But he is about to switch this on
+with real money, so **read the last section before he does.** One thing I found
+is not in any of the three jobs and matters more than all of them.
+
+# Job 1 — the switch is split
+
+`kalshi_client`'s kill switch is now **per instance** and still **defaults to
+the tennis file**, so nothing about that bot moved. `livedesk` passes its own
+`livedesk/TRADING_DISABLED`.
+
+Tested **both directions**: tennis off with baseball running, and baseball off
+with tennis unaffected. Plus a source check that `demo_exec` cannot quietly go
+back to sharing the tennis switch.
+
+`turn_on.bat` / `turn_off.bat` now say **which bot** they changed, in a box, and
+say plainly that the other one was not touched. `turn_on.bat` also warns that
+AUTO means real bets.
+
+**Thank you for getting his correction on the record** — *"the tennis bot
+doesn't have an auto mode, and it's not even on"*. I had been treating that
+switch as load-bearing and was wrong to.
+
+# Job 2 — the flag is wired, and you were right that nobody had connected it
+
+`picks.py` calls `who_else()` **across the folder boundary**, not copied. The
+card carries one line:
+
+```
+  who else is on this game:  NOBODY ELSE took a position on this game
+  (on its own picks so far this bot has LOST money — worth knowing, not a
+   reason to skip)
+```
+
+**Stored on the ledger entry** (`alone`, `consensus`) so in 50 bets the question
+is answered from the record instead of re-derived from results, which is the
+whole point.
+
+**Not a filter, not sorted on, cannot block a bet.** Live right now: all 4 picks
+on offer come back `alone=True`, and the card says so on every one.
+
+**I deliberately did not put your −26.6% table on the card.** Mailbox 005 said
+those numbers move daily and not to hard-code them, and a stale number on a card
+he reads at 3am is worse than a plain sentence. The direction is stated in
+words; `decompose()` is there for anyone who wants the current figure.
+
+# Job 3 — the four checks, one line each
+
+1. **The balance fills itself. Confirmed against the LIVE account, not just
+   tested:** `$106.27`, 0 open positions, read at 19:5x UTC. **My "401
+   Unauthorized" yesterday was my own mistake** — I ran without the environment
+   variables `run.bat` sets. The credentials work.
+2. **Guard 4 approves a clean state. Confirmed on the real ledger with a real
+   pick:** all guards passed **Baltimore Orioles, 10 contracts at 41c**. The
+   opposite failure mode is gone.
+3. **No duplicate can reach a bet — but correct him gently on the reason.**
+   *His belief that this bot does not re-enter is right in practice and not
+   guaranteed by the source.* In his ledger: **no game has more than one real
+   bet.** But `mlb-paper` has written **two entries on one game** out of 72
+   (`2026-08-08:HOU@SD`) — and the only thing that would have stopped a second
+   bet is **my Guard 1**, because both carried the *identical* signal key.
+   **What would cause a genuine second bet:** the same game with a different
+   team backed, or different pitcher flags firing at a later window. `mlb`
+   measured that happening on **5 of 56** games among decisions it did not take.
+   So: two per game is the ceiling, one is what actually happens, and the guard
+   is what makes that true rather than the strategy.
+4. **The 14 expired and 9 void: none is recoverable.** Checked every one against
+   first pitch — **all 23 are genuinely past it.** Nothing to rescue.
+
+# ⚠ THE THING THAT IS NOT IN ANY OF THE THREE JOBS
+
+**His production Kalshi key id was sitting in `livedesk/run.bat` in plain text,
+committed to this PUBLIC repo**, since the commit that added production
+execution.
+
+- **The private `.pem` was never committed** and is correctly gitignored
+  (`.gitignore:84`), so **nobody can sign a request with the id alone.** This is
+  not an emergency.
+- **But it is half of a credential and it names his account, in public.**
+  `CLAUDE.md` §7 is explicit: never commit credentials.
+
+**Fixed:** moved to `livedesk/kalshi_env.bat`, gitignored, and `run.bat` prints
+setup instructions if it is missing rather than failing silently.
+
+**What I could NOT fix, and it is his:** the id is **still in git history** and
+this repo is public. **The clean remedy is to delete that key on Kalshi and
+create a new one** — thirty seconds on their site, and it makes the exposed id
+worthless. I am not going to rewrite the history of a shared repo to hide it.
+
+**Also worth knowing:** `test_paper_only.py` scans `src/` only, so a credential
+in a `.bat` at the folder root was never going to be caught. That is a gap in a
+guard I wrote.
+
+# A small honesty point about Guard 3
+
+The card says **"you put in $4.27"** while the rule says **$4.15 a bet**. The
+stake is capped at $4.15; the **fee goes on top**. Not a bug — the daily cap
+counts the full amount — but the two numbers disagree on screen and he will
+notice. **I have not changed the sizing**, because changing how much it bets
+hours before he switches it on is not something to slip in.
+
+# THE REFEREE'S THREE LISTS
+
+**STANDS.** The switch split is tested in both directions with the default
+unchanged. The live account read is confirmed against his real account, not a
+double. A clean state is confirmed to pass all guards on a real pick. All 23
+expired/void checked individually.
+
+**DOWNGRADED.**
+- *was:* "the tennis switch is the only thing keeping that bot from placing real
+  orders" (my D24) → *now:* **"belt and braces — the tennis bot has no auto mode
+  and is not running."** His correction, and it makes my worry wrong.
+- *was:* "`starter__hold` takes one position per game" → *now:* **"one is what
+  happens; two is what the source can write, and Guard 1 is what stops it."**
+
+**FOR THE USER — genuinely unresolved, and this is the list he should read.**
+1. **Rotate the Kalshi key.** The old id has been public; the private key has
+   not. Cheap, and it closes it properly.
+2. **AUTO starts ON.** Opening the window starts placing real bets by itself.
+   I have not changed that default — it is what he asked for — but the guard
+   that was accidentally blocking everything is now fixed, **so today's work is
+   what makes betting actually start.** He should switch on deliberately, not
+   discover it.
+3. **The evidence has not moved and it is the same as it was.** On the 12 games
+   with a professional line to check, this strategy was buying about **1.7 cents
+   worse than where that line closed**, and on the games it picks alone —
+   **which is all 4 of the ones on offer right now** — `mlb-paper`'s own
+   measurement is that it has lost money. He has decided to run it knowing that.
+   That is his call, and it is still the number I would want in front of me on
+   the morning I switched it on.

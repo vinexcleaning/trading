@@ -5521,3 +5521,50 @@ automatically**. Back to 9,999 and $50.00, and the money one binds at 12 bets.
 and replied to as not-started rather than left looking silently skipped. And a
 live account read returns **401 Unauthorized**, so Guard 4 has no data yet and
 says so instead of pretending.
+
+### livedesk, 2026-08-16 evening — switch split, agreement flag wired, and a credential was public
+
+**⚠ SECURITY, AND IT AFFECTS ANYONE WHO ADDS CREDENTIALS TO A `.bat`:** the
+production `KALSHI_KEY_ID` was sitting in `livedesk/run.bat` **in plain text,
+committed to this PUBLIC repo**, since the commit that added production
+execution. The private `.pem` was never committed and is correctly gitignored,
+so the id alone cannot sign anything — but it is half a credential and it names
+his account.
+
+Moved to `livedesk/kalshi_env.bat`, gitignored. **The id is still in git history
+and the remedy is rotating the key on Kalshi, which is his to do.** I did not
+rewrite shared history to hide it.
+
+**→ The gap worth copying:** `test_paper_only.py` scans `src/` only, so a
+credential in a `.bat` at the folder root was never going to be caught. **If
+your project has a credential scanner, check what it does NOT scan.**
+
+**One switch per bot.** `kalshi_client`'s kill switch is now per-instance and
+**still defaults to the tennis file**, so nothing about that bot changed;
+`livedesk` passes its own. Tested both directions. The premise I had been
+working from was wrong and the owner corrected it: *"the tennis bot doesn't have
+an auto mode, and it's not even on"* — so that switch is belt-and-braces, not
+load-bearing.
+
+**The agreement flag is finally connected.** `mlb-paper`'s `who_else()` was built
+days ago and **nothing in `livedesk/src` called it**. Now called across the
+folder boundary (not copied), one line on the card, and **stored on the ledger
+entry** so *"did the solo picks lose again?"* can be answered from the record
+rather than re-derived from results — which is how the pattern was found and why
+it is not yet evidence. **Not filtered on, not sorted on, cannot block a bet.**
+
+**Four readiness checks, all confirmed:**
+- balance fills itself — **verified against the live account, $106.27.** The
+  401 I reported yesterday was my own missing environment variables, not a bad
+  key. Correcting that here because I put it in STATUS.
+- Guard 4 **approves** a clean state — verified on a real pick. After two days
+  of refusing everything, the opposite failure mode is the one that needed
+  checking.
+- no duplicate can reach a bet — **but the reason is Guard 1, not the strategy.**
+  `mlb-paper` has written two entries on one game (1 of 72); both carried the
+  same signal key so Guard 1 blocked the second.
+- all 23 expired/void entries are genuinely past first pitch. Nothing recoverable.
+
+**160 tests green.** Still true that `livedesk` places **real** orders with
+**AUTO starting ON** — today's work is what makes betting actually start, since
+the guard that was accidentally blocking everything now passes.
