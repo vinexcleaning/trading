@@ -126,6 +126,10 @@ class Desk(tk.Tk):
         # Starts ON — the user wants "one command, bot runs on its own."
         self.auto_exec = True
         self._auto_submitted: set = set()   # signals already auto-submitted this session
+        # Entry objects already submitted this session, by identity. Belt and
+        # braces against the status handler: see the retry loop for why one
+        # lock was not enough.
+        self._auto_submitted_ids: set = set()
 
         self._build_ui()
         self._render()
@@ -977,11 +981,18 @@ class Desk(tk.Tk):
                 # Try to submit again. guards_ok() in demo_exec will re-evaluate
                 # all guards; if the blocking condition has cleared, it will go
                 # through. If not, it will be re-marked deferred with updated note.
+                # ⚠ SECOND LOCK, deliberately independent of the status.
+                # The status handler is what SHOULD stop a retry, and it
+                # failed to, which cost 8 orders on one market. This does not
+                # care what the status says: one submission per entry per
+                # session, full stop. Two locks because the first one being
+                # wrong is not a hypothetical here -- it already happened.
+                if id(de) in self._auto_submitted_ids:
+                    continue
                 try:
+                    self._auto_submitted_ids.add(id(de))
                     outcome = DEMO.submit(self.ledger, de)
                     self.events.put(("auto_result", (de, outcome)))
-                    # Remove from ledger deferred list since it's no longer deferred
-                    # (status changed to filled/partial/resting/etc.)
                     break
                 except DEMO.Refused as exc:
                     de.note = f"auto-exec still refused: {exc}"
@@ -1022,6 +1033,7 @@ class Desk(tk.Tk):
                     self.ledger.add(entry)
                     # Submit through the production adapter (guards + signing).
                     try:
+                        self._auto_submitted_ids.add(id(entry))
                         outcome = DEMO.submit(self.ledger, entry)
                         self.events.put(("auto_result", (entry, outcome)))
                     except DEMO.Refused as exc:
@@ -1071,6 +1083,37 @@ class Desk(tk.Tk):
                     dirty = True
                 elif kind == "auto_result":
                     entry, outcome = rest[0]
+                    # ⚠ THE STATUS MUST CHANGE HERE, AND IT DID NOT.
+                    #
+                    # This handler used to only log. A `deferred` entry that
+                    # submitted SUCCESSFULLY stayed `deferred`, so the retry
+                    # loop picked it up again 60 seconds later, and again, and
+                    # again. On 2026-08-16 that put EIGHT orders on one
+                    # Baltimore market -- 64 contracts, $26.24 -- against a
+                    # rule of $4.15 a bet. Roughly a quarter of his money on a
+                    # single game.
+                    #
+                    # It only started firing when Guard 4 was fixed the same
+                    # evening: before that every submit was refused, so the
+                    # loop span harmlessly. Removing the accidental brake is
+                    # what exposed the missing one.
+                    if outcome.is_working:
+                        entry.status = "open"
+                        entry.note = (f"auto-placed: {outcome.state}, "
+                                      f"{outcome.filled:g} of "
+                                      f"{outcome.requested} @ "
+                                      f"{entry.price_c}c")
+                    elif outcome.state in ("rejected", "cancelled"):
+                        entry.status = "void"
+                        entry.note = f"auto {outcome.state}: {outcome.message}"
+                    else:                       # unknown
+                        # NOT retried. Unknown means we do not know whether
+                        # money went on, and guessing "no" is how you place it
+                        # twice.
+                        entry.status = "open"
+                        entry.note = (f"auto UNKNOWN — may or may not be on. "
+                                      f"{outcome.message}")
+                    self.ledger.save()
                     self._log(f"AUTO [PRODUCTION] [{outcome.state}] {outcome.message}")
                     if outcome.is_working:
                         self._alert(
