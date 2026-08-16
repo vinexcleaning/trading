@@ -485,17 +485,28 @@ class Ledger:
         self.save()
 
     # ---- Guard 4, RE-POINTED 2026-08-16 ---------------------------------
-    def _ours_open(self):
+    def _ours_open(self, ignore=None):
         """Our open bets that the account should currently be showing.
 
         Only bets on games inside the live window. Once a game has been over
         for a while the position settles and legitimately disappears, and
         "missing" would then mean nothing at all.
+
+        ⚠ `ignore` is the entry being asked ABOUT, and leaving it out is not
+        an optimisation -- it is the difference between the tool working and
+        not. The entry is written to the ledger BEFORE it is submitted, so
+        without this the bet about to be placed counts as one of our open bets
+        that is missing from his account, Guard 4 says "does not match", and
+        the bet refuses itself. Every auto bet, for ever.
+
+        This is the SECOND time this exact shape has appeared here: Guard 1 had
+        it in August and it made the practice button permanently dead. I fixed
+        that one and then reintroduced it in Guard 4 the day I re-pointed it.
         """
         now = datetime.now(timezone.utc)
         out = {}
         for e in self.entries:
-            if e.status != "open":
+            if e.status != "open" or e is ignore:
                 continue
             starts = _parse(e.starts_utc)
             if starts and now > starts + timedelta(hours=POSITION_LIVE_HOURS):
@@ -503,7 +514,7 @@ class Ledger:
             out[e.ticker] = out.get(e.ticker, 0) + e.contracts
         return out
 
-    def reconcile_positions(self, rows):
+    def reconcile_positions(self, rows, ignore=None):
         """(state, message) from the account's OPEN POSITIONS, not its balance.
 
         ⚠ THIS REPLACED A CHECK THAT COULD NEVER PASS, and the failure was
@@ -529,7 +540,7 @@ class Ledger:
         Cleveland bet I placed is not in your account", which is a real problem
         worth stopping for.
         """
-        ours = self._ours_open()
+        ours = self._ours_open(ignore=ignore)
         if not ours:
             return "nothing", "no open bets of its own to check"
         held = {}
@@ -541,7 +552,8 @@ class Ledger:
         for ticker, want in sorted(ours.items()):
             got = held.get(ticker, 0.0)
             e = next((x for x in self.entries
-                      if x.ticker == ticker and x.status == "open"), None)
+                      if x.ticker == ticker and x.status == "open"
+                      and x is not ignore), None)
             who = f"{e.team} ({e.matchup})" if e else ticker
             if got <= 0:
                 problems.append(f"the {who} bet is NOT in your account at all")
@@ -575,12 +587,12 @@ class Ledger:
         return (f"account ${self.account_balance_usd:.2f}; {usd(diff)} of that "
                 f"is not from this tool — your own trades, which is expected")
 
-    def reconcile(self, rows=None):
+    def reconcile(self, rows=None, ignore=None):
         """Guard 4. Delegates to the positions check -- see
         reconcile_positions for why it is no longer the balance."""
         if rows is None:
             rows = self.account_positions
-        return self.reconcile_positions(rows)
+        return self.reconcile_positions(rows, ignore=ignore)
 
     def _reconcile_balance_old(self):
         """(state, message). One of:

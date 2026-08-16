@@ -198,7 +198,10 @@ def guards_ok(ledger, entry) -> None:
     # Guard 4 gates SUBMISSION, not only the display. It is the guard that
     # caught his $32 problem, and a wrong running total makes every other
     # guard read a wrong number.
-    state, msg = ledger.reconcile()
+    # ignore=entry: this bet has already been written to the ledger and has
+    # NOT been placed yet, so without this it counts as one of our own open
+    # bets missing from his account and refuses itself. See _ours_open.
+    state, msg = ledger.reconcile(ignore=entry)
     if state in ("disagree", "unchecked"):
         raise Refused(msg)
 

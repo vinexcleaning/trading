@@ -193,3 +193,47 @@ def test_the_ledger_still_cannot_reach_a_network(led):
     allowed = {"json", "os", "re", "tempfile", "dataclasses", "datetime",
                "pathlib", "typing", "money", "__future__"}
     assert roots <= allowed, f"ledger.py imports {roots - allowed}"
+
+
+# ===== the bug that refused every auto bet, 2026-08-16 evening =============
+
+def test_a_brand_new_entry_does_not_refuse_its_own_submission(led):
+    """⚠ THE SECOND TIME THIS SHAPE HAS APPEARED HERE, and it killed the bot.
+
+    `_work()` writes the entry to the ledger and THEN submits it. So the bet
+    about to be placed is an "open bet of ours", and it is of course not in his
+    Kalshi account yet -- because it has not been placed. Guard 4 therefore
+    said "the Baltimore Orioles bet is NOT in your account", and refused it.
+
+    **Every auto bet, for ever.** He watched it happen on screen:
+
+        17:56:18 AUTO refused Baltimore Orioles: THIS TOOL'S OWN BETS DO NOT
+        MATCH YOUR ACCOUNT ... bet is NOT in your account at all.
+
+    Guard 1 had the identical bug in August and made the practice button
+    permanently dead. It was fixed there and reintroduced here the day Guard 4
+    was re-pointed.
+    """
+    fresh = _open(led, "ABOUT-TO-BE-PLACED", 7)
+    # His account holds nothing of ours yet.
+    assert led.reconcile_positions([], ignore=fresh)[0] == "nothing"
+    assert led.reconcile_positions([]) [0] == "disagree", (
+        "without ignore it must still complain -- otherwise the guard is gone")
+
+
+def test_the_ignored_entry_does_not_hide_a_REAL_missing_bet(led):
+    """The exemption must be one entry wide, not a hole in the guard."""
+    already = _open(led, "PLACED-EARLIER", 7)
+    fresh = _open(led, "ABOUT-TO-BE-PLACED", 7)
+    state, msg = led.reconcile_positions([], ignore=fresh)
+    assert state == "disagree"
+    assert "PLACED-EARLIER" in msg or "Miami Marlins" in msg
+
+
+def test_guards_ok_passes_the_entry_through_to_guard_4(led):
+    """Checked at the seam, because the unit was right and the wiring was not."""
+    import demo_exec as X
+    fresh = _open(led, "ABOUT-TO-BE-PLACED", 7)
+    led.account_positions = []
+    led.set_account_balance(500.00)
+    X.guards_ok(led, fresh)          # must NOT raise
