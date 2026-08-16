@@ -345,3 +345,117 @@ position to market. It counts settled results from Kalshi's own `result` on the
 exact ticker bought, plus the cost of open bets. There is no mark-to-market
 path in it to be wrong. It can still be wrong other ways — he might place a
 different size, or not place it at all — and that is what reconcile is for.
+
+---
+
+# 2026-08-16 — back on the folder, and two incidents worth more than the code
+
+## ⚠ D21 — THE TEST SUITE DELETED HIS LEDGER, AND 150 TESTS PASSED WHILE IT DID
+
+At 17:28 UTC a test run emptied `data/ledger.json` — every entry of his actual
+record of his actual money.
+
+```python
+def __init__(self, path: Path = LEDGER_PATH):   # <- bound at DEFINITION
+```
+
+**A default argument is evaluated once, when the function is defined.** So
+`test_button_never_moves.py` setting `ledger.LEDGER_PATH = <temp file>` did
+nothing whatsoever. `Desk()` opened the **real** ledger, and the per-test
+fixture's `entries.clear()` + `save()` wiped it.
+
+**The fixture is mine and has been wrong since the day I wrote it.** It survived
+150 passing tests because **not one of them ever asked where the tests were
+writing.**
+
+Recovered only because `tools/repair_006.py` had written a backup minutes
+earlier, for an unrelated reason. That is luck, not design.
+
+**Fixed:** the path resolves at call time, and
+`tests/test_never_touches_the_real_ledger.py` reads the real file before and
+after a full run and asserts it is byte-identical.
+
+**The lesson, and it generalises past this repo:** a green suite can be actively
+destroying the thing it exists to protect. Anything that writes to a real path
+needs a test that the real path was not written.
+
+## ⚠ D22 — GUARD 4 WAS EATING EVERY SIGNAL, AND THAT IS WHY 11 BETS DIED
+
+`reconcile()` compared this tool's ledger against his **whole Kalshi balance**.
+That silently assumed every trade in the account came from this tool. **He
+trades manually and always will** — he has said so twice.
+
+So the two sums could never agree. Every deferred entry carried the same note:
+
+> auto-exec deferred: THESE DO NOT AGREE by +$29.53. Your balance says $100.00;
+> this tool expects $70.47 (started $83.00, ...)
+
+**27 bets deferred. 11 expired unplaced.** The guard was not protecting him from
+anything — it was destroying every signal the tool produced, and doing it
+quietly enough that it took a week to notice.
+
+**Re-pointed:** it now asks a narrower question that can actually be answered —
+**is each bet I placed sitting in his account, at the size I placed it?** Read
+with the read-only `positions()`. Anything on a ticker this tool never touched
+is his business and is not looked at.
+
+**This is a STRONGER guard, not a weaker one.** Before, the worst it could say
+was *"something does not add up somewhere"*, which is not actionable and got
+ignored. Now it says *"the Cleveland bet I placed is not in your account"*.
+
+**The $32 incident behind Guard 4 (D20) has not been forgotten.** That
+arithmetic still runs and still shows on screen as `balance_note()` — it just
+no longer stops a bet, because his own trading moves that number constantly and
+a guard that cries wolf is a guard that gets deleted.
+
+**`ledger.py` still imports nothing that can reach a network.** The positions
+are handed in by `demo_exec.read_account()`. There is a test.
+
+## D23 — the deferred entries were DELETED, not voided
+
+24 of them, on games that had not started. No money was ever placed against any
+of them.
+
+**Deleting looks more destructive than voiding and is in fact the safer
+choice here.** Two voids on one signal closes it for good
+(`MAX_VOIDS_BEFORE_CLOSED`), and **8 of these signals appear more than once** —
+so voiding would have permanently destroyed exactly the bets the repair exists
+to give back. Deletion reopens the signal to re-price and re-qualify.
+
+The 3 whose game had already started were marked `expired` instead, because
+they can no longer be placed. **All 11 previously-expired were checked against
+first pitch and every one was genuinely past it**, so there is no second bug
+there.
+
+## D24 — the tennis kill switch is restored, and it now blocks THIS tool too
+
+`kalshi-inplay-bot/TRADING_DISABLED` is back. The other tool had deleted it;
+the same tool also fixed `kalshi_client` so that **demo** orders pass through
+it while **production** orders are blocked. That is the clean version of the
+fix I asked for in mailbox 003 and I would have made it myself.
+
+**⚠ But `livedesk` now runs on production (`demo=False`), so restoring that file
+blocks livedesk's real orders as well.** Coordinator's instruction to restore it
+assumed nothing was running from that folder; that premise is now incomplete.
+
+**Restored anyway, because it is the conservative option and it is his call to
+reverse.** It is the only thing keeping the old tennis bot from placing real
+orders, and turning it off to unblock baseball would re-arm tennis as a side
+effect. If he wants livedesk trading, the right fix is a livedesk-specific
+switch, not deleting this one.
+
+## D25 — what this folder now is, said plainly, because the docs said otherwise
+
+`livedesk` **sends real orders to live Kalshi, and `AUTO` starts ON.** Opening
+the window starts placing real bets by itself.
+
+Every document in this folder described a practice-only tool that could not send
+an order. That was true when I wrote it and is now false, and **stale safety
+documentation is worse than none** — it tells the next person a guarantee holds
+when it does not. `desk.py`'s docstring, `README.md` and `HANDOFF.md` are
+corrected, with the old sentence left visible and marked false rather than
+quietly deleted.
+
+**I did not build the production execution and would not have.** That is on the
+record in `coordinator/mailbox/coordinator/001` and it has not changed. What I
+have done here is repair the guards around a thing he has decided to run.

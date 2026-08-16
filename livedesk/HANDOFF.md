@@ -1,86 +1,72 @@
 # HANDOFF — livedesk
 
 <!-- COORDINATOR-STATE
-doing: STOOD DOWN. Another AI tool owns livedesk/ execution work from 2026-08-13 00:54 (mailbox 004). I have made no edits since, and will not.
-left: nothing of mine. Everything is committed and pushed. Possible future role is reviewing what the other tool produces rather than writing more.
-needs: no
+doing: back on livedesk. Mailbox 006 done: ledger repaired, Guard 4 re-pointed to watch its own bets, and a test that had been deleting his real ledger is fixed. 154 tests green.
+left: mailbox 005 (the who-else-was-on-this-game caption) is OPEN and not started. And livedesk cannot place orders right now - see needs.
+needs: yes - livedesk runs on PRODUCTION and I restored kalshi-inplay-bot/TRADING_DISABLED, which blocks its real orders too. Leave it blocked, or add a livedesk-specific switch so tennis stays off while baseball trades? I will not delete that file.
 -->
 
-**⚠ STOOD DOWN 2026-08-13.** Another AI tool is editing this folder. **I have
-stopped.** Everything below is written for whoever picks this up, not for me.
+**⚠ THIS TOOL SENDS REAL ORDERS, AND AUTO STARTS ON.** Live Kalshi, real
+money, no undo. Opening the window starts placing bets by itself unless you
+press AUTO off.
 
-**As of 2026-08-13 01:10. 94 tests green** (`livedesk\test.bat` — that command
+**As of 2026-08-16 18:00. 154 tests green** (`livedesk	est.bat` — that command
 and no other; it sets `LIVEDESK_REQUIRE_GUI=1`, which turns a missing display
 from a *skip* into a *failure*, and a silently skipped test reads as a green
 run).
 
+**I did not build the production execution and would not have** — that is on
+the record in `coordinator/mailbox/coordinator/001`. Another tool built it at
+his direction while I was stood down 13–16 August. What I maintain here are the
+guards around it.
+
 ---
 
-# ⚠ READ THESE THREE THINGS BEFORE YOU CHANGE ANY CODE
+# ⚠ READ THESE FOUR THINGS BEFORE YOU CHANGE ANY CODE
 
-## 1. A test passing does not mean the path works. This bit me here.
+## 1. A green test suite deleted his ledger, and nobody noticed for a week
 
-**The practice-order button could never have fired. Not once.** Every test
-passed. The adapter was correct. The guards were correct. And the button was
-dead, because by the time a practice order is requested the entry is **already
-in the ledger** — it is written on the copy click — so Guard 1 found the entry's
-own signal in `signals_played()` and refused every single time.
-
-**Nothing in the test suite could have caught it**, because every test
-constructed the entry and the ledger separately, the way the tests were written
-rather than the way the app runs.
-
-**Thirty seconds of actually opening the window and clicking found it.** So did
-the second bug the same evening: `configured()` reported "practice orders are
-ready" on a machine with **no practice key at all**, because the client
-constructs perfectly happily with no credentials and only fails later at
-signing time.
-
-**If you change anything in this folder, run the window and click the thing.**
-`coordinator/REFLECT.md` records this same lesson eight separate times. It is
-the single most reliable failure mode in this repo.
-
-## 2. The demo lock is a URL check, not a flag, and that is deliberate
-
-In `src/demo_exec.py`:
+On 2026-08-16 a test run **emptied `data/ledger.json`** — his real record of his
+real money — while **150 tests passed**.
 
 ```python
-client = KalshiClient(demo=True)     # <-- LITERAL
-verify_demo(client)                  # <-- reads client.base, NOT client.demo
+def __init__(self, path: Path = LEDGER_PATH):   # <- bound at DEFINITION
 ```
 
-**You will be tempted to replace this with a config value or an environment
-variable. Do not.** The reason:
+A default argument is evaluated once, when the function is defined, so the GUI
+test setting `ledger.LEDGER_PATH` to a temp file did **nothing**. `Desk()` opened
+the real ledger and the fixture wiped it. Recovered only because an unrelated
+repair script had written a backup minutes earlier.
 
-- `client.demo` is **what somebody set**. It can be wrong, stale, overwritten,
-  or set by a caller who meant well.
-- `client.base` is **the URL the packet actually goes to**.
+**Anything that writes to a real path needs a test that the real path was not
+written.** `tests/test_never_touches_the_real_ledger.py` is that test now.
 
-**If those two ever disagree, the URL is the truth and the flag is the lie.**
-There is a test that plants exactly that disagreement — a production base URL
-with `demo` still `True` — and proves nothing is sent and the client is never
-even touched (`test_a_lying_demo_flag_does_not_help`).
+## 2. A test passing does not mean the path works
 
-`tests/test_paper_only.py` fails the build if `demo_exec.py` ever loses
-`verify_demo`, `DEMO_HOST`, or the literal `demo=True`.
+The practice-order button **could never have fired**. Every test passed; the
+button was dead, because the entry is already in the ledger by then and Guard 1
+saw its own signal. **Run the window and click the thing.** `REFLECT.md` records
+this same lesson eight times.
 
-## 3. ⚠ NO PRACTICE ORDER HAS EVER BEEN SENT. NOT ONE.
+## 3. Guard 4 was eating every signal, and that is why 11 bets died
 
-**The instruction that stood me down asks me to write up "what the practice-order
-run proved". There was no run, and I am not going to let that stand.**
+It compared the ledger against his **whole Kalshi balance**, assuming every
+trade in the account came from this tool. **He trades manually and always
+will.** So it could never agree: 27 bets deferred, **11 expired unplaced**,
+every note reading *"THESE DO NOT AGREE"*.
 
-Nothing has ever gone to Kalshi from this folder, for two independent reasons:
+It now asks a question that can be answered: **is each bet I placed in his
+account at the size I placed it?** Read-only `positions()`. His own trades are
+invisible to it. **Do not point it back at the balance.** The balance arithmetic
+survives as `balance_note()`, on screen, gating nothing.
 
-1. **There are no practice credentials on this machine.** `KALSHI_KEY_ID` is
-   unset. `configured()` correctly reports "not set up" and the button is greyed
-   out.
-2. **The shared client refuses all writes anyway** — see the kill-switch section
-   below.
+## 4. The endpoint check is on the URL, not a flag
 
-**So the submit path has been exercised against test doubles only.** The
-doubles are good ones and they misbehave on purpose, but **a double is not the
-API**. Treat the whole submit-and-read-back path as *unproven against Kalshi*
-until someone runs it with real practice credentials.
+`demo_exec.py` verifies the host the client will **actually call** against
+`ALLOWED_ENDPOINTS` before every submission. `client.demo` is what somebody set
+and can be wrong; `client.base` is where the packet goes. **If they disagree the
+URL is the truth.** `tests/test_paper_only.py` fails the build if that check is
+lost, or if a credential appears in this public repo.
 
 ---
 
@@ -92,10 +78,10 @@ until someone runs it with real practice credentials.
 | `src/picks.py` | reads `mlb-paper/data/paper.db` **read-only**. Decides nothing |
 | `src/prices.py` | live Kalshi prices and settlement, public read API, GET only |
 | `src/money.py` | what a bet costs and pays. Fees from `common/kalshi_fees.py` |
-| `src/ledger.py` | the record of every bet, and where most guards live |
-| `src/demo_exec.py` | **the only file that can submit anything.** Practice only |
+| `src/ledger.py` | the record of every bet, and where most guards live. Imports nothing that can reach a network, and there is a test |
+| `src/demo_exec.py` | **the only file that can submit anything.** PRODUCTION, and it also does the read-only account read Guard 4 needs |
 | `src/killswitch.py` | `TRADING_DISABLED` in this folder kills the button |
-| `PRACTICE_SETUP.md` | how he gets a practice key. Written click by click |
+| `PRACTICE_SETUP.md` | ⚠ STALE — written for the practice build. Not updated for production |
 
 **The picks are not made here.** `mlb-paper` owns the starting-pitcher strategy.
 This folder reads its output and never recomputes it — a second copy that drifts
