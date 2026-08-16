@@ -98,10 +98,15 @@ class Market:
 
 
 class KalshiClient:
-    def __init__(self, demo: bool = True, read_only: bool = False):
+    def __init__(self, demo: bool = True, read_only: bool = False,
+                 kill_switch: str | None = None):
         self.base = DEMO_BASE if demo else PROD_BASE
         self.demo = demo
         self.read_only = read_only
+        # Which TRADING_DISABLED file governs THIS client. None keeps the
+        # tennis bot's own, so nothing about that bot changes. Another project
+        # passes its own path so the two switches are independent.
+        self.kill_switch = kill_switch
         self.key_id = os.environ.get("KALSHI_KEY_ID", "")
         key_path = os.environ.get("KALSHI_KEY_PATH", "kalshi_private_key.pem")
 
@@ -339,10 +344,18 @@ class KalshiClient:
         # Exception: demo=True bypasses this check. The tennis bot's kill
         # switch protects production orders only; demo execution uses fake
         # money and must continue working even when the tennis bot is off.
-        if os.path.exists(self.KILL_SWITCH) and not self.demo:
+        #
+        # ⚠ ONE SWITCH PER BOT, 2026-08-16. `kill_switch` is per INSTANCE and
+        # defaults to this file's own TRADING_DISABLED, so the tennis bot's
+        # behaviour is unchanged. A different caller passes its own path, and
+        # then neither bot can silently disable the other -- which is what was
+        # happening: livedesk moved to production and was then blocked by a
+        # file that is about the tennis strategy.
+        switch = getattr(self, "kill_switch", None) or self.KILL_SWITCH
+        if os.path.exists(switch) and not self.demo:
             raise PermissionError(
                 "TRADING IS DISABLED. "
-                f"Delete {self.KILL_SWITCH} to re-enable order placement. "
+                f"Delete {switch} to re-enable order placement. "
                 "Turned off 2026-08-03: the strategy's own backtest returns "
                 "-9c/trade and no maker configuration clears its cost bar "
                 "under a realistic fill model.")

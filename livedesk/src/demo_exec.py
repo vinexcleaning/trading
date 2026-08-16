@@ -94,7 +94,13 @@ def _client():
         sys.path.insert(0, str(_CLIENT_DIR))
     from kalshi_client import KalshiClient          # noqa: E402
 
-    client = KalshiClient(demo=False)               # PRODUCTION
+    # ONE SWITCH PER BOT. This client obeys `livedesk/TRADING_DISABLED` and
+    # nothing else -- the tennis bot's switch is about the tennis strategy and
+    # was blocking this one by accident once livedesk moved to production.
+    # Neither can now silently disable the other, and there is a test for each
+    # direction.
+    client = KalshiClient(demo=False,               # PRODUCTION
+                          kill_switch=str(killswitch.SWITCH))
     return client
 
 

@@ -496,6 +496,18 @@ class Desk(tk.Tk):
 
         lines = ["why this bet:"]
         lines += [f"  · {w}" for w in p.why]
+        # Was anything else on this game? INFORMATION ONLY -- shown, recorded,
+        # never filtered on. mlb-paper's own measurement is that every dollar
+        # this strategy has made came from games something else also wanted,
+        # and that it loses on the ones it picks alone -- but that was found by
+        # looking at results and has never been tried on a game that was not
+        # used to find it. So it is a caption, not a criterion.
+        if p.consensus:
+            lines.append("")
+            lines.append(f"  who else is on this game:  {p.consensus}")
+            if p.alone:
+                lines.append("  (on its own picks so far this bot has LOST "
+                             "money — worth knowing, not a reason to skip)")
         lines.append("")
         body = self._fit(lines, self.CARD_BODY_LINES - self.NUMBER_LINES)
         numbers = (
@@ -769,6 +781,7 @@ class Desk(tk.Tk):
             contracts=bet.contracts, cost_usd=bet.cost_usd, fee_usd=bet.fee_usd,
             win_profit_usd=bet.win_profit_usd, lose_usd=bet.lose_usd,
             starts_utc=p.starts_utc, signal=p.signal,
+            alone=p.alone, consensus=p.consensus,
             confirmed_utc=datetime.now().astimezone().isoformat(timespec="seconds"),
             why=list(p.why)))
         self.pending = (self.ledger.entries[-1], p, bet)

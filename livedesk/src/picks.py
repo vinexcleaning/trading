@@ -62,6 +62,10 @@ class Pick:
     why: list                 # plain-English lines
     warning: str              # '' or a sentence he must read
     signal: str               # which rule fired on what state -- Guard 1
+    # Was any other mentality on this game? INFORMATION ONLY -- never filtered
+    # on, never sorted on. See _consensus() for why that restraint matters.
+    alone: Optional[bool] = None
+    consensus: str = ""
 
     @property
     def starts_local(self) -> datetime:
@@ -240,6 +244,35 @@ def source_age_minutes(db: Path = MLB_DB) -> Optional[float]:
         return None
 
 
+def _consensus(game_key: str):
+    """(alone, one-line summary) — was any other mentality on this game?
+
+    Built by `mlb-paper` and documented in mailbox 005. **Called across the
+    folder boundary rather than copied**, because two copies drift and the fee
+    formula in this repo reached seventeen of them before a test stopped it.
+
+    ⚠ INFORMATION ONLY. It is NOT a filter, it is NOT sorted on, and it must
+    never block a bet. The pattern behind it — that `starter` makes money on
+    games something else also traded and loses on the ones it picks alone —
+    **was found by looking at results and has never been tested on a game that
+    was not used to find it.** Acting on it now would fit a rule to the very
+    games that suggested it, which is the shape this project has thrown away 45
+    results over. Showing it and recording it forward is what turns it into
+    evidence: in a month there will be games where the flag was written down
+    before the outcome was known, and those can answer the question honestly.
+
+    Never raises. If `mlb-paper` moves or the call fails, the card simply says
+    nothing about it rather than the window dying over a caption.
+    """
+    try:
+        sys.path.insert(0, str(MLB_SRC))
+        from consensus import who_else            # noqa: E402
+        r = who_else(game_key, asking="starter") or {}
+        return r.get("alone"), str(r.get("summary") or "")
+    except Exception:
+        return None, ""
+
+
 def _changed_mind(con) -> dict:
     """game_key -> when `mlb-paper` last looked at that game and decided NOT
     to trade it.
@@ -334,6 +367,7 @@ def pending_picks(db: Path = MLB_DB, min_hours_before: float = 0.25,
             why=_why(r, backed, _club(away_code), _club(home_code)),
             warning=_warning(r),
             signal=signal_key(gk, backed, r.get("flags") or {}),
+            **dict(zip(("alone", "consensus"), _consensus(gk))),
         ))
 
     # Soonest first pitch first. Deliberately NOT ranked by how good the bot

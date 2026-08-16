@@ -137,6 +137,13 @@ class Entry:
     pnl_usd: float = 0.0
     note: str = ""
     why: list = field(default_factory=list)
+    # Was anything else on this game when the bet was taken? Recorded so that
+    # in 50 bets the question "did the solo picks lose again?" can be answered
+    # FROM THE RECORD rather than re-derived from results afterwards, which is
+    # how the pattern was found in the first place and why it is not yet
+    # evidence. INFORMATION ONLY -- nothing reads these to make a decision.
+    alone: Optional[bool] = None
+    consensus: str = ""
 
     @property
     def counts_as_money(self) -> bool:

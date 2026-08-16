@@ -182,3 +182,6 @@ apify.txt
 *_token.txt
 *_key.txt
 keys/
+
+# livedesk local credentials, never committed (repo is PUBLIC)
+kalshi_env.bat
