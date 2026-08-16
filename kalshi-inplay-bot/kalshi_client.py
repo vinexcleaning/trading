@@ -335,7 +335,11 @@ class KalshiClient:
         # Checked before read_only, so it cannot be bypassed by constructing
         # the client differently. Fail closed: if the file is there, no order
         # goes out, whatever the caller intended.
-        if os.path.exists(self.KILL_SWITCH):
+        #
+        # Exception: demo=True bypasses this check. The tennis bot's kill
+        # switch protects production orders only; demo execution uses fake
+        # money and must continue working even when the tennis bot is off.
+        if os.path.exists(self.KILL_SWITCH) and not self.demo:
             raise PermissionError(
                 "TRADING IS DISABLED. "
                 f"Delete {self.KILL_SWITCH} to re-enable order placement. "

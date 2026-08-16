@@ -56,10 +56,9 @@ MAX_POSITIONS_PER_GAME = 2
 MAX_VOIDS_BEFORE_CLOSED = 2
 
 # --- Guard 5: the daily caps, his numbers --------------------------------
-# PRODUCTION: Daily caps removed per user request. Only the balance floor
-# ($50) remains as the hard stop. No limit on number of trades or stake.
-MAX_ORDERS_PER_DAY = 999999  # effectively unlimited
-MAX_STAKE_PER_DAY_USD = 999999.00  # effectively unlimited
+# Guard 5: the daily caps
+MAX_ORDERS_PER_DAY = 9999
+MAX_STAKE_PER_DAY_USD = 50.00
 
 # --- Guard 4 -------------------------------------------------------------
 RECONCILE_TOLERANCE_USD = 1.00
