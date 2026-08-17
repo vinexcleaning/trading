@@ -50,6 +50,16 @@ _CLIENT_DIR = Path(__file__).resolve().parents[2] / "kalshi-inplay-bot"
 # How long to wait for a demo order to fill before recording it as resting.
 FILL_WAIT_SECONDS = 6.0
 
+# Corrections found on the last account read, drained by the window so they
+# reach the screen. A silent correction is how the phantom $3.77 survived.
+_corrections: list = []
+
+
+def drain_corrections():
+    out = list(_corrections)
+    _corrections.clear()
+    return out
+
 
 class NotDemo(RuntimeError):
     """The client is not pointed at the demo environment. Always fatal."""
@@ -168,6 +178,11 @@ def read_account(ledger, client=None):
         client = client or _client()
         rows = client.positions(open_only=True)
         ledger.account_positions = list(rows or [])
+        # EVERY REFRESH, not a one-off script. He found a money error by
+        # reading Kalshi himself; catching it is this tool's job. The account
+        # wins and the ledger is corrected, never the other way round.
+        for line in ledger.adopt_fills(ledger.account_positions):
+            _corrections.append(line)
         try:
             ledger.set_account_balance(float(client.balance()))
         except Exception:

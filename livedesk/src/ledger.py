@@ -544,6 +544,126 @@ class Ledger:
             out[e.ticker] = out.get(e.ticker, 0) + e.contracts
         return out
 
+    def adopt_fills(self, rows, ignore=None):
+        """Take size, cost and fee for our open bets from HIS ACCOUNT.
+
+        ⚠ HE FOUND THIS BY READING KALSHI HIMSELF, which is the tool's job and
+        not his. Three of four positions disagreed with the ledger.
+
+        **The cause was not the arithmetic and not a partial fill.** Kalshi
+        reports `position_fp` exactly -- 18, 21, 27, 11 -- and every one
+        matched. What differed was:
+
+          * **the PRICE.** Miami was asked at 36c and **filled at 33c** -- a
+            better price than requested. The ledger recorded what it asked for,
+            not what it got, and so carried $10.16 against a real $8.91.
+          * **the FEE.** Every fill was charged about HALF the taker fee this
+            tool computes. ATL $0.1565 against $0.32, SD $0.1831 against
+            $0.37, MIA $0.2090 against $0.42.
+
+        So this stops computing any of it. Kalshi returns
+        `market_exposure_dollars`, `position_fp` and `fees_paid_dollars` per
+        position, and those are the truth. **A number read from the account
+        cannot be wrong about the account.**
+
+        Returns a list of plain-English sentences describing what changed, so
+        a correction is never silent -- a silent one is how the phantom $3.77
+        survived.
+        """
+        if rows is None:
+            return []
+        by_ticker = {}
+        for r in (rows or []):
+            t = str(r.get("ticker") or "")
+            if t:
+                by_ticker[t] = r
+        said = []
+
+        # ⚠ FIRST: a position his account holds that NO open entry carries.
+        #
+        # This kept happening and I kept repairing it from a command line while
+        # the window was running -- and the window's 60-second save wrote its
+        # own copy back over the top, every time. Three restores, three
+        # silent reversions. The repair has to live INSIDE the loop that saves,
+        # or it loses the race by design.
+        #
+        # His 11 Baltimore contracts were real, were from this tool, and were
+        # carried nowhere: every stake and every balance was computed around a
+        # hole.
+        covered = {e.ticker for e in self.entries
+                   if e.status == "open" and e is not ignore}
+        for ticker, r in by_ticker.items():
+            if ticker in covered:
+                continue
+            if abs(_size(r.get("position_fp"))) <= 0:
+                continue
+            back = None
+            for e in reversed(self.entries):
+                if e.ticker == ticker and e.status in ("void", "deferred",
+                                                       "expired"):
+                    back = e
+                    break
+            if back is None:
+                continue          # never ours; his own trade, leave it alone
+            was = back.status
+            back.status = "open"
+            covered.add(ticker)
+            back.note = (f"{back.note} | RESTORED from {was}: your account "
+                         f"holds this and nothing was tracking it").strip(" |")
+            said.append(
+                f"{back.team}: your account holds this bet and the tool had "
+                f"lost track of it — put back")
+
+        for e in self.entries:
+            if e.status != "open" or e is ignore:
+                continue
+            r = by_ticker.get(e.ticker)
+            if r is None:
+                continue
+            size = abs(_size(r.get("position_fp")))
+            cost = abs(_size(r.get("market_exposure_dollars")))
+            fee = abs(_size(r.get("fees_paid_dollars")))
+            churned = abs(_size(r.get("realized_pnl_dollars"))) > 0.0001
+            if size <= 0 or cost <= 0:
+                continue
+            real_price = int(round(100.0 * cost / size))
+            # ⚠ `fees_paid_dollars` is CUMULATIVE FOR THE MARKET, not for the
+            # contracts still held. On Baltimore it is $0.99 -- the fees from
+            # eight buys AND the sell-down -- against 11 remaining contracts.
+            # Adding all of it made this report $5.50 for a position he had
+            # read as $4.60, so my first version of this fix was itself wrong
+            # by ninety cents on exactly the bet that started the whole
+            # problem.
+            #
+            # `realized_pnl_dollars` is non-zero once a market has been traded
+            # both ways. When it has, the fees belong to the whole episode and
+            # cannot be attributed to what is left, so the cost of the CURRENT
+            # position is its exposure and nothing more. Money already spent on
+            # fees is gone either way; pretending it is riding on these 11
+            # contracts overstates what is at stake.
+            real_total = round(cost if churned else cost + fee, 2)
+            before = (e.contracts, e.price_c, round(e.cost_usd, 2))
+            after = (int(size), real_price, real_total)
+            if before == after:
+                continue
+            e.contracts = int(size)
+            e.price_c = real_price
+            e.fee_usd = round(fee, 2)
+            e.cost_usd = real_total
+            e.lose_usd = real_total
+            e.win_profit_usd = round(size * 1.00 - real_total, 2)
+            e.note = (f"{e.note} | corrected from your account: was "
+                      f"{before[0]} at {before[1]}c costing ${before[2]:.2f}, "
+                      f"really {after[0]} at {after[1]}c costing "
+                      f"${after[2]:.2f}").strip(" |")
+            said.append(
+                f"{e.team}: you actually got {after[0]} at {after[1]} cents "
+                f"for ${after[2]:.2f} — the tool had recorded {before[0]} at "
+                f"{before[1]} cents for ${before[2]:.2f}")
+        if said:
+            self.save()
+        return said
+
     def reconcile_positions(self, rows, ignore=None):
         """(state, message) from the account's OPEN POSITIONS, not its balance.
 

@@ -975,6 +975,12 @@ class Desk(tk.Tk):
         if ok != self._account_read_ok:
             self._account_read_ok = ok
             self.events.put(("log", f"account: {said}"))
+        # Say it out loud the moment it appears. He should never have to read
+        # Kalshi himself to find out the tool's numbers are wrong.
+        for line in DEMO.drain_corrections():
+            self.events.put(("log", f"CORRECTED from your account — {line}"))
+            self.events.put(("alert", (f"Corrected from your account: {line}",
+                                       "warn")))
 
         age = PICKS.source_age_minutes()
         retired = []
