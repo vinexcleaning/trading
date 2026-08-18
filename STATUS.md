@@ -150,21 +150,43 @@ put at risk is the one holding data that cannot be bought back at any price.
 **Treat 15 as recorded-not-verified, and ramp concurrency up gradually while
 watching `health.n_ok` rather than assuming the headroom is there.**
 
-## 4. Disk is the wall, and it is closer than it looks
+## 4. ⚠ Disk is NOT the wall for Kalshi. I wrote that an hour ago and it is wrong
 
-| | |
-|---|---|
-| `record.db` today | **65.4 GB** |
-| span | 2026-08-04 → 2026-08-18, **13.3 days** |
-| **growth** | **~5 GB per day at the CURRENT 20 series** |
-| free on C: | **780 GB** |
-| **runway at current width** | **~130 days** |
+**I drafted this section saying disk limits the widening. Then I looked at what
+is actually in the 65 GB, and it inverts the advice, so the wrong version is
+replaced rather than softened.**
 
-**Ten times the width is roughly ten times the rate**, which is about **two
-weeks** of runway. **Whatever the widening plan is, it needs a retention or
-compaction policy in the same commit**, or it buys three months of Kalshi
-history and then stops recording for lack of space — which is the exact failure
-it is trying to prevent.
+| table | rows | what it is |
+|---|---|---|
+| `pin_market` | **160,159,773** | Pinnacle prices |
+| `pin_matchup` | **16,021,097** | Pinnacle fixtures — **each carrying a JSON blob, 1,841 bytes on average** |
+| **`k_book`** | **936,216** | **the Kalshi order book. The thing we are here for.** |
+
+> **Kalshi is 0.53% of every row in the database.** The **4.92 GB a day** is
+> Pinnacle's, essentially all of it. `pin_matchup`'s raw-JSON column alone is
+> **29.5 GB of the 65.4 GB**, and it exists because **11,660 Pinnacle fixtures
+> are re-serialised and rewritten on every single cycle** — 16.0 million rows
+> across 1,374 cycles — whether or not anything about them changed.
+
+**So the honest version, and it is much better news for the widening:**
+
+1. **Widening KALSHI is nearly free on disk.** Ten times the Kalshi series takes
+   the database from 65 GB to roughly 68 GB. It is the request budget that
+   constrains breadth (§1, §3), not the disk.
+2. **The 130-day runway is real but it is Pinnacle's fault, not Kalshi's.**
+   Storing `pin_matchup.raw` only when the blob's hash changes would cut total
+   growth by roughly half at a stroke, and lose nothing — a fixture's metadata
+   does not change every ten minutes.
+3. **That one change buys more recording headroom than any amount of pruning
+   Kalshi ever could.** If the factory chat wants a cheap first commit that
+   makes everything after it easier, **that is the one.**
+
+**⚠ Both numbers above are derived, and here is how, so they can be checked:**
+the row counts are exact `count(*)`s; the 1,841-byte average is sampled over
+30,000 rows because a full scan of a 16-million-row table on a 65 GB file with a
+live writer does not finish inside two minutes. **The 29.5 GB is that average
+times the exact row count — an estimate, not a measurement**, and the blob is
+capped at 4,000 bytes so it cannot be far wrong in the unsafe direction.
 
 ## 5. Hard constraints. Each one is a failure that has already happened here
 

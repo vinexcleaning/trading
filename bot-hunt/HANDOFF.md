@@ -1,7 +1,7 @@
 <!-- COORDINATOR-STATE
-doing: nothing running except the two recorders, which now restart themselves via the shared watchdog
-left: nothing queued - R1 (retail bookmaker de-vig) finished on 2026-08-14 and is negative, so the queue is clear
-needs: yes - Pinnacle's free feed carries 62 two-sided player props joining to Kalshi on 10 strikeout pitchers and 13 home-run hitters. Every de-vig null here was measured on the game winner. Test the props next, or something else?
+doing: coordinating with the factory chat over widening the Kalshi recorder - the measurements it needs are in STATUS.md; and watching whether the sharp bookmaker ever quotes strikeout prices, which gates the whole props idea
+left: the props kill-test finishes on its own in 48 hours and answers, for free, whether there is any window to trade in; P1 itself is pre-registered and not started
+needs: no
 -->
 
 # HANDOFF.md — bot-hunt, session of 2026-08-04

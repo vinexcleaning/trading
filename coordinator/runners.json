@@ -160,6 +160,23 @@
       "done_marker": "candles captured for",
       "restart": "From the mlb-paper folder: .venv\\Scripts\\python.exe src\\capture_truth.py  -- NOT `py -3`, this project has its own venv. RESUMABLE: it selects markets on candle row count, so a crash loses nothing but time. ONE WRITER ONLY -- check for a running copy first, because two writers on the same sqlite file is exactly how the first attempt died.",
       "not_in_watchdog_because": "one-shot. runners/runners.json restarts things forever, which for this job would relaunch it after it legitimately finishes and put a second writer on the same database -- the failure it just had. Deliberate, recorded in mlb-paper/DECISIONS.md."
+    },
+    {
+      "id": "devig-prop-watch",
+      "workstream": "devig",
+      "title": "Are the sharp strikeout prices ever there?",
+      "plain_english": "Checks every twenty minutes whether the free sharp bookmaker is quoting pitcher strikeout prices, and how long before the game starts. It only reads. It exists to answer, for free, whether the whole strikeout idea has a window to work in at all.",
+      "monitor": "heartbeat",
+      "kind": "one-shot",
+      "machine": "desktop",
+      "heartbeat": [
+        "bot-hunt/reports/prop_watch.jsonl",
+        "bot-hunt/logs/prop_watch.log"
+      ],
+      "stale_after_minutes": 45,
+      "done_marker": "prop_watch: every",
+      "note": "ONE-SHOT, 48 hours, deliberately NOT in runners/runners.json -- the watchdog restarts anything it finds stopped, which is right for a continuous recorder and wrong for a job that is supposed to end. Same treatment as crypto-tape-pull and crypto-15m-opens.",
+      "restart": "nothing - it ends on its own after 48 hours"
     }
   ]
 }
