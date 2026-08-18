@@ -200,7 +200,9 @@ def test_the_kill_switch_is_checked_at_SUBMIT_not_at_startup(led, monkeypatch,
 
 
 def test_the_cut_off_stops_a_submission(led):
-    led.set_account_balance(49.00)          # under the absolute $50 floor
+    """⚠ The floor is $40 since 2026-08-18 and it PAUSES rather than stopping.
+    A pause still refuses a submission -- that is the whole point of it."""
+    led.set_account_balance(39.00)          # under the $40 floor
     c = FakeClient()
     with pytest.raises(X.Refused) as e:
         X.submit(led, _entry(), client=c)

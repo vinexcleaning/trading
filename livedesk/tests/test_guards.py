@@ -153,13 +153,16 @@ def test_signal_key_is_stable_and_order_independent(led):
 
 # ========================================== Guard 2: the RELATIVE cut-off
 
-def test_guard2_the_absolute_floor_never_moves(led):
-    assert ACCOUNT_FLOOR_USD == 50.00
-    led.set_account_balance(49.99)
-    stopped, why = led.stopped()
-    assert stopped and "floor" in why
-    led.set_account_balance(50.01)
-    assert led.stopped()[0] is False
+def test_guard2_the_floor_is_forty_and_PAUSES(led):
+    """⚠ CHANGED 2026-08-18 on his instruction: 50 -> 40, and it PAUSES rather
+    than stopping. "if it goes below that then the bot doesnt trade till its
+    above... if it goes back above 40 it should like turn on"."""
+    assert ACCOUNT_FLOOR_USD == 40.00
+    led.set_account_balance(39.99)
+    paused, why = led.paused()
+    assert paused and "floor" in why
+    led.set_account_balance(40.01)
+    assert led.paused()[0] is False, "it must resume by itself"
 
 
 def test_guard2_the_trailing_stop_is_35_percent_off_the_peak(led):
@@ -453,7 +456,7 @@ def test_the_ledger_file_is_readable_by_a_human(led):
     led.add(_entry(signal="s1"))
     raw = json.loads(led.path.read_text(encoding="utf-8"))
     assert raw["account_start_usd"] == 83.0
-    assert raw["account_floor_usd"] == 50.0
+    assert raw["account_floor_usd"] == 40.0
     assert raw["entries"][0]["team"] == "Miami Marlins"
 
 

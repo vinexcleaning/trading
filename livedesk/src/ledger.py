@@ -43,7 +43,14 @@ from money import BANKROLL_START, STAKE_USD, usd
 LEDGER_PATH = Path(__file__).resolve().parents[1] / "data" / "ledger.json"
 
 # --- Guard 2, as he restated it -----------------------------------------
-ACCOUNT_FLOOR_USD = 50.00      # absolute. never moves. his "cannot go under".
+# ⚠ 50 -> 40 AND IT IS NOW A PAUSE, NOT A STOP. His decision, 2026-08-18:
+# "reset it and make the new floor 40, if it goes below that then the bot
+#  doesnt trade till its above... if it goes back above 40 it should like turn
+#  on".
+# So `stopped()` is no longer terminal. Below the floor it places nothing;
+# back above it, it resumes by itself with no restart and no button. Every
+# crossing is announced, so he can always see why it went quiet.
+ACCOUNT_FLOOR_USD = 40.00
 TRAILING_DROP_FRAC = 0.35      # 35% below the highest the running total reached
 # From $83 that is a stop at $53.95 -- next to his floor at the start, and
 # proportionate later: at $300 it allows a $105 drawdown, which is what he
@@ -390,23 +397,41 @@ class Ledger:
             return self.account_balance_usd, True
         return self.worst_case_total_usd(), False
 
-    def stopped(self):
-        """(True, reason) if everything must stop. Both rules, either fires."""
+    def paused(self):
+        """(True, reason) while it must not place anything. NOT TERMINAL.
+
+        ⚠ THIS USED TO BE `stopped()` AND IT WAS FINAL. He asked for a pause
+        instead: below the floor it places nothing, and the moment the money is
+        back above it, it starts again on its own.
+
+        Both cut-offs pause. Neither kills the tool. That matters more than it
+        looks: resetting the peak to $62.61 puts the 35% trailing stop at
+        $40.70, right on top of the $40 floor -- so if the trailing rule had
+        stayed terminal it would have permanently killed a tool he had just
+        asked to resume automatically.
+        """
         self._bump_peak()
         acct, real = self.account_for_floor_usd()
         if acct < ACCOUNT_FLOOR_USD:
             src = "your account" if real else "this tool's own count"
-            return True, (f"STOPPED. {src} is at ${acct:.2f}, under the "
-                          f"${ACCOUNT_FLOOR_USD:.0f} floor you set. That floor "
-                          f"never moves. No more bets.")
+            return True, (f"PAUSED — {src} is at ${acct:.2f}, under your "
+                          f"${ACCOUNT_FLOOR_USD:.0f} floor. It will start again "
+                          f"by itself the moment it is back above "
+                          f"${ACCOUNT_FLOOR_USD:.0f}. Nothing is broken.")
         stop_at = self.trailing_stop_usd()
         worst = self.worst_case_total_usd()
         if worst < stop_at:
             return True, (
-                f"STOPPED. Counting every open bet as a loss, this tool is at "
-                f"${worst:.2f}. Its best was ${self.peak_total_usd:.2f}, and "
-                f"35% below that is ${stop_at:.2f}. No more bets.")
+                f"PAUSED — counting every open bet as a loss this tool is at "
+                f"${worst:.2f}, and 35% below its best of "
+                f"${self.peak_total_usd:.2f} is ${stop_at:.2f}. It resumes by "
+                f"itself when it climbs back. Nothing is broken.")
         return False, ""
+
+    def stopped(self):
+        """Kept so nothing that calls it silently stops checking. Same answer
+        as paused(); the difference is that nothing treats it as final."""
+        return self.paused()
 
     def room_line(self) -> str:
         """Both cut-offs and how much room is left in each, always on screen."""

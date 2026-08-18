@@ -211,7 +211,7 @@ def test_the_button_is_dead_when_the_kill_switch_is_on(app, monkeypatch):
 
 def test_the_button_is_dead_once_the_cut_off_fires(app):
     from ledger import Entry
-    app.ledger.set_account_balance(49.00)      # under the absolute $50 floor
+    app.ledger.set_account_balance(39.00)      # under the $40 floor
     app.picks = [_fake_pick()]
     assert app._blocked()[0] == "stopped"
     app._render()
