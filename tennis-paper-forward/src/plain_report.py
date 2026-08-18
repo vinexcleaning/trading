@@ -27,6 +27,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT.parent))
 
+from common.noskill import Bets, band  # noqa: E402
+
 DATA = ROOT / "data"
 LOGS = ROOT / "logs"
 
@@ -191,21 +193,18 @@ def main() -> int:
     # size. Measured on momentum__hold's 204 solo picks the band runs -13.7% to
     # +14.5%, so a +1.96% result that looked like a lead happens 42 times in 100
     # by chance.
-    rng_band = np.random.default_rng(SEED)
+    # THE ONE IMPLEMENTATION lives in common/noskill.py. This project wrote the
+    # first version; mlb-paper independently wrote a second by a different
+    # method; the strategy factory requires one for every strategy it generates,
+    # which would have been a third. The Kalshi fee formula reached SEVENTEEN
+    # copies that way (GUARDS #6). Consolidated before the copies exist rather
+    # than after, and this project imports it like everyone else.
     bands = {}
     for b, v in live.items():
-        pr = np.array(v["prices"], dtype=float)
-        qt = np.array(v["qtys"], dtype=float)
-        fe = np.array(v["fees"], dtype=float)
-        stk = float(np.sum(pr * qt))
-        if stk <= 0:
+        bets = Bets(prices=v["prices"], qtys=v["qtys"], fees=v["fees"])
+        if bets.staked_cents <= 0:
             continue
-        # the no-skill bot pays the SAME fees on the SAME trades
-        sims = np.array([
-            100.0 * (np.sum(np.where(rng_band.random(len(pr)) < pr / 100.0,
-                                     (100.0 - pr) * qt, -pr * qt)) - fe.sum()) / stk
-            for _ in range(4000)])
-        bands[b] = (float(np.percentile(sims, 5)), float(np.percentile(sims, 95)))
+        bands[b] = band(bets, n_sims=4000, seed=SEED)
 
     print(" WHAT EACH BOT HAS DONE, BEST FIRST")
     print(" " + "-" * 76)

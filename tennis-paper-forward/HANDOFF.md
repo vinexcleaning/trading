@@ -33,6 +33,42 @@ that does not yet exist here, not merely a decision to try.**
 
 ---
 
+
+## THE REVIEW DATE IS 2026-10-08. DO NOT RAISE IT BEFORE THEN.
+
+**His instruction, 2026-08-18, verbatim:** *"stop asking me about the dates. Set
+a date to look again at the 56-day mark, write it in your handoff, and do not
+raise it before then unless something changes."*
+
+**Review date: Thursday 8 October 2026** — 56 days from the 2026-08-13 estimate
+that the answer on `favourite` needs 56 more days.
+
+**One thing recorded here rather than raised with him:** the settling rate has
+fallen from 136 a day to **86 a day** as the tennis calendar moved on. At that
+rate the full sample for `favourite` lands nearer **11 November**, so the
+October review may honestly be "not yet". Checked 2026-08-18 and it is **not** a
+backlog — settlements run 0-2 per tick against a cap of 25, so nothing is
+queueing. It is just fewer matches finishing. **Recorded, not escalated.**
+
+### The only things that reopen this early
+
+Anything on this list is "something changed" and may be raised immediately.
+Nothing else is.
+
+1. **Any bot lands outside its pure-luck range on the WINNING side.** Today all
+   17 are inside. This is the one that would matter.
+2. **The runner dies for more than 24 hours**, or the watchdog stops restarting
+   it.
+3. **The settling rate halves again** (below ~43 a day), which would push the
+   answer past the new year and change the decision he already made.
+4. **A guard fires** — a result leak, a stale-book run, or the paper-only tests
+   failing.
+5. **A current all-tier free results source is found**, which unblocks the form
+   half of `pre-game` and is the one open data question.
+
+`src/plain_report.py` prints 1 and 3; `runners\check.bat` shows 2; the test
+suite covers 4.
+
 ## ⚠ S022, S023 AND ANY set1_overshoot RE-RUN NEED THE LAPTOP, NOT THIS MACHINE
 
 Recorded here so it is not rediscovered a third time - the reopen chat and this
@@ -55,9 +91,9 @@ set-1 labels for S006's own window against the 479 it used. The join rate still
 needs the laptop.
 
 <!-- COORDINATOR-STATE
-doing: collecting on the desktop, 587 settled of 2,500, 17 bots incl. the new pre-game one; watchdog restarts everything after a power-off
-left: his dates choice (56 days / 11 days / stop at two weeks). favourite__hold earns nothing on its own picks - decomposition, 2026-08-14
-needs: yes - pick 56 days, 11 days or stop at two weeks. No purchase is wanted; he decided that and it is closed.
+doing: collecting unattended, 788 of 2,500 settled; nothing needs a human until the review date
+left: review on 2026-10-08 and not before; free for strategy-factory work until then
+needs: no
 -->
 
 **Built 2026-08-06, desktop `C:\Users\vinig`.** Running and accumulating.
