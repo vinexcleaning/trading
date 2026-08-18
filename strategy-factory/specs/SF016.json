@@ -1,0 +1,42 @@
+{
+ "id": "SF016",
+ "created": "2026-08-18",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "VARIABLES.md, Science and Technology: 'award families are CLOSED candidate lists and should sum to a dollar' and 'KXH200MON and KXB200MAX are GPU prices, settling on a vendor'. KXNOBELPHYSICS is a named-candidate award set.",
+ "families": [
+  "KXNOBELPHYSICS",
+  "KXH200MON",
+  "KXB200MAX",
+  "KXEBOLACOUNTRY"
+ ],
+ "thesis": "Award markets name the people who could win one prize and exactly one of them gets it, so the set is worth a dollar - and unlike entertainment awards, a scientific prize can go to somebody the market never listed, which is the thing to check before believing any of it.",
+ "unit": "one settled award",
+ "entry": {
+  "when": "Group every candidate market for one prize in one year. Establish from the rules text whether an unlisted winner is possible. If the set is exhaustive, fire when the sum of asks plus fees is under 100 cents. If it is NOT exhaustive, fire only on the sell side when the sum of bids minus fees exceeds 100 cents.",
+  "side": "either",
+  "min_price_c": 1,
+  "max_price_c": 99,
+  "max_spread_c": 99
+ },
+ "exit": {
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null,
+  "mode": "hold_to_settlement"
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.4
+ },
+ "wrong_if": [
+  "Neither side ever fires in 90 days.",
+  "The prize is awarded to somebody unlisted while the set was treated as exhaustive, which is a direct loss and kills the exhaustive branch outright.",
+  "Fewer than 5 award events settle in a year, making this unmeasurable by arithmetic."
+ ],
+ "slow": true,
+ "notes": "DECLARED SLOW and it is the slowest thing in the folder - a Nobel prize settles once a year. It is written anyway because the INCONSISTENCY is visible on tape immediately even though the settlement is not, and because a category with no spec is a category that was skipped. The GPU-price families in the same category settle monthly and are the faster half; they are listed so the family set is on the board, and a separate spec for them belongs in the depth pass."
+}

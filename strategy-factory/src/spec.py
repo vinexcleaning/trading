@@ -243,16 +243,100 @@ def cmd_list() -> int:
     return 0
 
 
+def cmd_coverage() -> int:
+    """THE QUOTA CHECK — the mechanism that makes narrowing visible.
+
+    Mailbox 001: *"A total is how narrowing hides. 200 strategies all on
+    baseball satisfies '200 strategies' and fails him completely."* So the
+    check is not how many specs exist, it is **how many categories have none**,
+    and it names them.
+
+    A category is only in the quota if `categories.py` judged a strategy could
+    ever be tested there — and that judgment carries a written reason, so a
+    category cannot drop out of the quota silently either.
+    """
+    ROOT = SPECS.parent
+    cats_p = ROOT / "data" / "categories.json"
+    if not cats_p.exists():
+        print("run src/categories.py first - %s missing" % cats_p)
+        return 1
+    quota = json.loads(cats_p.read_text(encoding="utf-8"))["quota_categories"]
+
+    # ⚠ Read the category from shape.json, which is the SAME source
+    # `categories.py` used to build the quota. Reading it from `census.db`'s
+    # `series` table instead put SF017 in an "(unmatched)" bucket and reported
+    # its category as having no spec — because `KXMLBWINS` is listed with 106
+    # open markets and has **no series row at all**, so the lookup missed and
+    # the miss looked like a gap in coverage. Two sources of truth for one
+    # label is how a coverage checker reports a hole that is not there, which
+    # is worse than useless: it sends the next session to fill a filled slot.
+    ser_cat = {s: (d.get("category") or "?")
+               for s, d in json.loads(
+                   (ROOT / "data" / "shape.json").read_text(encoding="utf-8")
+               )["per_series"].items()}
+
+    #: A spec may name a wildcard family like `*tier_a_economics` instead of
+    #: real tickers. The wildcard carries its own category, so it is read here
+    #: rather than silently counting as "no category".
+    def cats_of(spec):
+        out = set()
+        for f in spec.get("families") or []:
+            if f.startswith("*"):
+                for c in quota:
+                    if c.lower().split()[0] in f.lower():
+                        out.add(c)
+                if f in ("*all_tier_a", "*tier_a_no_maker_fee",
+                         "*tier_a_no_maker_fee_non_financial",
+                         "*tier_a_scheduled_release"):
+                    out.add("(cross-category)")
+            elif f in ser_cat:
+                out.add(ser_cat[f])
+        return out or {"(unmatched)"}
+
+    per = Counter()
+    for _, s in load_all():
+        if "_parse_error" in s:
+            continue
+        for c in cats_of(s):
+            per[c] += 1
+
+    print("%-26s %6s   %s" % ("category", "specs", "quota"))
+    missing = []
+    for c in quota:
+        n = per.get(c, 0)
+        if n == 0:
+            missing.append(c)
+        print("%-26s %6d   %s" % (c, n, "OK" if n else "**NONE**"))
+    for c in sorted(set(per) - set(quota)):
+        print("%-26s %6d   (not in quota)" % (c, per[c]))
+    print()
+    total = len([1 for _, s in load_all() if "_parse_error" not in s])
+    print("%d specs across %d of %d quota categories"
+          % (total, len(quota) - len(missing), len(quota)))
+    if missing:
+        print()
+        print("QUOTA NOT MET. No second spec should be written for any "
+              "category until these have one:")
+        for c in missing:
+            print("   - %s" % c)
+        return 1
+    print("QUOTA MET - every testable category has at least one strategy.")
+    return 0
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--validate", action="store_true")
     ap.add_argument("--new", default="")
     ap.add_argument("--list", action="store_true")
+    ap.add_argument("--coverage", action="store_true")
     args = ap.parse_args()
     if args.new:
         sys.exit(cmd_new(args.new))
     if args.list:
         sys.exit(cmd_list())
+    if args.coverage:
+        sys.exit(cmd_coverage())
     sys.exit(cmd_validate())
 
 

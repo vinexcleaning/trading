@@ -1,0 +1,41 @@
+{
+ "id": "SF011",
+ "created": "2026-08-18",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "VARIABLES.md, Entertainment: 'whether the candidate list is CLOSED - who headlines Coachella is a named short list, and a closed list of mutually exclusive outcomes must sum to a dollar'. KXROLEATEVENTCOACHELLA and KXPERFORMVS are named-candidate sets.",
+ "families": [
+  "KXROLEATEVENTCOACHELLA",
+  "KXPERFORMVS",
+  "KXRT"
+ ],
+ "thesis": "When a market lists the named people who could take one slot and exactly one of them will, the whole set is worth a dollar, so a set that costs less than a dollar to buy outright is locked money whoever turns out to get it.",
+ "unit": "one settled event",
+ "entry": {
+  "when": "Group every candidate market sharing one event. Require the set to be exhaustive - either the rules text names it as such or an 'anyone else' contract exists and is included. Fire when the sum of asks plus every leg's fee is under 100 cents.",
+  "side": "yes",
+  "min_price_c": 1,
+  "max_price_c": 99,
+  "max_spread_c": 99
+ },
+ "exit": {
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null,
+  "mode": "hold_to_settlement"
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.4
+ },
+ "wrong_if": [
+  "No candidate set is ever exhaustive - i.e. someone unlisted can always win - in which case this is not an arbitrage and is dropped rather than weakened.",
+  "It fires fewer than 5 times in 60 days.",
+  "The thinnest candidate caps capacity below $25."
+ ],
+ "slow": true,
+ "notes": "THE EXHAUSTIVENESS CHECK IS THE WHOLE SPEC and it is the same lesson as LEDGER C014, which claimed 464 bucket-sum arbitrages and retracted all 464 because the ladder was partial - 3 of 80 buckets. Buying 3 of 80 pays a dollar only if the outcome lands in those 3, which is a bet and not an arbitrage. Here the risk is worse than numeric ladders, because a named-candidate list is hand-curated and 'somebody nobody listed' is a real outcome. If the exhaustiveness requirement is ever relaxed to get more firings, this has become C014 and must be dropped."
+}

@@ -1,0 +1,39 @@
+{
+ "id": "SF017",
+ "created": "2026-08-18",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "VARIABLES.md, Unclassified: 'wins across all teams are CONSERVED - every game produces exactly one win, so the expected wins implied by all thirty teams' ladders is pinned to a fixed total'. KXMLBWINS has 106 two-sided markets and no series row at all.",
+ "families": [
+  "KXMLBWINS"
+ ],
+ "thesis": "Every baseball game produces exactly one win, so the wins the market expects from all thirty teams added together must equal the number of games left to play, and if it does not then some of those ladders are wrong by an amount that can be measured exactly.",
+ "unit": "one league-season snapshot",
+ "entry": {
+  "when": "For each recorded snapshot, take every team's season win-total ladder and compute the implied expected wins for each team as the sum over strikes of the probability of exceeding that strike. Add across all teams. Compare against games already played plus games remaining. Where the total is above the conserved figure, sell the most overpriced ladders; below it, buy the most underpriced.",
+  "side": "either",
+  "min_price_c": 2,
+  "max_price_c": 98,
+  "max_spread_c": 10
+ },
+ "exit": {
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null,
+  "mode": "hold_to_settlement"
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.3
+ },
+ "wrong_if": [
+  "Fewer than 25 of the 30 teams carry a quoted ladder at the same moment, which makes the sum incomplete and the whole comparison invalid - the C014 failure again, in a new costume.",
+  "The conservation gap is smaller than the cost of trading the ladders it would take to close it.",
+  "The season ends before 100 snapshots with a complete set of teams accrue, in which case it is unmeasured, not negative."
+ ],
+ "slow": true,
+ "notes": "THE UNIT IS THE LEAGUE-SEASON SNAPSHOT, not the team and not the market. One conservation reading across thirty teams is ONE observation, however many contracts it involves - the same arithmetic that retracted LEDGER K003 and that this repo has now paid for twice. A season also gives very few independent readings, because consecutive days are almost the same reading; effective sample size is reported, not nominal. || This category exists in the census as '?' because KXMLBWINS has NO series row on the exchange at all - it is listed with open markets and no metadata, which is itself worth knowing."
+}

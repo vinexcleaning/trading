@@ -1,0 +1,42 @@
+{
+ "id": "SF014",
+ "created": "2026-08-18",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "VARIABLES.md, Mentions: 'all of a family's risk resolves inside one short window - a speech, a press conference - and nothing should move before it', and 'the words are correlated: one speech drives every market in the family, so they are one observation and not thirty'.",
+ "families": [
+  "KXFEDMENTION",
+  "KXSECPRESSMENTION",
+  "KXTRUMPSAY",
+  "KXWARSHMENTION"
+ ],
+ "thesis": "Markets on whether someone will say a particular word are decided entirely during one speech, so before the speech there is no news that can move them, and the question worth measuring is whether they drift anyway.",
+ "unit": "one speech, NOT one word market",
+ "entry": {
+  "when": "For each speech event, record every word market's price at 24 hours, 6 hours and 1 hour before the scheduled start, and at settlement. Measure the drift over that window against the eventual outcome. Where drift is systematically toward zero beyond what the outcomes justify, buy the cheapest words at the 1-hour mark.",
+  "side": "yes",
+  "min_price_c": 2,
+  "max_price_c": 30,
+  "max_spread_c": 8
+ },
+ "exit": {
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null,
+  "mode": "hold_to_settlement"
+ },
+ "size": {
+  "rule": "flat",
+  "usd_per_bet": 5,
+  "max_share_of_depth": 0.2
+ },
+ "wrong_if": [
+  "Drift is inside its no-skill range at 100 SPEECHES - not 100 word markets, which would be pseudo-replication of exactly the kind that retracted LEDGER K003.",
+  "Fewer than 100 speeches occur in 90 days, in which case this is dropped as unmeasurable rather than as unprofitable.",
+  "The prices do not move before the speech at all, which makes this a null with nothing to trade and is the expected outcome."
+ ],
+ "slow": true,
+ "notes": "THE UNIT IS THE SPEECH AND THAT IS THE ENTIRE POINT. One speech drives every word market in the family simultaneously, so thirty word markets from one speech are ONE observation. LEDGER K003 was retracted for precisely this - a 10-strike ladder counted as 10 markets when it is one temperature reading, and the confidence ranges came out about three times too tight. Reporting effective sample size, not nominal, is not optional here. || Also a longshot family, so it overlaps SF004's price band; SF004 rests a passive offer against the longshot, this buys the longshot outright. Opposite directions, and that is deliberate."
+}

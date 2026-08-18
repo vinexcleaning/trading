@@ -82,6 +82,12 @@ def main() -> None:
                     help="markets per tier A series that get a ladder walk")
     ap.add_argument("--min-two-sided", type=int, default=1,
                     help="two-sided markets a series needs to earn tier B")
+    ap.add_argument("--per-category", type=int, default=4,
+                    help="tier A: depth slots EVERY category gets before any "
+                         "category gets a second helping. This is the quota "
+                         "that stops the expensive tier collapsing onto "
+                         "whichever category happens to have the most "
+                         "two-sided markets -- see mailbox 001.")
     args = ap.parse_args()
 
     shape_p = ROOT / "data" / "shape.json"
@@ -117,16 +123,50 @@ def main() -> None:
             score = 0.0        # already on tape at depth; do not spend tier A
         tier_a_pool.append((score, ser, cat, n, two))
 
+    # ------------------------------------------------------------------
+    # TIER A IS ALLOCATED BY QUOTA FIRST, SCORE SECOND.
+    #
+    # ⚠ v1 ranked purely on `two_sided * category boost` and it narrowed
+    # exactly the way mailbox 001 warns about. Measured on the first
+    # allocation: Financials took 12 of 36 depth slots and Sports took 8,
+    # while **crypto, weather, politics, companies, science and mentions got
+    # ZERO** -- and crypto settles in minutes and weather settles same-day,
+    # which makes them the two fastest categories to get a real forward answer
+    # from. A pure score is a TOTAL, and his sentence is that a total is how
+    # narrowing hides.
+    #
+    # So: every category with any two-sided market gets `--per-category` slots
+    # before any category gets a second helping. Only the leftover budget is
+    # handed out by score.
+    # ------------------------------------------------------------------
     tier_a_pool.sort(reverse=True)
     tier_a, spent = [], 0
-    for score, ser, cat, n, two in tier_a_pool:
-        if score <= 0:
-            continue
+    taken = set()
+
+    def take(ser, n):
+        nonlocal spent
         cost = min(n, args.depth_cap)
-        if spent + cost > args.tier_a_budget:
-            continue
+        if spent + cost > args.tier_a_budget or ser in taken:
+            return False
         tier_a.append(ser)
+        taken.add(ser)
         spent += cost
+        return True
+
+    by_cat = defaultdict(list)
+    for score, ser, cat, n, two in tier_a_pool:
+        if score > 0:
+            by_cat[cat].append((score, ser, n))
+    # Round-robin so a large budget cannot be exhausted by the first category.
+    for slot in range(args.per_category):
+        for cat in sorted(by_cat, key=lambda c: -len(by_cat[c])):
+            if slot < len(by_cat[cat]):
+                _, ser, n = by_cat[cat][slot]
+                take(ser, n)
+    quota_spent, quota_series = spent, len(tier_a)
+    for score, ser, cat, n, two in tier_a_pool:
+        if score > 0:
+            take(ser, n)
 
     tier_b = sorted(tier_b)
     out = {
@@ -222,7 +262,18 @@ def main() -> None:
              "yes" if feetypes.get(ser) == "quadratic_with_maker_fees"
              else "no"))
     A("")
-    A("The ranking is two-sided market count multiplied by a boost for "
+    A("**%d of the %d tier A families were allocated by CATEGORY QUOTA** - "
+      "%d slots to every category with any two-sided market, handed out before "
+      "any category got a second helping. The remaining %d were filled by "
+      "score. Without the quota the first allocation put 12 of 36 slots in "
+      "Financials and 8 in Sports and gave **zero** to crypto, weather, "
+      "politics, companies, science and mentions - and crypto settles in "
+      "minutes while weather settles same-day, which makes them the two "
+      "fastest categories to get a real forward answer from."
+      % (quota_series, len(tier_a), args.per_category,
+         len(tier_a) - quota_series))
+    A("")
+    A("The score used for the leftover slots is two-sided market count "
       "categories `bot-hunt` records **nothing** in - crypto, economics, "
       "financials, commodities. Those are the families where this recorder is "
       "the only thing that will ever have tape, which was his explicit ask: "

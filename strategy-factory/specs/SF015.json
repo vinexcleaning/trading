@@ -1,0 +1,42 @@
+{
+ "id": "SF015",
+ "created": "2026-08-18",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "VARIABLES.md, Companies: 'these settle on a data vendor (Fiscal.ai), not on the filing' and 'the scheduled earnings date'. KXHOODA, KXTSLAA, KXSPOTA, KXSBUXA are company KPI ladders.",
+ "families": [
+  "KXHOODA",
+  "KXTSLAA",
+  "KXSPOTA",
+  "KXSBUXA"
+ ],
+ "thesis": "Company performance markets are ladders around a number reported on a date everyone knows in advance, so the plain question - does buying and holding them make or lose money - has never been asked here and costs nothing to ask.",
+ "unit": "one settled market",
+ "entry": {
+  "when": "Buy at the recorded ask at a fixed number of days before the scheduled report, bucketed by price in 5-cent bands. The dullest possible rule, on purpose: this exists to accrue a sample in a category with none.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 8
+ },
+ "exit": {
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null,
+  "mode": "hold_to_settlement"
+ },
+ "size": {
+  "rule": "flat",
+  "usd_per_bet": 10,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Fewer than 100 markets settle by 2026-11-18, which confirms the category is unmeasurable on this timescale and it is dropped as unmeasurable rather than unprofitable.",
+  "Result inside its no-skill range at 100 settled markets.",
+  "The ladders turn out to share one reported number, making the unit the EARNINGS REPORT rather than the market - in which case the sample is about 4 per company per year and the whole thing is underpowered by two orders of magnitude."
+ ],
+ "slow": true,
+ "notes": "The third kill condition is the one most likely to fire and it is written before any number exists. A 20-strike ladder on Tesla's quarterly revenue is ONE observation of one report, not 20 markets, and if that is how it turns out then 36 families times 4 quarters is 144 observations a year - which is the honest answer and is a finding about the category rather than about the strategy."
+}

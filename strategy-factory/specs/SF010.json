@@ -1,0 +1,41 @@
+{
+ "id": "SF010",
+ "created": "2026-08-18",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "VARIABLES.md, Elections: 'the margin ladder against the winner market on the same race - P(margin above zero) and P(win) are the same event described twice'. KXMIDTERMMOV is the single largest two-sided family on the exchange at 3,687 markets.",
+ "families": [
+  "KXMIDTERMMOV",
+  "KXHOUSERACE",
+  "KXSENATERACE"
+ ],
+ "thesis": "Winning a race and winning it by more than nothing are the same event, so the two markets must agree, and when they do not the difference is money that does not depend on who wins.",
+ "unit": "one settled race",
+ "entry": {
+  "when": "For one race, take the winner market and the margin-of-victory ladder. The probability of a margin above zero for a candidate is the sum of that candidate's margin brackets. Fire when that sum, bought at ask plus fees, is below the winner market's bid minus fees, or the mirror.",
+  "side": "either",
+  "min_price_c": 1,
+  "max_price_c": 99,
+  "max_spread_c": 99
+ },
+ "exit": {
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null,
+  "mode": "hold_to_settlement"
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.4
+ },
+ "wrong_if": [
+  "The margin ladder is not complete for any race, so the sum is not the probability of winning and the whole comparison is invalid.",
+  "It fires but the gap never exceeds the cost of the many legs involved - a margin ladder can be 20 markets and each pays a fee.",
+  "Fewer than 10 races carry both a winner market and a complete margin ladder."
+ ],
+ "slow": true,
+ "notes": "DECLARED SLOW. These settle at an election, months away, so a month gives no settled units. What a month DOES give is the answer to whether the inconsistency exists at all, which is visible on tape long before anything settles - and that is worth having in September rather than never. || Same family of mechanism as SF001 and SF002 but a different rule and a different pairing: those compare strikes within one ladder, this compares a ladder against a separate market."
+}

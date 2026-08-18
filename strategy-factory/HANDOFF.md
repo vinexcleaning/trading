@@ -1,6 +1,6 @@
 <!-- COORDINATOR-STATE
-doing: the wide Kalshi recorder is LIVE since 2026-08-18 05:14 UTC - 36 families at full order-book depth and 3,438 at top of book, against the 19 recorded before
-left: build the screening engine with its placebo arm, and replace the disk projection with the real first-day numbers
+doing: recorder LIVE since 2026-08-18 05:14 UTC - now 55 families at full order-book depth and 3,438 at top of book, against the 19 recorded before; 17 strategy specs written, one for every testable category
+left: build the screening engine with its placebo arm; then answer four unchecked assumptions that could void four specs outright, from rules text already on tape
 needs: yes - which markets does he actually know something about that the numbers would not tell us? Not which he likes - which ones behave differently, and why. It is the one input this repo cannot generate and all three other idea sources are already running.
 -->
 
@@ -68,8 +68,9 @@ to `devig` as mailbox 021 and answered in `STATUS.md`.
 - **`src/wide.py`** — the two-tier recorder. Own database, own single-instance
   lock, change-only writes with a forced heartbeat.
 - **`src/verify_list_quotes.py`**, **`src/bestofn.py`**, **`src/spec.py`**,
-  **`src/seed_specs.py`**.
-- **8 strategy specs**, validated, across three of the four required sources.
+  **`src/seed_specs.py`**, **`src/categories.py`**,
+  **`src/seed_specs_breadth.py`**.
+- **17 strategy specs**, validated, across three of the four required sources and **every one of the 13 testable categories**.
 - **15 tests passing**, including a paper-only guard extended to scan
   `bot-hunt/src/venues.py` (which runs inside this process) and a local
   GUARD #23 field-name check with the real bug as its planted violation.
@@ -83,8 +84,8 @@ to `devig` as mailbox 021 and answered in `STATUS.md`.
 | | tier A — depth | tier B — breadth |
 |---|---|---|
 | what it stores | the **whole order-book ladder**, both sides, as JSON | top of book with sizes |
-| families | **36** that `bot-hunt` does not record at depth | **3,438** on tape after cycle 1 |
-| cost per cycle | 900 requests, **measured 257 s and 338 s** | ~785 requests, **measured 940 s** on the first (write-everything) cycle |
+| families | **55** that `bot-hunt` does not record at depth (36 before the category quota) | **3,438** on tape |
+| cost per cycle | 1,200 requests, **measured 1,172 ladders in 378 s** | ~785 requests, **measured 883-1,533 s** |
 | interval | 600 s | 1,800 s |
 | database | `data/wide_depth.db` | `data/wide_top.db` |
 
@@ -98,12 +99,13 @@ Analysis joins them with `ATTACH`, which costs nothing.
 compared after editing and agree in both directions. `devig`'s recorders died
 four times for want of exactly this, the last for **19 hours** after a reboot.
 
-**First cycles, off the tape rather than predicted: 83,698 markets across
-3,438 families, and 1,800 full ladders across 36.** Every category that had
-nothing now has tape — crypto 4,010 markets, economics 3,183, financials
-10,050, commodities 1,288. Sports is now 12% of what is recorded rather than
-all of it. Read back and spot-checked in `reports/RECORDER_LIVE.md`, including
-a structural check on 1,270 stored ladders: **0 violations**.
+**After 18 hours, off the tape rather than predicted: 1,010,740 top-of-book
+rows across 3,438 families and 144,558 distinct markets, plus 99,949 full
+ladders.** Every category that had nothing now has tape. Sports is about one
+market in two and one family in four — it used to be everything. Measured disk:
+**about 20 GB a month**, against the 40 GB limit written into
+`PREREGISTRATION.md` §5 before any of it ran. Read back and spot-checked in
+`reports/RECORDER_LIVE.md`: **85,498 snapshots, not one crossed book.**
 
 ### What it is NOT doing, and why
 
@@ -114,6 +116,48 @@ because their own warning applies harder here: the 15 requests/second ceiling is
 one holding 65 GB that cannot be re-pulled, and breadth here comes from one
 request per **sweep** rather than per market — so the rate is not where my
 headroom has to come from.
+
+---
+
+## ⚠ MAILBOX 001 WAS MISSED AT THE START, AND TWO OF ITS WARNINGS HAD COME TRUE
+
+`coordinator/mailbox/factory/` did not exist when this session checked, so it
+concluded there was no mail. **The message landed at 00:33 while work was in
+progress**, and the folder's README was created at 01:01 **without listing the
+directory again** — writing a README into a folder holding an unread
+instruction. Read and answered at the end; `Status: DONE`.
+
+It names one failure mode in his own words: *"I tell the factory chat to find me
+a bunch of strategies. Instead we'll end up doing it to find me one really good
+market and find all the strategies within that market."* **It had already
+happened twice by the time it was read.**
+
+**In the recorder, which is the version I had not thought of.** Tier A allocates
+full order-book depth on a single score. The first allocation gave
+**Financials 12 slots and Sports 8, and ZERO to crypto, weather, politics,
+companies, science and mentions** — and crypto settles in minutes, weather
+same-day, making them the two fastest categories to get a real answer from.
+Fixed with a per-category quota in `tiers.py`. Now **55 families**, largest
+category holds 5, measured at 1,172 ladders in 378 s inside a 600 s interval.
+
+**In the specs.** 8 specs across **4 of 13** testable categories. Fixed by a
+breadth pass, SF009–SF017, one per uncovered category. `spec.py --coverage`
+now **exits non-zero** while any testable category has zero, so this cannot
+silently recur.
+
+**Three artefacts now enforce breadth instead of intending it:**
+
+| | |
+|---|---|
+| `reports/CATEGORIES.md` | every category, a verdict, and a **written reason** — including for the hopeless ones, because a category dismissed without a reason is one that was skipped |
+| `reports/VARIABLES.md` | what could move the price in each category, written **before** SF009–SF017. Anything added after a result gets a dated `LATE:` tag; there are none |
+| `reports/COMPLETENESS-01.md` | what was not covered, and what becomes next cycle's work |
+
+**Four assumptions are named as unchecked and two can void a spec outright** —
+whether Kalshi's NFL spread has a push (kills SF009), whether more than one
+person can be pardoned (kills SF012), whether Pyth is free (SF013), and whether
+company KPI ladders are one observation per earnings report (SF015). All four
+are queries against `w_names.rules_primary`, already on tape.
 
 ---
 

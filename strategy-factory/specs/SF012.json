@@ -1,0 +1,41 @@
+{
+ "id": "SF012",
+ "created": "2026-08-18",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "VARIABLES.md, Politics: 'whether the field is OPEN - who will Trump pardon has no closed list, so the candidates should sum to LESS than a dollar, and a sum above one is a lock'. KXTRUMPPARDONS and KXFEDERALCHARGE are open-field sets.",
+ "families": [
+  "KXTRUMPPARDONS",
+  "KXFEDERALCHARGE",
+  "KXFUNDRAISING"
+ ],
+ "thesis": "When a market names some of the people something could happen to but anyone else could be the answer too, the listed names must add up to less than a dollar, so a set that can be SOLD for more than a dollar is locked money.",
+ "unit": "one settled event",
+ "entry": {
+  "when": "Group every named-candidate market sharing one open-field event. Confirm from the rules text that an unlisted outcome is possible. Fire when the sum of BIDS minus every leg's fee exceeds 100 cents, selling one of each.",
+  "side": "no",
+  "min_price_c": 1,
+  "max_price_c": 99,
+  "max_spread_c": 99
+ },
+ "exit": {
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null,
+  "mode": "hold_to_settlement"
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.4
+ },
+ "wrong_if": [
+  "The events turn out not to be mutually exclusive - more than one person can be pardoned - in which case the sum is not bounded by a dollar at all and this spec is VOID, not weak.",
+  "It fires fewer than 5 times in 60 days.",
+  "Selling requires posting the full complement in margin, making the real capital cost far above the stated size."
+ ],
+ "slow": true,
+ "notes": "THE MUTUAL-EXCLUSIVITY QUESTION IS CHECKED FIRST AND IS LIKELY FATAL. 'Who will Trump pardon' plausibly allows several people to be pardoned, and if so nothing is bounded and there is no arbitrage - only a bet. This is written down now, before any firing is counted, so that a result cannot be read as evidence when the premise was never checked. The mirror of SF011 on purpose: closed field means BUY the set, open field means SELL it, and getting the direction backwards is the obvious way to lose money confidently."
+}

@@ -1,0 +1,42 @@
+{
+ "id": "SF013",
+ "created": "2026-08-18",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "VARIABLES.md, Commodities: 'KXGOLDH and KXSILVERH settle HOURLY on Pyth - a free public price feed, and among the fastest-settling families outside crypto'. The category has zero tape in this repo.",
+ "families": [
+  "KXGOLDH",
+  "KXSILVERH",
+  "KXWTI",
+  "KXWTIMAX"
+ ],
+ "thesis": "Gold and silver settle every hour against a free public price, so a plain buy-and-hold at each price level accrues a real sample in days rather than months, in a category where this repo has never measured anything at all.",
+ "unit": "one settled market",
+ "entry": {
+  "when": "Buy at the recorded ask at a fixed number of minutes before close, bucketed in 5-cent bands across the whole price range, so the answer is a curve. No selection on which band looks good.",
+  "side": "either",
+  "min_price_c": 2,
+  "max_price_c": 98,
+  "max_spread_c": 6
+ },
+ "exit": {
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null,
+  "mode": "hold_to_settlement"
+ },
+ "size": {
+  "rule": "flat",
+  "usd_per_bet": 10,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Every price band's range still contains zero at 100 settled markets per band, in which case it is recorded as UNMEASURED and not as negative.",
+  "The whole curve sits below zero at the real ask and the real fee.",
+  "Fewer than 100 markets settle in 30 days, which would mean the hourly families are not as frequent as the listing suggests."
+ ],
+ "slow": false,
+ "notes": "Deliberately the same rule as SF005 on crypto, pointed at a different category - and therefore a DIFFERENT strategy with its own id and its own place in the screened count, not a re-run. The reason to expect a different answer is that the counterparty differs: crypto hourly markets are quoted heavily by bots, and LEDGER C022 measured market making there at -0.853 cents. Whether metals hourly are the same crowd is exactly the unknown."
+}

@@ -484,8 +484,8 @@ thought, not less.
 **It is running.** Since tonight we save prices on **3,438 kinds of market**
 instead of 19. Crypto, economic releases, share indexes, commodities,
 elections, entertainment - all of those had nothing saved at all before, and
-now do. Sports is now about one part in eight of what we save rather than all
-of it. On 36 of them we also save the full list of every buy and sell offer,
+now do. Sports used to be everything we saved; it is now about one market in
+two, and one family in four. On 36 of them we also save the full list of every buy and sell offer,
 which is what answers your question about thin markets: not "what is the
 price" but "what would it actually cost me to put five hundred dollars in".
 
