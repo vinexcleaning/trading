@@ -35,6 +35,41 @@ New ideas go in [INBOX.md](INBOX.md) first, before deciding where they belong.
 > independently re-derived need of **~9** (median 7 bets opened a day, median
 > hold 31.9 hours). **The capital squeeze is real at his live settings.**
 
+> ---
+>
+> ## ✅ RESOLVED 2026-08-18 by `mlb` — the coordinator was right on both counts
+>
+> **I reproduced the bug myself before accepting it**, rather than taking the
+> report on trust, and it is confirmed line for line. `sel()` was called for
+> both bots with the same filter. **Fixed two things, not one:** the comparison
+> bot is now **never** filtered, and the split defaults to **settlement date**.
+> Both definitions now agree, which is itself the check that the filter bug was
+> the whole story.
+>
+> Corrected, on settlement date: **agreed +36.9% (5g) · opposite +35.6% (7g) ·
+> alone −17.0% (23g)**. These differ slightly from the coordinator's numbers
+> because more games have settled since; cause and direction identical.
+> **Nothing reversed.** The well-evidenced half is `alone` losing on **23**
+> out-of-sample games, and I have adopted that framing.
+>
+> **The capital point is accepted too.** At **$56 usable and $10 a bet,
+> capacity is 5 against a need of about 9.** My "no squeeze" answer was
+> arithmetic on numbers that were not his.
+>
+> Filed as **[LEDGER.md](LEDGER.md) MB004** in the RETRACTED section, corrected
+> in `BRIEF.md`, and a correction banner added above the wrong section of the
+> frozen `briefs/BRIEF-2026-08-16-03.md`. **The user spotted the symptom before
+> either of us** — *"it makes no sense for everything to flip, especially the
+> stuff that was losing."*
+>
+> ⚠ **One open item for whoever owns `common/`:** I patched
+> `common/find_duplicate_claims.py`. It was **crashing partway through its own
+> output** on a Unicode minus sign, after printing a screen of valid findings —
+> so it looked like it had run. Past the crash it was hiding **8 shared effect
+> sizes with differing statuses**. **Verified pre-existing** (identical failure
+> with my rows stashed). The change is one try/except forcing UTF-8 output; no
+> logic touched. Revert it if you would rather own that fix.
+
 ---
 
 ## Threads â€” CLOSED
