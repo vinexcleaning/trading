@@ -252,6 +252,57 @@ user's**, not a next planned step.
 **If it is wanted, the cheap shapes are:** a fixed window (one week is ~68 GB),
 or filter-on-the-fly to sports tickers only and discard the rest, exactly as
 `pull_kalshi_archive.py` already does for tennis.
+### ✅ DECIDED 2026-08-14 by the user: one week, not all of it
+
+**His words:** *"take one week, about 68GB. Not all of it — there is 782GB free
+on this machine and the full 1.15TB does not fit, so 'all' was never actually on
+the table."*
+
+**He is right and it was my error.** I offered three options and priced them
+without ever checking his disk. Verified since: **781 GB free**, so "all of it"
+was fictional. **A cost quoted without checking it fits is not a cost.**
+
+**Running now:** 2026-08-03 → 08-09, **168 hourly files, ~68 GB**, into
+`social-signal/data/polymarket_archive/` via
+`social-signal/src/pull_polymarket_week.py`.
+
+**Raw files are KEPT, not filtered.** The Kalshi puller filters to two tennis
+series because that scope was already settled. **Nothing has settled what
+Polymarket scope matters**, and the host is under a shutdown request — filtering
+now would discard irreplaceable data to answer a question nobody has asked.
+
+**Three things the puller does that the Kalshi one learned the hard way:** writes
+through a `.part` file so a half download never looks whole; checks `PAR1` magic
+bytes before saving, because this domain serves **HTTP 200 with a ~400-byte body**
+for URLs that hold nothing; and **names every missing hour**, because a hole in an
+archive that cannot be re-obtained must never be silent.
+
+### ✅ DECIDED 2026-08-14: YouTube transcript collection is STOPPED
+
+**His words:** *"stop pulling from the address YouTube's own rules disallow. Keep
+the 1,135 transcripts already collected and keep the 484 findings that rest on
+them, but do not collect more that way."*
+
+Both paths reached endpoints `robots.txt` disallows — `youtube-transcript-api`
+via `/api/timedtext`, `yt-dlp` via `/youtubei/`. **We killed four other platforms
+on that exact test**, so this was the one inconsistency in the access policy.
+
+**Stopped in `youtube-signal/src/transcripts.py`, `src/retrieval.py`, and
+enforced by `tests/test_no_disallowed_route.py` (6 tests).** The test earned its
+place immediately: `retrieval.py` called the underlying path **directly**, and its
+`except Exception` would have swallowed the stop and filed it as an ordinary
+fetch error — so a stopped collector would have looked like a blocked one and
+carried on.
+
+**Nothing is retracted.** The 1,135 transcripts and the 484 claims drawn from
+them stand; only future collection is blocked.
+
+**Priced, as he asked — see `youtube-signal/DECISIONS_YOUTUBE_ROUTE.md`.** The
+free official key needs no card and covers metadata for all 11,277 known video
+ids in **226 of 10,000 daily units**. But `captions.download` is **owner-only**,
+so **no price returns a stranger's captions**. Paid vendors obtain them the same
+way we just stopped; buying the output moves the problem to an invoice.
+
 
 ---
 
