@@ -51,6 +51,16 @@ SECRET_SHAPES = [
     ("bearer literal", re.compile(r"[Bb]earer\s+[A-Za-z0-9\-._~+/]{25,}")),
     ("bluesky app password", re.compile(r"\b[a-z0-9]{4}-[a-z0-9]{4}-"
                                         r"[a-z0-9]{4}-[a-z0-9]{4}\b")),
+    # Bright Data hands out a UUID-shaped key. A BARE uuid is deliberately not
+    # flagged -- snapshot ids, dataset ids and request ids all look like that
+    # and appear in every log line and report. What is flagged is a uuid
+    # sitting next to a Bright Data word, which is what a paste looks like.
+    ("brightdata api key",
+     re.compile(r"(bright ?data|brd_|BRIGHTDATA_TOKEN)[^\n]{0,40}"
+                r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-"
+                r"[0-9a-f]{12}", re.I)),
+    ("brightdata proxy credential",
+     re.compile(r"brd-customer-[A-Za-z0-9_\-]{6,}")),
     # A long unbroken high-entropy run assigned to a credential-shaped name.
     ("secret-shaped assignment",
      re.compile(r"\b(token|secret|api[_-]?key|password|passwd|apikey)\b"
@@ -61,8 +71,11 @@ SECRET_SHAPES = [
 # to appear. Anything that looks like the value is not.
 ALLOWED_SUBSTRINGS = [
     r"C:\Users\vinig\keys\apify.txt",
+    r"C:\Users\vinig\keys\brightdata.txt",
     "keys/apify.txt",
+    "keys/brightdata.txt",
     "apify.txt",
+    "brightdata.txt",
 ]
 
 
@@ -126,6 +139,11 @@ def test_the_detector_still_detects():
         ("a private key block", "-----BEGIN RSA PRIVATE KEY-----"),
         ("a bearer literal", "Authorization: Bearer " + "G" * 30),
         ("a bluesky app password", "pw is abcd-efgh-ijkl-mnop"),
+        ("a bright data key next to its own name",
+         "BRIGHTDATA_TOKEN=8f3a1c2d-4b5e-6f70-8a9b-0c1d2e3f4a5b"),
+        ("a bright data key in prose",
+         "the bright data key is 8f3a1c2d-4b5e-6f70-8a9b-0c1d2e3f4a5b"),
+        ("a bright data proxy login", "brd-customer-hl_1a2b3c4d-zone-web"),
         ("a generic secret assignment",
          'password = "' + "H" * 30 + '"'),
     ]
@@ -144,6 +162,9 @@ def test_the_detector_does_not_cry_wolf():
         "cursor = 'eyJzIjpbMTc4Njc0ODU4MjAwMCwiZGlkOnBsYzpn'",
         "def load_token(path): return open(path).read().strip()",
         "at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.post/3kkzc3swzy22c",
+        "snapshot_id = 8f3a1c2d-4b5e-6f70-8a9b-0c1d2e3f4a5b",
+        "dataset_id=gd_lwxmeb2u1cniijd7t4 type=discover_new",
+        "Read the token from " + chr(92) + chr(92) + "keys" + chr(92) + chr(92) + "brightdata.txt",
     ]
     for c in clean:
         assert not scan_text(c), f"detector cried wolf on: {c[:60]}"
@@ -157,8 +178,8 @@ def test_the_token_is_not_read_from_inside_the_repo():
             continue
         text = p.read_text(encoding="utf-8", errors="replace")
         for line in text.splitlines():
-            if "apify.txt" not in line:
+            if not any(n in line for n in ("apify.txt", "brightdata.txt")):
                 continue
             assert ("keys" in line or "KEYS" in line), (
-                f"{p.name} names apify.txt without the outside-the-repo keys "
+                f"{p.name} names a key file without the outside-the-repo keys "
                 f"path: {line.strip()[:80]}")

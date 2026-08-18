@@ -1,43 +1,50 @@
 # HANDOFF.md — extractor-apify
 
 <!-- COORDINATOR-STATE
-doing: scoring a free Bluesky corpus and pricing social-data vendors
-left: finish the Bluesky score, then the free trial on X/TikTok/Instagram once an account exists
-needs: yes - sign up for a free Bright Data account (no card) so the X/TikTok/Instagram trial can run at zero cost instead of $31-41 on Apify
+doing: paid trial on X/TikTok/Instagram is built and waiting on a Bright Data API key
+left: run preflight, then the 5,000-record free trial, then score it on the same rubric
+needs: yes - the Bright Data API KEY (not the account, which exists) saved to C:\Users\vinig\keys\brightdata.txt - steps in extractor-apify/GET_THE_TOKEN.md, five minutes, no card
 -->
 
 **Owner: the `extractors` chat.** Created 2026-08-14 from
-`coordinator/mailbox/extractors/001`.
+`coordinator/mailbox/extractors/001`. Bluesky work 2026-08-14; the paid trial
+built 2026-08-18.
 
 ---
 
 ## Where this got to
 
-**Job 1 — Bluesky. Done, and the answer is better than the instruction
-assumed.** Bluesky is not closed and does not need a login. `api.bsky.app`
-answers a logged-out request; `public.api.bsky.app` — the host
-`social-signal/PLATFORMS.md` tested — refuses everyone. No account was created
-because none is needed.
+**Job 1 — Bluesky. DONE.** It is open, free, permitted in writing, and needs no
+login. `PLATFORMS.md` had it recorded as closed and that is corrected inline.
+The content answer is a clean null: **3,671 posts, zero carrying a claim with a
+real number behind it.** `reports/BLUESKY.md`.
 
-**Job 3 — the vendor question. Done.** `reports/VENDORS.md`. Apify is a real
-vendor and it is the wrong place to start: **Bright Data gives 5,000 records a
-month free with no card**, and Apify's cheapest X scraper refuses free accounts
-outright.
+**Job 3 — the vendor question. DONE.** `reports/VENDORS.md`. Apify is real and
+is the wrong place to start; Bright Data gives 5,000 records a month free.
 
-**Job 2 — the paid trial. Blocked on one signup, and it is now a FREE signup.**
-See below.
+**Job 2 — the paid trial. BUILT, and blocked on one credential.**
 
-## The one thing needed from a human
+## ⚠ The blocker, precisely
 
-**Sign up for a free Bright Data account.** No payment method, no spend, hard
-stop at the free allowance. Then the whole three-platform trial runs at **$0**
-instead of the **$31–41** Apify would really have cost.
+**The account exists. The API key does not.** Those are different things — the
+key is what lets a script use the account, and only he can create it.
 
-Exact steps are in `reports/VENDORS.md` and repeated in the session report.
+Checked, not assumed: `C:\Users\vinig\keys\` does not exist, `BRIGHTDATA_TOKEN`
+is unset, and nothing under his home directory matches `*bright*` or `*brd*`.
 
-**Do NOT create an Apify paid plan for this.** The $5.05 trial in the mailbox
-cannot be run for $5.05 — the X actor gates free accounts to 50 items a month
-and blocks API access entirely.
+**`GET_THE_TOKEN.md` is the five-minute click-by-click**, verified against
+Bright Data's current documentation on 2026-08-18 rather than written from
+memory. No payment details at any point.
+
+The moment the key lands:
+
+```bash
+py -3 extractor-apify\src\brightdata.py preflight
+py -3 extractor-apify\src\brightdata.py run
+```
+
+`preflight` **spends nothing** — it reads the account, says which scraper it
+would use for each platform and why, prints the exact request, and stops.
 
 ## What is in this folder
 
@@ -48,39 +55,66 @@ and blocks API access entirely.
 | `src/bluesky_fetch.py` | the collector. Walks time windows, because the cursor 403s |
 | `src/unit_control.py` | re-scores the sibling corpus so platforms compare on one unit |
 | `src/score_corpus.py` | gate + rubric + the shuffled placebo |
-| `tests/test_no_secrets.py` | credential guard. Scans every file, not just `.py` |
+| **`src/brightdata.py`** | **the paid-trial client. Preflight first, hard budget cap, discovers dataset ids** |
+| `tests/test_no_secrets.py` | credential guard. Every file, not just `.py` |
+| **`tests/test_brightdata_safety.py`** | **the money guard. Budget cap and ambiguity refusal, both with planted violations** |
 | `PREREGISTRATION_BLUESKY.md` | written before any post was scored |
-| `reports/VENDORS.md` | what each vendor sells, what it costs, what was not tested |
-| `reports/BLUESKY.md` | the platform correction and the corpus result |
-| `data/bluesky.db` | the corpus. Gitignored — it is collected data |
+| **`PREREGISTRATION_PAIDTRIAL.md`** | **written before any record was pulled** |
+| `GET_THE_TOKEN.md` | the five minutes only he can do |
+| `reports/BLUESKY.md` · `reports/VENDORS.md` | the findings |
 
-## Two findings that are not about Bluesky and matter more
+**17 tests pass.** Run them with an explicit temp dir — Windows refuses to clean
+the shared pytest one:
 
-**1. The sibling rubric half-survives a placebo.** Take 4,000 Reddit threads,
-shuffle the words inside each one so no phrase survives, and the rubric still
-calls 5.6 in 100 of them recommend-grade against 11.4 in 100 for the real text.
-**About half of what it calls good it is calling good on vocabulary alone.**
-That applies to every number this rubric has produced in this repo. Reported,
-not tuned — `DECISIONS.md` D006.
+```bash
+py -3 -m pytest extractor-apify\tests -q -p no:cacheprovider
+```
 
-**2. The published Reddit-vs-Mastodon gap is mostly real, and I expected it not
-to be.** Reddit was scored on posts-plus-comments and Mastodon on posts alone,
-so the comparison was confounded. Removing the confound moves the gap from 41×
-to 34×. **One part in six was the artifact; five parts in six is the platform.**
-`DECISIONS.md` D005.
+## Three things the money guard actually enforces
+
+Not comments — tests, each with a planted violation, because a guard nobody has
+tested against a real violation is a guard nobody knows still works.
+
+1. **It cannot spend past 5,000 records.** Spend is counted on records
+   **returned**, not requested, because billing is per delivered record and
+   counting requests would let an under-delivering run quietly buy a second
+   helping. The check runs **before** each request. One test seeds the allowance
+   as fully spent, replaces `trigger()` with a function that raises, and asserts
+   the run returns cleanly having never called it.
+2. **It refuses to guess which scraper to use.** Bright Data does not publish
+   the dataset ids for X/TikTok/Instagram discovery — four documentation pages
+   were read and none carries them — so the client asks the account. **If two
+   scrapers match, or none does, it stops.** A test plants two matching X
+   entries and asserts nothing is chosen.
+3. **The key never enters this repo.** Read at runtime from outside it. The
+   guard knows Bright Data's UUID shape *and* knows not to fire on a bare UUID,
+   because snapshot ids look identical and a guard that cries wolf gets
+   suppressed.
+
+## Two findings that are not about any platform and matter more
+
+**1. The sibling rubric half-survives a placebo.** 4,000 Reddit threads with the
+words shuffled inside each document still score **5.6 per 100** recommend-grade
+against **11.4** real. About half of what it calls good, it calls good on
+vocabulary alone. **Nothing was adjusted.** `DECISIONS.md` D006.
+
+**2. The rubric's sample-size component is 37% false positives on Reddit** — it
+fires on phrases like *"30 days"*. Reddit's real rate is **6.3 per 100** of what
+clears the gate, not 10.0. The claim survives; the headline was inflated by a
+third. This is why the paid trial pre-registers **reading every hit** rather
+than reporting the pattern count.
 
 ## Next, in order
 
-1. Score the finished Bluesky corpus (`src/score_corpus.py`) — how many items
-   carry a claim with a number attached, which is the bar the mail set.
-2. On a Bright Data account: the same query on X, TikTok and Instagram, same
-   rubric, same three counts. 5,000 records, $0.
-3. Only then decide whether anything is worth paying for.
+1. He creates the API key (`GET_THE_TOKEN.md`).
+2. `preflight` — free, and it is also the first real test of whether the free
+   tier actually covers these three scrapers.
+3. `run` — 5,000 records, $0.
+4. Score on the same gate and rubric, **read every sample-size hit**, report
+   cost per item that survives reading.
 
 ## Rules this folder is under
 
-- **The token lives outside the repo**, at `C:\Users\vinig\keys\apify.txt`,
-  read at runtime, never copied here. `tests/test_no_secrets.py` fails the
-  build otherwise. That file does not currently exist and nothing here needs it.
+- **Keys live outside the repo**, at `C:\Users\vinig\keys\`, read at runtime.
 - **`py -3`.** No venv, standard library only.
 - **Google Maps is out of scope** — it is `Vinex-OS` work.

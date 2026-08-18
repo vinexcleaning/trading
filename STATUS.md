@@ -72,6 +72,143 @@ New ideas go in [INBOX.md](INBOX.md) first, before deciding where they belong.
 
 ---
 
+---
+
+# ⚠ TO THE `factory` CHAT — READ BEFORE WIDENING `bot-hunt/src/record.py`
+
+**Written 2026-08-18 by `devig`, who owns `bot-hunt`. Everything below is
+measured on the running recorder today, not remembered.** I am not blocking the
+widening — it is the right idea and the retention clock is real. **But the
+premise "add more series" will make coverage worse, not better, and here is the
+arithmetic.**
+
+## 1. The recorder has NO spare capacity. It is already 29% over its own interval
+
+| measured over the last 200 cycles | |
+|---|---|
+| interval it is configured to run at | **600 s** |
+| **median time one cycle actually takes** | **775 s — 129% of the window** |
+| p90 | **1,132 s — 189%** |
+| worst | 1,686 s |
+| **cycles that overran the interval** | **156 of 200** |
+
+`record.py` ends each cycle with `sleep(max(5.0, interval - elapsed))`, so on
+**78% of cycles the interval is doing nothing** and the recorder is already
+running flat out at whatever pace it can manage.
+
+## 2. It already throws away 47 out of every 100 markets it lists
+
+`mkts[:60]` caps orderbook probes at 60 per series (the `close_time` ordering
+that makes the cap non-random is **BH014**, fixed 2026-08-06 — **do not remove
+that sort**).
+
+| one cycle, 18 Kalshi series | |
+|---|---|
+| markets listed | **1,359** |
+| orderbook-probed | **719** |
+| **discarded, every cycle** | **640 — 47 out of 100** |
+
+**Seven of eighteen series are starved right now:**
+
+| series | lists | probes | sees |
+|---|---|---|---|
+| `KXITFMATCH` | 286 | 60 | **21%** |
+| `KXITFWMATCH` | 192 | 60 | **31%** |
+| `KXMLBTOTAL` | 165 | 60 | **36%** |
+| `KXCS2GAME` | 146 | 60 | **41%** |
+| `KXLOLGAME` | 130 | 60 | **46%** |
+| `KXMLBGAME` | 78 | 60 | 77% |
+| `KXDIMAYORGAME` | 63 | 60 | 95% |
+
+> **So "we record 19 of 13,133 series" understates the problem in one direction
+> and overstates it in another.** The live count is **13,133 series** on the
+> exchange today (I counted: Sports 3,433 · Entertainment 2,531 · Politics 2,190
+> · Financials 991 · Economics 671 · Companies 513 · Weather 350 · Sci-tech 381
+> · Crypto 272 · World 149 · Health 98 · Transport 44). We record **20** — 18 in
+> the main recorder and 2 in the European-football one. **But we do not even
+> record those 20 fully.** Adding a 21st series today buys 60 more probes and
+> costs everyone else cycle time.
+
+## 3. ⚠ THE ACTUAL LEVER, AND IT IS A BIG ONE: the recorder is SERIAL
+
+`venues.PACE = 0.12 s`, so pacing accounts for **86 s of the 775 s cycle**. The
+rest is round-trip latency, one request at a time.
+
+> **719 requests in 775 seconds is 0.93 requests per second. `C018` records the
+> unauthenticated ceiling at 15 per second. We are using about 6% of what we
+> are allowed.**
+
+**The way to record more is concurrency, not more series and not more
+processes.** A pool of 8–10 in-flight orderbook requests is inside the recorded
+ceiling with a wide margin and would cut the cycle from ~775 s to well under the
+600 s window *while raising the per-series cap* — i.e. it fixes §1 and §2 at
+once, before a single new series is added.
+
+⚠ **I have NOT re-measured the 15/second ceiling and deliberately did not.**
+Measuring a rate limit means deliberately hitting it, and the process it would
+put at risk is the one holding data that cannot be bought back at any price.
+**Treat 15 as recorded-not-verified, and ramp concurrency up gradually while
+watching `health.n_ok` rather than assuming the headroom is there.**
+
+## 4. Disk is the wall, and it is closer than it looks
+
+| | |
+|---|---|
+| `record.db` today | **65.4 GB** |
+| span | 2026-08-04 → 2026-08-18, **13.3 days** |
+| **growth** | **~5 GB per day at the CURRENT 20 series** |
+| free on C: | **780 GB** |
+| **runway at current width** | **~130 days** |
+
+**Ten times the width is roughly ten times the rate**, which is about **two
+weeks** of runway. **Whatever the widening plan is, it needs a retention or
+compaction policy in the same commit**, or it buys three months of Kalshi
+history and then stops recording for lack of space — which is the exact failure
+it is trying to prevent.
+
+## 5. Hard constraints. Each one is a failure that has already happened here
+
+1. **Never point two processes at one SQLite file.** I claimed in this very file
+   that it was "safe by design: WAL plus a 120 s busy timeout". **It is not**, and
+   it died with `database is locked` before the first cycle completed. WAL lets
+   readers run beside a writer; it does not let two writers overlap, and
+   `kalshi_cycle` holds one write transaction for 340–1,400 s. **Use `--db`.**
+2. **`record.py` now holds a single-instance lock**, added 2026-08-14, keyed on
+   the **database file** so the two recorders can both run. On Windows, do not
+   test liveness with `os.kill(pid, 0)` — CPython maps that to `TerminateProcess`
+   and it would kill the recorder.
+3. **Any new background process goes in BOTH registries** — `runners/runners.json`
+   and `coordinator/runners.json` — or it is unwatched or unrestarted. Mine were
+   in neither and died four times, the last for 19 hours after a reboot.
+4. **Read `*_dollars` / `*_fp`.** The legacy integer fields return `None` and
+   become a silent zero (GUARDS #12, #23).
+5. **Keep the `close_time` ascending sort** if the cap survives at all (BH014).
+6. **GUARDS #27**, written 2026-08-14: an empty payload is not an empty board
+   until a control endpoint on the same host has returned a full one.
+
+## 6. What I am asking for, and what I am not
+
+**Not asking to own the change.** Widen it — the retention clock is real and
+20 of 13,133 is indefensible.
+
+**Asking for three things, in this order, and I will review or write any of
+them if that is faster:**
+
+1. **Concurrency before breadth.** It is the only change that makes coverage go
+   up rather than sideways, and it is invisible to every downstream consumer.
+2. **A retention policy in the same commit as the widening.** Otherwise the disk
+   decides when recording stops, and it will decide during the widening.
+3. **Tell me before it lands**, in this file. `bot-hunt/RESULTS_*.md`,
+   `devig_where.py`, `mlb_scope.py` and `replay.py` all read `record.db`'s schema
+   directly. **A schema change is fine; a schema change I find out about from a
+   failing join is not.**
+
+**And the thing I would most like challenged:** I think the 60-cap, not the
+series count, is the biggest single loss of data in this repo right now — 640
+markets a cycle, ~92,000 a day, on families we deliberately chose. **If the
+factory chat disagrees, say so here rather than routing around it.**
+
+
 ## Threads â€” CLOSED
 
 > ⚠ **2026-08-08 — the `reopen` chat audited how every recorded claim was
@@ -5682,3 +5819,40 @@ it is not yet evidence. **Not filtered on, not sorted on, cannot block a bet.**
 **160 tests green.** Still true that `livedesk` places **real** orders with
 **AUTO starting ON** — today's work is what makes betting actually start, since
 the guard that was accidentally blocking everything now passes.
+
+### extractors, 2026-08-18 — the paid trial is built and waiting on a key, not an account
+
+He confirmed the Bright Data **account** exists. **An account is not a
+credential.** The Web Scraper API authenticates with a Bearer **API key**, and
+there is none on this machine — `C:\Users\vinig\keys\` does not exist,
+`BRIGHTDATA_TOKEN` is unset, nothing under his home matches `*bright*` or
+`*brd*`. Checked, not assumed.
+
+So everything that does not depend on it was built: `PREREGISTRATION_PAIDTRIAL.md`
+(written **before any record was pulled**), `src/brightdata.py`,
+`tests/test_brightdata_safety.py`, and `GET_THE_TOKEN.md` — five minutes, no
+card, **verified against Bright Data's live documentation on 2026-08-18** rather
+than written from memory (`CLAUDE.md` §3). **17 tests pass.**
+
+⚠ **Bright Data does not publish the `dataset_id` values for X, TikTok or
+Instagram discovery-by-keyword.** Four documentation pages were read; all four
+give the shape (`gd_` prefix, `{platform}-{object}-{action}-by-{input}`), none
+carries the values — they are behind the account login. **So the client asks the
+account and refuses to guess:** if two scrapers match a platform, or none does,
+it prints the candidates and stops. Tests plant both cases.
+
+**The budget is enforced before the request, not after.** `HARD_CAP = 5000`, the
+free monthly allowance. Spend is counted on records **returned**, not requested,
+because billing is per delivered record. A test seeds the allowance as fully
+spent, replaces `trigger()` with a function that raises, and asserts the run
+returns cleanly having never called it.
+
+**Prediction recorded before the run, so it can be wrong:** all three paid
+platforms behave like Mastodon and Bluesky — high on-topic passage, near-zero
+items with a real denominator — and if any beats the others it is X. **Drop
+condition: fewer than 5 items across all three carrying a real countable
+denominator.** **Recommend-paying condition: one item of the shape 13 Reddit
+threads produced.**
+
+**Needs him:** the API key at `C:\Users\vinig\keys\brightdata.txt`.
+`extractor-apify/GET_THE_TOKEN.md`.

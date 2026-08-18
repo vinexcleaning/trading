@@ -237,3 +237,83 @@ scope, it is `Vinex-OS` work.**
 
 Both checkers run on both reports. The Referee's three lists are at the end of
 each, and list 3 is not empty in either.
+
+---
+
+## UPDATE 2026-08-18 — he confirmed the Bright Data account. Still BLOCKED, on a different thing.
+
+**An account is not a credential.** The Web Scraper API authenticates with a
+**Bearer API key**, and there is none on this machine. Checked, not assumed:
+`C:\Users\vinig\keys\` does not exist, `BRIGHTDATA_TOKEN` is unset, and nothing
+under his home directory matches `*bright*` or `*brd*`.
+
+Creating the key means signing into his account, which this session may not do.
+**So everything that does not depend on it is built and tested**, and the trial
+runs the moment the key lands:
+
+- `PREREGISTRATION_PAIDTRIAL.md` — written **before any record was pulled**.
+  6 search terms, 3,500 X + 1,000 TikTok + 500 Instagram = the free 5,000, the
+  read-every-hit rule, and what result would make me drop the idea entirely.
+- `src/brightdata.py` — `preflight` (spends nothing) and `run`.
+- `tests/test_brightdata_safety.py` — **the money guard**, 13 tests.
+- `GET_THE_TOKEN.md` — five minutes, no card, verified against Bright Data's
+  live documentation on 2026-08-18 rather than written from memory
+  (`CLAUDE.md` §3).
+
+**17 tests pass.**
+
+## What the money guard actually stops, and why each has a planted violation
+
+**1. Spending past the free allowance.** `HARD_CAP = 5000`. Spend is counted on
+records **returned**, not requested — billing is per delivered record, and
+counting requests would let an under-delivering run quietly buy a second
+helping. The check runs **before** each request. One test seeds the allowance as
+fully spent, replaces `trigger()` with a function that raises, and asserts the
+run returns cleanly having never called it. There is also a test asserting
+`HARD_CAP == 5000` whose failure message says: **raising it is a decision to
+spend money and does not belong in a code change.**
+
+**2. Guessing which scraper to use.** ⚠ **Bright Data does not publish the
+`dataset_id` values for X, TikTok or Instagram discovery-by-keyword.** Four
+documentation pages were read on 2026-08-18 — the Web Scraper API overview, the
+trigger reference, the social-media-APIs overview, and the per-platform
+introductions for X and Instagram. All four give the *shape* (`gd_` prefix,
+endpoints named `{platform}-{object}-{action}-by-{input}`); **none carries the
+values.** They live in the account's own Scraper Library, behind the login.
+
+So the client **asks the account** and matches on platform **plus** post/video
+**plus** evidence of discovery-by-keyword. **If two match, or none does, it
+stops and prints the candidates.** A test plants two matching X entries and
+asserts nothing is chosen; another plants an Instagram *collect-by-URL* entry
+and asserts it is refused, because we have keywords and not post URLs and
+triggering that would spend allowance for nothing.
+
+Hardcoding an id off a blog post would have been quicker and is precisely the
+failure `CLAUDE.md` §3 names — except here it costs money rather than an
+afternoon.
+
+**3. The key entering the repo.** The credential guard now knows Bright Data's
+UUID-shaped key **and knows what not to flag**: a bare UUID is deliberately
+ignored, because snapshot ids, dataset ids and request ids look identical and a
+guard that cries wolf gets suppressed, which is how a real leak walks through.
+What fires is a UUID **next to a Bright Data word** — what a paste looks like —
+plus the `brd-customer-...` proxy format. Both carry plants; three new clean
+cases were added to the cry-wolf test.
+
+## One prediction recorded before the run, so it can be wrong
+
+`PREREGISTRATION_PAIDTRIAL.md` says all three paid platforms will behave like
+Mastodon and Bluesky — high on-topic passage, near-zero items carrying a real
+denominator — and that if any beats the others it is **X**, because it is the
+only one of the three where written argument is the native format.
+
+**It also says what would make me drop the whole idea:** fewer than 5 items
+across all three carrying a real countable denominator means paying for social
+data does not buy substance, at any price. **And what would make me recommend
+paying: one item of the shape the bar describes.** One was enough on Reddit.
+
+## Still needed from him — one thing, and it is not the account
+
+**The API key**, saved to `C:\Users\vinig\keys\brightdata.txt`. Steps in
+`extractor-apify/GET_THE_TOKEN.md`. **No payment details at any point** — if a
+screen asks for a card, that is not this and he should stop.

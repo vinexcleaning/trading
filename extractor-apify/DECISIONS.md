@@ -117,3 +117,77 @@ length. A guard that echoes the secret into a test log has leaked it itself.
 
 Largest actor on Apify by users, and it is local business data. That is
 `Vinex-OS` work, not this repo (`CLAUDE.md` §7). Not investigated further.
+
+---
+
+## D010 — the Bright Data account exists; the trial is built and waiting on a token
+
+**2026-08-18, after he confirmed the account.** An account is not a credential.
+The Web Scraper API authenticates with a **Bearer API key**, and there is none
+on this machine: `C:\Users\vinig\keys\` was listed and does not exist, no
+`BRIGHTDATA_TOKEN` is set, and no file under his home directory matches
+`*bright*` or `*brd*`. **Checked, not assumed.**
+
+Creating an API key requires signing into his account, which this session may
+not do. So everything that does not depend on the key was built instead:
+`PREREGISTRATION_PAIDTRIAL.md`, `src/brightdata.py`, the money tests, and
+`GET_THE_TOKEN.md`. **`preflight` runs the moment the key lands and spends
+nothing.**
+
+## D011 — dataset ids are discovered from the account, never hardcoded
+
+Bright Data's public documentation does **not** publish the `dataset_id` values
+for X, TikTok and Instagram discovery-by-keyword. **Four pages were read on
+2026-08-18** — the Web Scraper API overview, the trigger-a-collection reference,
+the social-media-APIs overview, and the per-platform introductions for X and
+Instagram. All four describe the *shape* (`gd_` prefix, endpoints named
+`{platform}-{object}-{action}-by-{input}`) and none carries the values. They live
+in the account's own Scraper Library, behind the login.
+
+**So the client asks the account.** `list_scrapers()` tries the documented paths
+in order and matches on platform name **plus** post/video **plus** evidence of
+discovery-by-keyword.
+
+**And it refuses ambiguity.** If two scrapers match, or none does, it prints the
+candidates and **stops**. It never picks the first and spends.
+
+Hardcoding an id read off a blog post would have been faster and is exactly the
+failure `CLAUDE.md` §3 names: an instruction written from an unverified source,
+which here would cost money rather than an afternoon.
+
+## D012 — a collect-by-url scraper is never used for a keyword search
+
+We have search terms, not post URLs. Triggering a collect-by-url scraper with a
+keyword spends allowance and returns nothing. The matcher requires the word
+`discover` or `keyword` in the entry, and there is a test planting an
+Instagram *collect-by-URL* entry and asserting it is refused.
+
+## D013 — the budget is enforced before the request, and tested with a planted spend
+
+`HARD_CAP = 5000`, the free monthly allowance. Three things make it real rather
+than a comment:
+
+- **spend is counted on records RETURNED, not requested.** Billing is per
+  delivered record; counting requests would let a run that under-delivers
+  quietly buy a second helping.
+- **the check runs before each trigger**, not after the loop.
+- **`test_a_run_at_the_cap_would_stop_before_sending` replaces `trigger()` with
+  a function that raises**, seeds the allowance as fully spent, and asserts the
+  run returns cleanly having never called it. A cap that has never been tested
+  against a real attempt to cross it is a comment.
+
+There is also a test asserting `HARD_CAP == 5000` with the reason written into
+the failure message: **raising it is a decision to spend money and does not
+belong in a code change.**
+
+## D014 — the credential guard learned Bright Data's key shape, and learned what NOT to flag
+
+Bright Data's key is **UUID-shaped**. A bare UUID is deliberately **not**
+flagged — snapshot ids, dataset ids and request ids all look identical and
+appear in every log line and report, and a guard that fires on those gets
+suppressed, which is how a real leak walks through.
+
+**What is flagged is a UUID next to a Bright Data word**, which is what a paste
+actually looks like, plus the `brd-customer-...` proxy login format. Both carry
+planted violations, and three new clean cases were added to the cry-wolf test
+(a bare snapshot id, a dataset id, and the key's own file path).
