@@ -456,3 +456,51 @@ banned phrase appears anywhere in the list of hits.
 judgement, it is left blank on purpose, and the report says out loud that an
 unanswerable comparison must be reported as *"go and read it"* rather than as
 *"already tested"*.
+
+---
+
+## 2026-08-18 — answered "how long to recover my $100", with the range, not a number
+
+**He asked**, at $61.19 with a $50 floor: how many days to get back to $100 at
+the current rate. **A fair question, and it is the shape `CLAUDE.md` §9b #1
+warns about** — a money target acquires a deadline, and a deadline changes what
+counts as evidence. **I answered the arithmetic rather than refusing it**, and
+gave the range instead of a single number, because a single number here would
+be a prediction dressed as a fact.
+
+**Method.** 600 runs from $61.19, 5% a bet, 7 signals a day, money back after
+1.3 days, hard stop at the floor. Per-bet outcomes drawn two ways: from
+`starter__hold`'s own 72 settled bets, and from the market's own prices with the
+real fees — i.e. the same bot with no skill whatever.
+
+| | back to $100 | median days | stopped out at the floor |
+|---|---|---|---|
+| if the strategy is as good as its record | **57 in 100** | 21 | 11 in 100 |
+| if it has no edge at all | **10 in 100** | 20 | 26 in 100 |
+
+**The honest statement is "about three weeks IF it works, and whether it works
+is exactly the open question."** The median days barely differ between the two
+rows — **speed is not the thing that separates them, and quoting the 21 days
+without the 57-in-100 beside it would be the whole lie.**
+
+**And the floor table, which is the decision he actually has in front of him:**
+
+| floor | if the strategy is real | if it is not | most he can lose |
+|---|---|---|---|
+| $50 | 57 in 100 | 10 in 100 | $11.19 |
+| $40 | 84 in 100 | 18 in 100 | $21.19 |
+| $30 | 94 in 100 | 21 in 100 | $31.19 |
+
+**Lowering the floor is not a recovery-speed setting. It is a bet on the
+strategy being real** — it buys a great deal if it is (57 → 94) and almost
+nothing if it is not (10 → 21), while the chance of being stopped out nearly
+doubles (26 → 45 in 100). **Recorded so that if the floor is later lowered,
+what it was known to be at the time is on the record.**
+
+**Left open deliberately.** The floor is his money and his call. Nothing was
+changed. `livedesk` has been told in mailbox 014 not to touch
+`account_floor_usd` unless he says so in his own words.
+
+**Not commented on:** he mentioned he may place his own bets separately to
+recover faster. That is a different account, this chat cannot measure it, and
+the repo's own record of that shape is §9b #3. Stated once to him, not argued.
