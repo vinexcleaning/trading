@@ -292,6 +292,35 @@
         "platform",
         "platforms"
       ]
+    },
+    {
+      "name": "FACTORY",
+      "slug": "factory",
+      "folders": [
+        "strategy-factory"
+      ],
+      "purpose": "Generates strategies continuously, screens them on recorded tape, forward paper-trades the survivors.",
+      "opening": "you are the factory chat, read coordinator/STRATEGY_FACTORY.md then check your mail",
+      "created": "2026-08-18",
+      "subjects": [
+        "factory",
+        "strategy",
+        "strategies",
+        "generate",
+        "screen",
+        "backtest",
+        "forward",
+        "paper",
+        "recorder",
+        "widen",
+        "series",
+        "capacity",
+        "depth",
+        "liquidity",
+        "placebo",
+        "preregistration"
+      ],
+      "window_title": "Strategy factory"
     }
   ]
 }

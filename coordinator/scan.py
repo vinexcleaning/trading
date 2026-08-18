@@ -41,6 +41,10 @@ HEAVY = {".venv", "venv", "__pycache__", ".git", "data", "Data", "reports",
 # A workstream is what the user thinks in. A folder is what git thinks in.
 # One workstream can span several folders -- de-vig does.
 WORKSTREAMS = {
+    "factory": {
+        "title": "FACTORY",
+        "folders": ["strategy-factory"],
+    },
     "tennis": {
         "title": "TENNIS",
         "folders": ["tennis-paper-forward", "kalshi-tennis", "set1_overshoot"],
