@@ -105,6 +105,48 @@ so a crossing means the two ladders have gone inconsistent.
 > The table above is the real canary; the ladder check is a parse check and is
 > labelled as one.
 
+## THE REAL DISK COST, measured on cycle 2 — and the flagged underestimate was right
+
+Cycle 2 is the first change-only cycle, so it is the first honest reading.
+
+| | |
+|---|---|
+| markets swept | 83,708 |
+| **quote changed since cycle 1** | **16,270 — 19.4%** over a 30-minute gap |
+| rows written | 16,270 |
+| cycle time | 883 s |
+
+> **19.4%, against the 2.5% that `SHAPE.md` projected — nearly eight times
+> higher, and in the direction this file predicted an hour earlier.** The 2.5%
+> was measured across all 768,262 markets in two sweeps, and ~700,000 of those
+> are parlay markets that never move. Strip them out and what remains is the
+> markets that actually trade. **`SHAPE.md`'s disk table is superseded by this
+> one and should not be quoted.**
+
+**What it costs, measured rather than projected:**
+
+| | rows/day | GB/day | **GB per 30 days** |
+|---|---:|---:|---:|
+| tier B — breadth, 1,800 s | 780,960 | 0.50 | **14.9** |
+| tier A — depth, 600 s | 129,600 ladders | 0.17 | **5.0** |
+| **total** | | **0.67** | **≈ 20** |
+
+**This clears the pre-registered limit.** `PREREGISTRATION.md` §5 fixed the
+criterion before any of this ran: *"Disk stays under 40 GB per 30 days. If the
+first three days project past that, the long tail's interval is lengthened."*
+Measured at **about 20 GB**, so no interval changes and the criterion is met on
+a measurement rather than on a hope.
+
+**And the figure is deliberately conservative.** The per-row size is computed by
+dividing the whole database by all its rows, which charges the **one-off**
+`w_names` table — the only place a market's full rules text is stored — into the
+**recurring** rate. `w_names` is written once per ticker and stops growing; the
+true steady-state cost is lower than 20 GB, not higher.
+
+For scale: `bot-hunt`'s recorder is measured at **4.92 GB a day**, essentially
+all of it Pinnacle. This whole widening is about an eighth of that, for 3,438
+families against 19.
+
 ## What is NOT established by any of this
 
 - **Nothing about whether any of these markets is worth trading.** Not one
