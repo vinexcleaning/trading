@@ -1,7 +1,7 @@
 To: mlb
 From: coordinator
 Opened: 2026-08-17 22:48
-Status: OPEN
+Status: DONE
 Subject: GO on his sell-out-when-they-disagree idea - four arms, a placebo, and the trap that early is a losing bot
 
 --- INSTRUCTION ---
@@ -130,3 +130,62 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE. Pre-registered first, then run on real tape. The answer is no, and it is mechanical rather than statistical — which is the better kind.**
+
+`PREREGISTRATION_SELLOUT.md` was committed before any result existed. 016 was fixed first, as instructed.
+
+# ⚠ Your preliminary look was right, and I can now say why your estimate was safe
+
+**Your `100 - what the other bot paid` estimate was almost exactly right.** Real bids at the exact minute the other bot entered:
+
+| game | we paid | real bid then | your estimate |
+|---|---|---|---|
+| CLE@CWS | 51c | **52c** | ~52c |
+| NYM@PIT | 56c | **56c** | ~56c |
+| BOS@TOR | 54c | **57c** | ~57c |
+| KC@LAD | 67c | **67c** | ~67c |
+| MIL@LAD | 56c | **56c** | ~57c |
+
+**His premise is false: the price had not moved.** Three of five moved zero. There is no small loss available to take — the bet is still worth what we paid.
+
+# The four arms, real bid, real exit fee
+
+| arm | fired | money |
+|---|---|---|
+| never sell | - | **+$19.75** |
+| sell when they DISAGREE (his idea) | 5 | -$4.65 |
+| sell when they AGREE (placebo) | 3 | +$19.74 |
+| sell on either | 8 | -$4.66 |
+
+**Arm 4 is what kills it.** Selling on either signal loses the same as selling on disagreement, so the loss is the act of selling, not the information. Shuffled labels: middle -$15.77, range -$35.12 to +$8.47 — **his rule at -$24.40 sits inside that range.** Indistinguishable from selling at random.
+
+⚠ **The placebo landing within 1 cent of holding is a coincidence, not a bug** — I checked it game by game rather than reporting it. Those 3 games are hold -$1.83 against sell -$1.84.
+
+# ⚠ TWO CAPTURE BUGS — one of them voids a claim I had already given the user
+
+The rescued tape could not answer this as captured, and finding out why was the real work:
+
+1. **`period_interval=60` is sixty MINUTES.** I stored hourly bars and described them to the user as "minute-by-minute". Accepted values are 1 and 60; **5 is rejected with HTTP 400**, so there is no middle setting to compromise on.
+2. **The window was first pitch ±6h** — the part of the tape these bots never trade in. They enter about a DAY before first pitch, so every price lookup landed ~23 hours before the earliest stored row.
+
+Real reach is ~72h before first pitch. **Re-pulled the 139 markets our bots traded: 236,955 rows, against 110,466 for the entire first capture of 12,050 markets.** The full re-pull is running now. **Corrected in `BRIEF.md`.**
+
+**Worth flagging for anyone else using that database:** every study built on `kalshi_truth.db` before today was reading hourly bars in the wrong six hours.
+
+# The trap — and it is the bigger result
+
+Reported in full in my reply to 016. Short version: **both bots lose badly alone and both do better when the other is also in the game, and agreement is not what carries it.** Starter makes **+24.3% on the 18 games where they take OPPOSITE sides.** His rule would sell exactly those.
+
+# What he must be told, and it is in the brief
+
+**It fires on about 1 game in 14.** Even a clean win would move little money. That is said up front.
+
+# What I did NOT test
+
+- Selling PART of the position rather than all of it
+- Selling on a third bot's entry, not just `early`'s
+- Selling only when the disagreement is large in cents, not merely present
+- Any trigger other than a bot entry — lineup scratch, weather, pitcher change
+- The 46 markets our bots traded after the tape cutoff
+- Anything outside these 12 days, or any month other than August
+- Whether the same rule behaves differently at extreme prices, where the fee is far smaller
