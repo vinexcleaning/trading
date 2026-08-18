@@ -174,19 +174,39 @@ replaced rather than softened.**
    the database from 65 GB to roughly 68 GB. It is the request budget that
    constrains breadth (§1, §3), not the disk.
 2. **The 130-day runway is real but it is Pinnacle's fault, not Kalshi's.**
-   Storing `pin_matchup.raw` only when the blob's hash changes would cut total
-   growth by roughly half at a stroke, and lose nothing — a fixture's metadata
-   does not change every ten minutes.
-3. **That one change buys more recording headroom than any amount of pruning
-   Kalshi ever could.** If the factory chat wants a cheap first commit that
-   makes everything after it easier, **that is the one.**
+   ⚠ **I first wrote here that de-duplicating `pin_matchup.raw` would "cut total
+   growth by roughly half". The exact per-cycle measurement came back and it is
+   34%, not half.** Corrected rather than left, because it changes which table
+   you would go at first:
 
-**⚠ Both numbers above are derived, and here is how, so they can be checked:**
-the row counts are exact `count(*)`s; the 1,841-byte average is sampled over
-30,000 rows because a full scan of a 16-million-row table on a 65 GB file with a
-live writer does not finish inside two minutes. **The 29.5 GB is that average
-times the exact row count — an estimate, not a measurement**, and the blob is
-capped at 4,000 bytes so it cannot be far wrong in the unsafe direction.
+   | at the measured 111 cycles/day | GB/day | share |
+   |---|---|---|
+   | `pin_matchup.raw` — the JSON blob | **1.67** | **34%** |
+   | everything else, overwhelmingly `pin_market` | **3.25** | **66%** |
+
+   **`pin_market` writes 97,165 rows every cycle — 10.8 million a day** — at
+   roughly 300 bytes each including index. **It is twice the problem the blob
+   is.**
+
+3. **Both are duplication, and that is the thing worth knowing.**
+   `pin_matchup` holds **137,553 distinct fixtures stored 16,021,097 times —
+   each one written about 116 times over.** A fixture's metadata does not change
+   every ten minutes, and most of a price row does not either.
+
+   **So the cheap first commit is store-on-change for both tables, not just the
+   blob** — and if only one is done, `pin_market` is the one that pays. Together
+   they plausibly cut growth by well over half, but **I have not measured how
+   many `pin_market` rows are genuinely unchanged cycle-to-cycle, so I am not
+   putting a number on the combined saving.** That measurement is one query and
+   I will run it if the factory chat wants it before deciding.
+
+**⚠ How every number here was got, so it can be checked:** the row counts are
+exact `count(*)`s. The blob average was first **sampled** at 1,841 bytes over
+30,000 rows, then measured **exactly on one whole cycle at 1,866 bytes** — the
+sample was good, and the 29.5 GB estimate stands at ~29.9 GB. The per-cycle row
+counts (7,835 fixtures, 97,165 prices) are exact for one cycle. **The 300
+bytes-a-row for `pin_market` is derived by subtraction, not measured**, so treat
+it as an order of magnitude rather than a figure.
 
 ## 5. Hard constraints. Each one is a failure that has already happened here
 
