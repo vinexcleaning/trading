@@ -177,6 +177,44 @@
       "done_marker": "prop_watch: every",
       "note": "ONE-SHOT, 48 hours, deliberately NOT in runners/runners.json -- the watchdog restarts anything it finds stopped, which is right for a continuous recorder and wrong for a job that is supposed to end. Same treatment as crypto-tape-pull and crypto-15m-opens.",
       "restart": "nothing - it ends on its own after 48 hours"
+    },
+    {
+      "id": "factory-wide-depth",
+      "workstream": "factory",
+      "title": "Whole-order-book recorder, 36 new market families",
+      "plain_english": "Writes down the full list of buy and sell offers on 36 kinds of Kalshi market that nothing else here records - crypto, economic releases, share indexes, commodities, elections. It only reads and saves. This is the one kind of work that cannot be caught up later: a Kalshi market that closes disappears after about ten weeks and cannot be bought back at any price.",
+      "monitor": "heartbeat",
+      "kind": "continuous",
+      "machine": "desktop",
+      "watchdog_name": "factory-wide-depth",
+      "heartbeat": [
+        "strategy-factory/data/wide_depth.db-wal",
+        "strategy-factory/data/wide_depth.db",
+        "strategy-factory/logs/wrapper_wide_depth.log"
+      ],
+      "lock": "strategy-factory/data/wide_depth.db.lock",
+      "writes_every_minutes": 10,
+      "stale_after_minutes": 35,
+      "restart": "the watchdog restarts it within ten minutes and at startup; nothing for a human to do"
+    },
+    {
+      "id": "factory-wide-top",
+      "workstream": "factory",
+      "title": "Whole-exchange price recorder, 3,357 market families",
+      "plain_english": "Sweeps every open market on Kalshi every half hour and saves the best buy and sell price. It saves a line only when a price actually changed, which is about one line in forty, so it stays small. Its job is to make sure that when a strategy for weather or crypto or an economic release is written next month, the history to test it on already exists.",
+      "monitor": "heartbeat",
+      "kind": "continuous",
+      "machine": "desktop",
+      "watchdog_name": "factory-wide-top",
+      "heartbeat": [
+        "strategy-factory/data/wide_top.db-wal",
+        "strategy-factory/data/wide_top.db",
+        "strategy-factory/logs/wrapper_wide_top.log"
+      ],
+      "lock": "strategy-factory/data/wide_top.db.lock",
+      "writes_every_minutes": 30,
+      "stale_after_minutes": 75,
+      "restart": "the watchdog restarts it within ten minutes and at startup; nothing for a human to do"
     }
   ]
 }

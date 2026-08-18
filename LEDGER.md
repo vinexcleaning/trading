@@ -20,12 +20,14 @@ asserts a number and no artifact backs it, the row says `NONE` and the status is
 | Status | Count |
 |---|---|
 | **RETRACTED** | **52** |
-| SETTLED | 181 |
+| SETTLED | 184 |
 | SUGGESTIVE | 38 |
 | UNVERIFIED | 30 |
 | BROKEN | 12 |
 | CANCELLED | 1 |
-| **Total** | **314** |
+| **Total** | **317** |
+
+**Updated 2026-08-18**: **+3 rows** from `strategy-factory`'s first session — Section 11. All three SETTLED, **none of them a strategy result**: two are API/exchange facts and one is arithmetic. **RETRACTED stays at 52** — F002 corrects a number in `coordinator/STRATEGY_FACTORY.md`, which has no ledger row of its own, so there is nothing here to retract. Recording that here so the correction is not invisible to the count.
 
 **Updated 2026-08-11**: **+3 rows** from `soccer`'s closure — Section 9. Only
 the two rows that are **not about soccer** are merged; the other 39 stay in
@@ -672,6 +674,34 @@ entry (lineup scratch, weather, pitcher change) · whether MB003 survives once
 the re-pulled tape allows it to be scored on games no bot has ever seen · and
 whether any of it holds at extreme prices, where the fee is roughly 20× smaller
 than the middling-price bar this repo quotes by habit.
+
+## Section 11 — `strategy-factory`, opened 2026-08-18
+
+**Three rows, and none of them is a strategy result.** This project was opened
+on 2026-08-18 and has screened nothing. Every row below is either an API fact or
+arithmetic, and two of the three **correct something this repo already
+believed**. The unit is stated in every row.
+
+| ID | Claim in plain English | Project | n + unit | Effect | STATUS |
+|---|---|---|---|---|---|
+| **F001** | **Kalshi's market-LIST endpoint returns a live quote, and `bot-hunt/src/venues.py` says it does not.** `/markets` carries `yes_bid_dollars`, `yes_ask_dollars`, `yes_bid_size_fp` and `yes_ask_size_fp` for up to 1,000 markets in one request. | strategy-factory | **168 markets across 23 series**, deliberately spread over every category including both parlay families; one observation is one market, checked against its own orderbook ~200 ms later | Bid agreed **168 of 168 (100%)**, ask **158 of 168 (94%)**, and the list was **never** blank while the orderbook was quoted (**0 of 168**). Worst disagreement anywhere: **1 tick**. ⚠ **The exception is real and named:** on `KXMVECROSSCATEGORY` and `KXMVESPORTSMULTIGAMEEXTENDED` the list quote is **stale against an empty book** — 7 list quotes against 2 live books, and 4 against 0 — so on the parlay families the list ask must not be trusted | **SETTLED (API fact), with a stated exception.** Consequence: one pass over every open Kalshi market is **~10 minutes by list against ~81 hours per-market**, which is the only reason recording the whole exchange is possible. ⚠ **Not** a claim that the docstring was wrong when written — Kalshi has renamed fields before — and **not** a claim that 168 markets settles it for all 13,133 series. Filed to `devig` as mailbox 021; their file, their call |
+| **F002** | **The best-of-N table in `coordinator/STRATEGY_FACTORY.md` understates the danger by about four times.** | strategy-factory | Exact binomial tail (no simulation) **and** 20,000 simulated single runs plus 800 simulated 2,000-strategy factories, which agree; one observation is one 100-bet strategy at 50c paying the real fee from `common/kalshi_fees.py` | One zero-skill strategy reaching +30%: **1 in 2,289**, not 1 in 10,000. Best of 2,000 zero-skill strategies reaching +30%: **58 in 100**, not 37. The plan's figure is only reproducible with the fee charged **twice**; `roundtrip_cost_cents` states that `exit_cents=None` means held to settlement and pays the entry fee **once**, and Kalshi charges nothing at settlement | **SETTLED by arithmetic, and it CORRECTS a live number.** The "typical best" column reproduces almost exactly (10.0 vs 10.1 · 18.0 vs 17.9 · 26.0 vs 25.6 · 30.0 vs 29.5), so this is one column of the table, not the table. **It strengthens the plan's conclusion rather than weakening it** — which is exactly why it needed saying: a load-bearing number wrong in the comfortable direction is the kind nobody re-checks. Reproduce: `py -3 strategy-factory/src/bestofn.py` |
+| **F003** | **Nine of every ten open markets on Kalshi belong to two combinatorial parlay families that almost never have a counterparty.** | strategy-factory | Full exchange sweep, **784,814 open markets**, 2026-08-18; one observation is one open market | `KXMVECROSSCATEGORY` and `KXMVESPORTSMULTIGAMEEXTENDED` hold **701,056 of 784,814 (89.4%)** and carry **16** two-sided quotes between them. Exchange-wide, only **54,269 markets (6.9%)** are two-sided at all. The remaining 3,437 series hold **83,758** markets, of which **54,253** are two-sided | **SETTLED (exchange census).** Consequence: "record everything" is a different and much smaller job than the market count suggests, and any capacity or coverage figure computed over all open markets is dominated by products nobody trades. ⚠ A drop is a **recording priority, not a verdict** (GUARDS #15) — the list is re-measured on every rebuild and a family can come back |
+
+**What is NOT tested here, and it is a list rather than a caveat** (`CLAUDE.md`
+§9c step 7): **no strategy has been screened, scored, or looked at** · F001 was
+measured on 23 of 13,133 series and on one day · F001 says nothing about
+whether the list quote is *fresh enough* for a fast strategy, only that it
+matches the book at the moment of asking · F002 is computed at a single price
+(50c) and a single bet count (100), and the fee is quadratic in price, so the
+shape at 90c is not derived here · F003 is one sweep on one night and the
+parlay families' quoting could change · and nothing here touches whether any of
+the 3,437 remaining families is worth trading, which is the actual question and
+is not answered.
+
+**The three rows exist mainly to make two corrections findable.** F001 and F002
+both contradict a document in this repo, and marking a correction inline where
+the claim lives is how the next session avoids re-deriving it.
 
 ## What is SETTLED enough to build on
 

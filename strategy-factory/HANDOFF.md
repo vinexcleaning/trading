@@ -1,7 +1,7 @@
 <!-- COORDINATOR-STATE
-doing: widening the Kalshi recorder from 19 families to hundreds, before any strategy work
-left: launch the wide recorder, register it in both runner registries, then build the screening engine with its placebo arm
-needs: yes - which sports, leagues and market types does he actually know well enough to say "that market behaves differently"? It is the one input this repo cannot generate and every other source is already running.
+doing: the wide Kalshi recorder is LIVE since 2026-08-18 05:14 UTC - 36 families at full order-book depth and 3,438 at top of book, against the 19 recorded before
+left: build the screening engine with its placebo arm, and replace the disk projection with the real first-day numbers
+needs: yes - which markets does he actually know something about that the numbers would not tell us? Not which he likes - which ones behave differently, and why. It is the one input this repo cannot generate and all three other idea sources are already running.
 -->
 
 # HANDOFF — strategy-factory
@@ -76,35 +76,66 @@ to `devig` as mailbox 021 and answered in `STATUS.md`.
 
 ---
 
+## THE RECORDER IS RUNNING — launched 2026-08-18 05:14 UTC
+
+**Two processes, two database files, registered in both registries.**
+
+| | tier A — depth | tier B — breadth |
+|---|---|---|
+| what it stores | the **whole order-book ladder**, both sides, as JSON | top of book with sizes |
+| families | **36** that `bot-hunt` does not record at depth | **3,438** on tape after cycle 1 |
+| cost per cycle | 900 requests, **measured 257 s and 338 s** | ~785 requests, **measured 940 s** on the first (write-everything) cycle |
+| interval | 600 s | 1,800 s |
+| database | `data/wide_depth.db` | `data/wide_top.db` |
+
+**Two files, not one, and it is a hard constraint rather than a preference:**
+two writers on one SQLite died here with `database is locked` inside 19 minutes
+on 2026-08-09, and `kalshi_cycle` holds one write transaction for 340–1,400 s.
+Analysis joins them with `ATTACH`, which costs nothing.
+
+**Registered as `factory-wide-depth` and `factory-wide-top` in BOTH**
+`runners/runners.json` and `coordinator/runners.json`. The two lists were
+compared after editing and agree in both directions. `devig`'s recorders died
+four times for want of exactly this, the last for **19 hours** after a reboot.
+
+**First cycles, off the tape rather than predicted: 83,698 markets across
+3,438 families, and 1,800 full ladders across 36.** Every category that had
+nothing now has tape — crypto 4,010 markets, economics 3,183, financials
+10,050, commodities 1,288. Sports is now 12% of what is recorded rather than
+all of it. Read back and spot-checked in `reports/RECORDER_LIVE.md`, including
+a structural check on 1,270 stored ladders: **0 violations**.
+
+### What it is NOT doing, and why
+
+**It is serial.** `devig` measured that a concurrency pool of 8–10 would fix
+their recorder's overrun, and they are right. **This one stays serial anyway**,
+because their own warning applies harder here: the 15 requests/second ceiling is
+*recorded, not verified*, my process shares the unauthenticated quota with the
+one holding 65 GB that cannot be re-pulled, and breadth here comes from one
+request per **sweep** rather than per market — so the rate is not where my
+headroom has to come from.
+
+---
+
 ## ⚠ WHAT IS NOT DONE, stated plainly
 
-1. **The wide recorder is written and dry-run but was not yet launched in this
-   session.** `src/shape.py`'s second sweep was still running when the session
-   wrote up, and the tier list is built from its output. **First action next
-   session, before anything else:**
-
-   ```bash
-   py -3 strategy-factory/src/tiers.py
-   py -3 strategy-factory/src/wide.py --dry-run
-   py -3 strategy-factory/src/wide.py --interval 600
-   ```
-
-   Every hour it is not running is an hour of exchange history nobody can buy
-   back. It outranks everything else in this file.
-
-2. **It is not in either runner registry yet.** `runners/runners.json` and
-   `coordinator/runners.json` both need an entry, or it is either unwatched or
-   unrestarted. `devig`'s recorders died four times for exactly this, the last
-   for 19 hours after a reboot.
-
-3. **No strategy has been screened.** Stage 3 does not exist yet. That is
+1. **No strategy has been screened.** Stage 3 does not exist yet. That is
    deliberate — the gates in `PREREGISTRATION.md` section 6 have to pass first,
-   and gate 4 (a placebo arm run once on real tape) needs tape that starts
-   accruing today.
+   and gate 4 (a placebo arm run once on real tape) needs tape that only
+   started accruing tonight.
 
-4. **The screening engine has no code.** Next session's second job, after the
-   recorder is up. It must carry the placebo arm from the first run, not added
-   later.
+2. **The screening engine has no code.** Next session's first job. It must
+   carry the placebo arm in its first commit, not added later.
+
+3. **The disk projection in `reports/SHAPE.md` is a projection.** Replace it
+   with the real `w_cycle` numbers after 24 hours. On the measured change rate
+   (2.5% of markets move in 300 s) the whole exchange at this cadence is well
+   under a gigabyte a day, and `devig`'s correction — Kalshi is 0.53% of every
+   row in their 65 GB — says disk was never the wall for Kalshi book data.
+
+4. **Nobody has checked what the recorders do to each other's request rate.**
+   `w_health.http_ok` and the non-200 rate are the numbers to look at, and the
+   first person to look should look there rather than at cycle time.
 
 ---
 

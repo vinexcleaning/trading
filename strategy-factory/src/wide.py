@@ -251,14 +251,7 @@ def load_tiers():
 # -------------------------------------------------------------- one cycle ----
 
 def list_series(series: str):
-    """Every open market in one series, with its list quote.
-
-    Per-series rather than one exchange-wide sweep on purpose. The exchange-wide
-    sweep is 836 requests, of which ~750 return nothing but the two Exotics
-    parlay families -- 751,943 of 835,422 open markets, almost none of them
-    quoted. Asking for the families we actually want costs one request each and
-    returns every market in them rather than whatever fits.
-    """
+    """Every open market in one series, with its list quote. TIER A only."""
     out = []
     for m in V.k_paginate("/markets",
                           {"series_ticker": series, "status": "open",
@@ -268,114 +261,193 @@ def list_series(series: str):
     return out
 
 
-def cycle(con, tier_a, tier_b, cid, heartbeat, last, dry, depth_cap,
-          depth_levels):
+def sweep_exchange():
+    """Every open market on the exchange, in ~785 requests. TIER B.
+
+    ⚠ THIS REPLACED A PER-SERIES LOOP, AND THE ARITHMETIC IS WHY.
+
+    v1 fetched tier B one series at a time, on the reasoning that asking for
+    the families we want beats downloading 700,000 parlay markets we do not.
+    That reasoning was right about bandwidth and **wrong about the thing that
+    actually costs**, which is requests:
+
+        tier B, one request per SERIES     3,357 requests
+        tier B, one exchange-wide sweep      785 requests
+
+    Four times cheaper, because a sweep returns 1,000 markets of ANY series per
+    request while a per-series call returns one family's worth however small
+    that family is - and the median tier B series has 3 open markets. The
+    parlay payload is wasted bytes, not wasted requests, and bytes are not the
+    constraint. Measured, not estimated: `reports/SHAPE.md` section 1.
+
+    It also fixes something the per-series loop could not: a series that did
+    not exist when `tiers.json` was built is invisible to a per-series loop
+    forever, and arrives on its own in a sweep.
+    """
+    for m in V.k_paginate("/markets", {"status": "open", "limit": 1000},
+                          "markets", max_pages=4000):
+        if m.get("ticker"):
+            yield m
+
+
+def _flush(con, names, tops, dry):
+    if dry:
+        return
+    if names:
+        con.executemany("insert or ignore into w_names values "
+                        "(?,?,?,?,?,?,?,?,?,?,?,?)", names)
+    if tops:
+        con.executemany("insert into w_top values "
+                        "(?,?,?,?,?,?,?,?,?,?,?,?,?,?)", tops)
+
+
+def cycle_b(con, tier_b, drop, cid, heartbeat, last, dry):
+    """TIER B: one exchange-wide sweep, filtered on write.
+
+    The filter is applied to what is WRITTEN, not to what is fetched, because
+    the sweep returns everything anyway. `drop` holds the parlay families,
+    excluded by name as well as by measurement (DECISIONS.md D5) - a single
+    quoted leg would otherwise drag 614,573 markets onto the tape.
+
+    A series that is in neither `tier_b` nor `drop` is NEW since the tier list
+    was built. It is recorded, and counted separately, because a family
+    appearing for the first time is exactly the thing a rolling 69-day window
+    makes expensive to notice late.
+    """
     ts = now()
-    n_seen = n_changed = n_written = n_depth = 0
-    names = []
-    tops = []
-
-    # ---- TIER B (and the listing half of tier A: one listing serves both).
-    for tier, sers in (("A", tier_a), ("B", tier_b)):
-        for series in sers:
-            try:
-                mkts = list_series(series)
-            except Exception:                                  # noqa: BLE001
-                con.execute("insert into w_health values (?,?,?,?,?,?,?,?,?,?)",
-                            (cid, ts, tier, series, 0, 0, 0, 0, 0,
-                             traceback.format_exc()[-300:]))
-                continue
-            n_q = n_two = n_w = 0
-            for m in mkts:
-                tk = m["ticker"]
-                yb, ya, bs, asz = quote_of(m)
-                n_seen += 1
-                n_q += int(yb is not None or ya is not None)
-                n_two += int(yb is not None and ya is not None)
-                key = (yb, ya, bs, asz, m.get("status"))
-                prev = last.get(tk)
-                if prev != key:
-                    n_changed += 1
-                if prev != key or heartbeat:
-                    last[tk] = key
-                    tops.append((cid, ts, series, tk, yb, ya, bs, asz,
-                                 V.fnum(m.get("last_price_dollars")),
-                                 V.fnum(m.get("volume_fp")),
-                                 V.fnum(m.get("open_interest_fp")),
-                                 m.get("status"), m.get("close_time"), "list"))
-                    n_w += 1
-                names.append(name_row(m, ts))
-            n_written += n_w
-            con.execute("insert into w_health values (?,?,?,?,?,?,?,?,?,?)",
-                        (cid, ts, tier, series, len(mkts), n_q, n_two, n_w, 1,
-                         None))
-
-            # ---- TIER A: walk the real ladder on the soonest-closing markets.
-            #
-            # Soonest-closing rather than largest-volume, for the reason
-            # `record.py` fixed on 2026-08-06: an unspecified server-side
-            # ordering starved ~40 of KXMLBGAME's markets on every cycle and
-            # nothing said so. A pre-match strategy trades the market about to
-            # settle, so close_time ascending is the ordering that matters, and
-            # markets with no close_time sort LAST -- an absent field must never
-            # win a priority contest.
-            if tier == "A" and not dry:
-                mkts.sort(key=lambda m: (m.get("close_time") is None,
-                                         m.get("close_time") or "",
-                                         m.get("ticker") or ""))
-                drows = []
-                for m in mkts[:depth_cap]:
-                    ylv, nlv = V.k_orderbook(m["ticker"], depth=depth_levels)
-                    if ylv is None and nlv is None:
-                        continue
-                    yb2, ya2, bs2, as2 = V.k_touch(ylv, nlv)
-                    d5y = sum(sz for p, sz in (ylv or [])
-                              if yb2 is not None and p >= yb2 - 5)
-                    nb = nlv[-1][0] if nlv else None
-                    d5n = sum(sz for p, sz in (nlv or [])
-                              if nb is not None and p >= nb - 5)
-                    drows.append((cid, ts, series, m["ticker"], yb2, ya2, bs2,
-                                  as2, len(ylv or []), len(nlv or []),
-                                  d5y, d5n,
-                                  json.dumps([[round(p, 2), s] for p, s in (ylv or [])]),
-                                  json.dumps([[round(p, 2), s] for p, s in (nlv or [])]),
-                                  m.get("close_time")))
-                if drows:
-                    con.executemany("insert into w_depth values "
-                                    "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", drows)
-                    n_depth += len(drows)
-
+    n_seen = n_changed = n_new_series = 0
+    names, tops = [], []
+    per_series = {}
+    for m in sweep_exchange():
+        tk = m["ticker"]
+        series = V.series_of(tk)
+        if series in drop:
+            continue
+        known = series in tier_b
+        if not known:
+            n_new_series += 1
+        yb, ya, bs, asz = quote_of(m)
+        if yb is None and ya is None and not known:
+            continue          # unknown AND unquoted: not worth a row
+        n_seen += 1
+        st = per_series.setdefault(series, [0, 0, 0])
+        st[0] += 1
+        st[1] += int(yb is not None or ya is not None)
+        st[2] += int(yb is not None and ya is not None)
+        key = (yb, ya, bs, asz, m.get("status"))
+        prev = last.get(tk)
+        if prev != key:
+            n_changed += 1
+        if prev != key or heartbeat:
+            last[tk] = key
+            tops.append((cid, ts, series, tk, yb, ya, bs, asz,
+                         V.fnum(m.get("last_price_dollars")),
+                         V.fnum(m.get("volume_fp")),
+                         V.fnum(m.get("open_interest_fp")),
+                         m.get("status"), m.get("close_time"), "list"))
+        names.append(name_row(m, ts))
+        # Flush in batches. A whole sweep held in memory is ~800,000 rows and
+        # the process that dies is the one holding tape nobody can re-pull.
+        if len(names) >= 5000:
+            _flush(con, names, tops, dry)
+            names, tops = [], []
+    _flush(con, names, tops, dry)
     if not dry:
-        if names:
-            con.executemany("insert or ignore into w_names values "
-                            "(?,?,?,?,?,?,?,?,?,?,?,?)", names)
-        if tops:
-            con.executemany("insert into w_top values "
-                            "(?,?,?,?,?,?,?,?,?,?,?,?,?,?)", tops)
+        con.executemany("insert into w_health values (?,?,?,?,?,?,?,?,?,?)",
+                        [(cid, ts, "B", s, v[0], v[1], v[2], 0, 1, None)
+                         for s, v in per_series.items()])
         con.commit()
-    return n_seen, n_changed, len(tops), n_depth
+    return n_seen, n_changed, n_new_series, len(per_series)
+
+
+def cycle_a(con, tier_a, cid, dry, depth_cap, depth_levels):
+    """TIER A: walk the real ladder, per series, on the soonest-closing markets.
+
+    Soonest-closing rather than largest-volume, for the reason `record.py`
+    fixed on 2026-08-06 (BH014): an unspecified server-side ordering starved
+    ~40 of KXMLBGAME's markets on every cycle and nothing said so. A pre-match
+    strategy trades the market about to settle, so close_time ascending is the
+    ordering that matters, and markets with no close_time sort LAST - an absent
+    field must never win a priority contest.
+    """
+    ts = now()
+    n_depth = 0
+    for series in tier_a:
+        try:
+            mkts = list_series(series)
+        except Exception:                                      # noqa: BLE001
+            if not dry:
+                con.execute(
+                    "insert into w_health values (?,?,?,?,?,?,?,?,?,?)",
+                    (cid, ts, "A", series, 0, 0, 0, 0, 0,
+                     traceback.format_exc()[-300:]))
+            continue
+        mkts.sort(key=lambda m: (m.get("close_time") is None,
+                                 m.get("close_time") or "",
+                                 m.get("ticker") or ""))
+        drows = []
+        for m in mkts[:depth_cap]:
+            ylv, nlv = V.k_orderbook(m["ticker"], depth=depth_levels)
+            if ylv is None and nlv is None:
+                continue
+            yb, ya, bs, asz = V.k_touch(ylv, nlv)
+            d5y = sum(sz for p, sz in (ylv or [])
+                      if yb is not None and p >= yb - 5)
+            nb = nlv[-1][0] if nlv else None
+            d5n = sum(sz for p, sz in (nlv or [])
+                      if nb is not None and p >= nb - 5)
+            drows.append((cid, ts, series, m["ticker"], yb, ya, bs, asz,
+                          len(ylv or []), len(nlv or []), d5y, d5n,
+                          json.dumps([[round(p, 2), s] for p, s in (ylv or [])]),
+                          json.dumps([[round(p, 2), s] for p, s in (nlv or [])]),
+                          m.get("close_time")))
+        if drows and not dry:
+            con.executemany("insert into w_depth values "
+                            "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", drows)
+            con.executemany("insert or ignore into w_names values "
+                            "(?,?,?,?,?,?,?,?,?,?,?,?)",
+                            [name_row(m, ts) for m in mkts[:depth_cap]])
+            con.execute("insert into w_health values (?,?,?,?,?,?,?,?,?,?)",
+                        (cid, ts, "A", series, len(mkts), len(drows),
+                         sum(1 for r in drows if r[4] is not None
+                             and r[5] is not None), len(drows), 1, None))
+            con.commit()
+        n_depth += len(drows)
+    return n_depth
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--interval", type=float, default=300.0)
+    ap.add_argument("--tier", choices=["a", "b"], required=True,
+                    help="which tier this process runs. They are SEPARATE "
+                         "processes with SEPARATE database files because two "
+                         "writers on one SQLite file died with 'database is "
+                         "locked' inside 19 minutes here on 2026-08-09, and "
+                         "because the two tiers want different cadences.")
+    ap.add_argument("--interval", type=float, default=600.0)
     ap.add_argument("--minutes", type=float, default=0.0, help="0 = forever")
     ap.add_argument("--once", action="store_true")
     ap.add_argument("--dry-run", action="store_true",
                     help="one cycle, no writes, print what it would cost")
     ap.add_argument("--heartbeat", type=int, default=12,
-                    help="every Nth cycle writes every row, changed or not")
-    ap.add_argument("--depth-cap", type=int, default=40,
+                    help="tier B: every Nth cycle writes every row, changed "
+                         "or not, so 'quiet' and 'dead' stay distinguishable")
+    ap.add_argument("--depth-cap", type=int, default=25,
                     help="tier A: markets per series to walk the ladder on")
     ap.add_argument("--depth-levels", type=int, default=20)
-    ap.add_argument("--db", default=str(DB))
+    ap.add_argument("--db", default="")
     args = ap.parse_args()
 
-    db = Path(args.db)
+    db = Path(args.db) if args.db else (
+        DATA / ("wide_depth.db" if args.tier == "a" else "wide_top.db"))
     tier_a, tier_b, meta = load_tiers()
-    print("wide recorder  db=%s" % db, flush=True)
-    print("  tier A (full ladder) : %d series" % len(tier_a), flush=True)
-    print("  tier B (top of book) : %d series" % len(tier_b), flush=True)
+    drop = set(meta.get("dropped", {}).get("exotic_parlay", []))
+    tier_b_set = set(tier_b)
+    print("wide recorder  tier=%s  db=%s" % (args.tier.upper(), db), flush=True)
+    print("  tier A (full ladder) : %d series, %d markets each"
+          % (len(tier_a), args.depth_cap), flush=True)
+    print("  tier B (top of book) : %d series, %d parlay families dropped"
+          % (len(tier_b), len(drop)), flush=True)
     print("  tier list built %s from %s"
           % (meta.get("built_utc"), meta.get("source")), flush=True)
 
@@ -383,14 +455,22 @@ def main() -> None:
         con = sqlite3.connect(":memory:")
         con.executescript(SCHEMA)
         t0 = time.time()
-        seen, chg, wrote, dep = cycle(con, tier_a, tier_b, 1, True, {}, True,
-                                      args.depth_cap, args.depth_levels)
+        if args.tier == "a":
+            dep = cycle_a(con, tier_a, 1, True, args.depth_cap,
+                          args.depth_levels)
+            print("\nDRY RUN tier A - nothing written")
+            print("  ladders that would be walked : %d" % dep)
+        else:
+            seen, chg, newser, nser = cycle_b(con, tier_b_set, drop, 1, True,
+                                              {}, True)
+            print("\nDRY RUN tier B - nothing written")
+            print("  markets kept in one sweep    : %d" % seen)
+            print("  series seen                  : %d" % nser)
+            print("  markets in series NOT in the tier list (new since it "
+                  "was built) : %d" % newser)
         dt = time.time() - t0
-        print("\nDRY RUN - nothing written")
-        print("  markets seen in one cycle : %d" % seen)
-        print("  seconds for one cycle     : %.0f  (tier B listing only; "
-              "tier A ladders are skipped in a dry run)" % dt)
-        print("  at --interval %.0f s that is %.1f cycles an hour"
+        print("  seconds for one cycle        : %.0f" % dt)
+        print("  at --interval %.0f s that is %.2f cycles an hour"
               % (args.interval, 3600.0 / max(args.interval, dt)))
         return
 
@@ -399,15 +479,17 @@ def main() -> None:
     # Seed the change detector from the tape, so a restart does not rewrite
     # every row it already has. Without this, a recorder that the watchdog
     # restarts every ten minutes would write a full snapshot every ten minutes
-    # and the change-only rule would quietly stop saving anything.
+    # and the change-only rule would quietly stop saving anything -- a saving
+    # that silently stops is worse than one that was never claimed.
     last = {}
-    for tk, yb, ya, bs, asz, st in con.execute(
-            "select ticker, yes_bid_c, yes_ask_c, bid_size, ask_size, status "
-            "from w_top where rowid in "
-            "(select max(rowid) from w_top group by ticker)"):
-        last[tk] = (yb, ya, bs, asz, st)
-    print("  change detector seeded from %d tickers already on tape"
-          % len(last), flush=True)
+    if args.tier == "b":
+        for tk, yb, ya, bs, asz, st in con.execute(
+                "select ticker, yes_bid_c, yes_ask_c, bid_size, ask_size, "
+                "status from w_top where rowid in "
+                "(select max(rowid) from w_top group by ticker)"):
+            last[tk] = (yb, ya, bs, asz, st)
+        print("  change detector seeded from %d tickers already on tape"
+              % len(last), flush=True)
 
     n_done = con.execute("select count(*) from w_cycle").fetchone()[0]
     t_end = time.time() + args.minutes * 60 if args.minutes else None
@@ -417,27 +499,41 @@ def main() -> None:
                           (now(),))
         cid = cur.lastrowid
         con.commit()
-        hb = (n_done % max(args.heartbeat, 1)) == 0
+        hb = args.tier == "b" and (n_done % max(args.heartbeat, 1)) == 0
+        seen = chg = dep = newser = 0
         note = None
         try:
-            seen, chg, wrote, dep = cycle(con, tier_a, tier_b, cid, hb, last,
-                                          False, args.depth_cap,
-                                          args.depth_levels)
+            if args.tier == "a":
+                dep = cycle_a(con, tier_a, cid, False, args.depth_cap,
+                              args.depth_levels)
+                seen = dep
+            else:
+                seen, chg, newser, _ = cycle_b(con, tier_b_set, drop, cid, hb,
+                                               last, False)
         except Exception:                                      # noqa: BLE001
-            seen = chg = wrote = dep = 0
             note = traceback.format_exc()[-1500:]
         dt = time.time() - t0
+        # Count the rows THIS tier writes. Reading w_top for tier A printed
+        # `wrote=0` on a cycle that had just written 900 ladders, which is the
+        # shape of a health number that quietly lies.
+        wrote = con.execute(
+            "select count(*) from %s where cycle_id=?"
+            % ("w_depth" if args.tier == "a" else "w_top"),
+            (cid,)).fetchone()[0]
         con.execute("update w_cycle set finished_utc=?, seconds=?, "
                     "n_series_a=?, n_series_b=?, n_seen=?, n_changed=?, "
                     "n_written=?, n_depth=?, heartbeat=?, note=? "
                     "where cycle_id=?",
                     (now(), round(dt, 1), len(tier_a), len(tier_b), seen, chg,
-                     wrote, dep, int(hb), note, cid))
+                     wrote, dep, int(hb),
+                     note if note else
+                     ("new-series markets=%d" % newser if newser else None),
+                     cid))
         con.commit()
-        print("cycle %d %s %.0fs seen=%d changed=%d wrote=%d depth=%d%s%s"
-              % (cid, now(), dt, seen, chg, wrote, dep,
-                 " HEARTBEAT" if hb else "",
-                 (" ERR " + note[:120]) if note else ""), flush=True)
+        print("cycle %d %s %.0fs tier=%s seen=%d changed=%d wrote=%d depth=%d"
+              "%s%s" % (cid, now(), dt, args.tier.upper(), seen, chg, wrote,
+                        dep, " HEARTBEAT" if hb else "",
+                        (" ERR " + note[:120]) if note else ""), flush=True)
         n_done += 1
         if args.once:
             break

@@ -98,6 +98,54 @@
       "log": "logs\\wrapper_recorder_eu.log",
       "paper_only": true,
       "_note": "Second recorder, Champions League and Premier League only, own database file. It MUST have its own db: two writers on one SQLite died with 'database is locked' inside 19 minutes on 2026-08-09."
+    },
+    {
+      "name": "factory-wide-depth",
+      "enabled": true,
+      "windowless": true,
+      "dir": "strategy-factory",
+      "exe": ".venv\\Scripts\\python.exe",
+      "args": [
+        "src/wide.py",
+        "--tier",
+        "a",
+        "--interval",
+        "600"
+      ],
+      "match": "wide.py --tier a",
+      "verify": [
+        "-m",
+        "pytest",
+        "tests",
+        "-q"
+      ],
+      "log": "logs\\wrapper_wide_depth.log",
+      "paper_only": true,
+      "_note": "NOT a paper test - a RECORDER, and the expensive tier. Walks the FULL order-book ladder on 36 market families that bot-hunt does not record at depth: crypto, economics, financials, commodities, elections. One request per market, 900 per cycle, measured at 160 s. It is here because a Kalshi market that closes 404s forever - roughly a 69-day rolling window - so an hour not recorded cannot be bought back at any price. Read-only public endpoints, no credentials, no order code; strategy-factory/tests/test_paper_only.py fails the build if any appears, and it also scans bot-hunt/src/venues.py because that module runs inside this process."
+    },
+    {
+      "name": "factory-wide-top",
+      "enabled": true,
+      "windowless": true,
+      "dir": "strategy-factory",
+      "exe": ".venv\\Scripts\\python.exe",
+      "args": [
+        "src/wide.py",
+        "--tier",
+        "b",
+        "--interval",
+        "1800"
+      ],
+      "match": "wide.py --tier b",
+      "verify": [
+        "-m",
+        "pytest",
+        "tests",
+        "-q"
+      ],
+      "log": "logs\\wrapper_wide_top.log",
+      "paper_only": true,
+      "_note": "The BREADTH tier, and its own database file - two writers on one SQLite died with 'database is locked' inside 19 minutes here on 2026-08-09, so this is a hard constraint and not a preference. One exchange-wide sweep of every open market, 785 requests, ~10 minutes, top of book only. Writes a row ONLY when a quote changed, measured at 2.5% of writing them all, with a forced full snapshot every 12th cycle so that 'nothing moved' and 'the recorder was down' stay distinguishable (GUARDS #12). Covers 3,357 market families against bot-hunt's 19."
     }
   ]
 }
