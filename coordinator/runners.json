@@ -158,7 +158,7 @@
       "writes_every_minutes": 1,
       "stale_after_minutes": 25,
       "done_marker": "candles captured for",
-      "restart": "py -3 mlb-paper\\src\\capture_truth.py from the mlb-paper folder. RESUMABLE -- it selects markets on candle row count, so a crash loses nothing. ONE WRITER ONLY: two copies collide on the sqlite lock and that is exactly how the first attempt died.",
+      "restart": "From the mlb-paper folder: .venv\\Scripts\\python.exe src\\capture_truth.py  -- NOT `py -3`, this project has its own venv. RESUMABLE: it selects markets on candle row count, so a crash loses nothing but time. ONE WRITER ONLY -- check for a running copy first, because two writers on the same sqlite file is exactly how the first attempt died.",
       "not_in_watchdog_because": "one-shot. runners/runners.json restarts things forever, which for this job would relaunch it after it legitimately finishes and put a second writer on the same database -- the failure it just had. Deliberate, recorded in mlb-paper/DECISIONS.md."
     }
   ]
