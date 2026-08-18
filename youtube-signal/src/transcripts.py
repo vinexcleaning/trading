@@ -1,12 +1,46 @@
-"""Transcript fetching, two independent paths.
+"""Transcript fetching — **COLLECTION IS STOPPED. Decided by the user 2026-08-14.**
+
+His decision, in his words: *"stop pulling from the address YouTube's own rules
+disallow. Keep the 1,135 transcripts already collected and keep the 484 findings
+that rest on them, but do not collect more that way."*
+
+**What was wrong with it.** Both paths below reach YouTube through endpoints its
+own `robots.txt` disallows — `youtube-transcript-api` hits `/api/timedtext`, and
+`yt-dlp` resolves the player via `/youtubei/`. This programme killed four other
+platforms on exactly that test, so continuing here was the one inconsistency in
+the whole access policy.
+
+**What is NOT retracted.** The 1,135 transcripts already on disk stay, and so do
+the 484 claims and 36 methods derived from them. Nothing about how they were
+read is in question — only how the next one would be obtained. He was explicit
+about that split.
+
+**There is no official replacement and that is measured, not assumed.** YouTube's
+`captions.download` is **owner-only**; third-party caption download was withdrawn.
+So an API key cannot fetch a stranger's captions at any price. See
+`social-signal/PLATFORM_ACCESS.md`.
+
+**If you are here because something raised `CollectionStopped`:** that is this
+working. Do not add a bypass. If the policy changes, change it here, in one
+place, and say who decided.
 
 Path A: youtube-transcript-api  -- fast, hits the timedtext endpoint directly.
-Path B: yt-dlp                  -- slower, but resolves the player and can pick
-                                   up captions path A is refused.
+Path B: yt-dlp                  -- slower, resolves the player.
 
-Neither path costs YouTube Data API quota. Both are IP-sensitive: YouTube blocks
-datacenter ranges outright, so this must run from a residential connection.
+Neither costs YouTube Data API quota. Both are IP-sensitive: YouTube blocks
+datacenter ranges outright, so this had to run from a residential connection.
 """
+
+class CollectionStopped(RuntimeError):
+    """The disallowed-route collection was stopped by the user on 2026-08-14."""
+
+
+# **One switch, and it is off.** Kept as a named constant rather than deleting
+# the code, so reversing this is a person changing a policy in one visible
+# place -- not someone re-deriving the fetcher months from now without
+# knowing it was ever a decision. `tests/test_no_disallowed_route.py` fails
+# if it is flipped without the decision being updated too.
+_ALLOW_DISALLOWED_ROUTE = False
 
 import json
 import urllib.request
@@ -24,6 +58,11 @@ def _classify(exc):
 
 def fetch_via_api(video_id, languages=("en", "en-US", "en-GB")):
     """Path A. Returns (snippets, meta) or raises."""
+    if not _ALLOW_DISALLOWED_ROUTE:
+        raise CollectionStopped(
+            "youtube-transcript-api / api.timedtext reaches YouTube through an endpoint its robots.txt "
+            "disallows. Stopped by the user 2026-08-14. %s was NOT "
+            "fetched." % video_id)
     from youtube_transcript_api import YouTubeTranscriptApi
 
     api = YouTubeTranscriptApi()
@@ -111,6 +150,11 @@ def _parse_vtt(raw):
 
 def fetch_via_ytdlp(video_id, languages=("en", "en-US", "en-GB")):
     """Path B. Returns (snippets, meta) or raises."""
+    if not _ALLOW_DISALLOWED_ROUTE:
+        raise CollectionStopped(
+            "yt-dlp / youtubei player reaches YouTube through an endpoint its robots.txt "
+            "disallows. Stopped by the user 2026-08-14. %s was NOT "
+            "fetched." % video_id)
     from yt_dlp import YoutubeDL
 
     opts = {"quiet": True, "skip_download": True, "no_warnings": True}
@@ -141,7 +185,18 @@ def fetch_via_ytdlp(video_id, languages=("en", "en-US", "en-GB")):
 
 
 def fetch(video_id, prefer="api"):
-    """Try both paths. Returns a dict describing exactly what happened on each --
+    raise CollectionStopped(
+        f"transcript collection is stopped (user decision 2026-08-14): "
+        f"both paths reach YouTube through endpoints its robots.txt "
+        f"disallows. {video_id} was NOT fetched. Existing transcripts are "
+        f"unaffected; see the module docstring.")
+
+
+def _fetch_disabled(video_id, prefer="api"):
+    """The original implementation, kept so the decision is reversible by a
+    person rather than by a rewrite. Not reachable.
+
+    Try both paths. Returns a dict describing exactly what happened on each --
     Phase 0 needs the per-path outcome, not just the winner."""
     order = (
         [("youtube-transcript-api", fetch_via_api), ("yt-dlp", fetch_via_ytdlp)]

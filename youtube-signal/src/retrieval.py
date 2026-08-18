@@ -151,8 +151,30 @@ class Retriever:
     # ---------- transcripts ----------
 
     def transcript(self, video_id, info=None):
-        """Try youtube-transcript-api, then the caption track yt-dlp already
-        resolved. Counts consecutive block errors and halts the run at 3."""
+        """**Stopped.** Raises `transcripts.CollectionStopped`.
+
+        User decision 2026-08-14: no more transcript collection through
+        endpoints YouTube's `robots.txt` disallows. Existing transcripts and
+        the claims drawn from them are unaffected.
+
+        **This method needed its own stop, not just the one in
+        `transcripts.fetch()`.** It called `T.fetch_via_api` directly, so the
+        wrapper's guard would never have been reached -- and worse, the
+        `except Exception` below would have caught `CollectionStopped` and
+        recorded it as just another fetch error class, so a stopped collector
+        would have looked like a blocked one and kept going.
+        `tests/test_no_disallowed_route.py` found this on its first run.
+        """
+        import transcripts as T
+
+        raise T.CollectionStopped(
+            f"transcript collection is stopped (user decision 2026-08-14); "
+            f"{video_id} was NOT fetched. See src/transcripts.py.")
+
+    def _transcript_disabled(self, video_id, info=None):
+        """The original implementation. Not reachable -- kept so the decision is
+        reversed by a person changing a policy, not by someone rewriting a
+        fetcher without knowing it was ever decided."""
         import transcripts as T
 
         self._pace("_last_transcript", TRANSCRIPT_GAP_S)
