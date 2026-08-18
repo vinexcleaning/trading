@@ -702,6 +702,35 @@ bytes before saving, because this domain serves **HTTP 200 with a ~400-byte body
 for URLs that hold nothing; and **names every missing hour**, because a hole in an
 archive that cannot be re-obtained must never be silent.
 
+**✅ DONE 2026-08-18. 168 of 168 files, zero failures, zero gaps.**
+
+| | |
+|---|---|
+| files | **168 of 168**, 2026-08-03 → 08-09, **0 gaps** |
+| corrupt or unreadable | **0** — every file re-opened and its `PAR1` header checked |
+| rows | **14,629,626,811** |
+| size | **87.6 GB** (81.6 GiB) |
+| time | 563 minutes |
+| disk after | **693 GB free**, from 781 GB |
+
+**Columns:** `timestamp_received`, `timestamp`, `market`, `event_type`,
+`asset_id`, `bids`, `asks`, `price`, `size`, `side`, `best_bid`, `best_ask`,
+**`fee_rate_bps`**, `transaction_hash`, `old_tick_size`, `new_tick_size`. Full
+depth on both sides, the fee rate per row, and a transaction hash that joins to
+the on-chain work in `wallet-copy-study`.
+
+**⚠ MY SIZE ESTIMATE WAS 29% LOW AND HERE IS WHY.** I told him ~68 GB; it is
+87.6 GB. **I averaged file size across the whole 118-day archive (~9.7 GB/day)
+and then pulled the most recent seven days, which are the largest.** The archive
+grows: midday files run **296–396 MB in April** against **511–575 MB in August**.
+**Averaging over a growing series to price its newest slice understates it every
+time** — the same shape as quoting a repo-wide average cost bar at a price where
+it does not apply.
+
+**No harm done** — 693 GB still free — but the estimate was wrong in the
+direction that matters, and a 29% miss on a number he approved a decision with is
+worth recording rather than quietly absorbing.
+
 ### ✅ DECIDED 2026-08-14: YouTube transcript collection is STOPPED
 
 **His words:** *"stop pulling from the address YouTube's own rules disallow. Keep
