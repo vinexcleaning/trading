@@ -9,7 +9,7 @@ channel between sessions; this is the short channel out. Plain English, no
 acronyms, no jargon. If a number matters, say whether bigger is better.
 
 <!-- STAMP -->
-> **Generated 2026-08-18 01:33, on top of commit `df8979a`.**
+> **Generated 2026-08-18 10:08, on top of commit `23b33f5`.**
 >
 > **This page never changes.** Every version of the brief is written to
 > its own permanent address under `briefs/`, and none is ever edited
@@ -26,7 +26,7 @@ acronyms, no jargon. If a number matters, say whether bigger is better.
 > query string to any address; it is discarded before the cache is
 > checked.
 >
-> **Cross-check:** commit `df8979a` must appear in this repo's commit
+> **Cross-check:** commit `23b33f5` must appear in this repo's commit
 > history. If it does not, something is wrong — say so rather than
 > reading on.
 <!-- /STAMP -->
@@ -202,64 +202,53 @@ _Section `devig` last written 2026-08-18 00:47._
 
 ---
 
-<!-- SECTION:signal updated=2026-08-18T00:34 -->
+<!-- SECTION:signal updated=2026-08-18T10:08 -->
 ## Signal hunting — GitHub, YouTube, social
 
-**As of 2026-08-14.** Written by the session doing the social work.
+**As of 2026-08-18.** Written by the session doing the social work.
 
-**Both of your decisions are carried out, and you caught a real mistake of mine
-doing it.** I offered "all of it, 1.15 terabytes" without ever checking your
-disk. There is 781 gigabytes free, so that option never existed — I priced
-something that could not fit. **A cost quoted without checking it fits is not a
-cost.**
+**The Polymarket week you approved is downloaded, complete, and checked.** All
+168 hours from 3 to 9 August, **nothing missing, nothing corrupt** — I re-opened
+every single file rather than trusting the download. **14.6 billion rows.** It
+carries the full order book on both sides, the fee charged on every row, and a
+reference that links each trade to the blockchain records another project here
+already works with.
 
-**Polymarket: one week is downloading now.** 3 to 9 August, 168 hourly files,
-about 68 gigabytes. It keeps the files whole rather than filtering them, because
-nothing here has yet decided which Polymarket markets matter, and throwing data
-away to answer a question nobody has asked is not recoverable once the site goes.
-It writes each file under a temporary name first so a half-finished download can
-never look complete, and it **names every hour it fails to get**, because a hole
-in an archive that cannot be re-fetched must never be silent.
+**⚠ It came to 87.6 gigabytes, not the 68 I told you.** That is my error and the
+reason is worth knowing: I worked out the average day across the whole four-month
+archive, then downloaded the *newest* week — and the newest days are the biggest,
+because the archive has been growing. April days are about 300–400 megabytes an
+hour; August days are 510–575. **Averaging over something that grows, then using
+that average to price its newest part, understates it every time.** No harm done —
+**693 gigabytes still free** — but you approved a decision using my number, so it
+should not disappear quietly.
 
-**YouTube: collection is stopped.** No more transcripts taken from the address
-YouTube's own rules disallow. **Nothing is retracted** — the 1,135 transcripts and
-the 484 findings drawn from them stand, exactly as you said.
+**YouTube collection is stopped, as you decided.** Nothing retracted: the 1,135
+transcripts and the 484 findings built on them stand. It is stopped in three
+places, and a test I wrote caught that one of them was being bypassed — a second
+file was calling the fetcher directly and would have logged the stop as an
+ordinary network error, so a stopped collector would have looked like a blocked
+one and carried on regardless.
 
-**I stopped it in three places, and a test proved one was not enough.** The test
-found that a second file called the fetcher *directly*, going around the front
-door — and worse, it would have caught the "stopped" error and filed it as an
-ordinary network failure, so a stopped collector would have looked like a blocked
-one and carried on. **A guard on the main entrance alone would have done nothing.**
+**What an allowed route costs, since you asked.** The official key is free and
+needs no card, and covers everything we would want to know *about* 11,277 videos
+in 2% of a day's allowance — **but it returns no transcript text at any price**,
+because YouTube only lets you download subtitles from your own videos. Paid
+services run 5 to 30 cents a video and I do not recommend them: they obtain the
+subtitles the same way we just stopped, so buying the result only moves the
+problem onto an invoice.
 
-**You asked what an allowed route costs. Here it is.**
-
-- **The official key is free, needs no card**, and would cover metadata for all
-  11,277 videos we know about in **2% of one day's allowance**.
-- **But it returns no transcript text at any price.** YouTube only lets you
-  download subtitles from your own videos.
-- **Paid services exist at roughly 5 to 30 cents a video** — the 1,135 we have
-  would have been $57 to $340. **I do not recommend it**, and not because of the
-  money: they get the subtitles the same way we just stopped doing, so buying the
-  result only moves the problem onto an invoice.
-
-**So the transcript collection is now a fixed pile rather than a growing one.**
-Given reading was already the slow part — 16 threads read out of 7,411 worth
-reading — that is close to no loss at all.
-
-**One thing to be aware of about how the chats share files.** While saving the
-above, my own command accidentally picked up 137 lines another chat had written
-and not yet saved. I caught it, took only my own lines, and left theirs
-untouched. **The same thing happened to me two days ago in the other direction.**
-The rule we all follow — "only save your own files" — does not prevent it,
-because two chats editing *the same* file is the case it does not cover.
+**So the transcripts are now a fixed pile rather than a growing one**, and since
+reading was already the slow part — 16 read out of 7,411 worth reading — that
+costs us very little.
 
 <!-- COORDINATOR-STATE
-doing: downloading the approved one-week Polymarket archive (168 files, ~68GB) and having stopped YouTube transcript collection with a test that enforces it
-left: confirm the week downloaded with no missing hours, then test whether brand-new markets are mispriced in their first hours using the rescued Kalshi archive
+doing: the approved one-week Polymarket order-book archive is downloaded and verified - 168 of 168 hours, 14.6 billion rows, no gaps; YouTube collection stopped and enforced by a test
+left: test whether brand-new markets are mispriced in their first hours, using the rescued Kalshi archive; then whether loud Reddit agreement predicts the wrong side
 needs: no
 -->
 
-_Section `signal` last written 2026-08-18 00:34._
+_Section `signal` last written 2026-08-18 10:08._
 <!-- /SECTION:signal -->
 
 ---
