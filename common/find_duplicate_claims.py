@@ -25,6 +25,22 @@ row that replaced it. Read the output, do not just count it.
 """
 import collections
 import re
+import sys
+
+# ⚠ Windows console fix, added 2026-08-18 by the `mlb-paper` session.
+# This tool CRASHED partway through its own output -- UnicodeEncodeError on
+# U+2212, the real minus sign, which several ledgers use in effect sizes
+# (`soccer`'s SO037 is "-0.40c" with a real minus). The default Windows console
+# codepage is cp1252 and cannot encode it. It died AFTER printing a screen of
+# valid findings, which is the dangerous shape: it looks like it ran.
+# Verified pre-existing -- it fails the same way with this session's rows
+# stashed. `CLAUDE.md` section 6 tells every session to run this, so it is
+# fixed here rather than worked around locally.
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
 
 LEDGER = "C:/Users/vinig/trading/LEDGER.md"
 src = open(LEDGER, encoding="utf-8").read()

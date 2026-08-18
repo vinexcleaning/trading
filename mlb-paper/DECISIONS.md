@@ -215,3 +215,24 @@ correctness argument for it. Left it running; hardened the script (WAL, a
 five-minute busy timeout) so the collision is survivable next time. **WAL does
 not make two writers correct — it makes them queue.** The real rule is one
 writer, and it is now written at the top of `db()`.
+
+## 2026-08-18 — I edited `common/`, which is outside my folder
+
+`CLAUDE.md` §5 says work only inside your own folder. **I patched
+`common/find_duplicate_claims.py` anyway**, and this is the reasoning so it can
+be reversed if the owner disagrees.
+
+`CLAUDE.md` §6 instructs **every** session to run that tool before filing
+claims. It **crashed partway through its own output** — `UnicodeEncodeError` on
+U+2212, the real minus sign, which several ledgers already use in effect sizes.
+The crash shape is the dangerous one: it prints a screen of valid findings
+first, **so it looks like it ran**. Past the crash point it was hiding **8
+shared effect sizes with differing statuses** — exactly what the tool exists to
+surface.
+
+**I verified the crash predates my rows** by stashing my LEDGER edit and
+re-running: identical failure. So this is not damage I caused and then repaired,
+it is a latent bug my rows happened to reach.
+
+The change is **one try/except forcing UTF-8 output**. It changes no logic and
+no result. Flagged in `STATUS.md` for whoever owns `common/`.

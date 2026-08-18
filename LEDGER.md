@@ -19,13 +19,13 @@ asserts a number and no artifact backs it, the row says `NONE` and the status is
 
 | Status | Count |
 |---|---|
-| **RETRACTED** | **51** |
-| SETTLED | 177 |
-| SUGGESTIVE | 37 |
+| **RETRACTED** | **52** |
+| SETTLED | 181 |
+| SUGGESTIVE | 38 |
 | UNVERIFIED | 30 |
-| BROKEN | 11 |
+| BROKEN | 12 |
 | CANCELLED | 1 |
-| **Total** | **307** |
+| **Total** | **314** |
 
 **Updated 2026-08-11**: **+3 rows** from `soccer`'s closure — Section 9. Only
 the two rows that are **not about soccer** are merged; the other 39 stay in
@@ -97,6 +97,7 @@ These were stated as findings and are wrong. Anything built on them is void.
 
 | ID | Retracted claim | Project | Why it died |
 |---|---|---|---|
+| **MB004** | "The agreement pattern REVERSED out of sample — all three buckets flipped sign, and that is what a pattern being luck looks like" | mlb-paper | **A bug in my own code, not a result.** `capital.py buckets()` applied the "new games since" date filter to the COMPARISON bot as well as the asking bot, so a game the other bot had entered a day earlier lost its row and was scored "picked alone". **Three games moved, including the largest winner, and all three buckets changed sign.** Corrected: agreed **+36.9% (5g)**, opposite **+35.6% (7g)**, alone **−17.0% (23g)** — every one held its original direction. **The user spotted the symptom before I did** ("it makes no sense for everything to flip, especially the stuff that was losing"); `livedesk` found the line. Reported to him as a headline finding for three days. |
 | **S011** | Set-1 undershoot −2.53pp, p=0.0007, and everything in Phases 2–5 built on it | set1_overshoot | Dedupe kept the higher-`volume_fp` side. P(kept side wins) = **0.5356, z=+10.0**. The two orientations disagreed by **25.5pp**. Voided Phases 2, 3, 4 and the 90¢+ result in one stroke. |
 | **S003** | Label-verified subsample −5.75pp [−9.71,−1.79], p=0.0062 | set1_overshoot | 1.9× its own mechanism ceiling; decays **+3.365¢ → +0.311¢** on holdout; join canary **UNTESTABLE** (z=+2.15). Presumed artifact. |
 | **S012** | "ATP is the thinnest book — median 30 lots, 3¢ spread" | set1_overshoot | A single 68-minute window at market open. Full day: **1.0¢ spread, 312 lots**. |
@@ -647,6 +648,30 @@ to a data provider's fixture and is validated by a second side that trusts no
 name — **does the team the venue SETTLED as winner match the one the provider
 records as winning? 57 of 57, 0 disagreements.** That is the **GUARDS #22**
 precision check, implemented.
+
+## Section 10 — `mlb-paper`, opened 2026-08-18
+
+**Eleven days of paper trading and this project had no rows here at all.** That
+is the gap being closed, not a new result. Everything below is from the forward
+test's own database, and the unit is **one game** in every row — a market
+settles once, so a 25-contract position is one observation, not 25.
+
+| ID | Claim in plain English | Project | n + unit | Effect + CI | STATUS |
+|---|---|---|---|---|---|
+| **MB001** | **Kalshi's baseball price is already the professional bookmakers' price, with the bookmaker's cut taken out.** There is no gap to trade. | mlb-paper | **58 markets** matched to the Pinnacle line, 2026-08-07 → 08-14; one reading per market | **0 of 58** cleared the cost bar. Placebo arm — same machinery on deliberately mismatched games — fired on **44 to 82 in 100**, so the pipeline can find a gap when one is there | **SETTLED as a negative.** The placebo is what makes the zero readable rather than a broken join |
+| **MB002** | **The over/under and first-inning markets do not beat the plain who-wins market as a target.** | mlb-paper | Kalshi's own listing, 2026-08-07 → 08-14 | The "249 over/under markets" in `SCOREBOARD.md` is **about 23 games** — each carries an **11-strike ladder**, and a ladder is one temperature reading, not eleven markets. First-inning markets are thinner still | **SETTLED by arithmetic.** Corrects a count that was being read as a sample size |
+| **MB003** | **What predicts whether a bot's pick makes money is not whether another bot AGREED — it is whether another bot was in that game at all.** | mlb-paper | **72 settled games** for `starter`, 65 for `early`, 2026-08-07 → 08-18; one game per row | `starter`: both agreed **+42.8% (19g)** · opposite sides **+24.3% (18g)** · **picked alone −18.2% (35g)**. `early`: **+17.4% · −21.0% · −28.3%**. **Both bots lose badly alone; the disagreement bucket still makes money.** Out of sample (settled after 2026-08-13): **+36.9% (5g) · +35.6% (7g) · −17.0% (23g)** | **SUGGESTIVE, and only the ALONE half is decently evidenced** — 23 out-of-sample games losing 17 per 100 against 5 agreed games. **Found by looking at results.** Logged forward, never traded on. Superseded [MB004](#-retracted--loudly-first) |
+| **MB005** | **Selling out of a position when the other bot later takes the opposite side loses money, and the reason is mechanical rather than statistical.** | mlb-paper | **5 firing games** (of 72 — it fires on about 1 game in 14), real bid from Kalshi's own minute tape at the exact minute the other bot entered, exit fee from `common/kalshi_fees.py` | **The price had not moved.** Paid 51/56/54/67/56c; bid then 52/56/57/67/56c — three of five moved zero. Holding those five made **+$21.58**; selling made **−$2.82**. Never-sell **+$19.75** vs his rule **−$4.65** vs **sell-on-either −$4.66** — the loss is the act of selling, not the signal. Shuffled labels: middle −$15.77, range −$35.12 to +$8.47, and **his rule sits inside that range** | **SETTLED as a negative, on a mechanism.** Pre-registered in `PREREGISTRATION_SELLOUT.md` before any result existed. **n=5 and the sample cannot carry a statistical claim** — what carries it is that the price had not moved, which does not need a large sample |
+| **MB006** | The 66 days of Kalshi baseball prices rescued on 2026-08-14 were **hourly bars covering only the six hours around each game** — not the minute-by-minute tape they were described as. | mlb-paper | 12,059 markets, 110,466 rows | `period_interval=60` is **sixty MINUTES**, not seconds (1 and 60 are accepted; **5 returns HTTP 400**). And these bots enter about **a day** before first pitch, so every price lookup landed **~23 hours before the earliest stored row**. One market: **1,790 rows at interval 1 against 66 at interval 60**, same span | **BROKEN, and fixed.** Any study built on `kalshi_truth.db` before 2026-08-18 was reading hourly bars in the wrong six hours. Re-pull at 1-minute resolution running; the 139 markets our own bots traded already yield **236,955 rows against 110,466 for the entire first capture** |
+| **MB007** | **At his real balance the money-tied-up limit binds.** | mlb-paper | 72 bets over 12 days, 2026-08-07 → 08-18 | A bet is held **1.3 days** (median), worst 1.5. On **$56 usable** ($106 less his $50 floor) at **$10 a bet that is 5 open at once**, against a median **6 new bets a day** needing room for about **9** | **SETTLED by arithmetic.** ⚠ **Supersedes my own earlier answer** that there was no squeeze — that was computed at $83 and 5% a bet, which are not his numbers |
+
+**What is NOT tested here, and it is a list rather than a caveat** (`CLAUDE.md`
+§9c step 7): any month other than August 2026 · any venue other than Kalshi ·
+selling part of a position rather than all of it · any trigger other than a bot
+entry (lineup scratch, weather, pitcher change) · whether MB003 survives once
+the re-pulled tape allows it to be scored on games no bot has ever seen · and
+whether any of it holds at extreme prices, where the fee is roughly 20× smaller
+than the middling-price bar this repo quotes by habit.
 
 ## What is SETTLED enough to build on
 
