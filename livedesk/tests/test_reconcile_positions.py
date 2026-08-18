@@ -116,8 +116,12 @@ def test_an_old_position_he_sold_ENTIRELY_is_voided_not_blocked(led):
     led.save()
     state, msg = led.reconcile_positions([])
     assert state == "ok", msg
-    assert e.status == "void"
-    assert "gone from your account" in e.note
+    # ⚠ CHANGED 2026-08-18. This used to assert `void`, and that assertion was
+    # wrong: it erased three of his real settled losses. A bet with a fill
+    # behind it can never be void -- void means "we never had this". It goes to
+    # awaiting-settlement and the market result decides won or lost.
+    assert e.status == "awaiting-settlement"
+    assert "settled or sold" in e.note
 
 
 def test_one_of_OUR_bets_at_the_wrong_size_is_a_disagreement(led):
@@ -311,7 +315,8 @@ def test_a_read_and_EMPTY_account_still_adopts(tmp_path):
     led.account_positions = []            # read, and empty
     led.save()
     assert led.reconcile()[0] == "ok"
-    assert e.status == "void"
+    # Had a fill, so it waits for the result rather than being erased.
+    assert e.status == "awaiting-settlement"
 
 
 def test_an_unread_account_BLOCKS_a_submission(tmp_path):

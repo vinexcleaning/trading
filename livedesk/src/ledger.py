@@ -138,7 +138,10 @@ class Entry:
     starts_utc: str
     confirmed_utc: str
     signal: str = ""
-    status: str = "open"            # 'open' | 'won' | 'lost' | 'void' | 'deferred' | 'expired'
+    # 'open' | 'won' | 'lost' | 'void' | 'deferred' | 'expired'
+    # | 'awaiting-settlement'  <- had a fill, off the positions list, result
+    #   not yet read. NEVER 'void': void means we never had it.
+    status: str = "open"
     settled_utc: Optional[str] = None
     pnl_usd: float = 0.0
     note: str = ""
@@ -169,6 +172,10 @@ class Entry:
         * `expired` — the game has started; the signal is gone.
         """
         return self.status not in ("void", "deferred", "expired")
+
+    @property
+    def is_settled_or_waiting(self) -> bool:
+        return self.status in ("won", "lost", "awaiting-settlement")
 
     @property
     def payout_usd(self) -> float:
@@ -755,9 +762,34 @@ class Ledger:
             e.lose_usd = e.cost_usd
             e.win_profit_usd = round(e.contracts * 1.00 - e.cost_usd, 2)
             if e.contracts <= 0:
-                e.status = "void"
-                e.note = (f"{e.note} | gone from your account — "
-                          f"sold, or never filled").strip(" |")
+                # ⚠ `position_fp = 0` MEANS TWO DIFFERENT THINGS and they used
+                # to collapse to the same row: "he never held this" and "he
+                # held it and the market SETTLED". A settled market drops off
+                # the positions endpoint entirely -- which is the same
+                # mechanism behind the original $32 error in the tennis app.
+                #
+                # Voiding on that erased three of his real, settled, LOST bets
+                # -- roughly $4.51, $9.12 and $10.05 gone from his own record
+                # while his balance had correctly paid for them. That is the
+                # dangerous shape: it looks reconciled.
+                #
+                # **A bet with a fill behind it can never become void.** Void
+                # means "we never had this". Anything else waits to be settled
+                # from the market result, which `settle_from_result` does.
+                if want > 0:
+                    e.status = "awaiting-settlement"
+                    e.contracts = int(want)          # keep what he really held
+                    e.cost_usd = round(e.contracts * e.price_c / 100.0
+                                       + e.fee_usd, 2)
+                    e.lose_usd = e.cost_usd
+                    e.win_profit_usd = round(e.contracts * 1.00 - e.cost_usd, 2)
+                    e.note = (f"{e.note} | off the positions list — either "
+                              f"settled or sold; waiting for the market "
+                              f"result").strip(" |")
+                else:
+                    e.status = "void"
+                    e.note = (f"{e.note} | gone from your account — "
+                              f"sold, or never filled").strip(" |")
             else:
                 e.note = (f"{e.note} | resized {want} -> {e.contracts} to "
                           f"match your account").strip(" |")
@@ -765,7 +797,9 @@ class Ledger:
             self.save()
         if adopted and not problems:
             bits = "; ".join(
-                (f"{e.team} is gone from your account" if e.contracts <= 0
+                (f"{e.team} is off your positions list and is waiting "
+                 f"for the result" if e.status == "awaiting-settlement"
+                 else f"{e.team} is gone from your account" if e.contracts <= 0
                  else f"{e.team} is {e.contracts} contracts, not {want}")
                 for e, want, got in adopted)
             return "ok", (f"updated to match your account: {bits}. Your own "
