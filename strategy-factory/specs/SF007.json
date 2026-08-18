@@ -1,0 +1,38 @@
+{
+ "id": "SF007",
+ "created": "2026-08-18",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "The market object carries settlement_timer_seconds (120 on the markets inspected) and the series object carries settlement_sources with names and URLs. So the exchange itself publishes who decides the outcome and how long it waits after deciding.",
+ "families": [
+  "*tier_a_scheduled_release"
+ ],
+ "thesis": "Markets that settle on a number published at a scheduled instant stay open for a couple of minutes after that number exists, so the question worth measuring is how much of the price move happens before the number is public rather than after it.",
+ "unit": "one settled market",
+ "entry": {
+  "when": "DIAGNOSTIC, not a trade. For every market whose series names a scheduled publisher, measure the recorded price path either side of the publication instant and report the share of the total move that had already happened one minute before publication.",
+  "side": "either",
+  "min_price_c": 1,
+  "max_price_c": 99,
+  "max_spread_c": 99
+ },
+ "exit": {
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null,
+  "mode": "hold_to_settlement"
+ },
+ "size": {
+  "rule": "flat",
+  "usd_per_bet": 10,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "The share of the move already complete before publication is above 90 out of 100, which is the answer his own bot got on sports (97.4 out of 100 of the move already done, 4,398 score-change events). At that number this whole direction is dead for anything he could actually run, and it gets written down as dead.",
+  "The recorder's cycle is too coarse to see the move at all, in which case the finding is about the recorder and is reported as such."
+ ],
+ "slow": true,
+ "notes": "This is a MEASUREMENT, not a strategy to run, and it is written as a spec so that it is screened and reported under the same rules as one. CLAUDE.md 9b item 2 holds absolutely: nothing here goes live and in-play, and this spec cannot become a live strategy no matter what it finds - it can only tell us whether that door is shut by a wall or a curtain. Doing it on tape costs nothing and answers it once for the whole exchange rather than family by family."
+}

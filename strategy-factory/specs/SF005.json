@@ -1,0 +1,44 @@
+{
+ "id": "SF005",
+ "created": "2026-08-18",
+ "author": "claude:factory",
+ "source": "reopen",
+ "source_detail": "reopen/REOPENED.md, claim C023. Recorded in the ledger with the single word 'negative'. The committed output crypto/reports/hold_settle.txt (25 May - 30 Jul 2026, four assets, 146-250 events each) says TIE in 40 of its 44 price cells, with ranges of plus or minus 5 to 15 cents against a cost of 1 to 2 cents. Bitcoin at 5 cents reads +2.9 cents with its bottom edge one hundredth of a cent below zero. Classified by the reopen audit as closed for the wrong reason - too small - not as a negative result.",
+ "families": [
+  "KXBTCD",
+  "KXETHD",
+  "KXSOLD",
+  "KXBTCE",
+  "KXETHE",
+  "KXSOLE"
+ ],
+ "thesis": "Buying a crypto level contract and simply holding it to settlement was written down as a loser, but the measurement behind that word could not tell a five cent gain from a five cent loss, so the question is open rather than answered.",
+ "unit": "one settled market",
+ "entry": {
+  "when": "Buy at the recorded ask at a fixed number of minutes before close, across the whole price range in 5-cent buckets, so the answer is a curve rather than one number. No selection on which bucket looks good.",
+  "side": "either",
+  "min_price_c": 2,
+  "max_price_c": 98,
+  "max_spread_c": 6
+ },
+ "exit": {
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null,
+  "mode": "hold_to_settlement"
+ },
+ "size": {
+  "rule": "flat",
+  "usd_per_bet": 10,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Every price bucket's range still contains zero at 100 settled markets per bucket - in which case the honest answer is still unmeasured, and it gets recorded as unmeasured rather than as negative for a second time.",
+  "The whole curve sits below zero once the real ask and the real fee are used.",
+  "The buckets that look good are the ones with the fewest markets in them."
+ ],
+ "slow": false,
+ "notes": "The reason this is worth re-running rather than re-reading: the original had 146-250 events per asset. Crypto level markets settle every hour, so the wide recorder accrues that many in days, not months. The number that killed it was a sample size, and a sample size is the one thing recording fixes. Reporting rule: the whole curve, every bucket, including the empty ones - picking the best bucket after the fact is exactly the best-of-N trap this project is built around."
+}

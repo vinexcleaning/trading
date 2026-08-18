@@ -1,0 +1,39 @@
+{
+ "id": "SF004",
+ "created": "2026-08-18",
+ "author": "claude:factory",
+ "source": "github",
+ "source_detail": "artyomderkach-bit/kalshi-15m-market-maker, read in full by signal-github (GITHUB_KNOWLEDGE.md, 'longshot-seller maker'); costs modelled YES, evidence backtest/longshot_maker.py:7 and backtest/maker_model.py:11. Independently described by Part Time Larry, 'the nothing ever happens strategy', youtube-signal KNOWLEDGE.md at timestamps 931-965s.",
+ "families": [
+  "*tier_a_no_maker_fee_non_financial"
+ ],
+ "thesis": "Cheap long-shot contracts are priced above what they are worth because people enjoy buying them, so resting an offer against the long shot - which is the same as passively buying the favourite - earns that overpayment without ever crossing the spread.",
+ "unit": "one settled market",
+ "entry": {
+  "when": "Long-shot side priced between 3 and 15 cents, and its ask exceeds the recorded touch by the margin. Rest a passive offer at the long-shot ask. At most one fill per market. Non-financial categories only.",
+  "side": "no",
+  "min_price_c": 3,
+  "max_price_c": 15,
+  "max_spread_c": 99
+ },
+ "exit": {
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null,
+  "mode": "hold_to_settlement"
+ },
+ "size": {
+  "rule": "flat",
+  "usd_per_bet": 10,
+  "max_share_of_depth": 0.2
+ },
+ "wrong_if": [
+  "Forward result inside its no-skill range at 100 settled markets.",
+  "Negative at 50 settled markets.",
+  "The shape shows up as many small wins and rare large losses with a negative total, which is the failure this repo has already lived through."
+ ],
+ "slow": false,
+ "notes": "PRIOR WORK, and it is close. LEDGER B024: 'the one surviving signal - buy the heavy favourite - is a wide-book quoting artifact, not a mispricing'. bot-forensics, 952 settled events at 80 cents or above, 2026-06-29 to 2026-07-27. Residual by opening spread was +7.92 out of 100 on books wider than 8 cents and +1.18 out of 100 on books tighter than 2 cents, which at t=0.64 is nothing; net at the ask it was -0.77 cents. SETTLED as an artifact, and its own row records the detectable-effect floor on tight books as 5.15 out of 100 - 'a real effect is not excluded, only unevidenced'. HOW THIS DIFFERS: B024 bought at the ASK as a taker and that is where the -0.77 cents came from. This never crosses the spread - it rests an order, on series that charge makers nothing, and is filled only if someone comes to it. The cost being tested differs by the spread plus the taker fee, which at these prices is the same size as the entire effect under discussion. This is a different test, not a re-run. It is also the shape of the $25 to $130 run (CLAUDE.md 9b item 3), so it gets watched for the one-loss-eats-thirty pattern specifically."
+}

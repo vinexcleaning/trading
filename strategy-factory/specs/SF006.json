@@ -1,0 +1,38 @@
+{
+ "id": "SF006",
+ "created": "2026-08-18",
+ "author": "claude:factory",
+ "source": "reopen",
+ "source_detail": "reopen/REOPENED.md, claim K012: 'economics markets are killed on recurrence' means we can never gather enough of them to measure anything. It reads as 'there is no edge there'. Those are opposite sentences.",
+ "families": [
+  "*tier_a_economics"
+ ],
+ "thesis": "Economic release markets were never tested and were written off because they happen too rarely to gather - which is a reason to start recording them, not a reason to believe there is nothing there.",
+ "unit": "one settled market",
+ "entry": {
+  "when": "Buy at the recorded ask at a fixed number of hours before close on every economics-category market the recorder covers, bucketed by price. Deliberately the dullest possible rule: the point of this spec is to accrue a sample in a category that has none, not to be clever.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 8
+ },
+ "exit": {
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null,
+  "mode": "hold_to_settlement"
+ },
+ "size": {
+  "rule": "flat",
+  "usd_per_bet": 10,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Fewer than 100 settled markets accrue by 2026-11-18, in which case the original 'killed on recurrence' judgment is confirmed on its own terms and this is dropped as unmeasurable rather than as unprofitable.",
+  "Result inside its no-skill range at 100 settled markets."
+ ],
+ "slow": true,
+ "notes": "DECLARED SLOW IN ADVANCE, which is the point of the flag. Economics families settle monthly or quarterly. A month gives no answer here and saying so now is a prediction, not an excuse offered in September. What a month DOES give is tape that does not currently exist for a single economics family."
+}

@@ -1,0 +1,39 @@
+{
+ "id": "SF003",
+ "created": "2026-08-18",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "The census: 13,003 of Kalshi's 13,133 series have fee_type 'quadratic', which charges takers only. 130 charge makers. So on 99% of the exchange a resting order pays no fee at all.",
+ "families": [
+  "*tier_a_no_maker_fee"
+ ],
+ "thesis": "On almost every Kalshi series a resting order costs nothing in fees, so quoting passively inside a wide spread earns the spread for free where crossing it would cost about two cents.",
+ "unit": "one settled market",
+ "entry": {
+  "when": "Series charges no maker fee (fee_type == 'quadratic'). Recorded spread is 4 cents or wider and both sides have been continuously two-sided for the last hour of tape. Rest a bid one tick above the recorded best bid. Count a fill only when the recorded ask later trades down through the resting level, never when it merely touches it.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 99
+ },
+ "exit": {
+  "mode": "sell_and_scale",
+  "sell_at_c": 4,
+  "buy_more_at_c": 4,
+  "time_exit_utc_rule": null,
+  "second_mentality": "A twin bot holds every fill to settlement instead of quoting out, so the spread-capture and the directional bet are separable.",
+  "on_disagreement": "They are run as two separate bots with separate books and are never netted. The quoting bot is the one being tested; the holding twin is its control. Neither overrides the other."
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 10,
+  "max_share_of_depth": 0.2
+ },
+ "wrong_if": [
+  "Fills only arrive when the market then moves against the fill, i.e. the capture is smaller than the pick-off cost. This is the measured failure of crypto market making (reopen C022: 17,325 fills, 1,161 events, 23 days, net -0.853 cents per contract, range [-1.632, -0.185]). If this reproduces that shape on other categories it is dead.",
+  "Under 100 fills in 30 days across all eligible families.",
+  "Net capture after the pick-off cost is inside its no-skill range at 100 settled markets."
+ ],
+ "slow": false,
+ "notes": "sell_at_c and buy_more_at_c are OFFSETS in cents from the fill price, not absolute prices, because this quotes across the whole price range. C022 killed this on crypto specifically and on evidence. Crypto is therefore excluded from the family list, and this spec exists to ask the question C022 did not: whether the same is true in categories where the counterparty is not another bot."
+}

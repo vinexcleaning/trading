@@ -1,0 +1,38 @@
+{
+ "id": "SF008",
+ "created": "2026-08-18",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "A crossed book - a bid above an ask - is impossible on a functioning exchange. On Kalshi both sides are quoted as bids and the YES ask is 100 minus the best NO bid, so a crossing means the two ladders have gone inconsistent.",
+ "families": [
+  "*all_tier_a"
+ ],
+ "thesis": "If a bid is ever above an ask on the same market, either there is free money sitting on the screen or our reading of the book is wrong, and finding out which is worth doing before any strategy is priced off that book.",
+ "unit": "one recorded snapshot",
+ "entry": {
+  "when": "yes_bid_c >= yes_ask_c on a recorded tier A snapshot with both sides sized above zero. Record it, its duration across cycles, and whether it persists into the next snapshot.",
+  "side": "either",
+  "min_price_c": 1,
+  "max_price_c": 99,
+  "max_spread_c": 99
+ },
+ "exit": {
+  "mode": "time_exit",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": "the next recorded cycle, whatever it shows",
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "flat",
+  "usd_per_bet": 10,
+  "max_share_of_depth": 0.5
+ },
+ "wrong_if": [
+  "It never fires, which is the expected and desirable outcome and makes this a passed canary rather than a failed strategy.",
+  "It fires often, in which case the overwhelmingly likely cause is our own reading of the two ladders and the first thing audited is our code, not the exchange."
+ ],
+ "slow": false,
+ "notes": "GUARDS #18, the structural-invariant canary: conservation can pass while the book rots. This runs continuously against tier A tape for the life of the project and costs nothing, and its value is almost entirely as a canary rather than as a trade."
+}

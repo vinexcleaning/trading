@@ -1,0 +1,46 @@
+{
+ "id": "SF001",
+ "created": "2026-08-18",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "Market structure. Kalshi lists threshold ladders where the YES side means 'above X'. P(above 92) can never exceed P(above 90). A crossing is an arithmetic impossibility, not a forecast.",
+ "families": [
+  "KXHIGHNY",
+  "KXHIGHCHI",
+  "KXBTCD",
+  "KXETHD",
+  "KXNASDAQ100U",
+  "KXINXU",
+  "KXDJI"
+ ],
+ "thesis": "On a ladder of 'above X' markets on the same underlying event, a higher strike must never be cheaper to buy than a lower strike is to sell. When it is, buying the high strike and selling the low one is locked money whatever the outcome, because the high strike winning implies the low strike winning.",
+ "unit": "one event-day ladder",
+ "entry": {
+  "when": "Within one event (same underlying, same settlement time), find strikes A < B on the threshold ladder where ask(B) + fee < bid(A) - fee. Buy YES on B and sell YES on A (equivalently buy NO on A) in equal size. Both legs must be fillable at the recorded touch size.",
+  "side": "either",
+  "min_price_c": 1,
+  "max_price_c": 99,
+  "max_spread_c": 99
+ },
+ "exit": {
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null,
+  "mode": "hold_to_settlement"
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.5
+ },
+ "wrong_if": [
+  "The rule fires fewer than 10 times in 30 days across all listed families.",
+  "It fires but the locked profit after both fees, both sides, is under 0.5 cents per contract.",
+  "Capacity at the recorded touch size is under $25 per opportunity.",
+  "Every firing turns out to be two strikes with different settlement times or different underlyings, i.e. a bug in my own grouping rather than a crossing."
+ ],
+ "slow": false,
+ "notes": "This is a structural invariant, so it doubles as a data-quality canary (GUARDS #18: conservation can pass while the book rots). If it fires constantly, the far more likely explanation is that I have grouped the ladder wrongly, and the FIRST thing to check is my own grouping, not the exchange. Needs tier A depth to price the fill honestly. || PRIOR WORK, AND IT IS STRONG. TWO ROWS, NOT ONE. (1) LEDGER C001, crypto: 'Kalshi greater ladders are monotone in strike - no arbitrage'. 3,187 scans across 26 events, on 2026-08-01, zero violations. Its own wording was NARROWED on 2026-08-09 because it rests on 10.5 MINUTES of scanning, and the row now says the sentence to quote is K007's instead. (2) LEDGER K007, kalshi-market-scan: 'No-arb violations are real but the size is dust'. 1,083 scans across 26 families over about 9 hours, 2026-08-02 to 08-03. Result: 52 GENUINE VIOLATIONS, 0 WITH TRADEABLE SIZE. SETTLED as a null. One observation is one scan of one family's ladder. Note the correction attached to it: crypto cited this study twice as 'zero violations in 1,083 scans' when it found 52, corrected 2026-08-03. || HOW THIS DIFFERS, and I am not claiming much. K007 is a LIVE SCAN: it asks whether a violation has tradeable size at the instant it looks. A recorded ladder asks a different question - how LONG a violation persists across cycles - and 'no tradeable size in this snapshot' and 'no tradeable size ever' are not the same sentence. It also runs continuously for the life of the recorder rather than for 9 hours, on weather and index families as well as crypto. || WHAT I EXPECT: K007 to be confirmed. Its 52-violations-none-tradeable is the most likely outcome here and the honest prior. This spec is cheap because it runs on tape that is being collected anyway, and its real value is as the canary, not as the trade."
+}
