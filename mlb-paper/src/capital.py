@@ -134,20 +134,51 @@ def job1(con, bankroll, stake_pct):
 
 # ------------------------------------------------------------------- job 2
 
-def buckets(con, bot=BOT, other=OTHER, since=None, until=None):
-    def sel(b):
+def buckets(con, bot=BOT, other=OTHER, since=None, until=None,
+            on="closed_utc"):
+    """Split `bot`'s settled games by what `other` did on the same game.
+
+    ⚠ TWO BUGS FIXED 2026-08-16, and the first one produced a false retraction
+    that reached the user. Reported by `livedesk` (mailbox 016), who reproduced
+    it line by line; the USER spotted the symptom first -- "it makes no sense
+    for everything to flip, especially the stuff that was losing."
+
+    BUG 1, THE SERIOUS ONE. The date filter was applied to BOTH bots. So in a
+    "new since" run the COMPARISON bot was also cut down, and a game where
+    `early` opened on the 12th and `starter` opened on the 14th lost its
+    `early` row entirely -- which made `g not in B` true and scored the game
+    ALONE. That is not "nobody else took this game", it is "the other bot took
+    it a day earlier and we deleted the evidence". Three games moved, including
+    the biggest winner in the agreed bucket, and all three buckets changed sign.
+
+      my code : agreed 3g -68.0% | ALONE 19g +14.4%
+      fixed   : agreed 4g +19.9% | ALONE 16g -10.0%
+
+    The comparison bot is now NEVER filtered. It is the yardstick; a yardstick
+    you trim to match the thing you are measuring is not a yardstick.
+
+    BUG 2, the definition. Splitting on OPEN date is wrong for an
+    out-of-sample question. A bet opened on the 12th that settled on the 14th
+    could not have informed a pattern found on the 13th, so it belongs in the
+    NEW column. The split is on `closed_utc` by default now. Both definitions
+    agree once bug 1 is fixed, which is itself the check that bug 1 was the
+    whole story.
+    """
+    def sel(b, apply_filter):
         q = ("SELECT game_key, ticker, contracts, entry_price_c, entry_fee_c, "
-             "pnl_c, opened_utc FROM positions WHERE bot=? AND "
+             "pnl_c, opened_utc, closed_utc FROM positions WHERE bot=? AND "
              "status IN ('settled','closed')")
         a = [b]
-        if since:
-            q += " AND opened_utc >= ?"
-            a.append(since)
-        if until:
-            q += " AND opened_utc < ?"
-            a.append(until)
+        if apply_filter:
+            if since:
+                q += f" AND {on} >= ?"
+                a.append(since)
+            if until:
+                q += f" AND {on} < ?"
+                a.append(until)
         return {r["game_key"]: r for r in con.execute(q, a)}
-    A, B = sel(bot), sel(other)
+    A = sel(bot, True)
+    B = sel(other, False)          # NEVER filtered -- see BUG 1
     agree, opp, alone = {}, {}, {}
     for g, r in A.items():
         if g not in B:
