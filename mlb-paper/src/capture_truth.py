@@ -67,10 +67,31 @@ CREATE INDEX IF NOT EXISTS ix_m_date ON market(game_date);
 """
 
 
-def db():
+def db(read_only=False):
+    """Open the truth database.
+
+    ⚠ WAL + a long busy timeout, added 2026-08-17 after a real failure. Two
+    copies of this script were running at once -- one orphaned from a shell
+    that had exited -- and the second died with `database is locked` after
+    1,850 markets, having done real work first. The default journal mode takes
+    a whole-file write lock, so a reader (even `status.py`) can knock over a
+    five-hour capture.
+
+    WAL lets readers run against a live capture, and the timeout makes two
+    writers queue instead of one dying. **It does NOT make concurrent writers
+    correct** -- it makes the collision survivable. Check for a running copy
+    before starting another; the re-pull is resumable either way, because
+    `capture_candles` selects on row count rather than on presence.
+    """
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    con = sqlite3.connect(OUT, timeout=60)
+    if read_only:
+        con = sqlite3.connect(f"file:{OUT}?mode=ro", uri=True, timeout=60)
+        con.row_factory = sqlite3.Row
+        return con
+    con = sqlite3.connect(OUT, timeout=300)
     con.row_factory = sqlite3.Row
+    con.execute("PRAGMA journal_mode=WAL")
+    con.execute("PRAGMA busy_timeout=300000")
     con.executescript(SCHEMA)
     return con
 

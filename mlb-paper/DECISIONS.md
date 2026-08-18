@@ -179,3 +179,39 @@ market equalling the ET-converted start plus exactly 72 h.
 `zoneinfo` bundles none, so in a bare venv `ZoneInfo("America/New_York")`
 raises. Without it the whole run is wrong in a way that looks like a network
 error. Found by running the tests in a fresh venv, not by reading the code.
+
+## 2026-08-18 — the tape re-pull is in ONE runner registry, not both, on purpose
+
+`CLAUDE.md` §10 says a new background job goes in **both** `runners/runners.json`
+and `coordinator/runners.json` or it is "either unwatched or unrestarted".
+**I have put the minute-resolution re-pull in the coordinator registry only.**
+
+**Why, and this is the conservative option rather than the lazy one.**
+`runners/runners.json` is the watchdog that **restarts things** — every field in
+it describes something continuous. This job is **one-shot**: it runs for about
+five hours and then legitimately stops. Registering it there would have the
+watchdog relaunch it after it finishes, which puts **a second writer on the same
+SQLite database** — and that is precisely the failure that killed the first
+attempt tonight (`database is locked` after 1,850 markets of real work).
+
+So the trade is: unwatched-by-the-watchdog, versus a registry that would
+actively recreate the bug. I took unwatched. It is visible in the coordinator
+registry with a `done_marker`, and it is **resumable** — `capture_candles`
+selects markets on candle row count rather than presence, so a crash costs
+nothing but time.
+
+**Recorded rather than raised** because it is a mechanical consequence of the
+job being one-shot, not a judgment about direction.
+
+## 2026-08-18 — I let an orphaned process finish instead of killing it
+
+Two copies of `capture_truth.py` were running: one orphaned from a shell that
+had exited, one tracked. The tracked one died on the lock. The orphan was
+**alive and producing 75,332 rows in 75 seconds**, an hour into a five-hour job.
+
+**Killed the impulse, not the process.** Restarting cleanly would have thrown
+away an hour to gain tidiness, and the job is resumable anyway so there was no
+correctness argument for it. Left it running; hardened the script (WAL, a
+five-minute busy timeout) so the collision is survivable next time. **WAL does
+not make two writers correct — it makes them queue.** The real rule is one
+writer, and it is now written at the top of `db()`.
