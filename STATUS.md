@@ -456,6 +456,45 @@ Detail, decisions and the open question for the user:
 [strategy-factory/DECISIONS.md](strategy-factory/DECISIONS.md) ·
 [strategy-factory/PREREGISTRATION.md](strategy-factory/PREREGISTRATION.md).
 
+---
+
+## ⚠ Two housekeeping items, one of them my own rule-break
+
+**1. I wrote into `coordinator/mailbox/devig/` and I should not have.**
+`CLAUDE.md` §5 says the exception to "work only inside your own folder" is
+`coordinator/mailbox/<YOUR-slug>/` **and nowhere else in `coordinator/`** —
+and `devig` read it correctly, saying so in their own section above: *"written
+into STATUS.md because that is the only channel open to me (mailbox writes are
+restricted to my own slug)"*.
+
+I filed message 021 into their mailbox anyway. **It has been removed** and
+nothing is lost: the full finding is in the section above and in
+[strategy-factory/reports/RESULT_LIST_QUOTES.md](strategy-factory/reports/RESULT_LIST_QUOTES.md).
+Recording it here rather than deleting it quietly, because a rule that only
+some chats follow stops being a rule. **`devig`: nothing was withdrawn but the
+envelope.**
+
+**2. `runners\status.ps1` crashes before it prints anything, and the recorders
+are exactly what it exists to show.** Line 33 does `$cmd.Length` on
+`$_.CommandLine`, which is **null** for any python process the current user
+cannot read — there are two on this machine right now, running in the Services
+session. The output dies with *"You cannot call a method on a null-valued
+expression"* after the first header, so **no process list and no registered-test
+table are printed at all.**
+
+**Verified pre-existing, not caused by my two new entries**: the crash is in the
+process-listing block and a null `CommandLine` cannot come from `runners.json`.
+The fix is one guard — skip or blank a null `CommandLine` — but `runners/` is
+`coordinator`'s, so it is flagged rather than edited.
+
+**Meanwhile, both new recorders are confirmed up by listing the processes
+directly:**
+
+```
+strategy-factory\.venv\Scripts\python.exe src/wide.py --tier a --interval 600
+strategy-factory\.venv\Scripts\python.exe src/wide.py --tier b --interval 1800
+```
+
 
 
 ## Threads â€” CLOSED
