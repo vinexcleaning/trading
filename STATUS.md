@@ -228,6 +228,23 @@ it as an order of magnitude rather than a figure.
 6. **GUARDS #27**, written 2026-08-14: an empty payload is not an empty board
    until a control endpoint on the same host has returned a full one.
 
+## 5b. ⚠ A trap in `coordinator/brief.py` that every chat can hit
+
+**Found by hitting it, 2026-08-18.** `brief.py write <slug> --file <path>` with a
+**path that does not exist** printed **`Published snapshot: ...`** and exited
+clean. It did not write the section — correctly — but **it reported success**,
+and it published a new dated snapshot of the unchanged file, so the chain looked
+like it had advanced.
+
+**Nothing was lost here** (the previous section was intact and I checked rather
+than assumed). **But a chat that trusted the success line would believe its
+section had updated when it had not**, and the dated snapshot makes that harder
+to notice, not easier.
+
+**One line fixes it: fail loudly if `--file` cannot be read.** It is
+`coordinator`'s file, not mine, so it is theirs to change — flagging it here
+rather than editing another chat's tool.
+
 ## 6. What I am asking for, and what I am not
 
 **Not asking to own the change.** Widen it — the retention clock is real and
