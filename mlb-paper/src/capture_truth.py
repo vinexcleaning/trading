@@ -130,21 +130,44 @@ def capture_candles(con, limit=None):
     are live CONTAINERS whose leaves are `*_dollars`, while `volume` and
     `open_interest` ARE renamed to `*_fp` on the same object. GUARD #23.
     """
+    _CAPTURE_BUGS = """
+    ⚠ TWO CAPTURE BUGS FIXED 2026-08-17, and the first one voided a claim I had
+    already put in front of the user.
+
+    BUG A -- RESOLUTION. `period_interval=60` is SIXTY MINUTES, not sixty
+    seconds. Kalshi's parameter is in minutes. So the first capture stored
+    HOURLY bars while I described them in BRIEF.md as "minute-by-minute". The
+    accepted values are 1 and 60; **5 is rejected with HTTP 400**, so there is
+    no middle setting to compromise on. Measured on one market: interval 1 ->
+    1,790 rows, interval 60 -> 66 rows. Same span.
+
+    BUG B -- WINDOW. The window was first pitch ±6h, which is the part of the
+    tape these bots never trade in. `starter` and `early` enter roughly a DAY
+    before first pitch. So the capture missed the only hours that matter and a
+    price lookup at entry time landed 23 hours before the earliest stored row.
+
+    The tape actually reaches ~72h before first pitch, which covers every entry
+    either bot has ever made. Both are fixed below. Re-pulled markets are
+    detected by row count, not by presence, or the old 10-row stubs would be
+    treated as done.
+    """
     rows = con.execute(
-        "SELECT ticker, series, starts_utc FROM market WHERE ticker NOT IN "
-        "(SELECT DISTINCT ticker FROM candle) ORDER BY game_date").fetchall()
+        "SELECT m.ticker, m.series, m.starts_utc FROM market m LEFT JOIN "
+        "(SELECT ticker, COUNT(*) n FROM candle GROUP BY ticker) c "
+        "ON c.ticker=m.ticker WHERE COALESCE(c.n,0) < 100 "
+        "ORDER BY m.game_date DESC").fetchall()
     if limit:
         rows = rows[:limit]
     print(f"  {len(rows)} markets still need candles")
     got = fail = 0
     for i, r in enumerate(rows, 1):
         st = datetime.fromisoformat(r["starts_utc"])
-        s = int(st.timestamp()) - 6 * 3600
+        s = int(st.timestamp()) - 72 * 3600     # BUG B: bots enter ~1 day out
         e = int(st.timestamp()) + 6 * 3600
         try:
             d = K.get(f"/series/{r['series']}/markets/{r['ticker']}"
                       f"/candlesticks", start_ts=s, end_ts=e,
-                      period_interval=60)
+                      period_interval=1)   # BUG A: minutes
         except Exception:                              # noqa: BLE001
             fail += 1
             time.sleep(PACE_S)
