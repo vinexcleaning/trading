@@ -996,6 +996,34 @@ class Ledger:
     def open_entries(self) -> list:
         return [e for e in self.entries if e.status == "open"]
 
+    def live_entries(self) -> list:
+        """Everything that might still have money on it, INCLUDING the ones
+        parked as awaiting-settlement.
+
+        ⚠ The settle sweep used to walk `open` only, so an entry that dropped
+        off the positions list sat in awaiting-settlement for ever: never
+        counted, never resolved, never cleaned up. Five of his were sitting
+        like that -- San Francisco, St. Louis, Texas, Toronto, Milwaukee -- the
+        phantoms mailbox 018 found. Retiring them is what stops the list
+        drifting away from his account in the first place."""
+        return [e for e in self.entries if e.status in self.LIVE_STATUSES]
+
+    def duplicate_live_games(self) -> dict:
+        """{game_key: [entries]} where one game carries more than one live row.
+
+        ⚠ `WSH@TEX` was recorded once as "Texas Rangers 6 @ 58c" and once as
+        "Washington Nationals 6 @ 47c" -- the SAME market, under the two sides'
+        names, because the order filled cheaper than it was asked and the ask
+        was never retired. Three games were doubled that way and it would have
+        shown him $35.69 riding against a real $12.34.
+
+        Keyed on `game_key`, never on the team name, which is what let both
+        rows live."""
+        by_game = {}
+        for e in self.live_entries():
+            by_game.setdefault(e.game_key, []).append(e)
+        return {g: es for g, es in by_game.items() if len(es) > 1}
+
     def deferred_entries(self) -> list:
         """Entries that were blocked by a temporary condition and can be
         retried when the condition clears. They are NOT closed signals."""

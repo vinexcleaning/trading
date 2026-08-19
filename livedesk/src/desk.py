@@ -1015,7 +1015,7 @@ class Desk(tk.Tk):
 
         # Settle anything finished. Kalshi's own result for the exact ticker
         # bought is the authority -- not a score read from anywhere else.
-        for e in self.ledger.open_entries():
+        for e in self.ledger.live_entries():
             try:
                 q = PRICES.quote(e.ticker)
             except RuntimeError:

@@ -137,3 +137,65 @@ def test_settled_and_void_rows_never_count(led):
         _entry(led, f"T-{status}", 5.00, status=status)
     led.account_positions = []
     assert led.at_risk_usd() == pytest.approx(0.0)
+
+
+# ============ mailbox 019: the correction, and the direction that can cost him
+
+def test_awaiting_settlement_is_NOT_excluded_from_at_risk(led):
+    """⚠ 019 ASKED FOR THIS TEST BY NAME, and it is the direction that can
+    actually cost him.
+
+    018 claimed the ledger was OVER-counting and would stop him out. It was
+    over-counting on screen, but `at_risk_usd()` summed `open` only -- so the
+    entries matching his REAL positions, which had drifted to
+    `awaiting-settlement`, were counted as nothing. **At-risk read $6.61 while
+    he was genuinely risking $12.34.**
+
+    Over-counting pauses a healthy bot. UNDER-counting lets it keep betting
+    with less protection than it thinks. The second is the one that costs
+    money, and it is the opposite of what the urgent message claimed.
+    """
+    _entry(led, "DRIFTED", 4.05, status="awaiting-settlement")
+    _entry(led, "PLAIN", 3.00, status="open")
+    led.account_positions = [_row("DRIFTED", 7, 3.84), _row("PLAIN", 6, 3.00)]
+    assert led.at_risk_usd() == pytest.approx(6.84), (
+        "an entry the account CONFIRMS was excluded because of its status")
+
+
+def test_at_risk_equals_what_the_account_reports(led):
+    """The whole rule in one assertion."""
+    _entry(led, "A", 99.0, status="open")
+    _entry(led, "B", 0.01, status="awaiting-settlement")
+    rows = [_row("A", 10, 4.11), _row("B", 5, 2.22)]
+    led.account_positions = rows
+    from_account = sum(abs(float(r["market_exposure_dollars"])) for r in rows)
+    assert led.at_risk_usd() == pytest.approx(from_account)
+
+
+def test_one_live_row_per_game_is_detectable(led):
+    """⚠ WSH@TEX was carried twice -- as "Texas Rangers 6 @ 58c" AND as
+    "Washington Nationals 6 @ 47c". The same market under the two sides'
+    names, because the order filled cheaper than it was asked and the ask was
+    never retired. Keyed on game_key, never on the team name."""
+    a = _entry(led, "WSHTEX-TEX", 3.59, team="Texas Rangers")
+    b = _entry(led, "WSHTEX-WSH", 2.87, team="Washington Nationals")
+    a.game_key = b.game_key = "2026-08-19:WSH@TEX"
+    led.save()
+    dupes = led.duplicate_live_games()
+    assert "2026-08-19:WSH@TEX" in dupes
+    assert len(dupes["2026-08-19:WSH@TEX"]) == 2
+
+
+def test_a_clean_ledger_reports_no_duplicate_games(led):
+    _entry(led, "A", 3.00)
+    _entry(led, "B", 3.00)
+    assert led.duplicate_live_games() == {}
+
+
+def test_the_settle_sweep_covers_awaiting_settlement(led):
+    """Otherwise a phantom sits for ever: never counted, never resolved, never
+    cleaned up. Five of his were sitting exactly like that."""
+    _entry(led, "PARKED", 7.00, status="awaiting-settlement")
+    tickers = [e.ticker for e in led.live_entries()]
+    assert "PARKED" in tickers, (
+        "the settle sweep would never reach it, so it never retires")
