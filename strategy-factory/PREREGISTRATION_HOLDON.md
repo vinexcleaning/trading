@@ -151,3 +151,63 @@ A list, not a caveat (`CLAUDE.md` §9c step 7):
 
 **A1 — 2026-08-19.** None yet. This line exists so the first amendment is
 visibly an amendment.
+
+---
+
+**A2 — 2026-08-19. THE STRENGTH VARIABLE IS WRONG AND IS REPLACED. Made before
+any 2026/27 European price exists and before any result of any kind.**
+
+**What changes.** Section 2 and the entry rule identified a strong side as
+**top-third of the domestic table**. That is replaced by **a per-club measure of
+what that club actually does after going one goal up, learned from that club's
+own season.**
+
+**Why, and it is his own words** (`coordinator` mailbox 004, recorded in
+`DOMAIN_SOCCER.md`):
+
+> *"Real Madrid's the type of team that if they score the first goal, they're
+> gonna keep trying to score. But Manchester United, it's very likely that if
+> they score the first goal, they're gonna park the bus no matter who they're
+> playing against."*
+>
+> *"A better team with better players will sometimes park the bus even playing
+> against the worst team."*
+
+**So table position does not predict the behaviour this trade is built on.** A
+league-wide strength average would mix clubs that push on with clubs that sit
+back, and the two do the opposite thing to the price of the side that is ahead.
+
+**Why this is a correction and not a fitted parameter.** This is the repo's most
+expensive recorded mistake, in a new sport: a sweep over *price and market
+features* was used to close a question about *individual players*, and a live
+idea died because the wrong variable was measured. **He has now said the same
+thing about soccer, in advance, before any number exists here.** Changing it
+after a null would have been fitting; changing it before any data is the whole
+point of a pre-registration having amendments at all.
+
+**What this costs, stated honestly.** The per-club history has to be built from
+each club's own season, which means:
+
+1. **The sample shrinks.** It is no longer "top-third clubs" but "this club,
+   after going ahead" — perhaps 10 to 20 matches per club per season.
+2. **A club with no history yet cannot be classified.** Newly promoted sides and
+   the first weeks of a season have no per-club record, and those matches are
+   **excluded and counted as excluded**, not defaulted to the league average.
+3. **It introduces a fitting risk the table-position version did not have.**
+   Learning a club's behaviour from the same season it is traded in is
+   look-ahead. **So the per-club label is built from matches BEFORE the traded
+   match only, never from the full season.**
+
+**New drop rule, replacing item 5 of section 6.** The old rule was that the
+top-third / bottom-third split failing to separate voids the result. It is now:
+
+> **5. If clubs classified as "pushes on" and clubs classified as "sits back"
+> hold on equally often at these prices, the mechanism is absent and the result
+> is void rather than weak.** And separately: **if the per-club label cannot be
+> built for at least 60 of the 100 fired matches, this is UNMEASURABLE and is
+> reported as unmeasurable, not as negative.**
+
+**What does NOT change.** Unit of observation (one match), 100 fired matches
+before judgement, the no-skill range beside every number, the SLOW declaration,
+the fee as the likeliest killer, and the selection effect named in section 0.
+**The burden of proof is unchanged.**

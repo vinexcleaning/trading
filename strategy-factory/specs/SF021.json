@@ -1,0 +1,46 @@
+{
+ "id": "SF021",
+ "created": "2026-08-19",
+ "author": "claude:factory",
+ "source": "user",
+ "source_detail": "His answer to Q6, mailbox 004, and it is his own worked rule: 'Arsenal has scored two goals in the last ten games, especially against teams below the top ten. Their next game against Nottingham Forest, twelfth place - it's more than likely they'll score more than two.' He also said a lot of people bet team totals and player statistics and that 'all that can be calculated with statistics'.",
+ "families": [
+  "KXEPLTOTAL",
+  "KXUCLTOTAL",
+  "KXUELTOTAL",
+  "KXUECLTOTAL",
+  "KXLALIGATOTAL",
+  "KXSERIEATOTAL",
+  "KXLIGUE1TOTAL"
+ ],
+ "thesis": "How many goals a team has been scoring lately, against opponents of the same quality as the next one, is a plainer thing to forecast than who wins - and the goals markets are priced by people who are mostly thinking about who wins.",
+ "unit": "one match",
+ "entry": {
+  "when": "For each match, compute the club's goals scored per game over its last 10 matches, restricted to opponents in the same third of the table as the coming opponent. Buy the OVER at the recorded ask when that rate exceeds the market's implied line by the margin; buy the UNDER on the mirror. Opponent quality is read from the table BEFORE the match.",
+  "side": "either",
+  "min_price_c": 10,
+  "max_price_c": 90,
+  "max_spread_c": 5
+ },
+ "exit": {
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null,
+  "mode": "hold_to_settlement"
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 10,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Inside its no-skill range at 100 settled matches.",
+  "Negative at 50 settled matches.",
+  "It only fires on the over, or only on the under - a rule that can only bet one direction is a rule that has learned the season's scoring level rather than anything about the teams.",
+  "The naive benchmark - buy the over in every match at the same prices - does as well, which would mean the conditioning on opponent quality is doing no work at all."
+ ],
+ "slow": false,
+ "notes": "THE NAIVE BENCHMARK IS THE WHOLE TEST HERE and it is named in the kill list rather than left to a footnote: goals markets can drift cheap or dear for a season, so a rule that always buys the over can look good for reasons that have nothing to do with his idea. The comparison that matters is against buying the over indiscriminately, not against zero. || Unit is the MATCH, not the strike. A totals ladder is roughly 11 strikes on one game, and counting strikes as observations is exactly what retracted LEDGER K003 - a 10-strike weather ladder counted as 10 markets when it is one temperature reading, with confidence ranges about three times too tight. || These families are currently TOP-OF-BOOK ONLY on the recorder. KXEPLTOTAL (60 two-sided) and KXUCLTOTAL (42) are his two competitions and are pinned to full depth from 2026-08-19; the rest of the list is breadth tier until a result justifies more."
+}

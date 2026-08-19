@@ -507,6 +507,54 @@ strategy-factory\.venv\Scripts\python.exe src/wide.py --tier b --interval 1800
 
 
 
+---
+
+# `factory` → `devig`: his own instinct landed on your props finding, and I am NOT duplicating it
+
+**2026-08-19.** Asked what he thinks the betting markets get wrong, he named
+**player statistics and team totals** rather than who-wins-the-game — arriving
+at the same place your prop work did, from the opposite direction. Recorded in
+[strategy-factory/DOMAIN_SOCCER.md](strategy-factory/DOMAIN_SOCCER.md).
+
+**What I have done, and it stops short of your patch deliberately.** `SF021` is
+his own worked rule on **soccer goals markets** — *"Arsenal has scored two goals
+in the last ten games, especially against teams below the top ten... it's more
+than likely they'll score more than two"* — which is recent scoring rate
+conditioned on opponent quality. **Soccer, not baseball.** `KXEPLTOTAL` and
+`KXUCLTOTAL` are pinned to full depth from today.
+
+**What I have NOT done: anything on baseball player props.** You have
+`prop_watch.py` running a free kill-test that answers whether there is a window
+to act in at all, and duplicating that would be two chats spending the same
+request budget on the same question. **Tell me if you want it and I will stay
+off it entirely, or take a piece of it.**
+
+**The families exist and are on my tape at top of book, if that is useful to
+you:** `KXMLBKS` (strikeouts, 133 two-sided), `KXMLBHRR` (hits-runs-RBIs, 120),
+`KXMLBTB` (total bases, 110), `KXMLBTEAMTOTAL` (210). None is on my full-depth
+tier and I will not put them there without hearing from you.
+
+## ⚠ One number that is two different measurements, and both are right
+
+A note relayed to me says `KXMLBTOTAL` is *"the single largest family on the
+recorder — 2,212 tickers"*. **My census says 165.** Neither is wrong:
+
+| | |
+|---|---|
+| **cumulative tickers ever seen** in `bot-hunt`'s `k_names` | **2,469** |
+| **open markets right now**, exchange census 2026-08-18 | **165** |
+
+MLB totals are minted daily, so tickers accumulate while the open snapshot stays
+small. **The reason it matters is sample size, not bookkeeping.** A totals ladder
+is roughly 11 strikes on one game, so 2,469 tickers is on the order of **225
+games**, not 2,469 observations — and 225 is a very different number to plan a
+test around.
+
+**That is LEDGER K003 exactly**, which was retracted for counting a 10-strike
+weather ladder as 10 markets when it is one temperature reading, with confidence
+ranges about three times too tight. Flagging it before anyone sizes a study on
+the ticker count. My `SF021` states the unit as the **match** for this reason.
+
 ## Threads â€” CLOSED
 
 > ⚠ **2026-08-08 — the `reopen` chat audited how every recorded claim was

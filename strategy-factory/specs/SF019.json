@@ -1,0 +1,46 @@
+{
+ "id": "SF019",
+ "created": "2026-08-19",
+ "author": "claude:factory",
+ "source": "user",
+ "source_detail": "His answer to Q1 and Q2, mailbox 004. Q1: rotation depends on the stakes in BOTH games, and 'at the beginning of the league, teams usually always come with their A game... towards the end, once the results are kind of defined, then it changes'. Q2, unprompted warning: 'Don't completely rely on this' - qualification status is NOT the driver; games played recently is.",
+ "families": [
+  "KXEPLGAME",
+  "KXUCLGAME",
+  "KXUELGAME",
+  "KXUECLGAME",
+  "KXLALIGAGAME",
+  "KXSERIEAGAME",
+  "KXLIGUE1GAME"
+ ],
+ "thesis": "A club with a pile of fixtures behind it is a weaker version of itself whether or not it changes the eleven, and that shows up late in a season once league places are settled rather than early when everyone is still trying.",
+ "unit": "one match",
+ "entry": {
+  "when": "Buy against a side that has played 3 or more fixtures in the previous 10 days when its next fixture within 4 days is a European tie. Record matchday number and whether the club's league objective is still mathematically live. Fire only in the second half of the league season, because his rule is that the effect is absent early - and record the first-half matches anyway as the control that tests the rule.",
+  "side": "no",
+  "min_price_c": 20,
+  "max_price_c": 85,
+  "max_spread_c": 5
+ },
+ "exit": {
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null,
+  "mode": "hold_to_settlement"
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 10,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "No gradient across the season - if congested sides underperform equally in matchday 3 and matchday 33, his stated rule is wrong and it is reported as wrong.",
+  "Inside its no-skill range at 100 fired matches.",
+  "Fewer than 100 qualifying matches by the end of the season, which makes it unmeasurable rather than unprofitable.",
+  "The effect vanishes once the leading-club identity from SF018 is controlled for, meaning this is SF018 wearing a different label."
+ ],
+ "slow": true,
+ "notes": "\u26a0 HIS WARNING IS BUILT INTO THE RULE AND IT IS THE MOST USEFUL PART: 'They might put the same team though. It might not put them at full effort.' So ROTATION IS NOT ONLY PERSONNEL - a club can field its first eleven and not try, and any line-up-based variable scores that match as full strength and is wrong. This spec therefore measures FIXTURE LOAD, which is observable, rather than line-up changes, which are observable and misleading. || He also told us the obvious version of Q2 is wrong before it was written: clubs that are already qualified often still field strong sides 'because they wanna give their teams more practice'. Qualification status is recorded as a secondary flag and is NOT the driver. || The season gradient is a PREDICTION stated in advance, which makes it a test of his rule and not a parameter to tune."
+}

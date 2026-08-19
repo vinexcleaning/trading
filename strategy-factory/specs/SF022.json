@@ -1,0 +1,46 @@
+{
+ "id": "SF022",
+ "created": "2026-08-19",
+ "author": "claude:factory",
+ "source": "user",
+ "source_detail": "Two of his answers converging with another chat. Q4: 'I have no idea how different these competitions work... that statistics, you can find for yourself' - recorded as answered-with-a-no, and therefore our work. Q6: he named player statistics as where he sees both a lot of fails and a lot of wins.",
+ "families": [
+  "KXEPLBTTS",
+  "KXUCLBTTS",
+  "KXLALIGABTTS",
+  "KXSERIEABTTS",
+  "KXLIGUE1BTTS",
+  "KXLALIGATEAMTOTAL",
+  "KXMLSSCORE",
+  "KXLALIGASCORE"
+ ],
+ "thesis": "Nobody here knows whether a Spanish league game behaves differently from a French one, and the exchange lists the same goal-shaped market in seven competitions at once - so the comparison is free and answers a question he explicitly said he cannot.",
+ "unit": "one match",
+ "entry": {
+  "when": "The SAME rule applied unchanged across every competition that lists the family: buy at the recorded ask in fixed price buckets and hold. The output is a per-competition curve, not one number. No competition is selected before the curves exist, and the curves are reported in full including the empty ones.",
+  "side": "either",
+  "min_price_c": 10,
+  "max_price_c": 90,
+  "max_spread_c": 6
+ },
+ "exit": {
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null,
+  "mode": "hold_to_settlement"
+ },
+ "size": {
+  "rule": "flat",
+  "usd_per_bet": 10,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Every competition's range contains zero at 100 settled matches each - reported as UNMEASURED, not as negative.",
+  "The competitions that look best are the ones with the fewest matches, which is what a best-of-N artefact looks like from the inside.",
+  "Fewer than 5 competitions accrue 100 settled matches by the end of the season, which makes the comparison unmeasurable."
+ ],
+ "slow": true,
+ "notes": "\u26a0 THIS SPEC IS A SEVEN-WAY COMPARISON AND IS THEREFORE A BEST-OF-N MACHINE BY CONSTRUCTION. Picking the best competition afterwards is precisely the trap this whole project is built around: the best of seven zero-skill arms looks good roughly 1 time in 3 at any single threshold. So the rule is fixed in advance, every curve is reported including the bad ones, and NO competition may be promoted on this screen alone - a winner here becomes a new spec with a new id and its own forward test, and it counts against the screened total. || He said he does not know the answer to this and that we should find it. That makes it the one place where a broad sweep is the right shape rather than a narrowing risk."
+}

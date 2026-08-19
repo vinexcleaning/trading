@@ -100,6 +100,16 @@ PINNED = {
                  "says its one live descendant was waiting for",
     "KXEPLGAME": "Premier League - same argument, named in the same sentence",
     "KXVALORANTGAME": "his only esport, and the only one he can sanity-check",
+    # Added 2026-08-19 on mailbox 004. Asked what he thinks the markets get
+    # wrong, he named GOALS rather than who-wins: "some people bet on a team to
+    # score more than one goal, less than one goal. All that can be calculated
+    # with statistics." SF021 is his own worked rule on exactly these. Only his
+    # two competitions are pinned -- the other five European totals families
+    # stay on the breadth tier until a result justifies the request budget.
+    "KXEPLTOTAL": "Premier League total goals - the market he named, in the "
+                  "competition he knows best. 60 two-sided markets",
+    "KXUCLTOTAL": "Champions League total goals - same, and the group stage "
+                  "starts in September. 42 two-sided markets",
 }
 
 

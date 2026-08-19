@@ -1,0 +1,40 @@
+{
+ "id": "SF020",
+ "created": "2026-08-19",
+ "author": "claude:factory",
+ "source": "user",
+ "source_detail": "His answer to Q5, mailbox 004: 'When they announce the line-up, the price might move... that news usually hits a few hours before the game.' \u26a0 He marked this as a guess himself - 'I'm just giving you what I'm assuming would happen. That's all stuff you can check better than me' - so it is a hypothesis to verify, not a fact he supplied.",
+ "families": [
+  "KXUCLGAME",
+  "KXEPLGAME"
+ ],
+ "thesis": "If team news moves the price, it should show up as a step in the recorded book at a predictable time before kickoff, and if there is no step then there is nothing there to trade.",
+ "unit": "one match",
+ "entry": {
+  "when": "DIAGNOSTIC FIRST, trade second. For every European match, measure the recorded price path from 8 hours before kickoff to kickoff and locate the largest step. Report the distribution of when those steps happen. Only if steps cluster at a repeatable time does a trade follow, and it is written as a separate spec with its own id rather than smuggled into this one.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 6
+ },
+ "exit": {
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null,
+  "mode": "hold_to_settlement"
+ },
+ "size": {
+  "rule": "flat",
+  "usd_per_bet": 10,
+  "max_share_of_depth": 0.2
+ },
+ "wrong_if": [
+  "The largest pre-kickoff step is uniformly distributed across the 8 hours - no clustering means no announcement effect visible at this resolution, and it is reported as absent.",
+  "The recorder's 10-minute cadence on the full-depth tier is too coarse to see the step, which is a finding about the recorder and is reported as such rather than as a finding about the market.",
+  "Steps cluster but sit inside the spread, so there is nothing to capture after costs."
+ ],
+ "slow": true,
+ "notes": "THIS CANNOT BECOME A LIVE STRATEGY WHATEVER IT FINDS. CLAUDE.md 9b item 2 holds absolutely: his own bot was reading scores after 97.4 out of 100 of the price move had already happened, on 4,398 score-change events. A pre-kickoff announcement is a scheduled instant rather than an in-play event, which is why it is worth measuring at all - but the answer this produces is about whether the door is shut by a wall or a curtain, and paper stays paper. || He hedged this answer himself and that hedge is why it is written as a diagnostic rather than as a trade. An expert who marks their own uncertainty is worth more than one who does not, and the way to honour that is to test it rather than to build on it."
+}

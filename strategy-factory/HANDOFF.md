@@ -1,7 +1,7 @@
 <!-- COORDINATOR-STATE
-doing: recorder LIVE since 2026-08-18 05:14 UTC - 55 families at full order-book depth (European soccer and Valorant pinned on his own domain knowledge) and 3,438 at top of book; 18 specs, every testable category covered
+doing: recorder LIVE since 2026-08-18 05:14 UTC - 55 families at full order-book depth (European soccer and Valorant pinned on his own domain knowledge) and 3,438 at top of book; 22 specs, every testable category covered, 6 of them soccer built on his own answers
 left: build the screening engine with its placebo arm; then answer four unchecked assumptions that could void four specs outright, from rules text already on tape
-needs: yes - six specific European soccer questions in strategy-factory/QUESTIONS_FOR_HIM.md, batched. Nothing waits on them; they shape the next soccer specs, not whether work happens.
+needs: no - his six soccer answers arrived and are all turned into specs. Next question comes after the screening engine produces something to ask about.
 -->
 
 # HANDOFF — strategy-factory
@@ -72,7 +72,7 @@ to `devig` as mailbox 021 and answered in `STATUS.md`.
   **`src/seed_specs_breadth.py`**.
 - **`PREREGISTRATION_HOLDON.md`** — the soccer descendant, sealed before any 2026/27 European price exists.
 - **`QUESTIONS_FOR_HIM.md`** — six specific soccer questions, batched.
-- **18 strategy specs**, validated, across **all four** required sources and **every one of the 13 testable categories**. SF018 is the first from his own domain knowledge.
+- **22 strategy specs**, validated, across **all four** required sources and **every one of the 13 testable categories**. SF018-SF022 come from his own domain knowledge.
 - **15 tests passing**, including a paper-only guard extended to scan
   `bot-hunt/src/venues.py` (which runs inside this process) and a local
   GUARD #23 field-name check with the real bug as its planted violation.
@@ -232,6 +232,69 @@ nothing"* — which is where the live money is.
 - **Nothing was narrowed onto soccer.** Soccer went from 1 spec to 2 of 18; the
   depth tier went from 55 families to 55. The pins displaced, they did not
   expand.
+
+---
+
+## MAIL 004 — HIS SIX SOCCER ANSWERS, AND THEY CAUGHT A SPEC I HAD WRITTEN WRONG
+
+**The headline is that three of his six answers say the same thing: the variable
+is the CLUB, not the league table.**
+
+> *"Real Madrid's the type of team that if they score the first goal, they're
+> gonna keep trying to score. But Manchester United, it's very likely that if
+> they score the first goal, they're gonna park the bus no matter who they're
+> playing against."* — and *"a better team with better players will sometimes
+> park the bus even playing against the worst team."*
+
+**`SF018` was written on top-third / bottom-third of the domestic table.** A
+league-wide average mixes clubs that do opposite things to the price of the side
+that is ahead, and would have reported a null. **That is the repo's most
+expensive recorded mistake — a sweep over price and market features used to
+close a question about individual players — arriving in a new sport**, and the
+only reason it is a correction rather than a retraction is that **no number
+existed yet.**
+
+Recorded as **amendment A2** of `PREREGISTRATION_HOLDON.md`, numbered and dated,
+old wording left visible. **A2 also names what the change costs:** the sample
+shrinks to each club's own matches; clubs with no history are **excluded and
+counted as excluded**, never defaulted to the league average; and the label is
+built from matches **before** the traded match only, or it is look-ahead. New
+drop rule — if the label cannot be built for 60 of 100 fired matches, the answer
+is **UNMEASURABLE**, not negative.
+
+### All six became specs, and both "I don't know" answers did work
+
+| his answer | spec |
+|---|---|
+| Q1 rotation · Q2 fixture load | **SF019** — measures games in the last 10 days, **not** line-up changes |
+| Q3 per-club behaviour | **SF018 v2** |
+| Q4 *"I have no idea"* | **SF022** — the seven-competition comparison, ours to answer |
+| Q5 line-up news | **SF020** — a diagnostic, because he hedged it himself |
+| Q6 goals and player stats | **SF021** — his Arsenal rule as written |
+
+**Q1's most skippable sentence is its most useful:** *"They might put the same
+team though. It might not put them at full effort."* A line-up-based variable
+scores that match as full strength and is **wrong**, so SF019 measures fixture
+load instead. His season gradient — near zero early, growing as the table
+settles — is written in as a **prediction stated in advance**, which tests his
+rule rather than tuning a parameter.
+
+**Q2 is where he pre-empted us**, warning unprompted that the obvious version
+(already-qualified teams rest players) is wrong. **A domain expert telling you
+your unwritten spec is wrong is worth more than a confirmation.**
+
+`KXEPLTOTAL` and `KXUCLTOTAL` pinned to full depth. **No baseball player-prop
+spec written** — `devig` has a free kill-test running on exactly that, and
+`STATUS.md` offers to stay off it or take a piece.
+
+**⚠ And one relayed number that is two measurements.** `KXMLBTOTAL` as *"2,212
+tickers"* against my census's 165: `bot-hunt` has **2,469 cumulative tickers ever
+seen**, 165 **open right now**. It matters for sample size — a totals ladder is
+~11 strikes on one game, so 2,469 tickers is on the order of **225 games**. That
+is LEDGER K003 exactly. `SF021`'s unit is the **match**.
+
+**Nothing narrowed.** Soccer went from 2 specs to 6 of 22; the depth tier stayed
+at 55 families. Coverage still 13 of 13.
 
 ---
 
