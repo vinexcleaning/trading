@@ -86,6 +86,20 @@ POSITION_LIVE_HOURS = 6.0
 # is entitled to, and a guard that deadlocks on that gets switched off.
 RECENT_PLACEMENT_MINUTES = 30.0
 
+# ⚠ THE LINE BETWEEN "WHILE THE TOOL WAS BROKEN" AND "SINCE THE FIX".
+#
+# Guard 4 was refusing nearly every bet until 2026-08-16 ~18:00 local, when the
+# reconciliation defect was fixed (commit 28636e7). Before that line the record
+# is not a fair read of the strategy in either direction: 24 signals never got
+# placed, and the ones that DID go on were sized at a flat 10% because the
+# tiered rule had not landed yet.
+#
+# It is marked, not deleted. Deleting the losses from a window whose MISSED WINS
+# were never recorded at all would make the record wrong in his favour rather
+# than right -- on 2026-08-16 the strategy won 8 of 13 and made +$34.93 and this
+# tool placed nothing.
+FIX_INSTANT_UTC = "2026-08-16T22:00:00+00:00"
+
 
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
@@ -937,6 +951,54 @@ class Ledger:
                 self.save()
                 return e
         return None
+
+    def money_and_percent(self, since_fix=None):
+        """(money, percent, staked, n) for settled bets. BOTH NUMBERS, ALWAYS.
+
+        His words: *"I wanna see the profit, so the actual dollar profit, and
+        then I wanna see the percent... The two numbers are very connected, but
+        they're different."* He is right and the distinction is the correct one:
+
+          * **dollars** are about HIS ACCOUNT -- what happened to his money
+          * **percent** is about THE STRATEGY -- how it did per dollar risked
+
+        The percent is profit divided by MONEY STAKED, not by bankroll. Those
+        differ and a reader cannot tell which is meant, so it is said out loud
+        wherever it is shown.
+
+        `since_fix=True` counts only bets placed after the reconciliation
+        defect was fixed; `False` only before; `None` everything.
+        """
+        cut = _parse(FIX_INSTANT_UTC)
+        money = staked = 0.0
+        n = 0
+        for e in self.entries:
+            if e.status not in ("won", "lost"):
+                continue
+            when = _parse(e.confirmed_utc)
+            if since_fix is not None and when is not None:
+                after = when >= cut
+                if after != since_fix:
+                    continue
+            money += e.pnl_usd
+            staked += e.cost_usd
+            n += 1
+        pct = (100.0 * money / staked) if staked > 0 else 0.0
+        return round(money, 2), round(pct, 1), round(staked, 2), n
+
+    def two_window_line(self) -> str:
+        """Both windows, both numbers, side by side. The second is the honest
+        read of the strategy and it grows every day."""
+        bm, bp, bs, bn = self.money_and_percent(since_fix=False)
+        am, ap, as_, an = self.money_and_percent(since_fix=True)
+        parts = []
+        if bn:
+            parts.append(f"while the tool was broken: {usd(bm)} on {bn} bets "
+                         f"({usd(bp)} for every $100 risked)")
+        parts.append(f"since the fix: {usd(am)} on {an} bet"
+                     f"{'s' if an != 1 else ''}"
+                     + (f" ({usd(ap)} for every $100 risked)" if as_ else ""))
+        return "  ·  ".join(parts)
 
     def summary_line(self) -> str:
         n_done = len([e for e in self.entries if e.status in ("won", "lost")])

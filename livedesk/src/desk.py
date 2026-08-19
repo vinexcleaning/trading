@@ -390,7 +390,8 @@ class Desk(tk.Tk):
                 "ok": "#86efac"}.get(state, "#9ca3af"))
         self.room_lbl.configure(
             text="  " + self.ledger.room_line()
-                 + "\n  " + self.ledger.daily_line())
+                 + "\n  " + self.ledger.daily_line()
+                 + chr(10) + "  " + self.ledger.two_window_line())
 
         avail = self._available()
         if self.pending is not None:
