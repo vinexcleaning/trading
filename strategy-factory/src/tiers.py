@@ -74,6 +74,35 @@ UNCOVERED_BOOST = {"Crypto": 3.0, "Economics": 3.0, "Financials": 2.5,
 EXOTIC_PREFIXES = ("KXMVE",)
 
 
+#: ⚠ PINNED TO TIER A BY NAME, and each one needs a written reason because a
+#: pin overrides a measurement.
+#:
+#: Added 2026-08-19 on coordinator mailbox 003, which carries the user's own
+#: answer to "which markets do you actually know something about". His answer:
+#: **soccer most of all** ("everything Europe related, I know"), tennis's format
+#: but not its players, and Valorant as his only esport. Baseball: "literally
+#: close to nothing" -- which is where the live money is.
+#:
+#: Why a pin rather than a bigger category boost: a boost would quietly pull in
+#: whatever else scores nearby, and the reason here is specific to these three
+#: families and to nobody else's. A pin is visible; a tuned constant is not.
+#:
+#: NOT duplication of `bot-hunt`, though it looks like it. Its EU recorder does
+#: probe these books, but `record.py` stores only `depth5_yes`/`depth5_no` -- a
+#: SUMMARY of the ladder. Tier A stores the whole ladder, both sides, level by
+#: level. The capacity question ("what would $500 actually cost here") needs the
+#: levels, and `soccer/CLOSED.md`'s one live descendant is blocked on exactly
+#: that: "a deeper book than this window had... the Premier League and Champions
+#: League group stage would fix that, and only those."
+PINNED = {
+    "KXUCLGAME": "Champions League - his strongest sport, and the group stage "
+                 "starting in September is the specific data soccer/CLOSED.md "
+                 "says its one live descendant was waiting for",
+    "KXEPLGAME": "Premier League - same argument, named in the same sentence",
+    "KXVALORANTGAME": "his only esport, and the only one he can sanity-check",
+}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--tier-a-budget", type=int, default=900,
@@ -152,6 +181,13 @@ def main() -> None:
         taken.add(ser)
         spent += cost
         return True
+
+    # Pins first, before the quota, so a pin can never be squeezed out by it.
+    pin_taken = []
+    for score, ser, cat, n, two in tier_a_pool:
+        if ser in PINNED and take(ser, n):
+            pin_taken.append((ser, cat))
+    pin_spent, pin_series = spent, len(tier_a)
 
     by_cat = defaultdict(list)
     for score, ser, cat, n, two in tier_a_pool:
@@ -262,6 +298,25 @@ def main() -> None:
              "yes" if feetypes.get(ser) == "quadratic_with_maker_fees"
              else "no"))
     A("")
+    if pin_taken:
+        A("### The %d PINNED families, and what they displaced" % len(pin_taken))
+        A("")
+        A("| series | category | why it is pinned |")
+        A("|---|---|---|")
+        for ser, cat in pin_taken:
+            A("| `%s` | %s | %s |" % (ser, cat, PINNED[ser]))
+        A("")
+        A("**A pin overrides a measurement, so it costs something and the cost "
+          "is named.** These %d families consume %d of the %d request budget. "
+          "What they displaced is the %d lowest-scoring families that would "
+          "otherwise have been filled by score - listed at the bottom of the "
+          "tier A table below as the ones just outside the line. **Nothing "
+          "allocated by the category quota was touched**, because pins are "
+          "taken before the quota rather than after it: a pin can push out a "
+          "score-filled family and can never push out a category's guaranteed "
+          "share." % (len(pin_taken), pin_spent, args.tier_a_budget,
+                      len(pin_taken)))
+        A("")
     A("**%d of the %d tier A families were allocated by CATEGORY QUOTA** - "
       "%d slots to every category with any two-sided market, handed out before "
       "any category got a second helping. The remaining %d were filled by "

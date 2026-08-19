@@ -1,0 +1,42 @@
+{
+ "id": "SF018",
+ "created": "2026-08-19",
+ "author": "claude:factory",
+ "source": "user",
+ "source_detail": "coordinator mailbox 003, carrying his own answer to which markets he knows: 'I know the most about soccer. I know how it works, I know where the best players are, I know the best teams. Not the crazy specific stuff, but everything Europe related, I know.' The trade itself is the one live descendant handed over by soccer/CLOSED.md rather than dropped. Fully pre-registered in PREREGISTRATION_HOLDON.md before any 2026/27 price exists.",
+ "families": [
+  "KXUCLGAME",
+  "KXEPLGAME"
+ ],
+ "thesis": "A strong side that goes one goal up early is bet on to hold on, as a cheap contract rather than a near-certain one - which is the opposite side of the trade that was closed, and the side where a price actually exists.",
+ "unit": "one match",
+ "entry": {
+  "when": "A side goes one goal up between the 20th and 35th minute. Buy that side at the recorded ask. Record team strength as top-third or bottom-third of the domestic table BEFORE the match, never after. Require a two-sided quote and a spread inside the bar; a firing with no tradeable price is recorded as unavailable rather than skipped.",
+  "side": "yes",
+  "min_price_c": 35,
+  "max_price_c": 80,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 10,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Inside its no-skill range at 100 fired matches.",
+  "Negative at 50 fired matches.",
+  "Fewer than 10 firings in the first 30 days of the Champions League group stage - the availability failure that killed the parent idea, arriving on this one.",
+  "Capacity below $25 per firing when priced by walking the recorded ladder.",
+  "Top-third and bottom-third sides hold on equally often at these prices, which removes the mechanism entirely and voids the result rather than weakening it."
+ ],
+ "slow": true,
+ "notes": "PRIOR WORK, and it is a CLOSURE this descends from rather than contradicts. soccer/CLOSED.md, 2026-08-11, closed the late-comeback idea. What was tested: buy the thing that is about 97 out of 100 to happen, cheaply. Data: Kalshi soccer, 699 matches priced at every displayed minute inside the ~69-day window ending 2026-08-09, one reading per match. Result: it failed on AVAILABILITY, not on price - at the 89th minute a tradeable quote existed 16 times in 100, and at 97 cents or better 1 time in 100. That is now GUARDS #24 and it holds across SEVEN sports, so it is not a soccer finding. || HOW THIS DIFFERS: it buys the UNCERTAIN side, where quotes were measured at 93 in 100 at the 15th minute, and its loss is capped at what was paid instead of many small wins and one loss that eats thirty. CLOSED.md says in terms that 'nothing here supports the reverse trade and nothing here rules it out'. || THE FEE IS THE LIKELIEST KILLER and it is nine times bigger here than in the parent: 1.74 cents at a price of 53 against 0.20 at 97, measured 2026-08-11 from common/kalshi_fees.py. Any version reporting a gross number is void. || SELECTION EFFECT DECLARED: this reached the queue because the user knows soccer, which is a reason to record the data and is not evidence about the trade. Same forward test, same no-skill range, same 100 units. || Screened count: ZERO. It was handed over untested, not selected by a backtest - a different provenance from every other spec here, and not an advantage."
+}

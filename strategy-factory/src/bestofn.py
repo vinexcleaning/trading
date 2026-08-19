@@ -51,7 +51,11 @@ from common.kalshi_fees import fee_order_cents  # noqa: E402
 # The quoted table this script exists to check. Source:
 # coordinator/STRATEGY_FACTORY.md section 1.
 QUOTED = {10: 10.1, 50: 17.9, 200: 23.7, 500: 25.6, 2000: 29.5}
+#: Superseded. The EXACT figures, agreed with coordinator mailbox 002 after
+#: both of us got it wrong once: one strategy 1 in 4,893, best of 2,000 is 34
+#: in 100. Kept here only so the script prints the disagreement it settled.
 QUOTED_P30 = {10: 0.0, 50: 0.0, 200: 5.0, 500: 9.0, 2000: 37.0}
+EXACT_P30 = {10: 0.2, 50: 1.0, 200: 4.0, 500: 9.7, 2000: 33.6}
 
 
 def one_strategy(rng, price_c: float, bets: int, per_order: int) -> float:
@@ -70,7 +74,12 @@ def one_strategy(rng, price_c: float, bets: int, per_order: int) -> float:
     wins = sum(1 for _ in range(contracts) if rng.random() < p)
     gross = wins * (100.0 - price_c) - (contracts - wins) * price_c
     fee = float(fee_order_cents(price_c, per_order)) * n_orders
-    staked = contracts * price_c
+    # ⚠ THE DENOMINATOR IS CASH OUT OF POCKET, NOT PRICE STAKED, and v1 of
+    # this file had it the other way. Buying a contract at 50c takes 52c out
+    # of the account -- the price AND the fee -- so "+30%" means turning 52c
+    # into 67.6c, not turning 50c into 65c. The user thinks in "I turned $100
+    # into $130", and $100 is what left his account. See DECISIONS.md D6.
+    staked = contracts * price_c + fee
     return (gross - fee) / staked
 
 
@@ -96,19 +105,24 @@ def exact_p_at_least(threshold, price_c, bets, per_order, roundtrip=False):
     That is the correct cost for a strategy that sells before settlement and
     the WRONG cost for one that holds - `common/kalshi_fees.py` says so in
     `roundtrip_cost_cents`: "exit_cents=None means held to settlement, which
-    pays the entry fee only." It is a flag here because the quoted table in
-    `coordinator/STRATEGY_FACTORY.md` can only be reproduced with it on, and
-    which of the two is right changes the answer by a factor of four.
+    pays the entry fee only."
+
+    ⚠ It is kept only as a counter-example. I once claimed the plan's
+    1-in-10,000 "could only be reproduced" by turning this on, because turning
+    it on gives 1 in 10,920. That was wrong: the plan's number was a Monte
+    Carlo estimate off two hits in 20,000 runs. The flag stays so the near-miss
+    is visible - a hypothesis that reproduces a number is not thereby the
+    explanation for it.
     """
     n_orders = max(1, bets // per_order)
     contracts = n_orders * per_order
     fee = float(fee_order_cents(price_c, per_order)) * n_orders
     if roundtrip:
         fee *= 2.0
-    staked = contracts * price_c
+    staked = contracts * price_c + fee          # cash out of pocket
     p = price_c / 100.0
-    # profit(w) = w*(100-price) - (contracts-w)*price - fee = 100w - contracts*price - fee
-    need_w = (threshold * staked + contracts * price_c + fee) / 100.0
+    # profit(w) = 100w - contracts*price - fee, and staked already holds the fee
+    need_w = (threshold * staked + staked) / 100.0
     w = math.ceil(need_w - 1e-9)
     if w > contracts:
         return 0.0
@@ -145,9 +159,16 @@ def main() -> None:
     print("  lands between %+.1f%% and %+.1f%% ninety times in a hundred"
           % (100 * pct(xs, 0.05), 100 * pct(xs, 0.95)))
     print("  typical (middle) result        : %+.1f%%" % (100 * pct(xs, 0.50)))
-    print("  reaches +30%%                   : %d in %d  (%s)"
+    # ⚠ THE HIT COUNT IS PRINTED, NOT JUST THE RATE. Coordinator mailbox 002:
+    # the plan's wrong figure was a Monte Carlo estimate off TWO hits in
+    # 20,000 runs, reported as a rate with no hit count beside it, and nobody
+    # could see it was noise. At the true rate this line expects about 4 hits
+    # in 20,000 - so this simulation CANNOT resolve the tail and says so.
+    print("  reaches +30%%                   : %d HITS in %d runs  (%s)"
           % (n30, len(xs),
-             "about 1 in %d" % round(len(xs) / n30) if n30 else "never seen"))
+             "about 1 in %d, and %d hits is far too few to trust - "
+             "read the exact figure below" % (round(len(xs) / n30), n30)
+             if n30 else "never seen, which is also too few to trust"))
     print()
 
     # ---- 2. The best of M. This is what a factory reports.
@@ -186,11 +207,23 @@ def main() -> None:
               % (m, 100 * (1 - (1 - p_hold) ** m),
                  100 * (1 - (1 - p_trip) ** m), sim))
     print()
-    print("WHICH FEE IS RIGHT decides this, and it is not a detail. Kalshi")
-    print("charges nothing at settlement, so a BUY-AND-HOLD strategy - the")
-    print("default shape in this repo - pays the fee once. The quoted table")
-    print("can only be reproduced with the fee charged twice, which makes the")
-    print("best-of-N hazard look about four times smaller than it is.")
+    print("WHAT SETTLED THIS, and both parties were wrong once. The number")
+    print("that decides it is not the fee, it is the DENOMINATOR. Buying at")
+    print("50c takes 52c out of the account - price AND fee - so +30% means")
+    print("turning 52c into 67.6c, which needs 68 wins of 100 rather than 67.")
+    print("One win of difference halves the answer: 1 in 4,893, not 1 in 2,289.")
+    print()
+    print("MY EARLIER DIAGNOSIS WAS WRONG AND IS WITHDRAWN. I wrote that the")
+    print("plan's 1-in-10,000 could only be reproduced by charging the fee")
+    print("twice, because charging it twice gives 1 in 10,920. It does give")
+    print("that - and it is not what happened. The plan's figure was a Monte")
+    print("Carlo estimate off TWO hits in 20,000 runs. Finding A way to")
+    print("reproduce a number is not finding THE way, and a close match is")
+    print("the most persuasive form that mistake takes.")
+    print()
+    print("HENCE THE HIT COUNT PRINTED ABOVE, NOT JUST THE RATE. A tail")
+    print("probability read off a simulation without its hit count beside it")
+    print("is how the original error survived being written down.")
     print()
     print("Read the M=2000 row as the specification of this project, not as a")
     print("warning about it: a factory that screens two thousand strategies")

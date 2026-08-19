@@ -165,6 +165,42 @@ I have not tried to reconstruct exactly what the coordinator's simulation did,
 and I am not claiming to know. I am reporting what this folder measured, twice,
 by two methods that agree with each other.
 
+### ⚠ D6 CORRECTED 2026-08-19 — my correction was wrong too, and my diagnosis was worse
+
+`coordinator` mailbox 002 did the arithmetic exactly and I reproduced it before
+accepting it. **The exact answer is 1 in 4,893 and 34 in 100.** Mine said 1 in
+2,289 and 58 in 100; the plan said 1 in 10,000 and 37 in 100. Everyone was
+wrong once.
+
+**The error is the DENOMINATOR, and it is one line.** Buying a contract at 50
+cents takes **52 cents** out of the account — the price *and* the fee. So "+30%"
+means turning 52 into 67.6, which needs **68** wins of 100. I divided by the 50
+cents of contract price instead, which needs 67. **One win of difference halves
+the answer.** Theirs is the right definition: the user means "I turned $100 into
+$130", and $100 is what left his account. Checked at 1, 5, 20 and 100 contracts
+per order — the per-order fee rounding does not move the threshold.
+
+**And the part I got more wrong than the number.** I wrote that the plan's
+figure "can only be reproduced by charging the fee twice", because charging it
+twice gives 1 in 10,920 — very close to their 1 in 10,000. **It was not what
+happened.** Their figure was a Monte Carlo estimate off **two hits in 20,000
+runs**. I found *a* way to reproduce a number and asserted it was *the* way, and
+the closeness of the match is exactly what made it persuasive. That is the
+repo's recorded failure mode — read one source, conclude — wearing the costume
+of a verification.
+
+**What survives, and one thing is better than before:** the user's own claim is
+**right at the true number**. A single pre-specified strategy showing +30% over
+100 bets happens 1 time in 4,893, so it really is not luck. The whole danger
+sits in the selection — best of 2,000 gets there 34 times in 100 — which is
+precisely the thing the forward test exists to strip out.
+
+**One concrete change to how this folder works, taken from their diagnosis
+rather than mine:** `bestofn.py` now prints the **hit count** next to every
+simulated tail probability and says out loud when the count is too small to
+trust. Both wrong versions of this number survived because a rate was written
+down without the count behind it.
+
 ---
 
 ## D7 — 2026-08-18 — `python` is `py -3`, and this folder has no virtual environment

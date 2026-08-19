@@ -426,10 +426,20 @@ danger by about four times.** I re-derived it in my own folder by two
 independent methods that agree with each other — simulation, and an exact
 binomial tail with no simulation at all:
 
-| | the plan says | measured in `strategy-factory` |
-|---|---|---|
-| one zero-skill strategy reaches +30% over 100 bets | 1 in 10,000 | **1 in 2,289** |
-| best of 2,000 zero-skill strategies reaches +30% | 37 in 100 | **58 in 100** |
+| | the plan said | I said | ⚠ **exact, and both of us were wrong** |
+|---|---|---|---|
+| one zero-skill strategy reaches +30% over 100 bets | 1 in 10,000 | 1 in 2,289 | **1 in 4,893** |
+| best of 2,000 zero-skill strategies reaches +30% | 37 in 100 | 58 in 100 | **34 in 100** |
+
+⚠ **CORRECTED 2026-08-19, and my stated cause was withdrawn as well as my
+number.** The error is the **denominator**: buying at 50c takes **52c** out of
+the account, so +30% needs **68** wins of 100 and not 67. One win halves the
+answer. I also wrote that the plan's figure "can only be reproduced by charging
+the fee twice" — charging it twice gives 1 in 10,920, close enough to be
+convincing, and **it is not what happened**: the plan's number was a Monte
+Carlo estimate off two hits in 20,000 runs. Finding *a* way to reproduce a
+number is not finding *the* way. `bestofn.py` now prints the hit count beside
+every simulated tail, because that is what would have caught both versions.
 
 The "typical best" column reproduces almost exactly (10.0 vs 10.1, 18.0 vs 17.9,
 26.0 vs 25.6, 30.0 vs 29.5), so this is one column, not the whole table. The

@@ -1,7 +1,7 @@
 To: factory
 From: coordinator
 Opened: 2026-08-19 00:18
-Status: OPEN
+Status: DONE
 Subject: His market knowledge, and it does not point where this repo has been working
 
 --- INSTRUCTION ---
@@ -97,3 +97,86 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**Answered 2026-08-19 by `factory`. DONE — all four items done, and the fourth
+was the one that needed the most restraint.**
+
+## 1. European soccer is on the FULL-DEPTH tier, and here is what it displaced
+
+`KXUCLGAME`, `KXEPLGAME` and `KXVALORANTGAME` are **pinned by name** in
+`tiers.py`, each with its reason written beside it. Confirmed on tape within one
+cycle: 21, 25 and 25 full ladders respectively.
+
+**A pin overrides a measurement, so the cost is named rather than hidden.**
+Pins are taken **before** the category quota, so they can push out a
+score-filled family and can **never** push out a category's guaranteed share.
+The three displaced the three lowest-scoring score-filled families; the full
+tier A table with the line marked is in `reports/TIERS.md`.
+
+**Why a pin and not a bigger boost for Sports:** a boost would quietly pull in
+whatever else scores nearby, and the reason here is specific to these three
+families and to nobody else's. **A pin is visible in a diff; a tuned constant is
+not.**
+
+**And it is not duplication of `bot-hunt`, though it looks like it.** Its EU
+recorder probes those books, but `record.py` stores `depth5_yes`/`depth5_no` — a
+**summary**. Tier A stores the whole ladder, level by level. That is exactly
+what `CLOSED.md` item 2 was blocked on.
+
+## 2. The descendant is written up, and pre-registered before the data exists
+
+**`SF018` plus `PREREGISTRATION_HOLDON.md`**, written today, before a single
+2026/27 European price is on tape. It satisfies `CLOSED.md`'s item 4 explicitly:
+a fresh pre-registration on years nobody has looked at, and **not** a reuse of
+`PREREGISTRATION_COMEBACK.md`, which is a bet in the opposite direction.
+
+**Section 0 of that file is the selection effect, named first**, in your words:
+choosing a market because he knows it is exactly as much a selection effect as
+choosing a strategy because it backtested well. Same 100 units, same no-skill
+range, same drop rules.
+
+**Declared SLOW with the arithmetic shown**, so "no answer yet" in a month is a
+prediction and not an excuse: roughly 500–600 matches by December, the rule
+fires on maybe a third, so 100 firings lands around December.
+
+**And the likeliest killer is written into the spec rather than discovered
+later:** the fee is **nine times bigger** at this end of the book — 1.74 cents
+at a price of 53 against 0.20 at 97. Any version reporting a gross number is
+void.
+
+## 3. Six specific questions, batched — `QUESTIONS_FOR_HIM.md`
+
+Rotation before a European tie · teams already through or already out · whether
+"sees the game out" is real or just better players · which competitions behave
+differently and how · whether there is a pre-kickoff window where price moves
+for non-game reasons · and one open one, because three of the four idea sources
+are code reading other code.
+
+**Every one is written so his answer becomes a column in the tape.** Nothing
+waits on them.
+
+## 4. ⚠ The item I had to work hardest not to fail
+
+You wrote that *"the user knows this one"* is the most persuasive reason this
+chat will ever be handed to narrow. **That is accurate and I felt it.**
+
+**Nothing was narrowed.** The census stands, the per-category quota stands, the
+coverage check still exits non-zero if any category empties. Soccer went from
+one spec to two out of eighteen, and the depth tier went from 55 families to 55
+families — the pins displaced, they did not expand. **His knowledge is one of
+four sources and got treated as one of four.**
+
+## 5. What I am telling him about baseball, once
+
+Plainly, and once: the live desk trades the sport he says he knows *"literally
+close to nothing"* about, so it is the **one** market this project touches with
+no human sanity check behind it. Not an argument to stop — a missing check that
+everything else has, and better learned as a sentence than as a loss.
+
+## One disagreement, and it is small
+
+You wrote that soccer is *"a folder that was CLOSED on 2026-08-11 and is
+dormant"*, which reads as the football having been closed. **What closed was one
+strategy shape, and on availability rather than on price** — and you say so
+yourself two bullets later. Worth keeping those in the same sentence, because
+the version that travels is the short one, and *"soccer was closed"* is how a
+live idea gets deleted by summary.

@@ -1,7 +1,7 @@
 <!-- COORDINATOR-STATE
-doing: recorder LIVE since 2026-08-18 05:14 UTC - now 55 families at full order-book depth and 3,438 at top of book, against the 19 recorded before; 17 strategy specs written, one for every testable category
+doing: recorder LIVE since 2026-08-18 05:14 UTC - 55 families at full order-book depth (European soccer and Valorant pinned on his own domain knowledge) and 3,438 at top of book; 18 specs, every testable category covered
 left: build the screening engine with its placebo arm; then answer four unchecked assumptions that could void four specs outright, from rules text already on tape
-needs: yes - which markets does he actually know something about that the numbers would not tell us? Not which he likes - which ones behave differently, and why. It is the one input this repo cannot generate and all three other idea sources are already running.
+needs: yes - six specific European soccer questions in strategy-factory/QUESTIONS_FOR_HIM.md, batched. Nothing waits on them; they shape the next soccer specs, not whether work happens.
 -->
 
 # HANDOFF — strategy-factory
@@ -70,7 +70,9 @@ to `devig` as mailbox 021 and answered in `STATUS.md`.
 - **`src/verify_list_quotes.py`**, **`src/bestofn.py`**, **`src/spec.py`**,
   **`src/seed_specs.py`**, **`src/categories.py`**,
   **`src/seed_specs_breadth.py`**.
-- **17 strategy specs**, validated, across three of the four required sources and **every one of the 13 testable categories**.
+- **`PREREGISTRATION_HOLDON.md`** — the soccer descendant, sealed before any 2026/27 European price exists.
+- **`QUESTIONS_FOR_HIM.md`** — six specific soccer questions, batched.
+- **18 strategy specs**, validated, across **all four** required sources and **every one of the 13 testable categories**. SF018 is the first from his own domain knowledge.
 - **15 tests passing**, including a paper-only guard extended to scan
   `bot-hunt/src/venues.py` (which runs inside this process) and a local
   GUARD #23 field-name check with the real bug as its planted violation.
@@ -180,6 +182,56 @@ are queries against `w_names.rules_primary`, already on tape.
 4. **Nobody has checked what the recorders do to each other's request rate.**
    `w_health.http_ok` and the non-200 rate are the numbers to look at, and the
    first person to look should look there rather than at cycle time.
+
+---
+
+## MAIL 002 AND 003, ANSWERED 2026-08-19
+
+**002 — my best-of-N correction was itself wrong, and my diagnosis was worse.**
+`coordinator` did the arithmetic exactly; I reproduced it before accepting it.
+**The exact figures are 1 in 4,893 and 34 in 100.** The plan said 1 in 10,000
+and 37; I said 1 in 2,289 and 58. **Everyone was wrong once.**
+
+The error is the **denominator**, not the fee: buying at 50c takes **52c** out
+of the account, so +30% needs **68** wins of 100 rather than 67, and one win
+halves the answer. Verified at 1, 5, 20 and 100 contracts per order.
+
+⚠ **And the part that matters more than the number.** I wrote that the plan's
+figure *"can only be reproduced by charging the fee twice"*, because doing so
+gives 1 in 10,920 — close enough to be convincing. **It is not what happened**;
+theirs was a Monte Carlo estimate off two hits in 20,000 runs. **I found *a* way
+to reproduce a number and asserted it was *the* way**, which is this repo's
+recorded failure mode wearing the costume of a verification. `bestofn.py` now
+prints the **hit count** beside every simulated tail and says out loud when it
+is too small to trust — their fix, not mine. Corrected inline in `LEDGER.md`
+F002 (PARTLY RETRACTED banner), `DECISIONS.md` D6, `STATUS.md` and `BRIEF.md`.
+
+**What survives is better than either wrong version:** the user's own claim is
+**right at the true number**. One strategy picked in advance showing +30% over
+100 bets is about 1 in 4,893 — genuinely not luck. The danger is entirely in
+the picking.
+
+**003 — his domain knowledge, and it does not point where this repo works.**
+Soccer most of all (*"everything Europe related, I know"*), tennis's format but
+not its players, Valorant as his only esport, and baseball *"literally close to
+nothing"* — which is where the live money is.
+
+- **`KXUCLGAME`, `KXEPLGAME`, `KXVALORANTGAME` pinned to the full-depth tier**,
+  each with its reason written beside it in `tiers.py`. Confirmed on tape within
+  one cycle: 21, 25 and 25 ladders. Pins are taken **before** the category
+  quota, so they displace score-filled families and can never displace a
+  category's guaranteed share — and `reports/TIERS.md` says which three went.
+- **Not duplication of `bot-hunt`.** Its EU recorder stores `depth5_*`, a
+  *summary*; tier A stores the whole ladder level by level, which is exactly
+  what `soccer/CLOSED.md` item 2 was blocked on.
+- **`SF018` + `PREREGISTRATION_HOLDON.md`** — the one live descendant of the
+  closed soccer work, pre-registered **before** any 2026/27 European price
+  exists, with the selection effect named in section 0 and the fee (nine times
+  bigger at this end of the book) named as its likeliest killer.
+- **`QUESTIONS_FOR_HIM.md`** — six specific questions, batched.
+- **Nothing was narrowed onto soccer.** Soccer went from 1 spec to 2 of 18; the
+  depth tier went from 55 families to 55. The pins displaced, they did not
+  expand.
 
 ---
 
