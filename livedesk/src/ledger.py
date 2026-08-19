@@ -381,9 +381,74 @@ class Ledger:
         return round(sum(e.pnl_usd for e in self.entries
                          if e.status in ("won", "lost")), 2)
 
+    # Statuses that mean "this bet of ours may still have money on it".
+    # `void`/`expired` never had money; `won`/`lost` are finished.
+    LIVE_STATUSES = ("open", "awaiting-settlement")
+
     def at_risk_usd(self) -> float:
-        return round(sum(e.cost_usd for e in self.entries
-                         if e.status == "open"), 2)
+        """What is really riding, TAKEN FROM HIS ACCOUNT.
+
+        ⚠ THIS USED TO SUM THE LEDGER'S OWN `open` ROWS AND IT FED THE STOP.
+        `worst_case_total_usd()` subtracts this, so an inflated figure walks the
+        tool toward its own cut-off. On 2026-08-19 the ledger carried $35.69 of
+        positions against $12.34 actually held -- $23 of phantoms -- which put
+        the tool $19 "under" a floor it was really $4 above. That is the same
+        shape as the stop that fired on 2026-08-17 and cost a whole window: a
+        cut-off tripped by bookkeeping rather than by losses.
+        
+        It has since drifted the OTHER way -- positions he holds marked as no
+        longer open -- which is the same defect with the sign flipped.
+
+        So the account decides. For each of our live entries, the money at risk
+        is what Kalshi says that position costs. **A row the account does not
+        report contributes ZERO** -- it is a phantom, whatever the ledger
+        thinks. **A position the account holds that we have no entry for
+        contributes zero too** -- that one is HIS (mailbox 016).
+
+        Falls back to the ledger's own figure only when the account has never
+        been read, and `at_risk_source()` says which is in use so the screen can
+        tell him.
+        """
+        if self.account_positions is None:
+            return round(sum(e.cost_usd for e in self.entries
+                             if e.status in self.LIVE_STATUSES), 2)
+        held = {}
+        for r in (self.account_positions or []):
+            t = str(r.get("ticker") or "")
+            if t:
+                held[t] = held.get(t, 0.0) + abs(
+                    _size(r.get("market_exposure_dollars")))
+        total = 0.0
+        for e in self.entries:
+            if e.status not in self.LIVE_STATUSES:
+                continue
+            total += held.get(e.ticker, 0.0)      # phantom -> 0
+        return round(total, 2)
+
+    def at_risk_source(self) -> str:
+        return ("your account" if self.account_positions is not None
+                else "this tool's own record (your account has not been read)")
+
+    def at_risk_line(self) -> str:
+        """On screen, so a gap is visible to him instead of him finding it.
+
+        He has found four separate money errors by reading Kalshi himself. That
+        is the tool's job.
+        """
+        mine = self.at_risk_usd()
+        if self.account_positions is None:
+            return f"riding: ${mine:.2f} (from {self.at_risk_source()})"
+        ours = {e.ticker for e in self.entries
+                if e.status in self.LIVE_STATUSES}
+        his = 0.0
+        for r in (self.account_positions or []):
+            if str(r.get("ticker") or "") not in ours:
+                his += abs(_size(r.get("market_exposure_dollars")))
+        bits = [f"riding ${mine:.2f} — from {self.at_risk_source()}"]
+        if his > 0.005:
+            bits.append(f"plus ${his:.2f} of YOUR OWN bets, not this bot's "
+                        f"and not counted")
+        return "  ·  ".join(bits)
 
     def running_total_usd(self) -> float:
         """The bot's own running total: what the account would be if it had
@@ -647,6 +712,20 @@ class Ledger:
         # **Only an entry that is already OPEN is ever touched.** A position
         # with no open entry is his: never adopted, never voided, never
         # counted, and shown separately as his own.
+
+        # A bet we parked as awaiting-settlement that the account still HOLDS
+        # is simply open. This is not the ticker-restore loop that adopted his
+        # bet -- it never touches `void` or `expired`, only an entry we already
+        # own that we had written off too early.
+        for e in self.entries:
+            if e.status != "awaiting-settlement" or e is ignore:
+                continue
+            r = by_ticker.get(e.ticker)
+            if r is not None and abs(_size(r.get("position_fp"))) > 0:
+                e.status = "open"
+                e.note = (f"{e.note} | still open — your account holds it"
+                          ).strip(" |")
+                said.append(f"{e.team}: still open, your account holds it")
 
         for e in self.entries:
             if e.status != "open" or e is ignore:

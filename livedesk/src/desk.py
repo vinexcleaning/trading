@@ -391,6 +391,7 @@ class Desk(tk.Tk):
         self.room_lbl.configure(
             text="  " + self.ledger.room_line()
                  + "\n  " + self.ledger.daily_line()
+                 + chr(10) + "  " + self.ledger.at_risk_line()
                  + chr(10) + "  " + self.ledger.two_window_line())
 
         avail = self._available()

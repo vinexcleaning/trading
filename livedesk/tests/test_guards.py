@@ -212,7 +212,16 @@ def test_guard2_counts_money_still_riding_on_open_games(led):
         led.entries.append(_entry(game_key=f"g{i}", ticker=f"T{i}",
                                   signal=f"s{i}", status="open"))
     led.save()
+    # ⚠ CHANGED 2026-08-19: what is riding now comes from the ACCOUNT, not
+    # from the ledger's own rows -- the ledger was carrying $23 of positions he
+    # did not hold and that walks the tool toward its own cut-off. So the
+    # account has to show these nine for them to count, which is the point.
+    led.account_positions = [
+        {"ticker": f"T{i}", "position_fp": "7.00",
+         "market_exposure_dollars": "3.77", "fees_paid_dollars": "0.00",
+         "realized_pnl_dollars": "0.00"} for i in range(9)]
     assert led.realised_usd() == 0.0
+    assert led.at_risk_usd() == pytest.approx(33.93, abs=0.01)
     assert led.worst_case_total_usd() == pytest.approx(49.07, abs=0.01)
     assert led.worst_case_total_usd() < led.trailing_stop_usd()
     assert led.stopped()[0] is True
