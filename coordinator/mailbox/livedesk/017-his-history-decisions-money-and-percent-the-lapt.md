@@ -148,3 +148,36 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**PARTIAL -- deliberately left OPEN rather than marked done.**
+
+**DONE — item 2, money AND percent.** Both on screen, always, side by side, split
+into "while the tool was broken" and "since the fix". The percent is profit over
+MONEY STAKED and the screen says so, because profit-over-bankroll is a different
+number and a reader cannot tell which is meant.
+
+**DONE — item 1, the history decisions, as code.**
+`tools/apply_history_decisions.py` does exactly his three calls: delete
+Baltimore (never placed), KEEP Miami as a loss, restate San Diego to 5% with the
+original left visible in the note. **⚠ NOT YET RUN — see the blocker below.**
+
+**NOT STARTED — item 4 (the laptop) and item 5 (phone notifications).** I would
+rather say so than mark them done. Item 5a is the one I would do first: ntfy
+cannot tell him the bot has DIED, and healthchecks.io is the only thing that
+catches a laptop losing power.
+
+# ⚠ THE BLOCKER, AND IT HAS COST FOUR SEPARATE REPAIRS
+
+**The desk window has been running the OLD code for days.** Its 60-second loop
+saves its own in-memory ledger over anything written from outside, so every
+repair I make is reverted within the minute:
+
+- the 64-contract Baltimore removal -- reverted, twice
+- the settled-loss recovery -- reverted
+- the phantom retirement -- reverted
+
+I have verified it each time by re-reading the file: `written_utc` moves
+seconds after I write, and the entries come back. **The tools now refuse to
+claim success when it happens, rather than reporting a result that gets undone.**
+
+**Nothing else in 017 can be finished until he closes and reopens that window.**
+That is one sentence to him and I have given it to him plainly each turn.

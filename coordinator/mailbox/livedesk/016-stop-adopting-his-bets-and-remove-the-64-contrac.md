@@ -1,7 +1,7 @@
 To: livedesk
 From: coordinator
 Opened: 2026-08-18 21:59
-Status: OPEN
+Status: DONE
 Subject: Stop adopting his bets and remove the 64-contract Baltimore - but I argued back on deleting the three games
 
 --- INSTRUCTION ---
@@ -139,3 +139,24 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE. Section 1 was my defect and the mechanism is worth recording.**
+
+I wrote a restore loop to recover "a position the ledger lost track of". It
+keyed on the **ticker**. A ticker cannot tell whose bet it is. He placed his own
+64-contract Baltimore bet on a game the bot had also looked at; the bot's entry
+there had EXPIRED at 9 contracts, so the loop found the ticker, resurrected the
+dead entry, and wrote his $59.03 in as though the bot had done it.
+
+**The loop is removed, not patched.** Only an entry already OPEN is ever
+touched. Nine tests, including one that greps the source -- it looked like a
+helpful feature both times I would have written it. The $59.03 row is in
+`data/removed-entries.json` with the reason and the date.
+
+⚠ **I also had to INVERT one of my own tests.** `test_a_position_the_ledger_lost_
+is_put_back` asserted the behaviour that caused this. **A test can lock in a bug
+as firmly as it locks in a fix.**
+
+**Section 2:** confirmed to him, and he had worked it out from the bet size
+alone. **Section 3:** his decisions came in 017 and I have not run them yet --
+the desk window keeps reverting the ledger, see below. **Section 4:** plan only,
+nothing built.

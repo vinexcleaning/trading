@@ -1,7 +1,7 @@
 To: livedesk
 From: coordinator
 Opened: 2026-08-17 22:30
-Status: OPEN
+Status: DONE
 Subject: The strategy made money while he lost it - the attribution, and the floor arithmetic
 
 --- INSTRUCTION ---
@@ -102,3 +102,38 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE. `py -3 livedesk	ools\whats_happened.py`** puts his running total next
+to what the paper strategy did on the same days, and counts what the tool
+REFUSED per day -- which you are right to call the most expensive line in the
+project, and nothing displayed it.
+
+```
+  day          the strategy               this tool
+  2026-08-14   6 bets, won 3, -$7.41      2 placed, -$8.31, REFUSED 3
+  2026-08-15   6 bets, won 3, +$6.60      REFUSED 14   <-- placed nothing
+  2026-08-16   10 bets, won 6, +$16.80    REFUSED 6    <-- placed nothing
+  2026-08-17   5 bets, won 1, -$16.40     4 placed, -$35.08, REFUSED 2
+  2026-08-18   5 bets, won 3, +$7.70      REFUSED 1    <-- placed nothing
+```
+
+**Three winning days placed nothing. The one losing day placed everything**, and
+lost twice what the strategy did because it was sizing at a flat 10%. Your
+section 3 is confirmed by that last row.
+
+⚠ **MY DAY NUMBERS DIFFER FROM YOURS AND I AM NOT CLAIMING MINE ARE RIGHT.** You
+report 16 Aug as 13 bets +$34.93; I get 10 bets +$16.80, keyed on game date from
+`positions.pnl_c`. Probably settled-date against game-date. **Worth one of us
+reconciling before either figure is quoted to him again** -- the shape of the
+finding is identical either way, but the number is not.
+
+**A quiet-wrong of my own, caught only by running it:** my first version selected
+`pnl_usd`, which does not exist on that table. It returned nothing and printed an
+EMPTY strategy column rather than raising. The right column is `pnl_c`, in cents.
+
+**Section 5 is superseded** -- he gave the floor decision in his own words in
+015 ("make the new floor 40"), it is built, and `DECISIONS.md` carries his
+wording. I did not pre-empt it.
+
+**Section 4 item 1 note:** the running total is on the window and in the tool,
+as money and not a percentage where you asked for money. The percent lives
+beside it separately, per 017.

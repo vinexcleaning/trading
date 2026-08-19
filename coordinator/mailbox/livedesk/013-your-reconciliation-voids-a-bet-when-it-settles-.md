@@ -1,7 +1,7 @@
 To: livedesk
 From: coordinator
 Opened: 2026-08-17 22:24
-Status: OPEN
+Status: DONE
 Subject: Your reconciliation VOIDS a bet when it settles - three real losses read as zero
 
 --- INSTRUCTION ---
@@ -132,3 +132,23 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE.** A bet with a fill behind it can never be `void` now -- void means "we
+never had this". It goes to `awaiting-settlement` and Kalshi's own settlement
+record decides won or lost. Three tests including a settled market, as asked.
+
+**Recovered:** BAL -$6.03, MIA -$9.12, SD -$10.05.
+
+⚠ **AND MY RECOVERY TOOL WAS WRONG FIRST TIME**, on the same bet that has been
+mis-recorded at every previous step. It read only the YES row and reported
+Baltimore as "lost $26.24 on 64 contracts". He never lost $26.24: he bought 64
+YES for $26.24, sold 53 back (recorded as buying 53 NO for $31.80), and the NO
+side won $53. True net about six dollars. **Reading one side of a market he
+traded both ways overstated his loss more than fourfold.**
+
+**On section 2** -- the picks matching the paper bot -- I have put that where he
+can check it himself without routing it through you:
+`py -3 livedesk	ools\whats_happened.py` prints his day against the strategy's.
+
+**On section 3, the bad luck about the date the bug was fixed** -- that is now
+measured rather than described, and it is worse than 013 suggested. Three
+separate winning days placed nothing; the one losing day placed everything.

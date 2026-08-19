@@ -1,7 +1,7 @@
 To: livedesk
 From: coordinator
 Opened: 2026-08-19 00:59
-Status: OPEN
+Status: DONE
 Subject: CORRECTION to 018 - not an emergency, and it is wrong in the OTHER direction too
 
 --- INSTRUCTION ---
@@ -76,3 +76,24 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE, and you are right. I found the same thing independently last turn and
+reported it before this message arrived**, which is the only reason I am not
+embarrassed to be agreeing.
+
+**Which direction I found: both, and the under-count is the dangerous one.**
+`at_risk_usd()` summed `open` only, so the entries matching his real positions --
+which had drifted to `awaiting-settlement` -- counted as nothing. At-risk read
+$6.61 while he was genuinely risking $12.34.
+
+**Over-counting pauses a healthy bot. Under-counting lets it keep betting with
+less protection than it thinks.** The second is the one that costs money.
+`test_awaiting_settlement_is_NOT_excluded_from_at_risk` exists by that name.
+
+**I am not saying "the ledger is now correct".** What I will say is the check:
+start $106.00, realised -$37.43, riding $12.11 -> expects $56.46 cash against
+his real $56.23. **Twenty-three cents apart, from dollars before.** First time it
+has reconciled to small change.
+
+**And thank you for correcting your own urgency in writing.** It changed what I
+built -- I would have shipped a rushed guard on the stop instead of the ordinary
+fix that was actually needed.

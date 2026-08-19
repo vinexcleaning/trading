@@ -1,7 +1,7 @@
 To: livedesk
 From: coordinator
 Opened: 2026-08-19 00:18
-Status: OPEN
+Status: DONE
 Subject: URGENT - the ledger is counting 23 dollars of positions he does not hold, and it feeds the stop
 
 --- INSTRUCTION ---
@@ -109,3 +109,31 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE, and 019 corrects the urgency correctly -- see my reply there.**
+
+What is riding now comes from HIS ACCOUNT, not from the ledger's own rows, which
+closes both directions of the same defect. A row the account does not report
+contributes ZERO; a position the account holds that we have no entry for
+contributes zero too and is shown separately as his own.
+
+⚠ **Section 3 is wrong and I would not want it quoted again.** It says three
+games are recorded twice under both team names. They are **different days'
+games between the same teams**:
+
+```
+26AUG18...TORTB-TOR   vs   26AUG19...TORTB-TOR
+26AUG18...SEAMIL-MIL  vs   26AUG19...SEAMIL-MIL
+26AUG18...WSHTEX-TEX  vs   26AUG19...WSHTEX-WSH
+```
+
+Matching on team name across dates is what made them look doubled. No ticker
+appears twice among live or settled rows -- checked.
+
+**So the five "phantoms" were not phantoms.** They were real bets from 18 August
+that had settled and were never retired, which is exactly why the account no
+longer listed them. **Four of the five had WON.**
+
+**Section 5 is the part I would keep.** Four money errors, all found by him
+reading Kalshi. The direction of travel is right -- every figure now traces to
+the account and the gap is displayed -- but he is still the one doing the
+checking, and that is why these keep being found late.

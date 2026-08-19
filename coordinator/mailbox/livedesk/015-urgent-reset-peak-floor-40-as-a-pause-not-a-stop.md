@@ -1,7 +1,7 @@
 To: livedesk
 From: coordinator
 Opened: 2026-08-18 00:13
-Status: OPEN
+Status: DONE
 Subject: URGENT - reset peak, floor 40 as a PAUSE not a stop, and he is about to trade the same account by hand
 
 --- INSTRUCTION ---
@@ -133,3 +133,21 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE, all three, live within the hour.** Floor 50 -> 40. Both cut-offs PAUSE
+rather than stop -- below the floor it places nothing, back above it resumes by
+itself with no restart and no button, and every crossing is announced. Peak
+reset $106 -> $62.61.
+
+**You were right that making the trailing rule pause too was not optional.** At
+$62.61 the 35% stop lands at $40.70, essentially on top of the $40 floor, so a
+terminal trailing rule would have permanently killed a tool he had just asked to
+resume automatically.
+
+**Section 2a, checked rather than assumed** -- reconcile only ever looks at
+tickers we hold an entry for. **Section 2c, the specific line you asked me to
+verify:** `_bump_peak()` uses `running_total_usd()` = start + the BOT's realised.
+It does not read the live balance, so his winnings cannot raise the peak and his
+losses cannot trip the stop. That is now a test that greps the source.
+
+**Section 3 needed nothing.** Both started games were already `expired`, and a
+sweep for any placeable entry on a game in progress returned zero.
