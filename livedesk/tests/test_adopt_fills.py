@@ -196,27 +196,27 @@ def test_a_clean_position_DOES_include_its_fee(led):
     assert e.cost_usd == pytest.approx(9.12, abs=0.01)
 
 
-def test_a_position_the_ledger_lost_is_put_back(led):
-    """⚠ HIS 11 BALTIMORE CONTRACTS, LOST THREE TIMES.
+def test_a_position_the_ledger_lost_is_NOT_put_back(led):
+    """⚠ THIS TEST ASSERTED THE OPPOSITE AND THE OPPOSITE WAS WRONG.
 
-    Real money, from this tool, carried nowhere -- so every stake and every
-    balance was computed around a hole. I repaired it from a command line three
-    times and the running window's 60-second save wrote its own copy back over
-    the top, every time.
+    It was written for a restore loop that recovered "a position the ledger
+    lost track of" by matching the TICKER. **A ticker cannot tell whose bet it
+    is.** He placed his own 64-contract Baltimore bet on a game the bot had
+    also looked at; the bot's entry there had expired at 9 contracts, so the
+    loop restored it and resized it to his $59.03 -- ten times the bot's own
+    sizing rule, straight into the record.
 
-    The repair has to live INSIDE the loop that saves, or it loses the race by
-    design."""
+    A position the ledger is not carrying is HIS. The loop is gone and this
+    test now guards its absence.
+    """
     e = _open(led, "BAL", 11, 42, 4.78, 0.19)
     e.status = "void"
-    e.note = "gone from your account"
     led.save()
-    row = _row("BAL", 11, 4.51, 0.9872)
+    row = _row("BAL", 64, 26.24, 0.9872)
     row["realized_pnl_dollars"] = "-0.530000"
-    said = led.adopt_fills([row])
-    assert e.status == "open", "the account holds it and it was not restored"
+    assert led.adopt_fills([row]) == []
+    assert e.status == "void", "his own bet resurrected a dead entry"
     assert e.contracts == 11
-    assert any("lost track" in s for s in said)
-    assert "RESTORED" in e.note
 
 
 def test_a_position_that_was_never_ours_is_left_alone(led):

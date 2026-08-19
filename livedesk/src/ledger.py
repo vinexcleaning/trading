@@ -611,40 +611,28 @@ class Ledger:
                 by_ticker[t] = r
         said = []
 
-        # ⚠ FIRST: a position his account holds that NO open entry carries.
+        # ⚠ THIS IS WHERE A RESTORE LOOP USED TO BE, AND REMOVING IT IS THE
+        # POINT. Do not put it back.
         #
-        # This kept happening and I kept repairing it from a command line while
-        # the window was running -- and the window's 60-second save wrote its
-        # own copy back over the top, every time. Three restores, three
-        # silent reversions. The repair has to live INSIDE the loop that saves,
-        # or it loses the race by design.
+        # It existed to recover a position the ledger had lost track of, and it
+        # keyed on the TICKER: if the account held a market and any old entry
+        # mentioned it, the entry was restored and then resized from the
+        # account.
         #
-        # His 11 Baltimore contracts were real, were from this tool, and were
-        # carried nowhere: every stake and every balance was computed around a
-        # hole.
-        covered = {e.ticker for e in self.entries
-                   if e.status == "open" and e is not ignore}
-        for ticker, r in by_ticker.items():
-            if ticker in covered:
-                continue
-            if abs(_size(r.get("position_fp"))) <= 0:
-                continue
-            back = None
-            for e in reversed(self.entries):
-                if e.ticker == ticker and e.status in ("void", "deferred",
-                                                       "expired"):
-                    back = e
-                    break
-            if back is None:
-                continue          # never ours; his own trade, leave it alone
-            was = back.status
-            back.status = "open"
-            covered.add(ticker)
-            back.note = (f"{back.note} | RESTORED from {was}: your account "
-                         f"holds this and nothing was tracking it").strip(" |")
-            said.append(
-                f"{back.team}: your account holds this bet and the tool had "
-                f"lost track of it — put back")
+        # **A ticker cannot tell whose bet it is.** On 2026-08-17 he placed his
+        # OWN 64-contract Baltimore bet on a game the bot had also looked at.
+        # The bot's own entry there had EXPIRED at 9 contracts -- so the loop
+        # found a matching ticker, restored the dead entry, and resized it to
+        # his 64 contracts and $59.03. Ten times the bot's own sizing rule
+        # walked into the record as if the bot had done it.
+        #
+        # That corrupts the evidence rather than the display, which makes it
+        # worse than a wrong number on screen. He trades this account by hand
+        # and always will.
+        #
+        # **Only an entry that is already OPEN is ever touched.** A position
+        # with no open entry is his: never adopted, never voided, never
+        # counted, and shown separately as his own.
 
         for e in self.entries:
             if e.status != "open" or e is ignore:
