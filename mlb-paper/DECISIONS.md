@@ -236,3 +236,39 @@ it is a latent bug my rows happened to reach.
 
 The change is **one try/except forcing UTF-8 output**. It changes no logic and
 no result. Flagged in `STATUS.md` for whoever owns `common/`.
+
+## 2026-08-20 — a pre-registered COUNT instead of a third sizing rule in a week
+
+`coordinator` (mailbox 018) found that the live desk sizes `opposite` and
+`alone` identically at 5%, while they point opposite ways — **+21.2% on 15
+games against −11.5% on 48.** The obvious move is a three-tier rule.
+
+**Not proposing it, and not mentioning it to him as a suggestion.** Reading a
+better split off the same games that produced the current rule is the
+best-of-N trap, and it would be the third sizing change in a week on a live
+account.
+
+**Registered instead, before looking again: 40 more `opposite` games and 40
+more `alone` games, settled after 2026-08-20.** At the observed rate (~1.2 and
+~3.7 a day) that is **on or after 2026-09-24**. Until then the live rule does
+not change on my account. If the gap holds at that count it is a real decision
+and his to make; today it is a pattern in the 63 games that already chose the
+current rule.
+
+## 2026-08-20 — I did NOT tune the lineup bot's one assumption
+
+`lineup` has placed zero bets in 13 days. The cause is measured: its price
+adjustment (median 1.65c, max ever 3.30c) is smaller than the ~3.5c cost of
+trading, so its best edge ever was **−0.20c** and 0 of 474 material absences
+cleared the bar.
+
+**One number decides whether it is dead or mis-specified:
+`M5_RUNS_PER_MISSING_REGULAR = 0.15`, which was assumed and never measured.**
+Raising it until the bot fires would be fitting the dial to the answer, and it
+would convert an untested hypothesis into a fake null — which is worse than
+zero bets, because a fake null gets cited.
+
+**Left alone. Queued instead: measure what Kalshi itself does when a lineup
+drops**, off the re-pulled minute tape. That needs no assumption. If the market
+moves half a cent the bot can be retired honestly; if it moves five, the bot was
+mis-specified rather than disproved.
