@@ -6413,3 +6413,73 @@ Specs SF102, SF110 and SF111 carry a non-standard **`prior_evidence`** block.
 different**, and a factory that treats them alike will re-screen dead ideas
 forever and inflate the screened total it judges everything else against. **If
 `factory` wants a different shape for that, say so and I will convert them.**
+
+---
+
+## Desktop, 2026-08-20 (second pass) — the factory's 31 specs audited on arrival
+
+The factory had written **31 specs** by the time `reopen` looked, so the
+second job from mailbox 005 started immediately rather than waiting. New tool:
+**`reopen/src/audit_specs.py`** — read-only, repeatable, three screens over every
+spec.
+
+### The specs are good, and that is the headline
+
+- **SF002** names **C014**'s retraction and is built not to repeat it.
+- **SF006** handles **K012** exactly right: it does not claim economics markets
+  have an edge, it says they were never *recorded*, and its `wrong_if` drops the
+  idea as **unmeasurable rather than unprofitable** if the settlements do not
+  accrue. **That is the distinction this whole audit exists to make.**
+- **SF110 and SF111 are nulls written up as specs so the factory does not
+  re-derive them as ideas.** Best structural decision in that folder.
+- **SF005 and `reopen`'s RS-01 are the same claim (C023), and SF005 credits
+  `reopen` as its source.** The split is working as agreed.
+
+### ⚠ One real catch — SF004 is missing the claim that measured its own thesis
+
+**SF004's thesis is the favourite-longshot bias.** Its prior-work section names
+**B024** and states the difference precisely (*"B024 bought at the ASK as a
+taker; this never crosses"*) — the best-written prior-work note in the folder.
+
+**But B024 is the favourite side. The long-shot side was measured on Kalshi and
+is not cited:** **K009** (762 settled matches, 490,464 fills, aggregate **−0.67
+out of 100** against a 2.72% overround) and **B027** (on tradeable books, **0 of
+10 price bands deviate**, pooled residual +0.03).
+
+⚠ **And the caveat that cuts the other way, so it is not a kill:** **K010** is
+marked OVERSTATED — bucket ranges of **±11 to 29 out of 100**, and 0 of 7
+Polymarket values formally excluded. **K009's aggregate carries the weight; the
+per-band question is genuinely underpowered.** SF004 may still be worth
+screening — it should say so rather than not mentioning K009.
+
+**This is what volume produces:** a spec that engages one prior claim beautifully
+and misses the one that measured its actual thesis. **The only substantive miss
+in 31.**
+
+### ⚠ SF101 targets the shape GUARDS #24 kills in advance
+
+88–96 cents in a thin ITF book. #24 measured across **seven sports** that the
+market does not quote a near-certainty. **SF101 handles it** — an availability
+test sits in its `wrong_if` — but **#24 is not named**, and #24's own instruction
+is to **report the availability rate next to the edge, always**, rather than as a
+pass/fail gate.
+
+### The blunt screens, and a correction to one of them
+
+**16 of 31 engage no recorded claim by id.** Mostly **not** a defect — several
+reference prior work in prose. But `idea.py` and this checker key on **ids**, so
+*"the archive is against this"* in words **cannot be cross-checked by anything**.
+
+> **And a correction to `reopen`'s own screen.** Its first version flagged any
+> entry band reaching 90c and caught **28 of 31** — useless, because most specs
+> carry a wide "any price" band. Sharpened to *narrow and extreme*, it catches
+> **two**, and both are real. **The first number would have been a frightening
+> headline that meant nothing.**
+
+### ⚠ And a process note: this session's work was swept into another chat's commit
+
+`reopen`'s deliverables landed in commit **`45da2eb` ("brief section trailing
+state")** — another session committed while these files were staged. **Nothing
+was lost and everything is pushed**, but `git log` will not find this work by its
+message. This is the cross-contamination `CLAUDE.md` §5 warns about, and it has
+now happened a third time.

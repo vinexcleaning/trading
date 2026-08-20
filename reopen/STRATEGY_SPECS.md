@@ -425,3 +425,44 @@ the same family it carries a different mechanism, or it cites the `RS-` id.
 audits claims on arrival — each against the guards, against the 612 recorded
 claims, and against the dud list above. **Volume is exactly when a bad premise
 slips through.**
+
+---
+
+# 2026-08-20 — the second job started immediately: 31 factory specs audited
+
+The factory had already written **31 specs**, so the audit-on-arrival job was not
+waiting after all. New tool: **`src/audit_specs.py`**, read-only and repeatable.
+
+**The specs are good.** SF002 names C014's retraction and is built not to repeat
+it. **SF006 handles K012 exactly right** — it does not claim economics markets
+have an edge, it says they were never recorded, and it drops the idea as
+**unmeasurable rather than unprofitable** if the settlements do not accrue.
+SF110 and SF111 are nulls written up as specs **so the factory does not
+re-derive them as ideas**, which is the best structural decision in that folder.
+**SF005 and RS-01 are the same claim and SF005 credits `reopen`** — the split
+works.
+
+## The one substantive catch
+
+**SF004's thesis is the favourite-longshot bias.** It cites **B024** and states
+the difference precisely — *"B024 bought at the ASK as a taker; this never
+crosses"* — which is the best prior-work note in the folder.
+
+**B024 is the favourite side. The long-shot side was measured on Kalshi and is
+not cited:** **K009** (762 settled matches, aggregate **−0.67 out of 100**
+against a 2.72% overround) and **B027** (tradeable books, **0 of 10 bands
+deviate**).
+
+⚠ **The caveat that stops this being a kill:** **K010** is marked OVERSTATED —
+bucket ranges **±11 to 29 out of 100**. K009's *aggregate* carries the weight;
+the *per-band* question is underpowered. **SF004 may still deserve screening; it
+should say so rather than omit K009.**
+
+## And a correction to this chat's own screen
+
+The first version of `audit_specs.py` flagged **any** entry band reaching 90c and
+caught **28 of 31** — useless, because most specs carry a wide "any price" band.
+**Sharpened to narrow-and-extreme it catches two, and both are real** (SF004 at
+3–15c, SF101 at 88–96c). **The first number would have been a frightening
+headline that meant nothing**, and it is the same mistake as reading the set-1
+grid's interval column without checking what it measured.
