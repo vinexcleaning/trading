@@ -1117,6 +1117,68 @@ class Ledger:
                 f"${self.at_risk_usd():.2f} riding on {n_open}  ·  "
                 f"account {self._account_str()}")
 
+    def day_summary(self, day=None) -> dict:
+        """The four things he asked to be told each day, in HIS day not UTC's.
+
+        His list, verbatim: how many bets went on, how much he is up or down,
+        the same thing as a percentage, and how many are still running.
+
+        ⚠ THE PERCENTAGE IS PROFIT OVER MONEY STAKED TODAY, not over his
+        bankroll, and every place it is printed says so. Those are different
+        numbers and a reader cannot tell which is meant -- the same confusion
+        that had a 10% stake showing as "10% of your balance" on a card sized
+        at 5%.
+
+        **`placed` counts bets PLACED today. `money` counts bets that SETTLED
+        today.** They are deliberately different questions and a bet placed
+        this evening is in the first and not the second. Anything else would
+        report a day as flat because its games have not finished yet.
+
+        Never raises. A summary that fails to send because one row has a bad
+        date is worse than a summary with a gap in it -- silence is the thing
+        this is built to prevent, so an unreadable row is REPORTED rather than
+        thrown, in `unreadable`.
+        """
+        day = day or datetime.now().astimezone().date()
+        placed = money = staked = 0
+        placed, won, lost = 0, 0, 0
+        money = staked = 0.0
+        unreadable = 0
+        for e in self.entries:
+            # ⚠ `_parse` RAISES on a malformed string, it does not return None.
+            # The first version of this trusted the None and blew up on a bad
+            # date -- caught by the test that exists precisely because a
+            # summary that fails to send is the thing this is built to
+            # prevent. Silence must never be the failure mode here.
+            try:
+                when = _parse(e.confirmed_utc)
+            except Exception:
+                when = None
+            if when is None:
+                if e.counts_as_money:
+                    unreadable += 1
+                continue
+            if e.counts_as_money and when.astimezone().date() == day:
+                placed += 1
+            if e.status in ("won", "lost"):
+                try:
+                    done = _parse(e.settled_utc) or when
+                except Exception:
+                    done = when
+                if done.astimezone().date() != day:
+                    continue
+                money += e.pnl_usd
+                staked += e.cost_usd
+                won += e.status == "won"
+                lost += e.status == "lost"
+        pct = (100.0 * money / staked) if staked > 0 else 0.0
+        return {"day": day, "placed": placed, "won": won, "lost": lost,
+                "money": round(money, 2), "pct": round(pct, 1),
+                "staked": round(staked, 2),
+                "running": len(self.live_entries()),
+                "at_risk": round(self.at_risk_usd(), 2),
+                "unreadable": unreadable}
+
     def _account_str(self) -> str:
         if self.account_balance_usd is None:
             return "not typed in"

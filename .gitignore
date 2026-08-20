@@ -185,3 +185,6 @@ keys/
 
 # livedesk local credentials, never committed (repo is PUBLIC)
 kalshi_env.bat
+
+# pytest --basetemp, per-run scratch
+.pytest_tmp/

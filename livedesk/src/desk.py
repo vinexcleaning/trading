@@ -52,6 +52,8 @@ import demo_exec as DEMO                                 # noqa: E402
 import killswitch                                        # noqa: E402
 import picks as PICKS                                    # noqa: E402
 import prices as PRICES                                  # noqa: E402
+import onemachine                                         # noqa: E402
+from alerts import DeskAlerts                             # noqa: E402
 from ledger import (ACCOUNT_FLOOR_USD, Entry, Ledger,    # noqa: E402
                     TRAILING_DROP_FRAC)
 from money import (AGREED_EVIDENCE_GAMES, BANKROLL_START,   # noqa: E402
@@ -132,6 +134,11 @@ class Desk(tk.Tk):
         # braces against the status handler: see the retry loop for why one
         # lock was not enough.
         self._auto_submitted_ids: set = set()
+        # Phone alerts. Reads the ledger and sends text; it can do nothing
+        # else, and if every line of it failed the desk would trade exactly as
+        # it does now.
+        self.alerts = DeskAlerts()
+        self._cycles = 0
 
         self._build_ui()
         self._render()
@@ -377,9 +384,17 @@ class Desk(tk.Tk):
                                                  "  YOU PLACE THE BET  "))
         self.total_lbl.configure(text=self.ledger.summary_line())
         self.rules_lbl.configure(
-            text=(f"${self._stake():.2f} a bet ({STAKE_PCT:.0f}% of your "
-                  f"${self.ledger.account_balance_usd or 0:.2f})  ·  one bet "
-                  f"per signal, two per game, never twice on one market"))
+            # ⚠ THIS USED TO READ "(10% of your $X)" WHILE THE CARD BELOW IT
+            # WAS SIZED AT 5%. The stake became tiered and the label did not
+            # follow, so the header stated a rule the tool was not using -- he
+            # would have read "10%" and seen $5 and had no way to tell which
+            # was broken. The label now states the RULE, not one number.
+            text=(f"${self._stake():.2f} on this one  ·  "
+                  f"{STAKE_PCT_AGREED:.0f}% of your "
+                  f"${self.ledger.account_balance_usd or 0:.2f} when both "
+                  f"approaches agree, {STAKE_PCT_OTHER:.0f}% otherwise  ·  "
+                  f"one bet per signal, two per game, never twice on one "
+                  f"market"))
         self.beat_lbl.configure(
             text=f"last checked {self.last_check}  (#{self.check_count})")
 
@@ -973,6 +988,22 @@ class Desk(tk.Tk):
         # ledger against his WHOLE balance, which could never agree because he
         # trades manually, so every signal deferred and 11 bets expired
         # unplaced. It now checks that OUR OWN bets are in his account.
+        # Keep both "this desk is alive" claims fresh: the local lock file and
+        # the ntfy claim the other machine reads. Neither can raise -- a failed
+        # claim must never be able to stop a bet being checked.
+        onemachine.heartbeat(lock_path=onemachine.LOCK_PATH)
+        self._cycles = getattr(self, "_cycles", 0) + 1
+        if self._cycles % 10 == 0:
+            who, _checked = onemachine.remote_holder()
+            if who:
+                # Do not kill the window -- he may have a position open on it.
+                # Stop it BETTING, say so loudly, and let him decide.
+                self.events.put(("autooff", who))
+
+        did = self.alerts.tick(self.ledger)
+        if did:
+            self.events.put(("log", did))
+
         ok, said = DEMO.read_account(self.ledger)
         if ok != self._account_read_ok:
             self._account_read_ok = ok
@@ -1098,7 +1129,36 @@ class Desk(tk.Tk):
         try:
             while True:
                 kind, *rest = self.events.get_nowait()
-                if kind == "log":
+                if kind == "alert":
+                    # ⚠ THIS BRANCH DID NOT EXIST AND THE MESSAGES WERE BEING
+                    # DROPPED ON THE FLOOR. The background thread has been
+                    # queueing ("alert", ...) since the corrections work went
+                    # in -- so every "CORRECTED from your account" banner, the
+                    # loudest thing this window can say, was silently
+                    # discarded and only the log line survived. Found by
+                    # grepping for the handler before adding a second caller,
+                    # not by any test: 244 of them pass either way, because
+                    # not one of them drains this queue.
+                    text, level = rest[0]
+                    self._alert(text, level)
+                    dirty = True
+                elif kind == "autooff":
+                    # ⚠ ANOTHER MACHINE IS RUNNING THIS DESK TOO. Both would
+                    # place the same bet and both act on the same position.
+                    # The window is NOT closed -- he may have money on it and
+                    # closing it would take the screen away from him. It stops
+                    # BETTING and says so, loudly, and on his phone.
+                    if self.auto_exec:
+                        self.auto_exec = False
+                        msg = (f"AUTO TURNED OFF: the baseball desk is also "
+                               f"running on \"{rest[0]}\". Two of them would "
+                               f"both place the same bet. Close one, then "
+                               f"turn AUTO back on.")
+                        self._log(msg)
+                        self._alert(msg, "warn")
+                        self.alerts.say(msg, title="Baseball desk: two copies",
+                                        urgent=True)
+                elif kind == "log":
                     self._log(rest[0])
                 elif kind == "source":
                     self.source_age = rest[0]
@@ -1199,7 +1259,37 @@ def main() -> None:
             stream.reconfigure(encoding="utf-8", errors="replace")
         except (AttributeError, ValueError):
             pass
-    Desk().mainloop()
+
+    # The one irreversible mistake in the move to the laptop: two desks running
+    # would both place the same bet and both act on the same position, and
+    # neither can see the other. src/onemachine.py says what this catches and,
+    # more importantly, what it does not.
+    ok, why = onemachine.may_start()
+    if not ok:
+        print()
+        print("  " + why)
+        print()
+        try:
+            import tkinter.messagebox as mb
+            root = tk.Tk()
+            root.withdraw()
+            mb.showerror("Baseball desk is already running", why)
+            root.destroy()
+        except Exception:
+            pass
+        raise SystemExit(1)
+    if why:
+        print()
+        print("  " + why)
+        print()
+
+    onemachine.write_lock(onemachine.LOCK_PATH)
+    try:
+        Desk().mainloop()
+    finally:
+        # Free it immediately rather than making him wait out the five-minute
+        # staleness window before he can open it on the other machine.
+        onemachine.clear_lock(onemachine.LOCK_PATH)
 
 
 if __name__ == "__main__":

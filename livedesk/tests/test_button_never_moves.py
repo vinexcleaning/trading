@@ -59,8 +59,19 @@ def _root(tmp_path_factory):
     module ends."""
     import ledger as L
     import desk as D
-    path = tmp_path_factory.mktemp("livedesk") / "ledger.json"
+    import onemachine as OM
+    tmp = tmp_path_factory.mktemp("livedesk")
+    path = tmp / "ledger.json"
     L.LEDGER_PATH = path
+    # ⚠ THIS FIXTURE IS module-SCOPED, so it is built BEFORE conftest.py's
+    # function-scoped protection can run. That is not a detail: this window
+    # runs a REAL refresh, and once the two-machine guard went into that loop
+    # the suite started writing his real data/desk.lock and posting a claim to
+    # ntfy under this computer's name -- which would then have refused to open
+    # his desk, blaming a pytest process that had exited hours before.
+    # Higher-scoped fixtures protect themselves or they are not protected.
+    OM.LOCK_PATH = tmp / "desk.lock"
+    os.environ["KALSHI_NTFY_TOPIC"] = ""
     try:
         a = D.Desk()
     except tk.TclError as e:

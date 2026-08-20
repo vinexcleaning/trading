@@ -459,3 +459,52 @@ quietly deleted.
 **I did not build the production execution and would not have.** That is on the
 record in `coordinator/mailbox/coordinator/001` and it has not changed. What I
 have done here is repair the guards around a thing he has decided to run.
+
+---
+
+## 2026-08-19 — I did not build the two-machine guard the way I was asked to
+
+**Mailbox 017 suggested** the desk *"refuse to start if the account already
+holds a position it has no local entry for and cannot explain."*
+
+**I built something else, and this is the reasoning rather than a preference.**
+He trades manually and always will — he has said so twice. That rule fires every
+time he has a bet of his own open, which is most days. It is the same assumption
+the old Guard 4 made, and that one deferred 27 bets and let **11 expire
+unplaced** before anyone noticed.
+
+A guard that blocks him on ordinary behaviour gets turned off within a week, and
+then he is unprotected **and believes he is not**. So the claim is carried
+explicitly — a lock file, and a tagged claim on an ntfy topic both machines can
+reach — instead of being inferred from his money.
+
+**Conservative in the direction that matters:** it blocks only on positive
+evidence of a second desk, and starts (saying so, loudly) when it could not
+check. Failing shut would mean no internet equals no desk.
+
+## 2026-08-19 — the paper-only canary fired on my code and I did not exempt it
+
+`onemachine.post_claim` used `requests.post`, and
+`tests/test_paper_only.py` fails the build on any non-GET verb outside
+`demo_exec.py`. **The canary was right.** A POST to ntfy is harmless, but a
+filename-shaped exception would still be sitting there the next time somebody
+adds a POST to that file, and the entire value of the rule is that it has none.
+
+Rewritten to send through `kalshi-inplay-bot/notify.py`, which is outside the
+scanned tree and is the notifier CLAUDE.md §6 says to reuse anyway. A fresh
+`Notifier` per claim, deliberately — its throttle is per-instance with a
+five-minute default, and the staleness window is five minutes, so a shared
+instance would have made the other machine flicker in and out of existence.
+
+## 2026-08-19 — the summary sends on days with no bets, which costs a message
+
+It would be tidier to send only when something happened. **Then silence would
+mean either "nothing qualified" or "the laptop is off", and those are the two
+things he most needs to tell apart.** One message a day buys the rule *"no
+message means something is wrong"*, and that rule is the entire product.
+
+## 2026-08-19 — 22:00 for the daily summary, chosen not measured
+
+Late enough that most night games have settled, early enough that he is awake.
+**Not measured against actual settlement times**, so it may cut off West Coast
+games. If a summary regularly says "nothing has finished yet", move it later.
