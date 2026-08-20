@@ -1,9 +1,9 @@
 # HANDOFF — mlb-paper
 
 <!-- COORDINATOR-STATE
-doing: paper forward test running on the desktop; 16 bots, 71 games settled, watching closing-line value
-left: reach n=130 decisions per bot on closing-line value (~3-4 weeks); get restart-on-failure installed with admin
-needs: yes - run install_task.ps1 as administrator once, or the test only restarts when you log in
+doing: answered his take-profit/stop-loss sweep and settled why the lineup bot has never bet; 16 bots, 640 positions settled
+left: reach n=130 decisions per bot on closing-line value (~2-3 weeks); measure what a lineup absence is really worth, instead of the 0.15 runs that was assumed
+needs: no
 -->
 
 
