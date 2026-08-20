@@ -1,0 +1,40 @@
+{
+ "id": "SF103",
+ "created": "2026-08-20",
+ "author": "claude:tennis",
+ "source": "reasoning",
+ "source_detail": "The one shape this repo has never tested on tennis and the only shape currently winning anywhere in it: pre-game. bot-forensics measured 97.4% of the price move as already gone by the time a bot reacts in-play, on 4,398 score-change events.",
+ "families": [
+  "KXATPMATCH",
+  "KXWTAMATCH"
+ ],
+ "thesis": "Bet before the first ball on evidence that does not go stale - career surface record, head-to-head, deciding-set record, break points saved - because in-play is a race this repo has already measured itself losing.",
+ "unit": "one settled match",
+ "entry": {
+  "when": "Strictly before the scheduled start time. Spread 2 cents or less. The brief's non-decaying evidence must favour the side by more than that market's own round-trip cost.",
+  "side": "either",
+  "min_price_c": 15,
+  "max_price_c": 85,
+  "max_spread_c": 2
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "The result lands inside its no-skill range after 400 settled matches, the point at which that range narrows enough to be worth reading.",
+  "It fires under 150 times in 30 days.",
+  "Splitting by tier puts the whole effect in one tier, which would make it a tier finding and not a rule."
+ ],
+ "slow": false,
+ "notes": "ALREADY RUNNING as pre-game__hold in tennis-paper-forward since 2026-08-13, on its own arm, never pooled backwards. Deliberately EXCLUDES recent form: the free archive freezes at 2026-06-01 and this project's own recorder holds 1.5 results per player with 66% of players appearing exactly once. One result is not form, and a bot leaning on it would measure staleness rather than the idea. || Written here so the factory does not generate it a second time. tennis-paper-forward, 17 bots, 1,037 settled matches from 2026-08-06, every bot inside its own no-skill range."
+}

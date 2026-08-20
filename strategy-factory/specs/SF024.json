@@ -1,0 +1,43 @@
+{
+ "id": "SF024",
+ "_cat": "Politics",
+ "created": "2026-08-20",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "status": "LIVE",
+ "source_detail": "Replaces the VOIDED SF012. KXFUNDRAISING is 84 two-sided markets settling on FEC filings, and KXNYCSTAT 53 on published statistics - both NUMERIC ladders on a single published number, unlike the 'who will be pardoned' sets that voided SF012.",
+ "families": [
+  "KXFUNDRAISING",
+  "KXNYCSTAT"
+ ],
+ "thesis": "Political money and city statistics settle on a number somebody publishes on a schedule, so the plain question - does buying and holding these ladders make or lose money - has never been asked and the answer costs nothing but the waiting.",
+ "unit": "one published figure",
+ "entry": {
+  "when": "NUMERIC LADDERS ONLY. A family qualifies if its markets are brackets on one published number; any family whose markets name PEOPLE is excluded by rule, not by judgement. Buy at the recorded ask a fixed number of days before the scheduled publication, bucketed by price in 5-cent bands, and report the whole curve.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 8
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "flat",
+  "usd_per_bet": 10,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Fewer than 100 figures settle by 2027-02-20. Politics mints only about 10 new markets a day measured off the tape, so this is the likeliest outcome and it is reported as UNMEASURABLE, not as negative.",
+  "Every price bucket's range contains zero at 100 settled figures.",
+  "The whole curve sits below zero at the real ask and the real fee.",
+  "A family in the list turns out to name people after all, which means the exclusion rule was applied by eye rather than by code."
+ ],
+ "slow": true,
+ "notes": "THE EXCLUSION IS A RULE, NOT A JUDGEMENT, and that is the whole point of the rewrite. SF012 died because somebody (me) looked at 'who will Trump pardon' and assumed exactly one could happen. The replacement does not ask anyone to assess exclusivity by eye: a family is in only if its markets are brackets on a number. || WHY THIS IS NOT ITS PREDECESSOR. The spec it replaces was VOIDED on 2026-08-20 by rules text already on tape: Kalshi's NAMED-CANDIDATE sets are not mutually exclusive. 'Will Tame Impala be a Headliner at Coachella' - a festival has several. 'Will Eric Trump receive a presidential pardon' - several people can be. 'Will Yves Meyer win the Nobel Physics' - it can be shared by three. Every one of those specs assumed the set summed to a dollar. This one uses a NUMERIC ladder on a single published number, where exactly one bracket can be true, so the partition is real. If a future version of this spec is ever extended to a named-candidate family, it has become the spec it replaced and must be dropped."
+}

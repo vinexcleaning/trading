@@ -1,0 +1,41 @@
+{
+ "id": "SF023",
+ "_cat": "Entertainment",
+ "created": "2026-08-20",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "status": "LIVE",
+ "source_detail": "Replaces the VOIDED SF011. KXRT is 180 two-sided markets on Rotten Tomatoes scores, and Entertainment mints about 509 new markets a day measured off the tape. Unlike an awards shortlist, a score ladder is a numeric partition: a film has exactly one score.",
+ "families": [
+  "KXRT"
+ ],
+ "thesis": "A film's Rotten Tomatoes score is public and stops moving once enough reviews are in, so the question worth asking is whether Kalshi still quotes a market whose answer is already visible - and if it does not, that is the same wall that closed the soccer work.",
+ "unit": "one film",
+ "entry": {
+  "when": "For each film, record whether a two-sided quote exists at each point in the run-up to settlement, and how far the current public score sits from the strike. Buy at the recorded ask only where the outcome is already effectively determined by the public score AND a quote exists. Availability is recorded first and separately from price.",
+  "side": "either",
+  "min_price_c": 3,
+  "max_price_c": 97,
+  "max_spread_c": 6
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 10,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "No quote exists once the score is effectively settled - which is GUARDS #24 arriving in an eighth sport, and is the expected outcome. Reported as availability, not as price.",
+  "Inside its no-skill range at 100 settled films.",
+  "The public score is not obtainable free, in which case this is recorded as blocked on data and the availability half still stands on its own."
+ ],
+ "slow": true,
+ "notes": "THE AVAILABILITY HALF IS THE VALUABLE HALF AND IT COSTS NOTHING. GUARDS #24 says a market maker declines to quote when there is nothing left to be uncertain about, measured across seven sports. Rotten Tomatoes is the cleanest non-sport test of that guard available on this exchange, because the outcome becomes public BEFORE settlement in a way a match result does not. Whatever happens to the trade, the guard gets an eighth data point. || WHY THIS IS NOT ITS PREDECESSOR. The spec it replaces was VOIDED on 2026-08-20 by rules text already on tape: Kalshi's NAMED-CANDIDATE sets are not mutually exclusive. 'Will Tame Impala be a Headliner at Coachella' - a festival has several. 'Will Eric Trump receive a presidential pardon' - several people can be. 'Will Yves Meyer win the Nobel Physics' - it can be shared by three. Every one of those specs assumed the set summed to a dollar. This one uses a NUMERIC ladder on a single published number, where exactly one bracket can be true, so the partition is real. If a future version of this spec is ever extended to a named-candidate family, it has become the spec it replaced and must be dropped."
+}

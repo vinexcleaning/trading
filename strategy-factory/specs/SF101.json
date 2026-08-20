@@ -1,0 +1,40 @@
+{
+ "id": "SF101",
+ "created": "2026-08-20",
+ "author": "claude:tennis",
+ "source": "ledger",
+ "source_detail": "The soccer chat's finding that tennis is where a quote survives furthest into a near-certainty, tested on the family where the book is thinnest and a stale quote is most likely to persist.",
+ "families": [
+  "KXITFMATCH",
+  "KXITFWMATCH"
+ ],
+ "thesis": "In a thin ITF book a heavy favourite's price can lag the state of the match, so a quote at 88 to 96 cents still available late is either a genuine bargain or a stale screen. This asks which, and the measurement is the same either way.",
+ "unit": "one settled match",
+ "entry": {
+  "when": "Last two hours of quoting, spread 3 cents or less, best ask between 88 and 96 cents, at least $100 showing. Buy YES.",
+  "side": "yes",
+  "min_price_c": 88,
+  "max_price_c": 96,
+  "max_spread_c": 3
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "The win rate comes in below the entry price - buying at 92c wins under 92 times in 100 - which is the whole bet.",
+  "It fires under 100 times in 30 days.",
+  "The result sits inside its no-skill range once fees are paid, which is what all 17 forward bots currently do."
+ ],
+ "slow": false,
+ "notes": "AT 92 CENTS THE FEE IS ABOUT 0.52c, roughly a fifth of what it is at 50c, so this band is chosen partly because it is where the fee is cheapest. That is a real structural advantage and it is also exactly where a wrong-way loss costs 92 cents to win 8. || THE ARCHIVE IS AGAINST THIS. Buy-the-heavy-favourite measured +3.12c at the mid and +0.96c then -0.77c at real prices, and the apparent edge GREW with the spread: +1.18c where the quote was tight enough to trade, +7.92c where it was wider than 8c. That is the signature of the spread, not of an edge, which is why the spread is capped at 3c here rather than taking whatever is offered. || tennis-paper-forward, 17 bots, 1,037 settled matches from 2026-08-06, every bot inside its own no-skill range."
+}

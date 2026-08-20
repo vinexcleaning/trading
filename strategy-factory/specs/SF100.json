@@ -1,0 +1,40 @@
+{
+ "id": "SF100",
+ "created": "2026-08-20",
+ "author": "claude:tennis",
+ "source": "reasoning",
+ "source_detail": "Capacity measurement on this repo's own recorded book, made 2026-08-20 by the tennis chat. Measured on 16 days of recorded book, 2026-08-04 to 08-20, with common/capacity.py. By hours before the market stopped quoting (>12h / 2-12h / last 2h): KXITFMATCH 19.9c-$13, 9.7c-$46, 5.6c-$124. KXITFWMATCH 16.9c-$18, 7.9c-$63, 3.9c-$163. KXATPMATCH 3.8c-$1,002, 1.4c-$6,642, 1.2c-$9,599. KXWTAMATCH 5.4c-$753, 1.8c-$3,384, 1.2c-$5,559. NOTE the two ITF families are NOT the same market: the women's book is about 30% tighter and 30% deeper than the men's in every bucket.",
+ "families": [
+  "KXITFMATCH",
+  "KXITFWMATCH"
+ ],
+ "thesis": "ITF is only tradeable in the last two hours before a match, when the quote tightens from about twenty cents to under six and the money at the best price rises from thirteen dollars to about a hundred and twenty. Any ITF strategy that ignores the clock is priced against a book that does not exist.",
+ "unit": "one settled match",
+ "entry": {
+  "when": "The market is inside its last two hours of quoting AND the spread is 4 cents or less AND at least $100 is showing at the best ask. This spec is the GATE, screened alone so the cost of the restriction is known before any rule is layered on it.",
+  "side": "either",
+  "min_price_c": 10,
+  "max_price_c": 90,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Fewer than 200 matches in 30 days pass the gate, which would leave every ITF strategy underpowered however good its rule is.",
+  "The gate is passed but the realised round trip still exceeds 6 cents, which is larger than any edge this repo has ever measured.",
+  "Capacity at the touch inside the gate is under $50, which makes it a hobby rather than a market."
+ ],
+ "slow": false,
+ "notes": "THE GATE, not a trade. Measured on 16 days of recorded book, 2026-08-04 to 08-20, with common/capacity.py. By hours before the market stopped quoting (>12h / 2-12h / last 2h): KXITFMATCH 19.9c-$13, 9.7c-$46, 5.6c-$124. KXITFWMATCH 16.9c-$18, 7.9c-$63, 3.9c-$163. KXATPMATCH 3.8c-$1,002, 1.4c-$6,642, 1.2c-$9,599. KXWTAMATCH 5.4c-$753, 1.8c-$3,384, 1.2c-$5,559. NOTE the two ITF families are NOT the same market: the women's book is about 30% tighter and 30% deeper than the men's in every bucket. || WHY THIS MATTERS TO THE FACTORY: KXITFMATCH and KXITFWMATCH carry about 3,500 of the 4,900 recorded tennis tickers, five times ATP and WTA combined, so a factory ranking families by ticker count will point straight at the least tradeable corner of the exchange. || PRIOR: no ledger row covers ITF capacity. LEDGER T018 said the ITF tier cannot be modelled, but that was measured as serve stats on 4.6% of one provider's rows - a statement about a data source, not about the book."
+}

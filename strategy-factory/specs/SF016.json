@@ -38,5 +38,7 @@
   "Fewer than 5 award events settle in a year, making this unmeasurable by arithmetic."
  ],
  "slow": true,
- "notes": "DECLARED SLOW and it is the slowest thing in the folder - a Nobel prize settles once a year. It is written anyway because the INCONSISTENCY is visible on tape immediately even though the settlement is not, and because a category with no spec is a category that was skipped. The GPU-price families in the same category settle monthly and are the faster half; they are listed so the family set is on the board, and a separate spec for them belongs in the depth pass."
+ "notes": "DECLARED SLOW and it is the slowest thing in the folder - a Nobel prize settles once a year. It is written anyway because the INCONSISTENCY is visible on tape immediately even though the settlement is not, and because a category with no spec is a category that was skipped. The GPU-price families in the same category settle monthly and are the faster half; they are listed so the family set is on the board, and a separate spec for them belongs in the depth pass.",
+ "status": "VOID",
+ "status_reason": "CHECKED AGAINST RULES TEXT ON TAPE 2026-08-20, before screening. Same failure as SF011 and SF012, and it should have been obvious from the sport itself: a Nobel Prize in Physics can be SHARED BY UP TO THREE PEOPLE, so the candidates are not mutually exclusive. 'If Yves Meyer has won the 2026 Nobel prize for Physics, then the market resolves to Yes' - and so can two others in the same year. Both branches of the spec, buy and sell, rested on the set summing to a dollar. It does not. \u26a0 The GPU-price families in the same spec (KXH200MON, KXB200MAX) are NOT affected by this and are a live idea that now has no spec - see SF025."
 }

@@ -1,0 +1,48 @@
+{
+ "id": "SF110",
+ "created": "2026-08-20",
+ "author": "claude:tennis",
+ "source": "reasoning",
+ "source_detail": "tennis-paper-forward's own three-arm exit experiment, pre-registered before the run.",
+ "families": [
+  "KXITFMATCH",
+  "KXITFWMATCH",
+  "KXATPMATCH",
+  "KXWTAMATCH"
+ ],
+ "thesis": "Selling a losing tennis position before settlement, on a stop or a target, costs about nine points against simply holding - because the downside is already capped at what you paid, so a stop realises a loss that was going to recover and pays the buy-sell gap twice.",
+ "unit": "one settled match",
+ "entry": {
+  "when": "Any entry rule. This spec is about the EXIT, and exists so the factory does not generate stop-loss variants of other strategies without seeing this first.",
+  "side": "either",
+  "min_price_c": 3,
+  "max_price_c": 97,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "sell_at_level",
+  "sell_at_c": 12,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "A stop arm beats its own hold arm on the same matches at the same prices over 400 or more settled matches, which would overturn a pre-registered 5-of-5 result."
+ ],
+ "slow": false,
+ "notes": "WRITTEN AS A SPEC SO IT IS FINDABLE, not because it should be screened. The factory's rules say a variant counts against the screened total; the point of this entry is that stop-loss variants of tennis strategies should not be generated at all without a reason to overturn the result above.",
+ "prior_evidence": {
+  "status": "RULED OUT",
+  "measured_by": "tennis-paper-forward, 545 settled matches, 2026-08-06 to 08-13",
+  "finding": "Three arms differing ONLY in exit rule, on the same matches at the same prices with the same sizing. Not stopping won in 5 families out of 5, by 9.3 points on average.",
+  "independent_confirmation": "bot-forensics, on the user's own live tennis bot: stop-and-re-enter turned -2.29 cents per contract into -9.36.",
+  "caveat": "The selling arms also differ in RE-ENTRY, not only in stopping, so this is not a clean test of the stop alone, and it is 5 matched pairs not 500.",
+  "scope": "Applies to a PER-TRADE stop on an instrument whose downside is capped. It does NOT apply to a daily stop-everything cut-off, which is a different animal and should stay."
+ }
+}

@@ -48,6 +48,21 @@ EXIT_MODES = {
 
 SIZE_RULES = {"flat", "depth_capped", "fraction_of_bankroll"}
 
+#: A spec is never deleted. `PREREGISTRATION.md` section 2 requires every report
+#: to state how many strategies were screened, and a spec quietly removed from
+#: the folder makes that number wrong forever. So a killed spec stays on disk
+#: with a status and a reason.
+#:
+#:   LIVE          eligible for screening
+#:   VOID          its PREMISE is false, so no result it could produce would
+#:                 mean anything. Not "it lost" - it cannot be run.
+#:   UNMEASURABLE  the premise holds but the sample can never arrive. Reported
+#:                 as unmeasurable, never as negative (LEDGER K012 is the
+#:                 warning: "killed on recurrence" was read as "no edge there",
+#:                 and those are opposite sentences).
+#:   SUPERSEDED    replaced by a spec with a different id, which is named.
+STATUSES = {"LIVE", "VOID", "UNMEASURABLE", "SUPERSEDED"}
+
 REQUIRED = ["id", "created", "author", "source", "source_detail", "families",
             "thesis", "unit", "entry", "exit", "size", "wrong_if", "slow"]
 
@@ -163,6 +178,12 @@ def validate(spec: dict, path: Path) -> list:
     if not isinstance(spec.get("slow"), bool):
         bad.append("slow must be true or false - does this family settle "
                    "often enough to be judged inside a month?")
+    st = spec.get("status", "LIVE")
+    if st not in STATUSES:
+        bad.append("status %r not one of %s" % (st, sorted(STATUSES)))
+    if st != "LIVE" and not str(spec.get("status_reason") or "").strip():
+        bad.append("status %s with no status_reason - a spec is never killed "
+                   "without a written reason" % st)
     return bad
 
 
@@ -227,14 +248,13 @@ def cmd_new(new_id: str) -> int:
 
 def cmd_list() -> int:
     specs = [(p, s) for p, s in load_all() if "_parse_error" not in s]
-    print("%-8s %-10s %-26s %-20s %s"
-          % ("id", "source", "families", "exit", "thesis"))
+    print("%-8s %-13s %-10s %-22s %s"
+          % ("id", "status", "source", "families", "thesis"))
     for p, s in specs:
-        print("%-8s %-10s %-26s %-20s %s"
-              % (s.get("id"), s.get("source"),
-                 ",".join(s.get("families") or [])[:26],
-                 (s.get("exit") or {}).get("mode", "?"),
-                 str(s.get("thesis"))[:60]))
+        print("%-8s %-13s %-10s %-22s %s"
+              % (s.get("id"), s.get("status", "LIVE"), s.get("source"),
+                 ",".join(s.get("families") or [])[:22],
+                 str(s.get("thesis"))[:52]))
     print("\n%d specs" % len(specs))
     by = Counter(s.get("source") for _, s in specs)
     print("by source: %s" % dict(by))
@@ -294,11 +314,24 @@ def cmd_coverage() -> int:
         return out or {"(unmatched)"}
 
     per = Counter()
+    dead = Counter()
+    dead_ids = []
     for _, s in load_all():
         if "_parse_error" in s:
             continue
+        # ⚠ A KILLED SPEC DOES NOT COVER ITS CATEGORY. It still counts toward
+        # the screened total (that is why it stays on disk), but a category
+        # whose only spec turned out to be VOID has no strategy in it and the
+        # quota must say so. Counting dead specs as coverage is how a category
+        # silently empties.
+        live = s.get("status", "LIVE") == "LIVE"
         for c in cats_of(s):
-            per[c] += 1
+            if live:
+                per[c] += 1
+            else:
+                dead[c] += 1
+        if not live:
+            dead_ids.append((s.get("id"), s.get("status")))
 
     print("%-26s %6s   %s" % ("category", "specs", "quota"))
     missing = []
@@ -310,9 +343,15 @@ def cmd_coverage() -> int:
     for c in sorted(set(per) - set(quota)):
         print("%-26s %6d   (not in quota)" % (c, per[c]))
     print()
-    total = len([1 for _, s in load_all() if "_parse_error" not in s])
-    print("%d specs across %d of %d quota categories"
-          % (total, len(quota) - len(missing), len(quota)))
+    allspecs = [s for _, s in load_all() if "_parse_error" not in s]
+    total = len(allspecs)
+    nlive = sum(1 for s in allspecs if s.get("status", "LIVE") == "LIVE")
+    print("%d specs written, %d LIVE, across %d of %d quota categories"
+          % (total, nlive, len(quota) - len(missing), len(quota)))
+    if dead_ids:
+        print("killed and kept on disk (they still count toward the screened "
+              "total): %s"
+              % ", ".join("%s=%s" % (i, st) for i, st in sorted(dead_ids)))
     if missing:
         print()
         print("QUOTA NOT MET. No second spec should be written for any "

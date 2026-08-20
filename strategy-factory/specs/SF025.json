@@ -1,0 +1,44 @@
+{
+ "id": "SF025",
+ "_cat": "Science and Technology",
+ "created": "2026-08-20",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "status": "LIVE",
+ "source_detail": "Replaces the VOIDED SF016, and rescues the half of it that was never affected. SF016 bundled Nobel prizes (named candidates, shareable, therefore void) with GPU PRICES (numeric, monthly). KXH200MON 28 two-sided, KXH100MON 20, KXB200MON 20 - the only recurring families in the category.",
+ "families": [
+  "KXH200MON",
+  "KXH100MON",
+  "KXB200MON",
+  "KXB200MAX"
+ ],
+ "thesis": "Graphics-card prices settle every month against a published figure, which makes them the only thing in this whole category that comes round often enough to ever be judged.",
+ "unit": "one monthly settlement",
+ "entry": {
+  "when": "Buy at the recorded ask a fixed number of days before the monthly close, bucketed by price in 5-cent bands. The dullest possible rule on purpose - this exists to accrue a sample in the only corner of this category that recurs.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 8
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "flat",
+  "usd_per_bet": 10,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Fewer than 100 monthly settlements accrue by 2027-08-20 - four families settling monthly is 48 a year, so this is arithmetically the likely outcome and it is UNMEASURABLE, not negative.",
+  "Every price bucket's range contains zero at whatever sample arrives.",
+  "The settlement source ('Ornn') turns out not to be readable free, in which case this is blocked on data and says so."
+ ],
+ "slow": true,
+ "notes": "\u26a0 THE ARITHMETIC SAYS THIS WILL PROBABLY BE UNMEASURABLE AND THAT IS WRITTEN DOWN BEFORE IT RUNS. Four families times twelve months is 48 settlements a year against the 100 needed, so the honest expectation is a two-year wait. It is written anyway because the category has no other recurring family, and a category with no spec is a category that was skipped - but nobody should be surprised in a year, and 'unmeasurable' will not be dressed up as 'no edge'. || WHY THIS IS NOT ITS PREDECESSOR. The spec it replaces was VOIDED on 2026-08-20 by rules text already on tape: Kalshi's NAMED-CANDIDATE sets are not mutually exclusive. 'Will Tame Impala be a Headliner at Coachella' - a festival has several. 'Will Eric Trump receive a presidential pardon' - several people can be. 'Will Yves Meyer win the Nobel Physics' - it can be shared by three. Every one of those specs assumed the set summed to a dollar. This one uses a NUMERIC ladder on a single published number, where exactly one bracket can be true, so the partition is real. If a future version of this spec is ever extended to a named-candidate family, it has become the spec it replaced and must be dropped."
+}

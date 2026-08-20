@@ -1,0 +1,48 @@
+{
+ "id": "SF102",
+ "created": "2026-08-20",
+ "author": "claude:tennis",
+ "source": "reasoning",
+ "source_detail": "Structural invariant on Kalshi's mirrored pair, measured live by the tennis chat 2026-08-06 to 08-13.",
+ "families": [
+  "KXITFMATCH",
+  "KXITFWMATCH",
+  "KXATPMATCH",
+  "KXWTAMATCH"
+ ],
+ "thesis": "Kalshi lists one market per player, so the two YES asks are complements and must cost at least a dollar together. When they cost less, buying both is locked money - if the fees do not eat it, which on this book they always have.",
+ "unit": "one settled match",
+ "entry": {
+  "when": "Within one event, both sides quotable, ask(A) + ask(B) below 100 minus the two-leg fee. Buy both sides in equal size at the recorded touch size.",
+  "side": "either",
+  "min_price_c": 1,
+  "max_price_c": 99,
+  "max_spread_c": 99
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.5
+ },
+ "wrong_if": [
+  "It never fires net of the two-leg fee over 30 days, which is what 16 days of live observation already suggests.",
+  "It fires but median locked profit is under 0.5 cents.",
+  "Capacity is under $25 per firing."
+ ],
+ "slow": false,
+ "notes": "DOUBLES AS A CANARY, GUARDS #18. The correct stale-book invariant is the OTHER direction - bid(A) + bid(B) above 100 is impossible in a live book and fires on 1-2 matches a tick. The under-100 ask sum is common and is NOT a stale book; mislabelling it as one is a mistake this chat made and corrected. || Reproduces LEDGER K007 - 52 genuine violations, 0 with tradeable size, 1,083 scans - on a family it was never measured on.",
+ "prior_evidence": {
+  "status": "expected null, but cheap and doubles as a canary",
+  "measured_by": "tennis-paper-forward, live, 2026-08-06 to 08-13",
+  "finding": "13 to 16 of about 123 matches per tick showed both asks summing under a dollar, median 1 cent gross, and ZERO beat the two-leg fee of about 2.5 cents.",
+  "why_still_worth_running": "Free on tape already being collected, and it is a data-quality canary: if it starts firing constantly the likely cause is my own event grouping, not the exchange."
+ }
+}
