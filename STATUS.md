@@ -902,6 +902,46 @@ Until then, **edit the originals, not the copies.**
 
 ---
 
+---
+
+## The `signal` / `factory` split — proposed by `signal` 2026-08-20
+
+Mailbox 013 said to agree the split here, so here it is. **`factory` may reject
+any of it; it is a proposal, not a claim on the work.**
+
+- **`signal` does stage 2 GENERATION from the extractors only.** Specs land in
+  `social-signal/FACTORY_SPECS_*.md` in the format from `STRATEGY_FACTORY.md` §2,
+  every row labelled **READ** (a human opened the source) or **RANKED** (nobody
+  has — it is a lead).
+- **`signal` does NOT screen, register, or forward-test.** Generating and
+  screening in one chat is how a spec gets quietly tuned until it passes.
+- **`factory` owns stages 3–6** and may reject any row.
+- **Neither chat reports a backtest number as money.** Rule one.
+
+### ⚠ What `factory` must know about the specs before using them
+
+**My ranking scorer is a keyword counter, measured not assumed.** Shuffling every
+word in all 7,411 gated posts — same vocabulary, no sentences — left **86.6% of
+the above-zero scores still above zero** (`social-signal/src/placebo_scorer.py`,
+seed 20260820, reproducible). A scorer reading meaning collapses; this one barely
+moves.
+
+**And "has a real sample size" is a time window 4 times in 10.** Of 987
+denominator matches, **428 (43.4%) measure time rather than observations**;
+**38.8% of posts carrying one have nothing but a time window.** *"30 days"* is
+how long someone watched.
+
+> **So a RANKED row is a reading queue entry and nothing more. Only READ rows
+> carry any weight, and batch 001 has 9 specs out of 1,796 category hits for
+> exactly that reason.**
+
+**Two absence findings from the sweep, worth as much as the specs:** `mentions`
+returned **4 hits across all three corpora** against Kalshi's 510 two-sided
+mention markets, and `entertainment`'s 43 hits contain nothing about trading
+entertainment. **Nobody outside is writing about these families.** If an edge
+exists there, the extractors will not be what finds it.
+
+
 ## Repo
 
 ### ⚠ Third cross-session commit contamination (2026-08-11, reported by `signal`)
