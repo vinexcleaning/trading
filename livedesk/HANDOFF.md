@@ -1,9 +1,9 @@
 # HANDOFF — livedesk
 
 <!-- COORDINATOR-STATE
-doing: back on livedesk. Mailbox 006 done: ledger repaired, Guard 4 re-pointed to watch its own bets, and a test that had been deleting his real ledger is fixed. 154 tests green.
-left: mailbox 005 (the who-else-was-on-this-game caption) is OPEN and not started. And livedesk cannot place orders right now - see needs.
-needs: yes - livedesk runs on PRODUCTION and I restored kalshi-inplay-bot/TRADING_DISABLED, which blocks its real orders too. Leave it blocked, or add a livedesk-specific switch so tennis stays off while baseball trades? I will not delete that file.
+doing: mailbox clear, all 19 closed. Built phone alerts (daily summary, every day even with no bets) and the guard against running the desk on two computers. 285 tests green.
+left: he must CLOSE AND REOPEN the desk window - it is on old code and overwrites the ledger from memory every 60s, which has now reverted four separate repairs. Two history tools are written and cannot run until then.
+needs: yes - close the baseball desk window fully and reopen it, then sign up at healthchecks.io (step 8 of livedesk/MOVING_TO_LAPTOP.md) so something outside the laptop notices if it dies.
 -->
 
 **⚠ THIS TOOL SENDS REAL ORDERS, AND AUTO STARTS ON.** Live Kalshi, real
@@ -19,6 +19,46 @@ run).
 the record in `coordinator/mailbox/coordinator/001`. Another tool built it at
 his direction while I was stood down 13–16 August. What I maintain here are the
 guards around it.
+
+---
+
+# ⚠ THE THING THAT HAS COST MORE THAN ANY BUG: THE WINDOW REVERTS REPAIRS
+
+**The running desk saves its in-memory ledger over `data/ledger.json` every 60
+seconds.** Any repair made from outside while it is open is gone within the
+minute. It has now silently undone four of them: the 64-contract removal
+(twice), the Baltimore restore, the settled-loss recovery, and the phantom
+retirement.
+
+**So a repair tool that reports success has not necessarily succeeded.** Check
+`written_utc` in the file afterwards. The tools now refuse to claim a result
+they cannot verify stuck.
+
+**Fixing this properly means the desk reloading from disk before each save, or
+never writing rows it did not change. Neither is built.** Until then the answer
+is: close the window, run the tool, reopen.
+
+---
+
+# ⚠ TESTS WRITE REAL PATHS UNLESS SOMETHING STOPS THEM. TWICE NOW.
+
+`tests/conftest.py` redirects every real path for every test automatically.
+**It exists because the lesson did not hold when it was written down once.**
+
+1. **2026-08-16:** a green run of 150 tests deleted his real ledger.
+2. **2026-08-19:** the two-machine guard went into the refresh loop, and the
+   GUI test — which builds a real window and runs a real refresh — started
+   writing his real `data/desk.lock` **and posting a claim to ntfy under this
+   computer's name.** His desk would have refused to open, blaming a pytest
+   process that had exited hours before.
+
+Neither showed in the test output. **Both were found by running the tool
+afterwards and reading what it printed.**
+
+⚠ **A module- or session-scoped fixture is built BEFORE conftest's
+function-scoped protection runs, so it must protect itself.**
+`test_button_never_moves.py` does this explicitly. If you add another
+higher-scoped fixture that builds a `Desk`, do the same or it is unprotected.
 
 ---
 
