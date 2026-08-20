@@ -585,13 +585,35 @@ def main() -> None:
     A("**A category with a small screened count cannot say anything**, and the "
       "count is shown rather than the number being quoted alone.")
     A("")
-    A("**ONE category clears the 100-event bar `PREREGISTRATION.md` §4 sets, "
-      "and it is Sports at 514 events** - where buying at the ask and holding "
-      "loses **3 cents a contract** and sits on top of its own null. That is "
-      "the only line on this page with a sample behind it, and it says the "
-      "dull version of this does not work. Everything else here is two days of "
-      "tape and is reported so nobody mistakes a 36-event number for a finding "
-      "later.")
+    big = [(c, r) for c, (r, _) in percat.items() if r["events"] >= 100]
+    if big:
+        for c, r in sorted(big, key=lambda x: -x[1]["events"]):
+            A("**The only category with a real sample is %s: %d events, "
+              "%s per contract.** That is the one line on this page with "
+              "anything behind it, and it says the dull version does not work."
+              % (c, r["events"], fmt_money(r["per_c"])))
+    else:
+        A("**No category reaches the 100-event bar `PREREGISTRATION.md` §4 "
+          "sets.** Nothing here can be judged at all.")
+    A("")
+    A("Everything else is a few days of tape, reported so that nobody mistakes "
+      "a %d-event number for a finding later."
+      % max((r["events"] for c, (r, _) in percat.items()
+             if r["events"] < 100), default=0))
+    A("")
+    A("> ⚠ **ONE LIMITATION THE CRYPTO ROW EXPOSES, AND IT IS MINE NOT THE "
+      "MARKET'S.** Crypto has **%d markets in the index and only %d that "
+      "could be screened.** The entry rule takes the last two-sided quote at "
+      "least 60 minutes before close - and a Kalshi crypto ladder is an HOURLY "
+      "market, so 60 minutes before its close is at or before the moment it "
+      "opens. **The fixed entry lead is simply wrong for fast families**, and "
+      "the near-total absence of crypto here is an artefact of my parameter "
+      "rather than a fact about crypto. Fixing it means an entry lead "
+      "expressed as a FRACTION of each market's life, not a constant, and "
+      "that is a change to make deliberately and re-run - not to tune until "
+      "something looks good."
+      % (idx_cat.get("Crypto", [0, 0])[0],
+         percat.get("Crypto", ({"n": 0},))[0]["n"] if "Crypto" in percat else 0))
     A("")
     A("## 4. WHAT WAS NOT SCREENED, AND WHY — the honest half")
     A("")

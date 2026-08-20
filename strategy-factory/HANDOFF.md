@@ -300,13 +300,13 @@ at 55 families. Coverage still 13 of 13.
 
 ## THE SCREENING ENGINE IS BUILT AND HAS RUN — `reports/SCREEN-01.md`
 
-**The result is a null and nothing may be promoted.** Real arm **-8.44%**
-against a matched null of **-3.05%**: buying indiscriminately at the recorded
+**The result is a null and nothing may be promoted.** Real arm **-8.55%**
+against a matched null: buying indiscriminately at the recorded
 ask and holding did worse than the price paid implies. That is the answer
 `CLAUDE.md` §9c step 3 and `PREREGISTRATION.md` §7 both predicted in advance.
 
-**Only one category clears the 100-event bar** — Sports, 514 events, **-3
-cents a contract**, sitting on its own null. Every other row is a two-day
+**Only one category clears the 100-event bar** — Sports, **528 events, -2.99
+cents a contract**, sitting *on* its own null (-6.5% against -6.5%). Every other row is a two-day
 sample and the verdict column says so *inside the verdict*, because the verdict
 is what gets quoted alone.
 
@@ -320,6 +320,32 @@ off on every future run. Replaced with a null that redraws each outcome from
 the market's own implied probability — and **two** nulls are now reported,
 because the mid null is advantaged by half a spread against entries that pay
 the ask.
+
+### ⚠ Two defects in my own data collection, both found after the first run
+
+1. **`settle.py` truncated six families at exactly 8,000 rows** — my own
+   `max_pages=8`, not the exchange. KXBTC, KXBTCD, KXETHD, KXSOLD, KXSOLE and
+   KXNASDAQ100U, the highest-volume crypto and index ladders. Walked properly,
+   KXBTCD alone has **13,588**. **The first screening run used 58,556
+   settlements; the full set is 111,058 — nearly double**, and the missing half
+   was concentrated in the busiest families. Caught only because a stray
+   background query printed a column of suspiciously round numbers, which is
+   luck rather than process. The ceiling is now 200 pages **and is logged when
+   reached**, so a truncated family can never again be recorded as complete.
+2. **A patch script asserted its way out before writing the file**, so a fix I
+   believed was applied was not — the re-fetch ran on the old cap and produced
+   the same 8,000 rows, which I briefly read as evidence the API was the limit.
+   It was not. Verified by walking the cursor by hand.
+
+### One limitation that is mine, not the market's
+
+**Crypto has 59,401 markets in the index and 130 that could be screened.** The
+entry rule takes the last two-sided quote at least 60 minutes before close, and
+a Kalshi crypto ladder is an **hourly** market — so 60 minutes before its close
+is at or before the moment it opens. **The near-total absence of crypto from
+this run is an artefact of my parameter.** The fix is an entry lead expressed as
+a fraction of each market's life, made deliberately and re-run — not tuned until
+something looks good.
 
 ### Three findings that matter more than the return
 

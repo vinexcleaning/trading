@@ -92,6 +92,22 @@ def spec_series():
     return sorted(out), wild
 
 
+#: WARNING - A CAP THAT IS NOT LOGGED IS A CAP THAT LIES.
+#:
+#: v1 used max_pages=8 and SIX families came back at exactly 8,000 rows -
+#: KXBTC, KXBTCD, KXETHD, KXSOLD, KXSOLE and KXNASDAQ100U, the highest-volume
+#: crypto and index ladders. Every one was truncated by MY OWN pagination, and
+#: nothing said so: the fetch log recorded "8000 rows" as though that were the
+#: answer rather than the ceiling. Walked properly, KXBTCD alone has 13,588.
+#: The crypto screening sample was bounded by my code, not by the exchange.
+#:
+#: It was caught only because a stray background query printed a column of
+#: suspiciously round numbers. That is luck, not process. So the ceiling is now
+#: high AND `fetch` records when it is reached - a family that hits it is
+#: reported as TRUNCATED, never silently accepted as complete.
+MAX_PAGES = 200
+
+
 def fetch(c, series, since_ts):
     ts = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     rows, ok, note = [], 1, None
@@ -99,7 +115,7 @@ def fetch(c, series, since_ts):
         for m in V.k_paginate("/markets",
                               {"series_ticker": series, "status": "settled",
                                "limit": 1000, "min_close_ts": since_ts},
-                              "markets", max_pages=8):
+                              "markets", max_pages=MAX_PAGES):
             tk = m.get("ticker")
             if not tk:
                 continue
@@ -110,6 +126,10 @@ def fetch(c, series, since_ts):
                          ts))
     except Exception as exc:                                   # noqa: BLE001
         ok, note = 0, str(exc)[:200]
+    if len(rows) >= MAX_PAGES * 1000:
+        note = ("HIT THE PAGE CEILING at %d rows - TRUNCATED, this count is a "
+                "floor and not an answer" % len(rows))
+        ok = 0
     if rows:
         c.executemany("insert or replace into settled values "
                       "(?,?,?,?,?,?,?,?)", rows)

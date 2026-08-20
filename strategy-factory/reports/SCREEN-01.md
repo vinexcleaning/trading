@@ -1,6 +1,6 @@
 # SCREENING RUN 01 — and not one number here is money
 
-**Run 2026-08-20 05:46 UTC by `strategy-factory/src/screen.py`.**
+**Run 2026-08-20 09:54 UTC by `strategy-factory/src/screen.py`.**
 
 > **THE BACKTEST CHOOSES. ONLY THE FORWARD TEST COUNTS.** Nothing below is a result, none of it may be sized on, and none of it should be repeated to anyone as an amount of money. It exists to pick candidates.
 
@@ -16,11 +16,11 @@ The same machinery, on the same tape, with **every outcome redrawn from the mark
 
 | | return on cash |
 |---|---:|
-| **real arm** | **-8.44%** |
-| placebo median (40 runs) | -6.54% |
-| placebo range | -10.18% to -2.73% |
-| **null drawn at the ASK** (matched to what we actually pay) | **-3.05%** |
-| its range | -8.44% to +0.75% |
+| **real arm** | **-8.55%** |
+| placebo median (40 runs) | -7.33% |
+| placebo range | -10.39% to -3.34% |
+| **null drawn at the ASK** (matched to what we actually pay) | **-3.80%** |
+| its range | -6.56% to -0.13% |
 
 **TWO nulls, because one of them is unfair and it is the one that flatters nobody.** The mid null asks *"is the mid the truth?"* while our entries pay the **ask** - so it is advantaged by roughly half a spread before anything else happens, and the real arm should be below it even if the market is perfectly fair. The ask null asks the question that matters: *"given what we actually paid, did the outcomes beat it?"* Both are reported so neither can be quoted alone.
 
@@ -30,10 +30,10 @@ The same machinery, on the same tape, with **every outcome redrawn from the mark
 
 | | |
 |---|---:|
-| settled markets with a recorded price | **52643** |
-| of those, with a **two-sided quote 60 min before close** | **7230** |
-| markets in the screened price and spread band | **1524** |
-| distinct EVENTS behind them | **589** |
+| settled markets with a recorded price | **72495** |
+| of those, with a **two-sided quote 60 min before close** | **7645** |
+| markets in the screened price and spread band | **1595** |
+| distinct EVENTS behind them | **612** |
 
 > ⚠ **The second row is a finding on its own and it is not good news for trading.** Most settled markets had no two-sided quote an hour before they closed. That is `GUARDS.md` #24 - *the market does not quote a near-certainty* - showing up across the whole exchange rather than in one sport. **A strategy cannot trade what is not quoted**, and any backtest that assumes it can is measuring a market that does not exist.
 
@@ -44,16 +44,20 @@ The same machinery, on the same tape, with **every outcome redrawn from the mark
 | category | in index | screenable | screened | net per contract | vs placebo | verdict |
 |---|---:|---:|---:|---:|---|---|
 | **Climate and Weather** | 44 | 28 | **6** (3 events) | +1.67c | +3.4% vs -31.0% | **too few events to say anything (3)** |
-| **Commodities** | 3655 | 2741 | **128** (36 events) | +6.09c | +21.5% vs -19.9% | **too few events to say anything (36)** |
-| **Crypto** | 40005 | 246 | **106** (26 events) | -5.04c | -15.1% vs -9.5% | **too few events to say anything (26)** |
+| **Commodities** | 3975 | 3004 | **130** (37 events) | +5.85c | +20.9% vs -17.6% | **too few events to say anything (37)** |
+| **Crypto** | 59401 | 286 | **130** (34 events) | -5.02c | -15.0% vs -8.1% | **too few events to say anything (34)** |
 | **Elections** | 40 | 5 | **1** (1 events) | +5.00c | +5.3% vs +5.3% | **too few events to say anything (1)** |
-| Entertainment | 13 | 0 | 0 | - | - | nothing in the price/spread band |
+| Entertainment | 20 | 0 | 0 | - | - | nothing in the price/spread band |
 | **Financials** | 7320 | 2770 | **187** (9 events) | -12.30c | -48.9% vs -12.8% | **too few events to say anything (9)** |
-| **Sports** | 1566 | 1440 | **1096** (514 events) | -3.00c | -6.5% vs -6.9% | above its null - still not a result |
+| **Sports** | 1695 | 1552 | **1141** (528 events) | -2.99c | -6.5% vs -6.5% | **at or below its null** |
 
 **A category with a small screened count cannot say anything**, and the count is shown rather than the number being quoted alone.
 
-**ONE category clears the 100-event bar `PREREGISTRATION.md` §4 sets, and it is Sports at 514 events** - where buying at the ask and holding loses **3 cents a contract** and sits on top of its own null. That is the only line on this page with a sample behind it, and it says the dull version of this does not work. Everything else here is two days of tape and is reported so nobody mistakes a 36-event number for a finding later.
+**The only category with a real sample is Sports: 528 events, -2.99c per contract.** That is the one line on this page with anything behind it, and it says the dull version does not work.
+
+Everything else is a few days of tape, reported so that nobody mistakes a 37-event number for a finding later.
+
+> ⚠ **ONE LIMITATION THE CRYPTO ROW EXPOSES, AND IT IS MINE NOT THE MARKET'S.** Crypto has **59401 markets in the index and only 130 that could be screened.** The entry rule takes the last two-sided quote at least 60 minutes before close - and a Kalshi crypto ladder is an HOURLY market, so 60 minutes before its close is at or before the moment it opens. **The fixed entry lead is simply wrong for fast families**, and the near-total absence of crypto here is an artefact of my parameter rather than a fact about crypto. Fixing it means an entry lead expressed as a FRACTION of each market's life, not a constant, and that is a change to make deliberately and re-run - not to tune until something looks good.
 
 ## 4. WHAT WAS NOT SCREENED, AND WHY — the honest half
 
