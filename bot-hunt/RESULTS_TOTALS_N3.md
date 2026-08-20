@@ -87,6 +87,86 @@ expensive to detect.
 
 ---
 
+## 3b. ⚠ THE OTHER TWO TOTALS FAMILIES, TESTED THE SAME HOUR — both dead too
+
+§4 below listed first-five-innings and team totals as untested. **They are not
+any more.** Same machinery, same day, `src/totals_family_n3.py`.
+
+| | game totals | **first five innings** | **team totals** |
+|---|---|---|---|
+| Kalshi family | `KXMLBTOTAL` | `KXMLBF5TOTAL` | `KXMLBTEAMTOTAL` |
+| rungs compared | 30 | **25** | **54** |
+| **games** | 9 | **9** | **9** (18 team-games) |
+| Pinnacle's margin | 3.96 | **3.98** | **5.44** |
+| median disagreement | 0.43¢ | **0.73¢** | **1.20¢** |
+| largest, any rung | 1.00¢ | **1.58¢** | **2.79¢** |
+| median fee | 1.71¢ | 1.69¢ | 1.68¢ |
+| **clearing the bar — buy** | **0 of 30** | **0 of 25** | **0 of 54** |
+| **— sell** | **0 of 30** | **0 of 25** | **0 of 54** |
+
+**109 rungs across three families, nine games, one hour. Not one clears.**
+
+**Team totals look like the interesting row and they are not — and working out
+why produced the best thing in this study.**
+
+They carry Pinnacle's **fattest margin measured anywhere** (5.44 out of 100,
+nearly three times its own moneyline) and the **largest apparent disagreement,
+2.79¢** — comfortably above the 1.68¢ fee. A careless reading stops there and
+reports a trade.
+
+**⚠ It is not a disagreement. It is Kalshi's own spread, and I nearly wrote it up
+as the former.** The biggest one in the study:
+
+| Yankees team total, over 5.5 | |
+|---|---|
+| Kalshi bid / ask | **32¢ / 36¢** (a 4¢ spread) |
+| sharp book's fair value for the over | **33.21¢** |
+| buy the over at 36¢ | **−2.79¢** — you pay 2.79¢ over fair |
+| so sell it? buying the under costs 100−32 = **68¢** | its fair is 66.79¢ → **−1.21¢** |
+
+**Both sides are overpriced at once, and that is not a contradiction — it is what
+a spread is.** The sharp price sits *between* Kalshi's bid and its ask, so you
+cross the spread whichever way you go.
+
+### The mechanism, measured across all three families
+
+| | rungs | **sharp fair sits INSIDE Kalshi's bid–ask** | median Kalshi spread |
+|---|---|---|---|
+| game totals | 30 | 17 (**57%**) | 1.0¢ |
+| first five | 25 | 17 (**68%**) | 2.0¢ |
+| team totals | 54 | 42 (**78%**) | 3.0¢ |
+| **all three** | **109** | **76 — 70 out of 100** | **2.0¢** |
+
+> **On 70 out of every 100 rungs, the sharp book's fair value is inside Kalshi's
+> spread.** There is no disagreement to trade; there is a spread to pay. And the
+> share rises exactly with the spread — 57% at a 1¢ spread, 78% at 3¢ — so **the
+> families that look like they disagree most are simply the ones with the widest
+> spread.** The apparent gap is the half-spread wearing a disguise.
+
+> **This is the fifth measured demonstration that a fat margin is not evidence of
+> room, and the first that also explains the mechanism.** Widest margin in the
+> study, widest apparent gap in the study — and the gap was Kalshi's own spread,
+> pointing at a trade that does not exist in either direction.
+
+**⚠ A caveat that belongs on the team-totals row specifically:** 54 rungs on 18
+team-games is **not 54 observations and not even 18.** The two teams in one game
+share a game state — a rain-shortened seven-inning game moves both — so the
+conservative count is **nine**, and it is the one printed.
+
+### And the coverage pattern is not a quirk of one family
+
+| | referenced by a sharp book | **not referenced** | fee on the unreferenced |
+|---|---|---|---|
+| game totals | 30, at 37–68¢ | **69**, at 15–97¢ | min **0.20¢** |
+| first five | 25, at 36–66¢ | **38**, at 23–98¢ | min **0.14¢** |
+| team totals | 54, at 30–70¢ | **72**, at 10–89¢ | min 0.63¢ |
+
+**Three families, same shape every time: the sharp book quotes only the middle
+of the ladder, and every cheap-to-trade rung is unreferenced.** **179 rungs**
+across the three have no free sharp price at all.
+
+---
+
 ## 4. What this does NOT kill
 
 `CLAUDE.md` §9c step 7 — the list, not a caveat.
@@ -95,11 +175,9 @@ expensive to detect.
   **untestable by this route**, because the reference does not exist.
 - **One reading, nine games, one hour of one day.** Totals move on weather,
   wind, and a late scratched pitcher. Nothing here sees any of that.
-- **First-five-innings totals.** Pinnacle carries **105** of them (`total p1`)
-  and Kalshi runs `KXMLBF5TOTAL` at 77 markets. **Never joined.**
-- **Team totals.** Pinnacle carries 126 (`team_total p0`); Kalshi runs
-  `KXMLBTEAMTOTAL` at 154 markets. **Never joined**, and it is the third-largest
-  baseball family on the board.
+- ~~First-five-innings totals~~ and ~~team totals~~ — **both tested the same
+  hour, see §3b. Both dead.** Struck through rather than deleted: a list of
+  untested things is only useful if you can see what came off it.
 - **Every non-baseball total.** `KXLIGAMXTOTAL` is on the recorder already.
 - **Any model at all.** This is a price comparison. It says nothing about
   whether recent scoring rate conditioned on opponent quality predicts anything
@@ -109,10 +187,13 @@ expensive to detect.
 
 ## 5. What would make me doubt this
 
-- **Nine games is small.** It is decisive only because the gap is **1.7× under
-  the bar at its very worst and 4× under at the median** — a result landing at
-  1.5¢ against 1.7¢ would prove nothing at this sample and I would not have
-  written it up.
+- **Nine games is small.** For game totals it is decisive only because the gap is
+  **4× under the bar at the median and still under it at the very worst**. ⚠ **I
+  first wrote "1.7× under at its worst" and that was only true of the game-totals
+  family** — team totals reach 2.79¢ against a 1.68¢ fee, *above* the bar, and
+  are dead for a different reason (§3b: the sharp price is inside the spread).
+  **A result landing at 1.5¢ against 1.7¢ would prove nothing at this sample** and
+  I would not have written it up.
 - **One hour of one day**, and an overnight hour at that. A getaway day, a
   doubleheader, or a scratched starter an hour before first pitch would not
   appear here.

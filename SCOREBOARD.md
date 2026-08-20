@@ -43,12 +43,12 @@ beside it.
 | Tennis — before the match | 6 | **0** | 4 | 2 |
 | Crypto | 9 | **0** | 8 | 1 |
 | Esports | 12 | **0** | 6 | 6 |
-| Baseball (MLB) | 6 | **0** | 3 | 3 |
+| Baseball (MLB) | 8 | **0** | 5 | 3 |
 | Soccer | 2 | **0** | 1 | 1 |
 | Weather | 2 | **0** | **2** | 0 |
 | Copy trading | 9 | **0** | 7 | 2 |
 | Arbitrage | 3 | **0** | 3 | 0 |
-| **TOTAL** | **57** | **0** | **40** | **17** |
+| **TOTAL** | **59** | **0** | **42** | **17** |
 
 **Nothing works. Nothing has ever worked.** And the 17 "not enough data" rows
 are not hidden winners — they are strategies whose result was so uncertain that

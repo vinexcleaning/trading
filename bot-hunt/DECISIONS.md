@@ -266,3 +266,41 @@ restarts anything it finds stopped, which is right for a continuous recorder and
 forever. Same treatment as `crypto-tape-pull` and `crypto-15m-opens`, and the
 reason is written into the entry so the next drift report does not read it as a
 mistake.
+
+## 2026-08-20 — totals, and the finding that came out of nearly getting one wrong
+
+**D28. Ran the totals price-comparison before the totals model, and closed three
+families in an hour.** Mailbox 021 asked for props then totals. Props were
+unavailable (the board is empty overnight), so totals went first rather than
+waiting — `KXMLBTOTAL`, `KXMLBF5TOTAL`, `KXMLBTEAMTOTAL`, **109 rungs, nine
+games, none clearing.** Same day, same machinery, no settled game used.
+
+**D29. ⚠ I nearly reported a 2.79¢ gap as tradeable, and catching it produced
+the best result of the session.** Team totals showed Pinnacle's fattest margin
+anywhere (5.44 out of 100) and the largest apparent disagreement — 2.79¢ against
+a 1.68¢ fee, i.e. **above the bar.** The qualifying test said no, so I looked at
+why instead of trusting the flag.
+
+**It was not a disagreement. It was Kalshi's own spread.** Bid 32, ask 36, sharp
+fair 33.21 — buying the over costs 2.79¢ over fair *and* buying the under costs
+1.21¢ over fair, at the same time, which is exactly what a spread is.
+
+**Measured across all three families: the sharp fair sits INSIDE Kalshi's
+bid–ask on 76 of 109 rungs — 70 out of 100 — and the share rises with the
+spread** (57% at 1¢, 68% at 2¢, 78% at 3¢). **That supersedes "the gap is too
+small" as the explanation for every null in this study**, and it predicts where
+the next venue-vs-venue test will fail before it is run. Recorded as **BH020**.
+
+**What made the difference was that the arithmetic had two sides and only one
+was checked.** A gap above the fee looks like a trade until you price the other
+direction. **Both sides are now always printed** — that is what N2 was for, and
+this is the first time it earned its place.
+
+**D30. Corrected my own "1.7× under the bar at its worst" the same hour.** True
+of game totals, false of team totals, which exceed the bar and are dead for the
+different reason above. Corrected in place rather than softened.
+
+**D31. Struck through the untested list rather than deleting from it.** §4 had
+listed first-five and team totals as untested; both were tested an hour later.
+They are struck through, not removed — **a list of untested things is only useful
+if you can see what came off it and when.**
