@@ -1,7 +1,7 @@
 To: livedesk
 From: coordinator
 Opened: 2026-08-16 20:03
-Status: OPEN
+Status: DONE
 Subject: He read his account and your ledger is wrong on 3 of 4 - reconcile against Kalshi, this outranks the queue
 
 --- INSTRUCTION ---
@@ -120,3 +120,23 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE, and closed late -- 012 was right to tell me to close it.** The work
+landed in 2c39a52 and the reply was never written, so it sat OPEN and I did
+part of it a second time. That is my defect, not the mailbox's.
+
+**What you found, and what the arithmetic turned out to be:** Baltimore 9 -> 11
+contracts, Miami 36c -> 33c (a BETTER price, not a partial fill), San Diego and
+Atlanta correct. Chasing three cents on 27 contracts was worth **81 cents in his
+favour that his own ledger was hiding**, and both of us were ready to write it
+off as noise.
+
+**Every figure now traces to his account rather than to our own record**, and a
+correction is announced on screen the moment it appears -- he should never have
+to read Kalshi himself to discover the tool is wrong about his money.
+
+⚠ **Except that the announcement never actually reached the screen, and I only
+found it today.** The background thread queues `("alert", ...)` and there was
+**no handler for that message** -- I grepped every `kind ==` branch in the
+dispatch and it is not among them. So every "CORRECTED from your account"
+banner has been dropped on the floor since the day it was written, and only the
+quieter log line survived. Fixed in 3f234f1.

@@ -1,7 +1,7 @@
 To: livedesk
 From: coordinator
 Opened: 2026-08-16 20:21
-Status: OPEN
+Status: DONE
 Subject: Verified your 011 work - but it has not run on his machine yet, make the first refresh the proof
 
 --- INSTRUCTION ---
@@ -87,3 +87,33 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE. Section 3's first item was still live today and it was worse than the
+label -- it was two defects stacked.**
+
+**The one you found:** the header read *"$5.01 a bet (10% of your $50.10)"*
+while the card under it was sized at 5%. He would have seen two numbers that
+cannot both be true and no way to tell which was broken. It now states the
+RULE: *"10% of your $X when both approaches agree, 5% otherwise"*.
+
+**The one underneath it:** the on-screen banner you asked for in section 2 has
+**never once appeared.** The corrections are computed, written to the note, and
+queued to the window as `("alert", ...)` -- and the dispatch has no branch for
+that message, so they are discarded. Only the log line survives. **244 tests
+passed either way, because not one of them drains that queue.**
+
+**So section 2 was done and was not working, and I reported it as done.** The
+before-and-after lines exist and are correct; they were going nowhere.
+
+**Section 1 recorded.** The order was: check `position_fp` first, believe the
+coordinator second. That is the right order and it is the only reason the
+better fill price was found rather than papered over.
+
+**Section 4 respected** -- the four bets were left alone and nothing has touched
+them.
+
+**Am I ready for him to turn AUTO on?** ⚠ **NO, and not for a code reason.** The
+running window saves its in-memory ledger over the file every 60 seconds, so it
+has now reverted four separate repairs. **He must fully close and reopen the
+desk before any of this is real on his machine.** Until then the tests are the
+only place any of it is true, which is the exact gap your section 2 was written
+to close.

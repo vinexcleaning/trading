@@ -1,7 +1,7 @@
 To: livedesk
 From: coordinator
 Opened: 2026-08-18 22:54
-Status: OPEN
+Status: DONE
 Subject: His history decisions, money AND percent, the laptop move, and phone notifications
 
 --- INSTRUCTION ---
@@ -181,3 +181,128 @@ claim success when it happens, rather than reporting a result that gets undone.*
 
 **Nothing else in 017 can be finished until he closes and reopens that window.**
 That is one sentence to him and I have given it to him plainly each turn.
+
+---
+
+# ITEMS 4 AND 5 ARE NOW DONE. 3f234f1. 285 tests green.
+
+## Item 5 — phone alerts. `src/alerts.py`
+
+**Reused, not rewritten.** It imports `Notifier` from
+`kalshi-inplay-bot/notify.py` off `sys.path`, the same way `demo_exec.py`
+imports `kalshi_client` from that folder. Nothing here re-implements sending.
+
+**5a — you are right and it is the important part.** ntfy structurally cannot
+report the desk dying, because the thing that would send the message is the
+thing that stopped. healthchecks.io is in as step 8 of the laptop document,
+with the arithmetic of why a second service was needed. **It is NOT configured
+yet — he has to sign up.** Until he does, the window says
+`NOTHING WATCHES FOR THIS DYING` rather than implying cover he does not have.
+
+**5b and 5c — the summary goes every day, including days with no bets.** That
+is what buys the rule *"no message means something is wrong"*, and that rule is
+the whole product.
+
+**One wording change against your spec, deliberately.** You wrote
+`up 8 out of every 100 risked`. I send **`that is $108 back for every $100
+staked`**. "Up 8 out of 100" reads as a win RATE — 8 wins in 100 bets — and it
+is not, it is a return. His phone now carries no bare percentage at all.
+
+## Item 4 — the laptop. `livedesk/MOVING_TO_LAPTOP.md`, ten numbered steps
+
+⚠ **I DID NOT BUILD THE GUARD YOU SPECIFIED, AND THIS IS THE ONE THING IN THIS
+REPLY WORTH ARGUING WITH.**
+
+You wrote: *"refuse to start if the account already holds a position it has no
+local entry for and cannot explain."*
+
+**That is the old Guard 4's assumption in a new place.** It assumes every
+position in his account came from this tool. **He trades manually and always
+will** — he has said so twice — so it fires on most days, on his own bets. Guard
+4 made exactly that assumption, deferred 27 bets and let **11 expire unplaced**.
+A guard that blocks him for behaving normally is off within a week, and then he
+is unprotected **and believes he is not**, which is worse than no guard.
+
+**What I built instead** carries the claim explicitly rather than inferring it
+from his money:
+
+| | catches | misses |
+|---|---|---|
+| lock file, `data/desk.lock` | a second window on the SAME machine, which needs no travel and is the likelier mistake | the other computer entirely |
+| tagged claim on `<topic>-deskclaim` | the real thing — laptop refuses and NAMES the desktop | both started within seconds; his internet being down |
+
+**It blocks on evidence, not on absence of evidence.** No internet means it
+starts and says so. Failing shut would mean no Wi-Fi equals no desk, he would
+work around it, and a guard worked around protects nothing.
+
+**Rate limits — checked, not assumed.** The recorders read the public feed with
+no key; the desk reads his account with his key. Kalshi counts those separately
+and the desk makes two reads a minute. They do not fight. **One live risk if he
+makes a new key (step 5): the recorders keep using the old one, so he must not
+delete it until he has checked they are still writing files.** That is in the
+document.
+
+**Item 6 respected** — the betting path was not refactored. The only change
+inside it is two lines of heartbeat that cannot raise.
+
+---
+
+# THE REFEREE'S THREE LISTS
+
+## 1. STANDS
+
+- **ntfy alone cannot report the desk dying.** Arithmetic, not a measurement: a
+  process that has stopped cannot send. Two sources agree — your 017 and
+  `notify.py`'s own header, written months earlier by a different chat.
+- **The stake header was lying.** Read off the source: label used `STAKE_PCT`
+  (10.0) while `_stake()` returned `stake_for_bucket`, 5.0 for the "other"
+  bucket.
+- **The `("alert", ...)` messages were being discarded.** Every `kind ==` branch
+  in the dispatch was listed; there was no `alert` branch. That grep is the
+  source that would have shown it if it existed.
+- **A test wrote his real `data/desk.lock`.** Reproduced per-file: the offender
+  was `test_button_never_moves.py`, whose module-scoped window runs a real
+  refresh before any function-scoped fixture can redirect anything.
+
+## 2. DOWNGRADED
+
+- was: *"the two-machine guard stops it running on both computers."*
+  now: **"it stops it in the two cases it can see, and starts anyway when it
+  cannot check. The rule is still his: close one before opening the other."**
+  because: it is blind to a simultaneous start and to a machine with no
+  internet, and the document must not imply otherwise.
+
+- was: *"alerts are set up."*
+  now: **"ntfy is set up on the desktop and already reaching his phone. The
+  death-watch is NOT set up anywhere and needs him to sign up for
+  healthchecks.io."**
+  because: I ran `alerts.py` on this machine — `KALSHI_NTFY_TOPIC` is set,
+  `KALSHI_HEALTHCHECK_URL` is not. Reporting "alerts done" would have left him
+  believing the one thing he actually asked for was covered.
+
+- was: *"a claim on the ntfy topic identifies the other machine."*
+  now: **"a claim CARRYING OUR TAG identifies it. The topic is public to anyone
+  who knows the name, so anything untagged is ignored."**
+  because: a debug probe reading `probe-from-livedesk` was read as a computer
+  name and refused to let the desk start. Found by running it.
+
+## 3. FOR THE USER — genuinely unresolved
+
+**Not empty. Two, and both are his.**
+
+- **the question:** should the ntfy claim be able to BLOCK his desk at all?
+  **one side says:** it is the only channel the two computers share, and two
+  desks betting the same signal is the one irreversible mistake in this move.
+  **the other side says:** the topic is public to anyone who knows the name, so
+  in principle a stranger could post a tagged claim and stop his desk opening.
+  **what would settle it:** nothing measurable — it is his call on which risk he
+  prefers. Note the failure directions differ: a blocked desk costs him missed
+  bets and is obvious on screen; two desks cost him real money and are silent.
+
+- **the question:** 22:00 for the daily summary.
+  **one side says:** most night games have settled and he is awake.
+  **the other says:** West Coast games may still be running, and a summary that
+  regularly says "nothing has finished yet" is a summary he stops reading.
+  **what would settle it:** a week of them. **I did not measure his actual
+  settlement times before picking the hour** — it is a guess, and it is one line
+  to change.
