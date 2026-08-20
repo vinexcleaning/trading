@@ -1,7 +1,7 @@
 <!-- COORDINATOR-STATE
-doing: coordinating with the factory chat over widening the Kalshi recorder - the measurements it needs are in STATUS.md; and watching whether the sharp bookmaker ever quotes strikeout prices, which gates the whole props idea
-left: the props kill-test finishes on its own in 48 hours and answers, for free, whether there is any window to trade in; P1 itself is pre-registered and not started
-needs: no
+doing: the player-prop price comparison is queued and fires by itself when Pinnacle reopens its prop board
+left: nothing else - totals closed across three families (109 rungs, 9 games, 0 clear), and the split with factory is proposed in STATUS.md
+needs: yes - 179 cheap-to-trade totals rungs have no free sharp reference. Worth a model to reach them when nothing cheap can check it?
 -->
 
 # HANDOFF.md — bot-hunt, session of 2026-08-04
