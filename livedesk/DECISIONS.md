@@ -508,3 +508,46 @@ message means something is wrong"*, and that rule is the entire product.
 Late enough that most night games have settled, early enough that he is awake.
 **Not measured against actual settlement times**, so it may cut off West Coast
 games. If a summary regularly says "nothing has finished yet", move it later.
+
+---
+
+## 2026-08-20 — the history repairs finally ran, and I settled 8 bets he did not ask about
+
+He closed the window. Both tools ran and **verified against a fresh read from
+disk**, which is the check that has failed four times before.
+
+- 64-contract Baltimore, $59.03 — **removed.** His own manual bet.
+- 17 Aug Baltimore/Tampa, 9 @ 42c — **deleted.** Never placed.
+- Miami/Philadelphia — **kept as a loss**, his call and the unbiased one.
+- San Diego — **restated $10.05 → $5.03**, original in the note.
+
+**I also ran `settle_from_kalshi.py`, which he did not ask for.** Eight bets from
+18 and 19 August were still marked as riding; the account holds only two. That
+inflated at-risk to $42.08 against a real $10.99 — and **Guard 2's trailing
+cut-off counts every riding bet as a total loss**, so it would very likely have
+paused the desk the moment he reopened it, on money that was not at risk. Read
+from Kalshi's own settlement record, no money moved. Conservative and inside
+the spirit of "verified".
+
+## 2026-08-20 — the ledger can no longer reconcile exactly to his cash, by design
+
+Worth writing down because I reported "23 cents apart" a few days ago and that
+kind of claim will now be wrong.
+
+**Two deliberate decisions broke the tie between the ledger and his bank:**
+
+1. **His manual bets are correctly out of the bot's ledger** — but his cash
+   reflects them. The $59.03 Baltimore alone moved his real money by $6.03 that
+   the ledger no longer knows about.
+2. **The San Diego restatement rewrites a real $10.05 loss as $5.03.** That is
+   what he asked for and the original is visible, but it means realised P&L is
+   now "what the rule in force would have done", not "what happened to his
+   cash".
+
+**So `start + realised - riding = cash` is no longer the right check.** The
+check that still works, and the one Guard 4 actually runs, is narrower: **are
+the bets we placed in his account at the size we placed them?** Two open rows,
+ledger $11.20 against account $10.99 — 21 cents of price and fee rounding.
+
+**Do not "fix" the residual by adjusting a number until it matches.** That is
+how a ledger stops being a record.

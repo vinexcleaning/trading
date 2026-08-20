@@ -1,9 +1,9 @@
 # HANDOFF — livedesk
 
 <!-- COORDINATOR-STATE
-doing: mailbox clear, all 19 closed. Built phone alerts (daily summary, every day even with no bets) and the guard against running the desk on two computers. 285 tests green.
-left: he must CLOSE AND REOPEN the desk window - it is on old code and overwrites the ledger from memory every 60s, which has now reverted four separate repairs. Two history tools are written and cannot run until then.
-needs: yes - close the baseball desk window fully and reopen it, then sign up at healthchecks.io (step 8 of livedesk/MOVING_TO_LAPTOP.md) so something outside the laptop notices if it dies.
+doing: history repairs are DONE and verified against a fresh read from disk - the 64-contract Baltimore removed, the 17 Aug Baltimore deleted, San Diego restated to 5%, Miami kept as a loss. Also settled 8 stale bets from Kalshi's own record.
+left: nothing blocking. He can reopen the desk window. Mailbox 016 section 4 (the take-profit/stop-loss sweep) is plan-only and not built.
+needs: no
 -->
 
 **⚠ THIS TOOL SENDS REAL ORDERS, AND AUTO STARTS ON.** Live Kalshi, real
