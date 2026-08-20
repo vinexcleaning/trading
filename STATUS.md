@@ -6231,3 +6231,140 @@ threads produced.**
 
 **Needs him:** the API key at `C:\Users\vinig\keys\brightdata.txt`.
 `extractor-apify/GET_THE_TOKEN.md`.
+
+---
+
+## Desktop, 2026-08-20 — the wrongly-closed claims fished: 9 specs, 11 duds, 28 that were never strategies
+
+`reopen` took mailbox 005, which asked for the 51 wrongly-closed claims to be
+turned into strategy specs for the factory. Deliverable:
+**[reopen/STRATEGY_SPECS.md](reopen/STRATEGY_SPECS.md)**.
+
+### ⚠ The pond is about five times smaller than the plan assumes
+
+`STRATEGY_FACTORY.md` Stage 2 lists the wrongly-closed claims as one of four idea
+sources — *"a stocked pond nobody has fished."* Fished:
+
+| the 48 wrongly-closed claims are | count |
+|---|---|
+| **a tradeable idea whose closure was wrong** | **9** |
+| dead anyway | **11** |
+| **not a strategy at all** — wording fix, bug record, data fact, enabler | **28** |
+
+**Twenty-eight are bookkeeping.** *"The parse bug that blocked crypto"*, *"three
+tennis cost bars are in circulation"*, *"this site serves the wrong country"* —
+all real, none of them a bet. **Turning those into specs would produce 28 pieces
+of fiction, and a factory measured on spec count is exactly the machine that
+would do it.**
+
+### The nine, ranked
+
+| id | claim | family | why the closure was wrong | cost |
+|---|---|---|---|---|
+| **RS-01** | C023 | crypto ladders | ledger says **"negative"**; artifact says **tie in 40 of 44 cells**, ranges ±5–15¢ against a 1–2¢ cost | one pull + re-run |
+| **RS-02** | C061 | `KXTEMPDCH` | the repo's **#1-ranked lead**, never measured against the market | a recorder job |
+| **RS-03** | CH074 | tennis set-winner vs match | closed by **arithmetic on one example**; the residual test was never run | one analysis run |
+| **RS-04** | S023 | tennis in-play | the **fade side**, computed on a voided event set and never re-run | one re-run, **laptop** |
+| **RS-05** | M025 | MLB player props | cancelled as unanswerable on **one feed**; a free two-sided prop is in our own probe | one probe + join |
+| **RS-06** | B023 | tennis pre-match | its own project says *"not demonstrated on **29 days**"* | **$9.99**, user's |
+| **RS-07** | S005/S006 | tennis buckets | "0 of 25 clear" where the rows print a floor of **3.7–9.9¢** against a **2¢** target | one re-run |
+| **RS-08** | C106c | tennis in-play | every negative result is about **price-visible** information; the **score** was never tested | forward time |
+| **RS-09** | C016 | crypto far wings | **61 minutes of one ladder on one day** | one query |
+
+**Three of the nine are expected to fail and say so inside the spec** — RS-07
+sharpens a floor without clearing a bar, RS-09 is probably right as closed, and
+RS-02 carries a hard prior against it (**C096**: a weather model against real ask
+prices on 600 sealed contracts, and it lost).
+
+### ⚠ And the duds, because a resurrection list that hides its own is worthless
+
+**Eleven were wrongly closed AND are dead anyway:** S021 · K001 (family dead on
+structure) · K012 (22–48 settlements ever against 481 needed) · M011 (settled
+properly since) · C088 (**C079**: informed flow dies inside 15 seconds against a
+~66-second visibility delay) · C011/C012 (broken parameters in a dormant bot) ·
+C082/C083 (defects in a pipeline C077 killed at 42,652 wallets) · SO006 (the data
+fell out of the retention window) · C001/C002 (a 75-leg ladder carries a ~1.9¢
+fee floor) · M027 (data claim false; **B009** still measures ITF as the worst
+tier at **−9.13¢ a trade**).
+
+### THE SPLIT between `reopen` and `factory` — agreed here so it survives a restart
+
+- **`reopen` writes specs ONLY from claims already in the ledgers.** Nine, ids
+  **`RS-01`–`RS-09`**. **It does not generate new ideas** — that is Stage 2's job.
+- **`factory` does not re-derive any of the nine.** A factory spec landing on the
+  same family carries a different mechanism or cites the `RS-` id.
+- **`reopen` audits factory specs on arrival** — each against `GUARDS.md`,
+  against the 612 recorded claims, and against the dud list. **Volume is exactly
+  when a bad premise slips through.**
+
+Filed to `factory` as **006**. **The factory has written no specs yet**, so the
+audit-on-arrival job has nothing in it and is waiting rather than running.
+
+
+---
+
+## THE TENNIS FAMILIES ARE OWNED BY THE `tennis` CHAT FOR THE FACTORY (2026-08-20)
+
+Per mailbox `tennis/016`. **Split agreed here so no spec is written twice.**
+
+| | |
+|---|---|
+| **spec id range** | **SF100-SF199 is tennis.** The factory keeps SF001-SF099 |
+| **families owned** | `KXITFMATCH` · `KXITFWMATCH` · `KXATPMATCH` · `KXWTAMATCH` |
+| written so far | SF100, SF101, SF102, SF103, SF110, SF111 — all validate against `strategy-factory/src/spec.py` |
+| generator | `tennis-paper-forward/factory/make_specs.py`, re-runnable |
+
+### THE ITF CAPACITY ANSWER, which shapes every ITF spec
+
+Measured on 16 days of the recorder's own book, 254,220 rows over 4,896 tennis
+tickers, with the new `common/capacity.py`. **Bucketed by hours before the
+market stopped quoting, because flat medians hide the whole story:**
+
+| family | >12h out | 2–12h | last 2h |
+|---|---|---|---|
+| `KXATPMATCH` | 3.8c / $1,002 | 1.4c / $6,642 | **1.2c / $9,599** |
+| `KXWTAMATCH` | 5.4c / $753 | 1.8c / $3,384 | **1.2c / $5,559** |
+| `KXITFWMATCH` | 16.9c / $18 | 7.9c / $63 | **3.9c / $163** |
+| `KXITFMATCH` | 19.9c / $13 | 9.7c / $46 | **5.6c / $124** |
+
+**Flat, `KXITFMATCH` reads 10.1c and $47 and looks dead. It is not dead — it is
+a different market in the last two hours.** "ITF is untradeable" and "ITF is
+tradeable only in the last two hours, at about $124 a click" are different
+findings and only the second is true.
+
+**Two things the factory should carry forward:**
+
+1. **ITF is where the tickers are and not where the money is.** 3,500 of 4,900
+   recorded tennis tickers, five times ATP and WTA combined — so **ranking
+   families by ticker count points straight at the least tradeable corner of the
+   exchange.**
+2. **The two ITF families are not one market.** The women's book is about 30%
+   tighter and 30% deeper than the men's in every bucket. Pooling them would
+   average a tradeable book together with a marginal one.
+
+### Two things for other owners
+
+> ⚠ **`strategy-factory/src/bestofn.py` re-implements `common/noskill.py`.**
+> It has its own `best_of`, `pct` and `exact_p_at_least`, and imports
+> `common.kalshi_fees` but not `common.noskill`. The shared module was committed
+> on 2026-08-18 specifically to stop a third copy — this repo took the fee
+> formula from 3 copies to 17 that way. **`factory`'s call, not mine, and I have
+> not touched it.** `common/noskill.py` carries a positive control (plant a real
+> 65% win rate and assert the band catches it) which a null-only test cannot.
+
+> ⚠ **`common/tests/test_no_legacy_kalshi_fields.py` is RED** on 13 files across
+> `bot-hunt`, `crypto`, `kalshi-market-scan`, `livedesk` and `market-selection` —
+> code reading Kalshi field names that no longer exist and read `None`, which
+> flows into arithmetic as a silent zero. **None are mine.** Adjudicating them
+> needs their owners, and a wrong all-clear would hide exactly the bug the guard
+> exists to catch. A repo-wide guard left red stops being read.
+
+### One convention I added rather than invented silently
+
+Specs SF102, SF110 and SF111 carry a non-standard **`prior_evidence`** block.
+`spec.py` requires 13 fields and permits extras, so these still validate.
+
+**It exists because "tried, and the test could not tell" and "never tried" are
+different**, and a factory that treats them alike will re-screen dead ideas
+forever and inflate the screened total it judges everything else against. **If
+`factory` wants a different shape for that, say so and I will convert them.**

@@ -1,9 +1,9 @@
 # HANDOFF — reopen
 
 <!-- COORDINATOR-STATE
-doing: nothing running - the chat now audits claims on arrival; M016b was written and checked the same day
-left: nothing queued. classify_closures.py flags new claims, check_delivery.py flags unrouted findings
-needs: no
+doing: nothing running - the 48 wrongly-closed claims are fished; 9 specs written, 11 duds named, 28 refused as not-strategies
+left: audit factory specs on arrival - the factory has written none yet, so this is waiting rather than running
+needs: yes - the $9.99 livetennisapi history is now blocking RS-06 and weakening RS-07. It answers T002, S018 and B023 at once and has no free substitute
 -->
 
 **As of 2026-08-08.** Written by the session that took mailbox message 001.
@@ -371,3 +371,38 @@ is one step along — **the listing said one thing, the contents said another.**
 
 `tennis` **006** is BLOCKED and correctly so — five of its seven items need the
 laptop or another chat's folder.
+
+## 2026-08-20 — mailbox 005: the wrongly-closed claims turned into specs
+
+Deliverable: **[STRATEGY_SPECS.md](STRATEGY_SPECS.md)**. Filed to `factory` as
+**006**. Split recorded in `STATUS.md`.
+
+**The tasking assumed 51 untapped strategies. There are nine.**
+
+| the 48 wrongly-closed claims are | count |
+|---|---|
+| a tradeable idea whose closure was wrong | **9** |
+| dead anyway | **11** |
+| **not a strategy at all** | **28** |
+
+**I refused to write the 28 up and recorded it as a refusal rather than an
+omission.** A factory judged on spec count would have produced 28 pieces of
+fiction from that list.
+
+**The nine:** RS-01 C023 crypto hold-to-settlement · RS-02 C061 weather vs the
+mid · RS-03 CH074 set-score decomposition · RS-04 S023 the fade side · RS-05
+M025 player props · RS-06 B023 player features · RS-07 S005/S006 tennis buckets ·
+RS-08 C106c the score thesis · RS-09 C016 the far wings.
+
+**Three of the nine are expected to fail and each says so inside its own spec.**
+
+**Guard checks ran on all nine.** #24 is quoted inside RS-03 and RS-09. #25 is
+why RS-03's feasibility was checked twice eight seconds apart, and why RS-05
+warns that re-running it today returns 403.
+
+### The split with `factory`
+
+`reopen` writes specs **only** from ledger claims, ids `RS-01`–`RS-09`, and
+generates no new ideas. `factory` does not re-derive the nine. `reopen` audits
+factory specs on arrival against the guards, the 612 claims and the dud list.
+**The factory has written no specs yet.**
