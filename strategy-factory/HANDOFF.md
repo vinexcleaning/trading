@@ -1,6 +1,6 @@
 <!-- COORDINATOR-STATE
-doing: recorder LIVE since 2026-08-18 05:14 UTC - 55 families at full order-book depth (European soccer and Valorant pinned on his own domain knowledge) and 3,438 at top of book; 22 specs, every testable category covered, 6 of them soccer built on his own answers
-left: build the screening engine with its placebo arm; then answer four unchecked assumptions that could void four specs outright, from rules text already on tape
+doing: screening engine BUILT and run - first report in reports/SCREEN-01.md, result is a null and nothing is promotable; recorder still LIVE at 55 families full depth and 3,438 top of book; 31 specs, 27 live
+left: get world-data (goal times, fixture lists) - 21 of 27 live specs are unscreenable without it; then pre-register any survivor before the forward test starts
 needs: no - his six soccer answers arrived and are all turned into specs. Next question comes after the screening engine produces something to ask about.
 -->
 
@@ -295,6 +295,51 @@ is LEDGER K003 exactly. `SF021`'s unit is the **match**.
 
 **Nothing narrowed.** Soccer went from 2 specs to 6 of 22; the depth tier stayed
 at 55 families. Coverage still 13 of 13.
+
+---
+
+## THE SCREENING ENGINE IS BUILT AND HAS RUN — `reports/SCREEN-01.md`
+
+**The result is a null and nothing may be promoted.** Real arm **-8.44%**
+against a matched null of **-3.05%**: buying indiscriminately at the recorded
+ask and holding did worse than the price paid implies. That is the answer
+`CLAUDE.md` §9c step 3 and `PREREGISTRATION.md` §7 both predicted in advance.
+
+**Only one category clears the 100-event bar** — Sports, 514 events, **-3
+cents a contract**, sitting on its own null. Every other row is a two-day
+sample and the verdict column says so *inside the verdict*, because the verdict
+is what gets quoted alone.
+
+### ⚠ The engine's first placebo was algebraically a no-op
+
+Twenty seeds returned **-8.44% every time, to the decimal**, because
+`total net = 100 × wins − Σask − Σfee` and a within-group shuffle preserves the
+win count while ask and fee never depended on the label. **The control could
+not move.** A placebo that cannot move is decoration, and it would have signed
+off on every future run. Replaced with a null that redraws each outcome from
+the market's own implied probability — and **two** nulls are now reported,
+because the mid null is advantaged by half a spread against entries that pay
+the ask.
+
+### Three findings that matter more than the return
+
+1. **7,230 of 52,643 settled markets had a two-sided quote an hour before
+   close.** GUARDS #24 across the whole exchange, not one sport. A strategy
+   cannot trade what is not quoted.
+2. **Financial books absorb about $38** — asking $50, $200 or $500 all return
+   about $38 when the recorded ladder is walked. A strategy that only exists in
+   the first thirty-eight dollars is a hobby.
+3. **21 of 27 live specs could not be screened, and almost all for the same
+   reason: they need data about the WORLD, not about the book** — goal times,
+   club identities, fixture lists, speech calendars. The recorder captures
+   prices beautifully and none of that. **That is now the biggest constraint on
+   this project and it was invisible until screening was attempted.**
+
+### A gap that blocked everything until it was found
+
+**The recorder never captured settlement outcomes.** It sweeps *open* markets,
+so a closed market simply stops appearing — the tape held every price and no
+result. `src/settle.py` now fetches them; **58,556 on file**.
 
 ---
 
