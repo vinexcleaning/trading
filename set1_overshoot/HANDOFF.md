@@ -234,7 +234,52 @@ The one most likely to bite: **fewer than 1 match in 5 getting any fill kills
 it regardless of the profit.**
 
 <!-- COORDINATOR-STATE
-doing: pulling 17,997 tennis matches of minute-by-minute prices so the fade can be re-tested as a maker; pipeline built and tested, waiting on the pull
-left: rerun p6_state, dump the tickers that fire, pull trades for those only, then run the three arms and the two placebos
+doing: nothing - the maker test is finished and written up in RESULTS_MAKER.md, ledger S026-S030
+left: nothing on this thread; the data cannot settle it and the shortfall is nine-fold
 needs: no
 -->
+
+---
+
+## FINISHED 2026-08-21 — read `RESULTS_MAKER.md`
+
+**The maker lever works and there is nothing under it.** 738 matches, fills from
+11.7M real trades. Taker **−2.35¢**; maker at the front of the queue **+0.83¢**,
+which is **inside the range luck produces**; maker at the back **−2.78¢**, which
+is **worse than luck**. **`UNDECIDABLE` — not a negative.**
+
+**And it will not become decidable.** Telling the observed +1.29% apart from
+luck needs **~8,000 matches**. Everything Kalshi will still serve is **902**.
+Forward collection runs **8.6 firing matches a day** — about **two and a half
+years**.
+
+**The check period was NOT opened and stays sealed** (decision 21): 164 matches
+cannot resolve what 738 could not.
+
+### If you pick this up, three things will save you a day each
+
+1. **S030 — the event set is conditioned on the future.** Every match in it is
+   one where the favourite collapsed, so **anything entering before the trigger
+   minute is reading the future.** It made a placebo return +12.40¢ against the
+   real signal's +0.83¢.
+2. **One clock.** The two tickers of a match have different detected play
+   starts — only 21.3% agree to the minute, 38.5% are over 30 minutes apart.
+   Read the favourite's path and derive the underdog by the mirror; both tests
+   in `test_p6_maker.py` fail if that regresses.
+3. **The paths start at `t0`.** Column *j* is minute *t0 + j*, so `deep:30@38`
+   means 38 minutes **into the match**. Indexing the raw market-life array still
+   produces numbers, and they are meaningless.
+
+### The pipeline, all of it re-runnable
+
+```
+py -3 src/p6_maker_pull.py --start 2026-06-14 --end 2026-08-21 --candles-only
+py -3 src/p6_state.py --build
+py -3 src/p6_triggers.py
+py -3 src/p6_maker_pull.py --trades-for data/triggers_all.txt
+py -3 src/p6_arms.py --grid
+```
+
+Data lives in `data/maker.db` (gitignored, ~4 GB): 35,994 markets, 13.2M
+candles, 11.7M trades. **4 markets never returned candles (0.011%) and are
+recorded as failed rather than treated as empty.**
