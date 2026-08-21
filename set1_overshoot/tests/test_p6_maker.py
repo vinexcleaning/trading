@@ -165,3 +165,55 @@ def test_entry_fires_on_a_planted_dip_and_not_on_a_flat_path():
     fired = M.find_entry(bid, ask, 71.0, 30.0, 38)
     assert fired > 0, "a planted 35c fall did not fire the rule"
     assert fired >= 60, "the rule fired BEFORE the fall it is supposed to detect"
+
+
+# ------------------------------------------------- the arm-level reporting
+sys.path.insert(0, str(ROOT / "src"))
+import p6_arms as A          # noqa: E402
+
+
+def _row(**kw):
+    base = dict(event="E", tier="main", series="KXATPMATCH", close="2026-07-01",
+                entry_min=40, p_r1=66, p_r2=34, ask_dog=70, dog_won=1,
+                r1_front=0, r1_back=0, r2_front=0, r2_back=0,
+                tape_f=True, tape_d=True)
+    base.update(kw)
+    return base
+
+
+def test_a_market_with_no_tape_is_not_counted_as_a_missed_fill():
+    """The difference between 'we rested and nobody came' and 'we have not
+    downloaded this market's trades yet'. Averaging them reports a
+    data-coverage rate wearing a fill rate's clothes."""
+    rows = [_row(tape_d=False), _row(tape_d=False), _row(r1_front=50)]
+    c = A.cell(rows, "r1", "front", {"KXATPMATCH": "quadratic"})
+    assert c["n"] == 1, "markets with no tape leaked into the denominator"
+    assert c["no_tape"] == 2
+    assert c["rate"] == 1.0
+
+
+def test_unfilled_attempts_stay_in_the_denominator_as_zero():
+    """Preregistration section 7 item 4. A maker strategy that counts only the
+    matches it got into is the classic maker backtest lie."""
+    rows = [_row(r1_front=50), _row(r1_front=0)]
+    c = A.cell(rows, "r1", "front", {"KXATPMATCH": "quadratic"})
+    assert c["n"] == 2 and c["filled"] == 1
+    assert c["rate"] == 0.5
+    # per-attempt must be half the per-fill number, not equal to it
+    assert c["attempt"][0] == pytest.approx(c["fill"][0] / 2)
+
+
+def test_the_taker_benchmark_pays_the_ask_and_not_the_bid():
+    """Pricing the taker at the bid hands it the whole spread for free, which
+    is the exact quantity this study is about. It read +8.79c against the
+    study's -1.10c before this was fixed."""
+    rows = [_row(p_r1=66, ask_dog=70, dog_won=1)]
+    (mean_pnl, _lo, _hi), mean_px = A.taker_cell(rows)
+    assert mean_px == 71, "the taker was not charged the ask plus slippage"
+    assert mean_pnl < 100 - 66, "the taker paid less than the ask"
+
+
+def test_the_taker_benchmark_loses_when_the_underdog_loses():
+    rows = [_row(ask_dog=70, dog_won=0)]
+    (mean_pnl, _l, _h), _ = A.taker_cell(rows)
+    assert mean_pnl < -70, "a losing taker bet must cost the price plus fee"

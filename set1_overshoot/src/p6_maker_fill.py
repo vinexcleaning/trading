@@ -152,7 +152,12 @@ def iter_events(con, depth=30.0, min_minute=38, tiers=None,
     """Every match where the entry rule fires. Shared by the fill model and by
     the trigger dump, so the two cannot drift apart.
 
-    Yields (event, fav_row, dog_row, entry_col, p_r1, p_r2).
+    Yields (event, fav_row, dog_row, entry_col, p_r1, p_r2, ask_dog).
+
+    `ask_dog` is what a TAKER would have to pay to buy the underdog. It is
+    returned because the benchmark needs it and because pricing the taker
+    at the bid understates its cost by the whole spread -- which is the
+    entire quantity this study is about.
 
     `before` / `since` gate on close_time, which is how the selection period is
     kept separate from the untouched check period. Passing neither returns
@@ -193,14 +198,14 @@ def iter_events(con, depth=30.0, min_minute=38, tiers=None,
         if pf is None or pd_ is None:
             continue
         fb, fa = pf
-        db_, _da = pd_
+        db_, da = pd_
 
         e = find_entry(fb, fa, pre_mid_fav, depth, min_minute)
         if e < 0:
             continue
-        if db_[e] < 0 or fa[e] < 0:
+        if db_[e] < 0 or fa[e] < 0 or da[e] < 0:
             continue
-        yield ev, fav, dog, e, int(db_[e]), int(fa[e])
+        yield ev, fav, dog, e, int(db_[e]), int(fa[e]), int(da[e])
 
 
 def run(con, depth=30.0, min_minute=38, rest_min=REST_MIN, tiers=None,
@@ -210,7 +215,7 @@ def run(con, depth=30.0, min_minute=38, rest_min=REST_MIN, tiers=None,
     fee_type = dict(con.execute("select series, fee_type from fees"))
     out = []
 
-    for ev, fav, dog, e, p_r1, p_r2 in iter_events(
+    for ev, fav, dog, e, p_r1, p_r2, ask_dog in iter_events(
             con, depth, min_minute, tiers, pre_spread_max, before, since):
 
         t_lo_f, t0_f = fav[4], fav[5]
@@ -233,9 +238,15 @@ def run(con, depth=30.0, min_minute=38, rest_min=REST_MIN, tiers=None,
         dog_won = 1 if dog[8] == "yes" else 0
 
         out.append({
+            # ⚠ "no trades on file" and "rested and never filled" are DIFFERENT
+            # and must never be added together. A market whose tape has not
+            # been pulled looks exactly like a market where nobody traded, and
+            # averaging the two reports a fill rate that is really a
+            # data-coverage rate. GUARDS #15: absent is not zero.
+            "tape_f": len(tape_f) > 0, "tape_d": len(tape_d) > 0,
             "event": ev, "tier": fav[3], "series": fav[2],
             "close": fav[9], "entry_min": e,
-            "p_r1": p_r1, "p_r2": p_r2,
+            "p_r1": p_r1, "p_r2": p_r2, "ask_dog": ask_dog,
             "r1_front": r1[0], "r1_back": r1[1],
             "r2_front": r2[0], "r2_back": r2[1],
             "dog_won": dog_won,
