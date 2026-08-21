@@ -10,14 +10,22 @@ amendments, all before any result existed. Data audit in `MAKER_DATA_AUDIT.md`.
 **Waiting in the queue instead of paying to jump it really does remove the cost
 — about 3 cents a contract, which is exactly what the study said the cost was.
 And it buys nothing, because the edge underneath it is not distinguishable from
-zero.** Being a patient buyer turns a bet that loses 2.35¢ into a bet that makes
-0.83¢ if you are at the front of the queue and loses 2.78¢ if you are at the
+zero.** Measured on 738 matches between 2026-06-14 and 2026-08-01, being a patient
+buyer turns a bet that loses 2.35¢ a contract into one that makes 0.83¢ if you are at the front of the queue and loses 2.78¢ if you are at the
 back. **We cannot observe which**, and the optimistic end sits inside the range
 that pure luck produces.
 
 **This does not kill the idea on evidence. It is `UNDECIDABLE`** (GUARDS #21):
 the test could not tell, and saying otherwise in either direction would be the
 mistake this repo has recorded more than any other.
+
+**And the more useful half of the answer is §8: it is not going to become
+decidable.** Telling a +1.29% effect apart from luck needs about **8,000
+matches**. The entire universe Kalshi will still hand over holds **902**, the
+history cannot be extended backwards because the retention window moves forward
+a day every day, and collecting forward runs at **8.6 firing matches a day** —
+**about two and a half years** to get there. **No amount of cleverness with the
+existing data closes a nine-fold shortfall.**
 
 ---
 
@@ -133,7 +141,7 @@ a grid in which nothing clears zero, on the smallest sample in the grid.
 
 ## 6. Placebos, and one that failed for a reason worth keeping
 
-**P1 — shuffle which side was the aggressor.** Real +0.83¢, shuffled +0.66¢.
+**P1 — shuffle which side was the aggressor.** Real +0.83¢, shuffled +0.66¢ (738 matches, 2026-06-14 → 08-01).
 **Nothing collapsed, because there was nothing to collapse.** With the real
 result inside the no-skill range this test has no power here; it is reported as
 uninformative rather than as a pass.
@@ -175,18 +183,44 @@ Pre-match quote gate at 5¢ instead of 10¢: +0.44 [−3.07, +3.80] on 647 match
 | 2 | a placebo produces an edge → void | **Passed**, after P2 was rebuilt twice |
 | 3 | fewer than 1 match in 5 fills → drop | **Passed comfortably** — 80–95% |
 | 4 | positive on selection, ≤ 0 on the check period | **Not evaluated.** See below |
-| 5 | effective sample under 100 matches → UNDECIDABLE | 738 matches, clustered at the match |
+| 5 | effective sample under 100 matches → UNDECIDABLE | 738 matches, counted one per match rather than one per fill |
 
-### Why the check period was NOT opened
+### Why the check period was NOT opened, with the arithmetic
 
-**Because opening it would spend the one evaluation on a question it cannot
-answer.** The check period holds **164 firing matches** against the selection
-period's 738 — and 738 could not separate a ~1% effect from luck. 164 has no
-chance of it.
+**Not asserted — computed.** Using `common/noskill.py` on the real entry-price
+distribution, here is how wide the range of pure luck is at each sample size,
+against an effect of about **+1.29%**:
 
-**§5 allows one evaluation and no second pass.** Spending it here would leave
-nothing for a future version of this idea that actually has something to test.
-**The check period stays sealed.** Logged in `DECISIONS.md`.
+| matches | where luck alone lands, 9 times in 10 | effect visible? |
+|---|---|---|
+| **164** — the whole check period | −8.35% to +7.99% | no, by a factor of six |
+| **738** — the selection period | −3.82% to +3.92% | no |
+| 5,000 | −1.52% to +1.51% | no |
+| **8,000** | −1.23% to +1.23% | **yes, just** |
+| 20,000 | −0.76% to +0.76% | comfortably |
+
+**So the check period could neither confirm nor refute this**, and §5 allows one
+evaluation and no second pass. Spending it here would leave nothing for a future
+version of the idea that actually has something to test. **The check period
+stays sealed.** Logged in `DECISIONS.md` as decision 21.
+
+### ⚠ AND THIS IS THE REAL RESULT: the question is not answerable yet
+
+**You would need roughly 8,000 matches. The entire retrievable universe holds
+902** — 738 in the selection period and 164 in the check period, at
+`deep:30@38`, between 2026-06-14 and 08-20.
+
+**The history cannot be extended backwards.** Kalshi's retention window ends at
+2026-06-14 and moves forward a day every day; everything older is gone for good.
+
+**So the only route is forward, and it is slow.** The check period ran 19 days
+and produced 164 firing matches — **8.6 a day**. At that rate, 8,000 matches is
+**about two and a half years** of collecting.
+
+**That is a far more useful answer than "undecidable".** It says: no amount of
+cleverness with the existing data will settle this, the shortfall is roughly
+nine-fold, and the only cure is time nobody is going to spend on a strategy
+whose central estimate is already sitting on zero.
 
 ## 9. What was NOT tested — CLAUDE.md §9c step 7
 
