@@ -360,3 +360,45 @@ another**, and both must be said: the strict pessimistic rule I promised is no
 longer the single reported number, but the pessimistic case is retained as the
 lower bound rather than abandoned, and the answer is now stated as a range
 instead of a point estimate that would have been false precision.
+
+---
+
+# AMENDMENT A4 — 2026-08-20, before any result exists
+
+**A free parameter I set in code and never declared: how long the order rests.**
+
+§7 pre-committed the latency (one minute-bar) and the no-chasing rule, but not
+the duration. A resting order has to be given up on at some point, and the
+choice changes the fill rate directly — so leaving it undeclared would have let
+me pick it after seeing the answer.
+
+**Declared now: the order rests for 30 minutes from the entry minute**, then is
+cancelled and the match is recorded as a no-trade. **Sensitivities at 10 and
+120 minutes are run and reported**, and if they disagree that is reported as a
+disagreement.
+
+**Why 30 and not something else.** The study's own entry is a stopping time
+followed by 3 minutes of stabilisation, and the median match in this data runs
+about two hours. Thirty minutes is long enough to be a real attempt at the
+price and short enough that the order is not still sitting there in a different
+phase of the match. **It is a judgment, it is declared before the answer, and
+the two sensitivities bracket it.**
+
+## ⚠ What I have already seen, declared rather than concealed
+
+Dry runs were executed while building the machinery, on a tape covering **500 of
+3,212 markets** and with a taker benchmark that was **wrong** (priced at the bid
+rather than the ask, since fixed). What I saw:
+
+- fill rates in the region of **4%**, which turned out to be mostly a
+  data-coverage artefact — markets with no tape on disk were being counted as
+  unfilled;
+- per-attempt figures within a few tenths of a cent of zero, with confidence
+  ranges crossing zero in every cell;
+- the underdog winning about **70%** of matches that fired.
+
+**None of that is a result and none of it caused a parameter to be chosen.**
+The resting duration of 30 minutes was set in code before any of it was run.
+It is recorded here because a pre-registration that hides a prior look is
+worthless, and because the honest test of that rule is whether I disclose the
+looks that were inconvenient as well as the ones that were not.
