@@ -199,9 +199,27 @@ def placebos(con, depth, min_minute, rest_min, pre_spread_max, before):
         print("  ⚠ THE SHUFFLE CHANGED NOTHING. That is a broken placebo, not "
               "a pass.\n    The repo's first placebo was algebraically a no-op "
               "and passed vacuously.")
-    print("\nP2 -- rest at a random minute with no signal at all.")
-    print("     Reported by --placebo-random, which is a separate run so that "
-          "it cannot\n     quietly share this one's event list.")
+    ctrl_file = ROOT / "data" / "control_tickers.txt"
+    if not ctrl_file.exists():
+        print("\nP2 -- SKIPPED: no control ticker list on disk.")
+        return
+    ctrl_tk = [x.strip() for x in ctrl_file.read_text().split() if x.strip()]
+    rand = F.run_control(con, ctrl_tk, min_minute=min_minute,
+                         rest_min=rest_min, pre_spread_max=pre_spread_max,
+                         before=before)
+    print(f"\nP2 -- a RANDOM MARKET (one that fires at no depth) at a RANDOM")
+    print("     minute. No signal anywhere. MUST return nothing.")
+    print(f"     control universe: {len(rand):,} matches")
+    print(f"  {'':10}{'real fill':>10}{'control':>10}"
+          f"{'real /attempt':>16}{'control':>16}")
+    for rep in ('r1', 'r2'):
+        a_ = cell(real, rep, 'front', fee_types)
+        b_ = cell(rand, rep, 'front', fee_types)
+        print(f"  {rep.upper() + ' front':<10}{a_['rate']:>10.1%}"
+              f"{b_['rate']:>10.1%}{a_['attempt'][0]:>+15.2f}c"
+              f"{b_['attempt'][0]:>+15.2f}c")
+    if not rand:
+        print("  !! P2 produced no events -- a broken placebo, not a pass.")
 
 
 def main():

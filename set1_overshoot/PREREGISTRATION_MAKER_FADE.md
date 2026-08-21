@@ -402,3 +402,57 @@ The resting duration of 30 minutes was set in code before any of it was run.
 It is recorded here because a pre-registration that hides a prior look is
 worthless, and because the honest test of that rule is whether I disclose the
 looks that were inconvenient as well as the ones that were not.
+
+---
+
+# AMENDMENT A5 — 2026-08-21. Placebo P2 was reading the future, and so was I.
+
+**§9 pre-registered P2 as "rest a bid on a RANDOM MARKET at a random minute".
+When I built it I changed that to "the SAME matches, random minute", believing a
+fixed event set was a tighter control. It is the opposite, and this amendment
+restores the original.**
+
+## What happened
+
+P2 returned **+12.40¢ per attempt against the real signal's +0.83¢.** The
+placebo beat the thing it was controlling for, which under §10 criterion 2
+voids the run.
+
+**It was not the pipeline. It was the placebo.** Three separate look-aheads,
+found in order:
+
+1. It read the **underdog's own price path**, reintroducing the clock
+   misalignment the main path had just been fixed for.
+2. It drew a minute anywhere up to 200, so it often rested **after the match had
+   finished**, where the winner's book is pinned near 100¢ and the loser's near
+   0¢. Contracts bought at ~10¢ "won" 35.8% of the time.
+3. **And the real one, which survived fixing the first two: the event set is
+   conditioned on the favourite collapsing later.** Entering at a random minute
+   on those matches buys the underdog cheap — average 48¢ — before a fall the
+   selection has already guaranteed. Those matches see the underdog win 69.9%.
+   Buying a 48¢ contract that wins 70% of the time is +22¢, and none of it is
+   skill.
+
+## The lesson, which is bigger than this placebo
+
+> **Every match in the event set is a match where the favourite collapsed. Any
+> analysis that enters BEFORE the trigger minute on those matches is reading the
+> future**, however innocent the entry rule looks.
+
+That is a live trap for anything built on this data later, not a one-off bug.
+
+## The change, binding
+
+**P2 is now what §9 originally said: a random market at a random minute.** The
+control universe is markets that fire at **no depth in the grid**, which is what
+"a random market" has to mean once the firing markets are known to be special.
+6,471 eligible tickers never fire; **700 were sampled at random and their trade
+tapes pulled specifically to serve as this control**, so the control is not
+borrowing the treatment group's data.
+
+**The random minute is also now drawn inside the match's own inferred duration**,
+so it cannot rest after settlement.
+
+**Nothing about the three registered arms changed**, and no arm result was
+looked at between finding the failure and fixing it — the diagnosis was run on
+entry prices and win rates by price bucket, not on P&L.

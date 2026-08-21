@@ -163,8 +163,9 @@ def iter_events(con, depth=30.0, min_minute=38, tiers=None,
     kept separate from the untouched check period. Passing neither returns
     BOTH, which is only correct for a count.
     """
+    # `dur` is appended LAST so existing positional indices do not shift.
     q = ("select ticker, event_ticker, series, tier, t_lo, t0, pre_bid, "
-         "pre_ask, result, close_time from state where ok=1 "
+         "pre_ask, result, close_time, dur from state where ok=1 "
          "and pre_spread <= ?")
     args = [pre_spread_max]
     if tiers:
@@ -203,9 +204,34 @@ def iter_events(con, depth=30.0, min_minute=38, tiers=None,
         e = find_entry(fb, fa, pre_mid_fav, depth, min_minute)
         if e < 0:
             continue
-        if db_[e] < 0 or fa[e] < 0 or da[e] < 0:
+        if fb[e] < 0 or fa[e] < 0:
             continue
-        yield ev, fav, dog, e, int(db_[e]), int(fa[e]), int(da[e])
+
+        # ⚠ ONE CLOCK, AND THE REASON IS A BUG THAT INVALIDATED A WHOLE TABLE.
+        #
+        # Each ticker has its OWN t_lo and its OWN detected play start, so
+        # column `e` of the favourite's path and column `e` of the underdog's
+        # path are DIFFERENT MOMENTS IN REAL TIME. Measured over 8,390 paired
+        # tickers: only 21.3% share a play start to the minute, 38.5% are more
+        # than 30 minutes apart, and the worst is 4,718 minutes.
+        #
+        # Reading the underdog's price at the favourite's column produced
+        # underdogs priced under 20c in matches where the favourite had
+        # supposedly just fallen 30c -- which would need a pre-match favourite
+        # above 110c. It also inflated the apparent mispricing to +7.95pp
+        # against the study's +2.53pp.
+        #
+        # So: the favourite's path is the only clock. The underdog's quotes are
+        # derived by the mirror identity, which is measured as median 0c and
+        # mean 0.81c apart from the real thing, and which by construction cannot
+        # be misaligned. `_mirror_error` reports the cost of that choice on the
+        # pairs where the clocks DO agree.
+        p_r1 = 100 - int(fa[e])          # underdog's best bid
+        ask_dog = 100 - int(fb[e])       # what a taker pays for the underdog
+        p_r2 = int(fa[e])                # favourite's best ask, where R2 rests
+        if not (0 < p_r1 < 100 and 0 < ask_dog < 100):
+            continue
+        yield ev, fav, dog, e, p_r1, p_r2, ask_dog
 
 
 def run(con, depth=30.0, min_minute=38, rest_min=REST_MIN, tiers=None,
@@ -221,29 +247,44 @@ def run(con, depth=30.0, min_minute=38, rest_min=REST_MIN, tiers=None,
 
         if random_entry:
             # PLACEBO P2. Same matches, same tapes, same fill rules -- only the
-            # TIMING is destroyed. This is a tighter control than resting on a
-            # random market, because the event set is held fixed: anything that
-            # survives here is coming from the machinery or from the market,
-            # and not from the signal. It MUST return nothing.
+            # TIMING is destroyed.
+            #
+            # ⚠ THIS BLOCK HAD TWO LOOK-AHEADS OF ITS OWN, and they made the
+            # placebo "beat" the real signal (+10.47c against +0.83c), which
+            # looked like a broken pipeline and was really broken placebo code:
+            #
+            #   1. it read the UNDERDOG's own path, reintroducing the clock
+            #      misalignment the main path had just been fixed for;
+            #   2. it drew a minute anywhere up to 200, so it frequently rested
+            #      AFTER the match had finished, where the winner's book is
+            #      pinned near 100 and the loser's near 0. Buying at a price
+            #      that already encodes the result is not a placebo, it is a
+            #      look-ahead: contracts at ~10c "won" 35.8% of the time.
+            #
+            # Now: same mirror derivation as the real arm, and the minute is
+            # drawn inside the match's own inferred duration.
             pf2 = load_paths(con, fav[0])
-            pd2 = load_paths(con, dog[0])
-            if pf2 is None or pd2 is None:
+            if pf2 is None:
                 continue
-            hi = min(len(pf2[0]) - 1, 200)
+            fb2, fa2 = pf2
+            dur = fav[10] if len(fav) > 10 and fav[10] else -1
+            hi = min(len(fb2) - 1, 200, dur if dur and dur > 0 else 200)
             if hi <= min_minute:
                 continue
             e2 = int(rng.integers(min_minute, hi))
-            if pd2[0][e2] < 0 or pf2[1][e2] < 0 or pd2[1][e2] < 0:
+            if fb2[e2] < 0 or fa2[e2] < 0:
                 continue
-            e = e2
-            p_r1 = int(pd2[0][e2])
-            p_r2 = int(pf2[1][e2])
-            ask_dog = int(pd2[1][e2])
+            p1 = 100 - int(fa2[e2])
+            ad = 100 - int(fb2[e2])
+            if not (0 < p1 < 100 and 0 < ad < 100):
+                continue
+            e, p_r1, p_r2, ask_dog = e2, p1, int(fa2[e2]), ad
 
-        t_lo_f, t0_f = fav[4], fav[5]
-        t_lo_d, t0_d = dog[4], dog[5]
-        t_start_f = t_lo_f + (t0_f + e) * 60
-        t_start_d = t_lo_d + (t0_d + e) * 60
+        # The entry happens at ONE moment in real time, so both tapes are
+        # windowed on the same absolute timestamp. Deriving the underdog's
+        # window from its own t0 was the same misalignment bug.
+        t_start = fav[4] + (fav[5] + e) * 60
+        t_start_f = t_start_d = t_start
 
         tape_f = trades_for(con, fav[0])
         tape_d = trades_for(con, dog[0])
@@ -343,3 +384,83 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+def run_control(con, tickers, min_minute=38, rest_min=REST_MIN,
+                pre_spread_max=10, seed=101, before=None):
+    """PLACEBO P2, as it was actually pre-registered: a RANDOM MARKET at a
+    RANDOM MINUTE, with no signal anywhere.
+
+    ⚠ WHY THE FIRST VERSION WAS WRONG, because it is the more useful lesson.
+    I first implemented P2 as "the same matches, random minute", thinking a
+    fixed event set was a tighter control. It is the opposite. **The event set
+    is conditioned on the favourite collapsing later.** Entering at a random
+    minute on those matches therefore buys the underdog cheap, BEFORE a fall
+    that the selection has already guaranteed. It returned +12.40c against the
+    real signal's +0.83c -- not a broken pipeline, a placebo that was reading
+    the future.
+
+    So the control universe here is markets that fire at NO depth in the grid,
+    which is what "a random market" has to mean once the firing markets are
+    known to be special.
+    """
+    rng = np.random.default_rng(seed)
+    fee_type = dict(con.execute("select series, fee_type from fees"))
+    out = []
+    want = set(tickers)
+
+    q = ("select ticker, event_ticker, series, tier, t_lo, t0, pre_bid, "
+         "pre_ask, result, close_time, dur from state where ok=1 "
+         "and pre_spread <= ?")
+    args = [pre_spread_max]
+    if before:
+        q += " and close_time < ?"
+        args.append(before)
+    rows = [r for r in con.execute(q, args) if r[0] in want]
+
+    by_ev = {}
+    for r in rows:
+        by_ev.setdefault(r[1], []).append(r)
+
+    for ev, mk in by_ev.items():
+        if len(mk) != 2:
+            continue
+        mk.sort(key=lambda r: (-(r[6] + r[7]), r[0]))
+        fav, dog = mk[0], mk[1]
+        if (fav[6] + fav[7]) / 2.0 <= 50:
+            continue
+        pf = load_paths(con, fav[0])
+        if pf is None:
+            continue
+        fb, fa = pf
+        dur = fav[10] if fav[10] else -1
+        hi = min(len(fb) - 1, 200, dur if dur > 0 else 200)
+        if hi <= min_minute:
+            continue
+        e = int(rng.integers(min_minute, hi))
+        if fb[e] < 0 or fa[e] < 0:
+            continue
+        p_r1, p_r2 = 100 - int(fa[e]), int(fa[e])
+        ask_dog = 100 - int(fb[e])
+        if not (0 < p_r1 < 100 and 0 < ask_dog < 100):
+            continue
+
+        t_start = fav[4] + (fav[5] + e) * 60
+        tape_f = trades_for(con, fav[0])
+        tape_d = trades_for(con, dog[0])
+        qa = QUEUE_AHEAD.get(fav[3], 1500)
+        r1 = fill_from_tape(tape_d, t_start, t_start + rest_min * 60,
+                            p_r1, "no", 1_000_000, qa)
+        r2 = fill_from_tape(tape_f, t_start, t_start + rest_min * 60,
+                            p_r2, "yes", 1_000_000, qa)
+        out.append({
+            "tape_f": len(tape_f) > 0, "tape_d": len(tape_d) > 0,
+            "event": ev, "tier": fav[3], "series": fav[2], "close": fav[9],
+            "entry_min": e, "p_r1": p_r1, "p_r2": p_r2, "ask_dog": ask_dog,
+            "r1_front": r1[0], "r1_back": r1[1],
+            "r2_front": r2[0], "r2_back": r2[1],
+            "dog_won": 1 if dog[8] == "yes" else 0,
+            "fee_type_fav": fee_type.get(fav[2], "?"),
+            "fee_type_dog": fee_type.get(dog[2], "?"),
+        })
+    return out
