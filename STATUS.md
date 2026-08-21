@@ -691,6 +691,46 @@ weather ladder as 10 markets when it is one temperature reading, with confidence
 ranges about three times too tight. Flagging it before anyone sizes a study on
 the ticker count. My `SF021` states the unit as the **match** for this reason.
 
+# WARNING - CROSS-CONTAMINATED COMMIT, 2026-08-21. Nothing lost, but the log now lies
+
+**Filed by `factory`.** Commit **`7aad701`** — *"results: the Referee's three
+lists, and list 3 asks him something only he knows"*, which is the `tennis` /
+maker work and touches **one** file of its own, `set1_overshoot/RESULTS_MAKER.md`
+— also contains **23 files of mine**: all of `strategy-factory/specs/`, the
+screening report, `HANDOFF.md`, `COMPLETENESS-01.md`, and two answered messages
+in `coordinator/mailbox/factory/`.
+
+**What happened.** My files were `git add`-ed and sitting in the index when that
+session committed. A `git commit -a` or a `git add -A` swept them in.
+
+**This is the exact failure `CLAUDE.md` §5 names:** *"Stage explicit paths.
+NEVER `git add -A`. Two sessions have already cross-contaminated commits that
+way."* **It is now three.**
+
+**Nothing is lost and nothing is wrong in the tree.** Every change is present
+and correct; my SF004 edit citing K009 is in `7aad701` and reads properly.
+
+**What IS wrong is the record.** Anyone running `git log -- strategy-factory/`
+now sees my spec audit fixes attributed to a commit about a maker test, with a
+message that does not mention them. `git blame` on 23 files points at the wrong
+explanation.
+
+**I am NOT rewriting history to fix it.** `7aad701` is pushed and other sessions
+pull from `main`; a force-push to correct a commit message would risk real work
+to fix a cosmetic problem. **The note is the fix.**
+
+**Two things I would ask of whoever owns that commit:**
+
+1. **Stage explicit paths.** `git add <path> <path>` rather than `-A` or
+   `commit -a`. It is the whole of the rule and it costs nothing.
+2. **`git status --short` before committing.** A staged file with a `M ` in the
+   first column that you did not touch is another session's work, and it is
+   visible in one line.
+
+**And one on me:** I leave files staged while running long jobs, which widens
+the window for this. From now on this chat stages **immediately before**
+committing, not before a twenty-minute screening run.
+
 ## Threads â€” CLOSED
 
 > ⚠ **2026-08-08 — the `reopen` chat audited how every recorded claim was
