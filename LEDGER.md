@@ -14,18 +14,22 @@ asserts a number and no artifact backs it, the row says `NONE` and the status is
 | **UNVERIFIED** | Asserted somewhere, no artifact findable. Machinery may exist; it was never run at real n. |
 | **BROKEN** | Artifact exists but carries a defect that invalidates the number. |
 | **RETRACTED** | Stated confidently, corrected later. **Read these first.** |
+| **UNDECIDABLE** | The test could not tell. **Not a negative.** GUARDS #21 — a two-valued verdict turns "could not tell" into "no", which is how a live idea gets deleted. |
 
 ## Tally
 
 | Status | Count |
 |---|---|
 | **RETRACTED** | **52** |
-| SETTLED | 184 |
+| SETTLED | 188 |
+| **UNDECIDABLE** | **1** |
 | SUGGESTIVE | 38 |
 | UNVERIFIED | 30 |
 | BROKEN | 12 |
 | CANCELLED | 1 |
-| **Total** | **317** |
+| **Total** | **322** |
+
+**Updated 2026-08-21**: **+5 rows** (S026–S030) from `set1_overshoot`'s maker test. **RETRACTED stays at 52** — S026 is `UNDECIDABLE`, which is a verdict about the test and not a correction of an earlier claim, so nothing is retracted. One row (S030) is a **design trap** rather than a result and is worth reading before building anything else on this data.
 
 **Updated 2026-08-18**: **+3 rows** from `strategy-factory`'s first session — Section 11. All three SETTLED, **none of them a strategy result**: two are API/exchange facts and one is arithmetic. **RETRACTED stays at 52** — F002 corrects a number in `coordinator/STRATEGY_FACTORY.md`, which has no ledger row of its own, so there is nothing here to retract. Recording that here so the correction is not invisible to the count.
 
@@ -161,6 +165,11 @@ Unit of observation is **the match**. Kalshi data **2026-05-25 → 2026-08-01**,
 | S022 | Retirement add-back costs −0.004¢. | set1_overshoot | `reports/p2_scalar.txt` | scalar settlements | 05-25→07-xx | −0.004¢ | — | — | **BROKEN** (computed on the void event set; needs re-run) |
 | S023 | The fade side loses in all 6 configurations. | set1_overshoot | `reports/p2_fade.md` | 6 configs | 05-25→07-xx | all negative | — | — | **BROKEN** (edge term void; cost arithmetic likely carries the conclusion — needs re-run) |
 | S025 | **The two maker-fee tennis series hold 34.4% of tennis volume on 5.8% of the markets** — 5.9× concentration. S010's "91% of the book" is a *count*; by volume the taker-only series are 65.6%. | set1_overshoot | `common/measure_tennis_maker_liquidity.py` → `common/TENNIS_MAKER_LIQUIDITY.md` | 42 series, 66,694 markets, 9.63bn volume | 2026-08-03 | maker-fee 3,864 mkts / 3.31bn vol; taker-only 62,830 / 6.32bn. `KXATPMATCH` alone is **21.9%** of volume | n/a | n/a | **SETTLED** (structural fact from the API) — answers the question `signal-github` `e3b87d7` left open. Does **not** revive the maker case: S008/S009 and the 08-03 `high_sweep` re-run all stand |
+| S026 | **The maker lever works and there is nothing under it.** Resting instead of crossing removes ~3.2¢ of the study's stated 3.61¢ cost bar — and the result is `UNDECIDABLE`, because the edge underneath does not separate from zero. | set1_overshoot | `src/p6_arms.py` → `RESULTS_MAKER.md`; pre-registered in `PREREGISTRATION_MAKER_FADE.md` (5 amendments, all pre-result) | **738 matches**, one observation = one match; 13.2M candles, 11.7M real trades | 2026-06-14→08-01 | taker **−2.35¢** [−5.62,+0.80]; maker front-of-queue **+0.83¢** [−2.21,+3.89] **INSIDE the no-skill range**; maker back-of-queue **−2.78¢**, **OUTSIDE, worse than no skill** | joint BH denominator 33→36 | **check period NOT opened** — 164 matches cannot resolve it, see S029 | **UNDECIDABLE** (GUARDS #21). Not a negative and not a positive |
+| S027 | **A resting ASK on the favourite fills far better than a resting BID on the underdog, and they are the same bet.** 95% / 80% against 90% / 53%. Takers buy ~3 times in 4 on **both** tickers of a match. | set1_overshoot | `src/p6_maker_fill.py`; aggressor split measured on the 2026-07-30 trade tape and on 126 events with >200 trades a side | 738 matches for the fill rates; 401,512 trades for the buy/sell split | 2026-06-14→08-01 | 126 of 126 events have both sides above half; the two tickers are near-exact mirrors (median 0¢, mean 0.81¢) | n/a | n/a | **SETTLED** (structural fact). ⚠ `taker_book_side` is the TAKER's own order side, not the resting side — the natural reading gives the direction backwards |
+| S028 | **The `deep:N` grid improves with depth mostly because the FEE shrinks, not because the edge grows.** Net goes −5.58¢ → −1.36¢ from `deep:8` to `deep:40`, while the mispricing stays flat and crosses zero at **every** depth (−1.55pp to +1.51pp). | set1_overshoot | `src/p6_arms.py --grid` → `RESULTS_MAKER.md` §5 | 1,336 down to 497 matches per depth | 2026-06-14→08-01 | underdog price rises 50¢→78¢, Kalshi fee falls 1.53¢→1.02¢ (fee ∝ p(1−p)) | grid is a PICTURE, no verdict, no BH slot | n/a | **SETTLED** (arithmetic). **`deep:40` is not a promotion candidate** — least-bad row of a grid where nothing clears zero, on the smallest sample |
+| S029 | **The maker question is not answerable with any data Kalshi will supply.** Telling the observed +1.29% apart from luck needs **~8,000 matches**; the entire retrievable universe holds **902**. | set1_overshoot | `common/noskill.py` band on the real entry-price distribution → `RESULTS_MAKER.md` §8 | 902 firing matches total (738 selection + 164 check) | 2026-06-14→08-20 | luck spans ±8.2% at n=164, ±3.9% at n=738, ±1.23% at n=8,000 | n/a | n/a | **SETTLED** (arithmetic). History cannot extend backwards — retention ends 2026-06-14 and moves forward daily. Forward collection runs **8.6 firing matches/day**, i.e. **~2.5 years** |
+| S030 | ⚠ **Every match in the fade's event set is one where the favourite collapsed, so any analysis entering BEFORE the trigger minute is reading the future.** | set1_overshoot | found by placebo P2 returning **+12.40¢** against the real signal's +0.83¢; `PREREGISTRATION_MAKER_FADE.md` amendment A5 | 738 matches | 2026-06-14→08-01 | a random entry minute on those matches buys the underdog at 48¢ average in matches where it wins 69.9% | n/a | n/a | **SETTLED** (design fact). A live trap for anything built on this data later, not a one-off bug |
 | S024 | `plausible` duration filter (25–330 min) is immaterial to θ. | set1_overshoot | `src/audit_plausible.py` → `reports/audit_plausible.md` | 16,258 kept / 682 dropped | 05-25→08-01 | +0.02pp; residual z=−2.59 (borderline, below \|z\|=4) | n/a | n/a | **SUGGESTIVE** (measured on the contaminated universe; re-test pending) |
 
 ---
