@@ -1,7 +1,7 @@
 <!-- COORDINATOR-STATE
-doing: the player-prop price comparison is queued and fires by itself when Pinnacle reopens its prop board
-left: nothing else - totals closed across three families (109 rungs, 9 games, 0 clear), and the split with factory is proposed in STATUS.md
-needs: yes - 179 cheap-to-trade totals rungs have no free sharp reference. Worth a model to reach them when nothing cheap can check it?
+doing: props capture is armed, watchdogged and idempotent - fires the first time Pinnacle's prop board opens; totals model pre-registered, not built
+left: build the totals model against 854 settled games (BH022); the prop-window gate needs a week of availability data before any price is compared
+needs: yes - spend a week measuring how often the prop board is up, or compare on the first day it opens and treat availability as a separate problem?
 -->
 
 # HANDOFF.md — bot-hunt, session of 2026-08-04
