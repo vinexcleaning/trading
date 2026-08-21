@@ -1,9 +1,9 @@
 # HANDOFF — reopen
 
 <!-- COORDINATOR-STATE
-doing: nothing running - the 48 wrongly-closed claims are fished; 9 specs written, 11 duds named, 28 refused as not-strategies
-left: audit factory specs on arrival - the factory has written none yet, so this is waiting rather than running
-needs: yes - the $9.99 livetennisapi history is now blocking RS-06 and weakening RS-07. It answers T002, S018 and B023 at once and has no free substitute
+doing: nothing running - the paid tennis history is declined and closed, RS-06 marked blocked and RS-07 weakened
+left: audit factory specs as they arrive; 31 seen so far and they acted on the first audit
+needs: no
 -->
 
 **As of 2026-08-08.** Written by the session that took mailbox message 001.
@@ -406,3 +406,42 @@ warns that re-running it today returns 403.
 generates no new ideas. `factory` does not re-derive the nine. `reopen` audits
 factory specs on arrival against the guards, the 612 claims and the dud list.
 **The factory has written no specs yet.**
+
+## 2026-08-20 — mailbox 006: the paid tennis history is declined and CLOSED
+
+**His words:** *"I don't wanna pay any money for tennis history."* **Second
+refusal.** Recorded at the top of [DECISIONS.md](DECISIONS.md) with the date.
+**Not to be raised again by this chat or any other.**
+
+| item | now |
+|---|---|
+| **RS-06** | **BLOCKED - not testable.** Marked in its own row, parked not queued |
+| **RS-07** | **WEAKENED by a stated amount** - free labels move the floor 9.9 -> 6.6 against a 3.61 bar, so it still does not clear |
+| **T002 / S018 / B023** | open, unanswerable from free sources; wording filed to  **018** |
+
+**Live spec count: 7 runnable, 1 blocked, 1 weakened.**
+
+### The free substitute, specified rather than declared absent
+
+Most of it is already solved free - per-set games won, history back years, main
+tour. **The only real gap is Challenger and ITF**, which is 73-87% of the Kalshi
+pool. The ask, if a source ever appears, is one sentence: *Challenger and ITF
+match results with per-set games won, 2023 to within a week of today, updated
+weekly.* And **open it before believing it** - M016b called itself "live
+updated" and stopped at 2026-01-17.
+
+### The factory audit is working, and it caught a fault in my own tool
+
+Re-ran `src/audit_specs.py`. Still 31 specs, but **they acted on mail 007:
+specs citing no claim by id dropped 16 -> 10**, and SF111 now carries a
+structured `claims` field.
+
+**That exposed a defect in my own screen.** It was labelled OVERLAP/duplicate,
+so it flagged SF111 for *citing* S005/S006 - the exact behaviour I had asked
+for. **A script cannot tell citing from re-testing.** Renamed **SHARES-CLAIM**,
+now says it is a prompt to read rather than a finding, and prefers the
+structured `claims` field over a regex.
+
+**Second screen in this tool too blunt on its first version** (GUARD-24 caught
+28 of 31). **Both found by looking at what they flagged instead of trusting the
+count.**

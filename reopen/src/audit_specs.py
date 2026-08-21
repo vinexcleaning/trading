@@ -69,7 +69,14 @@ DUDS: dict[str, str] = {
 }
 
 # Specs this chat already wrote from ledger claims. The factory agreed not to
-# re-derive them; a collision here is a duplicate, not a defect.
+# re-derive them.
+#
+# ⚠ SHARPENED 2026-08-20, the same lesson as GUARD-24 below. This screen was
+# labelled "duplicate". It is not one: SF111 carries `claims: ["S005","S006"]`
+# because it CITES them as prior work, which is exactly what mail 007 asked
+# for -- and the screen then flagged the good behaviour as a collision. A
+# script cannot tell "cites the claim" from "re-tests the claim". So this now
+# reports SHARES-CLAIM and says out loud that it needs reading.
 MINE = {
     "C023": "RS-01", "C061": "RS-02", "CH074": "RS-03", "S023": "RS-04",
     "M025": "RS-05", "B023": "RS-06", "S005": "RS-07", "S006": "RS-07",
@@ -98,8 +105,14 @@ def main() -> int:
             print(f"  UNPARSEABLE {f.name}: {e}")
             continue
         sid = d.get("id", f.stem)
-        blob = json.dumps(d)
-        ids = set(CLAIM_ID.findall(blob))
+        # The factory added a structured `claims` list after mail 007. Prefer
+        # it when present -- a regex over the whole blob also catches ids that
+        # merely appear in prose, which is how this screen over-reported.
+        declared = d.get("claims")
+        if isinstance(declared, list) and declared:
+            ids = {str(c).strip() for c in declared}
+        else:
+            ids = set(CLAIM_ID.findall(json.dumps(d)))
 
         if not ids:
             no_id.append(sid)
@@ -131,15 +144,19 @@ def main() -> int:
     print(f"GUARD-24 {len(guard24):3d}  entry band reaches near-certainty")
     for sid, why in guard24:
         print(f"           {sid} {why}")
-    print(f"OVERLAP  {len(mine_hits):3d}  same claim as a reopen RS- spec")
+    print(f"SHARES-CLAIM {len(mine_hits):3d}  cites a claim a reopen RS- spec "
+          f"also works")
     for sid, cid, rs in mine_hits:
-        print(f"           {sid} and {rs} both work {cid}")
+        print(f"           {sid} shares {cid} with {rs} "
+              f"-- READ IT: citing is not duplicating")
 
     print("\n" + "=" * 66)
-    print("None of these is a verdict. NO-ID is not 'ignored the archive' -- "
-          "several specs\nengage prior work in prose, which is good practice "
-          "and invisible to every tool\nhere. DUD and GUARD-24 are the two "
-          "worth reading by hand.")
+    print("None of these is a verdict.")
+    print("NO-ID is not the same as ignoring the archive -- several specs")
+    print("engage prior work in prose, which is good practice and invisible")
+    print("to every tool here.")
+    print("DUD and GUARD-24 are worth reading by hand.")
+    print("SHARES-CLAIM is a prompt to read, not a finding.")
     return 0
 
 

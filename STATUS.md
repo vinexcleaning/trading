@@ -6578,3 +6578,50 @@ state")** — another session committed while these files were staged. **Nothing
 was lost and everything is pushed**, but `git log` will not find this work by its
 message. This is the cross-contamination `CLAUDE.md` §5 warns about, and it has
 now happened a third time.
+
+---
+
+## Desktop, 2026-08-20 — the paid tennis history is declined and CLOSED
+
+`reopen` took mailbox 006. **His words: "I don't wanna pay any money for tennis
+history." Second refusal, recorded at the top of `reopen/DECISIONS.md` with the
+date, and not to be raised again by any chat.**
+
+### What it blocks, marked so nothing looks live
+
+| item | now |
+|---|---|
+| **RS-06** (player features on three years) | **BLOCKED — not testable.** Parked, not queued. A spec that cannot be run is not a pending spec |
+| **RS-07** (the tennis buckets) | **WEAKENED by a stated amount** — the free labels move the smallest visible effect from about **9.9 to about 6.6** against a **3.61** cost bar, so **it still does not clear.** Runnable once for the sharper floor; not worth twice |
+| **T002 · S018 · B023** | open and unanswerable from free sources. Wording filed to `tennis` **018** so the request is not re-derived in a month |
+
+**Live spec count: 7 runnable, 1 blocked, 1 weakened.**
+
+### The free substitute, specified rather than declared absent
+
+Most of it is **already solved free** — per-set games won, and history back
+years, from `tennis-data.co.uk`'s per-season workbooks. **The only real gap is
+Challenger and ITF, which is 73–87% of the Kalshi pool.**
+
+> **The ask, if a source is ever proposed, is one sentence:** *Challenger and ITF
+> match results with per-set games won, 2023 to within a week of today, updated
+> weekly.* **And open it before believing it** — `M016b` called itself *"a
+> complete and live updated Database"* and its most recent match was
+> **2026-01-17**.
+
+### The factory audit is working, and it caught a fault in `reopen`'s own tool
+
+Re-ran `reopen/src/audit_specs.py`. **Still 31 specs, but the factory acted on
+mail 007: specs engaging no recorded claim by id dropped 16 → 10**, and SF111
+now carries a structured `claims` field.
+
+**⚠ That immediately exposed a defect in the screen itself.** It was labelled
+*OVERLAP — duplicate of a reopen spec*, so it flagged SF111 for **citing**
+S005/S006 — the exact behaviour mail 007 had asked for. **A script cannot tell
+"cites the claim" from "re-tests the claim."** Renamed **SHARES-CLAIM**, now
+states that it is a prompt to read rather than a finding, and prefers the
+structured `claims` field over a regex across the file.
+
+> **Second screen in that tool too blunt on its first version** — GUARD-24
+> caught 28 of 31 before it was sharpened to catch 2. **Both were found by
+> looking at what they flagged instead of trusting the count.**

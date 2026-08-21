@@ -4,6 +4,66 @@ Judgement calls taken without asking, per `CLAUDE.md` §2. Newest first.
 
 ---
 
+## 2026-08-20 — HIS DECISION: no paid tennis history. CLOSED, do not raise again.
+
+**His words, 2026-08-20:** *"I don't wanna pay any money for tennis history."*
+
+**This is the second time he has declined it** — once through `tennis`, once
+through this chat. **It is closed.** `CLAUDE.md` §1: a request is raised once,
+clearly, then recorded and dropped. Re-raising it spends the credibility needed
+for the next thing that actually matters.
+
+**Not a judgement call I took — his call, recorded here so nobody re-derives the
+request in a month and asks him a third time.**
+
+### What it blocks, marked rather than left looking live
+
+| item | status now |
+|---|---|
+| **RS-06** (player features on three years) | **BLOCKED — not testable.** A spec that cannot be run is not a pending spec. |
+| **RS-07** (the tennis buckets) | **WEAKENED, still partly runnable** — see below |
+| **T002** (features stop 2026-06-02) | **open and unanswerable from free sources**, reason recorded |
+| **S018** (label coverage) | partly answered free; **the ITF half is not** |
+| **B023** (features add nothing, on 29 days) | **stays a 29-day null and cannot be improved** |
+
+### RS-07, by how much
+
+`tennis` already found a **free** substitute for the main-tour half: per-season
+workbooks carrying games won by each player in every set, reaching back years.
+That took the label count from **479 to 1,062** and the smallest visible effect
+from about **9.9 to about 6.6**.
+
+**Against a cost bar of 3.61 it still does not clear.** So RS-07 can still be
+re-run and will still produce a floor, and **the honest expectation is that it
+sharpens a number without answering the question.** That is worth doing once and
+not worth doing twice.
+
+### What a free substitute would have to look like
+
+**Stated as a specification rather than "none exists", so the question is
+answerable if one ever appears.** The gap is narrower than it sounds — most of
+it is already solved free.
+
+| requirement | why | current best free source |
+|---|---|---|
+| **Challenger and ITF matches** | the Kalshi pool is **73–87% ITF**; a main-tour-only source measures the wrong 15% | ⚠ **THE ONLY REAL GAP.** `tennis-data.co.uk` is main tour only |
+| **games won per set** (W1/L1 style) | this is the set-1 margin S006 buckets on | ✅ solved — `tennis-data.co.uk` per-season workbooks |
+| **history from 2023 or earlier** | so form and head-to-head are not noise; on 29 days the median player appears **~3 times** and head-to-head reached **1.2%** | ✅ solved for main tour, back years |
+| **updated within days, not frozen** | a frozen archive recreates T002 exactly. The one free ATP database that appeared (**M016b**) stops at **2026-01-17** | ⚠ partly — must be checked on arrival, not trusted from a description |
+| **serve stats on ITF rows** | only needed for a serve-based model, not for set margins | ❌ Sackmann carries futures rows but serve stats on **4.6%** of them (T018) |
+
+**So the precise ask, if a source is ever found:** *Challenger and ITF match
+results with per-set games won, from 2023 to within a week of today, updated
+weekly.* **Not "tennis data" — that specific thing.** Everything else on the list
+is already covered free.
+
+> **And the check that must be run on any candidate**, because it has now caught
+> two: **open the file and read the last date.** M016b described itself as *"a
+> complete and live updated Database"* and its most recent match was seven months
+> old. GUARDS #25.
+
+---
+
 ## 2026-08-08 — the denominator: what counts as "a closure"
 
 **Decision.** Of 313 distinct claims, **231 were classified as not closures at

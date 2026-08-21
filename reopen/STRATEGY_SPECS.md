@@ -233,6 +233,15 @@ publishes props one-sided.
 
 ## RS-06 · Pre-match player features, on three years instead of 29 days
 
+> ⚠⚠ **BLOCKED 2026-08-20 — NOT TESTABLE, AND THE REASON IS CLOSED.**
+> He declined the $9.99 history for the second time: *"I don't wanna pay
+> any money for tennis history."* **Recorded in `DECISIONS.md`; not to be
+> raised again.** A spec that cannot be run is not a pending spec, so this
+> one is parked rather than queued. **It becomes live only if a free source
+> appears carrying Challenger and ITF matches with per-set games won, from
+> 2023 to within a week of today** — the exact gap is specified in
+> `DECISIONS.md`.
+
 | field | value |
 |---|---|
 | **id** | `RS-06` |
@@ -268,6 +277,17 @@ mean anything.
 ---
 
 ## RS-07 · The tennis buckets, on the labels that turned out to be free
+
+> ⚠ **WEAKENED 2026-08-20, and by a stated amount.** The paid history is
+> declined and closed. What survives is the free main-tour label source
+> `tennis` already found: **479 labels to 1,062**, moving the smallest
+> visible effect from about **9.9 to about 6.6** — **still above the 3.61
+> cost bar.** So it is runnable and it will produce a floor, and **the
+> honest expectation is that it sharpens a number without answering the
+> question.** Worth doing once. Not worth doing twice.
+>
+> **And the ITF half stays unanswerable** — the free source is main tour
+> only, against a Kalshi pool that is **73–87% ITF**.
 
 | field | value |
 |---|---|
