@@ -1,7 +1,7 @@
 <!-- COORDINATOR-STATE
-doing: props capture is armed, watchdogged and idempotent - fires the first time Pinnacle's prop board opens; totals model pre-registered, not built
-left: build the totals model against 854 settled games (BH022); the prop-window gate needs a week of availability data before any price is compared
-needs: yes - spend a week measuring how often the prop board is up, or compare on the first day it opens and treat availability as a separate problem?
+doing: nothing running but the two recorders - props (BH023) and totals (BH017/19/20) are both closed
+left: build the totals model against 854 settled games; PREREGISTRATION_TOTALSMODEL.md is written, the model is not
+needs: no
 -->
 
 # HANDOFF.md — bot-hunt, session of 2026-08-04
