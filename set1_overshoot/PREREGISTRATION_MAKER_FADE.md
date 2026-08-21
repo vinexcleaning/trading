@@ -224,3 +224,65 @@ on ITF and Challenger is a genuine structural gain over crypto and I do not
 think it is enough.
 
 **Recorded now so it cannot be adjusted after the number is seen.**
+
+---
+
+# AMENDMENT A1 — 2026-08-20, before any result exists
+
+**Made because a check I ran after writing §8 showed my own framing was wrong.
+No outcome, return or win rate has been computed under any fill model; this
+amendment is therefore a design change, not a response to a result.**
+
+## What I had wrong
+
+§8 recorded that takers buy 75.6% of the time, and I concluded from it that the
+fade's maker order is stuck on the hard-to-fill side. **That conclusion does not
+hold, because I had not noticed that the position can be expressed two ways.**
+
+**Measured, on 126 events where both tickers carry over 200 trades each:**
+
+- **Takers buy on BOTH tickers of a match — 74% on average, and in 126 of 126
+  events both sides are above half.** It is not a mirror-image artifact. People
+  prefer buying a contract to selling one, whichever side they have picked.
+- The two tickers of an event are **near-exact price mirrors**: `100 − bid` on
+  one equals the other's ask, median difference **0¢**, mean 0.81¢, exactly
+  mirrored in 44% of paired minutes.
+
+## Why that changes the design
+
+Buying the underdog can be done in **two economically identical ways**:
+
+| representation | what rests | filled by | which side of the flow |
+|---|---|---|---|
+| **R1** | a YES **bid** on the underdog's ticker | takers *selling* the underdog | the ~26% side |
+| **R2** | a YES **ask** on the favourite's ticker | takers *buying* the favourite | the ~74% side |
+
+**Selling the favourite is being long the underdog. R2 is the same trade and it
+sits where the flow is.** I had assumed R1 without noticing R2 existed.
+
+## The change, binding
+
+**Both representations are measured for every arm, and reported side by side.**
+Neither is chosen in advance. The three arms M1/M2/M3 are each computed under R1
+and R2, and **the correction denominator is unchanged at 36** — R1 versus R2 is
+a reporting split of the same hypothesis, not a new hypothesis, and picking the
+better of the two afterwards would be exactly the selection this document
+exists to prevent.
+
+**If R1 and R2 disagree, that disagreement is the finding** and it is reported
+as one, not resolved by preferring the nicer number.
+
+## ⚠ And the obvious inference from it is NOT safe
+
+**Easy to fill and good to fill are not the same thing.** R2 gets filled by
+people buying the favourite — and being filled by someone who turns out to be
+right is precisely the adverse selection that killed the crypto maker version
+(capture −1.226¢). **A higher fill rate on R2 with a worse result per fill is a
+completely plausible outcome and would not be a contradiction.**
+
+**Standing prediction, updated and recorded before any number exists:** I still
+expect the strategy to fail, but I no longer expect it to fail through lack of
+fills. **I expect R2 to fill well and to lose on adverse selection**, and R1 to
+fill poorly. §11's original prediction — that it fails for want of fills — is
+**superseded**, and it was wrong for the reason given above rather than
+abandoned quietly.

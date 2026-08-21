@@ -105,14 +105,40 @@ side.** A marketable buy of YES is entered as a bid and lifts the ask.
 **Which inverts the conclusion:**
 
 > **75.6% of trades are takers BUYING. The resting order that gets filled is
-> therefore an ASK about three times in four.** A maker resting a **bid** — which
-> is exactly what the fade requires, since the fade buys the fallen favourite —
-> **is on the 24.4% side.**
+> therefore an ASK about three times in four.**
 
-An earlier draft of this document stated the reverse and treated it as
-encouraging. **It is the discouraging direction**, and it is the single most
-decision-relevant number found so far. It is also why the fill model must be
-built from the tape rather than assumed.
+An earlier draft stated the reverse and treated it as encouraging.
+
+### ⚠ AND THEN I OVERCORRECTED. Second fix, same day.
+
+I next wrote that this puts the fade's maker order on the hard side, because the
+fade buys the underdog and buying means resting a **bid**. **That is also wrong,
+and it was wrong because I had not noticed the position can be expressed two
+ways.**
+
+**Measured on 126 events with over 200 trades on each ticker:** takers buy on
+**both** tickers of a match — 74% on average, and **126 of 126 events have both
+sides above half**. Not a mirror artifact; people simply prefer buying a
+contract to selling one, whichever side they have picked. And the two tickers
+are **near-exact price mirrors** — `100 − bid` on one equals the other's ask,
+median difference **0¢**, mean 0.81¢.
+
+**So buying the underdog can be done two ways, and they are the same trade:**
+
+| | what rests | filled by | side of the flow |
+|---|---|---|---|
+| **R1** | a YES **bid** on the underdog's ticker | takers selling the underdog | the ~26% side |
+| **R2** | a YES **ask** on the favourite's ticker | takers buying the favourite | the ~74% side |
+
+**Selling the favourite is being long the underdog.** R2 sits where the flow is.
+Both are now measured for every arm (amendment A1), neither is chosen in
+advance, and the correction denominator is unchanged because this is a reporting
+split of one hypothesis, not a new one.
+
+**The comfortable inference from R2 is not safe.** Easy to fill and good to fill
+are different things — being filled by someone who turns out to be right is the
+adverse selection that killed the crypto version at −1.226¢. **R2 filling well
+and still losing is a completely plausible outcome.**
 
 ⚠ Caveats kept: one tier, six markets, one date range, and 53% of trades landed
 between the quotes (minute-bar close versus trade timestamp), so the split is
@@ -227,10 +253,18 @@ because a negotiated block is not a fill any resting order could have won.
 
 ## 7. Standing prediction, recorded before the result exists
 
-**I expect this to fail, for the crypto reason.** The zero maker fee on ITF and
-Challenger is a real structural gain over crypto and larger than the
-time-structure argument. But takers overwhelmingly buy, so a resting bid — the
-side the fade needs — is the hard side to get filled; and a thin ITF book is
+**I expect this to fail, and I have already had to change my reason once.**
+
+**Superseded (written earlier the same day):** *"it fails because the fade's
+resting bid is on the hard-to-fill side."* Wrong — R2 exists and sits on the
+easy side.
+
+**Current prediction:** the zero maker fee on ITF and Challenger is a real
+structural gain over crypto and larger than the time-structure argument. **I
+expect R2 to fill well and to lose on adverse selection, and R1 to fill
+poorly** — so the strategy fails, but not for want of fills. A thin ITF book is
 where a stale quote is *most* exposed, not least.
 
-**Recorded now so it cannot be adjusted after seeing a number.**
+**Recorded now so it cannot be adjusted after seeing a number. The superseded
+version is kept above rather than deleted** — a prediction quietly rewritten is
+not a prediction.

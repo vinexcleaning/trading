@@ -39,6 +39,18 @@ New ideas go in [INBOX.md](INBOX.md) first, before deciding where they belong.
 > order that fills is an **ask** three times in four. Anyone reading that field
 > the natural way will get the direction backwards.
 >
+> **⚠ CORRECTION TO MY OWN NOTE, same day, before anyone builds on it.** I first
+> wrote that this puts the fade's maker order on the hard-to-fill side. **That
+> is wrong.** Takers buy on **both** tickers of a match — 74% on average, 126 of
+> 126 events with both sides above half — and the two tickers are near-exact
+> price mirrors (median difference 0¢). So buying the underdog can rest either
+> as a **bid on the underdog's ticker** (the ~26% side) or as an **ask on the
+> favourite's ticker** (the ~74% side); selling the favourite *is* being long
+> the underdog. **The maker is not forced onto the hard side.** Both are now
+> measured rather than assumed. **But easy to fill is not good to fill** — being
+> filled by someone who turns out to be right is the adverse selection that
+> killed the crypto version.
+>
 > **Also for `devig`, and it is your call, not mine:** nothing in this repo is
 > recording the trade tape continuously. The endpoint serves it,
 > `kalshi-market-scan` captured two million rows in a day, and every unrecorded

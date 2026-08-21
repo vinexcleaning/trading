@@ -395,3 +395,55 @@ continuous trades recorder, and that is `devig`'s call.
   processes is more to restart and more to go unnoticed.
   **What would settle it:** it is a judgment about this machine, not a
   measurement. It is `devig`'s folder and his call.
+
+---
+
+# ⚠ ADDENDUM, same session — I overcorrected, and this reverses §3's conclusion
+
+**§3 above says the fade's maker order sits on the hard-to-fill 24.4% side.
+That is wrong. Correcting it before anyone builds on it.**
+
+The measurement in §3 stands: takers buy 75.6% of the time. **What I got wrong
+was the consequence**, because I had not noticed the position can be expressed
+two ways.
+
+**Measured on 126 events carrying over 200 trades on each ticker:**
+
+- **Takers buy on BOTH tickers of a match** — 74% on average, and **126 of 126
+  events have both sides above half**. It is not a mirror artifact. People
+  prefer buying a contract to selling one, whichever side they picked.
+- The two tickers are **near-exact price mirrors**: `100 − bid` on one equals
+  the other's ask, **median difference 0¢**, mean 0.81¢, exactly mirrored in 44%
+  of paired minutes.
+
+**So buying the underdog has two identical expressions:**
+
+| | what rests | filled by | side of the flow |
+|---|---|---|---|
+| **R1** | a YES **bid** on the underdog's ticker | takers selling the underdog | the ~26% side |
+| **R2** | a YES **ask** on the favourite's ticker | takers buying the favourite | the ~74% side |
+
+**Selling the favourite is being long the underdog.** R2 is the same trade and
+it sits where the flow is. **The maker is not forced onto the hard side.**
+
+**Pre-registration amended (A1), before any result exists:** both R1 and R2 are
+computed for all three arms and reported side by side, neither chosen in
+advance. **The denominator stays 36** — this is a reporting split of one
+hypothesis, not a new one, and picking the better of the two afterwards is
+exactly the selection the document exists to prevent. **If R1 and R2 disagree,
+that disagreement is the finding.**
+
+**⚠ Do not read R2 as good news.** Easy to fill and good to fill are different
+things. Being filled by someone who turns out to be right is precisely the
+adverse selection that killed the crypto version at −1.226¢. **R2 filling well
+and still losing money is a completely plausible outcome and would not be a
+contradiction.**
+
+**My standing prediction is updated and the old one kept rather than deleted.**
+Was: *it fails for want of fills.* **Now: I expect R2 to fill well and lose on
+adverse selection, and R1 to fill poorly.** Still a failure, different mechanism.
+
+**That is two corrections to my own work in one session** — first the answer to
+Job 0, then the direction of its main consequence. Both were caught by checking
+rather than by thinking harder, which is the pattern `REFLECT.md` already
+records.
