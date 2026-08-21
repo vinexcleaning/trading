@@ -147,10 +147,17 @@ def fill_from_tape(tape, t_start, t_end, price_c, want_side, contracts,
     return front, back
 
 
-def run(con, depth=30.0, min_minute=38, rest_min=REST_MIN, tiers=None,
-        pre_spread_max=10, shuffle=False, seed=0):
-    """One arm. Returns a list of per-match dicts."""
-    rng = np.random.default_rng(seed)
+def iter_events(con, depth=30.0, min_minute=38, tiers=None,
+                pre_spread_max=10, before=None, since=None):
+    """Every match where the entry rule fires. Shared by the fill model and by
+    the trigger dump, so the two cannot drift apart.
+
+    Yields (event, fav_row, dog_row, entry_col, p_r1, p_r2).
+
+    `before` / `since` gate on close_time, which is how the selection period is
+    kept separate from the untouched check period. Passing neither returns
+    BOTH, which is only correct for a count.
+    """
     q = ("select ticker, event_ticker, series, tier, t_lo, t0, pre_bid, "
          "pre_ask, result, close_time from state where ok=1 "
          "and pre_spread <= ?")
@@ -158,42 +165,53 @@ def run(con, depth=30.0, min_minute=38, rest_min=REST_MIN, tiers=None,
     if tiers:
         q += " and tier in (%s)" % ",".join("?" * len(tiers))
         args += list(tiers)
+    if before:
+        q += " and close_time < ?"
+        args.append(before)
+    if since:
+        q += " and close_time >= ?"
+        args.append(since)
     rows = con.execute(q, args).fetchall()
 
     by_ev = {}
     for r in rows:
         by_ev.setdefault(r[1], []).append(r)
 
-    fee_type = dict(con.execute("select series, fee_type from fees"))
-    out = []
-
     for ev, mk in by_ev.items():
         if len(mk) != 2:
-            continue                     # need both sides: one to read, one to rest on
+            continue                 # need both sides: one to read, one to rest on
         # the favourite is the higher pre-match mid. Ties broken by ticker
         # order, which is outcome-independent (GUARDS #1).
         mk.sort(key=lambda r: (-(r[6] + r[7]), r[0]))
         fav, dog = mk[0], mk[1]
         pre_mid_fav = (fav[6] + fav[7]) / 2.0
         if pre_mid_fav <= 50:
-            continue                     # no favourite; not the study's setup
+            continue                 # no favourite; not the study's setup
 
         pf = load_paths(con, fav[0])
         pd_ = load_paths(con, dog[0])
         if pf is None or pd_ is None:
             continue
         fb, fa = pf
-        db_, da = pd_
+        db_, _da = pd_
 
         e = find_entry(fb, fa, pre_mid_fav, depth, min_minute)
         if e < 0:
             continue
-
-        # the resting prices, at the touch, at the entry minute
         if db_[e] < 0 or fa[e] < 0:
             continue
-        p_r1 = int(db_[e])               # YES bid on the underdog
-        p_r2 = int(fa[e])                # YES ask on the favourite
+        yield ev, fav, dog, e, int(db_[e]), int(fa[e])
+
+
+def run(con, depth=30.0, min_minute=38, rest_min=REST_MIN, tiers=None,
+        pre_spread_max=10, shuffle=False, seed=0, before=None, since=None):
+    """One arm. Returns a list of per-match dicts."""
+    rng = np.random.default_rng(seed)
+    fee_type = dict(con.execute("select series, fee_type from fees"))
+    out = []
+
+    for ev, fav, dog, e, p_r1, p_r2 in iter_events(
+            con, depth, min_minute, tiers, pre_spread_max, before, since):
 
         t_lo_f, t0_f = fav[4], fav[5]
         t_lo_d, t0_d = dog[4], dog[5]
