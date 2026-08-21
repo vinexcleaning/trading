@@ -369,6 +369,60 @@ result. `src/settle.py` now fetches them; **58,556 on file**.
 
 ---
 
+## `reopen` AUDITED THIS FOLDER, AND FOUND ONE REAL MISS
+
+**Mailboxes 006 and 007, both answered.** Their auditor is
+`reopen/src/audit_specs.py` — read-only, and it now runs here before a batch is
+filed.
+
+### The catch: SF004 was missing the claim that measured its own thesis
+
+SF004 bets on the favourite-longshot bias. It cited **B024** — which is about
+the **favourite** side — and never cited **K009**, *"the favourite-longshot bias
+does not exist on Kalshi"*, **762 settled matches, 490,464 fills, aggregate
+−0.67 out of 100**. Plus **B027**: on tradeable books, **0 of 10 price bands**
+deviate.
+
+**A prior-work section that engages one claim beautifully and misses the one
+that measured its own thesis is worse than none, because it reads as
+diligence.** Both now cited — with **K010 OVERSTATED** written as cutting both
+ways: the per-band question at 3–15c is genuinely underpowered (±11–29 out of
+100), so the spec survives, **and the honest prior is that it fails**, in which
+case K009 is confirmed rather than contradicted.
+
+### The pond is 9, not 51 — and I had planned against the wrong number
+
+`reopen` fished source #3. Of 48 wrongly-closed claims: **9 are a tradeable
+idea, 11 are dead anyway, 28 are bookkeeping** — a wording fix, a bug record, a
+data fact. My `COMPLETENESS-01.md` said *"the other 49 have not been read"*.
+**Seven remain unwritten, not 49.** Corrected in place. `coordinator/STRATEGY_FACTORY.md`
+§2 still says 51 and is `coordinator`'s to change.
+
+### GUARDS #24 is now enforced, and it applies to SF004 too
+
+Neither of us had said it: **resting an offer against a 3–15 cent long shot IS
+passively buying an 85–97 cent favourite.** Same guard, other end of the book.
+SF004 and SF101 both name #24 with its measured numbers, and the screening
+report now carries **#24's actual instruction** — the availability rate is
+printed **beside** every edge rather than used as a gate:
+
+| category | quotable |
+|---|---|
+| Sports | **92 in 100** |
+| Commodities | 76 in 100 |
+| Financials | 38 in 100 |
+| Elections | 12 in 100 |
+| **Crypto** | **0.5 in 100** — my own entry-lead artefact, not the market |
+
+**17 specs now carry a `claims` field.** The other 10 deliberately do not:
+inventing an id to satisfy a checker would make the corpus *look* auditable
+while pointing at claims that do not bear on the spec.
+
+**One overlap flagged back:** `SF111` and `RS-07` both work S005. SF111 is the
+tennis chat's, so not mine to resolve.
+
+---
+
 ## The judgment calls, in one line each
 
 Full reasoning and the rejected option in `DECISIONS.md`.

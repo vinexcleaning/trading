@@ -558,13 +558,26 @@ def main() -> None:
     A("")
     A("## 3. BREADTH — every category in the census gets a row")
     A("")
-    A("| category | in index | screenable | screened | net per contract | vs placebo | verdict |")
+    A("⚠ **`GUARDS.md` #24 requires the availability rate to be reported BESIDE "
+      "the edge, always, and never used as a pass/fail gate** - *an edge "
+      "measured on 5 out of 100 moments is a statement about those 5 moments*. "
+      "The **quotable** column is that rate: of the settled markets we have a "
+      "price for, how many had a two-sided quote when the rule wanted to "
+      "enter. Read it next to every return on this table.")
+    A("")
+    A("| category | in index | **quotable** | screened | net per contract | vs null | verdict |")
     A("|---|---:|---:|---:|---:|---|---|")
     for cat in sorted(idx_cat):
         n_idx, n_ent = idx_cat[cat]
+        # Below 1 in 100 needs a decimal, or a row reads "0 in 100" beside a
+        # screened count of 130 and looks like a contradiction rather than a
+        # very small number.
+        rate = 100.0 * n_ent / max(n_idx, 1)
+        avail = "%d (%s in 100)" % (
+            n_ent, ("%.1f" % rate) if rate < 1 else ("%.0f" % rate))
         if cat not in percat:
-            A("| %s | %d | %d | 0 | - | - | nothing in the price/spread band |"
-              % (cat, n_idx, n_ent))
+            A("| %s | %d | %s | 0 | - | - | nothing in the price/spread band |"
+              % (cat, n_idx, avail))
             continue
         r, ps = percat[cat]
         med = ps[len(ps) // 2] if ps else 0.0
@@ -578,8 +591,8 @@ def main() -> None:
             verdict = "above its null - still not a result"
         else:
             verdict = "**at or below its null**"
-        A("| **%s** | %d | %d | **%d** (%d events) | %s | %s | %s |"
-          % (cat, n_idx, n_ent, r["n"], r["events"], fmt_money(r["per_c"]),
+        A("| **%s** | %d | **%s** | **%d** (%d events) | %s | %s | %s |"
+          % (cat, n_idx, avail, r["n"], r["events"], fmt_money(r["per_c"]),
              "%+.1f%% vs %+.1f%%" % (100 * r["ret"], 100 * med), verdict))
     A("")
     A("**A category with a small screened count cannot say anything**, and the "

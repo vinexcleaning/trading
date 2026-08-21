@@ -34,5 +34,8 @@
   "Result inside its no-skill range at 100 settled markets."
  ],
  "slow": true,
- "notes": "DECLARED SLOW IN ADVANCE, which is the point of the flag. Economics families settle monthly or quarterly. A month gives no answer here and saying so now is a prediction, not an excuse offered in September. What a month DOES give is tape that does not currently exist for a single economics family."
+ "notes": "DECLARED SLOW IN ADVANCE, which is the point of the flag. Economics families settle monthly or quarterly. A month gives no answer here and saying so now is a prediction, not an excuse offered in September. What a month DOES give is tape that does not currently exist for a single economics family.",
+ "claims": [
+  "K012"
+ ]
 }

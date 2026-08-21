@@ -37,5 +37,8 @@
   "Fewer than 10 races carry both a winner market and a complete margin ladder."
  ],
  "slow": true,
- "notes": "DECLARED SLOW. These settle at an election, months away, so a month gives no settled units. What a month DOES give is the answer to whether the inconsistency exists at all, which is visible on tape long before anything settles - and that is worth having in September rather than never. || Same family of mechanism as SF001 and SF002 but a different rule and a different pairing: those compare strikes within one ladder, this compares a ladder against a separate market."
+ "notes": "DECLARED SLOW. These settle at an election, months away, so a month gives no settled units. What a month DOES give is the answer to whether the inconsistency exists at all, which is visible on tape long before anything settles - and that is worth having in September rather than never. || Same family of mechanism as SF001 and SF002 but a different rule and a different pairing: those compare strikes within one ladder, this compares a ladder against a separate market.",
+ "claims": [
+  "C014"
+ ]
 }

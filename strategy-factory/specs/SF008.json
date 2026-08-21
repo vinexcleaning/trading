@@ -34,5 +34,8 @@
   "It fires often, in which case the overwhelmingly likely cause is our own reading of the two ladders and the first thing audited is our code, not the exchange."
  ],
  "slow": false,
- "notes": "GUARDS #18, the structural-invariant canary: conservation can pass while the book rots. This runs continuously against tier A tape for the life of the project and costs nothing, and its value is almost entirely as a canary rather than as a trade."
+ "notes": "GUARDS #18, the structural-invariant canary: conservation can pass while the book rots. This runs continuously against tier A tape for the life of the project and costs nothing, and its value is almost entirely as a canary rather than as a trade.",
+ "claims": [
+  "GUARDS-18"
+ ]
 }

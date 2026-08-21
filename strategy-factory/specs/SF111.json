@@ -43,5 +43,9 @@
   "finding": "All 17 bots sit INSIDE their own no-skill range - the spread a bot with no idea at all would land in 90 times in 100 while paying the same fees on the same bets. The best, a heavy-favourite hold arm, reads about +7.5% inside a range of -14.2% to +10.9%.",
   "why_this_is_not_ruled_out": "GUARDS #21. Inside the range means the test could not tell, which is a verdict about the TEST and not about the idea. Saying otherwise is the mistake this repo has recorded more than any other.",
   "what_would_settle_it": "About 3,260 bets for the heavy-favourite arm, which buys at 83c where the fee is small and therefore needs the most data."
- }
+ },
+ "claims": [
+  "S005",
+  "S006"
+ ]
 }

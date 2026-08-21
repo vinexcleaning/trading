@@ -40,5 +40,9 @@
   "The buckets that look good are the ones with the fewest markets in them."
  ],
  "slow": false,
- "notes": "The reason this is worth re-running rather than re-reading: the original had 146-250 events per asset. Crypto level markets settle every hour, so the wide recorder accrues that many in days, not months. The number that killed it was a sample size, and a sample size is the one thing recording fixes. Reporting rule: the whole curve, every bucket, including the empty ones - picking the best bucket after the fact is exactly the best-of-N trap this project is built around."
+ "notes": "The reason this is worth re-running rather than re-reading: the original had 146-250 events per asset. Crypto level markets settle every hour, so the wide recorder accrues that many in days, not months. The number that killed it was a sample size, and a sample size is the one thing recording fixes. Reporting rule: the whole curve, every bucket, including the empty ones - picking the best bucket after the fact is exactly the best-of-N trap this project is built around.",
+ "claims": [
+  "C023",
+  "RS-01"
+ ]
 }

@@ -86,8 +86,7 @@ Three assumptions found, and two of them were wrong:
 - **Polymarket is not touched.** The recorder is Kalshi-only. `bot-hunt` has
   Polymarket on one clock and this project has not asked what a cross-venue
   spec would look like.
-- **The `reopen` chat's 51 wrongly-closed claims produced 2 specs.** That is a
-  stocked pond fished twice. The other 49 have not been read.
+- ⚠ **CORRECTED 2026-08-20: the pond is 9, not 51, and I had planned against the wrong number.** `reopen` fished it and reported back (mailbox 006): of 48 wrongly-closed claims, **9 are a tradeable idea, 11 are dead anyway, and 28 are bookkeeping** - a wording fix, a bug record, a data fact. Turning those 28 into specs would have produced 28 pieces of fiction, and *"a factory measured on spec count is exactly the machine that would do it"*. So **7 remain unwritten, not 49**, and they are `RS-02`..`RS-09` in `reopen/STRATEGY_SPECS.md`, which this folder will not re-derive.
 - **The extractors produced 1 spec.** `signal-github` has repos read in full
   and `youtube-signal` has timestamped methods; I used one of each. That source
   is barely tapped.

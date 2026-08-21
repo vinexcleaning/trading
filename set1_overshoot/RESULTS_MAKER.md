@@ -253,3 +253,79 @@ selection with R2 filling well and R1 filling poorly.**
   from zero, which is a different verdict and a weaker one.
 - **An earlier version of the prediction — that it would fail for want of fills
   — was wrong**, and is kept in the pre-registration rather than deleted.
+
+---
+
+# THE REFEREE — three lists, and the third is not empty
+
+## 1. STANDS
+
+- **The pipeline reproduces the original study.** Three independent numbers
+  overlap it: mispricing +0.94pp against +2.53pp, taker net −2.35¢ against
+  −1.10¢, main tour −1.48¢ against −1.10¢. Nothing below would be worth reading
+  without this.
+- **Fills are plentiful — 80% to 95%.** Survives because every fill comes from a
+  real trade on the correct side at a price that would have reached the order,
+  out of 11.7M trades, with 26 tests pinning that rule including planted markets
+  where a resting bid is offered only taker *buys* and must not fill.
+- **Resting an ask on the favourite fills far better than a bid on the
+  underdog.** Survives on an independently measured mechanism: takers buy on
+  **both** tickers of a match, 126 of 126 events with over 200 trades a side.
+- **The grid's improvement with depth is mostly the fee, not the edge.**
+  Survives on arithmetic rather than inference: the Kalshi fee is proportional
+  to price × (1 − price), the underdog price moves 50¢ → 78¢, and the measured
+  fee falls 1.53¢ → 1.02¢ while the mispricing crosses zero at every depth.
+- **~8,000 matches would be needed and 902 exist.** Survives because it is
+  computed with the shared `common/noskill.py` on the real entry-price
+  distribution, not asserted.
+
+## 2. DOWNGRADED
+
+- **was:** "the maker version makes +0.83¢ a contract."
+  **now:** *"+0.83¢, which is inside the range luck alone produces (−4.21% to
+  +4.05%). It means nothing yet."*
+  **because:** the no-skill band contains it.
+
+- **was:** "placebo P1 passed."
+  **now:** *"P1 is uninformative here. The real result is inside the no-skill
+  range, so there was no fill advantage for a shuffle to collapse."*
+  **because:** a placebo run against a null effect tests nothing, and calling
+  that a pass is the vacuous-check failure this repo has recorded.
+
+- **was:** my standing prediction, "it fails on adverse selection."
+  **now:** *"the fill-side half was right — R2 fills well, R1 poorly. The
+  'it fails' half is not established: it could not be told apart from zero,
+  which is weaker than failing."*
+  **because:** UNDECIDABLE is not a negative.
+
+- **was:** "R1 and R2 are the same bet."
+  **now:** *"the same bet to within about a cent — the two tickers mirror at a
+  median of 0¢ but a mean of 0.81¢, and only 44% of paired minutes are exact."*
+  **because:** the underdog's quotes here are derived from the favourite's book
+  rather than read from its own, which is what removed the clock bug; that
+  choice costs about a cent of precision and it should be stated, not hidden.
+
+## 3. FOR THE USER — genuinely unresolved
+
+**Not empty, and the first one is a question only he can answer.**
+
+- **The question:** when you have rested an order on Kalshi, did it actually get
+  filled — and how big were you?
+  **Why it decides this:** the entire width of the answer is queue position.
+  Front of the queue is +$1.20 per $100 risked; back of the queue is −$4.00. The
+  exchange does not publish where in the queue an order sits, so **this data
+  cannot settle it and his own experience is better evidence than anything here.**
+  A small order on a thin ITF book may genuinely sit near the front far more
+  often than the pessimistic bound assumes.
+  **What would settle it otherwise:** resting real orders and watching, which is
+  live money and therefore not ours to start.
+
+- **The question:** is it worth collecting forward for about two and a half
+  years to settle this?
+  **One side:** it is free and unattended, the recorder already exists, and the
+  shortfall is only time.
+  **The other side:** the central estimate is already sitting on zero, so the
+  most likely purchase is a confident "no" in 2028, and every day of collection
+  is attention that could go to an idea with a larger claimed edge.
+  **My recommendation, which is not a decision:** no. But it is a judgment about
+  what his time is worth, not a measurement.

@@ -1,6 +1,6 @@
 # SCREENING RUN 01 — and not one number here is money
 
-**Run 2026-08-20 09:54 UTC by `strategy-factory/src/screen.py`.**
+**Run 2026-08-21 04:25 UTC by `strategy-factory/src/screen.py`.**
 
 > **THE BACKTEST CHOOSES. ONLY THE FORWARD TEST COUNTS.** Nothing below is a result, none of it may be sized on, and none of it should be repeated to anyone as an amount of money. It exists to pick candidates.
 
@@ -41,15 +41,17 @@ The same machinery, on the same tape, with **every outcome redrawn from the mark
 
 ## 3. BREADTH — every category in the census gets a row
 
-| category | in index | screenable | screened | net per contract | vs placebo | verdict |
+⚠ **`GUARDS.md` #24 requires the availability rate to be reported BESIDE the edge, always, and never used as a pass/fail gate** - *an edge measured on 5 out of 100 moments is a statement about those 5 moments*. The **quotable** column is that rate: of the settled markets we have a price for, how many had a two-sided quote when the rule wanted to enter. Read it next to every return on this table.
+
+| category | in index | **quotable** | screened | net per contract | vs null | verdict |
 |---|---:|---:|---:|---:|---|---|
-| **Climate and Weather** | 44 | 28 | **6** (3 events) | +1.67c | +3.4% vs -31.0% | **too few events to say anything (3)** |
-| **Commodities** | 3975 | 3004 | **130** (37 events) | +5.85c | +20.9% vs -17.6% | **too few events to say anything (37)** |
-| **Crypto** | 59401 | 286 | **130** (34 events) | -5.02c | -15.0% vs -8.1% | **too few events to say anything (34)** |
-| **Elections** | 40 | 5 | **1** (1 events) | +5.00c | +5.3% vs +5.3% | **too few events to say anything (1)** |
-| Entertainment | 20 | 0 | 0 | - | - | nothing in the price/spread band |
-| **Financials** | 7320 | 2770 | **187** (9 events) | -12.30c | -48.9% vs -12.8% | **too few events to say anything (9)** |
-| **Sports** | 1695 | 1552 | **1141** (528 events) | -2.99c | -6.5% vs -6.5% | **at or below its null** |
+| **Climate and Weather** | 44 | **28 (64 in 100)** | **6** (3 events) | +1.67c | +3.4% vs -31.0% | **too few events to say anything (3)** |
+| **Commodities** | 3975 | **3004 (76 in 100)** | **130** (37 events) | +5.85c | +20.9% vs -17.6% | **too few events to say anything (37)** |
+| **Crypto** | 59401 | **286 (0.5 in 100)** | **130** (34 events) | -5.02c | -15.0% vs -8.1% | **too few events to say anything (34)** |
+| **Elections** | 40 | **5 (12 in 100)** | **1** (1 events) | +5.00c | +5.3% vs +5.3% | **too few events to say anything (1)** |
+| Entertainment | 20 | 0 (0.0 in 100) | 0 | - | - | nothing in the price/spread band |
+| **Financials** | 7320 | **2770 (38 in 100)** | **187** (9 events) | -12.30c | -48.9% vs -12.8% | **too few events to say anything (9)** |
+| **Sports** | 1695 | **1552 (92 in 100)** | **1141** (528 events) | -2.99c | -6.5% vs -6.5% | **at or below its null** |
 
 **A category with a small screened count cannot say anything**, and the count is shown rather than the number being quoted alone.
 
