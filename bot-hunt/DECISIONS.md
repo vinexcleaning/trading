@@ -304,3 +304,47 @@ different reason above. Corrected in place rather than softened.
 listed first-five and team totals as untested; both were tested an hour later.
 They are struck through, not removed — **a list of untested things is only useful
 if you can see what came off it and when.**
+
+## 2026-08-21 — a retraction of my own, and a three-week wait that did not exist
+
+**D32. ⚠ Retracted my own two-day-old finding after it failed to reproduce
+twice.** I reported that the sharp book's prop board opens 16.9 hours before
+first pitch, and told him so directly. **It came from one day.** On 08-20 a
+four-hour watch inside that same window found nothing; on 08-21, checked at 16.1
+hours out — the same point in the cycle — nothing. All three readings passed the
+control, so the board really is empty on those days.
+
+**The rule I broke is the one this repo states most often:** slicing is fine for
+looking, not for concluding. **I broke it on apparatus, where it is cheapest to
+catch and least excusable to make.** Recorded as **BH021**, and the §3a gate is
+amended from "a short window" to "an unpredictable one" — the board must be
+present on a majority of days across a week, which has not been passed.
+
+**D33. Registered the props capture with the watchdog rather than running it
+loose, reversing D27 for this job.** D27 kept one-shots out of the watchdog
+because it restarts anything it finds stopped. **A reboot then killed the prop
+watcher at 15 hours of 48, while the watchdogged recorders came through the same
+reboot with no gap over 45 minutes.** The fix is `--once-only`: if the capture
+file already exists the job exits immediately, so restarting it forever is
+harmless. **Idempotence is what makes a one-shot safe to watchdog**, and D27 was
+right about the danger and wrong about the remedy.
+
+**D34. Checked mailbox 022's sample-size claim instead of inheriting it, and it
+was low by 5×.** It said 160 settled games and a three-week wait. **The API
+serves 854**, back to 2026-06-30 — `record.db` only began on 08-06 and only holds
+what the recorder saw. **The wait does not exist.** Given up: nothing. Cost: one
+query. **A timeline inherited without checking would have parked this until
+mid-September.**
+
+**D35. Found the outcome needs no external data, which changed the shape of the
+model plan.** The settlement ladder is self-describing — "over 10.5 yes / over
+11.5 no" fixes the total at exactly 11 — and **104 of 104 ladders cross exactly
+once with none inconsistent.** So one free endpoint gives the outcome and a
+second gives the historical ask. **No scraper, no paid feed, nothing to ask him
+for**, which removes the step where these projects usually stall.
+
+**D36. Made a constant the control I expect to bite (P3).** The weather study
+died on exactly that: climatology beat the real model **+1.37¢ to +0.43¢**, and a
+know-nothing 50% model still cleared the gate at **+1.01¢**. **If a league-average
+total trades as well as team form, team form is decoration** — and that is the
+cheapest way for this to fail, so it is named before the model exists.

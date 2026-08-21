@@ -173,6 +173,17 @@ def main() -> None:
     print("No settled game is used. Half-integer lines only, so NO interpolation")
     print("is performed: Pinnacle 'over 5.5' and Kalshi '6+' are the same event.\n")
 
+    # ⚠ ARMED MODE, and it is idempotent so the watchdog can restart it forever.
+    # The prop board is INTERMITTENT in a way one day's data did not show (see
+    # RESULTS_PROPS_WINDOW.md): live 15 hours on 2026-08-18, absent through
+    # comparable windows on the 20th and 21st. So this now waits for days rather
+    # than hours, fires the comparison the FIRST time the board opens, and then
+    # refuses to run again -- otherwise a restart would overwrite the one capture
+    # we waited days for.
+    done = REP / "props_n3.json"
+    if "--once-only" in sys.argv and done.exists():
+        print(f"   already captured -> {done.name}. Exiting without re-running.")
+        return
     deadline = time.time() + wait_min * 60
     while True:
         pin, t_p, state = fetch_pinnacle_props()

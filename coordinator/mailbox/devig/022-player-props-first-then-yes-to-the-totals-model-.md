@@ -1,7 +1,7 @@
 To: devig
 From: coordinator
 Opened: 2026-08-20 19:50
-Status: OPEN
+Status: DONE
 Subject: Player props FIRST - then yes to the totals model, checked against settlement not a bookmaker
 
 --- INSTRUCTION ---
@@ -109,3 +109,149 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**Props are armed and cannot be missed now. The model is pre-registered. But I
+have to retract something I told him two days ago, and correct the number this
+whole plan was scoped on — both of them first.**
+
+## ⚠ 1. RETRACTION — the seventeen-hour prop window came from ONE day and has now failed twice
+
+**I reported that the prop board opens 16.9 hours before first pitch and that the
+kill condition therefore did not fire.** It is in my 021 reply, in `BRIEF.md`, and
+I said it to him directly.
+
+| day | watched | result |
+|---|---|---|
+| **08-18** | 47 samples, 05:21→20:04Z | props appeared **16.9 h out**, live **44 of 45 samples** |
+| **08-20** | 17 samples, 04:52→08:55Z | **EMPTY throughout** — inside the window that was full on the 18th |
+| **08-21** | checked at **16.1 h out**, the same point in the cycle as the 18th's first sighting | **EMPTY.** 18 games listed, 17 upcoming |
+
+**All three passed the GUARDS #27 control** — the same call returned Exact Scores,
+Next Run and Double Result each time. **It is a genuinely empty prop board on all
+three days, not a block.**
+
+**The honest statement: the board was live fifteen hours on one day and absent
+through comparable windows on two others, and I do not know what makes the
+difference.** A hypothesis I have NOT tested: pitcher props may appear only once
+starting pitchers are confirmed, which is irregular. Naming it so it is not
+mistaken for a measurement.
+
+**And the kill condition was written against the wrong failure.** §3a says "under
+two hours before first pitch". Read literally it still does not fire — when the
+board is up it is up for hours. **But the risk is not a short window, it is an
+unpredictable one.** A strategy that only trades on the days a feed happens to be
+posted is not the same strategy, and that difference is most of the value. **The
+gate is amended before any price is compared: the board must be present on a
+majority of days at a usable offset, across at least a week. That has not been
+passed.** Written up in `RESULTS_PROPS_WINDOW.md`.
+
+## 2. Props — armed, idempotent, and watchdogged, which the last one was not
+
+You were right that "it fires by itself" is not the job being done.
+
+`props_n3.py --wait 4320 --once-only`, **registered in `runners/runners.json`**:
+waits up to **72 hours**, fires the comparison the first time the board opens, and
+**exits immediately if the capture already exists** — which is what makes it safe
+for the watchdog to restart forever.
+
+**The Kalshi half is tested and works** — 23 player ladders, 111 rungs, all
+monotone, all two-sided. So the machinery is ready and the report shape is
+written; when the board opens the answer comes out the same day.
+
+**⚠ And this matters: the previous prop watcher died at 15 hours of its 48 when
+the machine rebooted at 21:41 on the 18th. The recorders came through the same
+reboot with no gap over 45 minutes, because they are watchdogged.** That is the
+registration difference, measured on a real reboot rather than my staged one.
+
+**On the fee point — taken, and already applied.** On totals it turned out the
+matched rungs sit at 30–70¢ where the fee is 1.68–1.71¢, *not* at the extremes,
+and the cheap rungs had no reference at all. The props bar is computed per rung
+from the price that rung actually trades at, and its distribution is printed, not
+a single number.
+
+## ⚠ 3. CORRECTION — 854 settled games, not 160. The three-week wait does not exist
+
+**Your count came from `record.db`, which only began on 2026-08-06 and only holds
+what the recorder saw. Kalshi's API still serves settled markets back to
+2026-06-30.**
+
+| checked 2026-08-21 | |
+|---|---|
+| settled `KXMLBTOTAL` rungs retrievable | **10,431** |
+| **settled GAMES** | **854** |
+| game-days covered | **66** |
+| historical prices | **retrievable** — candlesticks return `yes_ask.close_dollars` per minute |
+
+**Against `K014`'s bar — 481 to detect a large edge, 2,084 for a small one — we
+are already past the first and 41% of the way to the second.**
+
+**What has not changed, and belongs in the report either way: the small-edge bar
+needs 2,084 games at ~15 a day, so a small edge stays undetectable this season.**
+
+## 4. The dataset needs no external source, which I did not expect
+
+**The settlement ladder is self-describing.** "Over 10.5 = yes" with
+"over 11.5 = no" means the game finished on exactly 11 runs. **Checked on 104
+consecutive ladders: every one crosses exactly once, none contradicts itself.**
+
+**So one free endpoint gives the outcome and a second gives the price we would
+have paid.** No scraper, no paid feed, no login, and nothing to ask him for.
+
+## 5. `PREREGISTRATION_TOTALSMODEL.md` — committed before the model exists
+
+Unit is **one game**, never a rung. Holdout is the **newest 30% of game-DAYS**,
+sealed as a constant before the first fit, opened once. Features strictly from
+games finishing before the one predicted, price from before first pitch, cost per
+rung from `common/kalshi_fees.py`.
+
+**Four controls, and P3 is the one I expect to bite:** shuffled outcomes; the
+market's own price as the forecast; **a constant league-average total**; and the
+sell side. **Weather died on exactly P3** — climatology beat the real model
++1.37¢ to +0.43¢, and a know-nothing 50% model still cleared the gate at +1.01¢.
+If a constant trades as well as team form, team form is decoration.
+
+**Not integrated, not traded, no credential, no order code.** And if it ever
+survives that far, the paper-only canary gets written before the feature does.
+
+## 6. Say back to him
+
+**He proposed the condition that fixed the objection, unprompted — build it,
+don't integrate it until it's backtested. That is the right instinct.** It is
+also what makes the 854-game correction useful rather than tempting: more data
+brings the *test* forward, not the trading.
+
+---
+
+## REFEREE — three lists
+
+**1. STANDS**
+- **854 settled games with retrievable pre-game asks**, and the final total
+  recoverable from the ladder alone on **104 of 104** checked.
+- **The props machinery is ready and the Kalshi half is tested** — 111 rungs, all
+  monotone.
+- **Registration survives reboots and non-registration does not**, measured on
+  the same reboot.
+
+**2. DOWNGRADED**
+- **was:** "the prop board opens 16.9 hours before first pitch, so the kill
+  condition does not fire."
+  **now:** "the board was live fifteen hours on one day and absent on two others
+  at the same offset; availability is unpredictable and the gate is now a
+  majority of days across a week, which has not been passed."
+  **because:** one day is a look, not a conclusion, and I generalised it.
+- **was:** "160 settled games, three weeks to the easy bar."
+  **now:** "854 settled games, already past it; the small-edge bar is still out
+  of reach this season."
+  **because:** the API retains far more than the recorder captured.
+
+**3. FOR THE USER — genuinely unresolved. Not empty.**
+- **The question:** the prop board's availability is unpredictable. **Do we spend
+  a week measuring when it is up before comparing any prices, or compare on the
+  first day it opens and treat availability as a separate problem?**
+- **One side:** the comparison is cheap and could kill the idea in an hour, the
+  way the retail test did. Waiting a week to find out *when* we could have run a
+  test we could run tomorrow is backwards.
+- **The other side:** if the board is only up two days in seven, the answer to
+  "do they disagree" is nearly irrelevant — there is no strategy either way, and
+  we would have spent the effort to learn something we cannot use.
+- **What would settle it:** nothing cheap; both cost about the same. It is a
+  judgement about which failure he would rather find out about first.
