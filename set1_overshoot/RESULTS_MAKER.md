@@ -146,8 +146,24 @@ a grid in which nothing clears zero, on the smallest sample in the grid.
 result inside the no-skill range this test has no power here; it is reported as
 uninformative rather than as a pass.
 
-**P2 — a random market at a random minute.** Returns **nothing** (negative), as
-it must.
+**P2 — a random market at a random minute. PASSES.** On **728 control matches**
+that fire at no depth in the grid, with tapes pulled specifically to serve as
+this control rather than borrowed from the treatment group:
+
+| | real signal | control |
+|---|---|---|
+| R2 fill rate | 95.0% | 67.0% |
+| R2 per attempt | +0.83¢ | **−5.01¢** |
+| R1 per attempt | +0.00¢ | **−5.08¢** |
+
+**The control loses about 5¢ a contract, which is what resting into a market for
+no reason should cost.**
+
+**And one thing the control shows that the treatment cannot:** the signal minute
+is a moment of unusually heavy trading — fills run **95%** there against **67%**
+at a random minute in the same kind of match. **Being easy to fill is a property
+of the moment, not of the strategy**, and it is worth knowing for any other
+maker idea aimed at a moment of sudden movement.
 
 **⚠ P2 failed twice first, and the third cause is a live trap for anyone using
 this data.** It returned **+12.40¢ against the real signal's +0.83¢** — the
