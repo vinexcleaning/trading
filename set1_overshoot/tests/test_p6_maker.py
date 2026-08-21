@@ -326,3 +326,45 @@ def test_placebo_p2_moves_the_entry_minute(tmp_path):
             moved = True
             break
     assert moved, "P2 never moved the entry minute -- the placebo is a no-op"
+
+
+def test_the_underdog_price_comes_from_the_mirror_not_its_own_path(tmp_path):
+    """Pins the clock fix.
+
+    Each ticker has its own detected play start, so column e of the two paths
+    are different moments in real time -- only 21.3% of real pairs agree to the
+    minute. Here the underdog's stored path is deliberately garbage. If the code
+    still reads it, the entry price changes; if it derives the mirror from the
+    favourite, the garbage is ignored.
+    """
+    con = _planted_db(tmp_path, trade_side="yes", trade_price=36)
+    good = M.run(con, depth=30.0, min_minute=38, rest_min=30,
+                 pre_spread_max=10)[0]
+
+    junk = np.full(300, 7, dtype=np.int16)
+    con.execute("update paths set bid=?, ask=? where ticker='DOG'",
+                (junk.tobytes(), (junk + 2).tobytes()))
+    con.commit()
+    after = M.run(con, depth=30.0, min_minute=38, rest_min=30,
+                  pre_spread_max=10)[0]
+
+    assert after["p_r1"] == good["p_r1"], \
+        "the underdog's own path is still being read -- the clock bug is back"
+    assert after["ask_dog"] == good["ask_dog"]
+    assert good["p_r1"] + good["p_r2"] == 100, \
+        "the two representations must rest at the same economic price"
+
+
+def test_the_two_tapes_are_windowed_on_the_same_absolute_moment(tmp_path):
+    """The entry happens at one instant. Deriving the underdog's window from
+    its own t0 was the same misalignment bug in a second place."""
+    con = _planted_db(tmp_path, trade_side="yes", trade_price=36)
+    base = M.run(con, depth=30.0, min_minute=38, rest_min=30,
+                 pre_spread_max=10)[0]
+    # shift ONLY the underdog's clock; the fill must not move
+    con.execute("update state set t0 = t0 + 90 where ticker='DOG'")
+    con.commit()
+    moved = M.run(con, depth=30.0, min_minute=38, rest_min=30,
+                  pre_spread_max=10)[0]
+    assert moved["r2_front"] == base["r2_front"], \
+        "shifting the underdog's clock moved a fill on the favourite's tape"
