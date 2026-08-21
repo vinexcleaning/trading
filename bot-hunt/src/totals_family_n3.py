@@ -37,6 +37,20 @@ from props_n3 import a2p, devig  # noqa: E402
 from totals_n3 import CLUB, PIN, nick, split_pair  # noqa: E402
 from common.kalshi_fees import fee_rate_cents  # noqa: E402
 
+# ⚠ ADDED 2026-08-21 AFTER THIS COST US THE ONE CAPTURE WE HAD WAITED THREE DAYS
+# FOR. Launched by hand these scripts inherit PYTHONIOENCODING=utf-8; launched by
+# the watchdog they inherit the Windows cp1252 console default, and the first
+# print containing a warning glyph raises UnicodeEncodeError and kills the run.
+# It died AFTER fetching 32 sharp props and 225 Kalshi rungs -- the data was in
+# memory and was lost to a print statement. Fixed at the source rather than by
+# setting an environment variable in one launcher, because the next launcher
+# would not have it either.
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:  # noqa: BLE001 - a non-reconfigurable stream is not fatal
+    pass
+
 REP = ROOT / "reports"
 
 

@@ -55,6 +55,15 @@ sys.path.insert(0, str(ROOT.parent))
 import venues as V  # noqa: E402
 from common.kalshi_fees import fee_rate_cents  # noqa: E402
 
+# ⚠ ADDED 2026-08-21: launched by the watchdog these inherit the Windows cp1252
+# console default, and a print containing a warning glyph then raises
+# UnicodeEncodeError and kills the run. It cost one capture already.
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:  # noqa: BLE001
+    pass
+
 REP = ROOT / "reports"
 BOV_BASE = "https://www.bovada.lv/services/sports/event/coupon/events/A/description/"
 BOVADA = BOV_BASE + "baseball/mlb"

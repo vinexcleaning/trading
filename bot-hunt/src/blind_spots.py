@@ -33,6 +33,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(ROOT.parent))
 import venues as V  # noqa: E402
 
+# ⚠ ADDED 2026-08-21: launched by the watchdog these inherit the Windows cp1252
+# console default, and a print containing a warning glyph then raises
+# UnicodeEncodeError and kills the run. It cost one capture already.
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:  # noqa: BLE001
+    pass
+
 REP = ROOT / "reports"
 PIN = "https://guest.api.arcadia.pinnacle.com/0.1/sports/3"
 

@@ -348,3 +348,22 @@ died on exactly that: climatology beat the real model **+1.37¢ to +0.43¢**, an
 know-nothing 50% model still cleared the gate at **+1.01¢**. **If a league-average
 total trades as well as team form, team form is decoration** — and that is the
 cheapest way for this to fail, so it is named before the model exists.
+
+**D37. ⚠ A print statement destroyed a three-day capture, and the fix went in all
+six scripts rather than one launcher.** The armed props job caught the board
+open, fetched 32 sharp props and 225 Kalshi rungs, and **died on
+`UnicodeEncodeError` printing a `⚠`** — because the watchdog does not set
+`PYTHONIOENCODING` and Windows defaults to cp1252. The data was already in
+memory. Given up: nothing. **Fixed at the source — `sys.stdout.reconfigure` at
+import in every script that prints a glyph — rather than setting an environment
+variable in the one launcher that happened to bite**, because the next launcher
+would not have had it. **A long-running capture must not be able to die on its
+own output.**
+
+**D38. Reported P1 as STOPPED rather than as "4 sell-side flags".** The gate
+printed four sell-side qualifiers, which is the first time anything has cleared
+in this whole programme. **Three of the four are home-run props sitting inside
+the method disagreement that §6 declares a drop condition; the fourth clears by
+0.03¢.** Given up: a positive-sounding headline. **The pre-registration said in
+advance that sign disagreement IS the finding, and honouring that when it points
+away from a result is the only reason writing it down first has any value.**
