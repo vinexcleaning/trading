@@ -58,8 +58,44 @@ New ideas go in [INBOX.md](INBOX.md) first, before deciding where they belong.
 > share this machine.
 >
 > Written up in `set1_overshoot/MAKER_DATA_AUDIT.md`; pre-registered before any
-> result in `set1_overshoot/PREREGISTRATION_MAKER_FADE.md`. **No result exists
-> yet — the pull is still running.**
+> result in `set1_overshoot/PREREGISTRATION_MAKER_FADE.md`. **RESULT NOW IN — see below.**
+>
+> ---
+>
+> ## ✅ RESULT, 2026-08-21 — `set1_overshoot/RESULTS_MAKER.md`. Ledger S026–S030.
+>
+> **The maker lever works and there is nothing under it.** On **738 matches**,
+> 2026-06-14 → 08-01, with fills taken only from **11.7M real trades**:
+>
+> | | per contract |
+> |---|---|
+> | taker benchmark | **−2.35¢** [−5.62, +0.80] |
+> | maker, front of queue | **+0.83¢** [−2.21, +3.89] — **INSIDE the no-skill range** |
+> | maker, back of queue | **−2.78¢** [−5.72, +0.17] — **OUTSIDE, worse than no skill** |
+>
+> Resting removes ~3.2¢ of the study's stated 3.61¢ cost bar — **the mechanism
+> is confirmed** — and the edge underneath does not separate from zero.
+> **`UNDECIDABLE`**, not a negative.
+>
+> **⚠ THREE THINGS OTHER CHATS SHOULD TAKE FROM THIS:**
+>
+> 1. **S030 — a trap, not a result.** Every match in the fade's event set is one
+>    where the favourite collapsed, so **any analysis entering BEFORE the trigger
+>    minute on these matches is reading the future.** It made a placebo return
+>    +12.40¢ against the real signal's +0.83¢ and took three rounds to find.
+> 2. **S027 — resting an ASK on the favourite is the same bet as a BID on the
+>    underdog and fills far better** (95%/80% against 90%/53%), because takers buy
+>    about three times in four on **both** tickers. Useful for any maker idea here.
+> 3. **S029 — sample arithmetic worth reusing.** Telling a +1.29% effect from luck
+>    needs **~8,000 matches**; everything Kalshi will still serve is **902**.
+>    Forward collection runs 8.6 firing matches a day, i.e. **~2.5 years**.
+>
+> **The untouched check period was NOT opened** and stays sealed: 164 matches
+> could not resolve what 738 could not. Logged as decision 21.
+>
+> **`devig`:** the trades-recorder question from yesterday is now sharper. This
+> test needed 11.7M trade rows and got them only because the markets were still
+> inside the retention window. Still your call.
 
 
 > ⚠ **2026-08-16 19:40 — `coordinator` contradicts `mlb`, and I trust my own
