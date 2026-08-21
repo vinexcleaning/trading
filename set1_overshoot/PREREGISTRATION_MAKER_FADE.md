@@ -286,3 +286,77 @@ fills. **I expect R2 to fill well and to lose on adverse selection**, and R1 to
 fill poorly. §11's original prediction — that it fails for want of fills — is
 **superseded**, and it was wrong for the reason given above rather than
 abandoned quietly.
+
+---
+
+# AMENDMENT A2 — 2026-08-20, before any result exists
+
+**The pre-match quote has to be gated, and the original study did not have to.**
+
+`deep:30` means "the mid is 30¢ below its pre-match level". Measured on the
+re-pulled candles, the pre-match spread is **sharply bimodal** — either a real
+quote or an effectively empty book, with very little in between:
+
+| tier | median pre-match spread | share ≤10¢ wide |
+|---|---|---|
+| main tour | 3¢ | 65.0% |
+| Challenger | 1¢ | 85.7% |
+| ITF | **86¢** | **19.7%** |
+
+**Against the midpoint of an empty 1/99 book, "30¢ below pre-match" is not a
+measurement.** The rule would fire on the book being filled in, not on anything
+happening in the match. The original study did not need this gate because its
+universe was main tour; this one includes ITF, where four books in five are
+empty before play.
+
+**The gate: the pre-match spread must be ≤10¢.** Taken from the shape of the
+quote distribution and from **no outcome**. Because 10¢ and 5¢ are not
+interchangeable on main tour (65.0% versus 56.7%), **both are run** — 10¢
+primary, 5¢ as a pre-committed sensitivity check — and if they disagree that is
+reported as a disagreement rather than resolved by preference.
+
+**Also adopted, from the original study rather than invented here:** the
+duration plausibility window `MIN_PLAY`–`MAX_PLAY` (25–330 minutes), imported
+from `p1_state.py` so the two studies agree on what counts as a match.
+
+---
+
+# AMENDMENT A3 — 2026-08-20, before any result exists
+
+**§7 item 2 pre-committed to "we are last in the queue". The data cannot
+support that rule, so it becomes a BRACKET rather than being quietly dropped.**
+
+**Why.** The one-minute candles carry `yes_bid` and `yes_ask` but **no size**.
+Queue depth is simply not in them, so "fill only after the size showing at that
+level has been consumed" is not computable from the price path.
+
+**What replaces it — a bracket, reported as two numbers, never one:**
+
+| bound | assumption | what it answers |
+|---|---|---|
+| **UPPER** | we are at the **front** of the queue: any qualifying trade fills us | the best the strategy could possibly do |
+| **LOWER** | we are **behind the whole visible resting size** for that tier | the worst it could do |
+
+**The true fill rate is between them and this study will not claim to know
+where.** Reporting a single number would be choosing a queue position that was
+never observed — the exact "easiest thing to fake in a maker backtest" the
+crypto work warns about.
+
+**The lower bound's depth constant comes from a second source**, since the
+candles lack it: `bot-hunt/data/record.db`, which records `bid_size`/`ask_size`
+for tennis. Measured there: **main tour ~7,512 contracts resting on the bid and
+~16,948 on the ask; ITF ~1,411 and ~1,600.** It is used as **one constant per
+tier**, not per market — a market-structure fact, not a per-observation input,
+so it cannot leak an outcome into any single match.
+
+⚠ **Declared honestly: that recorder covers 2026-08-04 onward**, which overlaps
+the untouched check period and not the selection period. It is used only to set
+a fixed queue-depth constant per tier and never to select, weight or score any
+match. **If that still troubles a reader, the upper bound requires no depth
+constant at all and is unaffected.**
+
+**This amendment makes the test WEAKER in one direction and STRONGER in
+another**, and both must be said: the strict pessimistic rule I promised is no
+longer the single reported number, but the pessimistic case is retained as the
+lower bound rather than abandoned, and the answer is now stated as a range
+instead of a point estimate that would have been false precision.
