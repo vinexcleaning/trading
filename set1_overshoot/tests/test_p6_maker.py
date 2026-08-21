@@ -217,3 +217,112 @@ def test_the_taker_benchmark_loses_when_the_underdog_loses():
     rows = [_row(ask_dog=70, dog_won=0)]
     (mean_pnl, _l, _h), _ = A.taker_cell(rows)
     assert mean_pnl < -70, "a losing taker bet must cost the price plus fee"
+
+
+# -------------------------------------------- end-to-end on a planted market
+import sqlite3          # noqa: E402
+
+
+def _planted_db(tmp_path, trade_side="yes", trade_price=34, n_trades=5000):
+    """One match, one planted 35c collapse, one planted trade.
+
+    Favourite opens at 70/72 and falls to 34/36 at minute 60. The underdog is
+    its exact mirror. A single trade prints during the resting window.
+    """
+    db = tmp_path / "planted.db"
+    con = sqlite3.connect(db)
+    con.executescript("""
+      create table markets (ticker text primary key, event_ticker text,
+        series text, result text, status text, open_time text,
+        close_time text, volume_fp real, tier text);
+      create table fees (series text primary key, fee_type text,
+        fee_multiplier real, seen_utc text);
+      create table state (ticker text primary key, event_ticker text,
+        series text, tier text, t_lo integer, n_min integer, t0 integer,
+        t1 integer, dur integer, pre_bid integer, pre_ask integer,
+        pre_spread integer, result text, close_time text, ok integer,
+        why text);
+      create table paths (ticker text primary key, bid blob, ask blob);
+      create table trades (trade_id text primary key, ticker text,
+        series text, count real, yes_price_c integer, no_price_c integer,
+        taker_outcome_side text, taker_book_side text, created_time text,
+        is_block integer);
+    """)
+    con.execute("insert into fees values ('S','quadratic',1,'')")
+    T0, TLO = 10, 1_780_000_000
+    n = 300
+    fb = np.full(n, 70, dtype=np.int16); fa = np.full(n, 72, dtype=np.int16)
+    fb[60:] = 34; fa[60:] = 36
+    db_ = (100 - fa).astype(np.int16)      # exact mirror
+    da_ = (100 - fb).astype(np.int16)
+    for tk, bid, ask, pb, pa, res in (
+            ("FAV", fb, fa, 70, 72, "no"), ("DOG", db_, da_, 28, 30, "yes")):
+        con.execute("insert into markets values (?,?,?,?,?,?,?,?,?)",
+                    (tk, "EV", "S", res, "settled", "", "2026-07-01", 0, "main"))
+        con.execute("insert into state values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    (tk, "EV", "S", "main", TLO, n, T0, 120, 110, pb, pa,
+                     pa - pb, res, "2026-07-01", 1, ""))
+        con.execute("insert into paths values (?,?,?)",
+                    (tk, bid.tobytes(), ask.tobytes()))
+    # entry fires at 61 + STAB = 64; rest 30 min -> trade at minute 70
+    ts = TLO + (T0 + 70) * 60
+    when = __import__("datetime").datetime.fromtimestamp(
+        ts, __import__("datetime").timezone.utc).isoformat().replace(
+            "+00:00", "Z")
+    con.execute("insert into trades values (?,?,?,?,?,?,?,?,?,?)",
+                ("t1", "FAV", "S", n_trades, trade_price, 100 - trade_price,
+                 trade_side, "bid" if trade_side == "yes" else "ask", when, 0))
+    con.commit()
+    return con
+
+
+def test_end_to_end_r2_fills_from_a_taker_buying_the_favourite(tmp_path):
+    """The trade is a taker BUYING the favourite at 34. That lifts our resting
+    ask on the favourite, which is economically buying the underdog at 66."""
+    con = _planted_db(tmp_path, trade_side="yes", trade_price=36)
+    rows = M.run(con, depth=30.0, min_minute=38, rest_min=30,
+                 pre_spread_max=10)
+    assert len(rows) == 1, "the planted 35c collapse did not produce an event"
+    r = rows[0]
+    # 64, not 63, and the arithmetic is the rule's own: the fall lands at
+    # minute 60, but "done" requires the mid to be no lower than the
+    # trailing 8-minute low, which only becomes true at 61 once that window
+    # contains the new low. Plus STAB=3. completed_dip's docstring says so
+    # explicitly -- "the rule fires ~1 minute after the fall stops".
+    assert r["entry_min"] == 64, f"entry fired at {r['entry_min']}, expected 64"
+    assert r["r2_front"] > 0, "R2 was not filled by a taker buying"
+    assert r["r1_front"] == 0, \
+        "R1 was filled by a taker BUYING -- a resting bid cannot be"
+    assert r["dog_won"] == 1
+
+
+def test_end_to_end_r1_fills_only_from_a_taker_selling(tmp_path):
+    con = _planted_db(tmp_path, trade_side="no", trade_price=30)
+    rows = M.run(con, depth=30.0, min_minute=38, rest_min=30,
+                 pre_spread_max=10)
+    assert len(rows) == 1
+    r = rows[0]
+    assert r["r2_front"] == 0, "R2 was filled by a taker SELLING"
+
+
+def test_end_to_end_a_trade_after_the_resting_window_never_fills(tmp_path):
+    con = _planted_db(tmp_path, trade_side="yes", trade_price=36)
+    rows = M.run(con, depth=30.0, min_minute=38, rest_min=2,
+                 pre_spread_max=10)
+    assert rows[0]["r2_front"] == 0, \
+        "an order that rested 2 minutes caught a trade 7 minutes later"
+
+
+def test_placebo_p2_moves_the_entry_minute(tmp_path):
+    """A random-timing placebo that leaves the timing alone proves nothing."""
+    con = _planted_db(tmp_path, trade_side="yes", trade_price=36)
+    real = M.run(con, depth=30.0, min_minute=38, rest_min=30,
+                 pre_spread_max=10)
+    moved = False
+    for seed in range(12):
+        rnd = M.run(con, depth=30.0, min_minute=38, rest_min=30,
+                    pre_spread_max=10, random_entry=True, seed=seed)
+        if rnd and rnd[0]["entry_min"] != real[0]["entry_min"]:
+            moved = True
+            break
+    assert moved, "P2 never moved the entry minute -- the placebo is a no-op"

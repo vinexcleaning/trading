@@ -209,7 +209,8 @@ def iter_events(con, depth=30.0, min_minute=38, tiers=None,
 
 
 def run(con, depth=30.0, min_minute=38, rest_min=REST_MIN, tiers=None,
-        pre_spread_max=10, shuffle=False, seed=0, before=None, since=None):
+        pre_spread_max=10, shuffle=False, seed=0, before=None, since=None,
+        random_entry=False):
     """One arm. Returns a list of per-match dicts."""
     rng = np.random.default_rng(seed)
     fee_type = dict(con.execute("select series, fee_type from fees"))
@@ -217,6 +218,27 @@ def run(con, depth=30.0, min_minute=38, rest_min=REST_MIN, tiers=None,
 
     for ev, fav, dog, e, p_r1, p_r2, ask_dog in iter_events(
             con, depth, min_minute, tiers, pre_spread_max, before, since):
+
+        if random_entry:
+            # PLACEBO P2. Same matches, same tapes, same fill rules -- only the
+            # TIMING is destroyed. This is a tighter control than resting on a
+            # random market, because the event set is held fixed: anything that
+            # survives here is coming from the machinery or from the market,
+            # and not from the signal. It MUST return nothing.
+            pf2 = load_paths(con, fav[0])
+            pd2 = load_paths(con, dog[0])
+            if pf2 is None or pd2 is None:
+                continue
+            hi = min(len(pf2[0]) - 1, 200)
+            if hi <= min_minute:
+                continue
+            e2 = int(rng.integers(min_minute, hi))
+            if pd2[0][e2] < 0 or pf2[1][e2] < 0 or pd2[1][e2] < 0:
+                continue
+            e = e2
+            p_r1 = int(pd2[0][e2])
+            p_r2 = int(pf2[1][e2])
+            ask_dog = int(pd2[1][e2])
 
         t_lo_f, t0_f = fav[4], fav[5]
         t_lo_d, t0_d = dog[4], dog[5]
