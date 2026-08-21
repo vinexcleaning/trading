@@ -169,3 +169,72 @@ and cannot be tightened further.
    0 of 10 buckets clear and median MDE is 9.9 ¢ against a 2 ¢ target. A monotone
    pattern across an ordered variable is more credible than a lone cell, but at
    this power it is indistinguishable from noise.
+
+---
+
+## Phase 6 — the maker test. Where it got to, 2026-08-20
+
+**Read `MAKER_DATA_AUDIT.md` first: I answered mailbox 017's data question
+"no", and it was wrong.** The exchange still serves per-market trades *and*
+one-minute bid/ask candles for settled markets back to **2026-06-14**, which is
+**35,994 markets = 17,997 matches**. Nobody had asked it.
+
+### Running right now
+
+`src/p6_maker_pull.py --start 2026-06-14 --end 2026-08-21 --candles-only`,
+logging to `data/pull_candles.log`. Read-only, no credentials, 6 requests a
+second against a measured ceiling of 15, and eight other jobs share this
+machine's quota. **Resumable** — if it dies, run the same command again and it
+skips what is already in `pulled`.
+
+**⏳ Time matters here and it does not usually.** The retention floor advances
+one day per day. Every day this is not finished, one more day of the study's
+window becomes permanently unbuyable.
+
+### The pipeline, in order
+
+| step | file | state |
+|---|---|---|
+| 1 | `p6_maker_pull.py --candles-only` | **running**, ~3 h |
+| 2 | `p6_state.py --build` | works; rerun after step 1 finishes |
+| 3 | *(to write)* dump the tickers where the rule fires | not started |
+| 4 | `p6_maker_pull.py --trades-for <file>` | not started |
+| 5 | `p6_maker_fill.py` | written and tested; fill rates meaningless until 4 |
+
+**Do not skip to step 4 with the whole universe.** Measured: 616 candle rows
+against 4,011 trade rows per market, so trades for everything is ~28 GB and
+nearly all of it belongs to markets where the rule never fires.
+
+### Three faults already found and fixed, all by looking at numbers
+
+1. **Paths start at `t0`.** `p1_state` stores `src_arr[t0:t0+PATH_MIN]`, so
+   column *j* is minute *t0+j* and `deep:30@38` means 38 minutes **into the
+   match**. My first version indexed the whole market-life array, which would
+   have searched a dormant pre-match book and still produced numbers.
+2. **`find_play_window` needs its density floor passed explicitly** — the
+   signature defaults to off. With it off the median "match" ran 1,093 minutes.
+3. **`count_fp`, not `count`.** The trade object has no `count` key, so the
+   obvious spelling writes 0.0 for every trade.
+
+### What is measured and holds
+
+- **Takers buy ~74% of the time on BOTH tickers of a match**, 126 of 126
+  events. So resting an **ask on the favourite** (R2) is the same position as a
+  **bid on the underdog** (R1) and sits where the flow is. Both are computed;
+  neither is chosen in advance.
+- **A first replication signal:** on 235 matches that fired `deep:30@38`, the
+  underdog won **66.8%**. The original study reported **66.09%** on a different
+  and earlier window. That is reassuring about the rebuilt pipeline, and it is
+  **not** a result — the breakeven is 67.19% and no fill model has run.
+
+### What would make this stop
+
+`PREREGISTRATION_MAKER_FADE.md` §10, five criteria, written before any result.
+The one most likely to bite: **fewer than 1 match in 5 getting any fill kills
+it regardless of the profit.**
+
+<!-- COORDINATOR-STATE
+doing: pulling 17,997 tennis matches of minute-by-minute prices so the fade can be re-tested as a maker; pipeline built and tested, waiting on the pull
+left: rerun p6_state, dump the tickers that fire, pull trades for those only, then run the three arms and the two placebos
+needs: no
+-->
