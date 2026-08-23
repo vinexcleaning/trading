@@ -321,6 +321,50 @@
         "preregistration"
       ],
       "window_title": "Strategy factory"
+    },
+    {
+      "name": "CHATGPT",
+      "slug": "chatgpt",
+      "folders": [
+        "chatgpt"
+      ],
+      "purpose": "Non-Claude participant. Architecture, strategy and plan review. READS shared state; WRITES only mail, INBOX.md and its own folder. No execution, no trading, no credentials.",
+      "opening": "read coordinator/AGENT_PROTOCOL.md then check your mail",
+      "created": "2026-08-22",
+      "subjects": [
+        "architecture",
+        "protocol",
+        "integration",
+        "review",
+        "design",
+        "orchestration",
+        "bridge",
+        "interface",
+        "plan"
+      ],
+      "window_title": "ChatGPT (external, via GitHub)",
+      "agent": "chatgpt",
+      "execution": false,
+      "may_write": [
+        "coordinator/mailbox/*/",
+        "INBOX.md",
+        "chatgpt/"
+      ],
+      "read_only": [
+        "CLAUDE.md",
+        "DICTATOR.md",
+        "coordinator/chats.json",
+        "BRIEF.md",
+        "STATUS.md",
+        "LEDGER.md",
+        "GUARDS.md",
+        "coordinator/runners.json"
+      ],
+      "never_touch": [
+        "livedesk/",
+        "common/kalshi_fees.py",
+        "briefs/"
+      ]
     }
   ]
 }

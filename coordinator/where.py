@@ -20,6 +20,17 @@ rendered Markdown, so it costs the page nothing):
 
 `needs:` is either `no`, or `yes - <the question, in one line>`.
 
+TWO OPTIONAL FIELDS, added 2026-08-22, for telling a stall from a long think:
+
+    state: WORKING | DONE | BLOCKED
+    updated: 2026-08-22T21:30
+
+A block without them behaves exactly as before and reads UNKNOWN. The point of
+`updated:` is that a WORKING claim EXPIRES -- stop refreshing it and it becomes
+STALLED on its own, which is the only way a session that died midway can be
+told apart from one that is still thinking. Nothing else in this repo can see
+that. Refresh it when you start a long task and when you finish one.
+
 When no session declared anything, this GUESSES from HANDOFF.md and marks the
 cell with a `~`. Every run prints how many cells were quoted and how many were
 guessed, so the table cannot quietly rot into fiction. See COORDINATOR.md
@@ -52,7 +63,10 @@ REPO = HERE.parent
 WHERE = HERE / "WHERE.md"
 
 STATE_RE = re.compile(r"<!--\s*COORDINATOR-STATE(.*?)-->", re.S | re.I)
-FIELD_RE = re.compile(r"^\s*(doing|left|needs)\s*:\s*(.+?)\s*$", re.I | re.M)
+# `state` and `updated` are OPTIONAL and were added 2026-08-22. A block that
+# carries only the original three parses exactly as it always did.
+FIELD_RE = re.compile(
+    r"^\s*(doing|left|needs|state|updated)\s*:\s*(.+?)\s*$", re.I | re.M)
 
 # Headings that plausibly hold "what is left".
 #
@@ -89,8 +103,103 @@ def declared(text: str) -> dict:
         return {}
     out = {}
     for k, v in FIELD_RE.findall(m.group(1)):
-        out[k.lower()] = strip_markdown(v)[:MAX_CELL]
+        k = k.lower()
+        # ⚠ `state` and `updated` are machine fields and must NOT be run through
+        # strip_markdown. That function removes leading list markers with
+        # `^[\s>*\-#\d.]+`, which also eats leading DIGITS -- so
+        # "2026-08-22T11:50" came back as "T11:50" and every timestamp silently
+        # failed to parse, making a live WORKING claim read as UNKNOWN. The
+        # prose fields still need the stripping; these two need the opposite.
+        out[k] = v.strip() if k in ("state", "updated") \
+            else strip_markdown(v)[:MAX_CELL]
     return out
+
+
+
+# --------------------------------------------------------------------------
+# Completion state -- the one thing this system could not previously see.
+# --------------------------------------------------------------------------
+#
+# THE PROBLEM, AND WHY THE OBVIOUS ANSWERS DO NOT WORK.
+#
+# Nothing here can watch a chat window. A session that is thinking hard and a
+# session that died look identical from disk. Three inferences were measured
+# before adding anything:
+#
+#   * mail `Status:` -- self-reported and lagging. Seven livedesk messages read
+#     OPEN while the commits proved the work finished.
+#   * commits after a message opened -- measured across all 119 messages. It
+#     fires on ACTIVITY, not completion: the one message it flagged was a false
+#     positive, because that participant commits constantly for other reasons.
+#   * HANDOFF.md changes -- same defect as commits.
+#
+# So there is no reliable derived signal, and the honest fix is an explicit one.
+#
+# THE DESIGN, AND THE ONE PROPERTY THAT MAKES IT MORE THAN ANOTHER SELF-REPORT:
+# a WORKING claim EXPIRES. A participant writes `state:` and `updated:` into its
+# COORDINATOR-STATE block. If it says WORKING and then stops refreshing the
+# timestamp, it becomes STALLED on its own, with no cooperation from the thing
+# that died. Silence is the signal. That is exactly the case -- a worker that
+# stops midway -- that nothing could previously detect.
+#
+# Both fields are OPTIONAL. `declared()` already parses any key:value pair, so
+# a participant that never writes them reads as UNKNOWN, which is precisely
+# today's behaviour. Nothing existing is disrupted.
+
+STALE_AFTER_MIN = 90        # a WORKING claim older than this is not believed
+VALID_STATES = ("WORKING", "DONE", "BLOCKED")
+
+
+def _parse_updated(raw: str):
+    """Accept the shapes a human or an agent actually writes. None if unusable."""
+    s = (raw or "").strip().replace("Z", "+00:00")
+    if not s:
+        return None
+    for fmt in (None, "%Y-%m-%d %H:%M", "%Y-%m-%dT%H:%M", "%Y-%m-%d"):
+        try:
+            d = datetime.fromisoformat(s) if fmt is None \
+                else datetime.strptime(s, fmt)
+            return d.replace(tzinfo=None) if d.tzinfo is None else \
+                d.astimezone().replace(tzinfo=None)
+        except ValueError:
+            continue
+    return None
+
+
+def liveness(decl: dict, now: datetime | None = None) -> tuple[str, str]:
+    """(state, why) from a COORDINATOR-STATE block.
+
+    Returns one of WORKING · DONE · BLOCKED · STALLED · UNKNOWN, and a plain
+    sentence explaining it. Never raises on a malformed block -- a participant
+    that writes nonsense reads as UNKNOWN rather than crashing the report.
+    """
+    now = now or datetime.now()
+    raw = (decl.get("state") or "").strip().upper()
+    if raw not in VALID_STATES:
+        if raw:
+            return "UNKNOWN", (
+                f"it wrote state: {raw.lower()}, which is not one of "
+                f"{', '.join(s.lower() for s in VALID_STATES)}"
+            )
+        return "UNKNOWN", "it has not declared a state at all"
+
+    when = _parse_updated(decl.get("updated", ""))
+    if raw != "WORKING":
+        return raw, f"it says {raw.lower()}"
+    if when is None:
+        return "UNKNOWN", (
+            "it says working but gave no readable 'updated:' time, so the "
+            "claim cannot expire and is not believed"
+        )
+    mins = (now - when).total_seconds() / 60.0
+    if mins < 0:
+        return "WORKING", "it says working, timestamped in the future"
+    if mins > STALE_AFTER_MIN:
+        return "STALLED", (
+            f"it said WORKING and has not refreshed that for "
+            f"{mins/60:.1f} hours. It may have stopped midway"
+        )
+    return "WORKING", f"it said working {mins:.0f} minutes ago"
 
 
 def paragraph_after(lines: list[str], i: int) -> str:
@@ -189,6 +298,7 @@ def handoffs(slug: str):
 # --------------------------------------------------------------------------
 def row_for(slug: str, ws: dict, state: dict, runstate: dict) -> dict:
     sources, doing, left, needs_declared = [], "", "", ""
+    decl_first: dict = {}
 
     # 1. A declared block wins, wherever it is. Brief section first -- it is
     #    the thing a session rewrites most often.
@@ -196,6 +306,7 @@ def row_for(slug: str, ws: dict, state: dict, runstate: dict) -> dict:
                        [(f"{folder}/HANDOFF.md", read(p)) for _, folder, p in handoffs(slug)]:
         d = declared(text)
         if d:
+            decl_first = decl_first or d
             doing = doing or d.get("doing", "")
             left = left or d.get("left", "")
             needs_declared = needs_declared or d.get("needs", "")
@@ -279,6 +390,15 @@ def row_for(slug: str, ws: dict, state: dict, runstate: dict) -> dict:
                 f"the {t['title'].lower()} has stopped producing anything. "
                 f"{t['restart']}"
             )
+    # A WORKING claim that stopped being refreshed is the ONE case nothing
+    # could previously detect: a window that died mid-task looks exactly like a
+    # window that is thinking. This fires only when a participant opted in by
+    # writing state:/updated:. Silence from a participant that never opted in
+    # is still invisible, and that is stated rather than papered over.
+    live_state, live_why = liveness(decl_first)
+    if live_state == "STALLED":
+        derived(f"{live_why}. Open that window and check it is still going")
+
     open_mail = state["mail"].get(slug, {}).get("OPEN", 0)
     if open_mail:
         derived(
@@ -315,6 +435,8 @@ def row_for(slug: str, ws: dict, state: dict, runstate: dict) -> dict:
         "sources": sources,
         "said_when": said_when,
         "brief_written": sec_written or "never",
+        "live_state": live_state,
+        "live_why": live_why,
     }
 
 
