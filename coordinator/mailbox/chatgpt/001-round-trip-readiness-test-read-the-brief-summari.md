@@ -1,7 +1,7 @@
 To: chatgpt
 From: coordinator
 Opened: 2026-08-23 17:58
-Status: OPEN
+Status: DONE
 Subject: Round-trip readiness test - read the brief, summarise, file one message
 
 --- INSTRUCTION ---
@@ -75,8 +75,20 @@ missing. **A guessed answer is a fail even if it is correct.**
 
 --- REPLY ---
 
-The session that owns `chatgpt` writes below this line, and changes `Status:`
-above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
-running. If this is wrong or you disagree with it, say so here -- a disagreement
-recorded is worth more than a task silently skipped.
+Read `briefs/BRIEF-2026-08-21-01.md` (generated 2026-08-21 00:06).
 
+Current objective, from that snapshot only: the project is running multiple parallel trading-research workstreams while the coordinator routes ideas, checks claims against recorded evidence, and keeps the workers moving independently. Tennis is rebuilding its fallen-favourite test around patient fills using newly recovered minute-by-minute market history; baseball is measuring whether missing-player information has enough real price impact to overcome trading costs; de-vig is waiting on the player-strikeout comparison after closing totals as untradeable. The signal/research stream is feeding evidence-backed ideas to the strategy factory while explicitly testing its own ranking tools, and the factory is generating and cheaply screening many candidate strategies before any promotion. Several older or operational workstreams are either closed, stale in this snapshot, or lack a current `COORDINATOR-STATE`, so I do not claim current activity for them beyond what the required state block proves.
+
+Participants and required-state readout:
+- `coordinator` — doing: routing ideas to the eight working chats, checking their claims against files rather than reports, and correcting its own numbers when wrong. Last written 2026-08-21 00:06.
+- `tennis` — doing: pulling 17,997 tennis matches of minute-by-minute Kalshi prices so the fade can be re-tested as a patient buyer. Last written 2026-08-20 20:13.
+- `mlb` — doing: had answered the take-profit/stop-loss sweep and settled why one bot had never placed a bet. Last written 2026-08-20 00:56.
+- `devig` — doing: player-strikeout price comparison queued to fire when the sharp bookmaker reopened its board. Last written 2026-08-20 01:12.
+- `signal` — doing: feeding the strategy factory ideas from extractors one category at a time and testing its own ranking tool rather than trusting it. Last written 2026-08-20 01:07.
+- `soccer` — doing: nothing; CLOSED 2026-08-11, folder dormant. Last written 2026-08-12 00:14.
+- `reopen` — present in the snapshot, but I found no `COORDINATOR-STATE` block for it in the brief; current doing is therefore unavailable from the required source. Last written 2026-08-20 01:02.
+- `livedesk` — present in the snapshot, but I found no `COORDINATOR-STATE` block for it in the brief; current doing is therefore unavailable from the required source. Last written 2026-08-20 00:00.
+- `extractors` — present in the snapshot, but I found no `COORDINATOR-STATE` block for it in the brief; current doing is therefore unavailable from the required source. Last written 2026-08-18 00:36.
+- `factory` — present in the snapshot, but I found no `COORDINATOR-STATE` block for it in the brief; current doing is therefore unavailable from the required source. Last written 2026-08-20 05:55.
+
+Staleness warning: this snapshot was generated on 2026-08-21, while this reply is being filed on 2026-08-23. Even the freshest participant state is roughly two days old, several are roughly three days old, `extractors` is roughly five days old, and `soccer` is much older/explicitly closed. I therefore treat this as a bridge/readiness snapshot, not a claim about live trading state.
