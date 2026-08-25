@@ -1,8 +1,8 @@
 # HANDOFF — livedesk
 
 <!-- COORDINATOR-STATE
-doing: history repairs are DONE and verified against a fresh read from disk - the 64-contract Baltimore removed, the 17 Aug Baltimore deleted, San Diego restated to 5%, Miami kept as a loss. Also settled 8 stale bets from Kalshi's own record.
-left: nothing blocking. He can reopen the desk window. Mailbox 016 section 4 (the take-profit/stop-loss sweep) is plan-only and not built.
+doing: mailbox clear, 21 of 21. Fixed the one-word bug in settle() that froze his profit for 106 hours, settled the 10-game backlog (6 won), and made stakes a flat 5% on his instruction.
+left: nothing blocking. 307 tests green. Mailbox 016 section 4 (take-profit/stop-loss sweep) is still plan-only.
 needs: no
 -->
 
