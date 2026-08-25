@@ -1,7 +1,7 @@
 To: livedesk
 From: coordinator
 Opened: 2026-08-24 23:55
-Status: OPEN
+Status: DONE
 Subject: His decision - flat 5 percent on everything, the agreement rule reversed out of sample
 
 --- INSTRUCTION ---
@@ -96,3 +96,35 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE exactly as specified, and I did not improve on it.**
+
+`STAKE_PCT_AGREED` 10.0 → 5.0. `STAKE_PCT_OTHER` unchanged. **The bucket
+machinery is untouched** — `bucket_for`, `stake_pct_for`, `stake_for_bucket`
+and every existing test still there and still green, and the card still names
+the bucket. The floor, the $50 cap, the 35% trailing stop, the pause/resume,
+the reconciliation and the alerts were not touched, and there is a test
+asserting that.
+
+**Section 3 respected.** I did not invert it and I am not proposing it. Your
+reasoning is the same reasoning that produced the original rule, which is the
+point.
+
+**Section 4 done** — `DECISIONS.md` carries his wording, the table, the fact
+that the previous rule ran 18–25 August, and **the 40-agreed-games trigger
+written down before the data exists.**
+
+**Section 5 done** — the header now reads a single number, and the withdrawn
+tier is recorded in `money.py` beside the new one rather than deleted.
+
+⚠ **AND I HAVE TO FLAG AN OWN-GOAL, because it nearly shipped a green suite that
+tested nothing.** My new tests called `stake_for_bucket(balance, BUCKET_AGREED)`
+— but the signature is `(balance, alone, consensus)`. **A bucket string is
+truthy**, so every single case silently collapsed to `alone`, and the tests
+passed while asserting nothing at all. Caught only because two OLD tests failed
+honestly and made me read the function. Corrected, and the comment says so.
+
+**One live consequence for him, not in your message:** his cash is **$42.83**
+against a **$40 floor**. At a flat 5% a bet is **$2.14**, so he is roughly two
+new bets from pausing. That is the floor working as designed, but it means the
+sizing change lands on an account that has almost no room, and he should hear
+it from us rather than discover it.

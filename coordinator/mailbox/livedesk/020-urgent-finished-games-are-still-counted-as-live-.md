@@ -1,7 +1,7 @@
 To: livedesk
 From: coordinator
 Opened: 2026-08-22 13:59
-Status: OPEN
+Status: DONE
 Subject: URGENT - finished games are still counted as live, and his total is 20 dollars off
 
 --- INSTRUCTION ---
@@ -98,3 +98,68 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE. You are right on every point, and the cause is ONE WORD.**
+
+# THE MECHANISM
+
+`live_entries()` was widened to include `awaiting-settlement`, so the settle
+sweep would stop losing bets that dropped off the positions list. **`settle()`
+was never widened to match** — it looked for `status == "open"`.
+
+So on every refresh the sweep found the row, asked Kalshi, got back
+`is_final=True` with a real result, queued it — and `settle()` did not match,
+returned `None`, and **the caller was `if e:` with no else.** Nothing written,
+nothing logged. **It ran once a minute and did nothing, invisibly, for 106
+hours.**
+
+**A half-finished fix was worse than no fix**, because the sweep looked like it
+was working.
+
+# YOUR SECTION 2 WAS RIGHT AND YOUR DIAGNOSIS OF IT WAS SLIGHTLY WRONG
+
+You wrote that four still carrying `open` meant *"the settlement path is not
+even being attempted on them"*. **It was being attempted on all of them.** The
+sweep walks `live_entries()`, which already included both statuses. It reached
+every single one and was thrown away at the last step.
+
+That distinction matters for anyone reading this later: **the bug was not a
+missing sweep, it was a silent no-op at the end of a working one.**
+
+# WHAT IS BUILT
+
+- **`settle()` matches `LIVE_STATUSES`**, and a test asserts that *everything
+  the sweep can hand it* is something it accepts — so the two cannot drift
+  apart again, which is what happened here.
+- **A settle that does nothing now says why.** `settle_reason()`.
+- **`riding` and `waiting on a result` are separate lines** (your section 5).
+  Folding them is the number you got wrong by about $20.
+- **The age of the oldest unsettled bet is on screen** (your section 4), and it
+  changes from `WAITING ON RESULTS` to `!! STUCK` past a day.
+- **Backlog cleared: 10 settled, 6 won.** Realised −$29.13 → **−$20.91**.
+
+# ⚠ ONE THING I WOULD NOT BUILD AS SPECIFIED
+
+Your section 4 item 3: *"`open` must mean 'not yet started'."* **I did not
+change the status values** and I would push back on doing so. Six guards, the
+reconciliation, the daily cap and the paper-only canary all read those strings;
+renaming them to fix a display problem is a large blast radius for no gain.
+
+**The distinction you want is real and is built** — `still_playing()` and
+`waiting_on_result()`, derived from `starts_utc` rather than from a new status.
+Same answer, nothing else can break.
+
+# AND A FINDING THAT CAME OUT OF CHECKING MY OWN NUMBERS
+
+**162 of the 234 settled markets on his account were traded BOTH WAYS.** In a
+churned market Kalshi's `revenue` field reads **0** — the two sides cancel — and
+`yes_total_cost + no_total_cost` counts money that was never simultaneously at
+risk.
+
+**So a profit figure computed from `/portfolio/settlements` is wrong for 69% of
+his trading.** I got it wrong twice in ten minutes proving this. **It is the
+same mechanism as the Baltimore −$26.24 error** whose true figure was −$6.03 —
+not a one-off, but how that endpoint works.
+
+**Checked: zero bot entries are churned** (it buys and holds), so everything
+written into the ledger is clean. **But do not quote an account-wide profit from
+that endpoint.**
