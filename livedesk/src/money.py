@@ -55,8 +55,39 @@ MAX_STAKE_USD = 50.00
 # he has not answered: skipping the alone games cuts him from 28 bets to 8 --
 # a better return on a much smaller amount of action. If he confirms it after
 # reading, it is one line on top of this.
-STAKE_PCT_AGREED = 10.0      # another approach took the same side
-STAKE_PCT_OTHER = 5.0        # it took the other side, OR nothing else is on it
+# ⚠ WITHDRAWN 2026-08-25 ON EVIDENCE. His words: **"Put five percent flat on
+# everything."** Both tiers are now 5.0. The machinery below stays exactly as it
+# was -- `bucket_for`, `stake_pct_for`, `stake_for_bucket` and their tests are
+# untouched, and the card still names the bucket -- because the classification
+# is still worth RECORDING, and if the evidence ever comes back this is a
+# one-number change rather than a rebuild.
+#
+# WHY. Measured on `mlb-paper/data/paper.db`, `starter__hold`, split on
+# settlement date, classified using only what was knowable when the bet was
+# placed. Out of every $100 staked:
+#
+#   bucket      the 81 games the rule came from      the 24 games since
+#   agreed      made $38                             LOST $29
+#   opposite    made $21                             made $36
+#   alone       LOST $10                             made $39
+#
+# **All three flipped.** Over all 104 games the `alone` bucket comes to about
+# minus one dollar per hundred -- the gap the whole rule rested on is gone.
+#
+# ⚠ AND THE OBVIOUS NEXT MOVE IS FORBIDDEN. `alone` made $39 per $100 in the
+# new window, so the temptation is to bet 10% on `alone` instead. **That is
+# selecting on the newest slice, which is exactly how the original rule was
+# produced.** A rule that reverses when fresh data arrives did not survive; the
+# answer is to stop tiering, not to tier the other way round.
+#
+# Flat is not a claim that the buckets are the same. It is the honest default
+# once the thing that told them apart stopped telling them apart.
+#
+# WHAT WOULD MAKE US REVISIT IT, written down BEFORE the data exists so nobody
+# can move the bar afterwards: **40 further `agreed` games.** Not 10, not "when
+# it looks good again".
+STAKE_PCT_AGREED = 5.0       # was 10.0 from 2026-08-18 to 2026-08-25
+STAKE_PCT_OTHER = 5.0        # unchanged throughout
 
 # ⚠ HOW THIN THE 10% TIER ACTUALLY IS, and it goes on the card every time.
 #

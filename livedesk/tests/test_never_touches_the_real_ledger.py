@@ -35,6 +35,17 @@ REAL = Path(__file__).resolve().parents[1] / "data" / "ledger.json"
 REAL_LOCK = Path(__file__).resolve().parents[1] / "data" / "desk.lock"
 
 
+def _lock_snapshot():
+    """(exists, contents). Taken once at import, before any test runs."""
+    try:
+        return (True, REAL_LOCK.read_bytes())
+    except Exception:
+        return (False, b"")
+
+
+_LOCK_AT_IMPORT = _lock_snapshot()
+
+
 def test_the_path_is_resolved_when_called_not_when_defined(tmp_path,
                                                            monkeypatch):
     """The exact mechanism that failed. Monkeypatching the module global MUST
@@ -126,11 +137,18 @@ def test_the_lock_path_is_resolved_when_called_not_when_defined(tmp_path,
     assert OM.read_lock()["pid"] == os.getpid()
 
 
-def test_a_full_test_run_leaves_no_lock_behind():
+def test_a_full_test_run_DOES_NOT_CHANGE_the_real_lock():
     """⚠ CHECKS THE LITERAL REAL PATH, not `OM.LOCK_PATH` -- conftest patches
-    that global for every test, so reading it here would check the temp file
-    and pass no matter what. The first version of this test did exactly that
-    and would have been useless."""
-    assert not REAL_LOCK.exists(), (
+    that global for every test, so reading it here would check a temp file and
+    pass no matter what.
+
+    ⚠ AND IT COMPARES AGAINST A SNAPSHOT, not against "the file is absent".
+    The first version asserted the lock did not exist and fired the moment he
+    had genuinely run the desk that day -- the real window leaves a lock
+    behind on purpose. **A canary that cries wolf gets ignored, and then the
+    real thing walks straight through it.** What must never happen is a TEST
+    writing it; the desk writing it is the feature.
+    """
+    assert _lock_snapshot() == _LOCK_AT_IMPORT, (
         f"a test wrote {REAL_LOCK} -- his desk would refuse to open, "
         f"blaming a window that is not there")

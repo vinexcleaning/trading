@@ -50,6 +50,12 @@ LEDGER_PATH = Path(__file__).resolve().parents[1] / "data" / "ledger.json"
 # So `stopped()` is no longer terminal. Below the floor it places nothing;
 # back above it, it resumes by itself with no restart and no button. Every
 # crossing is announced, so he can always see why it went quiet.
+#: How long after first pitch a baseball game is certainly over. Nine innings
+#: run about three hours; five is generous enough that extra innings and rain
+#: delays do not produce a false "STUCK" warning, and short enough that a
+#: genuinely stuck row is flagged the same evening rather than days later.
+GAME_LENGTH_HOURS = 5.0
+
 ACCOUNT_FLOOR_USD = 40.00
 TRAILING_DROP_FRAC = 0.35      # 35% below the highest the running total reached
 # From $83 that is a stop at $53.95 -- next to his floor at the start, and
@@ -428,6 +434,76 @@ class Ledger:
     def at_risk_source(self) -> str:
         return ("your account" if self.account_positions is not None
                 else "this tool's own record (your account has not been read)")
+
+    def has_started(self, e) -> bool:
+        """Has this game begun? Unreadable start time counts as STARTED.
+
+        The cautious direction: a row with a bad date is chased for a result
+        rather than assumed to be safely in the future and ignored, which is
+        how eight of them sat unnoticed.
+        """
+        t = None
+        try:
+            t = _parse(e.starts_utc)
+        except Exception:
+            t = None
+        return True if t is None else t <= datetime.now(timezone.utc)
+
+    def still_playing(self) -> list:
+        """Live money on a game whose result is genuinely not known yet."""
+        return [e for e in self.live_entries() if not self.has_started(e)
+                or self._hours_since_start(e) < GAME_LENGTH_HOURS]
+
+    def waiting_on_result(self) -> list:
+        """⚠ THE ONES THAT SHOULD NOT EXIST. Started long enough ago that the
+        game is over, and still not settled. Every one of these is a bet whose
+        outcome is already known to Kalshi and not to us -- his cash has
+        already moved and the reason is not in the record."""
+        return [e for e in self.live_entries()
+                if self.has_started(e)
+                and self._hours_since_start(e) >= GAME_LENGTH_HOURS]
+
+    def _hours_since_start(self, e) -> float:
+        try:
+            t = _parse(e.starts_utc)
+        except Exception:
+            t = None
+        if t is None:
+            return 1e6            # unreadable -> treat as very old, chase it
+        return (datetime.now(timezone.utc) - t).total_seconds() / 3600.0
+
+    def oldest_unsettled_hours(self):
+        """How long the worst one has been waiting, or None."""
+        rows = self.waiting_on_result()
+        return max((self._hours_since_start(e) for e in rows), default=None)
+
+    def waiting_line(self) -> str:
+        """⚠ ON SCREEN, BECAUSE HE FOUND THIS ONE TOO AND IT IS THE FIFTH TIME.
+
+        A bet whose game finished days ago and is still counted at what it cost
+        is invisible unless something says so. This says so, with the age, and
+        it is deliberately blunt once it goes past a day.
+        """
+        rows = self.waiting_on_result()
+        if not rows:
+            return "nothing waiting on a result"
+        money = round(sum(e.cost_usd for e in rows), 2)
+        oldest = self.oldest_unsettled_hours() or 0.0
+        age = (f"{oldest:.0f} hours" if oldest < 48
+               else f"{oldest / 24:.0f} DAYS")
+        lead = "WAITING ON RESULTS" if oldest < 24 else "!! STUCK"
+        return (f"{lead}: {len(rows)} finished game(s), ${money:.2f}, "
+                f"oldest {age} ago -- this is NOT money at risk, it is a "
+                f"result the tool has not recorded")
+
+    def riding_line(self) -> str:
+        """What is genuinely undecided, kept apart from what is merely
+        unrecorded. Folding them together is the number the coordinator got
+        wrong by about $20."""
+        playing = self.still_playing()
+        money = round(sum(e.cost_usd for e in playing), 2)
+        return (f"still playing: ${money:.2f} on {len(playing)} game(s)"
+                if playing else "no games still playing")
 
     def at_risk_line(self) -> str:
         """On screen, so a gap is visible to him instead of him finding it.
@@ -1050,14 +1126,48 @@ class Ledger:
         return count
 
     def settle(self, ticker: str, won: bool) -> Optional[Entry]:
+        """Record the result. Matches ANY live status, not just `open`.
+
+        ⚠ THIS ONE WORD COST HIM FOUR AND A HALF DAYS OF WRONG NUMBERS, and it
+        is the clearest example in this project of a half-finished fix being
+        worse than no fix.
+
+        `live_entries()` was widened to include `awaiting-settlement` so the
+        settle sweep would stop losing track of bets that dropped off the
+        positions list. **`settle()` was not widened to match.** So the sweep
+        found each one, read a finalised result from Kalshi, queued it -- and
+        this method looked for `status == "open"`, did not find it, and
+        returned `None`.
+
+        **The caller was `if e:`. Nothing was logged when it failed.** So it
+        ran every sixty seconds and did nothing, silently, for 106 hours. Eight
+        finished games sat counted at what they cost as though the outcome were
+        unknown, his profit was frozen at the moment of purchase, and the
+        coordinator repeated a total that was about $20 out.
+
+        **He found it. By reading his own account. For the fifth time.**
+        """
         for e in self.entries:
-            if e.ticker == ticker and e.status == "open":
+            if e.ticker == ticker and e.status in self.LIVE_STATUSES:
                 e.status = "won" if won else "lost"
                 e.pnl_usd = (e.win_profit_usd if won else -e.lose_usd)
                 e.settled_utc = _now()
                 self.save()
                 return e
         return None
+
+    def settle_reason(self, ticker: str) -> str:
+        """Why a settle attempt found nothing. The silent `return None` is what
+        hid the bug above -- a sweep that cannot say why it did nothing is
+        indistinguishable from a sweep that had nothing to do."""
+        rows = [e for e in self.entries if e.ticker == ticker]
+        if not rows:
+            return f"no entry at all for {ticker}"
+        done = [e for e in rows if e.status in ("won", "lost")]
+        if done:
+            return ""              # already settled; nothing wrong
+        return (f"{rows[0].team}: Kalshi says this is finished, but our row is "
+                f"'{rows[0].status}' and cannot be settled from that state")
 
     def money_and_percent(self, since_fix=None):
         """(money, percent, staked, n) for settled bets. BOTH NUMBERS, ALWAYS.

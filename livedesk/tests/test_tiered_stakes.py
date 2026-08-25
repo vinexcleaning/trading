@@ -35,13 +35,20 @@ BAL = 100.00
 
 
 def test_his_numbers():
-    assert STAKE_PCT_AGREED == 10.0
+    """⚠ CHANGED 2026-08-25. It asserted 10.0/5.0. His words: **"Put five
+    percent flat on everything."** The tier was withdrawn on evidence -- all
+    three buckets reversed out of sample -- not on a preference."""
+    assert STAKE_PCT_AGREED == 5.0
     assert STAKE_PCT_OTHER == 5.0
 
 
-def test_agreed_gets_ten_percent():
+def test_agreed_is_still_CLASSIFIED_even_though_it_no_longer_pays_more():
+    """⚠ WAS `test_agreed_gets_ten_percent`. The classification is unchanged
+    and still recorded -- it is the only data that could ever justify bringing
+    the tier back, so deleting the machinery would delete the evidence. What
+    changed is the stake it leads to."""
     assert bucket_for(False, "early agreed") == BUCKET_AGREED
-    assert stake_for_bucket(BAL, False, "early agreed") == pytest.approx(10.00)
+    assert stake_for_bucket(BAL, False, "early agreed") == pytest.approx(5.00)
 
 
 def test_the_other_side_gets_five():
@@ -182,3 +189,76 @@ def test_the_bucket_is_recorded_on_the_entry_for_counting():
     assert hasattr(e, "bucket")
     src = (SRC / "desk.py").read_text(encoding="utf-8")
     assert "bucket=bucket_for(" in src, "the builder must record the tier"
+
+
+# ==========================================================================
+# ⚠ THE TIER WAS WITHDRAWN ON EVIDENCE, 2026-08-25. His words: **"Put five
+# percent flat on everything."**
+#
+# The tests ABOVE are deliberately left in place and still pass. The bucket
+# machinery is unchanged -- `bucket_for`, `stake_pct_for`, `stake_for_bucket`
+# all still work and the card still names the bucket. Only the two numbers
+# moved, so that if the evidence ever comes back this is one number and not a
+# rebuild.
+#
+# WHY IT WAS WITHDRAWN. Out of every $100 staked, split on settlement date and
+# classified only on what was knowable at bet time:
+#
+#   bucket      the 81 games it came from      the 24 games since
+#   agreed      made $38                       LOST $29
+#   opposite    made $21                       made $36
+#   alone       LOST $10                       made $39
+#
+# All three flipped. The gap the rule rested on is gone.
+# ==========================================================================
+
+def test_every_bucket_now_stakes_the_same():
+    """The whole of his decision, in one assertion.
+
+    ⚠ NOTE THE SIGNATURE. `stake_for_bucket(balance, alone, consensus)` -- it
+    takes the FLAGS, not a bucket name. The first version of this test passed a
+    bucket string as `alone`, which is truthy, so every case silently collapsed
+    to `alone` and the test asserted nothing at all while passing.
+    """
+    cases = {"agreed": (False, "early agreed"),
+             "opposite": (False, "took the other side"),
+             "alone": (True, ""),
+             "unknown": (None, "")}
+    stakes = {k: stake_for_bucket(BAL, a, c) for k, (a, c) in cases.items()}
+    assert len(set(stakes.values())) == 1, stakes
+    assert stakes["agreed"] == pytest.approx(BAL * 0.05)
+
+
+def test_an_agreed_game_no_longer_gets_double():
+    """This is the change. It used to be $10 against $5 on this balance."""
+    assert stake_for_bucket(BAL, False, "early agreed") ==         stake_for_bucket(BAL, True, "")
+
+
+def test_an_unknown_flag_still_sizes_and_never_refuses_to_bet():
+    """⚠ A missing flag must size at 5%, NOT at nothing. Turning an unknown
+    bucket into a no-bet would silently stop him trading on the day the
+    classifier broke, and nothing would say so."""
+    s = stake_for_bucket(BAL, None, "")
+    assert s == pytest.approx(BAL * 0.05)
+    assert s > 0
+
+
+def test_the_bucket_is_still_recorded_even_though_it_changes_nothing():
+    assert bucket_for(False, "early agreed") == BUCKET_AGREED
+    assert bucket_for(False, "took the other side") == BUCKET_OPPOSITE
+    assert bucket_for(True, "") == BUCKET_ALONE
+    assert bucket_for(None, "") == BUCKET_UNKNOWN
+    assert stake_pct_for(False, "early agreed") == stake_pct_for(True, "") == 5.0
+
+
+def test_the_cap_and_the_floor_were_not_touched():
+    """His decision was about the percentage and nothing else. A sizing change
+    that quietly moved a guard would not be the change he approved."""
+    import ledger as _L
+    assert MAX_STAKE_USD == 50.00
+    assert _L.ACCOUNT_FLOOR_USD == 40.00
+    assert _L.TRAILING_DROP_FRAC == 0.35
+
+
+def test_a_big_balance_still_hits_the_ceiling():
+    assert stake_for_bucket(5000.00, False, "early agreed") ==         pytest.approx(50.00)

@@ -389,12 +389,10 @@ class Desk(tk.Tk):
             # follow, so the header stated a rule the tool was not using -- he
             # would have read "10%" and seen $5 and had no way to tell which
             # was broken. The label now states the RULE, not one number.
-            text=(f"${self._stake():.2f} on this one  ·  "
-                  f"{STAKE_PCT_AGREED:.0f}% of your "
-                  f"${self.ledger.account_balance_usd or 0:.2f} when both "
-                  f"approaches agree, {STAKE_PCT_OTHER:.0f}% otherwise  ·  "
-                  f"one bet per signal, two per game, never twice on one "
-                  f"market"))
+            text=(f"${self._stake():.2f} a bet  ·  {STAKE_PCT_OTHER:.0f}% of "
+                  f"your ${self.ledger.account_balance_usd or 0:.2f}, flat, "
+                  f"whatever the bucket  ·  one bet per signal, two per game, "
+                  f"never twice on one market"))
         self.beat_lbl.configure(
             text=f"last checked {self.last_check}  (#{self.check_count})")
 
@@ -403,10 +401,17 @@ class Desk(tk.Tk):
             text=msg[:150],
             fg={"disagree": "#fca5a5", "unchecked": "#fcd34d",
                 "ok": "#86efac"}.get(state, "#9ca3af"))
+        # ⚠ `waiting_line()` IS THE ONE HE NEEDED AND DID NOT HAVE. Ten of his
+        # bets sat on finished games for up to four days, counted at what they
+        # cost as though the result were unknown, and the only way anyone found
+        # out was him reading Kalshi. Fifth time. It is on the screen now, with
+        # the age, and it shouts once it goes past a day.
         self.room_lbl.configure(
             text="  " + self.ledger.room_line()
-                 + "\n  " + self.ledger.daily_line()
+                 + chr(10) + "  " + self.ledger.daily_line()
                  + chr(10) + "  " + self.ledger.at_risk_line()
+                 + chr(10) + "  " + self.ledger.riding_line()
+                 + chr(10) + "  " + self.ledger.waiting_line()
                  + chr(10) + "  " + self.ledger.two_window_line())
 
         avail = self._available()
@@ -1172,6 +1177,14 @@ class Desk(tk.Tk):
                 elif kind == "settle":
                     ticker, won = rest[0]
                     e = self.ledger.settle(ticker, won)
+                    if e is None:
+                        # ⚠ THE SILENT NO-OP THAT COST 106 HOURS. This branch
+                        # did not exist: `settle()` returned None, `if e:` was
+                        # false, and nothing was written or logged. It ran once
+                        # a minute and did nothing, invisibly, for four days.
+                        why = self.ledger.settle_reason(ticker)
+                        if why:
+                            self._log(f"COULD NOT SETTLE {why}")
                     if e:
                         self._log(f"{'WON' if won else 'LOST'} {e.matchup} — "
                                   f"{e.team} — {usd(e.pnl_usd)}")
