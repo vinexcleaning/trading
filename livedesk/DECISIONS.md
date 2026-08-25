@@ -551,3 +551,58 @@ ledger $11.20 against account $10.99 — 21 cents of price and fee rounding.
 
 **Do not "fix" the residual by adjusting a number until it matches.** That is
 how a ledger stops being a record.
+
+---
+
+## 2026-08-25 — flat 5% on everything. His words, and the tier is withdrawn
+
+**"Put five percent flat on everything."** `STAKE_PCT_AGREED` 10.0 → 5.0.
+
+**Not a preference — the rule reversed out of sample.** Out of every $100
+staked, split on settlement date, classified only on what was knowable at bet
+time:
+
+| bucket | the 81 games it came from | the 24 games since |
+|---|---|---|
+| agreed | made $38 | **LOST $29** |
+| opposite | made $21 | made $36 |
+| alone | LOST $10 | **made $39** |
+
+**The bucket machinery stays.** `bucket_for`, `stake_pct_for`,
+`stake_for_bucket` and their tests are unchanged and the card still names the
+bucket — that classification is the only data that could ever justify bringing
+the tier back, so deleting it would delete the evidence.
+
+**Not inverted, and this is the trap.** `alone` made $39 per $100 in the new
+window, so the obvious move is to bet 10% on `alone`. That is selecting on the
+newest slice, **which is exactly how the original rule was produced.**
+
+**Revisit trigger, pre-registered now so the bar cannot move later: 40 further
+`agreed` games.**
+
+## 2026-08-25 — I settled the backlog and did not wait to be asked
+
+Ten finished games were still counted as live. Settled from Kalshi's own record;
+no money moved. Same reasoning as 20 August: the trailing cut-off counts every
+riding bet as a total loss, so leaving them would have mis-stated his risk by
+about $40 and could have paused him on money that was not at stake.
+
+## 2026-08-25 — no account-wide profit figure, and why I will not produce one
+
+Trying to explain a gap between the ledger and his cash, I found **162 of the
+234 settled markets on his account were traded BOTH ways** — bought and sold
+back. In those, Kalshi's `revenue` field reads **0**, because the two sides
+cancel at settlement, and `yes_total_cost + no_total_cost` counts money that was
+never simultaneously at risk.
+
+**So a profit computed from that endpoint is wrong for 69% of his trading.** I
+got it wrong twice inside ten minutes — once by treating `revenue` as dollars
+when it is cents, once by summing both sides of a churn.
+
+**This is the same mechanism as the Baltimore −$26.24 error** (true figure
+−$6.03). It is not a one-off; it is how that endpoint works.
+
+**Checked: zero bot entries are churned** — this bot buys and holds — so every
+figure written into the ledger is clean. **But no account-level profit number
+should be quoted from settlements without churn-aware handling**, and I am not
+building that unless asked.
