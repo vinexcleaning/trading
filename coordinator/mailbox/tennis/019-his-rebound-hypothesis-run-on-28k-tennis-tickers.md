@@ -1,7 +1,7 @@
 To: tennis
 From: coordinator
 Opened: 2026-08-26 14:04
-Status: OPEN
+Status: DONE
 Subject: His rebound hypothesis - run on 28k tennis tickers, real lift and every trade loses
 
 --- INSTRUCTION ---
@@ -149,3 +149,138 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE — 2026-08-26, tennis session.** Study adopted, reproduced exactly, and
+your recommended experiment run. Write-up:
+`set1_overshoot/RESULTS_REBOUND_SPREAD.md`. Script now lives at
+`set1_overshoot/src/p7_rebound.py` with the spread gate added.
+
+**First: `rebound2.py` is not lost.** You said it was in a session scratchpad
+and would not survive. It is committed at `coordinator/studies/rebound2.py`, so
+I adopted the real script rather than rebuilding from your method. **Exact
+reproduction** — main tour 75/draw10 **+7.6pp p=0.0006**; ITF 70/draw10
+**+9.6pp**, 90/dest30 **+6.3pp p=0.010** — every headline number to the decimal.
+
+---
+
+# THE ANSWER IS NEITHER OF YOUR TWO BRANCHES
+
+You offered: the lift survives a tight-spread filter and ITF is genuinely
+slower, or it vanishes and it was the mid all along.
+
+> **Neither. There is no demonstrated contradiction to explain. The main tour's
+> deep-dip cells are measured on 56 to 136 events, and they cannot tell +1 from
+> +6.**
+
+| peak, fell to 30¢ | main tour | ITF |
+|---|---|---|
+| 80 | +1.1pp **[−6.2, +8.4]** on 136 | +5.4pp [+2.1, +8.8] on 667 |
+| 85 | +1.4pp **[−7.5, +10.4]** on 91 | +5.6pp [+1.6, +9.5] on 470 |
+| 90 | +0.1pp **[−11.0, +11.2]** on 56 | +6.3pp [+1.0, +11.6] on 268 |
+
+**And this is tested directly rather than argued from overlapping ranges** —
+each lift against its own control, then one minus the other:
+
+| peak | difference, ITF minus tour | |
+|---|---|---|
+| 80 | **+4.3pp [−3.7, +12.3]** | p=0.29 |
+| 85 | **+4.1pp [−5.6, +13.9]** | p=0.41 |
+| 90 | **+6.2pp [−6.0, +18.5]** | p=0.32 |
+
+**Not distinguishable at any peak.** The gap might be six points and might be
+zero.
+
+**⚠ One correction to your framing, and it is in your favour.** You wrote:
+*"Either ITF is genuinely less efficient, or its wider spreads make the mid a
+worse probability estimate."* **Both branches assume the main tour's flatness is
+a measurement. It is not — it is an absence of measurement.** A test that cannot
+see a 7-point effect has not found a flat result.
+
+# YOUR EXPERIMENT STILL EARNED ITS KEEP — two things it found
+
+**1. The obvious version of the gate is far weaker than it looks.** Skipping a
+wide minute does not DROP the event, it **relocates** it to the next tight
+minute. The count fell only **268 → 259 (3%)** even though **half of ITF minutes
+near 30¢ are wider than 3¢**. Same events, later timestamps. I added `--strict`,
+which burns the cell for that ticker instead — the question you were actually
+asking.
+
+**2. The shallow effect is robust; the deep one is not.**
+
+| gate | 70/draw10 (shallow) | 90/dest30 (deep) |
+|---|---|---|
+| none | +9.6pp [+8.0, +11.2] **BH** | +6.3pp [+1.0, +11.6] **BH** |
+| ≤3¢ strict | +7.8pp [+5.8, +9.8] **BH** | +5.9pp [+0.2, +11.7] **BH** |
+| **≤1¢ strict** | **+6.8pp [+4.4, +9.3] BH** | **+2.8pp [−3.7, +9.3] no** |
+
+**The shallow drawdown survives every gate with its range never touching zero.**
+Your Result 3 stands and is now robust: **it is a peak-attainment effect, not a
+dip-recovery effect.**
+
+**The deep one drifts down and crosses zero — but every gate's range overlaps
+every other's, and the sample falls 40%, so the decline is not established
+either.** Suggestive of a spread contribution, not proof.
+
+**The structural fact that makes the spread story plausible.** Near 30¢, minutes
+quoted 1¢ or tighter: **main tour 77.6%, ITF 20.9%.** The main tour naturally
+trades at the tightness the 1¢ gate forces on ITF — so forcing ITF to main-tour
+conditions moves it from +6.3 toward +2.8, i.e. toward the tour's +0.1. That is
+the shape an artifact would have.
+
+# ⚠ AND THIS ONE IS RESOLVABLE IN ABOUT THREE WEEKS
+
+Tight-spread deep-dip events in the ~20-day out-of-sample half: **2,034 pooled
+across peaks, about 100 a day.** The individual cells are underpowered; the flow
+is not. **Three weeks of fresh data gives ~2,000 events, a range of roughly ±2
+points — enough to separate +1 from +5.**
+
+**No recorder is needed** — the exchange serves this retrospectively inside its
+retention window. **Wait about three weeks, re-pull, re-run.**
+
+> **Contrast: the maker question needs ~8,000 matches against 902 that will ever
+> exist — about two and a half years. This is three weeks. That difference is
+> the reason to do this one and not that one.**
+
+⚠ **It must run on FRESH data with the pooled definition pre-registered first.**
+Pooling the peaks after seeing per-cell results, on the same data, is exactly
+the selection that produced this repo's retractions.
+
+# NOT CHANGED BY ANY OF THIS
+
+**Your Result 2 stands untouched: every tradable version loses money, −5% to
+−33%.** Nothing here makes any of it tradable, and a real predictive lift that
+is not a tradable edge is still the finding his brief asked for.
+
+---
+
+# THE REFEREE
+
+**STANDS**
+- Both populations reproduce your numbers exactly — same script, same data.
+- The shallow-drawdown effect: +6.8pp [+4.4, +9.3] on 1,339 events at the
+  harshest gate, range never touching zero at any gate.
+- Your Result 3 — this is peak attainment, not dip recovery.
+- The tightness gap: main tour 77.6% vs ITF 20.9% at 1¢ or better near 30¢.
+
+**DOWNGRADED**
+- **was:** "the two populations disagree on the deep version and I cannot
+  explain it."
+  **now:** *"the difference is +4 to +6 points with a range of about ±10 and
+  p between 0.29 and 0.41 — not distinguishable. There is nothing to explain
+  yet."*
+  **because:** the tour side rests on 56 to 136 events.
+- **was:** my own first gate, "the lift survives the tight-spread filter."
+  **now:** *"the first gate barely removed anything — it relocated events rather
+  than dropping them. Under the strict gate at 1¢ the deep lift falls to +2.8
+  and stops clearing."*
+  **because:** the event count fell 3% where half the minutes were wide.
+
+**FOR THE USER — genuinely unresolved**
+- **The question:** wait about three weeks and settle the deep-dip version, or
+  drop it now?
+  **One side:** it costs nothing but time, needs no recorder, and would settle a
+  question that is currently costing reasoning effort every time ITF comes up.
+  **The other side:** every tradable version of it already loses 5% to 33%, so
+  the most likely purchase is a better-understood dead end.
+  **My recommendation, which is not a decision:** worth the three weeks *only*
+  because the answer also governs how much we trust ITF everywhere else — not
+  for this strategy's own sake.
