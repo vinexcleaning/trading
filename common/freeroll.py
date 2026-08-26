@@ -77,6 +77,10 @@ class Position:
     won: bool
     fee_type: str = "quadratic"
     opened_min: int = 0
+    #: wall-clock seconds. Needed only by `simulate_concurrent`,
+    #: which is the arm where freeing cash EARLY is the point.
+    open_ts: int = 0
+    settle_ts: int = 0
 
     def __post_init__(self):
         if not (0 < self.entry_ask_c < 100):
@@ -99,6 +103,8 @@ class Rule:
     staged: bool = False
 
     def trigger_price(self, entry_ask_c: int) -> float:
+        if self.kind == "random":
+            return -1.0            # handled separately in apply()
         if self.kind == "multiple":
             return entry_ask_c * self.level
         if self.kind == "profit":
@@ -174,6 +180,40 @@ def apply(p: Position, rule: Rule) -> Outcome:
     if rule is HOLD or rule.level == float("inf"):
         o.reason = "hold-to-settlement baseline"
         o.net_c = settle_c(p.contracts, p.won) - cost
+        return o
+
+    if rule.kind == "random":
+        # PLACEBO. Scale out at a RANDOM minute, same size, same costs, no
+        # trigger at all. If this looks as good as the real rule, the rule is
+        # doing nothing and only the costs are real.
+        #
+        # ⚠ The minute is drawn strictly INSIDE the tape. RESULTS_MAKER.md §6
+        # records a placebo that drew minutes after settlement, where the book
+        # is pinned at the known result -- it beat its own treatment by
+        # +12.40c and took three rounds to find.
+        if len(p.tape) < 3:
+            o.reason = "tape too short to place a random exit"
+            o.net_c = settle_c(p.contracts, p.won) - cost
+            return o
+        seed = (abs(hash((p.pid, int(rule.level)))) % 2_147_483_647)
+        fire_at = 1 + (seed % (len(p.tape) - 2))
+        exec_bid = p.tape[fire_at][0]
+        if exec_bid <= 0:
+            o.reason = "no bid to sell into at the random minute"
+            o.net_c = settle_c(p.contracts, p.won) - cost
+            return o
+        want = p.contracts * p.entry_ask_c * rule.target
+        m = max(0, min(int(want // exec_bid), p.contracts))
+        if m == 0:
+            o.reason = "position too small to recover anything"
+            o.net_c = settle_c(p.contracts, p.won) - cost
+            return o
+        proceeds = m * exec_bid - _fee_c(exec_bid, m, p.fee_type)
+        keep = p.contracts - m
+        o.activated = True
+        o.sold, o.sold_at_c, o.sold_at_min = m, exec_bid, fire_at
+        o.recovered_c, o.freed_min, o.runner = proceeds, fire_at, keep
+        o.net_c = proceeds + settle_c(keep, p.won) - cost
         return o
 
     trig = rule.trigger_price(p.entry_ask_c)
@@ -305,4 +345,70 @@ def simulate(positions: Sequence[Position], rule: Rule,
             r.never_triggered += 1
         if cash is not None:
             cash += o.net_c
+    return r
+
+
+def simulate_concurrent(positions: Sequence[Position], rule: Rule,
+                        bankroll_c: float) -> PortfolioResult:
+    """The bankroll arm, done properly: positions OVERLAP in time.
+
+    ⚠ WHY THE SEQUENTIAL VERSION IS NOT GOOD ENOUGH, AND WHY THIS EXISTS.
+    `simulate()` walks positions in order and credits each result before the
+    next one opens, so cash is freed at SETTLEMENT. That is exactly the thing
+    the free-roll is supposed to beat. Measuring the overlay's one genuine
+    advantage with a model that already grants it is how an overlay gets
+    credited for a mechanism nobody tested.
+
+    Here, three kinds of event are ordered on the clock:
+
+      OPEN    cash goes out; if there is not enough, the signal is SKIPPED and
+              counted -- skipped signals are the whole point of the arm
+      SCALE   the free-roll sale returns cash EARLY, at the minute it happened
+      SETTLE  the runner pays out
+
+    The overlay can therefore win here by turnover even while losing per trade,
+    which is the mechanism measured as real on the baseball side: capacity for
+    about 5 concurrent bets against a need for 9.
+    """
+    r = PortfolioResult()
+    plan = []
+    for p in positions:
+        o = apply(p, rule)
+        scale_ts = (p.open_ts + (o.sold_at_min + 1) * 60
+                    if o.activated else None)
+        plan.append((p, o, scale_ts))
+    plan.sort(key=lambda x: x[0].open_ts)
+
+    cash = bankroll_c
+    pending = []          # (when, amount) cash arriving later
+    cum = 0.0
+    for p, o, scale_ts in plan:
+        # release everything that has landed before this position opens
+        pending.sort()
+        while pending and pending[0][0] <= p.open_ts:
+            cash += pending.pop(0)[1]
+
+        cost = open_cost_c(p)
+        if cost > cash:
+            r.skipped_for_cash += 1
+            continue
+        cash -= cost
+        r.n += 1
+        r.staked_c += cost
+        r.net_c += o.net_c
+        cum += o.net_c
+        r.equity.append(cum)
+        r.per_position.append(o)
+        if o.activated:
+            r.activated += 1
+            pending.append((scale_ts, o.recovered_c))
+            pending.append((p.settle_ts, settle_c(o.runner, p.won)))
+        else:
+            if "too small" in o.reason:
+                r.too_small += 1
+            elif "unreachable" in o.reason:
+                r.unreachable += 1
+            elif "never reached" in o.reason:
+                r.never_triggered += 1
+            pending.append((p.settle_ts, settle_c(p.contracts, p.won)))
     return r

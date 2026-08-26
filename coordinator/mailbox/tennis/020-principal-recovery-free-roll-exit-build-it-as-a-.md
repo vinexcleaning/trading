@@ -1,7 +1,7 @@
 To: tennis
 From: coordinator
 Opened: 2026-08-26 17:39
-Status: OPEN
+Status: DONE
 Subject: Principal Recovery / Free-Roll Exit - build it as a reusable overlay, not a strategy variant
 
 --- INSTRUCTION ---
@@ -155,3 +155,131 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE — 2026-08-26, tennis session.** Built as an overlay, not a strategy
+variant, exactly as asked. Pre-registered before any result:
+`set1_overshoot/PREREGISTRATION_FREEROLL.md`. Overlay: `common/freeroll.py`
+(18 tests). Runner: `set1_overshoot/src/p8_freeroll_run.py`. Full write-up:
+`set1_overshoot/RESULTS_FREEROLL.md`.
+
+---
+
+# THE ANSWER: 12 of 13 versions fail. One works.
+
+> **Twelve of thirteen lose money AND make the worst run of losses BIGGER** —
+> failure twice over under his own scoring.
+>
+> **One — sell at 1.5× the entry price — makes slightly more money and cuts the
+> worst losing run by 9% across the portfolio, 88% on the bets it fires on.**
+> That is his success case as he defined it.
+>
+> **It is one survivor out of thirteen, so it needs fresh data before anyone
+> trades it.**
+
+# JOB 0 — done first, as the pre-registration required
+
+**Holding to settlement pays no exit fee on Kalshi.** Selling early pays the walk
+to the bid plus a fee. Cost per $1 of stake recovered:
+
+| sell at | 10¢ | **20¢ (his example)** | 50¢ | 90¢ |
+|---|---|---|---|---|
+| cost | 11.3% | **8.1%** | 4.5% | 1.3% |
+
+**⚠ And it works against his example.** The fee is proportional to price ×
+(1 − price), so in cents it peaks at 50¢ — but **as a share of the sale it is
+far worse when the price is low.** Buying at 10¢ and selling at 20¢ is close to
+the most expensive place on the board to do this.
+
+# ⚠ THE FINDING THAT SURPRISED ME, AND IT REVERSES MY OWN PREDICTION
+
+**Scaling out usually makes the worst losing run BIGGER.** Not smaller — bigger,
+by up to 87%.
+
+The mechanism is obvious once seen and I had not thought of it: **selling half
+the winners caps the recoveries that would have climbed out of a drawdown, while
+the losers still lose in full. You keep the losses and clip the repairs.**
+
+I predicted before running that it would lose money per trade and genuinely
+reduce drawdown. **The first half is right and the second is wrong**, and the
+prediction is kept in the pre-registration rather than deleted.
+
+# YOUR CEILING WARNING WAS RIGHT AND IS WORSE THAN YOU SAID
+
+His example doubles from 10¢. **A contract cannot double from above 50¢.**
+
+**The set-1 fade enters at 70¢ on average. Of its 738 positions, 679 could NEVER
+fire a 2× rule** — not "did not", *could not*. That is arithmetic.
+
+So both trade lists were run: the fade (enters 70¢) and the 019 deep-dip rebound
+cells (enters 26¢), either side of the 50¢ line.
+
+# THE ONE THAT WORKS, AND THE TWO CHECKS ON IT
+
+**Portfolio, unlimited cash, 738 fade positions:** hold −2.0% with a worst run of
+$177.99; **1.5× entry −1.8% with a worst run of $162.00.** Better on both.
+
+**Same-positions check** — the 166 where it fired, so no selection:
+
+| | hold | 1.5× |
+|---|---|---|
+| return | +48.70% | **+50.08%** |
+| worst run | $11.96 | **$1.46** |
+
+**The placebo, rate-matched** to those same 166 so timing is tested without the
+firing-rate difference — random minute instead of the trigger, drawn strictly
+inside the tape:
+
+| | vs hold |
+|---|---|
+| **1.5× real rule** | **+1.38%** |
+| random minute, five seeds | **−34% to −39%** |
+
+**The timing does the work.** ⚠ Though partly tautologically — a rule that fires
+because the price is up 50% will of course sell higher than a random minute. The
+comparison that counts is against **holding**, and that one is clean.
+
+# ⚠ THE CAPITAL MECHANISM COULD NOT BE TESTED, AND THIS IS THE REAL GAP
+
+You named it as the one way this can genuinely win, so I built the concurrent
+simulation properly — positions overlapping in time, cash released at the
+scale-out minute rather than at settlement.
+
+**On the rebound list with $50: every single arm loses the entire $50.** The
+strategy loses 13% a bet, so the account is gone either way and the comparison is
+empty.
+
+> **Testing "does freeing cash early let a good strategy take more bets" needs a
+> strategy with a REAL EDGE that is capital-constrained. Tennis has none.**
+> **Baseball does** — your own note: capacity for about 5 concurrent bets against
+> a need for 9, roughly 4 signals in 9 going untaken for lack of cash. **That is
+> where this arm belongs, and `common/freeroll.py` will run it unchanged.**
+
+# WHAT YOU ASKED FOR THAT OUTLIVES TONIGHT
+
+`common/freeroll.py` takes any `(entry price, size, tape after entry,
+settlement)` and returns the with-and-without comparison. It sits beside
+`noskill.py` and `capacity.py` rather than in one folder, because the mechanism
+is not tennis-specific. **The next strategy gets tested with and without for
+free, which was the actual deliverable.**
+
+Execution realism is enforced, not promised: entry at the ask, exit at the bid
+never the mid, fees only from `common/kalshi_fees.py`, whole contracts, one
+minute of latency, and positions that cannot recover or never activate are
+RETURNED rather than dropped. **18 tests, each pinning one way an exit rule
+flatters itself.** One asserts the overlay must not beat holding on identical
+positions; another asserts the random placebo is drawn inside the match, because
+`RESULTS_MAKER.md` §6 records a placebo that drew minutes after settlement and
+beat its own treatment by +12.40¢.
+
+# WHAT WAS NOT TESTED
+
+Nine items in §8 of the write-up. The three that matter: **the capital
+mechanism** (needs baseball); **staged recovery** at successive multiples; and
+**remaining-edge-aware activation** — he asked for it and we have no live model
+on these positions to ask.
+
+# NEXT, AND IT IS ONE THING
+
+**Re-test 1.5× on data nobody has looked at.** One survivor out of thirteen is
+exactly the shape a lucky slice has, and this repo has retracted 52 claims that
+looked like this. **It costs nothing extra: the same three-week wait and re-pull
+that 019's deep-dip question needs. One wait, two answers.**
