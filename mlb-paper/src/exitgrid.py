@@ -109,7 +109,8 @@ if __name__ == "__main__":
 
     print("money by cell -- rows are take-profit, columns are stop-loss")
     hdr = "".join(f"{(NEVER if s is None else s):>8}" for s in LEVELS)
-    print(f"{'TP\SL':<7}{hdr}")
+    TPSL = "TP/SL"
+    print(f"{TPSL:<7}{hdr}")
     grid = {}
     for tp in LEVELS:
         line = f"{(NEVER if tp is None else tp):<7}"

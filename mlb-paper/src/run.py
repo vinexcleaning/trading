@@ -404,6 +404,31 @@ def decide(con, briefs, by_game, dry_run=False):
                 continue
 
             intent = res
+
+            # the 17th bot: the opposite side of `bullpen` (mailbox 020).
+            # Paper, hold-only, and deliberately NOT given the three exit modes
+            # -- one new bot, not three, so the multiplicity does not grow.
+            if mentality == MEN.INVERSE_OF:
+                inv = MEN.invert_intent(b, intent)
+                if inv is not None:
+                    ibot = f"{MEN.INVERSE_NAME}__hold"
+                    iok, iwhy = E.may_enter(con, ibot, gk, "hold")
+                    if iok:
+                        ibank = E.bankroll(con, ibot)
+                        istake = E.stake_for(ibank, inv.edge_c or 0.0,
+                                             inv.entry_price_c)
+                        inn = E.contracts_for(istake, inv.entry_price_c,
+                                              inv.top_of_book_size)
+                        if inn >= 1:
+                            idid = E.record_decision(
+                                con, bot=ibot, mentality=MEN.INVERSE_NAME,
+                                exit_mode="hold", brief=b, window=window,
+                                kind="entry", intent=inv, stake_usd=istake)
+                            if not dry_run:
+                                E.queue_open(con, decision_id=idid, bot=ibot,
+                                             brief=b, intent=inv, contracts=inn)
+                            entries += 1
+
             # the control sees the identical intent and takes nothing
             E.record_decision(con, bot="control__no-trade", mentality=mentality,
                               exit_mode="no-trade", brief=b, window=window,

@@ -709,3 +709,57 @@ def window_for(hours_to_first_pitch):
         if abs(hours_to_first_pitch - WINDOW_HOURS[w]) <= WINDOW_TOL_H[w]:
             return w
     return None
+
+# ============================================ the inverse bot (mailbox 020)
+INVERSE_OF = "bullpen"
+INVERSE_NAME = "bullpen-inverse"
+
+
+def invert_intent(brief, intent):
+    """Buy the OTHER club in the same game. His idea, mailbox 020.
+
+    His distinction, and it is computable: a bot that loses about what it costs
+    to trade is leaking fees, and flipping it gains nothing. A bot that loses
+    far MORE than it costs to trade is picking the wrong team, and flipping it
+    should win. `bullpen` is the second kind; `early` is the first, and is the
+    control that shows the distinction is real.
+
+    ⚠ This takes the opposite side by BUYING THE OTHER CLUB'S CONTRACT at that
+    club's real ask -- not by selling the one we hold. Those are not the same
+    trade. Selling would cross our own spread; buying the other side pays the
+    other book's ask, which is what a real opposite position costs.
+
+    ⚠ IN-SAMPLE UNTIL 60 GAMES. `bullpen` was chosen as the WORST of 16 bots,
+    and inverting the worst of sixteen is the same selection effect as promoting
+    the best of sixteen, mirrored. `PREREGISTRATION_INVERSE.md` fixes the count
+    and what drops it, and was committed before this ran.
+    """
+    rows = _ml_rows(brief)
+    if not rows:
+        return None
+    other = [r for r in rows if r["ticker"] != intent.ticker]
+    if len(other) != 1:
+        return None                       # never guess which side is opposite
+    row = other[0]
+    price, size = _executable(row, "YES")
+    if not price:
+        return None
+    fee = float(fee_order_cents(price, 1))
+    # The inverse has no fair value of its own. Its claim is only that the
+    # original is wrong, so its stated edge is the original's edge carried
+    # across, minus the cost of getting in on this side. Recorded as such
+    # rather than dressed up as a model.
+    edge = round((intent.edge_c or 0.0) - fee - SLIPPAGE_C, 3)
+    detail = {"rule": "the opposite side of a bot that loses more than it costs",
+              "inverts": intent.mentality,
+              "original_ticker": intent.ticker,
+              "original_price_c": intent.entry_price_c,
+              "original_edge_c": intent.edge_c,
+              "price_c": price, "fee_c": round(fee, 3),
+              "net_edge_c": edge,
+              "caveat": "IN-SAMPLE until 60 games settle after 2026-08-26. "
+                        "bullpen was chosen as the worst of 16 bots; "
+                        "inverting the worst of N is the same selection as "
+                        "promoting the best of N. See PREREGISTRATION_INVERSE.md"}
+    return Intent(INVERSE_NAME, row["ticker"], "YES", price, edge, None,
+                  edge, intent.window, size, detail)
