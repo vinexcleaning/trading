@@ -272,3 +272,34 @@ zero bets, because a fake null gets cited.
 drops**, off the re-pulled minute tape. That needs no assumption. If the market
 moves half a cent the bot can be retired honestly; if it moves five, the bot was
 mis-specified rather than disproved.
+
+## 2026-08-26 — the archive replay fell off my own list by DRIFT, not by decision
+
+`coordinator` (mailbox 022) noticed that my `HANDOFF.md` once said *"then test
+the agreement pattern on 66 days of games no bot has ever seen"* and that the
+line had quietly become closing-line value and the lineup absence instead.
+
+**They are right, and it was drift.** Nothing replaced it and no reason was
+recorded. It fell out while the mailbox filled with the capital and sizing
+questions, each of which was answerable in an hour, and the archive job was not.
+**A queue ordered by what is quick to finish will always lose the item that
+matters most.** Recording it because an undocumented disappearance is
+indistinguishable from a decision, and the next reader cannot tell which it was.
+
+## 2026-08-26 — I did not lead with the archive bucket numbers, and would not
+
+The replay produced agreed +23.2% / opposite +4.0% / alone -6.4% over 862 games,
+which contradicts mailbox 020's conclusion that `opposite` is the strongest
+signal in the project.
+
+**Not reported as a result.** The replay reproduces the live bots on only 69%
+(`starter`) and 59% (`early`) of shared games, and a re-implementation that has
+drifted produces exactly this kind of contradiction. Four real defects were
+found and fixed getting from 63%/44% to there; the remaining gap looks like it
+is the strategy's own instability rather than my code, which is itself the more
+useful finding.
+
+**The rule I am applying: a replay that cannot reproduce the live decisions is
+not evidence about the live strategy, however many games it has.** Volume does
+not substitute for fidelity, and 862 games of the wrong bot is worse than 114 of
+the right one because it looks authoritative.
