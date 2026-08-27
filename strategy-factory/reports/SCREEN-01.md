@@ -1,6 +1,6 @@
 # SCREENING RUN 01 — and not one number here is money
 
-**Run 2026-08-21 04:25 UTC by `strategy-factory/src/screen.py`.**
+**Run 2026-08-27 02:17 UTC by `strategy-factory/src/screen.py`.**
 
 > **THE BACKTEST CHOOSES. ONLY THE FORWARD TEST COUNTS.** Nothing below is a result, none of it may be sized on, and none of it should be repeated to anyone as an amount of money. It exists to pick candidates.
 
@@ -16,11 +16,11 @@ The same machinery, on the same tape, with **every outcome redrawn from the mark
 
 | | return on cash |
 |---|---:|
-| **real arm** | **-8.55%** |
-| placebo median (40 runs) | -7.33% |
-| placebo range | -10.39% to -3.34% |
-| **null drawn at the ASK** (matched to what we actually pay) | **-3.80%** |
-| its range | -6.56% to -0.13% |
+| **real arm** | **-6.15%** |
+| placebo median (24 runs) | -7.13% |
+| placebo range | -8.55% to -4.20% |
+| **null drawn at the ASK** (matched to what we actually pay) | **-3.76%** |
+| its range | -5.38% to -0.49% |
 
 **TWO nulls, because one of them is unfair and it is the one that flatters nobody.** The mid null asks *"is the mid the truth?"* while our entries pay the **ask** - so it is advantaged by roughly half a spread before anything else happens, and the real arm should be below it even if the market is perfectly fair. The ask null asks the question that matters: *"given what we actually paid, did the outcomes beat it?"* Both are reported so neither can be quoted alone.
 
@@ -30,10 +30,10 @@ The same machinery, on the same tape, with **every outcome redrawn from the mark
 
 | | |
 |---|---:|
-| settled markets with a recorded price | **72495** |
-| of those, with a **two-sided quote 60 min before close** | **7645** |
-| markets in the screened price and spread band | **1595** |
-| distinct EVENTS behind them | **612** |
+| settled markets with a recorded price | **299360** |
+| of those, with a **two-sided quote 60 min before close** | **27691** |
+| markets in the screened price and spread band | **7125** |
+| distinct EVENTS behind them | **2346** |
 
 > ⚠ **The second row is a finding on its own and it is not good news for trading.** Most settled markets had no two-sided quote an hour before they closed. That is `GUARDS.md` #24 - *the market does not quote a near-certainty* - showing up across the whole exchange rather than in one sport. **A strategy cannot trade what is not quoted**, and any backtest that assumes it can is measuring a market that does not exist.
 
@@ -45,21 +45,24 @@ The same machinery, on the same tape, with **every outcome redrawn from the mark
 
 | category | in index | **quotable** | screened | net per contract | vs null | verdict |
 |---|---:|---:|---:|---:|---|---|
-| **Climate and Weather** | 44 | **28 (64 in 100)** | **6** (3 events) | +1.67c | +3.4% vs -31.0% | **too few events to say anything (3)** |
-| **Commodities** | 3975 | **3004 (76 in 100)** | **130** (37 events) | +5.85c | +20.9% vs -17.6% | **too few events to say anything (37)** |
-| **Crypto** | 59401 | **286 (0.5 in 100)** | **130** (34 events) | -5.02c | -15.0% vs -8.1% | **too few events to say anything (34)** |
-| **Elections** | 40 | **5 (12 in 100)** | **1** (1 events) | +5.00c | +5.3% vs +5.3% | **too few events to say anything (1)** |
-| Entertainment | 20 | 0 (0.0 in 100) | 0 | - | - | nothing in the price/spread band |
-| **Financials** | 7320 | **2770 (38 in 100)** | **187** (9 events) | -12.30c | -48.9% vs -12.8% | **too few events to say anything (9)** |
-| **Sports** | 1695 | **1552 (92 in 100)** | **1141** (528 events) | -2.99c | -6.5% vs -6.5% | **at or below its null** |
+| **Climate and Weather** | 288 | **270 (94 in 100)** | **65** (22 events) | -5.28c | -14.6% vs -10.4% | **too few events to say anything (22)** |
+| **Commodities** | 12478 | **8093 (65 in 100)** | **330** (89 events) | +7.10c | +21.2% vs -6.8% | **too few events to say anything (89)** |
+| **Crypto** | 253493 | **2045 (0.8 in 100)** | **1053** (134 events) | -3.44c | -11.1% vs -9.6% | **at or below its null** |
+| **Elections** | 272 | **169 (62 in 100)** | **24** (14 events) | -2.88c | -10.3% vs -10.3% | **too few events to say anything (14)** |
+| **Entertainment** | 73 | **22 (30 in 100)** | **3** (1 events) | -15.67c | -100.0% vs -100.0% | **too few events to say anything (1)** |
+| **Financials** | 25770 | **10599 (41 in 100)** | **717** (45 events) | -7.55c | -27.5% vs -13.8% | **too few events to say anything (45)** |
+| **Mentions** | 31 | **27 (87 in 100)** | **9** (1 events) | +38.78c | +63.3% vs -27.4% | **too few events to say anything (1)** |
+| **Sports** | 6955 | **6466 (93 in 100)** | **4924** (2040 events) | -2.32c | -5.0% vs -5.5% | above its null - still not a result |
 
 **A category with a small screened count cannot say anything**, and the count is shown rather than the number being quoted alone.
 
-**The only category with a real sample is Sports: 528 events, -2.99c per contract.** That is the one line on this page with anything behind it, and it says the dull version does not work.
+**2 categories clear the 100-event bar:** **Sports** 2040 events at -2.32c per contract; **Crypto** 134 events at -3.44c per contract.
 
-Everything else is a few days of tape, reported so that nobody mistakes a 37-event number for a finding later.
+Those are the only lines on this page with a sample behind them, and they say the dull version does not work.
 
-> ⚠ **ONE LIMITATION THE CRYPTO ROW EXPOSES, AND IT IS MINE NOT THE MARKET'S.** Crypto has **59401 markets in the index and only 130 that could be screened.** The entry rule takes the last two-sided quote at least 60 minutes before close - and a Kalshi crypto ladder is an HOURLY market, so 60 minutes before its close is at or before the moment it opens. **The fixed entry lead is simply wrong for fast families**, and the near-total absence of crypto here is an artefact of my parameter rather than a fact about crypto. Fixing it means an entry lead expressed as a FRACTION of each market's life, not a constant, and that is a change to make deliberately and re-run - not to tune until something looks good.
+Everything else is a few days of tape, reported so that nobody mistakes a 89-event number for a finding later.
+
+> ⚠ **ONE LIMITATION THE CRYPTO ROW EXPOSES, AND IT IS MINE NOT THE MARKET'S.** Crypto has **253493 markets in the index and only 1053 that could be screened.** The entry rule takes the last two-sided quote at least 60 minutes before close - and a Kalshi crypto ladder is an HOURLY market, so 60 minutes before its close is at or before the moment it opens. **The fixed entry lead is simply wrong for fast families**, and the near-total absence of crypto here is an artefact of my parameter rather than a fact about crypto. Fixing it means an entry lead expressed as a FRACTION of each market's life, not a constant, and that is a change to make deliberately and re-run - not to tune until something looks good.
 
 ## 4. WHAT WAS NOT SCREENED, AND WHY — the honest half
 
@@ -91,7 +94,48 @@ Everything else is a few days of tape, reported so that nobody mistakes a 37-eve
 
 **The pattern is one thing, and it is worth naming: almost every unscreenable spec needs data ABOUT THE WORLD rather than about the book** - goal times, club identities, fixture lists, speech calendars, line-up announcements. The recorder captures prices beautifully and captures none of that. **That is the single biggest constraint on this project and it was not visible until screening was attempted.**
 
-## 5. CAPACITY — what it would actually cost to fill
+## 5. THE INVERT SCREEN — is a loser leaking fees, or picking the wrong side?
+
+His idea, and it is computable: *"if we find a purely bad strategy that isn't just getting killed by the fees - pretty much what that's telling us is that this site is picking the wrong side. So we just pick the other side."*
+
+**Two losers look identical on a profit line and are completely different things.** One pays more in costs than its edge is worth. The other is actively wrong, and the other side of it is a real hypothesis. The cost bar is what separates them.
+
+⚠ **INVERTING IS NOT NEGATING**, and that is why this needs arithmetic rather than a minus sign. Buying the other side lifts the OTHER ask, so the inverted trade **pays the spread again and the fee again**. A strategy losing exactly its cost bar loses the same amount inverted.
+
+**The bar is computed at the prices each row actually trades at, never at 50 cents** - the fee at 97c is 0.20c against 2.00c at 50c, and a constant bar would call every cheap strategy anti-predictive.
+
+| category | net per contract | cost bar | gross (picking only) | inverted | invertible? |
+|---|---:|---:|---:|---:|---|
+| Climate and Weather | -5.28c | +2.98c | -2.29c | -0.69c | no (too few events to act on: 22) |
+| Commodities | +7.10c | +4.30c | +11.40c | -15.69c | no (too few events to act on: 89) |
+| Crypto | -3.44c | +2.88c | -0.56c | -2.30c | no |
+| Elections | -2.88c | +3.06c | +0.19c | -3.29c | no (too few events to act on: 14) |
+| Entertainment | -15.67c | +3.50c | -12.17c | +8.67c | **YES** (too few events to act on: 1) |
+| Financials | -7.55c | +3.58c | -3.97c | +0.40c | **YES** (too few events to act on: 45) |
+| Mentions | +38.78c | +3.22c | +42.00c | -45.22c | no (too few events to act on: 1) |
+| Sports | -2.32c | +2.66c | +0.33c | -2.98c | no |
+
+**Whole run:** net -2.56c, cost bar +2.86c, gross +0.30c, inverted -3.16c - **not invertible: it loses about what it costs to trade, which is the fee-leaking case and there is nothing underneath to flip**.
+
+### ⚠ The trap, and it is the same size as the one that governs everything here
+
+**Selecting the worst of N and inverting it is the best-of-N problem in a mirror. It is not a weaker version - it is the same size.** Measured on 16 baseball bots: a bot landing in the worst 2-in-100 tail happens to at least one of 16 with no skill anywhere **28 times in 100**.
+
+So: **8 categories were screened to produce 2 invertible one(s)**, and an inverted strategy is a **NEW** strategy - it gets its own id, its own pre-registration and its own forward test before anything is believed about it. Nothing on this table is promotable.
+
+### The placebo for this screen specifically
+
+**Inverting a strategy that is merely fee-losing must NOT look good**, or the screen is finding noise. The null arm above is exactly that strategy: outcomes drawn from the price paid, so it loses its cost bar and nothing more, by construction.
+
+| | inverted, per contract |
+|---|---:|
+| **the real arm** | **-3.16c** |
+| a merely fee-losing arm, median of 12 | -4.22c |
+| its range | -4.84c to -3.80c |
+
+The real arm inverted beats the fee-losing arm inverted. **That is the minimum bar and not a result** - it says the screen can tell the two cases apart, which is a statement about the screen.
+
+## 6. CAPACITY — what it would actually cost to fill
 
 Walked on the recorded ladder rather than assumed from the touch. A market with no recorded ladder gets **no capacity claim at all**.
 
@@ -99,20 +143,22 @@ Walked on the recorded ladder rather than assumed from the touch. A market with 
 
 | category | markets with a ladder | asking $50, got | asking $200, got | asking $500, got |
 |---|---:|---|---|---|
-| Climate and Weather | 17 | $50 | $192 | **$393** |
+| Climate and Weather | **0** | - | - | - |
 | Commodities | **0** | - | - | - |
-| Crypto | 2 | $50 | $125 | **$275** |
-| Elections | **0** | - | - | - |
-| Financials | 155 | $38 | $38 | **$38** |
+| Crypto | **0** | - | - | - |
+| Elections | 1 | $50 | $200 | **$500** |
+| Entertainment | 20 | $50 | $177 | **$376** |
+| Financials | 25 | $45 | $45 | **$45** |
+| Mentions | 21 | $50 | $200 | **$443** |
 | Sports | **0** | - | - | - |
 
 **Where the count is 0 the family has no full-depth ladder on tape** - it is recorded at top of book only, so the question cannot be answered and is not guessed at.
 
-> ⚠ **The Financials row is the one to look at, and it is bad news for size.** Those books absorb about **$38** whether you ask for $50, $200 or $500 - the ladder simply runs out. **A strategy that only exists in the first thirty-eight dollars is a hobby**, which is the test `STRATEGY_FACTORY.md` stage 6 puts first, and it is answerable now rather than after a month of forward testing.
+> ⚠ **The Financials row is the one to look at, and it is bad news for size.** Those books absorb about **$45** whether you ask for $50, $200 or $500 - the ladder simply runs out. **A strategy that only exists in the first $45 is a hobby**, which is the test `STRATEGY_FACTORY.md` stage 6 puts first, and it is answerable now rather than after a month of forward testing.
 
-## 6. What this run does NOT establish
+## 7. What this run does NOT establish
 
-- **Nothing about whether any strategy works.** Two days of tape, no category near 100 settled units, and the forward test has not started.
+- **Nothing about whether any strategy works.** 8 days of tape, and the forward test has not started.
 - **Nothing about the specs that could not be run** - their absence here is a statement about our data, not about their merit.
 - **Nothing that survives being quoted without its screened count.** 31 specs were written to produce this page.
 - **The entry rule is one fixed choice** - the last two-sided quote at least 60 minutes before close. It was fixed before the run and NOT swept. Sweeping the entry time and reporting the best is the best-of-N trap applied to a parameter instead of a strategy.

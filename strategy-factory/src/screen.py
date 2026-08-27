@@ -167,6 +167,54 @@ def outlay_cents(entry_ask_c, contracts=1):
     return entry_ask_c + float(fee_order_cents(entry_ask_c, contracts)) / contracts
 
 
+def inverted_net_cents(entry_bid_c, won, contracts=1):
+    """Cents made per contract taking the OTHER SIDE at ITS real ask.
+
+    ⚠ INVERTING IS NOT NEGATING. This is the whole point of the screen and the
+    reason a naive "flip the losers" produces a null.
+
+    Buying YES lifts the YES ask. Buying NO lifts the NO ask, which on Kalshi is
+    `100 - yes_bid`. So the inverted trade **pays the spread again, in the other
+    direction, and pays a fee again**. A strategy that loses exactly what it
+    costs to trade therefore loses the same amount inverted - there is nothing
+    to recover. Only a strategy losing materially MORE than its cost bar has
+    something underneath the costs to flip.
+
+    `mlb-paper` measured both cases on real bots, which is what makes this a
+    screen rather than a slogan: `bullpen__free` went -34.3% to +18.9% at a 4c
+    spread assumption, while `early__free` went -14.9% to -0.3% and had nothing
+    in it.
+    """
+    no_ask_c = 100.0 - entry_bid_c
+    fee = float(fee_order_cents(no_ask_c, contracts)) / contracts
+    gross = (100.0 - no_ask_c) if (not won) else (-no_ask_c)
+    return gross - fee
+
+
+def cost_bar_cents(entry_bid_c, entry_ask_c, contracts=1):
+    """What it costs to trade this market at all, at ITS OWN price.
+
+    ⚠ COMPUTED AT THE PRICE THE STRATEGY ACTUALLY TRADES AT, never at 50c.
+    `CLAUDE.md` §9c step 5 is explicit that this repo quotes a habitual "3.6 to
+    4.8 cents" that is wrong by roughly twenty times at extreme prices - the fee
+    at 97c is 0.20c. A screen that judged "does it lose more than the bar" with
+    a constant bar would call every cheap strategy anti-predictive and every
+    expensive one fee-leaking.
+
+    Two components, both real:
+      * half the spread - buying at the ask when the fair value is the mid
+      * the entry fee at that price, from the one fee implementation
+
+    Slippage beyond the touch is NOT included and that is a stated limitation:
+    entries here are priced at the recorded touch, so a strategy that would have
+    walked the book pays more than this bar says. Capacity is reported
+    separately for that reason.
+    """
+    half_spread = max(0.0, (entry_ask_c - entry_bid_c) / 2.0)
+    fee = float(fee_order_cents(entry_ask_c, contracts)) / contracts
+    return half_spread + fee
+
+
 def wilson(k, n):
     """A range for a rate, wide when n is small. Reported as 'out of 100'."""
     if n == 0:
@@ -192,10 +240,14 @@ def capacity(c, ticker, entry_ts, dollars):
     has no recorded ladder - in which case the answer is NOT ASSUMED. A market
     with no depth data gets no capacity claim.
     """
+    # ⚠ PASS THE SERIES. `w_depth`'s index is (series, ticker, ts_utc), so a
+    # ticker-only predicate cannot use it and scans 300,000+ rows -- times
+    # three dollar targets, times every sampled market. That is what made a
+    # screening run die after ten minutes without writing anything.
     row = c.execute(
-        "select no_ladder from d.w_depth where ticker=? order by "
-        "abs(julianday(ts_utc)-julianday(?)) limit 1", (ticker, entry_ts)
-    ).fetchone()
+        "select no_ladder from d.w_depth where series=? and ticker=? "
+        "order by abs(julianday(ts_utc)-julianday(?)) limit 1",
+        (ticker.split("-")[0], ticker, entry_ts)).fetchone()
     if not row or not row[0]:
         return None
     try:
@@ -280,6 +332,8 @@ def screen_hold(c, series_list, lo, hi, max_spread, label, placebo_seed=None,
 
     tot_net = 0.0
     tot_out = 0.0
+    tot_inv = 0.0
+    tot_bar = 0.0
     n = wins = 0
     events = set()
     per_bucket = defaultdict(lambda: [0, 0, 0.0, 0.0])
@@ -289,6 +343,8 @@ def screen_hold(c, series_list, lo, hi, max_spread, label, placebo_seed=None,
         out = outlay_cents(ask)
         tot_net += net
         tot_out += out
+        tot_inv += inverted_net_cents(bid, won)
+        tot_bar += cost_bar_cents(bid, ask)
         n += 1
         wins += won
         events.add(ev or tk)
@@ -297,10 +353,23 @@ def screen_hold(c, series_list, lo, hi, max_spread, label, placebo_seed=None,
         b[1] += won
         b[2] += net
         b[3] += out
+    per_net = tot_net / n if n else 0.0
+    per_inv = tot_inv / n if n else 0.0
+    per_bar = tot_bar / n if n else 0.0
+    # gross = what is left once the cost of trading is added back. It is the
+    # part that is about PICKING rather than PAYING.
+    per_gross = per_net + per_bar
+    # INVERTIBLE only when the picking itself is bad by materially more than the
+    # bar. "Materially" is one whole cost bar, fixed here and not tuned: a
+    # threshold chosen after seeing which strategies pass it would be the
+    # best-of-N trap wearing a parameter.
+    invertible = per_gross < -per_bar and per_inv > 0
     return {"label": label, "n": n, "events": len(events), "wins": wins,
             "net_c": tot_net, "outlay_c": tot_out,
             "ret": tot_net / tot_out if tot_out else 0.0,
-            "per_c": tot_net / n if n else 0.0,
+            "per_c": per_net,
+            "per_bar_c": per_bar, "per_gross_c": per_gross,
+            "per_inv_c": per_inv, "invertible": invertible,
             "buckets": {k: v for k, v in sorted(per_bucket.items())}}
 
 
@@ -429,7 +498,7 @@ def main() -> None:
         if not r:
             continue
         ps = []
-        for i in range(max(5, args.placebos // 2)):
+        for i in range(max(5, args.placebos // 8)):
             q = screen_hold(c, sers, 5, 95, 8, "p", placebo_seed=2000 + i)
             if q:
                 ps.append(q["ret"])
@@ -441,12 +510,16 @@ def main() -> None:
     for cat, (r, ps) in percat.items():
         rows = c.execute(
             "select ticker, entry_ts from ev where entry_ask_c is not null "
-            "and series in (%s) limit 400"
+            "and series in (%s) limit 80"
             % ",".join("?" * len([s for s, k in cat_of.items() if k == cat])),
             [s for s, k in cat_of.items() if k == cat]).fetchall()
         hits = {50: [], 200: [], 500: []}
         for tk, ets in rows:
-            for d in (50, 200, 500):
+            got500 = capacity(c, tk, ets, 500)
+            if not got500:
+                continue
+            hits[500].append(got500[0])
+            for d in (50, 200):
                 got = capacity(c, tk, ets, d)
                 if got:
                     hits[d].append(got[0])
@@ -598,20 +671,37 @@ def main() -> None:
     A("**A category with a small screened count cannot say anything**, and the "
       "count is shown rather than the number being quoted alone.")
     A("")
-    big = [(c, r) for c, (r, _) in percat.items() if r["events"] >= 100]
+    # ⚠ NOT `c`. This loop used `c` as the category name and silently rebound
+    # the DATABASE CONNECTION to a string. It broke nothing for two runs
+    # because nothing used the connection afterwards; the moment the invert
+    # screen did, the run died with "'str' object has no attribute 'execute'"
+    # after ten minutes of work and wrote no report. A one-letter name reused
+    # for two things is a bug waiting for a later edit.
+    big = [(cn, r) for cn, (r, _) in percat.items() if r["events"] >= 100]
     if big:
-        for c, r in sorted(big, key=lambda x: -x[1]["events"]):
-            A("**The only category with a real sample is %s: %d events, "
-              "%s per contract.** That is the one line on this page with "
-              "anything behind it, and it says the dull version does not work."
-              % (c, r["events"], fmt_money(r["per_c"])))
+        # ⚠ "the only" printed once per row and claimed TWO different
+        # categories were the only one. A sentence written for a single winner
+        # must not be run in a loop.
+        big.sort(key=lambda x: -x[1]["events"])
+        if len(big) == 1:
+            cn, r = big[0]
+            A("**The only category with a real sample is %s: %d events, %s per "
+              "contract.**" % (cn, r["events"], fmt_money(r["per_c"])))
+        else:
+            A("**%d categories clear the 100-event bar:** %s."
+              % (len(big), "; ".join(
+                  "**%s** %d events at %s per contract"
+                  % (cn, r["events"], fmt_money(r["per_c"])) for cn, r in big)))
+        A("")
+        A("Those are the only lines on this page with a sample behind them, "
+          "and they say the dull version does not work.")
     else:
         A("**No category reaches the 100-event bar `PREREGISTRATION.md` §4 "
           "sets.** Nothing here can be judged at all.")
     A("")
     A("Everything else is a few days of tape, reported so that nobody mistakes "
       "a %d-event number for a finding later."
-      % max((r["events"] for c, (r, _) in percat.items()
+      % max((r["events"] for cn, (r, _) in percat.items()
              if r["events"] < 100), default=0))
     A("")
     A("> ⚠ **ONE LIMITATION THE CRYPTO ROW EXPOSES, AND IT IS MINE NOT THE "
@@ -646,7 +736,90 @@ def main() -> None:
       "captures none of that. **That is the single biggest constraint on this "
       "project and it was not visible until screening was attempted.**")
     A("")
-    A("## 5. CAPACITY — what it would actually cost to fill")
+    A("## 5. THE INVERT SCREEN — is a loser leaking fees, or picking the wrong side?")
+    A("")
+    A("His idea, and it is computable: *\"if we find a purely bad strategy that "
+      "isn\'t just getting killed by the fees - pretty much what that\'s telling "
+      "us is that this site is picking the wrong side. So we just pick the "
+      "other side.\"*")
+    A("")
+    A("**Two losers look identical on a profit line and are completely "
+      "different things.** One pays more in costs than its edge is worth. The "
+      "other is actively wrong, and the other side of it is a real hypothesis. "
+      "The cost bar is what separates them.")
+    A("")
+    A("⚠ **INVERTING IS NOT NEGATING**, and that is why this needs arithmetic "
+      "rather than a minus sign. Buying the other side lifts the OTHER ask, so "
+      "the inverted trade **pays the spread again and the fee again**. A "
+      "strategy losing exactly its cost bar loses the same amount inverted.")
+    A("")
+    A("**The bar is computed at the prices each row actually trades at, never "
+      "at 50 cents** - the fee at 97c is 0.20c against 2.00c at 50c, and a "
+      "constant bar would call every cheap strategy anti-predictive.")
+    A("")
+    A("| category | net per contract | cost bar | gross (picking only) | inverted | invertible? |")
+    A("|---|---:|---:|---:|---:|---|")
+    n_invertible = 0
+    for cat in sorted(percat):
+        r = percat[cat][0]
+        flag = "**YES**" if r["invertible"] else "no"
+        if r["invertible"]:
+            n_invertible += 1
+        if r["events"] < 100:
+            flag += " (too few events to act on: %d)" % r["events"]
+        A("| %s | %s | %s | %s | %s | %s |"
+          % (cat, fmt_money(r["per_c"]), fmt_money(r["per_bar_c"]),
+             fmt_money(r["per_gross_c"]), fmt_money(r["per_inv_c"]), flag))
+    A("")
+    A("**Whole run:** net %s, cost bar %s, gross %s, inverted %s - **%s**."
+      % (fmt_money(real["per_c"]), fmt_money(real["per_bar_c"]),
+         fmt_money(real["per_gross_c"]), fmt_money(real["per_inv_c"]),
+         "INVERTIBLE" if real["invertible"] else "not invertible: it loses "
+         "about what it costs to trade, which is the fee-leaking case and "
+         "there is nothing underneath to flip"))
+    A("")
+    A("### ⚠ The trap, and it is the same size as the one that governs everything here")
+    A("")
+    A("**Selecting the worst of N and inverting it is the best-of-N problem in "
+      "a mirror. It is not a weaker version - it is the same size.** Measured "
+      "on 16 baseball bots: a bot landing in the worst 2-in-100 tail happens to "
+      "at least one of 16 with no skill anywhere **28 times in 100**.")
+    A("")
+    A("So: **%d categories were screened to produce %d invertible one(s)**, and "
+      "an inverted strategy is a **NEW** strategy - it gets its own id, its own "
+      "pre-registration and its own forward test before anything is believed "
+      "about it. Nothing on this table is promotable."
+      % (len(percat), n_invertible))
+    A("")
+    A("### The placebo for this screen specifically")
+    A("")
+    A("**Inverting a strategy that is merely fee-losing must NOT look good**, "
+      "or the screen is finding noise. The null arm above is exactly that "
+      "strategy: outcomes drawn from the price paid, so it loses its cost bar "
+      "and nothing more, by construction.")
+    ps = [screen_hold(c, None, 5, 95, 8, "p", placebo_seed=3000 + i,
+                      null_at="ask") for i in range(12)]
+    ps = [x for x in ps if x]
+    if ps:
+        inv = sorted(x["per_inv_c"] for x in ps)
+        A("")
+        A("| | inverted, per contract |")
+        A("|---|---:|")
+        A("| **the real arm** | **%s** |" % fmt_money(real["per_inv_c"]))
+        A("| a merely fee-losing arm, median of %d | %s |"
+          % (len(ps), fmt_money(inv[len(inv) // 2])))
+        A("| its range | %s to %s |"
+          % (fmt_money(inv[0]), fmt_money(inv[-1])))
+        A("")
+        if real["per_inv_c"] <= inv[len(inv) // 2]:
+            A("**The real arm inverted does no better than a fee-losing arm "
+              "inverted. The screen finds nothing here, and says so.**")
+        else:
+            A("The real arm inverted beats the fee-losing arm inverted. **That "
+              "is the minimum bar and not a result** - it says the screen can "
+              "tell the two cases apart, which is a statement about the screen.")
+    A("")
+    A("## 6. CAPACITY — what it would actually cost to fill")
     A("")
     A("Walked on the recorded ladder rather than assumed from the touch. A "
       "market with no recorded ladder gets **no capacity claim at all**.")
@@ -668,17 +841,33 @@ def main() -> None:
       "is recorded at top of book only, so the question cannot be answered and "
       "is not guessed at.")
     A("")
-    A("> ⚠ **The Financials row is the one to look at, and it is bad news for "
-      "size.** Those books absorb about **$38** whether you ask for $50, $200 "
-      "or $500 - the ladder simply runs out. **A strategy that only exists in "
-      "the first thirty-eight dollars is a hobby**, which is the test "
-      "`STRATEGY_FACTORY.md` stage 6 puts first, and it is answerable now "
-      "rather than after a month of forward testing.")
+    # ⚠ COMPUTED, NOT TYPED. This sentence said "$38" for three runs after the
+    # table beneath it had moved to $45. A hard-coded number in prose beside a
+    # generated table is a retraction waiting to happen.
+    worst = [(d[500][1], cat) for cat, d in caps
+             if d[500][0] > 0 and d[500][1] < 200]
+    if worst:
+        amt, cat = min(worst)
+        A("> ⚠ **The %s row is the one to look at, and it is bad news for "
+          "size.** Those books absorb about **$%.0f** whether you ask for $50, "
+          "$200 or $500 - the ladder simply runs out. **A strategy that only "
+          "exists in the first $%.0f is a hobby**, which is the test "
+          "`STRATEGY_FACTORY.md` stage 6 puts first, and it is answerable now "
+          "rather than after a month of forward testing." % (cat, amt, amt))
     A("")
-    A("## 6. What this run does NOT establish")
+    A("## 7. What this run does NOT establish")
     A("")
-    A("- **Nothing about whether any strategy works.** Two days of tape, no "
-      "category near 100 settled units, and the forward test has not started.")
+    span = c.execute("select min(close_utc), max(close_utc) from ev").fetchone()
+    days = "?"
+    try:
+        import datetime as _d
+        f = "%Y-%m-%dT%H:%M:%SZ"
+        days = "%.0f" % ((_d.datetime.strptime(span[1], f)
+                          - _d.datetime.strptime(span[0], f)).days)
+    except Exception:                                          # noqa: BLE001
+        pass
+    A("- **Nothing about whether any strategy works.** %s days of tape, and the "
+      "forward test has not started." % days)
     A("- **Nothing about the specs that could not be run** - their absence "
       "here is a statement about our data, not about their merit.")
     A("- **Nothing that survives being quoted without its screened count.** "

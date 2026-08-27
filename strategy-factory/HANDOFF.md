@@ -1,5 +1,5 @@
 <!-- COORDINATOR-STATE
-doing: screening engine BUILT and run - first report in reports/SCREEN-01.md, result is a null and nothing is promotable; recorder still LIVE at 55 families full depth and 3,438 top of book; 31 specs, 27 live
+doing: invert screen built as a standard column over every strategy (mailbox 008); screening run on 8 days of tape, still a null and nothing promotable; recorders alive 9 days, 5 GB, 342,045 settlements on file
 left: get world-data (goal times, fixture lists) - 21 of 27 live specs are unscreenable without it; then pre-register any survivor before the forward test starts
 needs: no - his six soccer answers arrived and are all turned into specs. Next question comes after the screening engine produces something to ask about.
 -->
@@ -420,6 +420,50 @@ while pointing at claims that do not bear on the spec.
 
 **One overlap flagged back:** `SF111` and `RS-07` both work S005. SF111 is the
 tennis chat's, so not mine to resolve.
+
+---
+
+## THE INVERT SCREEN — built as a column, and it correctly refuses to flip
+
+**Mailbox 008.** His idea: a strategy that loses *about* what it costs to trade
+is leaking fees and inverting gains nothing; one that loses *materially more* is
+picking the wrong side, and the other side is a real hypothesis.
+
+**Now a standard column on every screened strategy:** net · **cost bar at that
+row's own prices** · gross = net + bar · inverted net · `invertible` flag.
+
+**⚠ Inverting is not negating.** Buying the other side lifts the *other* ask, so
+the inverted trade pays the spread and the fee again. Implemented as arithmetic.
+
+### What it found, on 8 days of tape
+
+| | |
+|---|---|
+| whole run | net −2.56c, bar +2.86c, **gross +0.30c**, inverted −3.16c → **not invertible** |
+| **Sports** (2,040 events, the only real sample) | net −2.32c, bar +2.66c, **gross +0.33c** — picking is neutral, the whole loss is the cost of trading |
+
+**The screen declining to flip is the screen working** — this is `mlb`'s
+`early__free` control case reproducing on my data. Two categories flagged
+invertible (Entertainment, Financials) and **both carry their sample guard in
+the same cell**: 1 event and 45 events.
+
+**Its own placebo:** inverting a merely fee-losing arm must not look good. Real
+inverted −3.16c against a fee-losing arm's −4.22c (median of 12, range −4.84 to
+−3.80). Above it — *the minimum bar, and a statement about the screen, not a
+result.*
+
+**Split filed in `STATUS.md`:** `mlb` runs the specific case (`bullpen` as a
+17th bot); this folder builds the general column. `mlb-paper` untouched.
+
+### ⚠ Three defects in my own code, all found by reading output rather than by a test
+
+1. **A loop variable clobbered the sqlite connection** (`for c, r in ...`). It
+   broke nothing for two runs; the moment the invert screen used the connection
+   afterwards, a ten-minute run died and **wrote no report**.
+2. **A sentence written for one winner ran in a loop**, so the report claimed
+   two different categories were each *"the only category with a real sample"*.
+3. **A hard-coded `$38` sat beside a generated table showing `$45`**, and
+   "two days of tape" survived until nine had passed. All now computed.
 
 ---
 

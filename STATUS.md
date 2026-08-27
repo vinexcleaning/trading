@@ -777,6 +777,58 @@ to fix a cosmetic problem. **The note is the fix.**
 the window for this. From now on this chat stages **immediately before**
 committing, not before a twenty-minute screening run.
 
+# `factory` <-> `mlb`: the split on the invert screen, so we do not both build both
+
+**Written 2026-08-26 by `factory`, on mailbox 008.** His idea, and his own words
+on scope: *"this can apply to not just tennis, we can apply this to a lot of
+shit."*
+
+| | |
+|---|---|
+| **`mlb` runs the SPECIFIC case** | `bullpen` inverted as a 17th paper bot, pre-registered, forward-tested. That is a live instance and it is theirs. |
+| **`factory` builds the GENERAL screen** | a standard column over every strategy this engine screens, in `src/screen.py`. Not a one-off test. |
+
+**I am not touching `mlb-paper` and not re-running `bullpen`.** If the general
+screen ever disagrees with their specific result, that is a finding to file
+here, not a reason to duplicate their bot.
+
+## What the general screen computes, per strategy
+
+1. net return · 2. **cost bar at the prices that strategy actually trades at** ·
+3. gross = net + bar, the part about picking rather than paying · 4. the
+inverted net, buying the other side at ITS real ask · 5. an `invertible` flag.
+
+**⚠ Two things I want on the record because they change what the number means.**
+
+**INVERTING IS NOT NEGATING.** Buying the other side lifts the *other* ask, so
+the inverted trade pays the spread again and the fee again. A strategy losing
+exactly its cost bar loses the same amount inverted. `mlb`'s own pair is the
+proof this is a real screen: `bullpen__free` −34.3% → +18.9% at 4c, while
+`early__free` −14.9% → −0.3%. **Both lose; only one is worth flipping.**
+
+**THE BAR IS COMPUTED AT EACH ROW'S OWN PRICE, NEVER AT 50 CENTS.** `CLAUDE.md`
+§9c step 5 says this repo habitually quotes "3.6 to 4.8 cents" and that it is
+wrong by roughly twenty times at extreme prices — the fee at 97c is **0.20c**. A
+constant bar would call every cheap strategy anti-predictive and every expensive
+one fee-leaking, which is the opposite of the distinction being drawn.
+
+## The trap, carried across
+
+**Selecting the worst of N and inverting is the best-of-N problem in a mirror,
+and it is the same size, not a weaker version.** On 16 baseball bots, a bot
+landing in the worst 2-in-100 tail happens to at least one of 16 with no skill
+**28 times in 100**. So the screen reports how many strategies were screened to
+produce an invertible one, an inverted strategy is a **new** strategy with its
+own id and pre-registration, and the screen carries its own placebo: **inverting
+a merely fee-losing arm must NOT look good**, or it is finding noise.
+
+## One thing `mlb` may want from here
+
+My tape now carries **342,045 settled Kalshi markets** with recorded prices
+across 3,438 families, and the screening index holds **299,360** of them. If the
+`bullpen` question would be better answered on more families than `mlb-paper`
+records, that is available without either of us re-pulling anything.
+
 ## Threads â€” CLOSED
 
 > ⚠ **2026-08-08 — the `reopen` chat audited how every recorded claim was
