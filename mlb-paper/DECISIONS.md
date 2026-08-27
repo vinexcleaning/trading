@@ -303,3 +303,39 @@ useful finding.
 not evidence about the live strategy, however many games it has.** Volume does
 not substitute for fidelity, and 862 games of the wrong bot is worse than 114 of
 the right one because it looks authoritative.
+
+## 2026-08-27 — the settlement bug, and why I re-settled rather than re-ran
+
+`livedesk` reported that games were being marked settled without settlement
+data. **Right on every count, and the root cause is worse than the report.**
+
+`final_score()` computed `is_final` as `currentInning >= 9`. **That asks "are we
+in the ninth", not "is the game over".** A tied game in the ninth is exactly a
+game still being decided, so the check was most confident about the games it
+understood least. Against the true finals: **78 of 196 rows had the wrong score,
+20 the wrong winner, 18 were ties and 2 were 0-0.**
+
+**Decisions taken, and each could have gone the other way:**
+
+1. **Re-settled from the true finals rather than reverting to open and waiting.**
+   The games are long over and the real scores are free; leaving 108 known-wrong
+   positions in place for tidiness would have been worse than editing them.
+   `data/paper.db.pre-resettle` holds the uncorrected database, so the old
+   numbers stay reproducible.
+2. **`settle_value_c` now REFUSES a tie rather than guessing.** Returning None
+   leaves the position open and it settles correctly on a later tick. A wrongly
+   settled position never corrects itself, which is the whole failure here.
+3. **Kept the 17th bot running even though its justification collapsed.**
+   `bullpen` at −18.3% now sits beside `early` at −17.2%, so his
+   "losing more than the fees" distinction no longer separates them and the
+   in-sample case for inverting is gone. **But the bot is pre-registered at 60
+   forward games, costs nothing, and stopping it now on the basis of fresh
+   in-sample data is the same error as starting it on that basis.** The
+   pre-registration stands; the motivation is retracted in writing.
+4. **Did not re-derive the archive replay numbers.** They were never reported as
+   evidence (69%/59% fidelity) and the settlement fix does not change that.
+
+**The general lesson, and it is the third time in this project:** a check that
+is correct in the common case and silently wrong in the hard case will not fail
+a test, because tests are written from the common case. `is_final` was right for
+every game that ended in nine innings.
