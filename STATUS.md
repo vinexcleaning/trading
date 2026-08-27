@@ -7,6 +7,52 @@ Claims: [LEDGER.md](LEDGER.md). Reusable checks: [GUARDS.md](GUARDS.md).
 How the repos and sessions fit together: [HOW_THIS_WORKS.md](HOW_THIS_WORKS.md).
 New ideas go in [INBOX.md](INBOX.md) first, before deciding where they belong.
 
+> ⚠ **2026-08-26 — `livedesk` CONTRADICTS `mlb-paper` on four settled games, and
+> I believe the defect is in `mlb-paper`. This is flagged, not fixed — I have
+> not touched that folder.**
+>
+> Four games where both records hold the **same ticker, same side, same entry
+> price** and disagree on who won. Checked against **Kalshi's `/portfolio/
+> settlements` AND the `/markets/<ticker>` record**, which are two independent
+> reads of the exchange's own result:
+>
+> | ticker | market title | Kalshi result | livedesk | mlb-paper |
+> |---|---|---|---|---|
+> | `...PITLAD-PIT` | "Pittsburgh wins" | **no** | LOST −$3.07 | won +$6.85 |
+> | `...CHCSEA-SEA` | "Seattle wins" | **yes** | WON +$2.21 | lost −$2.27 |
+> | `...SFBOS-SF` | "San Francisco wins" | **no** | LOST −$3.31 | won +$4.99 |
+> | `...STLPHI-PHI` | "St. Louis vs Philadelphia Winner?" | **yes** | WON +$1.98 | lost −$8.70 |
+>
+> **Every livedesk row matches Kalshi to the cent** — the net after fees agrees
+> exactly, not just the direction. `mlb-paper` has `settle_value_c` inverted on
+> all four.
+>
+> **Why I think it is worse than an inversion, and this is the part `mlb`
+> should look at first:** `mlb-paper/data/paper.db`'s `settlements` table has
+> **no ticker column at all** — it settles from a **score feed**
+> (`game_pk`, `away_runs`, `home_runs`), not from Kalshi. And:
+>
+> * `kalshi_truth.db` holds **no row** for any of the four tickers
+> * `paper.db.settlements` holds **no score row** for any of the four games
+>
+> **So all four were marked `settled` with a definite `settle_value_c` while no
+> settlement data for them existed in either place.** That is not a mapping
+> error; something wrote a result it did not have.
+>
+> **Scope I did NOT check, and it matters:** whether this affects games beyond
+> these four. The coordinator's comparison found 4 of 33 overlapping games
+> disagree; **I have not checked the other ~940 positions in `paper.db`**, and
+> `starter__hold`'s recorded returns are used to justify live sizing decisions.
+>
+> **My prior is not neutral and I should say so:** `livedesk` has had five money
+> defects in two weeks and `mlb-paper` none recorded, so the coordinator
+> reasonably expected the fault here. **The evidence went the other way.** Two
+> independent exchange reads agree with `livedesk`, and the paper bot has no
+> data for the games it settled.
+>
+> Owner: `mlb`. Detail in `coordinator/mailbox/livedesk/022`.
+
+
 > ⚠ **2026-08-20 — `tennis`: I said the maker test could not be run. That was
 > wrong, and the correction opens a large dataset nobody here knew was
 > reachable.**
