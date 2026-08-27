@@ -436,10 +436,47 @@ def final_score(game_pk):
         i1 = innings[0]
         fi = (_i((i1.get("away") or {}).get("runs")) or 0) + \
              (_i((i1.get("home") or {}).get("runs")) or 0)
+    # ⚠ THE GAME'S OWN STATUS, NEVER THE INNING NUMBER.
+    #
+    # This read `is_final = currentInning >= 9` until 2026-08-27, which asks
+    # "are we in the ninth" and not "is it over". A tied game in the ninth is
+    # precisely a game that is NOT over, so the check was systematically
+    # certain about exactly the games still being decided.
+    #
+    # Measured against the true finals on the 196 games settled this way:
+    #   78 of 196 (40 in 100) had the WRONG SCORE
+    #   20 of 196 had the WRONG WINNER
+    #   18 rows were recorded as TIES, which baseball does not have
+    #   2 were recorded 0-0
+    # 108 positions were settled on a wrong winner, carrying $122.36 of
+    # recorded profit that were really losses.
+    #
+    # `abstractGameState == "Final"` is the game telling us it is over.
+    # `is_final` is False when the status cannot be read: an unknown status
+    # must never settle anything, because not settling is recoverable on the
+    # next tick and settling wrongly is not.
+    st = game_status(game_pk)
     return {"away_runs": ar, "home_runs": hr, "total_runs": ar + hr,
             "first_inning_runs": fi,
-            "is_final": (ls.get("currentInningOrdinal") is not None
-                         and _i(ls.get("currentInning") or 0) >= 9)}
+            "game_status": st,
+            "is_final": st == "Final"}
+
+
+def game_status(game_pk, ttl_s=0):
+    """`abstractGameState` for one game: "Final", "Live", "Preview", or None.
+
+    None means we could not tell, and every caller must treat that as NOT
+    final. See the warning in `final_score`.
+    """
+    try:
+        d = get("/v1/schedule", ttl_s=ttl_s, sportId=1, gamePk=game_pk)
+    except Exception:                                   # noqa: BLE001
+        return None
+    for day in (d.get("dates") or []):
+        for g in (day.get("games") or []):
+            if g.get("gamePk") == game_pk:
+                return (g.get("status") or {}).get("abstractGameState")
+    return None
 
 
 if __name__ == "__main__":

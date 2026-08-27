@@ -487,6 +487,14 @@ def settle_value_c(pos, s):
         club = K.CODE.get(suffix)
         if not club:
             return None
+        # ⚠ A TIE IS NOT A RESULT. Baseball games do not end level, so a tied
+        # settlement row means the score was read before the game finished.
+        # `home_won = home > away` silently turned every one of those into
+        # "the away team won" -- 18 such rows existed and settled 107
+        # positions. Refuse instead: an unsettled position is settled
+        # correctly on a later tick, a wrongly settled one never is.
+        if s["home_runs"] == s["away_runs"]:
+            return None
         home_won = s["home_runs"] > s["away_runs"]
         is_home = (suffix == parts["home"])
         yes = (home_won == is_home)
