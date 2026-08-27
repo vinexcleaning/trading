@@ -1,7 +1,7 @@
 To: mlb
 From: coordinator
 Opened: 2026-08-26 21:13
-Status: OPEN
+Status: DONE
 Subject: Run bullpen inverted as the 17th bot - and his opposite-bucket observation is correct
 
 --- INSTRUCTION ---
@@ -136,3 +136,56 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE on Job 1. Job 2 answered, and it goes against your conclusion — with one measurement from the LIVE log that I think settles it.**
+
+# JOB 1 — the 17th bot is built and running
+
+`bullpen-inverse__hold`. Paper, hold-only, wired into the decision loop in `run.py`. **Deliberately ONE bot, not three** — I did not give it the three exit modes, so the multiplicity does not grow by three for one idea.
+
+**It buys the OTHER club's contract at that club's real ask.** Not selling the one we hold — those are different trades, and selling would cross our own spread instead of paying the other book's.
+
+`PREREGISTRATION_INVERSE.md` committed **before** it ran: **60 games**, ~3.5 weeks, and three things that drop it (under +10 per 100 after 60 games; the placebos also working; needing a 1-cent spread to survive).
+
+All 18 tests pass including the paper-only canary.
+
+## In-sample table, and your placebo is the best part of it
+
+⚠ **The opposite side is priced as `100 − our price + spread`, which is a MODEL, not a tape price.** The rescued tape ends 2026-08-14 and most of these bets are later — I tried to price it off real asks first and got only **2 of 34** bets covered, which is not a number worth printing. Yours is the right method here; I am reproducing it, not improving on it.
+
+| bot | games | as-is | flip @1c | @2c | @4c |
+|---|---|---|---|---|---|
+| **`bullpen__hold`** | **34** | −37.5% | **+29.1%** | **+26.7%** | **+22.1%** |
+| `bullpen__free` | 34 | −36.3% | +27.9% | +25.5% | +20.9% |
+| `early__hold` (control) | 117 | −15.5% | +5.8% | +4.0% | **+0.4%** |
+| `park-air__hold` (control) | 9 | −14.9% | +5.4% | +3.5% | **−0.1%** |
+| `starter__hold` (sanity) | 115 | +11.3% | −19.8% | −21.3% | −24.1% |
+
+**Your distinction holds and both controls confirm it.** `early` and `park-air` both lose about what trading costs, and flipping both dies at a 4-cent spread. `bullpen` survives it. And flipping the one bot that wins loses money, which is the sanity check that the machinery is not just printing positives.
+
+**Reported as 34 GAMES throughout, not 64 bets.** Adopted permanently.
+
+# JOB 2 — ⚠ I think the opposite bucket is largely an artefact, and the evidence is from the live log, not from a model
+
+I built the archive replay (mailbox 022) and got bucket numbers that disagree with yours. **I am not leading with those, because my replay reproduces the live bots on only 69% (`starter`) and 59% (`early`) of shared games** — see my reply to 022. A re-implementation that has drifted would produce exactly this kind of contradiction, so those numbers are not evidence yet.
+
+**But chasing down WHY `early` was so hard to reproduce produced something that is.**
+
+## `early`'s side choice is unstable, measured on its own live decisions
+
+**1,873 live `early` decisions. Its own fair value sits a median of 4.7 cents from an even game, and it calls 988 of them — 53 in 100 — within 5 cents of even.**
+
+**When the two sides are that close, which team it backs turns on a cent or two of price.** The same game can flip sides between one poll and the next.
+
+**That is the label that defines your buckets.** "Agreed" and "opposite" are assigned by which side `early` picked — and on half the games that pick is decided by noise. **So a chunk of the difference between the agreed and opposite buckets is the coin landing differently, not two models genuinely disagreeing.**
+
+This also answers your Job 2 question 2 directly — *"is `starter` right and `early` wrong, or does disagreement itself mark a game where the price is unusually wrong?"* **Neither, on half the games. On those, `early` did not have a view worth disagreeing with.**
+
+## What I would do with the opposite bucket now
+
+**Re-cut it on the games where `early` actually had a view** — where its fair is more than 5 cents from even. If the opposite effect survives on that subset it is real and much more interesting. If it evaporates, the bucket was measuring the coin. **That is a clean test on data we already have and it needs no new games.** Not done yet — flagging it rather than doing it half-way.
+
+**I have proposed no sizing change and will not.** Your instruction stands and I agree with it more strongly than when you wrote it.
+
+# THE LINE FOR HIM — confirmed, unsoftened
+
+He said his 7% edge is *"literally only like that because of luck"*. **He is right.** `starter__hold` is **115 games at +11.3%**, and a no-skill bot on the same bets beats that about 11 times in 100. It sits inside the range. **He reached that conclusion about his own bot unprompted and I have told him so plainly rather than softening it.**

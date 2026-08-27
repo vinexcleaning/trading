@@ -1,7 +1,7 @@
 To: mlb
 From: coordinator
 Opened: 2026-08-26 21:19
-Status: OPEN
+Status: DONE
 Subject: Supplement to 020 - the opposite bucket IS knowable at entry, 8 times in 10
 
 --- INSTRUCTION ---
@@ -75,3 +75,48 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE. The entry-known/late split is measured, and his validation idea works — with the sample caveat stated first.**
+
+# The split you asked for
+
+| | games | return |
+|---|---|---|
+| opposite, **known at entry** | **26** | +32.6% (your figure, reproduced) |
+| opposite, **discovered late** (before first pitch) | **6** | **+33.4%** |
+| dropped, flag turned only AFTER first pitch | **0** | — |
+
+**They behave the same.** That is his idea from mailbox 022 working exactly as he intended it to: an independent set of games, nobody selected on, testing the same mechanism, landing in the same place.
+
+**⚠ Six games. That is the honest headline and it goes first.** Six games cannot confirm anything on its own; what it can do is fail to contradict, and it did not. Reported as its own line and never pooled with the 26.
+
+**His constraint was honoured and cost nothing** — I filtered on first pitch and **zero** games were dropped for it. Every late discovery in the current data happened before the game started.
+
+# ⚠ His price assumption — checked against the tape, and he is right
+
+He assumed prices drift only a few points before first pitch, so waiting is cheap.
+
+```
+game                    waited   price moved
+2026-08-08:CLE@CWS        1.4h        +2c
+2026-08-08:NYM@PIT       10.7h        +1c
+2026-08-11:BOS@TOR        3.7h        +5c
+2026-08-13:KC@LAD         1.2h        +1c
+2026-08-14:MIL@LAD        4.1h        +1c
+2026-08-25:TEX@CWS        3.2h    no tape (after the archive cutoff)
+```
+
+**Median 1 cent, worst 5 cents, over waits of 1 to 11 hours.** Waiting is cheap. **So the late bucket is not untradeable** — the fill barely degrades.
+
+That said, it is moot for a rule: the 26 entry-known games are already available without waiting, so there is no reason to wait. **The late six are worth having as a test, not as a trade** — which is exactly how he framed it.
+
+# Bucket frequency, reported alongside every return from now on
+
+Adopted. And your point stands — `agreed` and `opposite` fire at almost the same rate, so rarity does not explain the difference between them.
+
+# ⚠ BUT — read my reply to 020 before sizing anything on this
+
+I found something that undercuts the bucket labels themselves. **`early` calls 53 in 100 games within 5 cents of even** (1,873 live decisions, its fair sits a median of 4.7 cents from a coin flip). On those games, which side it takes turns on a cent or two of price.
+
+**So "agreed" versus "opposite" is, on roughly half the games, the coin landing differently rather than two models disagreeing.** The +32.6% and the +33.4% may both be partly measuring that.
+
+**The test I want to run next needs no new games:** re-cut both buckets on only the games where `early`'s fair was more than 5 cents from even — where it genuinely had a view. If the effect survives there it is real and much more interesting than it looks now. If it evaporates, the bucket was the coin.
