@@ -1,9 +1,9 @@
 # HANDOFF — livedesk
 
 <!-- COORDINATOR-STATE
-doing: mailbox clear, 21 of 21. Fixed the one-word bug in settle() that froze his profit for 106 hours, settled the 10-game backlog (6 won), and made stakes a flat 5% on his instruction.
-left: nothing blocking. 307 tests green. Mailbox 016 section 4 (take-profit/stop-loss sweep) is still plan-only.
-needs: no
+doing: mailbox clear, 22 of 22. Proved the four disputed settlements are correct here and the defect is in mlb-paper. Measured why 39 picks were not placed - the 35% drop rule is the biggest live cost at $34.
+left: nothing blocking. 320 tests green. Two questions are the users: loosen the 35% drop rule, and whether mlb re-settles its other 940 positions.
+needs: yes - decide whether to loosen the 35 percent drop rule. Six games is too few to settle it with a number, so it is judgement.
 -->
 
 **⚠ THIS TOOL SENDS REAL ORDERS, AND AUTO STARTS ON.** Live Kalshi, real
