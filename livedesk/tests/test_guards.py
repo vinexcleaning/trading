@@ -699,3 +699,155 @@ def test_guard5_yesterdays_bets_do_not_count_against_today(led):
                               confirmed_utc="2026-08-01T12:00:00-04:00"))
     led.save()
     assert led.daily_used() == (0, 0.0)
+
+
+# ==========================================================================
+# MAILBOX 022: room stated in BETS, and the floor is a PAUSE not a stop.
+#
+# ⚠ 022 ASKED FOR AN EXPLICIT CONFIRMATION that a dip below $40 followed by a
+# recovery above it resumes on its own with no restart. That was his
+# instruction in mailbox 015. Confirming it in prose would be worth nothing,
+# so it is asserted here instead.
+# ==========================================================================
+
+def test_room_is_stated_in_BETS_not_only_dollars(tmp_path):
+    """He should not have to divide his spare cash by his stake to find out he
+    is two bets from the tool stopping."""
+    lg = Ledger(tmp_path / "l.json")
+    lg.set_account_balance(45.00)
+    bets, spare = lg.bets_of_room()
+    assert spare == pytest.approx(5.00)
+    assert bets == 2, "at 5% of $45 a bet is $2.25, so $5 is two bets"
+    assert "2 more bets" in lg.room_in_bets_line()
+
+
+def test_two_bets_or_fewer_shouts(tmp_path):
+    lg = Ledger(tmp_path / "l.json")
+    lg.set_account_balance(45.00)
+    assert lg.room_in_bets_line().startswith("!! ONLY")
+    lg.set_account_balance(80.00)
+    assert lg.room_in_bets_line().startswith("room for ")
+
+
+def test_at_the_floor_it_says_it_is_PAUSED_not_stopped(tmp_path):
+    """The wording matters. 'Stopped' reads as broken and would have him
+    restarting things or asking us."""
+    lg = Ledger(tmp_path / "l.json")
+    lg.set_account_balance(39.00)
+    line = lg.room_in_bets_line()
+    assert "PAUSED" in line
+    assert "starts again by itself" in line
+    assert "stopped" not in line.lower()
+
+
+def test_a_balance_never_read_says_so_rather_than_guessing_zero(tmp_path):
+    """'I do not know' and 'no room' are different answers. Showing zero would
+    read as being at the floor when nothing has been checked."""
+    lg = Ledger(tmp_path / "l.json")
+    assert lg.bets_of_room() == (None, None)
+    assert "not known" in lg.room_in_bets_line()
+
+
+def test_below_the_floor_PAUSES_and_a_recovery_RESUMES_with_no_restart(tmp_path):
+    """⚠ THE CONFIRMATION MAILBOX 022 ASKED FOR, asserted rather than claimed.
+
+    His instruction in 015: a dip under $40 must PAUSE, and coming back above
+    it must resume by itself -- no button, no restart, nothing to remember. It
+    matters more now than when he gave it, because he is close to the floor.
+    """
+    lg = Ledger(tmp_path / "l.json")
+
+    lg.set_account_balance(45.00)
+    assert lg.paused()[0] is False
+
+    lg.set_account_balance(38.00)                 # dips under
+    paused, why = lg.paused()
+    assert paused is True
+    assert "start again by itself" in why
+
+    lg.set_account_balance(41.00)                 # and recovers
+    assert lg.paused()[0] is False, (
+        "it must resume on its own -- the same object, no restart, nothing "
+        "cleared by hand")
+
+
+def test_the_floor_pause_is_not_one_of_the_terminal_states(tmp_path):
+    """A pause that quietly became permanent would look identical on screen
+    and he would never know which he had."""
+    lg = Ledger(tmp_path / "l.json")
+    lg.set_account_balance(38.00)
+    assert lg.stopped()[0] is True
+    lg.set_account_balance(60.00)
+    assert lg.stopped()[0] is False
+
+
+def test_every_line_he_reads_here_is_plain_ascii(tmp_path):
+    lg = Ledger(tmp_path / "l.json")
+    for bal in (39.00, 45.00, 80.00):
+        lg.set_account_balance(bal)
+        lg.room_in_bets_line().encode("cp1252")
+
+
+# ==========================================================================
+# MAILBOX 022 SECTION 4: his money and the bot's are never added together.
+# ==========================================================================
+
+def test_the_bots_own_figure_is_LABELLED_as_the_bots_own(tmp_path):
+    lg = Ledger(tmp_path / "l.json")
+    assert "THIS BOT ONLY" in lg.bot_only_line()
+
+
+def test_a_gap_is_reported_as_UNEXPLAINED_and_never_folded_in(tmp_path):
+    """⚠ 022: *"this tool cannot tell his money from its own, so it must not
+    present a total that mixes them."* It cannot, and it must not try. Two
+    deliberate reasons the gap can never be zero: his own manual bets are
+    correctly absent from these books, and the San Diego restatement rewrote a
+    real loss on his instruction."""
+    lg = Ledger(tmp_path / "l.json")
+    lg.account_positions = []
+    # ⚠ READ THE START OFF THE LEDGER. The first version of this test hardcoded
+    # $106 -- his real starting figure -- but a fresh Ledger starts at
+    # BANKROLL_START. A test that bakes in one environment's number fails for
+    # a reason that has nothing to do with what it is checking.
+    start = lg.account_start_usd
+    lg.set_account_balance(start - 46.00)
+    gap, expected = lg.unexplained_usd()
+    assert expected == pytest.approx(start)
+    assert gap == pytest.approx(-46.00)
+    line = lg.unexplained_line()
+    assert "NOT EXPLAINED BY THIS BOT" in line
+    assert "$46.00" in line and "LESS" in line
+    assert "not added in anywhere" in line
+
+
+def test_a_small_gap_is_reported_as_agreement_not_as_an_alarm(tmp_path):
+    """Rounding on fees is normal. Crying wolf over 40 cents would train him
+    to ignore the line that matters."""
+    lg = Ledger(tmp_path / "l.json")
+    lg.account_positions = []
+    lg.set_account_balance(lg.account_start_usd - 0.40)
+    assert "agrees with it to within $0.40" in lg.unexplained_line()
+
+
+def test_an_unread_balance_says_so_rather_than_reporting_a_gap(tmp_path):
+    lg = Ledger(tmp_path / "l.json")
+    assert lg.unexplained_usd() == (None, None)
+    assert "until your balance is read" in lg.unexplained_line()
+
+
+def test_the_two_figures_are_never_summed_anywhere_in_the_source():
+    """A greppable guard. The whole point is that these two numbers stay
+    apart; adding them would produce exactly the mixed total 022 objected to."""
+    src = (Path(__file__).resolve().parents[1] / "src")
+    for f in src.glob("*.py"):
+        text = f.read_text(encoding="utf-8", errors="replace")
+        assert "unexplained_usd()[0] +" not in text, f.name
+        assert "+ self.unexplained" not in text, f.name
+
+
+def test_the_lines_are_plain_ascii(tmp_path):
+    lg = Ledger(tmp_path / "l.json")
+    lg.account_positions = []
+    lg.set_account_balance(60.00)
+    lg.bot_only_line().encode("cp1252")
+    lg.unexplained_line().encode("cp1252")

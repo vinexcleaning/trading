@@ -599,6 +599,89 @@ class Ledger:
                 f"   ·   35% off its best ${self.peak_total_usd:.2f} = stop at "
                 f"${stop_at:.2f}: ${max(0.0, worst - stop_at):.2f} of room")
 
+    def unexplained_usd(self):
+        """(gap, expected_cash) between what this bot's books imply his cash
+        should be and what it is, or (None, None) if never read.
+
+        ⚠ THE GAP IS NOT AN ERROR AND MUST NEVER BE FOLDED INTO A TOTAL.
+        Mailbox 022: *"this tool cannot tell his money from its own, so it must
+        not present a total that mixes them."* Correct. Two known, deliberate
+        reasons it can never be zero:
+
+          1. **His own bets are not in this record and never should be.** He
+             trades manually and always will. His $59 Baltimore alone moved his
+             real cash by $6 that these books do not know about.
+          2. **The San Diego restatement rewrote a real $10.05 loss as $5.03**
+             on his own instruction, with the original visible in the note.
+
+        So this is shown as UNEXPLAINED, in its own line, and never added to
+        anything. Reporting it as profit or loss would be inventing a number.
+        """
+        if self.account_balance_usd is None:
+            return None, None
+        expected = (self.account_start_usd + self.realised_usd()
+                    - self.at_risk_usd())
+        return round(self.account_balance_usd - expected, 2), round(expected, 2)
+
+    def bot_only_line(self) -> str:
+        """This bot's own money, labelled as this bot's own money."""
+        return (f"THIS BOT ONLY: ${self.realised_usd():+.2f} on "
+                f"{len([e for e in self.entries if e.status in ('won','lost')])}"
+                f" finished bets, from a ${self.account_start_usd:.2f} start")
+
+    def unexplained_line(self) -> str:
+        gap, expected = self.unexplained_usd()
+        if gap is None:
+            return "nothing to compare until your balance is read"
+        if abs(gap) < 1.00:
+            return (f"and your account agrees with it to within "
+                    f"${abs(gap):.2f}")
+        direction = "MORE" if gap > 0 else "LESS"
+        return (f"NOT EXPLAINED BY THIS BOT: your account holds ${abs(gap):.2f} "
+                f"{direction} than these books imply (they expect "
+                f"${expected:.2f}). That is your own bets and the San Diego "
+                f"restatement -- it is NOT this bot's profit or loss and is "
+                f"not added in anywhere")
+
+    def bets_of_room(self):
+        """(bets, dollars) left before the $40 floor pauses it, or (None, None)
+        if his balance has never been read.
+
+        ⚠ IN BETS, NOT DOLLARS, BECAUSE THAT IS THE FORM HE CAN ACT ON. He
+        should not have to divide his spare cash by his stake to find out he is
+        two bets from the tool stopping. Mailbox 022 asked for it in these
+        words and it is the right unit.
+        """
+        acct, real = self.account_for_floor_usd()
+        if acct is None or not real:
+            return None, None
+        spare = acct - ACCOUNT_FLOOR_USD
+        if spare <= 0:
+            return 0, round(spare, 2)
+        try:
+            from money import stake_for_bucket
+            stake = stake_for_bucket(acct, True, "")
+        except Exception:
+            return None, round(spare, 2)
+        if stake <= 0:
+            return None, round(spare, 2)
+        return int(spare // stake), round(spare, 2)
+
+    def room_in_bets_line(self) -> str:
+        """The one he reads. Deliberately blunt at two bets or fewer."""
+        bets, spare = self.bets_of_room()
+        if bets is None:
+            return ("room before the $40 floor: not known until your balance "
+                    "is read")
+        if bets <= 0:
+            return ("NO ROOM: you are at or under your $40 floor. It is "
+                    "PAUSED, and starts again by itself once you are back "
+                    "above $40.")
+        word = "bet" if bets == 1 else "bets"
+        lead = "!! ONLY " if bets <= 2 else "room for "
+        return (f"{lead}{bets} more {word} before this pauses at your $40 "
+                f"floor  (${spare:.2f} of spare cash)")
+
     # ---- Guard 5: the daily caps ----------------------------------------
     def _today_entries(self):
         """Everything really placed today, in HIS day, not UTC's.

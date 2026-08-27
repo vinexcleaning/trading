@@ -408,10 +408,20 @@ class Desk(tk.Tk):
         # the age, and it shouts once it goes past a day.
         self.room_lbl.configure(
             text="  " + self.ledger.room_line()
+                 # ⚠ IN BETS, NOT DOLLARS. He should not have to divide his
+                 # spare cash by his stake to discover he is two bets from the
+                 # tool pausing itself. Mailbox 022.
+                 + chr(10) + "  " + self.ledger.room_in_bets_line()
                  + chr(10) + "  " + self.ledger.daily_line()
                  + chr(10) + "  " + self.ledger.at_risk_line()
                  + chr(10) + "  " + self.ledger.riding_line()
                  + chr(10) + "  " + self.ledger.waiting_line()
+                 # ⚠ HIS MONEY AND THE BOT'S ARE NEVER ADDED TOGETHER. This
+                 # tool cannot tell one from the other, so it reports its own
+                 # figure, labelled, and shows the difference as UNEXPLAINED
+                 # rather than folding it into a total. Mailbox 022.
+                 + chr(10) + "  " + self.ledger.bot_only_line()
+                 + chr(10) + "  " + self.ledger.unexplained_line()
                  + chr(10) + "  " + self.ledger.two_window_line())
 
         avail = self._available()
