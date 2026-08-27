@@ -135,8 +135,25 @@ def _ip(x):
 
 
 def starter_profile(person_id, season, as_of: datetime, last_n=3):
-    """Season line, the last N STARTS, and rest days -- all strictly before
-    `as_of`.
+    """The last N STARTS and rest days strictly before `as_of` -- and season
+    aggregates that are NOT, which is a trap. Read the warning.
+
+    ⚠ `season_era`, `season_ip`, `season_starts` and `season_whip` come from
+    `pitcher_season()`, which returns the WHOLE season. They are **not**
+    filtered by `as_of`, despite what this docstring said until 2026-08-26.
+
+    **Live that is harmless and correct** -- when the bot runs on the day of the
+    game, "the season so far" IS the point-in-time value.
+
+    **In a REPLAY it is a look-ahead leak, and a big one.** Measured on games of
+    2026-06-10: pitcher 453286 is handed **7.02** when his real ERA that day was
+    **9.64**; pitcher 592662 is handed **3.21** against a real **4.12**. A
+    backtest using these is being told how the rest of the summer went.
+
+    `season_era_asof` and `season_ip_asof` are computed from the game log with
+    the same date cut as everything else and are the ones a replay must use.
+    The unfiltered fields are left in place deliberately so that the live
+    forward test's behaviour does not change in the middle of the experiment.
 
     The date filter is the whole point. `phatcobra/nrfi-predictor`'s own
     docstring is the rule worth stealing: *"Per-game windows use only rows
@@ -167,8 +184,15 @@ def starter_profile(person_id, season, as_of: datetime, last_n=3):
     rec_k = sum(int(s["stat"].get("strikeOuts", 0) or 0) for _, s in recent)
     rec_bb = sum(int(s["stat"].get("baseOnBalls", 0) or 0) for _, s in recent)
 
+    # season to date, computed from the log with the SAME cut -- see the
+    # warning above. `prior` already excludes anything on or after `as_of`.
+    a_er = sum(int(s["stat"].get("earnedRuns", 0) or 0) for _, s in prior)
+    a_ip = sum(_ip(s["stat"].get("inningsPitched")) for _, s in prior)
+
     return {
         "person_id": person_id,
+        "season_era_asof": round(9.0 * a_er / a_ip, 2) if a_ip > 0 else None,
+        "season_ip_asof": round(a_ip, 2) if a_ip > 0 else None,
         "season_era": _f(season_stat.get("era")),
         "season_ip": _ip(season_stat.get("inningsPitched")) or None,
         "season_starts": _i(season_stat.get("gamesStarted")),
