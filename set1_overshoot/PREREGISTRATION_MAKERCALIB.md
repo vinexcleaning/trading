@@ -169,3 +169,35 @@ about to wobble — which is criterion 3.
 
 **I give the profitable outcome less than one chance in four, and I expect the
 honest verdict to be UNDECIDABLE rather than either a clean yes or a clean no.**
+
+---
+
+# AMENDMENT B1 — 2026-08-30, before any result exists
+
+**§5 said the order rests "from 60 minutes before play starts until play
+starts". Building it exposed that as a LOOK-AHEAD, and this fixes it.**
+
+The prematch quote in §4 is the one at **t0 − 1**, the last minute before play.
+Resting a bid *at that price* during the hour *before* t0 − 1 means the order is
+sitting at a price nobody knew yet. **No result was computed under the broken
+version; it was caught while writing the code.**
+
+**Two causal repairs, and BOTH are run rather than choosing one:**
+
+| mode | decision | rests | causal because |
+|---|---|---|---|
+| **prematch** | the quote at **T = t0 − 60** | T → t0 | the band, the price and the window all come from the same moment, and nothing after T is consulted |
+| **into play** | the prematch quote at t0 − 1 (what the coordinator's table uses) | t0 → t0 + 60 | the price is known before the order exists |
+
+**⚠ `into play` is the realistic one and it is where the trap lives.** A resting
+bid below the market only fills when the price comes **down** to it — which is
+when the favourite is in trouble. **That is adverse selection by construction**,
+and it is exactly what drop criterion 3 was written to catch. **If the fills
+concentrate on wobbling favourites, a positive number there is not an execution
+win, it is a worse population bought at a discount.**
+
+**`prematch` should have the opposite problem:** far fewer fills, because before
+play there is little reason for anyone to sell a near-certainty cheaply.
+
+**Both are reported side by side. Neither is chosen in advance, and if they
+disagree that disagreement is the finding.**
