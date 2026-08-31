@@ -367,3 +367,51 @@ the method disagreement that §6 declares a drop condition; the fourth clears by
 0.03¢.** Given up: a positive-sounding headline. **The pre-registration said in
 advance that sign disagreement IS the finding, and honouring that when it points
 away from a result is the only reason writing it down first has any value.**
+
+## 2026-08-31 — I nearly reported 1,292 arbitrages that were my own recorder's clock
+
+**D39. ⚠ Attacked my own positive result instead of reporting it, and it
+collapsed.** The first cross-venue run said **1,292 executable arbitrages, median
+3.47¢, best 92¢**. Given up: the biggest headline this programme has produced.
+**A 92-cent arbitrage does not exist**, so the number was treated as a bug
+report rather than a finding.
+
+**Three things were wrong, in increasing order of importance:**
+
+1. **In-play markets.** The biggest "opportunities" were already-decided games —
+   *"Over 20.5 runs"* with Kalshi bid 50 / ask 84 while both venues priced the
+   over near 99. A stale limit order on a settled question, gone by the next
+   cycle. Removing in-play cut the count by **94%**, from 2,043 to 125.
+2. **`cycle_id` is not one clock.** `record.py` walks Kalshi, then Polymarket,
+   then Pinnacle, so the two venues inside one cycle are a **median 6.5 minutes
+   apart** (max 23.8). Every crossing compared prices six minutes apart.
+3. **The placebo settled it.** Deliberately mis-aligning the venues further
+   produced *more* arbitrage, almost perfectly linearly — **125 at 6.5 minutes,
+   875 at 58, correlation 0.9975**. Extrapolated to a zero gap: **7**. So **94 of
+   every 100 apparent crossings are the clock.**
+
+**The lesson is not "be careful with in-play".** It is that **the placebo was the
+only thing that could distinguish a real edge from the instrument, and it cost
+four extra queries.** Steps 1 and 2 were caught by reading the data; step 3 is
+the one that turned "40 executable" into "cannot be measured", and no amount of
+reading would have produced it.
+
+**D40. Reported "cannot be measured" as a complete answer rather than a null.**
+Given up: a clean negative. **It does NOT say cross-venue arbitrage is absent** —
+the residual is consistent with zero *and* with a small real effect this
+instrument cannot resolve. Saying "there is none" would have been the absence
+claim this repo has made wrongly three times already.
+
+**D41. Established Polymarket's fees from their own documentation rather than
+assuming, and it overturned a working assumption.** This repo has treated
+Polymarket as free to trade. **On sports it charges `C × 0.05 × p × (1−p)`**
+(docs.polymarket.com/trading/fees, 2026-08-31) — the same quadratic shape as
+Kalshi's 7%. **Two taker legs cost ~3¢ at a 50¢ price**, which is three times the
+median crossing found. Recorded as **BH025** because it invalidates any past or
+future cross-venue arithmetic that assumed zero.
+
+**D42. Sent `factory` one specific ask rather than a warning.** They are widening
+the recorder now. **The fix is the order of operations, not the volume** — a
+paired sampler that hits both venues within seconds. A wider recorder with the
+same walk produces more unusable data. The matcher is already written and handed
+over.
