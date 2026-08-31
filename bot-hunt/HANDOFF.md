@@ -1,7 +1,7 @@
 <!-- COORDINATOR-STATE
-doing: nothing running but the two recorders; cross-venue arbitrage (BH024) answered as NOT MEASURABLE with the current recorder, and the paired-sampler fix is flagged to factory in STATUS.md
-left: the totals model against 854 settled games - PREREGISTRATION_TOTALSMODEL.md written, model not built
-needs: yes - build a paired sampler (both venues within seconds) to turn "cannot see it" into a real answer?
+doing: paired sampler (BH026) running every 10 min under the watchdog - both venues read 84 ms apart instead of record.py's 6.5 minutes, own db and lock
+left: let it accumulate until the skew placebo has enough samples to bite; then the totals model against 854 settled games (PREREGISTRATION_TOTALSMODEL.md written, not built)
+needs: yes - how long should the paired sampler run before the cross-venue answer is called?
 -->
 
 # HANDOFF.md — bot-hunt, session of 2026-08-04
