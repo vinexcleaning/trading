@@ -215,6 +215,23 @@
       "writes_every_minutes": 30,
       "stale_after_minutes": 75,
       "restart": "the watchdog restarts it within ten minutes and at startup; nothing for a human to do"
+    },
+    {
+      "id": "devig-paired-sampler",
+      "workstream": "devig",
+      "title": "Two venues, read at the same instant",
+      "plain_english": "Reads the same baseball bet on Kalshi and Polymarket at the same moment - about a tenth of a second apart instead of the six and a half minutes our main recorder manages - so we can finally tell a real price difference from our own clock. It only reads and saves.",
+      "monitor": "heartbeat",
+      "kind": "continuous",
+      "machine": "desktop",
+      "watchdog_name": "devig-paired-sampler",
+      "heartbeat": [
+        "bot-hunt/data/paired.db",
+        "bot-hunt/data/paired.db-wal"
+      ],
+      "lock": "bot-hunt/data/paired.db.lock",
+      "stale_after_minutes": 45,
+      "restart": "the watchdog restarts it within ten minutes and at startup; nothing for a human to do"
     }
   ]
 }

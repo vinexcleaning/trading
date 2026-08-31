@@ -163,6 +163,22 @@
       "log": "logs\\wrapper_props.log",
       "paper_only": true,
       "_note": "ARMED CAPTURE, not a recorder. Waits up to 72h for Pinnacle's player-prop board to open, runs the comparison once, writes reports/props_n3.json and exits. It is in the WATCHDOG registry -- unlike the earlier prop watcher, which a reboot killed at 15h of 48 -- because --once-only makes it idempotent: if the capture already exists it exits immediately, so restarting it forever is harmless."
+    },
+    {
+      "name": "devig-paired-sampler",
+      "enabled": true,
+      "windowless": true,
+      "dir": "bot-hunt",
+      "exe": ".venv\\Scripts\\python.exe",
+      "args": [
+        "src/paired_sampler.py",
+        "--every",
+        "600"
+      ],
+      "match": "paired_sampler.py",
+      "log": "logs\\wrapper_paired.log",
+      "paper_only": true,
+      "_note": "Reads Kalshi and Polymarket CONCURRENTLY for the same market and records the measured gap on every row (median 84 ms, against record.py's 6.5 MINUTES). Recording only -- no credentials, no order code, no execution path. Writes its OWN database (data/paired.db) with its own single-instance lock; it must never share record.db, where two writers died with 'database is locked' inside 19 minutes."
     }
   ]
 }

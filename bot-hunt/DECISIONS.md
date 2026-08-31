@@ -415,3 +415,34 @@ the recorder now. **The fix is the order of operations, not the volume** — a
 paired sampler that hits both venues within seconds. A wider recorder with the
 same walk produces more unusable data. The matcher is already written and handed
 over.
+
+## 2026-08-31 (later) — the paired sampler, and a zero that was a bug
+
+**D43. Built the sampler to fix the ORDER of operations, not the volume.** BH024
+failed because `record.py` walks venue by venue. The sampler fires both venues
+concurrently per pair and **records the arrival time of each response**: median
+gap **84 ms** against the recorder's **390,000 ms**. The gap is stored on every
+row rather than asserted, because the instruction was "do not assume it worked"
+and because a silent regression here would invalidate everything downstream.
+
+**D44. ⚠ Did not believe my own zero, and it was a bug.** The first run reported
+**0 theoretical crossings** — a clean-looking null. Counting populated columns
+first showed **0 of 66 Kalshi quotes** against 66 of 66 Polymarket: I had read
+`orderbook` → `yes_fp` when the live fields are `orderbook_fp` →
+`yes_dollars`/`no_dollars`, in dollars, needing ×100.
+
+**GUARDS #12 and #23, in a script whose own docstring cites them.** Fifth
+field-name absence in three weeks. **A comparison with one side missing returns
+"no crossings" and is indistinguishable from the real answer** — the check cost
+one query and was the only thing standing between a false negative and the
+ledger.
+
+**D45. Reported the corrected zero as apparatus, not as a finding.** 66 pairs in
+one instant is the first reading from a new instrument, not an answer about
+arbitrage. Given up: a tidy headline that would have matched the prior.
+
+**D46. Wired the skew placebo into `--report` permanently.** The instruction was
+explicit that it must not be run once and called clean. It is now printed on
+every report, and **the offset rows must come out higher than offset 0 for the
+instrument to be believed** — if they ever converge, the sampler has stopped
+doing the one thing it exists for, and that will be visible rather than silent.
