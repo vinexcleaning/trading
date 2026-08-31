@@ -1,7 +1,7 @@
 <!-- COORDINATOR-STATE
-doing: nothing running but the two recorders - props (BH023) and totals (BH017/19/20) are both closed
-left: build the totals model against 854 settled games; PREREGISTRATION_TOTALSMODEL.md is written, the model is not
-needs: no
+doing: nothing running but the two recorders; cross-venue arbitrage (BH024) answered as NOT MEASURABLE with the current recorder, and the paired-sampler fix is flagged to factory in STATUS.md
+left: the totals model against 854 settled games - PREREGISTRATION_TOTALSMODEL.md written, model not built
+needs: yes - build a paired sampler (both venues within seconds) to turn "cannot see it" into a real answer?
 -->
 
 # HANDOFF.md — bot-hunt, session of 2026-08-04
