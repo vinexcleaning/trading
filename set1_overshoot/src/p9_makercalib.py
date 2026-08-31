@@ -103,7 +103,8 @@ def quote_at(con, ticker, ts):
 
 
 def evaluate(con, band, tiers=None, rest_min=REST_MIN, before=CUTOFF,
-             since=None, wrong_side=False, contracts=100, mode="into_play"):
+             since=None, wrong_side=False, contracts=100,
+             mode="into_play", improve=0):
     """
     ⚠ A LOOK-AHEAD I HAD TO FIX, AND IT IS THE WHOLE DESIGN.
 
@@ -157,11 +158,11 @@ def evaluate(con, band, tiers=None, rest_min=REST_MIN, before=CUTOFF,
             dmid = (dbid + dask) / 2.0
             if not (lo <= dmid < hi):
                 continue          # band membership judged at the SAME moment
-            price_bid, cross = dbid, dask
+            price_bid, cross = min(dbid + improve, dask - 1), dask
         else:
             t_start = t_lo + t0 * 60
             t_end = t_start + rest_min * 60
-            price_bid, cross = bid, ask
+            price_bid, cross = min(bid + improve, ask - 1), ask
 
         spreads.append(cross - price_bid)
 
@@ -180,9 +181,23 @@ def evaluate(con, band, tiers=None, rest_min=REST_MIN, before=CUTOFF,
         sf = KF.SeriesFees("<s>", ft, Decimal(1))
 
         def net(got):
+            """⚠ THE WRONG-SIDE PLACEBO IS A SHORT, AND ITS P&L MUST BE FLIPPED.
+
+            The first version changed which side FILLED us but kept the buy
+            P&L, so the "placebo" was still booking profitable long trades and
+            simply filled more often (there are more buyers than sellers). It
+            returned +3.56% against the real arm's +1.75% -- a placebo beating
+            its treatment, which under the pre-registration voids the run.
+            It was my arithmetic, not the fill model.
+
+            Resting an ASK sells the favourite: you receive `price`, and if the
+            favourite wins you owe 100.
+            """
             if got <= 0:
                 return None
             f = float(KF.maker_fee_order_cents(price, int(got), sf)) / got
+            if wrong_side:
+                return (float(price) - 100.0 if won else float(price)) - f
             return (100.0 - price if won else -float(price)) - f
 
         nf, nb = net(front), net(back)
@@ -223,6 +238,11 @@ def main():
     ap.add_argument("--rest-min", type=int, default=REST_MIN)
     ap.add_argument("--mode", choices=("into_play", "prematch"),
                     default="into_play")
+    ap.add_argument("--improve", type=int, default=0,
+                    help="rest this many cents INSIDE the spread. A LOOK, "
+                         "not a registered arm -- it was added after the "
+                         "registered rest-at-the-bid rule was run, so it "
+                         "gets no verdict")
     ap.add_argument("--wrong-side", action="store_true",
                     help="PLACEBO P1: rest an ASK instead of a bid")
     ap.add_argument("--open-the-check-period", action="store_true")
@@ -237,7 +257,10 @@ def main():
         label += "   [PLACEBO: quoting the WRONG side]"
 
     print(f"Maker execution on prematch favourites   mode={a.mode}   "
-          f"rest {a.rest_min} min   [{label}]")
+          f"rest {a.rest_min} min"
+          + (f"   resting {a.improve}c INSIDE the spread [A LOOK, no verdict]"
+             if a.improve else "")
+          + f"   [{label}]")
     print()
     print("!! JOB 0 FIRST -- availability, per GUARDS #24. An edge that cannot")
     print("   be filled is not an edge, and fills that only happen when the")
@@ -249,7 +272,8 @@ def main():
     res = {}
     for b in BANDS:
         r = evaluate(con, b, rest_min=a.rest_min, before=before, since=since,
-                     wrong_side=a.wrong_side, mode=a.mode)
+                     wrong_side=a.wrong_side, mode=a.mode,
+                     improve=a.improve)
         res[b] = r
         print(f"  {r['band']:>10}{r['n']:>6}{r['spread']:>7.1f}c"
               f"{r['won'] * 100:>6.1f}%{r['fill_front']:>11.1%}"
@@ -273,7 +297,8 @@ def main():
     for name, tiers in ARMS.items():
         parts = [evaluate(con, b, tiers=tiers, rest_min=a.rest_min,
                           before=before, since=since,
-                          wrong_side=a.wrong_side, mode=a.mode)
+                          wrong_side=a.wrong_side, mode=a.mode,
+                     improve=a.improve)
                  for b in ((90, 92.5), (92.5, 95))]
         n = sum(p["n"] for p in parts)
         if not n:
