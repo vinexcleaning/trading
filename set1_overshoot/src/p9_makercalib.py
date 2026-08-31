@@ -139,13 +139,12 @@ def evaluate(con, band, tiers=None, rest_min=REST_MIN, before=CUTOFF,
         ask, bid = int(pre_ask), int(pre_bid)
         if not (0 < bid <= ask < 100):
             continue
-        spreads.append(ask - bid)
-
-        # --- taker arm: cross the spread, hold to settlement, no exit fee
-        tk_fee = float(KF.fee_order_cents(ask, contracts)) / contracts
-        taker.append((100.0 - ask if won else -float(ask)) - tk_fee)
-
-        # --- maker arm, causal in both modes (see the docstring)
+        # --- decide the window and the resting price FIRST, because in
+        # prematch mode the band is judged at T and a market that is not in
+        # the band at T must leave BOTH arms, not just the maker one. Counting
+        # it in the taker denominator while dropping it from the maker one
+        # would compare two different populations and quietly deflate the
+        # fill rate.
         if mode == "prematch":
             t_start = t_lo + t0 * 60 - rest_min * 60
             t_end = t_lo + t0 * 60
@@ -158,11 +157,17 @@ def evaluate(con, band, tiers=None, rest_min=REST_MIN, before=CUTOFF,
             dmid = (dbid + dask) / 2.0
             if not (lo <= dmid < hi):
                 continue          # band membership judged at the SAME moment
-            price_bid = dbid
+            price_bid, cross = dbid, dask
         else:
             t_start = t_lo + t0 * 60
             t_end = t_start + rest_min * 60
-            price_bid = bid
+            price_bid, cross = bid, ask
+
+        spreads.append(cross - price_bid)
+
+        # --- taker arm: cross the spread, hold to settlement, no exit fee
+        tk_fee = float(KF.fee_order_cents(cross, contracts)) / contracts
+        taker.append((100.0 - cross if won else -float(cross)) - tk_fee)
         tape = MF.trades_for(con, tk)
         qa = MF.QUEUE_AHEAD.get(tier, 1500)
         # a resting YES bid is reached by a taker SELLING yes; the wrong-side
@@ -234,7 +239,7 @@ def main():
     print(f"Maker execution on prematch favourites   mode={a.mode}   "
           f"rest {a.rest_min} min   [{label}]")
     print()
-    print("⚠ JOB 0 FIRST -- availability, per GUARDS #24. An edge that cannot")
+    print("!! JOB 0 FIRST -- availability, per GUARDS #24. An edge that cannot")
     print("   be filled is not an edge, and fills that only happen when the")
     print("   favourite wobbles are a selection effect, not an execution win.")
     print()
