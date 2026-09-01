@@ -12,7 +12,49 @@ measured, and what is genuinely new.
 
 ---
 
-## ⚠ PRIORITY 1 IS ANSWERED TONIGHT. THE CALIBRATION EDGE IS REAL AND THE SPREAD EATS ALL OF IT.
+## ⚠ PRIORITY 1 — CORRECTED 2026-09-02. THE ORIGINAL TABLE BELOW WAS CONTAMINATED.
+
+> **⚠ CORRECTION, found in a fresh-eyes audit of my own script.** The table
+> below used every `state` row carrying a prematch price — **34,218 markets —
+> without reading the `ok` flag the source study stores on every row. 22,974 of
+> those rows (67%) were rows the study itself had REJECTED, almost all as
+> `pre-match book empty`: the quote existed but the spread was wider than 10
+> cents, so its mid is a poor probability estimate and its ask is far from fair.
+> `calib.py` filtered on `pre_bid IS NOT NULL` and assumed that meant usable.
+> **It did not, and the assumption was exactly the class of error this repo
+> keeps recording.**
+>
+> **Re-run on the 11,079 clean rows only:**
+>
+> | band | n | implied | observed | gap | EV at ask |
+> |---|---|---|---|---|---|
+> | 50–55 | 761 | 52.3% | 51.4% | −0.9 | −8.1% |
+> | 55–60 | 814 | 57.3% | 59.5% | +2.2 | −2.0% |
+> | 60–65 | 749 | 62.3% | 65.3% | +3.0 | −0.7% |
+> | 65–70 | 664 | 67.2% | 64.9% | **−2.3** | −8.0% |
+> | 70–75 | 619 | 72.3% | 70.8% | **−1.6** | −6.7% |
+> | 75–80 | 589 | 77.3% | 79.5% | +2.2 | −1.7% |
+> | 80–85 | 562 | 82.2% | 85.8% | +3.5 | **+0.8%** |
+> | 85–90 | 480 | 87.3% | 89.6% | +2.3 | −0.4% |
+> | 90–92.5 | 240 | 91.1% | 92.9% | +1.8 | −0.9% |
+> | 92.5–95 | 232 | 93.5% | 95.3% | +1.7 | −0.6% |
+> | 95–97.5 | 107 | 95.8% | 93.5% | −2.3 | −4.4% |
+>
+> **What changes:** the "favourites are underpriced" gap is smaller and no
+> longer consistent — two mid bands are NEGATIVE. The clean story is patchy,
+> not uniform. **"Every band is negative at the ask" is also no longer exactly
+> true**: 80–85 shows +0.8% — one band of eleven, small, and not a finding.
+> **What does not change:** no reliably tradeable calibration edge, and the
+> reversal above 95c. **The 90–95c bands were almost entirely clean rows
+> (240/249 and 232/246), so the maker-execution test built on them is
+> unaffected.** The baseball half was checked for the same class of error and
+> is clean — all 1,706 earliest prices are before first pitch.
+>
+> **The wide-book rows, run alone, show why the contamination flattered the
+> original:** apparent gaps up to +10.2 points (the mid of a 1/99 book says 50
+> and means nothing) with EV at the ask as bad as −42%.
+
+## ~~PRIORITY 1 IS ANSWERED TONIGHT. THE CALIBRATION EDGE IS REAL AND THE SPREAD EATS ALL OF IT.~~ (superseded above; kept for the record)
 
 **Method:** one market = one observation. Implied probability is the **prematch
 mid**; the EV column is what you get **buying at the real ask** and holding to
