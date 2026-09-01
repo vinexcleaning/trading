@@ -1,6 +1,6 @@
 # SCREENING RUN 01 — and not one number here is money
 
-**Run 2026-08-27 02:17 UTC by `strategy-factory/src/screen.py`.**
+**Run 2026-09-01 04:12 UTC by `strategy-factory/src/screen.py`.**
 
 > **THE BACKTEST CHOOSES. ONLY THE FORWARD TEST COUNTS.** Nothing below is a result, none of it may be sized on, and none of it should be repeated to anyone as an amount of money. It exists to pick candidates.
 
@@ -17,9 +17,9 @@ The same machinery, on the same tape, with **every outcome redrawn from the mark
 | | return on cash |
 |---|---:|
 | **real arm** | **-6.15%** |
-| placebo median (24 runs) | -7.13% |
-| placebo range | -8.55% to -4.20% |
-| **null drawn at the ASK** (matched to what we actually pay) | **-3.76%** |
+| placebo median (20 runs) | -7.13% |
+| placebo range | -8.38% to -4.20% |
+| **null drawn at the ASK** (matched to what we actually pay) | **-3.79%** |
 | its range | -5.38% to -0.49% |
 
 **TWO nulls, because one of them is unfair and it is the one that flatters nobody.** The mid null asks *"is the mid the truth?"* while our entries pay the **ask** - so it is advantaged by roughly half a spread before anything else happens, and the real arm should be below it even if the market is perfectly fair. The ask null asks the question that matters: *"given what we actually paid, did the outcomes beat it?"* Both are reported so neither can be quoted alone.
@@ -135,7 +135,43 @@ So: **8 categories were screened to produce 2 invertible one(s)**, and an invert
 
 The real arm inverted beats the fee-losing arm inverted. **That is the minimum bar and not a result** - it says the screen can tell the two cases apart, which is a statement about the screen.
 
-## 6. CAPACITY — what it would actually cost to fill
+## 6. THE TWO STANDARD LENSES — fee curvature, and closing-line value
+
+### Fee curvature: the same edge is worth far more at extreme prices
+
+Kalshi's fee is `0.07 x contracts x p x (1-p)` — **maximised at 50 cents and collapsing at the extremes.** A 2-cent edge at 95c survives as **+1.67c**; the same 2-cent edge at 50c survives as **+0.25c**, nearly seven times less. **The price a strategy trades at is part of its value, not a detail**, and nothing in this engine knew that until now.
+
+**Every row carries its event count**, because a per-contract edge is the number that gets quoted alone and one of these rows sits on a single event.
+
+| category | events | avg price traded | fee at that price | gross edge | **edge after fee** |
+|---|---:|---:|---:|---:|---:|
+| Climate and Weather | 22 | 35c | 2.00c | -2.29c | -4.29c *(only 22 events - not readable)* |
+| Commodities | 89 | 32c | 2.00c | +11.40c | +9.40c *(only 89 events - not readable)* |
+| Crypto | 134 | 30c | 2.00c | -0.56c | **-2.56c** |
+| Elections | 14 | 27c | 2.00c | +0.19c | -1.81c *(only 14 events - not readable)* |
+| Entertainment | 1 | 14c | 1.00c | -12.17c | -13.17c *(only 1 events - not readable)* |
+| Financials | 45 | 26c | 2.00c | -3.97c | -5.97c *(only 45 events - not readable)* |
+| Mentions | 1 | 59c | 2.00c | +42.00c | +40.00c *(only 1 events - not readable)* |
+| Sports | 2040 | 45c | 2.00c | +0.33c | **-1.67c** |
+
+### Closing-line value — a signal that needs no outcomes
+
+Did the entry buy cheaper than the market ended up pricing it? **It needs no settlement data at all**, so it gives a reading long before enough markets settle to measure profit.
+
+| category | events | markets with a close | closing-line value per contract |
+|---|---:|---:|---:|
+| Climate and Weather | 22 | 13 | -8.19c *(only 22 events)* |
+| Commodities | 89 | 141 | +6.50c *(only 89 events)* |
+| Crypto | 134 | 630 | +1.68c |
+| Elections | 14 | 1 | -1.50c *(only 14 events)* |
+| Entertainment | 1 | 1 | -10.00c *(only 1 events)* |
+| Financials | 45 | 117 | -3.94c *(only 45 events)* |
+| Mentions | 1 | 1 | -2.00c *(only 1 events)* |
+| Sports | 2040 | 3314 | -1.10c |
+
+**Negative closing-line value means we bought dearer than the market settled into** — which is what paying the ask does, and is the expected sign for a rule that crosses the spread on every entry. It is reported as a lens, not as a result.
+
+## 7. CAPACITY — what it would actually cost to fill
 
 Walked on the recorded ladder rather than assumed from the touch. A market with no recorded ladder gets **no capacity claim at all**.
 
@@ -156,7 +192,7 @@ Walked on the recorded ladder rather than assumed from the touch. A market with 
 
 > ⚠ **The Financials row is the one to look at, and it is bad news for size.** Those books absorb about **$45** whether you ask for $50, $200 or $500 - the ladder simply runs out. **A strategy that only exists in the first $45 is a hobby**, which is the test `STRATEGY_FACTORY.md` stage 6 puts first, and it is answerable now rather than after a month of forward testing.
 
-## 7. What this run does NOT establish
+## 8. What this run does NOT establish
 
 - **Nothing about whether any strategy works.** 8 days of tape, and the forward test has not started.
 - **Nothing about the specs that could not be run** - their absence here is a statement about our data, not about their merit.

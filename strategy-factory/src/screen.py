@@ -215,6 +215,13 @@ def cost_bar_cents(entry_bid_c, entry_ask_c, contracts=1):
     return half_spread + fee
 
 
+def fee_c_at(price_c, contracts=1):
+    """The fee at THIS price, per contract. Never at 50c."""
+    if not price_c or price_c <= 0 or price_c >= 100:
+        return 0.0
+    return float(fee_order_cents(price_c, contracts)) / contracts
+
+
 def wilson(k, n):
     """A range for a rate, wide when n is small. Reported as 'out of 100'."""
     if n == 0:
@@ -287,7 +294,7 @@ def screen_hold(c, series_list, lo, hi, max_spread, label, placebo_seed=None,
     destroys only the link between the rule and the outcome.
     """
     q = ("select ticker, series, event_ticker, result, close_utc, "
-         "entry_ts, entry_ask_c, entry_bid_c from ev "
+         "entry_ts, entry_ask_c, entry_bid_c, last_bid_c, last_ask_c from ev "
          "where entry_ask_c is not null and entry_ask_c between ? and ? "
          "and (entry_ask_c - entry_bid_c) <= ?")
     args = [lo, hi, max_spread]
@@ -334,10 +341,13 @@ def screen_hold(c, series_list, lo, hi, max_spread, label, placebo_seed=None,
     tot_out = 0.0
     tot_inv = 0.0
     tot_bar = 0.0
+    tot_px = 0.0
+    tot_clv = 0.0
+    n_clv = 0
     n = wins = 0
     events = set()
     per_bucket = defaultdict(lambda: [0, 0, 0.0, 0.0])
-    for tk, ser, ev, res, close, ets, ask, bid in rows:
+    for tk, ser, ev, res, close, ets, ask, bid, lbid, lask in rows:
         won = (res == "yes")
         net = net_cents(ask, won)
         out = outlay_cents(ask)
@@ -345,6 +355,16 @@ def screen_hold(c, series_list, lo, hi, max_spread, label, placebo_seed=None,
         tot_out += out
         tot_inv += inverted_net_cents(bid, won)
         tot_bar += cost_bar_cents(bid, ask)
+        tot_px += ask
+        # CLOSING-LINE VALUE: did we buy cheaper than the market ended up
+        # pricing it? Mailbox 009 - it needs NO outcome data, so it gives a
+        # signal long before enough markets settle to measure profit. The
+        # closing mark is the last recorded MID, used here as a price level and
+        # not as a fill (GUARDS #7 forbids the mid as an execution price, which
+        # this is not).
+        if lbid is not None and lask is not None:
+            tot_clv += ((lbid + lask) / 2.0) - ask
+            n_clv += 1
         n += 1
         wins += won
         events.add(ev or tk)
@@ -364,11 +384,23 @@ def screen_hold(c, series_list, lo, hi, max_spread, label, placebo_seed=None,
     # threshold chosen after seeing which strategies pass it would be the
     # best-of-N trap wearing a parameter.
     invertible = per_gross < -per_bar and per_inv > 0
+    avg_px = tot_px / n if n else 0.0
+    # ⚠ FEE CURVATURE. Kalshi's fee is 0.07*C*p*(1-p): maximised at 50c and
+    # collapsing at the extremes. A 2c edge at 95c survives as +1.67c; the SAME
+    # 2c edge at 50c survives as +0.25c - nearly seven times less. So the price
+    # a strategy trades at is part of its value, not a detail, and this column
+    # exists because nothing in the engine knew that.
+    fee_at_px = fee_c_at(avg_px)
+    edge_after_fee = per_gross - fee_at_px
+    per_clv = tot_clv / n_clv if n_clv else 0.0
     return {"label": label, "n": n, "events": len(events), "wins": wins,
             "net_c": tot_net, "outlay_c": tot_out,
             "ret": tot_net / tot_out if tot_out else 0.0,
             "per_c": per_net,
             "per_bar_c": per_bar, "per_gross_c": per_gross,
+            "avg_px_c": avg_px, "fee_at_px_c": fee_at_px,
+            "edge_after_fee_c": edge_after_fee,
+            "clv_c": per_clv, "n_clv": n_clv,
             "per_inv_c": per_inv, "invertible": invertible,
             "buckets": {k: v for k, v in sorted(per_bucket.items())}}
 
@@ -819,7 +851,53 @@ def main() -> None:
               "is the minimum bar and not a result** - it says the screen can "
               "tell the two cases apart, which is a statement about the screen.")
     A("")
-    A("## 6. CAPACITY — what it would actually cost to fill")
+    A("## 6. THE TWO STANDARD LENSES — fee curvature, and closing-line value")
+    A("")
+    A("### Fee curvature: the same edge is worth far more at extreme prices")
+    A("")
+    A("Kalshi's fee is `0.07 x contracts x p x (1-p)` — **maximised at 50 cents "
+      "and collapsing at the extremes.** A 2-cent edge at 95c survives as "
+      "**+1.67c**; the same 2-cent edge at 50c survives as **+0.25c**, nearly "
+      "seven times less. **The price a strategy trades at is part of its value, "
+      "not a detail**, and nothing in this engine knew that until now.")
+    A("")
+    A("**Every row carries its event count**, because a per-contract edge is "
+      "the number that gets quoted alone and one of these rows sits on a "
+      "single event.")
+    A("")
+    A("| category | events | avg price traded | fee at that price | gross edge | **edge after fee** |")
+    A("|---|---:|---:|---:|---:|---:|")
+    for cat in sorted(percat):
+        r = percat[cat][0]
+        cell = "**%s**" % fmt_money(r["edge_after_fee_c"])
+        if r["events"] < 100:
+            cell = "%s *(only %d events - not readable)*" % (
+                fmt_money(r["edge_after_fee_c"]), r["events"])
+        A("| %s | %d | %.0fc | %.2fc | %s | %s |"
+          % (cat, r["events"], r["avg_px_c"], r["fee_at_px_c"],
+             fmt_money(r["per_gross_c"]), cell))
+    A("")
+    A("### Closing-line value — a signal that needs no outcomes")
+    A("")
+    A("Did the entry buy cheaper than the market ended up pricing it? **It "
+      "needs no settlement data at all**, so it gives a reading long before "
+      "enough markets settle to measure profit.")
+    A("")
+    A("| category | events | markets with a close | closing-line value per contract |")
+    A("|---|---:|---:|---:|")
+    for cat in sorted(percat):
+        r = percat[cat][0]
+        cell = fmt_money(r["clv_c"])
+        if r["events"] < 100:
+            cell += " *(only %d events)*" % r["events"]
+        A("| %s | %d | %d | %s |" % (cat, r["events"], r["n_clv"], cell))
+    A("")
+    A("**Negative closing-line value means we bought dearer than the market "
+      "settled into** — which is what paying the ask does, and is the expected "
+      "sign for a rule that crosses the spread on every entry. It is reported "
+      "as a lens, not as a result.")
+    A("")
+    A("## 7. CAPACITY — what it would actually cost to fill")
     A("")
     A("Walked on the recorded ladder rather than assumed from the touch. A "
       "market with no recorded ladder gets **no capacity claim at all**.")
@@ -855,7 +933,7 @@ def main() -> None:
           "`STRATEGY_FACTORY.md` stage 6 puts first, and it is answerable now "
           "rather than after a month of forward testing." % (cat, amt, amt))
     A("")
-    A("## 7. What this run does NOT establish")
+    A("## 8. What this run does NOT establish")
     A("")
     span = c.execute("select min(close_utc), max(close_utc) from ev").fetchone()
     days = "?"

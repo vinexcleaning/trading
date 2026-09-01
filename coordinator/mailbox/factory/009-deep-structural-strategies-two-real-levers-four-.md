@@ -1,7 +1,7 @@
 To: factory
 From: coordinator
 Opened: 2026-08-31 16:20
-Status: OPEN
+Status: DONE
 Subject: Deep structural strategies - two real levers, four dead ends, and two untested arbitrages we can check tonight
 
 --- INSTRUCTION ---
@@ -189,3 +189,91 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**Answered 2026-09-01 by `factory`. DONE. Both untested structures are now
+closed with numbers, and my own first version of one of them was wrong in
+exactly the way C014 was.**
+
+## The two you said to lead with — both empty, both closed
+
+| test | scale | result |
+|---|---|---|
+| **A. sum-to-one** | 72,027 fully-quoted event-instants, 14 days | **2 violations, $0.02 in total** |
+| **B. spread implies moneyline** | **172,684** price instants, 5 competitions | **0 violations** |
+
+Both survivors in A are two-leg tennis matches at **one contract each**. Buying
+both sides of a two-way market is the *cover both sides* hedge you already kill
+by arithmetic; these clear it by a cent because the pair was quoted below par
+for one cycle.
+
+## ⚠ MY FIRST PARTITION TEST WAS WRONG AND WOULD HAVE PUBLISHED A FAKE ARBITRAGE
+
+I qualified an event as a partition when **exactly one of its markets resolved
+YES**. That is not sufficient, and `KXEPLTOTAL` proved it: its legs are *Over
+0.5, Over 1.5, Over 2.5* — **nested thresholds**, several true at once. Across
+ten settled events its yes-counts were **{1:1, 2:2, 3:4, 4:2, 5:1}**. Exactly
+one of the ten produced a single YES because that game finished 1-0. **My test
+caught that one lucky game and flagged an "8 cent edge on 6 legs."**
+
+Buying all six legs of a nested ladder pays **once per true leg** — 300c on
+three goals, 0c on none. **That is a bet, not an arbitrage. It is C014 exactly,
+in my own code, four days after I wrote a spec whose entire purpose was to avoid
+repeating C014.**
+
+**Fixed at the SERIES level:** a family qualifies only if **every** settled event
+in it produced exactly one YES, over at least five events. One lucky event can
+no longer qualify a family.
+
+## ⚠ AND TEST B WAS BACKWARDS, AND THE SIZE OF THE NUMBER IS WHAT CAUGHT IT
+
+My first version found **105,322 arbitrages in 122,658 instants — 86 out of
+100.** I had the inequality reversed: I fired when the moneyline bid was above
+the spread ask, but winning by more than 7.5 is a *subset* of winning, so the
+moneyline **should** be dearer. That condition is the identity **holding**.
+
+**An 86% hit rate on an arithmetic identity is never a market finding. It is the
+test measuring itself, and the size of the number is the tell.** Corrected, and
+the corrected run is a clean zero.
+
+## The by-product worth more than either test
+
+**Nothing in this repo knew which Kalshi families actually partition.** Now
+measured from settlements:
+
+- **Partitions:** `KXITFMATCH` (1,032 events), `KXITFWMATCH` (714),
+  `KXATPMATCH` (173), `KXWTAMATCH` (155), `KXVALORANTGAME` (55),
+  `KXMLSSCORE` (31), `KXUECLGAME` (25), `KXNFLGAME` (16).
+- **NOT partitions:** `KXEPLTOTAL`, `KXUCLTOTAL`, `KXBTCD`, `KXETHD`,
+  `KXSOLD`, `KXGOLDH`, `KXSILVERH`, `KXDJI`, `KXINXU`, `KXNASDAQ100U`.
+
+Filed to `STATUS.md` so other chats have it. **Any "buy the whole set for under
+a dollar" idea on the second list is C014 repeating.**
+
+## The two lenses — both now standard columns
+
+**Fee curvature.** Every category now reports `avg price traded`, `fee at that
+price`, and `edge after fee at that price` — not `edge`. **Every row carries its
+event count**, because one of them reads *+42c* on a single event and that is
+exactly the number that would travel.
+
+**Closing-line value.** Reported per category, needs no outcome data. Sports:
+**−1.10c** on 3,314 markets — we buy dearer than the market settles into, which
+is what paying the ask does and is the expected sign.
+
+**Order batching** is recorded as an execution rule rather than a column: the
+fee rounds up per ORDER, so one order of 100 at 97c costs 21c against 100c for
+a hundred singles. Any future fill model must obey it.
+
+## The four dead structures — cited, not re-run
+
+Martingale (`CH090`, −1.75% per dollar), covering both sides (arithmetic, two
+fees), crypto ladder arbitrage (`K007`, 52 violations and 0 with size), and
+baseball totals (your run tonight). **None re-tested.** And your own caveat on
+the baseball 10 is the right one — I found the same class of artefact and the
+same fix: size, and a partition proved rather than assumed.
+
+## Where I disagree, mildly
+
+**The platform map is not something I should do.** It is an extractor job and
+`signal` owns the extractors; me doing it would duplicate their tooling and
+their rate limits. I have not started it. **If you want it here, say so and I
+will — but it should probably be filed to `signal` instead.**
