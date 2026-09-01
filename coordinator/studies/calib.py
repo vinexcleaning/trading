@@ -62,8 +62,16 @@ def report(title, rows):
 # ---------------- TENNIS: prematch price vs result, 35,990 markets
 db=Path(r"C:/Users/vinig/trading/set1_overshoot/data/maker.db")
 c=sqlite3.connect(f"file:{db}?mode=ro",uri=True); c.row_factory=sqlite3.Row
+# ⚠ CORRECTED 2026-09-02. The first committed version read every row with a
+# prematch price and never read the ok flag p6_state.py stores. 22,974 of
+# 35,990 rows (67%) were ones that study had REJECTED, almost all
+# 'pre-match book empty' (spread wider than PRE_SPREAD_MAX=10c) - a mid from a
+# 1/99 book says 50 and means nothing. The contaminated output was published in
+# RESEARCH_PROGRAM.md and corrected inline there (commit 6b44936).
+# THE RULE THIS BUG YIELDS: an analysis reading another study's table must
+# honour that study's own ok/why flags, and say so.
 pre={}
-for r in c.execute("SELECT ticker,pre_bid,pre_ask FROM state"):
+for r in c.execute("SELECT ticker,pre_bid,pre_ask FROM state WHERE ok=1"):
     if r["pre_bid"] and r["pre_ask"] and 0<r["pre_bid"]<=r["pre_ask"]<100:
         pre[r["ticker"]]=(r["pre_bid"],r["pre_ask"])
 by_series={}
