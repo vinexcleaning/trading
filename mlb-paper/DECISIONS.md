@@ -339,3 +339,50 @@ understood least. Against the true finals: **78 of 196 rows had the wrong score,
 is correct in the common case and silently wrong in the hard case will not fail
 a test, because tests are written from the common case. `is_final` was right for
 every game that ended in nine innings.
+
+## 2026-09-01 — "arithmetically incapable of firing" was the wrong words
+
+I told `coordinator` on 2026-08-20 that `lineup` was **"arithmetically incapable
+of firing as written"**. **It fired two days later, four times.**
+
+**The arithmetic was right and the characterisation was wrong.** I predicted it
+needed a gap of three missing regulars giving a 4.95c adjustment. Every one of
+the four firings is exactly that: away 3, home 0, adjustment **4.95c**, edge
+**+1.45c**. The number was correct to the decimal.
+
+**What I got wrong was calling a rare event an impossible one.** I had 156 games
+in which the largest gap was two, and I wrote that up as a property of the rule
+rather than as a fact about the sample. The Critic flagged ABSENCE CLAIM on that
+very draft and I did not act on it.
+
+**The correct wording, for reuse: "it needs a three-player gap, which had not
+occurred in 156 games."**
+
+**And a finding that came out of being wrong:** on all four firings the
+de-vigged sharp line said the bet was BAD by 2.8 to 4.0 cents. The mentality
+only fires when the professional line disagrees with it — which is evidence
+against the "Kalshi has not repriced yet" story it is built on. Four games,
++$0.64 on $12.88.
+
+## 2026-09-01 — fidelity is the wrong gate for the archive replay, and here is the proof
+
+`coordinator` framed the archive as blocked behind replay fidelity (69%/56%).
+**It is not, and chasing fidelity is chasing something unreachable.**
+
+**Proof that records were never the constraint:** record fidelity went from 0%
+exact to **97% (307 of 315)** after two fixes, and overall fidelity did not move
+at all — still 69% and 56%.
+
+**Proof that faithfulness is impossible in principle:** of 291 starter ERAs the
+live bot recorded, **270 (93%) no longer exist**. `pitcher_season` returns
+today's season total, so the value the bot used in August is unrecoverable —
+e.g. pitcher 663567, bot saw **3.06**, the endpoint now says **3.66**.
+
+**So the replay can be CORRECT (as-of, no leakage) or FAITHFUL (reproduce what
+the bot did). It cannot be both.** I chose correct. The archive numbers are
+therefore a test of **the strategy as specified**, not of **the bots as run**,
+and they are labelled that way everywhere.
+
+**The credibility check that makes them usable anyway:** bucket frequencies come
+out at 19/18/64 in 100 against the live test's 19/21/60. The replay is finding
+the same kind of games even though it does not reproduce individual picks.

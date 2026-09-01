@@ -20,7 +20,7 @@ asserts a number and no artifact backs it, the row says `NONE` and the status is
 
 | Status | Count |
 |---|---|
-| **RETRACTED** | **53** |
+| **RETRACTED** | **54** |
 | SETTLED | 188 |
 | **UNDECIDABLE** | **1** |
 | SUGGESTIVE | 38 |
@@ -103,6 +103,7 @@ These were stated as findings and are wrong. Anything built on them is void.
 
 | ID | Retracted claim | Project | Why it died |
 |---|---|---|---|
+| **MB009** | "The opposite bucket makes +74 per 100 where `early` had a real view, rising to +93 as you demand more conviction" — reported 2026-08-27 | mlb-paper | 61 games | **A selection effect I introduced.** Conviction was read only from `early`'s ENTRY decisions, which exist only for games it actually BET on — 72 of 146, selected by its edge clearing a bar. Reading conviction from every decision (entries, declines and shadows all record a fair value) gives **+26.6% on 23 games at the same 5c cut**, against **+30.5% unfiltered**. **The re-cut does nothing.** The "rising with conviction" table was the same artefact. Also retracted: the buckets are not distinguishable — over 146 games **agreed +22.8% (28g) and opposite +21.2% (31g)** are the same, and only `alone` at **−6.2% (87g)** differs. |
 | **MB008** | Every `mlb-paper` P&L figure published before 2026-08-27, including "starter makes +11.3 per 100", the inverse-bot case, and the exit-grid benchmark | mlb-paper | 196 settlement rows; 1,111 settled positions | **`final_score()` decided a game was over by asking whether the inning was 9 or later, not whether the game had finished.** A tied game in the ninth is precisely a game that is NOT over. Checked against the true finals: **78 of 196 rows (40 in 100) had the wrong score, 20 had the wrong WINNER, 18 were recorded as ties** (which baseball does not have) and 2 as 0-0. `settle_value_c` then read a tie as `home_won=False`, silently paying the away side. **108 positions flipped outcome on re-settlement.** `starter__hold` **+$122.00 → +$79.00**; `bullpen__hold` **−$74.26 → −$36.26**; `park-air__hold` **−$14.9% → +31.5%**. Found by `livedesk`; root cause and re-settlement by `mlb-paper`. |
 | **MB004** | "The agreement pattern REVERSED out of sample — all three buckets flipped sign, and that is what a pattern being luck looks like" | mlb-paper | **A bug in my own code, not a result.** `capital.py buckets()` applied the "new games since" date filter to the COMPARISON bot as well as the asking bot, so a game the other bot had entered a day earlier lost its row and was scored "picked alone". **Three games moved, including the largest winner, and all three buckets changed sign.** Corrected: agreed **+36.9% (5g)**, opposite **+35.6% (7g)**, alone **−17.0% (23g)** — every one held its original direction. **The user spotted the symptom before I did** ("it makes no sense for everything to flip, especially the stuff that was losing"); `livedesk` found the line. Reported to him as a headline finding for three days. |
 | **S011** | Set-1 undershoot −2.53pp, p=0.0007, and everything in Phases 2–5 built on it | set1_overshoot | Dedupe kept the higher-`volume_fp` side. P(kept side wins) = **0.5356, z=+10.0**. The two orientations disagreed by **25.5pp**. Voided Phases 2, 3, 4 and the 90¢+ result in one stroke. |
