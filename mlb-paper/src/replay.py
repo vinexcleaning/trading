@@ -53,7 +53,7 @@ CACHE = HERE.parent / "data" / "replay_cache.db"
 # the same club as the live bot on just 24 of 54 shared games -- a coin flip.
 # `early`'s whole input is the season win rate, so a truncated season is not a
 # smaller sample, it is a different bot.
-FROM, TO = date(2026, 3, 15), date(2026, 8, 15)
+FROM, TO = date(2026, 3, 15), date(2026, 9, 2)
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS game (
@@ -180,6 +180,7 @@ from common.kalshi_fees import fee_order_cents         # noqa: E402
 
 TRUTH = HERE.parent / "data" / "kalshi_truth.db"
 _prof_cache = {}
+_recs_cache = {}
 
 
 def profile(pid, as_of):
@@ -340,8 +341,14 @@ def run_replay(limit=None):
                 # 48h out, so the table it sees is two days stale relative to
                 # first pitch. Using the game-date table left every record 1-2
                 # games high against the live bot's own log.
-                dd = as_of.date().isoformat()
-                r2 = recs.get(dd) or r
+                # timestamp-precise, not date-precise -- see records_before.
+                # Date granularity was wrong by exactly one game on 15 of the
+                # games checked against the live bot's own log; this took
+                # record fidelity from 0% exact to 97% (307 of 315).
+                key = as_of.isoformat()
+                if key not in _recs_cache:
+                    _recs_cache[key] = records_before(con, key)
+                r2 = _recs_cache[key]
                 ra2, rh2 = r2.get(g["away_id"], ra), r2.get(g["home_id"], rh)
                 d = (decide_early((ra2, rh2), sa, sh, qh, qa)
                      if tag == "early" else decide_starter(sa, sh, qh, qa))
@@ -399,3 +406,34 @@ def verify():
                     else gk.split(":")[1].split("@")[0]))
     live.close()
     return agree, len(real)
+
+def records_before(con, ts_utc, game_end_hours=3.25):
+    """W-L for every team as of an exact MOMENT, not a date.
+
+    ⚠ Date-granularity records were wrong by exactly one game on 15 of the
+    games checked against the live bot's own log. A decision taken at 18:00
+    sees games that finished that afternoon; a decision at 02:00 UTC is the
+    previous evening locally and does not. `records_as_of` cuts on the date and
+    cannot express either.
+
+    A game counts once it has plausibly FINISHED -- first pitch plus
+    `game_end_hours`. That is an approximation, and it is a much smaller one
+    than a whole day.
+    """
+    from datetime import datetime as _dt
+    cut = _dt.fromisoformat(ts_utc).timestamp() - game_end_hours * 3600
+    rec = collections.defaultdict(lambda: [0, 0])
+    for r in con.execute(
+            "SELECT away_id, home_id, away_runs, home_runs, starts_utc "
+            "FROM game WHERE status='Final' AND away_runs IS NOT NULL "
+            "AND json_extract(raw,'$.gameType')='R'"):
+        try:
+            st = _dt.fromisoformat(r["starts_utc"].replace("Z", "+00:00"))
+        except (TypeError, ValueError, AttributeError):
+            continue
+        if st.timestamp() > cut:
+            continue
+        aw = r["away_runs"] > r["home_runs"]
+        rec[r["away_id"]][0 if aw else 1] += 1
+        rec[r["home_id"]][1 if aw else 0] += 1
+    return {t: tuple(v) for t, v in rec.items()}
