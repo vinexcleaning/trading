@@ -13,7 +13,12 @@ from datetime import datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(HERE, "..")
-PY = r"C:\Users\gianf\AppData\Local\Programs\Python\Python312\python.exe"
+# ⚠ The interpreter running THIS script, never a hardcoded path.
+# This was a LAPTOP path until 2026-09-01 -- a recording box, not the machine
+# any of this runs on -- so the whole pipeline chain crashed here on a path
+# that does not exist. CLAUDE.md section 10: never write an absolute
+# interpreter path into anything.
+PY = sys.executable
 LOG = os.path.join(ROOT, "reports", "PIPELINE.txt")
 
 

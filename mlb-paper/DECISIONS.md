@@ -386,3 +386,54 @@ and they are labelled that way everywhere.
 **The credibility check that makes them usable anyway:** bucket frequencies come
 out at 19/18/64 in 100 against the live test's 19/21/60. The replay is finding
 the same kind of games even though it does not reproduce individual picks.
+
+## 2026-09-01 — SLIPPAGE_C measured at ~0, and I did NOT change it
+
+Mailbox 024 asked whether the assumed `SLIPPAGE_C = 1.0` could be measured from
+the live desk's real fills. **It can, and it is wrong.**
+
+**39 orders with both a placed price and an account-confirmed fill. Not one
+filled worse than placed.** 36 filled exactly at the placed price and 3 filled
+BETTER (−3c, −1c, −3c). **Mean −0.18c, median 0.00c**, against an assumed
+**+1.00c against us**.
+
+**What it costs: 227 distinct games would have had at least one extra bet** if
+the constant were 0. The forward test has 146 settled games, so the assumption
+has suppressed more games than the experiment has run.
+
+**⚠ THE CAVEAT THAT STOPS THIS BEING A BIGGER CLAIM THAN IT IS.** The desk buys
+at the ask. **A marketable limit order fills at its limit or better by
+construction**, so "zero slip" is close to tautological for the orders measured
+and does NOT show that a moving book cannot cost us. What it does show is that
+the modelled trade — buy at the displayed ask — has not been paying an extra
+cent. That is the trade the bots model, so it is the right measurement, but it
+is 39 orders on one venue at middling prices.
+
+**Decision: left at 1.0. Not changed.** Two reasons, and the second is the one
+that decides it:
+
+1. **It changes every bot's behaviour mid-experiment.** The forward test's only
+   real value is that the rule was fixed before the results existed; splitting
+   it into two regimes for a cost correction spends that.
+2. **The error is in the SAFE direction.** A too-large cost makes the bots
+   stricter, so it suppresses bets rather than manufacturing them. Every result
+   recorded so far is therefore, if anything, **understated** — an edge found
+   under a 1-cent handicap is not an artefact of the handicap.
+
+**Flagged as available to change**, and it is a real decision rather than
+housekeeping: taking it to 0 would roughly triple the number of games in the
+test, at the cost of restarting the clock on every count.
+
+## 2026-09-01 — two audit fixes from mailbox 025
+
+`mlb/src/run_pipeline.py` hardcoded the **laptop** interpreter
+(`C:\Users\gianf\...\Python312`), so the whole pipeline chain crashed on this
+machine. Now `sys.executable`. `CLAUDE.md` §10 already forbids absolute
+interpreter paths in documents; it should be read as forbidding them in code
+too, and this is the case that proves it.
+
+`mlb/src/inplay_rfi_latency.py` had a comment saying the moved-price threshold
+was `>= 90c` while the code said `80.0`. **I corrected the COMMENT, not the
+code** — the code is what produced the published result, and editing the number
+to match a comment would silently change a number already reported. Recorded
+in the file that the 80-vs-90 sensitivity has NOT been re-tested.

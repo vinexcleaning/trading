@@ -164,7 +164,16 @@ def main():
         base = st.median([x[1] for x in pre[-10:]])
         if base > 85:                      # already resolved-ish; not an event
             continue
-        # first trade at a clearly-moved price: >= base + 15c, or >= 90c
+        # first trade at a clearly-moved price: >= base + 15c, or >= 80c.
+        #
+        # ⚠ The comment said 90c until 2026-09-01 while the code said
+        # 80.0. THE CODE IS AUTHORITATIVE: it is what produced the published
+        # result, and editing the number to match a comment would silently
+        # change a number already reported. The comment was the error.
+        #
+        # The 80 is a FLOOR and only binds when `base` is under 65 (the guard
+        # above already drops anything over 85). Whether the verdict is
+        # sensitive to 80 vs 90 has NOT been re-tested.
         thr = max(base + 15.0, 80.0)
         first_moved = next((x for x in post if x[1] >= thr), None)
         # also: the last trade still at (near) the pre-event price
