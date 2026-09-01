@@ -47,6 +47,18 @@ from sofascore_feed import SofaScoreClient
 # snapshot. The floor exists because SofaScore is a free endpoint that has
 # blocked scrapers before — going much below 10s risks losing the feed
 # entirely, which costs more than the extra resolution is worth.
+#
+# ⚠ THIS DELIBERATELY CONTRADICTS `sofascore_feed.POLL_MIN_SEC = 60`, which
+# says "floor; do not lower". Noted 2026-09-01 during the assumption audit;
+# BOTH numbers are intentional and neither was changed:
+#   * the RECORDER (this file) needs fine resolution, because measuring how
+#     fast the market reacts is the entire question it exists to answer, and
+#     a 60s sample cannot see a reaction that finishes in 20s;
+#   * the LIVE FEED module is polled by the trading bot, which needs the feed
+#     to keep working far more than it needs another data point.
+# If the feed ever gets blocked, this is the first thing to look at — but do
+# not "fix" one of these to match the other without knowing which caller you
+# are looking at. They answer different questions.
 MIN_INTERVAL = 10
 
 

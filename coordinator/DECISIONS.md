@@ -529,3 +529,37 @@ recommend a Fable switch when a task fits — including temporarily switching a
 specific worker chat (he named strategy-factory and the extractors chat).
 He does the switching; our job is only to say so. Current session stays on
 Fable until the test-less-folder code read is done, then back to Opus.
+
+### D-audit4 — Three fixes made in other chats' folders, on his instruction
+
+**2026-09-01.** He approved all three items the audit escalated to him. Two
+were changed, one deliberately was NOT. All three touch folders this chat does
+not own (CLAUDE.md §5); taken because he asked directly, and the owning chats
+are told in the same push. Same precedent as D2.
+
+**1. `CLAUDE.md` §9b item 2 re-worded.** The 97.4% line invited the reading
+that the score feed was minutes stale. It is now stated as what was measured -
+the bot could not act in time (about 97 of every 100 cents) - with the split
+underneath (59 before / 38 same reading / 3 after) and the old wording quoted
+inside the correction. Also removed the banned `n=` form. The other ~30 places
+the figure appears belong to other chats and were NOT swept; owners told.
+
+**2. Pinnacle web-client key moved out of `bot-hunt/src/probe_pinnacle.py`.**
+Now read from `PINNACLE_WEB_KEY` or `~/keys/pinnacle_web_key.txt`. It is
+Pinnacle's own public key, not his credential, so this is rule-keeping rather
+than a leak response. Verified first that the live recorder never used it -
+`venues.get()` sends a plain User-Agent only - so nothing running is affected.
+**The literal remains in git history and was NOT rewritten**: a public key
+does not justify rewriting a shared public repo's history.
+**Reversible:** put the literal back if the indirection ever annoys anyone.
+
+**3. Sofascore polling NOT changed - I reversed my own recommendation.**
+I flagged `record_data.py`'s 10s against `sofascore_feed.py`'s "60s floor; do
+not lower" and offered to align them. Reading both properly, BOTH are
+deliberate and both are documented: the recorder needs fine resolution because
+measuring reaction speed is the question it exists for, and a 60s sample
+cannot see a 20s reaction; the feed module is polled by the live bot, which
+needs the endpoint to keep answering. Changing a deliberate, reasoned
+parameter without measuring would be exactly the "assuming too much" this
+audit was called to find. Added a cross-reference comment to each file instead,
+so nobody "fixes" one without seeing the other. Neither is running today.

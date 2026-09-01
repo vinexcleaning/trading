@@ -561,10 +561,29 @@ measurement, not an opinion, so **agreeing to re-open one is not being helpful.*
 ambition. **A deadline silently changes what counts as evidence**, which is how
 every one of the 51 retractions started.
 
-**2. Anything trading live and in-play.** His own bot was reading scores after
-**97.4% of the price move had already happened** (n=4,398 score-change events),
-and stop-and-re-enter turned **−2.29¢ into −9.36¢**. **Paper only.** This is not
-a maturity gate that time passes; it is a latency measurement.
+**2. Anything trading live and in-play.** His own bot was measured across
+**4,398 score changes**. By the time the bot's own next reading arrived, the
+price had **already finished about 97 of every 100 cents of its move.** That is
+the number that decides it, because the bot can only ever act on its own
+readings — it is last in the queue.
+
+> **Corrected 2026-09-01 — the old wording said more than the measurement
+> did.** It read: *"his own bot was reading scores after 97.4% of the price
+> move had already happened"*, which invites the reading that **the score feed
+> itself was minutes behind.** Splitting the move up properly: **59 of every
+> 100 cents moved before the score arrived · 38 moved inside the same
+> one-minute reading**, too close together to tell which came first · **3 moved
+> after.** So "the feed was slow" is a **59**-out-of-100 claim, not 97. **The
+> conclusion does not change** — 59 or 97, the bot cannot get there first — but
+> quote the 97 as *"the bot could not act in time"*, never as *"the feed was
+> minutes stale"*. Found by reading the code: the window counted the very
+> reading the score arrived on as "before".
+
+And stopping out made it worse rather than better: **−2.29¢ per contract became
+−9.36¢** once it stopped and re-entered. **That −9.36¢ is now known to be the
+best case** — the test filled every stop at exactly the stop price even when
+the price jumped straight past it, which real life does not do. **Paper only.**
+This is not a maturity gate that time passes; it is a latency measurement.
 
 **3. "The $25 to $130 run proves something."** It was **buying heavy
 favourites** — many small wins, then one loss that eats thirty. The same shape

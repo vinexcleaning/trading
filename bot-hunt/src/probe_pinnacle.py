@@ -22,6 +22,7 @@ So: is the reference price free? Verified by fetching, endpoint by endpoint.
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -29,16 +30,62 @@ import requests
 
 OUT = Path(__file__).resolve().parent.parent / "reports"
 BASE = "https://guest.api.arcadia.pinnacle.com/0.1"
+
+# ---------------------------------------------------------------------------
+# The key is NOT stored in this file. Moved out 2026-09-01 during the
+# assumption audit.
+#
+# WHAT IT IS: the key Pinnacle's own web client sends. It is shipped in their
+# public JavaScript to every browser that loads pinnacle.com, so it is not a
+# secret and it is not the user's credential — it identifies their web client,
+# not us. Several guest endpoints answer 401 without it.
+#
+# WHY IT STILL MOVED: this repo is PUBLIC, and `CLAUDE.md` §7 says nothing
+# credential-shaped is committed. A reader who cannot tell whose key it is has
+# to stop and check, and "it looked like a key in a public repo" is a bad thing
+# to have to explain. The rule is cheaper to keep than to argue about.
+#
+# NOTE the live recorder does not need this at all — `venues.get()` sends only
+# a plain User-Agent and `record.py` pulls Pinnacle happily without a key.
+# This is a one-off diagnostic probe; only it ever needed the header.
+#
+# TO RUN THIS SCRIPT: set PINNACLE_WEB_KEY, or put the value in
+# C:\Users\vinig\keys\pinnacle_web_key.txt (that folder is gitignored).
+# To find the value: open pinnacle.com, open the browser's network tab, and
+# read the X-API-Key header off any request to guest.api.arcadia.pinnacle.com.
+# ---------------------------------------------------------------------------
+_KEY_FILE = Path.home() / "keys" / "pinnacle_web_key.txt"
+
+
+def _web_key() -> str | None:
+    k = os.environ.get("PINNACLE_WEB_KEY")
+    if k:
+        return k.strip()
+    try:
+        return _KEY_FILE.read_text(encoding="utf-8").strip() or None
+    except OSError:
+        return None
+
+
 UA = {
     "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"),
     "Accept": "application/json",
     "Referer": "https://www.pinnacle.com/",
     "Origin": "https://www.pinnacle.com",
-    # Pinnacle's public web client sends this; recorded here rather than in a
-    # comment because without it several endpoints 401.
-    "X-API-Key": "CmX2KcMrXuFmNg6YFbmTxE0y9CIrOi0R",
 }
+_k = _web_key()
+if _k:
+    UA["X-API-Key"] = _k
+else:
+    print("NOTE: no PINNACLE_WEB_KEY set, so this probe runs WITHOUT the web "
+          "client's X-API-Key header.\n"
+          "      Endpoints that require it will answer 401, and that 401 is "
+          "OUR missing header, NOT\n"
+          "      evidence that Pinnacle stopped serving the endpoint. Do not "
+          "record it as one.\n"
+          f"      Set PINNACLE_WEB_KEY or write it to {_KEY_FILE}.\n",
+          file=sys.stderr)
 
 
 def g(path: str, params=None):

@@ -47,7 +47,12 @@ from curl_cffi import requests as cr
 
 BASE = "https://www.sofascore.com/api/v1"
 LIVE = f"{BASE}/sport/tennis/events/live"
-POLL_MIN_SEC = 60          # floor; do not lower
+# Floor; do not lower FOR THE LIVE BOT — the bot needs this free endpoint to
+# keep answering more than it needs another sample. ⚠ `record_data.py` polls
+# the same endpoint every 10s on purpose (see the note at its MIN_INTERVAL):
+# the recorder is measuring reaction speed and a 60s sample cannot see it.
+# Both numbers are intentional. Noted 2026-09-01 in the assumption audit.
+POLL_MIN_SEC = 60
 
 
 # NFKD cannot decompose these — they are distinct letters, not accented bases.
