@@ -519,3 +519,13 @@ honest enforcement point is the Critic pass every report already runs.
 own checklist file; the conservative option was tightening review rather than
 adding a repo-wide test, which stays his decision (scoped in
 `AUDIT_2026-09.md`). Reversible by deleting the line.
+
+### D-model — His model rule, 2026-09-01, recorded verbatim in intent
+
+Dictator runs on **Opus** by default. **Fable** is for audit-shaped work:
+hostile re-reads, verifying a finding before he acts, recurring bugs a chat
+cannot shake. He set a standing ask: any dictator session should proactively
+recommend a Fable switch when a task fits — including temporarily switching a
+specific worker chat (he named strategy-factory and the extractors chat).
+He does the switching; our job is only to say so. Current session stays on
+Fable until the test-less-folder code read is done, then back to Opus.

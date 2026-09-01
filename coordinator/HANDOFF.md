@@ -1,9 +1,11 @@
 # HANDOFF.md — coordinator
 
 <!-- COORDINATOR-STATE
-doing: built the dictator chat - the one window the user talks to. Two-layer report, a prior-work check that cannot say "we tried that", and a name for every chat
-left: four folders still have no HANDOFF.md and five none DECISIONS.md (named in CLAUDE.md §10); the owning chats have to create them
+doing: the assumption audit, pass 4 - reading the code in the folders that have no tests, five folders being read in parallel right now
+left: verify and file whatever the readers find; recorder value-checks still need game hours
 needs: no
+state: WORKING
+updated: 2026-09-01T10:22
 -->
 
 **Session of 2026-08-07, extended 2026-08-08.** The coordinator was created from
