@@ -91,6 +91,12 @@ Work down it. Each item is a question with a wrong answer, not a topic.
 - **Does every number carry the dates it was measured over?**
 - **Is it the right unit?** A match settles once.
 - **Was the naive benchmark reported next to it?**
+- **Where a best-of-N appears, N and a shuffle control must appear beside
+  it.** Added 2026-09-01 from the audit: this is `GUARDS.md` #17 and it is
+  the guard behind the most repeated failure here — the winner of ten rules
+  looked real at 6-in-100 until "at least one of ten" made it 46-in-100.
+  A best number with no N is not a finding; a best number whose shuffled
+  control was never run is not a finding either.
 - **Gross or net?** Middle price or the price you would really pay?
 - **Is the sample big enough to see the effect being claimed**, and if not, is
   that said?

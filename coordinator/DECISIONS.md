@@ -504,3 +504,18 @@ changed. `livedesk` has been told in mailbox 014 not to touch
 **Not commented on:** he mentioned he may place his own bets separately to
 recover faster. That is a different account, this chat cannot measure it, and
 the repo's own record of that shape is §9b #3. Stated once to him, not argued.
+
+
+---
+
+## 2026-09-01 — added the argmax line to the Critic checklist without asking
+
+**The audit scored guard #17 (the argmax null) as prose-only, and it guards the
+failure this repo repeats most.** A mechanical test would lint reports for
+"best of" without a shuffle control and would false-positive constantly, so the
+honest enforcement point is the Critic pass every report already runs.
+
+**Judgment call taken:** one required line added to `REFLECT.md` §3. This is my
+own checklist file; the conservative option was tightening review rather than
+adding a repo-wide test, which stays his decision (scoped in
+`AUDIT_2026-09.md`). Reversible by deleting the line.
