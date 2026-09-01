@@ -188,3 +188,8 @@ kalshi_env.bat
 
 # pytest --basetemp, per-run scratch
 .pytest_tmp/
+
+# --- his Qwen workspace: stale copies of live code, kept on disk on his
+# instruction (2026-09-01), never published. Refresh from the live folders
+# before using it - see QWEN_BATCH_2/READ_ME_FIRST.md.
+QWEN_BATCH_2/
