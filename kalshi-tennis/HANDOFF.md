@@ -115,6 +115,19 @@ the board.
 
 ## Reproduce any of this
 
+> ⚠ **LAPTOP ONLY. Two of these three will not run on the desktop.**
+>
+> `audit/inventory_local.py:14` and `audit/quality_candles.py:13` hardcode
+> `C:\\Users\\gianf\\kalshi`, which is the **laptop**. The path is honest — the
+> data really is there and `CLAUDE.md` §8 says not to "re-pull to replace" a
+> local archive — but running them here fails, and this section used to read
+> as though it worked anywhere.
+>
+> `probe_api.py` is the one that runs on either machine.
+>
+> Flagged by the repo-wide audit, 2026-09-01 (`tennis` mailbox 022).
+
+
 ```
 python kalshi-tennis/audit/inventory_local.py    # what is on disk
 python kalshi-tennis/audit/probe_api.py          # what the free API gives (~2h17m)
