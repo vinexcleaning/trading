@@ -33,7 +33,14 @@ DATA = ROOT / "data"
 LOGS = ROOT / "logs"
 
 SD_CENTS = 45.0          # spread of one match's result, from the archive
-COST_BAR = 4.79          # measured round trip on this pool: 2.67 fees + 2.12 spread
+COST_BAR = 4.79          # measured on this pool: 2.67 fees + 2.12 spread
+# ⚠ EXIT ASSUMPTION, which a cost bar is meaningless without (C105):
+# this is a SOLD bar, not a held one. Counted from the ledgers: 77.3% of
+# 28,973 closed positions were sold early and 22.7% held to settlement,
+# so the fee term is a BLEND -- 3.003c per contract when sold, 1.165c when
+# held. Against a hold-to-settlement strategy this bar overstates the cost
+# by roughly 1.8c of fee. Slippage is in NONE of them: the measured value
+# is censored (208 runaway fills refused) so it is deliberately not added.
 ENTRY_RATE = 0.40        # a bot bets on about 40% of matches
 SEED = 20260811
 

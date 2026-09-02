@@ -120,9 +120,36 @@ the modal verdict is UNDERPOWERED."*
 |---|---|---|
 | **T1** machinery | **PASS.** 538 ticks, **zero** non-contiguous jumps, median 13.6 s, p95 15.2 s, **0 result leaks** | pass ✓ |
 | **T2** brief coverage | ATP/WTA 87.5–100% both players, surface 100%; ITF surface **96.3%**, point-by-point **2.8%** | ITF <60% ✗ (A1), point-by-point <20% ✓ |
-| **T3** cost to trade | **4.79c** = 2.67c fees + 2.12c spread, n=81 | 3.5–4.5c — **slightly under-predicted** |
+| **T3** cost to trade | **4.79c** = 2.67c fees + 2.12c spread, n=81 — **SOLD, not held: see the exit-assumption note below** | 3.5–4.5c — **slightly under-predicted** |
 | **T4** divergence | median pairwise Jaccard **0.083**; favourite vs underdog **0.000** | <0.5 ✓, favourite/underdog disjoint ✓ |
 | **T5** execution gap | control (mid, zero fees) beats 9 of 12 bots by **12–23c**; n=21, CI [−25.8, +36.0] | gap larger than every edge ✓ |
+
+### ⚠ The 4.79c bar's exit assumption, stated because a bar without one is not a number
+
+**Asked by `coordinator` mailbox 023 (C105), and measured rather than reasoned.**
+Kalshi charges **one** fee if you hold to settlement and **two** if you sell
+early, so a cost bar means nothing until it says which it is.
+
+**Counted directly from the forward test's own ledgers, 28,973 closed
+positions:**
+
+| | share | mean fee per contract |
+|---|---|---|
+| **sold early** | **77.3%** | **3.003c** |
+| held to settlement | 22.7% | 1.165c |
+
+**So 4.79c is predominantly a SOLD bar — about three positions in four — and
+the 2.67c fee component is a blend of the two, which is exactly why it sits
+between entry-only and round-trip.** It does not apply cleanly to a
+hold-to-settlement strategy, and quoting it against one would overstate the cost
+by roughly 1.8c of fee.
+
+**Use instead:** held ≈ **1.17c** of fee, sold ≈ **3.00c** of fee, plus the
+2.12c spread in either case.
+
+**And the slippage term is still absent from all of them** — the pre-registered
+metric included it, the measured value is censored (208 runaway fills were
+refused, truncating the adverse tail), and it is therefore **not** added in.
 
 **T3 is the number worth keeping.** 4.79c is *above* the 3.61c bar this repo has
 been using, and it is measured rather than assumed. Every edge in the archive is
