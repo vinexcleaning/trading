@@ -177,6 +177,7 @@ from datetime import datetime, timezone                # noqa: E402
 
 import mentalities as M                                # noqa: E402
 from common.kalshi_fees import fee_order_cents         # noqa: E402
+import fees as FEE                                     # noqa: E402
 
 TRUTH = HERE.parent / "data" / "kalshi_truth.db"
 _prof_cache = {}
@@ -226,7 +227,8 @@ def decide_early(recs, sa, sh, q_home, q_away):
         if q is None or q["spread"] > M.M4_MAX_SPREAD_C:
             continue
         price = q["ask"]                       # buying YES pays the ASK
-        fee = float(fee_order_cents(price, 1))
+        fee = FEE.edge_fee_c(price, "KXMLBGAME")   # see fees.py: half rate,
+                                                   # and no per-order round-up
         edge = fair - price - fee - M.SLIPPAGE_C
         if best is None or edge > best["edge"]:
             best = {"side": side, "edge": edge, "price": price,
@@ -265,7 +267,7 @@ def decide_starter(sa, sh, q_home, q_away):
     if q is None:
         return None
     price = q["ask"]
-    fee = float(fee_order_cents(price, 1))
+    fee = FEE.edge_fee_c(price, "KXMLBGAME")       # see fees.py
     edge = abs(adj) - fee - M.SLIPPAGE_C - q["spread"] / 2.0
     if edge < M.M1_BAR_C:
         return None
@@ -368,7 +370,9 @@ def pnl(d, home_won):
     if d is None:
         return None
     won = home_won if d["side"] == "home" else not home_won
-    paid = d["price"] / 100.0 + float(fee_order_cents(d["price"], 1)) / 100.0
+    # one contract actually bought, so the per-order round-up is real here --
+    # only the RATE was wrong.
+    paid = d["price"] / 100.0 + FEE.order_fee_c(d["price"], 1, "KXMLBGAME") / 100.0
     return (1.0 if won else 0.0) - paid
 
 

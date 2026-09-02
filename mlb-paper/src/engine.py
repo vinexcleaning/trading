@@ -58,6 +58,7 @@ sys.path.insert(0, str(TRADING_ROOT))
 
 import mentalities as MEN                      # noqa: E402
 from common.kalshi_fees import fee_order_cents  # noqa: E402
+import fees as F                                # noqa: E402
 
 DB = HERE.parent / "data" / "paper.db"
 
@@ -367,7 +368,9 @@ def fill_pending(con, book_by_ticker):
             n = min(p["contracts"], int(max(0.0, size) * DEPTH_CAP_FRAC))
             if n < 1:
                 continue
-            fee = float(fee_order_cents(price, n))
+            # a real order IS rounded up per order -- keep that. What was
+            # wrong is the RATE: Kalshi charges half on these series.
+            fee = F.order_fee_c(price, n, p['ticker'])
             posid = str(uuid.uuid4())
             con.execute(
                 "INSERT INTO positions (id, bot, game_key, game_pk, ticker, "
@@ -393,7 +396,9 @@ def fill_pending(con, book_by_ticker):
                 con.execute("DELETE FROM pending WHERE id=?", (p["id"],))
                 continue
             n = pos["contracts"]
-            fee = float(fee_order_cents(price, n))
+            # a real order IS rounded up per order -- keep that. What was
+            # wrong is the RATE: Kalshi charges half on these series.
+            fee = F.order_fee_c(price, n, p['ticker'])
             gross = (price - pos["entry_price_c"]) * n
             pnl = gross - pos["entry_fee_c"] - fee
             con.execute(

@@ -75,6 +75,7 @@ sys.path.insert(0, str(HERE))
 TRADING_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(TRADING_ROOT))
 from common.kalshi_fees import fee_order_cents        # noqa: E402
+import fees as F                                      # noqa: E402
 
 SLIPPAGE_C = 1.0
 CENTS_PER_RUN_TOTAL = 9.0      # d(Over price)/d(expected total runs)
@@ -128,7 +129,20 @@ def _decide(row, side, adjustment_c, bar_c):
     fair = _mid_for(row, side) + adjustment_c
     fair = max(1.0, min(99.0, fair))
     price, size = _executable(row, side)
-    fee = float(fee_order_cents(price, 1))
+    # ⚠ TWO FEE ERRORS FIXED 2026-09-02, and they stacked.
+    #
+    # (a) `fee_order_cents(price, 1)` applied Kalshi's per-ORDER round-up to a
+    #     single contract. `common/kalshi_fees.py` says in its own docstring
+    #     that `fee_rate_cents` is the one for expectancy, "where the per-order
+    #     round-up is an artefact of order size rather than an economic cost".
+    # (b) It used the FULL taker rate. Kalshi charges HALF on KXMLBGAME and
+    #     KXMLBTOTAL (fee_multiplier 0.5), verified live against the API.
+    #
+    # Together the gate demanded ~3c of edge where the real one-way cost is
+    # closer to 1c -- 2.3x at 50c, 6x at 95c. The error was in the SAFE
+    # direction (it suppressed bets, it did not manufacture them), so every
+    # result recorded before this date is understated, not inflated.
+    fee = F.edge_fee_c(price, row["ticker"])
     edge = round(fair - price - fee - SLIPPAGE_C, 3)
     return {"fair_c": round(fair, 2), "price_c": price, "size": size,
             "fee_c": round(fee, 3), "slippage_c": SLIPPAGE_C,
@@ -145,6 +159,17 @@ def _total_rows(brief):
 
 def _pin(brief):
     return (brief.get("market") or {}).get("pinnacle")
+
+
+def _series_for_kind(kind):
+    """Which Kalshi series a yardstick `kind` refers to.
+
+    ⚠ The SERIES is determined by the kind; the RATE is then looked up live by
+    `fees.rate_for`. Never hardcode the rate here -- both of these happen to be
+    half-fee today and that is exactly the kind of coincidence that becomes a
+    wrong constant later.
+    """
+    return "KXMLBGAME" if kind == "moneyline" else "KXMLBTOTAL"
 
 
 def _sharp_yardstick(brief, kind, side, price_c, points=None):
@@ -165,7 +190,7 @@ def _sharp_yardstick(brief, kind, side, price_c, points=None):
         return {"available": True, "sharp_fair_c": fair,
                 "overround_pp": ml["overround_pp"],
                 "sharp_net_edge_c": round(
-                    fair - price_c - float(fee_order_cents(price_c, 1))
+                    fair - price_c - F.edge_fee_c(price_c, _series_for_kind(kind))
                     - SLIPPAGE_C, 3)}
     tot = None
     for t in pin.get("totals", []):
@@ -178,7 +203,7 @@ def _sharp_yardstick(brief, kind, side, price_c, points=None):
     return {"available": True, "sharp_fair_c": fair,
             "sharp_points": tot["points"], "overround_pp": tot["overround_pp"],
             "sharp_net_edge_c": round(
-                fair - price_c - float(fee_order_cents(price_c, 1))
+                fair - price_c - F.edge_fee_c(price_c, _series_for_kind(kind))
                 - SLIPPAGE_C, 3)}
 
 
@@ -579,7 +604,7 @@ def m4_early(brief, window):
         if row is None or row["spread"] > M4_MAX_SPREAD_C:
             continue
         price, size = _executable(row, "YES")
-        fee = float(fee_order_cents(price, 1))
+        fee = F.edge_fee_c(price, row["ticker"])       # see _decide
         edge = round(fair - price - fee - SLIPPAGE_C, 3)
         if best is None or edge > best["net_edge_c"]:
             best = {"team_side": team_side, "row": row, "fair_c": round(fair, 2),
@@ -744,7 +769,7 @@ def invert_intent(brief, intent):
     price, size = _executable(row, "YES")
     if not price:
         return None
-    fee = float(fee_order_cents(price, 1))
+    fee = F.edge_fee_c(price, row["ticker"])           # see _decide
     # The inverse has no fair value of its own. Its claim is only that the
     # original is wrong, so its stated edge is the original's edge carried
     # across, minus the cost of getting in on this side. Recorded as such
