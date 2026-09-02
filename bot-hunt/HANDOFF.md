@@ -1,7 +1,7 @@
 <!-- COORDINATOR-STATE
-doing: paired sampler (BH026) running every 10 min under the watchdog - both venues read 84 ms apart instead of record.py's 6.5 minutes, own db and lock
-left: let it accumulate until the skew placebo has enough samples to bite; then the totals model against 854 settled games (PREREGISTRATION_TOTALSMODEL.md written, not built)
-needs: yes - how long should the paired sampler run before the cross-venue answer is called?
+doing: paired sampler running under the watchdog (venue gap ~80 ms); mailbox 025/026/027/028 answered and fixed
+left: totals model against 854 settled games (PREREGISTRATION_TOTALSMODEL.md written, not built); copy-trading headline could be restated on ex_net if wanted
+needs: no
 -->
 
 # HANDOFF.md — bot-hunt, session of 2026-08-04
