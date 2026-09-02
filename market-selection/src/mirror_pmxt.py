@@ -31,7 +31,24 @@ import pyarrow.parquet as pq
 import requests
 
 BASE = "https://r2kalshi.pmxt.dev/kalshi_orderbook_{stamp}.parquet"
-DEST = r"C:\Users\gianf\trading\market-selection\data\pmxt"
+# LAPTOP PATH, GUARDED 2026-09-02 (audit pass 4, item 7).
+#
+# This was a bare C:\Users\gianf\... constant. `gianf` is the LAPTOP; this
+# machine is `vinig`. Running this here would makedirs a fresh laptop-shaped
+# tree and begin re-downloading a 662-file archive into it -- and CLAUDE.md
+# section 8 is explicit that a local archive is never "re-pulled to replace".
+#
+# It now resolves relative to this file, and REFUSES to run when the archive is
+# not already present rather than silently starting a fresh download.
+_HERE = os.path.dirname(os.path.abspath(__file__))
+DEST = os.environ.get("PMXT_DEST", os.path.join(_HERE, "..", "data", "pmxt"))
+if not os.path.isdir(DEST):
+    raise SystemExit(
+        "REFUSING TO RUN. The pmxt archive is not at " + DEST + ".\n"
+        "This script mirrors 662 parquet files. It will not build that tree\n"
+        "from scratch on a machine that does not already have it: the archive\n"
+        "may exist on the laptop, and CLAUDE.md section 8 says a local archive\n"
+        "is never re-pulled to replace. Set PMXT_DEST if you really mean to.")
 LOG = os.path.join(DEST, "_mirror_log.jsonl")
 
 START = datetime(2026, 5, 14, 14, tzinfo=timezone.utc)

@@ -36,6 +36,7 @@ import venues as V  # noqa: E402
 from props_n3 import a2p, devig  # noqa: E402
 from totals_n3 import CLUB, PIN, nick, split_pair  # noqa: E402
 from common.kalshi_fees import fee_rate_cents  # noqa: E402
+from costbar_local import bar_cents as _bar  # noqa: E402
 
 # ⚠ ADDED 2026-08-21 AFTER THIS COST US THE ONE CAPTURE WE HAD WAITED THREE DAYS
 # FOR. Launched by hand these scripts inherit PYTHONIOENCODING=utf-8; launched by
@@ -189,8 +190,8 @@ def run(label: str, series: str, kind: str):
                          "margin": 100 * (a2p(o) + a2p(u) - 1),
                          "fair_over_c": over["power"], "ask_c": ask, "bid_c": bid,
                          "edge_c": over["power"] - ask,
-                         "bar_c": float(fee_rate_cents(ask)),
-                         "qualifies": over["power"] - ask > float(fee_rate_cents(ask)),
+                         "bar_c": _bar(ask, bid),
+                         "qualifies": over["power"] - ask > _bar(ask, bid),
                          "edge_no_c": (100 - over["power"]) - no_ask,
                          "qualifies_no": (100 - over["power"]) - no_ask > float(fee_rate_cents(no_ask)),
                          "by_method_c": {m: 100 * v[0] - ask for m, v in fair.items()}})

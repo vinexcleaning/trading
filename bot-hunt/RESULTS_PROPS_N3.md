@@ -136,3 +136,34 @@ the next launcher would not have had it either.
 - **A model.** This is a price comparison. It says nothing about whether a
   forecast could beat these prices — which is `PREREGISTRATION_TOTALSMODEL.md`'s
   question, on a different family.
+
+---
+
+## 7. ⚠ CORRECTION 2026-09-02 — the bar in §1 and §4 was fee-only, and too permissive
+
+An audit pass caught that this run set `bar = fee_rate_cents(ask)` — **the fee
+alone, with no spread** — while the shared engine's cost bar is half-spread +
+slippage + fee. **Buying at the ask is crossing the spread, and this file did not
+charge for it.**
+
+**The verdict does not change, but the evidence for it gets cleaner.** Re-costed
+with the half-spread included (`src/costbar_local.py`):
+
+| sell-side flag | edge | old bar | **new bar** | |
+|---|---|---|---|---|
+| Yoshinobu Yamamoto | +1.73¢ | 1.69¢ | **2.19¢** | **gone** |
+| Mookie Betts | +1.57¢ | 0.74¢ | **1.74¢** | **gone** |
+| Alex Bregman | +1.02¢ | 0.63¢ | **1.63¢** | **gone** |
+| Randy Arozarena | +1.46¢ | 0.89¢ | **1.39¢** | still flags |
+
+> **Four flags become one.** The Yamamoto case §4 described as clearing "by 0.03
+> cents" now **fails by 0.46¢** — it was never a candidate, and the fee-only bar
+> was manufacturing candidates I then had to argue away one at a time.
+>
+> **The survivor is a home-run prop, which sits inside the 8-of-8 method
+> disagreement that §2 reports.** So P1 still stops on its pre-registered drop
+> condition, now with one arguable case instead of four.
+
+**A permissive bar makes a null harder to reach, so §1's `0 of 14` on the buy
+side was never at risk.** But it was generating false positives on the sell side,
+and that is worth fixing rather than explaining away.

@@ -446,3 +446,57 @@ explicit that it must not be run once and called clean. It is now printed on
 every report, and **the offset rows must come out higher than offset 0 for the
 instrument to be believed** — if they ever converge, the sampler has stopped
 doing the one thing it exists for, and that will be visible rather than silent.
+
+## 2026-09-02 — four audit messages, and two of them caught me
+
+**D47. ⚠ I had reimplemented the Polymarket fee, using the weaker of two
+formulas, in the folder that writes cost bars.** Mailbox 025 asked me to create
+`common/polymarket_fees.py` because "Polymarket's fee has NO implementation at
+all". **It already had one** — `common/costbar.py`, carrying C004's *measured*
+`0.10·min(p,1−p)` and explicitly recording that the documentation matched 0.0% of
+4,310 fills. Meanwhile **my** `crossvenue_arb.py` had defined its own from the
+docs (`0.05·p(1−p)`). Given up: nothing. **The premise of the instruction was
+wrong and I was the one committing the error it warned about.** Now imports the
+shared module.
+
+**D48. Reported the guard hole rather than fixing it.**
+`test_no_fee_reimplementation.py` scans for Kalshi's `0.07`/`0.0175`; I wrote
+`0.05`, so it passed clean on a Polymarket reimplementation. **The guard protects
+the venue whose documentation has never been wrong and misses the one where it
+demonstrably was.** Mailbox 025 says the guard system is being audited
+separately, so this is filed, not touched.
+
+**D49. Could not verify the fee, and the reason changes the argument.** C004's
+route — the Goldsky orderbook subgraph — now returns *"paused and deprecated
+following Polymarket's migration to V2; the data is stale and incorrect"*.
+`data-api/trades` is 200 but carries no fee field; `clob/trades` is 401. **So
+neither formula is verified for current sports markets — and C004's April
+measurement predates a platform migration**, which is a concrete reason it may no
+longer hold. That is *not* the same as "the docs were wrong once, so trust
+C004". **Cost bars use the larger of the two and say UNVERIFIED**, because a bar
+should err upward.
+
+**D50. Settled the esports timezone the way BH012 settled MLB, and it moved
+H10.** 2,592 `KXCS2GAME` tickers against 2,069 Pinnacle start instants: **ET
+matches 2,236 at a 60-second tolerance, UTC 1,520**, and ET wins at every
+tolerance. `diagnose_cross.event_time` read UTC; `h10_passive` imports it and
+skips `ts >= et`, so **H10 discarded the last four genuinely pre-match hours of
+every match.** No post-match leak is possible, so its direction is safe — but it
+measured the quiet window, not the one it names. ⚠ **Cannot be re-run here:
+`pyarrow`'s parquet support is blocked by an Application Control policy on this
+machine.**
+
+**D51. Aligned the fee-only cost bar, and it removed three of four candidates.**
+The `*_n3` files charged `fee(ask)` with no spread, though buying at the ask *is*
+crossing it. With the half-spread included, the props run's **four sell-side
+flags become one**, and the case I had described as clearing "by 0.03¢" now
+**fails by 0.46¢**. Given up: nothing — a permissive bar makes a null harder to
+reach, so every `0 of N` stood. **But it was manufacturing false positives that I
+then had to argue away one at a time, which is a worse failure mode than a
+conservative bar.**
+
+**D52. Guarded `mirror_pmxt.py` before anyone ran it.** It hardcoded
+`C:\Users\gianf\...` — the laptop — and would have `makedirs` that tree and begun
+re-downloading a 662-file archive onto this machine. **`CLAUDE.md` §8 says a
+local archive is never "re-pulled to replace".** It now resolves relative to the
+file and **refuses to run** when the archive is absent.

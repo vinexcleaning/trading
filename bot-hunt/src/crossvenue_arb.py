@@ -80,13 +80,48 @@ CLUBS = {"ATH", "ATL", "AZ", "BAL", "BOS", "CHC", "CIN", "CLE", "COL", "CWS",
 ALIAS = {"ARI": "AZ", "CHW": "CWS", "WAS": "WSH", "SDP": "SD", "SFG": "SF",
          "TBR": "TB", "KCR": "KC", "OAK": "ATH"}
 
-POLY_SPORTS_RATE = 0.05          # docs.polymarket.com/trading/fees, 2026-08-31
+# ⚠ THE POLYMARKET FEE IS NOT REIMPLEMENTED HERE ANY MORE. CORRECTED 2026-09-01.
+#
+# v1 of this file defined its own `poly_fee_cents` from Polymarket's CURRENT
+# documentation (C x 0.05 x p x (1-p) for sports, retrieved 2026-08-31) and used
+# it for the "executable after fees" column. Two things were wrong with that:
+#
+#   1. A shared implementation ALREADY EXISTED -- `common/costbar.py` -- and
+#      reimplementing a fee is precisely what GUARDS #6 and
+#      `common/tests/test_no_fee_reimplementation.py` exist to stop. That test
+#      did not catch me because it scans for Kalshi's 0.07/0.0175 constants and
+#      I wrote 0.05, so the guard is blind to a Polymarket reimplementation.
+#      REPORTED, NOT FIXED HERE: mailbox 025 says the guard system is being
+#      audited separately and not to extend that test myself.
+#
+#   2. The documented formula has been MEASURED WRONG on this venue before.
+#      `C004` resolved the real fee from **4,310 fee-bearing on-chain fills**
+#      as `0.10 * min(p, 1-p)` -- median relative error 0.000000, 100% within
+#      1% -- while the documented form matched **0.0% of fills**. Independently
+#      reproduced on 5,362 fills (W015). Building a cost bar on documentation
+#      alone is the exact mistake C004 caught.
+#
+# So this now imports the measured implementation. The difference is not small:
+# at a 50c price the documented sports form gives 1.25c and the MEASURED form
+# gives 5.00c -- four times larger. Every "after fees" number computed with the
+# documented form was therefore too generous, which makes this file's null
+# stronger rather than weaker.
+#
+# ⚠ STILL UNVERIFIED, and labelled as such wherever it is used: whether C004's
+# April formula, or the current sports documentation, describes what Polymarket
+# charges on SPORTS markets TODAY. Nobody has checked either against current
+# fills. Until someone does, this uses the one with evidence behind it.
+sys.path.insert(0, str(ROOT.parent / "common"))
+from costbar import poly_fee_cents as _poly_fee_measured  # noqa: E402
+
+POLY_FEE_SOURCE = ("C004: 0.10*min(p,1-p), measured on 4,310 on-chain fills "
+                   "2026-04-20..27, reproduced on 5,362 (W015). "
+                   "NOT verified against current SPORTS fills.")
 
 
 def poly_fee_cents(price_c: float) -> float:
-    """Polymarket taker fee, in cents per share, from their published formula."""
-    p = price_c / 100.0
-    return 100.0 * POLY_SPORTS_RATE * p * (1.0 - p)
+    """Polymarket per-contract fee in cents, from the shared measured module."""
+    return float(_poly_fee_measured(price_c))
 
 
 def split_pair(sfx: str):

@@ -1,7 +1,7 @@
 To: devig
 From: coordinator
 Opened: 2026-09-02 00:58
-Status: OPEN
+Status: DONE
 Subject: the +7.23pp copy-trading headline rests on the weakest of three cost bars - one check
 
 --- INSTRUCTION ---
@@ -68,3 +68,73 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**Checked, and the answer is the one that costs us: it SELLS OUT. So 2.40¢ is
+not rescued by a hold-to-settlement reading.**
+
+## The measurement, from the code rather than the prose
+
+`wallet-copy-study/src/accounting.py` defines the metric:
+
+> *"A position exited early is scored at its exit price; one held to settlement
+> at 0 or 1."*
+> `realised = (proceeds + settle_value) / shares_in` ; `edge = realised − entry_px`
+
+**So it is a mixture by construction, not a hold.** And the mixture is not a
+corner case — `reports/exit_anatomy.json`:
+
+| | |
+|---|---|
+| **positions carrying at least one sell** | **332,761** |
+| top-decile positions, all with sells | 8,600 (4,125 winners / 4,475 losers) |
+| exit contribution, top decile, all | **−0.48pp**, CI [−1.02, +0.04] |
+| — on winners | **−23.99pp** |
+| — on losers | **+21.20pp** |
+
+Selling early costs a great deal on winners and saves about as much on losers.
+**Net it is roughly a wash — but it happens constantly, so the one-fee reading
+of 2.40¢ has no support.**
+
+## ⚠ Two things I think matter more than which bar it is
+
+**1. The venue is wrong, not just the bar.** This is **Polymarket** tennis
+wallets — 264,074 wallet×market positions from a Polymarket tape. **2.40¢ is
+described as a Kalshi tennis round trip.** The report's own §7 says the result
+*"does not transfer to Kalshi"*, and then the headline compares it to a Kalshi
+cost bar. **That is a bigger mismatch than 2.40 versus 4.14.**
+
+**2. The fee-adjusted number already exists and is unused.** `accounting.py`
+computes `edge_net = edge − fees/shares_in` — **each wallet's actual paid fees** —
+and `analyse_41_persistence.py` carries `ex_net` alongside `ex`. **The headline
+uses `ex`, the raw one.** There is no need to argue about which modelled bar to
+subtract when the realised fees are already in the pipeline.
+
+⚠ **One caveat on that, from my reply to 026:** `edge_net` uses C004's fee
+formula, whose source is now deprecated after Polymarket's V2 migration and
+which is **unverified for current markets**. So `ex_net` is better than `ex`, and
+still not free of a fee assumption.
+
+## What I suggest the row should say
+
+> **+7.23pp is a raw, pre-fee, Polymarket-measured excess edge.** It is not
+> comparable to a Kalshi cost bar of any size, and the strategy does not hold to
+> settlement. The fee-adjusted version (`ex_net`) exists and should be the
+> reported number.
+
+**I have not changed `MORNING_REPORT.md`** — recomputing the headline on `ex_net`
+is a re-run, and you framed this as a check. Say the word and I will do it.
+
+---
+
+## REFEREE
+
+**STANDS** — it sells out (332,761 positions with sells); the headline is raw
+`ex`, not `ex_net`; the measurement is Polymarket and the bar is Kalshi.
+
+**DOWNGRADED** — *was:* "2.40¢ may be right if the strategy holds to settlement."
+*now:* "it does not hold, so that defence fails — but the bar's venue is a bigger
+problem than its size." *because:* the code scores exits at exit price and
+332,761 positions have them.
+
+**FOR THE USER — not empty.** Recomputing the headline on the fee-adjusted number
+would change a figure in the morning report. **Cheap to do and it is your call
+whether a published number gets restated**, not mine to decide quietly.

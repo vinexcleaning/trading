@@ -45,6 +45,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(ROOT.parent))
 import venues as V  # noqa: E402
 from common.kalshi_fees import fee_rate_cents  # noqa: E402
+from costbar_local import bar_cents as _bar  # noqa: E402
 
 # ⚠ ADDED 2026-08-21 AFTER THIS COST US THE ONE CAPTURE WE HAD WAITED THREE DAYS
 # FOR. Launched by hand these scripts inherit PYTHONIOENCODING=utf-8; launched by
@@ -255,12 +256,13 @@ def main() -> None:
             continue
         over = {m: 100 * v[0] for m, v in fair.items()}
         # buying YES on "thr+" is backing the OVER
-        bar = float(fee_rate_cents(ask))
+        # audit pass 4 item 3: fee + HALF-SPREAD, not fee alone.
+        bar = _bar(ask, bid)
         edge = over["power"] - ask
         # and the sell side: buying NO backs the UNDER, paying 100 - bid
         no_ask = 100 - bid
         edge_no = (100 - over["power"]) - no_ask
-        bar_no = float(fee_rate_cents(no_ask))
+        bar_no = _bar(no_ask, 100 - ask if ask is not None else None)
         rows.append({"player": p["display"], "kind": key[1], "line": line,
                      "threshold": thr, "ticker": rung["ticker"],
                      "pin_over_am": p["over_am"], "pin_under_am": p["under_am"],

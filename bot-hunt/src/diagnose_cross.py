@@ -22,6 +22,7 @@ from __future__ import annotations
 import re
 import sys
 from collections import defaultdict
+from zoneinfo import ZoneInfo
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -41,8 +42,35 @@ def event_time(ticker):
         return None
     yy, mon, dd, hhmm = m.groups()
     try:
+        # ⚠ EASTERN, NOT UTC. CORRECTED 2026-09-02 (audit pass 4, item 1).
+        #
+        # This function read the ticker clock as UTC while every other file in
+        # the folder read it as America/New_York. BH012 established ET for MLB
+        # tickers (exact against Pinnacle on 22 of 22); ESPORTS was never
+        # settled, so it was settled the same way, on 2,592 KXCS2GAME tickers
+        # against 2,069 distinct Pinnacle esports start instants:
+        #
+        #     tolerance   read as UTC   read as ET
+        #          60 s        1,520        2,236
+        #         120 s        1,540        2,246
+        #         300 s        1,572        2,272
+        #
+        # ET wins at every tolerance. (Both counts are inflated because a
+        # ticker is matched against ANY Pinnacle start, not its own match, so
+        # the COMPARISON is the evidence and the absolute levels are not.)
+        #
+        # ⚠ WHAT THIS CHANGES, AND IT IS NOT COSMETIC. `h10_passive.py` imports
+        # this function and skips every observation with `ts >= et`. Reading an
+        # ET clock as UTC puts the computed start FOUR HOURS EARLY, so H10
+        # discarded the last four genuinely pre-match hours of every match --
+        # the busiest window. No post-match observation could leak in, so the
+        # direction of its conclusions is safe; the REGIME it describes is not
+        # the one the write-up claims. Any H10 number produced before this date
+        # describes a quieter market than the one it names.
         return datetime(2000 + int(yy), MON[mon], int(dd),
-                        int(hhmm[:2]), int(hhmm[2:]), tzinfo=timezone.utc)
+                        int(hhmm[:2]), int(hhmm[2:]),
+                        tzinfo=ZoneInfo("America/New_York")
+                        ).astimezone(timezone.utc)
     except (ValueError, KeyError):
         return None
 

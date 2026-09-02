@@ -21,7 +21,11 @@ from collections import defaultdict
 sys.path.insert(0, os.path.dirname(__file__))
 import kalshi_api as K  # noqa: E402
 
-DUMP = r"C:\Users\gianf\trading\market-selection\data\kalshi_markets_open.jsonl"
+# LAPTOP PATH, corrected 2026-09-02. `gianf` is the laptop; this machine is
+# `vinig`. Resolved relative to this file so it works on either.
+DUMP = os.environ.get("KALSHI_MARKETS_DUMP", os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "..", "data",
+    "kalshi_markets_open.jsonl"))
 REP = os.path.join(os.path.dirname(__file__), "..", "reports")
 
 
