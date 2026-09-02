@@ -34,6 +34,34 @@ CEIL = re.compile(r"\bceil\b")
 SHARED = re.compile(r"kalshi_fees|kalshi_research\.fees|costbar|"
                     r"from\s+fees\s+import|import\s+fees\b")
 
+# ---------------------------------------------------------------------------
+# ANY VENUE'S FEE, not just Kalshi's. Added 2026-09-02.
+#
+# WHY: `bot-hunt/src/crossvenue_arb.py` reimplemented POLYMARKET's fee using
+# the DISPROVEN documented formula (0.05*p*(1-p)) while a measured one already
+# existed in `common/costbar.py`. This guard did not see it, because `RATE`
+# only matches Kalshi's 0.07 and 0.0175. The folder that writes cost bars
+# carried a second, weaker fee formula and the canary stayed green.
+#
+# WHY NOT JUST ADD 0.05 AND 0.10 TO `RATE`: measured before deciding. Matching
+# those constants flags 45 files across the repo -- 0.05 and 0.10 are
+# thresholds, alphas and percentages everywhere. An allowlist of 45 is a guard
+# nobody maintains. Matching `min(p, 1-p)` alone flags 25, mostly legitimate
+# probability clamps.
+#
+# WHAT WORKS: match the SHAPE -- a plausible fee rate multiplied into a
+# quadratic - and let the rate be any decimal below 1.0 rather than a fixed
+# list. That flags 4 files, of which 2 already import the shared module.
+# Rates >= 1.0 are excluded because they are unit conversions (100.0, 40.0),
+# never fee rates.
+# ---------------------------------------------------------------------------
+QUAD_RATE = re.compile(
+    r"(?<![\d.])(\d*\.\d+)(?![\d])\s*\*[^\n]{0,40}?"
+    r"\(\s*1(?:\.0+)?\s*-\s*\w+\s*\)")
+#: Kalshi's own rates are handled by RATE above; anything else in a quadratic
+#: is another venue's fee and needs the same single-implementation discipline.
+KNOWN_KALSHI_RATES = {"0.07", "0.0175"}
+
 #: path -> why this file may carry a fee literal without importing the module.
 ALLOWED = {
     # Polymarket work. 0.07 is the DOCUMENTED Polymarket rate, retained
@@ -47,6 +75,13 @@ ALLOWED = {
         "Polymarket accounting; 0.07 is the documented form, kept to contrast",
     "wallet-copy-study/tests/test_accounting.py":
         "asserts the documented Polymarket form does NOT match real fills",
+    # Added 2026-09-02 when the guard was extended to non-Kalshi venues. This
+    # file exists to hold Polymarket's DOCUMENTED 0.05*p*(1-p) up against real
+    # on-chain fills, exactly as C004 did. The literal is the subject under
+    # test, not a cost bar anything trades on.
+    "bot-hunt/src/poly_fee_check.py":
+        "tests the documented Polymarket sports fee against real fills; the "
+        "0.05 form is what it is trying to refute, not a formula it relies on",
 
     # Prose, not arithmetic.
     "crypto/src/streak_fade.py":
@@ -88,6 +123,25 @@ def _looks_like_a_fee(src):
     return bool(RATE.search(src)) and bool(QUAD.search(src) or CEIL.search(src))
 
 
+def _other_venue_rates(src):
+    """Decimal rates below 1.0 multiplied into a `(1 - x)` quadratic.
+
+    Returns the offending rate strings, so the failure message can name them.
+    Kalshi's own rates are excluded -- `_looks_like_a_fee` already covers those.
+    """
+    found = set()
+    for m in QUAD_RATE.finditer(src):
+        r = m.group(1)
+        if r in KNOWN_KALSHI_RATES:
+            continue
+        try:
+            if 0.0 < float(r) < 1.0:      # a rate, not a unit conversion
+                found.add(r)
+        except ValueError:
+            continue
+    return found
+
+
 def test_no_file_reimplements_the_kalshi_fee():
     """Every fee-shaped file imports the shared module or is allowlisted."""
     offenders = []
@@ -114,6 +168,41 @@ def test_no_file_reimplements_the_kalshi_fee():
     )
 
 
+def test_no_file_reimplements_another_venues_fee():
+    """The same rule for Polymarket and anyone else, not just Kalshi.
+
+    The gap this closes: `crossvenue_arb.py` carried Polymarket's DOCUMENTED
+    0.05*p*(1-p) -- the formula this repo measured against 4,310 real fills and
+    found matched 0.0% of them -- while `common/costbar.py` already held the
+    measured one. The old guard only knew Kalshi's rates, so it stayed green
+    while the folder that writes cost bars used the weaker of two formulas.
+    """
+    offenders = []
+    for path, rel in _iter_py():
+        try:
+            src = open(path, encoding="utf-8", errors="replace").read()
+        except OSError:
+            continue
+        rates = _other_venue_rates(src)
+        if not rates:
+            continue
+        if rel in ALLOWED or SHARED.search(src):
+            continue
+        offenders.append(f"{rel}  (rate {', '.join(sorted(rates))})")
+
+    assert not offenders, (
+        "These files multiply a rate into a p*(1-p) fee shape without using "
+        "the shared cost module:\n  "
+        + "\n  ".join(sorted(offenders))
+        + "\n\nA fee belongs in ONE place per venue. Polymarket's lives in "
+          "common/costbar.py and carries the MEASURED 0.10*min(p,1-p) -- the "
+          "documented 0.05*p*(1-p) matched 0.0% of 4,310 real fills, so a "
+          "local copy of the documented form is a copy of a disproven number. "
+          "If the literal is genuinely under test or is prose, add it to "
+          "ALLOWED with a reason."
+    )
+
+
 def test_allowlist_has_no_dead_entries():
     """An allowlisted file that no longer trips the check should be removed.
 
@@ -127,7 +216,10 @@ def test_allowlist_has_no_dead_entries():
             dead.append(f"{rel} (file no longer exists)")
             continue
         src = open(path, encoding="utf-8", errors="replace").read()
-        if not _looks_like_a_fee(src):
+        # An entry earns its place by tripping EITHER detector: the Kalshi-rate
+        # one or the any-venue one added 2026-09-02. Checking only the first
+        # would call a live Polymarket exemption dead and delete it.
+        if not (_looks_like_a_fee(src) or _other_venue_rates(src)):
             dead.append(f"{rel} (no longer contains a fee fingerprint)")
     assert not dead, (
         "Stale ALLOWED entries — delete them:\n  " + "\n  ".join(dead))
