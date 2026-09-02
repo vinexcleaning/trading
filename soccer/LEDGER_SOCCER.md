@@ -139,6 +139,21 @@ That is a lead for `tennis`, **not a recommendation**: availability is necessary
 and not sufficient, and soccer's book was a clean 100 in 100 early in a match
 with a bad price anyway.
 
+## The reverse trade, first run 2026-09-02 — pre-registered, and it cannot tell
+
+| ID | Claim in plain English | Artifact | n + unit | Effect + CI | STATUS |
+|---|---|---|---|---|---|
+| **SO043** | **The reverse trade is placeable — unlike the idea it descends from.** Backing a side that just went one goal up, minute 20-45. | `src/reverse_trade.py`, `reports/reverse_trade.txt` | **73 European matches** with an entry, Kalshi window to 2026-09-02 | **buyable on 100 in 100 of the entries that existed** (0 with nothing to buy) | **SETTLED for availability** — the exact mirror of SO041. Quotes exist because the match is still in doubt, which is what GUARDS #24 predicts |
+| **SO044** | **Whether it makes money: CANNOT TELL, and that was the pre-registered expectation.** | same, `PREREGISTRATION_REVERSE.md` | 73 matches, one number each | average **−4.15c**, range **−13.76c to +5.46c**. Won 47 of 73. Median price paid 70c | **CANNOT TELL** — below the threshold fixed before looking. Per-competition cells swing −22.85c (England, 7) to +19.55c (Italy, 7), which is what 7-match cells produce and **is not to be read as a difference between leagues** |
+| **SO045** | **⚠ My own pre-registered threshold was built on the wrong spread, and correcting it makes the bar HARDER.** | `PREREGISTRATION_REVERSE.md` amendment | 73 matches | threshold used **7.35c**, the spread of expected-value differences (SO037). The realised per-match spread here is **41.9c** — you win ~30c or lose ~70c. Corrected need: **281 matches to see 5c, 1,755 to see 2c, 7,022 to see 1c** | **CORRECTED, verdict unchanged** — "cannot tell" under both. Recorded because an amendment that loosens a bar after seeing data is a retrofit, and this one tightens it |
+| **SO046** | **An edge the size this folder actually measures cannot be tested on Kalshi's API at all.** | same | — | 1 cent needs ~**7,022 matches**, about two European seasons. Kalshi retains **~69 days**, which holds ~270 European matches at most | **SETTLED as a structural limit** — not a sample-size problem patience fixes. It needs continuous recording across seasons. **The recorder that exists has one snapshot of European soccer, 2026-08-09** |
+
+**What the 73 matches DO settle:** the range's upper edge is **+5.46c**, so **an
+edge bigger than about 5½ cents is ruled out.** The live question is now
+narrower than when it was handed over — somewhere between zero and about five
+cents — and **281 matches would resolve it, roughly five more weeks of European
+football.**
+
 ### ⚠ SO038 was a lapse and the `reopen` audit was right to call it
 
 **The rule was applied to the positive tail and not the negative one.** SO039

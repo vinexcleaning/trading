@@ -1,34 +1,34 @@
-76054 matches given a team-strength reading
+76589 matches given a team-strength reading
   rolling window 20 matches (second reading at 10)
   a team needs 5 played, and 6 rivals active within 120 days, or it reads 'unknown'
 
-BOTH teams' strength known on 66531 of 76054 matches (87.5%). The rest keep an 'unknown' bucket in the table rather than being guessed or dropped.
+BOTH teams' strength known on 67003 of 76589 matches (87.5%). The rest keep an 'unknown' bucket in the table rather than being guessed or dropped.
 
 by competition:
   competition             matches  both known      %
-  usa.1                      5082        4848  95.4%
-  col.1                      4808        4686  97.5%
-  arg.1                      4550        4354  95.7%
-  usa.usl.1                  4420        4095  92.6%
-  ita.1                      4401        4255  96.7%
-  esp.1                      4396        4266  97.0%
-  bra.1                      4385        4181  95.3%
-  eng.1                      4370        4228  96.8%
-  fra.1                      4056        3914  96.5%
-  mex.1                      3847        3761  97.8%
-  per.1                      3784        3632  96.0%
-  ger.1                      3519        3403  96.7%
+  usa.1                      5142        4908  95.4%
+  col.1                      4836        4714  97.5%
+  arg.1                      4595        4399  95.7%
+  usa.usl.1                  4459        4134  92.7%
+  esp.1                      4426        4289  96.9%
+  ita.1                      4421        4272  96.6%
+  bra.1                      4415        4211  95.4%
+  eng.1                      4390        4244  96.7%
+  fra.1                      4074        3929  96.4%
+  mex.1                      3874        3786  97.7%
+  per.1                      3811        3659  96.0%
+  ger.1                      3528        3409  96.6%
   uefa.europa                3511        1827  52.0%
   fifa.friendly              3461        1571  45.4%
-  uru.1                      3290        3158  96.0%
-  ecu.1                      3027        2892  95.5%
-  chi.1                      2884        2758  95.6%
+  uru.1                      3314        3182  96.0%
+  ecu.1                      3053        2918  95.6%
+  chi.1                      2907        2781  95.7%
   uefa.champions             1986        1246  62.7%
-  bra.copa_do_brazil         1549         630  40.7%
-  usa.nwsl                   1452        1333  91.8%
-  usa.usl.l1                 1144        1000  87.4%
+  bra.copa_do_brazil         1554         635  40.9%
+  usa.nwsl                   1479        1360  92.0%
+  usa.usl.l1                 1171        1027  87.7%
   uefa.europa.conf            729         269  36.9%
-  uefa.champions_qual         572         120  21.0%
-  uefa.europa_qual            466          24   5.2%
+  uefa.champions_qual         586         123  21.0%
+  uefa.europa_qual            502          30   6.0%
   fifa.world                  232          68  29.3%
   fifa.cwc                    133          12   9.0%

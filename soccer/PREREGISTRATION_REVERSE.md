@@ -110,3 +110,44 @@ has to get past it, and so a flat one reads as expected.
 ## Paper only
 
 No orders, no credentials, at any stage.
+
+---
+
+# AMENDMENT, 2026-09-02, after the first run — the threshold was built on the wrong number
+
+**The verdict does not change: it was "cannot tell" at 73 matches under the old
+threshold and it is still "cannot tell" under the corrected one.** No result
+moves. What moves is the bar, and **it moves in the harder direction**, which is
+the only direction an amendment like this is allowed to move without being a
+retrofit.
+
+**What was wrong.** The 216-match threshold came from a spread of **7.35 cents**.
+That was the spread of *expected-value differences* — fair value minus the price
+— measured on the August work (SO037). **This test measures realised outcomes:
+you win about 30 cents or you lose about 70.** Its actual per-match spread is
+**41.9 cents**, nearly six times larger.
+
+**The corrected requirement**, from the 73 matches actually measured:
+
+| to see an edge of | matches needed | at ~60 European matches a week |
+|---|---|---|
+| 1 cent | **7,022** | about two seasons |
+| 2 cents | 1,755 | about seven months |
+| 5 cents | **281** | about five weeks |
+| 10 cents | 70 | already have it |
+
+**So the live question narrows rather than dying.** The measured range at 73
+matches is **−13.76c to +5.46c**, which already **rules out any edge bigger than
+about 5½ cents**. What remains possible is an edge somewhere between zero and
+about 5 cents, and **281 matches would resolve that** — roughly five more weeks
+of European football.
+
+**And an edge of 1 cent — the size this folder actually measures — needs about
+7,000 matches, which cannot be assembled from Kalshi's ~69-day window at all.**
+That is not a sample-size problem that patience fixes; it is a retention limit.
+It needs a recorder running across seasons, and the one that exists has captured
+**one snapshot** of European soccer.
+
+**The threshold for any future run of this test is 281 matches, not 216.** The
+rule, the entry window, the price basis and the five ways to drop it are all
+unchanged.

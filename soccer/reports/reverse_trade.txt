@@ -1,0 +1,64 @@
+THE REVERSE TRADE - BACKING A SIDE THAT JUST WENT ONE GOAL UP
+==============================================================================
+
+Implements PREREGISTRATION_REVERSE.md exactly. First goal of the
+match, minute 20-45, priced at the ASK 2 minutes later,
+held to settlement. One number per match.
+
+AVAILABILITY FIRST, per GUARDS #24:
+    matches with a tradeable entry      73
+    entry existed but nothing to buy    0
+    no price at that minute at all      1
+    -> buyable on 100 in 100 of the entries that existed
+
+==============================================================================
+THE RESULT
+==============================================================================
+
+    matches                  73
+    you won                  47 of 73 (64 in 100)
+    median price paid        70.0c
+    average result           -4.15c per contract
+    could really be          -13.76c to +5.46c
+
+**Positive means you were paid to take it. The range is the
+part to read: if it touches zero, this cannot tell you.**
+
+BY HOW GOOD THE SIDE WAS - the hypothesis was that strength
+matters, so if this is flat the idea is wrong even if the
+overall number is positive.
+
+    the side that scored  matches    paid     won     result        could really be
+    ------------------------------------------------------------------------------
+               top third       21   76.0c     62%    -12.91c        -29.25 to +3.42
+            middle third       16   65.5c     75%     +9.66c        -8.54 to +27.85
+            bottom third        3   too few to read
+                 unknown       33   70.0c     61%     -7.92c        -22.82 to +6.98
+
+BY COMPETITION
+
+       uefa.champions_qual    26     -8.60c
+          uefa.europa_qual    20     +0.86c
+                     eng.1     7    -22.85c
+                     esp.1     7     -7.06c
+                     ita.1     7    +19.55c
+                     fra.1     4   too few to read
+                     ger.1     2   too few to read
+
+==============================================================================
+THE VERDICT, BY THE RULE FIXED BEFORE LOOKING
+==============================================================================
+
+The pre-registration requires **216 matches** before a
+verdict is allowed - the number needed to see a 1-cent effect
+against a per-match spread of 7.35 cents.
+
+**73 matches. That is below 216, so the verdict is CANNOT TELL** - and it was pre-registered as
+the expected outcome, not chosen after seeing the number.
+
+The idea is neither alive nor dead. It is unmeasured.
+Reading the result above as evidence either way is exactly
+the mistake this folder documented four times.
+
+VARIANTS TRIED: one. The rule in the pre-registration, run
+once. No window moved, no competition dropped, no exit added.

@@ -1,30 +1,30 @@
-1146 matches with clock anchors
+1657 matches with clock anchors
 
-anchors per match: median 21, fewest 6, most 64
-matches with anchors in BOTH halves: 1119 (97.6%) -- a match with anchors in only one half can only be placed in that half
+anchors per match: median 22, fewest 6, most 64
+matches with anchors in BOTH halves: 1622 (97.9%) -- a match with anchors in only one half can only be placed in that half
 
 by competition:
-  usa.usl.1                  120
+  usa.usl.1                  159
+  usa.1                      142
+  usa.usl.l1                 123
+  ecu.1                      109
   fifa.world                 104
-  usa.usl.l1                  96
+  usa.nwsl                   103
+  arg.1                       99
   fifa.friendly               91
-  ecu.1                       83
-  usa.1                       82
-  usa.nwsl                    76
-  uefa.champions_qual         66
-  bra.1                       60
-  per.1                       60
-  arg.1                       54
-  chi.1                       49
-  uefa.europa_qual            43
-  col.1                       33
-  mex.1                       32
-  eng.1                       20
-  esp.1                       20
-  ita.1                       20
-  bra.copa_do_brazil          17
-  ger.1                        9
-  fra.1                        8
+  bra.1                       90
+  per.1                       87
+  uefa.champions_qual         80
+  uefa.europa_qual            79
+  chi.1                       72
+  col.1                       61
+  mex.1                       59
+  esp.1                       50
+  eng.1                       40
+  ita.1                       40
+  fra.1                       26
+  bra.copa_do_brazil          22
+  ger.1                       18
   uefa.champions               1
   uefa.europa                  1
   uefa.europa.conf             1
