@@ -1,6 +1,6 @@
 # SCREENING RUN 01 — and not one number here is money
 
-**Run 2026-09-02 01:54 UTC by `strategy-factory/src/screen.py`.**
+**Run 2026-09-02 02:07 UTC by `strategy-factory/src/screen.py`.**
 
 > **THE BACKTEST CHOOSES. ONLY THE FORWARD TEST COUNTS.** Nothing below is a result, none of it may be sized on, and none of it should be repeated to anyone as an amount of money. It exists to pick candidates.
 

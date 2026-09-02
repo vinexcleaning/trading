@@ -46,9 +46,41 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT.parent))
 sys.path.insert(0, str(ROOT / "src"))
-from common.kalshi_fees import fee_order_cents, fee_rate_cents  # noqa: E402
+from decimal import Decimal  # noqa: E402
+from common.kalshi_fees import (  # noqa: E402
+    TAKER_RATE, fee_order_cents, fee_rate_cents)
 
 IDX = ROOT / "data" / "index.db"
+
+# ⚠ THE FEE IS PER SERIES, AND 19 KALSHI FAMILIES CHARGE HALF.
+#
+# Kalshi exposes `fee_multiplier` on every series and the exchange actually uses
+# it: **every baseball family is 0.5** - KXMLBGAME, KXMLBTOTAL, KXMLBKS and 16
+# more - so their real taker rate is 0.035, not 0.07. Fourteen further series
+# are 0.0, genuinely free. Verified against the live `/series/{t}` endpoint on
+# 2026-09-01, not just off the census snapshot.
+#
+# `common/kalshi_fees.py` has supported this the whole time via
+# `SeriesFees.taker_rate`. This engine was not using it, and neither is
+# `mlb-paper` - which means baseball costs were being overstated by a factor of
+# two, at 0.875c per contract at middling prices.
+_RATES = {}
+
+
+def rate_for(series):
+    """Taker rate for one series, from the census. Defaults to standard."""
+    if not _RATES:
+        try:
+            cc = sqlite3.connect(
+                "file:%s?mode=ro" % (ROOT / "data" / "census.db"), uri=True)
+            for tk, mult in cc.execute(
+                    "select ticker, fee_multiplier from series"):
+                if mult is not None:
+                    _RATES[tk] = TAKER_RATE * Decimal(str(mult))
+            cc.close()
+        except sqlite3.Error:
+            pass
+    return _RATES.get(series, TAKER_RATE)
 # ⚠ THE PER-ORDER ROUND-UP IS NOT AN ECONOMIC COST, AND CHARGING IT PER
 # CONTRACT INFLATED EVERY FEE THIS ENGINE REPORTED.
 #
@@ -175,23 +207,23 @@ def build_index(entry_lead_min: int) -> int:
 
 # ------------------------------------------------------------- economics ----
 
-def net_cents(entry_ask_c, won, contracts=1):
+def net_cents(entry_ask_c, won, contracts=1, rate=None):
     """Cents made per contract buying YES at the real ask and holding.
 
     Fee on ENTRY ONLY - Kalshi charges nothing at settlement, which
     `common/kalshi_fees.py` states in `roundtrip_cost_cents`.
     """
-    fee = float(fee_rate_cents(entry_ask_c))
+    fee = float(fee_rate_cents(entry_ask_c, rate or TAKER_RATE))
     gross = (100.0 - entry_ask_c) if won else (-entry_ask_c)
     return gross - fee
 
 
-def outlay_cents(entry_ask_c, contracts=1):
+def outlay_cents(entry_ask_c, contracts=1, rate=None):
     """Cash that actually leaves the account: price PLUS fee."""
-    return entry_ask_c + float(fee_rate_cents(entry_ask_c))
+    return entry_ask_c + float(fee_rate_cents(entry_ask_c, rate or TAKER_RATE))
 
 
-def inverted_net_cents(entry_bid_c, won, contracts=1):
+def inverted_net_cents(entry_bid_c, won, contracts=1, rate=None):
     """Cents made per contract taking the OTHER SIDE at ITS real ask.
 
     ⚠ INVERTING IS NOT NEGATING. This is the whole point of the screen and the
@@ -210,12 +242,12 @@ def inverted_net_cents(entry_bid_c, won, contracts=1):
     in it.
     """
     no_ask_c = 100.0 - entry_bid_c
-    fee = float(fee_rate_cents(no_ask_c))
+    fee = float(fee_rate_cents(no_ask_c, rate or TAKER_RATE))
     gross = (100.0 - no_ask_c) if (not won) else (-no_ask_c)
     return gross - fee
 
 
-def cost_bar_cents(entry_bid_c, entry_ask_c, contracts=1):
+def cost_bar_cents(entry_bid_c, entry_ask_c, contracts=1, rate=None):
     """What it costs to trade this market at all, at ITS OWN price.
 
     ⚠ COMPUTED AT THE PRICE THE STRATEGY ACTUALLY TRADES AT, never at 50c.
@@ -235,15 +267,15 @@ def cost_bar_cents(entry_bid_c, entry_ask_c, contracts=1):
     separately for that reason.
     """
     half_spread = max(0.0, (entry_ask_c - entry_bid_c) / 2.0)
-    fee = float(fee_rate_cents(entry_ask_c))
+    fee = float(fee_rate_cents(entry_ask_c, rate or TAKER_RATE))
     return half_spread + fee
 
 
-def fee_c_at(price_c, contracts=1):
+def fee_c_at(price_c, contracts=1, rate=None):
     """The fee at THIS price, per contract. Never at 50c."""
     if not price_c or price_c <= 0 or price_c >= 100:
         return 0.0
-    return float(fee_rate_cents(price_c))
+    return float(fee_rate_cents(price_c, rate or TAKER_RATE))
 
 
 def wilson(k, n):
@@ -366,6 +398,7 @@ def screen_hold(c, series_list, lo, hi, max_spread, label, placebo_seed=None,
     tot_inv = 0.0
     tot_bar = 0.0
     tot_px = 0.0
+    tot_rate = 0.0
     tot_clv = 0.0
     n_clv = 0
     n = wins = 0
@@ -373,12 +406,14 @@ def screen_hold(c, series_list, lo, hi, max_spread, label, placebo_seed=None,
     per_bucket = defaultdict(lambda: [0, 0, 0.0, 0.0])
     for tk, ser, ev, res, close, ets, ask, bid, lbid, lask in rows:
         won = (res == "yes")
-        net = net_cents(ask, won)
-        out = outlay_cents(ask)
+        rt = rate_for(ser)
+        net = net_cents(ask, won, rate=rt)
+        out = outlay_cents(ask, rate=rt)
         tot_net += net
         tot_out += out
-        tot_inv += inverted_net_cents(bid, won)
-        tot_bar += cost_bar_cents(bid, ask)
+        tot_inv += inverted_net_cents(bid, won, rate=rt)
+        tot_bar += cost_bar_cents(bid, ask, rate=rt)
+        tot_rate += float(rt)
         tot_px += ask
         # CLOSING-LINE VALUE: did we buy cheaper than the market ended up
         # pricing it? Mailbox 009 - it needs NO outcome data, so it gives a
@@ -414,7 +449,8 @@ def screen_hold(c, series_list, lo, hi, max_spread, label, placebo_seed=None,
     # 2c edge at 50c survives as +0.25c - nearly seven times less. So the price
     # a strategy trades at is part of its value, not a detail, and this column
     # exists because nothing in the engine knew that.
-    fee_at_px = fee_c_at(avg_px)
+    avg_rate = Decimal(str(tot_rate / n)) if n else TAKER_RATE
+    fee_at_px = fee_c_at(avg_px, rate=avg_rate)
     edge_after_fee = per_gross - fee_at_px
     per_clv = tot_clv / n_clv if n_clv else 0.0
     return {"label": label, "n": n, "events": len(events), "wins": wins,
@@ -423,6 +459,7 @@ def screen_hold(c, series_list, lo, hi, max_spread, label, placebo_seed=None,
             "per_c": per_net,
             "per_bar_c": per_bar, "per_gross_c": per_gross,
             "avg_px_c": avg_px, "fee_at_px_c": fee_at_px,
+            "avg_rate": float(avg_rate),
             "edge_after_fee_c": edge_after_fee,
             "clv_c": per_clv, "n_clv": n_clv,
             "per_inv_c": per_inv, "invertible": invertible,

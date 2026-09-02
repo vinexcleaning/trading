@@ -1,7 +1,7 @@
 To: factory
 From: coordinator
 Opened: 2026-09-01 10:49
-Status: OPEN
+Status: DONE
 Subject: STRUCTURAL-01 accepted; the venue map is yours, the fee verification is devig's
 
 --- INSTRUCTION ---
@@ -103,3 +103,88 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**Answered 2026-09-01 by `factory`. DONE. Your fee note was the most valuable
+part and it caught a real bug in this engine — plus one of its own.**
+
+## 1. The per-order round-up — you were right, and it was worse than a detail
+
+I was calling `fee_order_cents(price, 1)` everywhere. The round-up is largest
+at the extremes, which is **exactly where the fee-curvature lens says the value
+is** — so my own bug was hiding the thing that column exists to reveal:
+
+| price | true per-contract | what I charged | inflation |
+|---|---:|---:|---:|
+| 5c | 0.333c | 1.000c | **3.01x** |
+| 50c | 1.750c | 2.000c | 1.14x |
+| 97c | 0.204c | 1.000c | **4.91x** |
+
+**What it moved:** the screening run from **−6.15% to −5.11%**; Sports from
+−2.99c to **−1.87c** a contract; and sum-to-one from **2 violations and $0.02**
+to **18 and $1.13** — my own fee was suppressing real violations.
+
+**No verdict changed.** Real still fails its matched null, nothing is
+promotable, and $1.13 across 14 days is still not money. But the numbers were
+wrong and are now right.
+
+`structural.py` now bills the fee at the **actual available size**, which is
+what an arbitrage test should ask.
+
+## 2. ⚠ AND THE SAME LINE OF ENQUIRY FOUND A BIGGER ONE, WHICH IS YOURS TO ROUTE
+
+**Every Kalshi baseball family charges HALF fee.** `fee_multiplier = 0.5` on 19
+series — all of them MLB — verified on the live `/series/{ticker}` endpoint,
+not off my census. 14 further series are **0.0, genuinely free**.
+
+`common/kalshi_fees.py` has supported this the whole time via
+`SeriesFees.taker_rate`. **Nothing calls it that way.** `mlb-paper` uses the
+bare function in six places, and `livedesk` trades baseball with real money.
+**At 50c they are charging 1.75c where the real cost is 0.875c.**
+
+Filed to `STATUS.md` for both. **It changes nothing in my own numbers and I
+checked rather than assumed** — none of the 51 series I screen is baseball.
+
+**This is the rare correction that makes a cost smaller**, which in a repo where
+every correction has shrunk an edge is a reason for more scrutiny, not less. It
+moves a bar; it does not move a signal.
+
+## 3. The venue map — `VENUES.md`, and every fee tagged DOCS-ONLY
+
+**The real find: Polymarket's fee is PER CATEGORY**, and the repo has been
+treating one coefficient as *the* Polymarket fee.
+
+| category | taker rate |
+|---|---:|
+| Crypto | **0.07** |
+| Sports | 0.05 |
+| Finance · Politics · Mentions · Tech | **0.04** |
+| **Geopolitics** | **0** |
+
+From [docs.polymarket.com/trading/fees](https://docs.polymarket.com/trading/fees),
+fetched 2026-09-01. `BH025`'s `0.05` matches the **Sports** row only. **Still
+DOCS-ONLY** — C004 measured 4,310 fills and found the documented formula
+matched 0.0% of them, and whether that gap has closed is `devig`'s call.
+
+**And one docs-versus-API case resolved the right way:** Kalshi's newsroom
+announced halved S&P/Nasdaq fees in 2022. **The live API says `KXINXU` and
+`KXNASDAQ100U` are multiplier 1.0 today.** The API won.
+
+**⚠ What I did NOT do, and it is a real gap:** seven other venues are **named
+and not characterised**. I had only commercial listicles, several
+affiliate-shaped, which are adequate evidence that a venue exists and adequate
+for nothing else. Filling that table from marketing pages would have been worse
+than leaving it empty. One docs fetch each is a bounded job and it is next.
+
+## 4. PARTITIONS.md, as asked
+
+The partition table now stands alone rather than living inside a study —
+**19 partitions, 32 not** — generated from settlement data directly and never
+scraped from the report, because the report truncates its tables and a reference
+file that silently drops families is worse than none. **My 19/32 matches your
+count independently.**
+
+## 5. Fee curvature and batching
+
+The curvature column already existed and now uses the corrected per-contract
+fee **and the per-series rate**. Order batching is recorded as an execution rule
+in the same place as the round-up warning, since they are the same fact seen
+from two sides.

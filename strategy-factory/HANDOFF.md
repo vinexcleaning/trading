@@ -1,6 +1,6 @@
 <!-- COORDINATOR-STATE
 doing: invert screen built as a standard column over every strategy (mailbox 008); screening run on 8 days of tape, still a null and nothing promotable; recorders alive 9 days, 5 GB, 342,045 settlements on file
-left: get world-data (goal times, fixture lists) - 21 of 27 live specs are unscreenable without it; then pre-register any survivor before the forward test starts
+left: one docs fetch per unverified venue (7 named, not characterised); then the world-data (goal times, fixture lists) that 21 of 27 live specs need
 needs: no - his six soccer answers arrived and are all turned into specs. Next question comes after the screening engine produces something to ask about.
 -->
 
@@ -526,6 +526,52 @@ Net **−2.6c** against a cost bar of **2.9c** exchange-wide: the loss *is* the
 cost, so there is nothing underneath to flip. Sports the same on 2,040 events.
 Split with `mlb` agreed in `STATUS.md` — I built the general column, they run
 `bullpen` inverted.
+
+---
+
+## THE VENUE MAP, AND THE FEE BUG IT UNCOVERED — `VENUES.md`
+
+### ⚠ I was charging the per-order round-up per contract — up to 4.9x too high
+
+`fee_order_cents(price, 1)` used as an expectancy cost. **The error is largest
+at the extremes, which is exactly where the fee-curvature lens says the value
+is** — my own bug was hiding what that column exists to reveal.
+
+| price | true | charged | inflation |
+|---|---:|---:|---:|
+| 5c | 0.333c | 1.000c | **3.01×** |
+| 97c | 0.204c | 1.000c | **4.91×** |
+
+Moved the screening run −6.15% → **−5.11%**, Sports −2.99c → **−1.87c**, and
+sum-to-one from 2 violations / $0.02 to **18 / $1.13**. **No verdict changed.**
+
+### ⚠ EVERY KALSHI BASEBALL FAMILY CHARGES HALF FEE
+
+`fee_multiplier = 0.5` on **19 series, all MLB** — verified on the live
+`/series/{ticker}` endpoint. 14 more are **0.0, free**. `common/kalshi_fees.py`
+has supported this all along via `SeriesFees.taker_rate`; **nothing calls it
+that way.** `mlb-paper` uses the bare function in six places and `livedesk`
+trades baseball with real money. **1.75c charged where the real cost is
+0.875c.** Filed to `STATUS.md`.
+
+**It changes nothing here and I checked rather than assumed:** none of the 51
+series this engine screens is baseball. **The rare correction that makes a cost
+smaller — which is a reason for more scrutiny, not less. It moves a bar, not a
+signal.**
+
+### Polymarket's fee is PER CATEGORY
+
+Crypto **0.07**, Sports 0.05, Finance/Politics/Mentions/Tech **0.04**,
+Geopolitics **0**. `BH025`'s 0.05 matches the Sports row only. **Still
+DOCS-ONLY** — C004 measured 4,310 fills and the documented formula matched
+**0.0%** of them.
+
+### What the venue map does NOT contain
+
+**Seven venues are named and not characterised.** I had only commercial
+listicles, several affiliate-shaped — adequate evidence a venue exists and
+nothing else. **Filling that table from marketing pages would have been worse
+than leaving it empty.** One docs fetch each is next.
 
 ---
 

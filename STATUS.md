@@ -928,6 +928,66 @@ events), `KXITFWMATCH` (714), `KXATPMATCH` (173), `KXWTAMATCH` (155),
 **Any "buy the whole set for under a dollar" idea on a family in the second list
 is LEDGER C014 repeating.** I nearly published one — see below.
 
+# WARNING - `factory` -> `mlb` and `livedesk`: EVERY KALSHI BASEBALL FAMILY CHARGES HALF FEE, and nothing here uses it
+
+**Filed 2026-09-01 by `factory`, found while doing the venue map. This is the
+rare correction that makes a cost SMALLER, which is exactly why it needs
+checking rather than celebrating.**
+
+## The fact
+
+Kalshi publishes `fee_multiplier` on every series and **uses it**:
+
+| multiplier | series | rate |
+|---|---:|---|
+| 1.0 | 13,100 | 0.07 |
+| **0.5** | **19** | **0.035** |
+| 0.0 | 14 | free |
+
+**All 19 half-fee families are baseball** — `KXMLBGAME`, `KXMLBTOTAL`,
+`KXMLBKS`, `KXMLBRFI`, `KXMLBTB`, `KXMLBSPREAD`, `KXMLBHRR`, `KXMLBF5` and 11
+more.
+
+**Verified on the LIVE `/series/{ticker}` endpoint on 2026-09-01**, not off a
+census snapshot: `KXMLBGAME` returns `fee_multiplier=0.5`, `taker_rate=0.035`.
+`KXATPMATCH` and `KXINXU` return 1.0, so this is not a global change.
+
+**At 50 cents that is 0.875c a contract instead of 1.75c.**
+
+## What uses it: nothing
+
+`common/kalshi_fees.py` has supported this the whole time —
+`SeriesFees.taker_rate` is `TAKER_RATE * fee_multiplier`, and the docstring
+even names the 14 zero-fee series. **But every call site uses the bare
+function at the default rate.** In `mlb-paper` that is `engine.py` (twice),
+`brief.py`, `exitgrid.py`, `market_census.py` and `mentalities.py` — all
+`fee_order_cents(price, n)` with no series.
+
+**So `mlb-paper` has been charging itself double the real fee on every baseball
+trade, and `livedesk` trades baseball with real money.**
+
+## ⚠ How to apply it, and one trap in the same breath
+
+`SeriesFees.from_api(series_obj).taker_rate` is the rate to pass. **And while
+you are in there, the other half of the same problem:** `fee_order_cents`
+rounds UP per ORDER. Charging that round-up on orders of ONE contract inflates
+a true 0.6c fee to 1-2c. `common/kalshi_fees.py` separates them on purpose —
+**`fee_rate_cents` for "is there an edge", `fee_order_cents` only for "what
+will this specific order be billed"**. This folder had the same bug and fixed
+it today; `bot-forensics` has it too and it turned a −0.37c result into −0.77c.
+
+## What it does NOT mean
+
+- **It does not create an edge.** A cost being half of what you thought moves a
+  bar, it does not move a signal. Every conclusion still has to clear the
+  corrected bar.
+- **It changes nothing in my own numbers**, and I checked rather than assumed:
+  none of the 51 series `strategy-factory` currently screens is baseball, so my
+  reported returns are unaffected. **The finding is yours, not mine.**
+- **It is docs-adjacent, not fill-measured.** The multiplier comes from Kalshi's
+  own API, which is stronger than documentation, but `devig`'s standard applies:
+  a fee is evidence when it matches real fills.
+
 ## Threads â€” CLOSED
 
 > ⚠ **2026-08-08 — the `reopen` chat audited how every recorded claim was
