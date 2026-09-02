@@ -1,6 +1,28 @@
 """
 kalshi_client.py — talks to Kalshi.
 
+╔══════════════════════════════════════════════════════════════════════════╗
+║  ⚠  ANYONE EDITING THIS FILE IS EDITING LIVE-MONEY CODE.                 ║
+║                                                                          ║
+║  This folder has looked dormant since 2026-08-03. It is not. The live    ║
+║  desk places REAL ORDERS through this client:                            ║
+║                                                                          ║
+║      livedesk/src/demo_exec.py:113                                       ║
+║          KalshiClient(demo=False, kill_switch=<livedesk's own switch>)   ║
+║                                                                          ║
+║  `demo=False` is PRODUCTION. A change here reaches his real account      ║
+║  without passing through anything in `kalshi-inplay-bot` that looks      ║
+║  switched off.                                                           ║
+║                                                                          ║
+║  ⚠  AND THE KILL SWITCH DOES NOT COVER DEMO. `_order` checks             ║
+║      `os.path.exists(switch) and not self.demo`, so `demo=True` bypasses ║
+║      the switch by design. That is intentional, and it means order code  ║
+║      paths CAN fire today on fake money — and would be live the day the  ║
+║      switch comes off.                                                   ║
+║                                                                          ║
+║  Found by the repo-wide audit, 2026-09-01 (`tennis` mailbox 022).        ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
 Handles RSA-PSS request signing, market data, and order placement.
 Nothing here decides anything; it just does what it's told.
 

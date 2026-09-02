@@ -133,10 +133,37 @@ class Scanner:
             return
 
         try:
-            self.client.limit_buy(st.ticker, d.contracts, d.entry_price)
+            resp = self.client.limit_buy(st.ticker, d.contracts, d.entry_price)
+            order_id = (resp.get("order") or resp).get("order_id", "")
             print(f"  BUY placed: {d.contracts} @ {d.entry_price}c")
-            self.client.limit_sell(st.ticker, d.contracts, d.target_price)
-            print(f"  SELL resting at {d.target_price}c — fills without you")
+
+            # Nothing may be sold until the buy really fills. A take-profit
+            # sell on contracts you do not own is not an exit -- it opens a
+            # SHORT, and it would trigger exactly when the match turns your
+            # way. `gui.py` was fixed for this on the same reasoning; this
+            # file was missed, and a limit buy at a stale price simply RESTS,
+            # so the unfilled case is the normal one rather than the rare one.
+            filled, status = (self.client.await_fill(order_id)
+                              if order_id else (0.0, "unknown"))
+            if filled <= 0:
+                print(f"  BUY DID NOT FILL ({status}) — no sell placed.")
+                print("  nothing is owned, so there is nothing to protect.")
+                print(f"  the buy may still be resting: check Kalshi and "
+                      f"cancel it if you do not want it.")
+                return
+
+            qty = int(filled)
+            if qty < d.contracts:
+                print(f"  PARTIAL FILL: {qty} of {d.contracts} — selling "
+                      f"only what was bought.")
+            try:
+                self.client.limit_sell(st.ticker, qty, d.target_price)
+                print(f"  SELL resting at {d.target_price}c — fills without you")
+            except Exception as sell_err:
+                print(f"  BOUGHT {qty} BUT THE SELL FAILED: {sell_err}")
+                print("  you are LONG with no take-profit. Set one on Kalshi.")
+                self.placed.add(st.ticker)
+                return
             print(f"  your manual exit is {d.exit_price}c. Kalshi has no stops.")
             self.placed.add(st.ticker)
         except Exception as e:
