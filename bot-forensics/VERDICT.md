@@ -115,6 +115,27 @@ the one to believe.
 > is the single best change available (−6.47c → −4.59c). The live bot stopped
 > out of **77% of its backtested trades** and 30 of 71 live ones.
 
+### ⚠ Two corrections to the sentences above, from the `reopen` audit, 2026-09-01
+
+**1. Every stop number here is a CEILING. The real damage was worse.**
+`kalshi-inplay-bot/backtest/engine.py:265` fills a stop **at the stop price**
+whenever the bid touched or crossed it — `close(i, stop_now - slip, ...)` — even
+when the bid gapped straight through. Real markets do not fill you at a price
+that never traded. **So −9.36c is the best case for stopping out, not the
+measured cost of it.** That strengthens the conclusion rather than weakening it,
+and it should never have been left implicit.
+
+**2. The "−2.29c → −9.36c" sentence blames the stop for more than the stop.**
+S1 carries a **+15c target with scale-out AND a disaster stop AND a structural
+stop**, so the gap between it and S2 buy-and-hold is the whole exit ladder, not
+the stop alone. **The conclusion survives on a clean isolation elsewhere**
+(+0.62c → −3.77c when only the stop is added), so the direction and the ranking
+stand — but *"the stop turned −2.29c into −9.36c"* is a loose mechanism claim and
+should be quoted as **"the exit ladder"** unless the isolated figure is meant.
+
+**Neither correction moves the verdict.** Stopping out is still the most
+expensive component, on three independent files, and now on a ceiling estimate.
+
 ---
 
 ## Task 4 — the extractors

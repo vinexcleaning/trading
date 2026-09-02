@@ -520,7 +520,26 @@ def decide(con):
             n = o["strength"] or 0
             if n >= MIN_NEG_N and n / rd_total >= MIN_NEG_SHARE:
                 keep.append(o)
-        obs_v = keep
+
+        # **The same floor now applies to ADVOCACY. Corrected 2026-09-01.**
+        # The `reopen` audit found the asymmetry: a NEGATIVE needed 3 windows
+        # and a tenth of the share, while a RECOMMENDED needed nothing — so one
+        # person saying "been using it" counted as full advocacy against a
+        # negative that had to clear a bar. **That biases every verdict toward
+        # the tools people mention approvingly in passing**, which is exactly
+        # the population most likely to be marketing.
+        #
+        # Symmetry is the point. If one loud comment is not enough to condemn a
+        # tool, it is not enough to recommend one either.
+        adv_keep = []
+        for o in keep:
+            if o["platform"] != "reddit" or o["stance"] not in STANCES_ADVOCACY:
+                adv_keep.append(o)
+                continue
+            n = o["strength"] or 0
+            if n >= MIN_NEG_N and n / rd_total >= MIN_NEG_SHARE:
+                adv_keep.append(o)
+        obs_v = adv_keep
 
         stances = [o["stance"] for o in obs_v]
         advocacy = [s for s in stances if s in STANCES_ADVOCACY]

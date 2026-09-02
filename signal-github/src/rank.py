@@ -91,7 +91,15 @@ def main():
     con = db.connect()
     rows = con.execute(
         "SELECT * FROM repos WHERE fetched>=1 AND gate IN ('PASS','STALE')").fetchall()
-    print(f"{len(rows)} deep-fetched repos", flush=True)
+    # **Counted live, never hardcoded. Corrected 2026-09-01.** The coverage
+    # percentage below used a literal 2562 as the corpus size, so the number it
+    # printed drifted away from the truth every time the corpus grew — a stale
+    # denominator inside a live figure, which the `reopen` audit flagged as
+    # item 10. The gate is the same one `rows` is drawn from.
+    gated_total = con.execute(
+        "SELECT COUNT(*) FROM repos WHERE gate IN ('PASS','STALE')"
+    ).fetchone()[0]
+    print(f"{len(rows)} deep-fetched repos of {gated_total} gated", flush=True)
     if not rows:
         print("nothing fetched yet")
         return
@@ -229,7 +237,8 @@ def main():
             fh.write("**The raw figure at near-complete coverage is the trustworthy one.** The "
                      "reason the control was introduced — that the fetched sample was a "
                      "star-enriched head of the queue — no longer applies once coverage "
-                     f"reaches {100*len(rows)/2562:.0f}% of the gated corpus. The band table is "
+                     f"reaches {100*len(rows)/max(gated_total,1):.0f}% of the gated corpus "
+                     f"(n={gated_total}). The band table is "
                      "kept because it shows how the earlier n=105 artifact arose, not because "
                      "its number should be quoted.\n\n")
         fh.write("> Cite the raw figure at full n. Both the n=105 positive and the within-band "

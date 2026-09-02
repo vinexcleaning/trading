@@ -44,11 +44,22 @@ import db  # noqa: E402
 
 # A number bound to a unit. Bare numbers are worthless — "up 400%" is not a
 # denominator, "400 trades" is.
+# **Observation units and TIME units are now separate. Corrected 2026-09-01.**
+# `placebo_scorer.py` measured what lumping them together cost: of 987 matches
+# in the corpus, **428 (43.4%) were time windows rather than observations**, and
+# 199 posts — 38.8% of those carrying any denominator — had nothing but a time
+# window. **"30 days" is how long someone watched; "30 trades" is how many
+# things he saw.** Only the second is a sample size and only the second should
+# score as one. Flagged by the `reopen` audit as item 10.
+OBS_UNITS = (r"trades?|bets?|markets?|matches|games|samples?|observations?|"
+             r"contracts?|fills?|events?|round[- ]trips?")
+TIME_UNITS = r"days?|weeks?|months?|years?|windows?|sessions?"
 DENOM = re.compile(
-    r"\b(\d{2,3}(?:,\d{3})+|\d{2,7})\s*"
-    r"(trades?|bets?|markets?|matches|games|samples?|observations?|"
-    r"contracts?|fills?|events?|windows?|round[- ]trips?|days?|weeks?|months?)\b",
-    re.I)
+    r"\b(\d{2,3}(?:,\d{3})+|\d{2,7})\s*(" + OBS_UNITS + r")\b", re.I)
+# Kept separately so a time window can still be REPORTED as context. It is a
+# fact about the study, just not a sample size.
+DENOM_TIME = re.compile(
+    r"\b(\d{2,3}(?:,\d{3})+|\d{2,7})\s*(" + TIME_UNITS + r")\b", re.I)
 COST = re.compile(r"\b(fees?|spread|slippage|commission|vig|juice|rake|"
                   r"break[- ]?even|transaction cost|gas)\b", re.I)
 # Venues and instruments this repo has NOT worked on. Kalshi, Polymarket and

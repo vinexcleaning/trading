@@ -73,7 +73,7 @@ Both were `open_price >= 80` — buy the heavy favourite.
 |---|---|---|
 | residual | **+4.31pp**, t = 4.17 | **+3.28pp**, t = 1.79 (same sign) |
 | net at the **mid** | +3.12c | +2.04c |
-| **net at the ask** | **+0.96c** | **−0.77c** |
+| **net at the ask** | **+0.96c** | **~~−0.77c~~ −0.374c** | ⚠ **CORRECTED 2026-09-01 to −0.374c** — the −0.770c charged `fee_order_cents(px, 1)`, the per-ORDER round-up, to orders of ONE contract in expectancy arithmetic; `common/kalshi_fees.py` names `fee_rate_cents` for exactly this case. Reproduced (n=261) then recomputed. **+0.396c of the old number was the rounding assumption, not economics.** The old figure is left visible per house rules. **B024 is unchanged** — still negative, and the cell's 6.06c mean spread is the killer, not the fee. Found by the `reopen` audit.
 | mean opening spread | 4.60c | **6.06c** |
 
 ### Why it is a quoting artifact, not an edge

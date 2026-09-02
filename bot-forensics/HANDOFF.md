@@ -127,7 +127,7 @@ New: `PREREGISTRATION_T6.md` (written and committed *before* running),
 | vendor rate limit | advertised 1,000/day, **actually 100/day** (B022) |
 | feature events built | **6,519**, leak-free; selection canary 0.5005, z = +0.09 |
 | cells swept | **2,008**; **2** BH discoveries against **4.1** on shuffled data (B023) |
-| the one survivor | wide-book artifact — +1.18pp on tradeable books, **−0.77c** net at ask (B024) |
+| the one survivor | wide-book artifact — +1.18pp on tradeable books, **~~−0.77c~~ −0.374c** net at ask (B024). ⚠ **CORRECTED 2026-09-01 to −0.374c** — the −0.770c charged `fee_order_cents(px, 1)`, the per-ORDER round-up, to orders of ONE contract in expectancy arithmetic; `common/kalshi_fees.py` names `fee_rate_cents` for exactly this case. Reproduced (n=261) then recomputed. **+0.396c of the old number was the rounding assumption, not economics.** The old figure is left visible per house rules. **B024 is unchanged** — still negative, and the cell's 6.06c mean spread is the killer, not the fee. Found by the `reopen` audit. |
 | **calibration, tradeable books** | **0 of 10 bands deviate**, pooled **+0.03pp** (B027) |
 | bugs in my own code, caught | **2**, both toward a false positive (B025) |
 
