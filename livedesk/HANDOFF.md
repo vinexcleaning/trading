@@ -1,9 +1,9 @@
 # HANDOFF — livedesk
 
 <!-- COORDINATOR-STATE
-doing: mailbox clear, 22 of 22. Proved the four disputed settlements are correct here and the defect is in mlb-paper. Measured why 39 picks were not placed - the 35% drop rule is the biggest live cost at $34.
-left: nothing blocking. 320 tests green. Two questions are the users: loosen the 35% drop rule, and whether mlb re-settles its other 940 positions.
-needs: yes - decide whether to loosen the 35 percent drop rule. Six games is too few to settle it with a number, so it is judgement.
+doing: mailbox clear, 25 of 25. Half fee on KXMLBGAME verified live and wired in per series; the daily line no longer divides by a dead $4.15; 24 tests now pin the exact order payload.
+left: nothing blocking. 365 tests green. The desk is parked and none of this changes whether to unpark it.
+needs: yes - two small questions. Loosen the 35 percent drop rule? And does he want any cap on the NUMBER of bets a day, given the $50 money cap already stops him first?
 -->
 
 **⚠ THIS TOOL SENDS REAL ORDERS, AND AUTO STARTS ON.** Live Kalshi, real
