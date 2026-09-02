@@ -673,3 +673,47 @@ that is the number he reasons with.
    canary failed the build. It was right: only `demo_exec.py` may construct a
    client, and a convenience block is exactly the second door that rule exists
    to keep shut. CLI moved to `tools/show_fees.py`.
+
+---
+
+## 2026-09-02 — `show_fills.py` printed every price as 0, and a second defect underneath
+
+Mailbox 026, verified against a real fills response rather than taken on trust —
+which is what it asked for, and GUARD #23 exists because these names moved once
+already.
+
+**Confirmed.** The live keys are `yes_price_dollars` and `no_price_dollars`.
+`yes_price` and `price` are both absent, so `.get()` returned None twice and the
+expression fell through to **0 on every row**.
+
+**And a second one 026 did not mention, which is the worse of the two.** Even
+with the right field name, reading the YES price on a NO fill reports the
+complement. A real pair from his account: the same market filled `yes` at 57c
+and `no` at 31c. The yes field on that no fill says 69. **A zero is obviously
+broken; 69 cents is a plausible number that is wrong**, and he would have had no
+way to tell.
+
+The side now decides which field is read, and an unreadable price prints `??`
+rather than a zero pretending to be a price.
+
+**No adjudication was needed in `common/`.** Fixing the file removed it from
+GUARD #23's list entirely — verified by re-running the guard, which now names 12
+files, none of them here. That is better than an entry explaining why it was
+acceptable, and it meant not editing another chat's folder.
+
+**A test lives in this project rather than only in the repo-wide guard**, which
+has been red for weeks. A red guard nobody clears stops being a guard, and this
+was the only live-money file on its list.
+
+## 2026-09-02 — display bugs are not a lower tier, and that is now the second in two days
+
+Both were on the layer he actually reads, both printed a confident wrong number,
+neither crashed:
+
+- the daily line dividing by a stake from the $83 era — said 12 where the answer
+  was 24
+- every fill price showing as 0
+
+**Neither would have been caught by a test of the thing that computes the
+number**, because both computations were fine. The rule taken from this: **a
+tool that displays money gets the same testing as one that decides it.**
