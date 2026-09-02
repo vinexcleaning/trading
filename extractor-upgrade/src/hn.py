@@ -126,19 +126,59 @@ def discover(term, hits=40):
     try:
         d = http(url)
     except Exception as e:
-        print(f"    discovery failed for {term!r}: {type(e).__name__}")
-        return []
+        # **A failed search is not an empty search. Corrected 2026-09-01.**
+        # Returning [] here made "no hits for this term" and "the search did
+        # not run" indistinguishable to every caller.
+        print(f"    discovery REFUSED for {term!r}: {type(e).__name__} "
+              f"-- contributes NO evidence either way")
+        raise Unreachable(f"discovery failed for {term!r}: {e}") from e
     return [int(h["objectID"]) for h in d.get("hits", []) if h.get("objectID")]
 
 
+# Every refusal in a run lands here and is reported at the end, so an
+# incomplete harvest can never be read as a complete one.
+REFUSED: list = []
+
+
+class Unreachable(RuntimeError):
+    """The item was not fetched. NOT the same as the item not existing."""
+
+
 def item(i):
-    """Firebase. This is the permitted endpoint and the only source of text."""
+    """Firebase. This is the permitted endpoint and the only source of text.
+
+    **Returns None ONLY for a story that genuinely is not there. Raises
+    `Unreachable` for a 429, a 5xx or a network error. Corrected 2026-09-01.**
+
+    This used to return `None` for all three, which is the fake-zero pattern
+    `GUARDS.md` #25 targets: a rate-limit refusal and a deleted story became the
+    same value, and anything counting "how many of these exist" silently
+    counted refusals as absences. Found by the `reopen` audit, which also noted
+    that `social-signal/src/audit_fake_zero.py` was only pointed at
+    social-signal and so could never have caught this copy.
+    """
     try:
         return http(f"{FIREBASE}/item/{i}.json")
-    except urllib.error.HTTPError:
+    except urllib.error.HTTPError as e:
+        if e.code in (404, 410):
+            return None                     # a real answer: it is not there
+        raise Unreachable(f"HTTP {e.code} on item {i}") from e
+    except Exception as e:  # noqa: BLE001
+        raise Unreachable(f"{type(e).__name__} on item {i}") from e
+
+def _try_item(i, refused):
+    """Fetch, counting refusals separately from genuine absences.
+
+    A caller that cannot tell "not there" from "not fetched" reintroduces the
+    fake zero one level up, so every call site funnels through here and the
+    refusal count is reported at the end of the run.
+    """
+    try:
+        return item(i)
+    except Unreachable as e:
+        refused.append(str(e))
         return None
-    except Exception:
-        return None
+
 
 
 def collect_comments(pace=0.12, cap=25):
@@ -157,14 +197,14 @@ def collect_comments(pace=0.12, cap=25):
         "SELECT id, family, query FROM items WHERE kind='story'").fetchall()
     n = 0
     for k, s in enumerate(stories, 1):
-        d = item(s["id"])
+        d = _try_item(s["id"], REFUSED)
         time.sleep(pace)
         if not d:
             continue
         for kid in (d.get("kids") or [])[:cap]:
             if kid in have:
                 continue
-            c = item(kid)
+            c = _try_item(kid, REFUSED)
             time.sleep(pace)
             if not c or c.get("dead") or c.get("deleted") or not c.get("text"):
                 continue
@@ -183,6 +223,13 @@ def collect_comments(pace=0.12, cap=25):
                 (str(n),))
     con.commit()
     con.close()
+    if REFUSED:
+        print("")
+        print(f"  !! {len(REFUSED)} REFUSALS this run -- the "
+              f"harvest is INCOMPLETE, not exhausted:")
+        for r in REFUSED[:5]:
+            print(f"       {r}")
+        print("     A count taken from this run is a FLOOR.")
     return n
 
 
@@ -192,7 +239,13 @@ def collect(pace=0.12, comment_cap=25):
     n_new = n_c = 0
     for family, terms in QUERIES.items():
         for term in terms:
-            ids = discover(term)
+            try:
+                ids = discover(term)
+            except Unreachable as e:
+                # A refused search contributes NO evidence. It must never be
+                # silently folded in as "this term found nothing".
+                REFUSED.append(str(e))
+                continue
             print(f"  [{family}] {term!r}: {len(ids)} stories")
             time.sleep(pace)
             for sid in ids:
@@ -202,7 +255,7 @@ def collect(pace=0.12, comment_cap=25):
                             (sid, family, term))
                 if sid in have:
                     continue
-                d = item(sid)
+                d = _try_item(sid, REFUSED)
                 time.sleep(pace)
                 if not d or d.get("dead") or d.get("deleted"):
                     continue
@@ -221,7 +274,7 @@ def collect(pace=0.12, comment_cap=25):
                 for kid in (d.get("kids") or [])[:comment_cap]:
                     if kid in have:
                         continue
-                    c = item(kid)
+                    c = _try_item(kid, REFUSED)
                     time.sleep(pace)
                     if not c or c.get("dead") or c.get("deleted") or not c.get("text"):
                         continue
@@ -239,6 +292,13 @@ def collect(pace=0.12, comment_cap=25):
                 (f"stories={n_new} comments={n_c}",))
     con.commit()
     con.close()
+    if REFUSED:
+        print("")
+        print(f"  !! {len(REFUSED)} REFUSALS this run -- the "
+              f"harvest is INCOMPLETE, not exhausted:")
+        for r in REFUSED[:5]:
+            print(f"       {r}")
+        print("     A count taken from this run is a FLOOR.")
     return n_new, n_c
 
 

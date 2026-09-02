@@ -134,7 +134,13 @@ def main():
         except urllib.error.HTTPError as e:
             out["sites"][name] = {"status": e.code, "dead": e.code >= 400}
         except (urllib.error.URLError, socket.timeout, socket.gaierror) as e:
-            out["sites"][name] = {"status": None, "dead": True,
+            # **`dead` was True here. Corrected 2026-09-01.** A timeout or a DNS
+            # failure is a fact about OUR network, not about the site. Recording
+            # it as death is the same defect the `reopen` audit found in
+            # social-signal/src/verify_live.py, and GUARDS #25 exists for it:
+            # a refusal and a real absence must never be stored the same way.
+            out["sites"][name] = {"status": None, "dead": None,
+                                  "unreachable": True,
                                   "error": f"{type(e).__name__}: {e}"}
         print(f"  site {name:36s} {out['sites'][name]}")
 

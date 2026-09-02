@@ -43,7 +43,8 @@ OUT = os.path.abspath(os.path.join(HERE, "..", "out"))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
-from common.kalshi_fees import fee_order_cents          # the ONLY fee impl
+from common.kalshi_fees import (fee_order_cents,        # the ONLY fee impl
+                                fee_rate_cents)
 
 pd.set_option("display.width", 260)
 pd.set_option("display.max_rows", 500)
@@ -69,7 +70,19 @@ def net_cents_buy_hold(mid_c: np.ndarray, won: np.ndarray,
     """
     px = mid_c if spread_c is None else mid_c + spread_c / 2.0
     px = np.clip(px, 1.0, 99.0)
-    fees = np.array([float(fee_order_cents(float(p), 1)) for p in px])
+    # **fee_rate_cents, NOT fee_order_cents. Corrected 2026-09-01.**
+    # This is expectancy arithmetic, and `common/kalshi_fees.py` says so in
+    # as many words: the per-ORDER round-up is "an artefact of order size
+    # rather than an economic cost". Charging it to orders of ONE contract
+    # billed a whole cent on a 0.63c fee at ~90c entries.
+    #
+    # Measured on the cited holdout cell (open_price>=80, n=261):
+    #   as coded, fee_order_cents(px, 1) : -0.770c   <- the published number
+    #   corrected, fee_rate_cents(px)    : -0.374c
+    # So +0.396c of the published -0.77c was the rounding assumption.
+    # **B024 STANDS**: still negative, and the 6.06c mean spread in that
+    # cell is the killer, not the fee. Found by the `reopen` audit.
+    fees = np.array([float(fee_rate_cents(float(p))) for p in px])
     return won * 100.0 - px - fees
 
 
@@ -149,7 +162,9 @@ def evaluate(df, mask):
                 net_se=net_ask.std(ddof=1) / math.sqrt(n),
                 net_mid_c=net_mid.mean(),                # the flattering one
                 spread=sub.open_spread.mean(),
-                fee_c=np.mean([float(fee_order_cents(float(x), 1))
+                # same correction as above -- this is a reported
+                # expectancy, not a bill
+                fee_c=np.mean([float(fee_rate_cents(float(x)))
                                for x in sub.open_mid.values]))
 
 

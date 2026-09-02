@@ -86,8 +86,30 @@ def fetch(url: str, timeout: int = 25, accept: str = "*/*", retries: int = 1):
                 continue
             break
     time.sleep(PACE)
-    with open(cp, "w", encoding="utf-8") as fh:
-        json.dump(out, fh)
+    # **Only DURABLE answers are cached. Corrected 2026-09-01.**
+    #
+    # This used to write `out` to disk unconditionally -- including a 429 and
+    # a bare network error (status 0). The T4 report reads through this cache,
+    # so **one timeout became a platform's permanent recorded status**, and the
+    # Reddit COLLECT / X KILL / TikTok KILL / Instagram KILL verdicts all sat
+    # on top of it. Found by the `reopen` audit.
+    #
+    # Our own sibling already does this right and says so in a comment --
+    # `signal-github/src/gh.py:204`, *"404s are cached; transient failures are
+    # not"*. This is that rule, written here too.
+    #
+    # A 404 or a 200 is an answer about the world. A 429 is the server asking
+    # us to come back later, and a timeout is a fact about the network. GUARDS
+    # #25: a refusal and a real absence must never be stored the same way.
+    durable = out["status"] not in (0, 429, 500, 502, 503, 504)
+    if durable:
+        with open(cp, "w", encoding="utf-8") as fh:
+            json.dump(out, fh)
+    else:
+        out["cached"] = False
+        out["transient"] = True
+        print(f"    NOT CACHED (transient {out['status'] or out['err']}): {url}",
+              flush=True)
     return out
 
 

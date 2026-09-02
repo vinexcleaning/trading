@@ -29,7 +29,19 @@ import ast
 import os
 import sys
 
-SRC = os.path.dirname(os.path.abspath(__file__))
+# **All three folders this session owns, not just its own. Widened
+# 2026-09-01.** The `reopen` audit found the fake-zero pattern alive in
+# `extractor-upgrade/src/hn.py` and noted that this auditor could never have
+# caught it, because it only ever scanned the folder it lives in. An auditor
+# whose blind spot is "everywhere except here" is most of the way to useless.
+_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__))))
+SRC_DIRS = [
+    os.path.join(_ROOT, "social-signal", "src"),
+    os.path.join(_ROOT, "signal-github", "src"),
+    os.path.join(_ROOT, "extractor-upgrade", "src"),
+]
+SRC = SRC_DIRS[0]          # kept: the report still names files relative to it
 EMPTY = {"[]", "{}", "()", "0", "''", '""', "None", "set()", "0.0"}
 
 
@@ -55,10 +67,19 @@ def literal(node) -> str | None:
 
 def main():
     findings = []
-    for fn in sorted(os.listdir(SRC)):
-        if not fn.endswith(".py") or fn == os.path.basename(__file__):
+    targets = []
+    for d in SRC_DIRS:
+        if not os.path.isdir(d):
+            print(f"  !! {d} is not a directory -- SKIPPED, and that is a gap")
             continue
-        path = os.path.join(SRC, fn)
+        for fn in sorted(os.listdir(d)):
+            if fn.endswith(".py") and fn != os.path.basename(__file__):
+                targets.append((os.path.relpath(d, _ROOT).replace("\\", "/")
+                                + "/" + fn, os.path.join(d, fn)))
+    print(f"scanning {len(targets)} files across "
+          f"{len(SRC_DIRS)} folders")
+    print("")
+    for fn, path in targets:
         try:
             # **utf-8-sig, not utf-8.** The first run of this audit reported
             # "soccer_sources.py does not parse" because a byte-order mark

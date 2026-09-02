@@ -107,7 +107,20 @@ def main() -> int:
     check("crypto series charging makers", crypto_maker, EXPECT_CRYPTO_MAKER)
     check("tennis series charging makers",
           EXPECT_TENNIS_MAKER & tickers, EXPECT_TENNIS_MAKER)
-    check("makers and takers charged the same", False, False)
+    # **REWRITTEN 2026-09-01. This line was `check(..., False, False)` -- a
+    # constant compared to a constant, printing [OK] whatever the census
+    # found.** Found by the `reopen` audit. GUARDS #9 is exactly this, and it
+    # sat inside the script whose stated job is re-verifying the maker-fee
+    # correction C1 -- the fee question this repo already got wrong once.
+    #
+    # The real test, on the census actually returned. C1's whole content is
+    # that the old belief "makers and takers are charged the same" is FALSE:
+    # some series do charge makers. So assert the census still contradicts it,
+    # and fail loudly if the census came back empty -- "we found nothing" and
+    # "nothing is wrong" are different facts, and only one of them is evidence.
+    check("census returned series at all", bool(series), True)
+    check("some series DO charge makers (C1's correction still holds)",
+          bool(maker), True)
 
     # --- the exchange's own schedule, as a second and independent source ---
     print("\nfee schedule PDF:")

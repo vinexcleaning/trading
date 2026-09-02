@@ -279,6 +279,13 @@ def currency(text: str, meta: dict | None = None, corpus: str = ""):
                        if d.get("pushed_at") else ""))
                 break
     for site, d in (tech.get("sites") or {}).items():
+        # `dead` is now three-valued: True (a real 4xx/5xx), False (alive), and
+        # **None meaning we could not reach it** -- a timeout or DNS failure is
+        # a fact about our network, not the site (verify_tech.py, corrected
+        # 2026-09-01). `None` is falsy, so an unreachable site contributes NO
+        # staleness reason, which is the conservative direction: it fails
+        # toward not accusing a source of being dead. **Do not "simplify" this
+        # to `is False`** -- that would resurrect the bug.
         if d.get("dead") and site.lower() in t:
             reasons.append(
                 f"T1 names `{site}` - returns "

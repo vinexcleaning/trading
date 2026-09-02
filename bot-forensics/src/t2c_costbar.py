@@ -32,7 +32,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats as st
 import load
-from kalshi_fees import fee_order_dollars
+from kalshi_fees import fee_order_dollars, fee_rate_cents
 
 rng = np.random.default_rng(20260805)
 pd.set_option("display.width", 250)
@@ -127,12 +127,31 @@ def bar(g):
         return pd.Series({"n_obs": 0})
     sp = g.spread.median()
     px = int(round(g.ask.median()))
+    # **Both conventions, reported side by side. Added 2026-09-01.**
+    #
+    # The `reopen` audit flagged this as carrying the same rounding bias as
+    # t7_sweep, and it is **half right, which is why both numbers are here
+    # rather than one replacing the other.**
+    #
+    #   ORDER  fee_order_dollars(px, 1) rounds UP per order. If you really do
+    #          trade one contract at a time -- which is exactly what this bot
+    #          did -- that IS the bill. It is not an artefact.
+    #   RATE   fee_rate_cents is the unrounded per-contract cost, and it is the
+    #          only one comparable with a per-contract EXPECTANCY.
+    #
+    # **The error is not using the rounded one. It is comparing a rounded bar
+    # against an unrounded expectancy, or the reverse.** t7_sweep reports
+    # expectancy, so it now uses RATE; a bar quoted next to it must too.
     f_in = fee_order_dollars(px, 1) * 100          # cents per contract
     f_out = fee_order_dollars(min(99, px + 10), 1) * 100
+    r_in = float(fee_rate_cents(px))
+    r_out = float(fee_rate_cents(min(99, px + 10)))
     return pd.Series({"n_obs": len(g), "median_ask": px,
                       "median_spread": sp, "mean_spread": g.spread.mean(),
                       "fee_in_c": f_in, "fee_out_c": f_out,
-                      "cost_bar_c": sp + f_in + f_out})
+                      "cost_bar_c": sp + f_in + f_out,
+                      "fee_in_rate_c": r_in, "fee_out_rate_c": r_out,
+                      "cost_bar_rate_c": sp + r_in + r_out})
 
 
 print("\n--- cost bar by tier (cents per contract, round trip)")
