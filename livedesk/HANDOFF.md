@@ -1,9 +1,9 @@
 # HANDOFF — livedesk
 
 <!-- COORDINATOR-STATE
-doing: mailbox clear, 25 of 25. Half fee on KXMLBGAME verified live and wired in per series; the daily line no longer divides by a dead $4.15; 24 tests now pin the exact order payload.
-left: nothing blocking. 365 tests green. The desk is parked and none of this changes whether to unpark it.
-needs: yes - two small questions. Loosen the 35 percent drop rule? And does he want any cap on the NUMBER of bets a day, given the $50 money cap already stops him first?
+doing: mailbox clear, 26 of 26. Fixed show_fills printing every price as 0, plus a second defect underneath it that would have shown the opposite side price. Earlier: half fee wired in per series.
+left: nothing blocking. 373 tests green, and livedesk is off GUARD #23s list.
+needs: yes - two small questions. Loosen the 35 percent drop rule? And any cap on the NUMBER of bets a day, given the $50 money cap stops him first?
 -->
 
 **⚠ THIS TOOL SENDS REAL ORDERS, AND AUTO STARTS ON.** Live Kalshi, real
