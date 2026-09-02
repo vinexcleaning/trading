@@ -57,7 +57,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT.parent))
-from common.kalshi_fees import fee_order_cents  # noqa: E402
+from common.kalshi_fees import fee_order_cents, fee_rate_cents  # noqa: E402
 
 
 def con():
@@ -69,7 +69,30 @@ def con():
 
 
 def fee_c(price_c, contracts=1):
-    return float(fee_order_cents(price_c, contracts)) / contracts
+    """Per-contract fee for EXPECTANCY - unrounded.
+
+    The per-order round-up is an artefact of order size, not an economic cost.
+    Charging it per contract overstates the fee by up to 4.9x at 97c.
+    """
+    return float(fee_rate_cents(price_c))
+
+
+def fee_billed_c(price_c, contracts):
+    """What an order of `contracts` is ACTUALLY billed, per contract.
+
+    Used where the question is "would this specific trade have paid", which is
+    what an arbitrage test asks. At one contract this equals the round-up; at
+    real size it collapses toward the unrounded rate, which is the whole reason
+    order batching is worth up to 5x.
+    """
+    # A size of 0 means nothing is offered, so there is no order to bill and
+    # no trade to make. Fall back to the unrounded rate so the arithmetic is
+    # defined; the violation is reported with size 0 and dismissed as an
+    # artefact anyway.
+    n = int(contracts or 0)
+    if n <= 0:
+        return fee_c(price_c)
+    return float(fee_order_cents(price_c, n)) / n
 
 
 # ------------------------------------------------------------------ TEST A ----
@@ -174,12 +197,19 @@ def sum_to_one(c, parts, max_events=0):
             continue
         n_complete += 1
         total = sum(a for a, _ in legs)
-        fees = sum(fee_c(a) for a, _ in legs)
+        # ⚠ THE FEE DEPENDS ON HOW MANY CONTRACTS YOU ACTUALLY BUY, and an
+        # arbitrage test asks "would this specific trade have paid" - so the
+        # BILLED fee at the real available size is the right one, not the
+        # single-contract round-up. Buying the whole available size is also
+        # what anyone taking a free-money trade would do, and it is up to 5x
+        # cheaper per contract than buying singles.
+        size = min((s or 0) for _, s in legs)
+        fees = sum(fee_billed_c(a, size) for a, _ in legs)
         edge = 100.0 - (total + fees)
         if edge > 0:
             hits.append({"event": ev, "cycle": cid, "legs": len(legs),
                          "sum_ask": total, "fees": fees, "edge_c": edge,
-                         "size": min((s or 0) for _, s in legs)})
+                         "size": size})
     return hits, len(acc), n_complete
 
 
@@ -259,12 +289,14 @@ def implication(c, spread_series, money_series):
                 mask, masz = m[0], m[1]
                 if sbid is None or mask is None:
                     continue
-                edge = (sbid - fee_c(sbid)) - (mask + fee_c(mask))
+                size = min(sbsz or 0, masz or 0)
+                edge = ((sbid - fee_billed_c(sbid, size))
+                        - (mask + fee_billed_c(mask, size)))
                 if edge > 0:
                     hits.append({"game": g, "spread": stk, "money": mtk,
                                  "cycle": cid, "spread_bid": sbid,
                                  "money_ask": mask, "edge_c": edge,
-                                 "size": min(sbsz or 0, masz or 0)})
+                                 "size": size})
     return hits, len(pairs), checked, whole_line, len(shared)
 
 
@@ -289,7 +321,11 @@ def main() -> None:
     print("  event-instants seen          : %d" % n_cyc)
     print("  fully-quoted instants        : %d" % n_comp)
     print("  violations after fees        : %d" % len(hits_a))
-    sized_a = [h for h in hits_a if h["size"] > 0]
+    # ⚠ AT LEAST ONE WHOLE CONTRACT. Kalshi sizes are floats and rows with
+    # 0.4 contracts were passing a `> 0` test and then printing as "0" - a
+    # violation reported as tradeable while showing no size. You cannot buy
+    # part of a contract.
+    sized_a = [h for h in hits_a if h["size"] >= 1]
     print("  ...of which with real size   : %d" % len(sized_a), flush=True)
 
     print("\nTEST B: spread implies moneyline...", flush=True)
@@ -388,7 +424,7 @@ def main() -> None:
         A("| event | legs | sum of asks | fees | edge | contracts offered |")
         A("|---|---:|---:|---:|---:|---:|")
         for h in sorted(sized_a, key=lambda x: -x["edge_c"])[:15]:
-            A("| `%s` | %d | %.1fc | %.1fc | **%.1fc** | %.0f |"
+            A("| `%s` | %d | %.1fc | %.1fc | **%.1fc** | %.4g |"
               % (h["event"], h["legs"], h["sum_ask"], h["fees"], h["edge_c"],
                  h["size"]))
         A("")
@@ -396,15 +432,23 @@ def main() -> None:
         A("**Total money available in every violation on this tape, added up: "
           "$%.2f.**" % tot_money)
         A("")
+        from collections import Counter as _C
+        fams = _C(h["event"].split("-")[0] for h in sized_a)
+        biggest = max(h["size"] for h in sized_a)
         A("**That is the answer, and it is a null with a number on it.** Over "
-          "%d fully-quoted event-instants across 14 days of recording, the "
-          "whole sum-to-one structure offered %s. Both survivors are two-leg "
-          "tennis matches at one contract each - and buying both sides of a "
-          "two-way market is the \"cover both sides\" hedge that mailbox 009 "
-          "already kills by arithmetic: it costs two fees and cancels the leg "
-          "exactly. These clear it by a cent because the pair happened to be "
-          "quoted below par for one cycle, at one contract."
-          % (n_comp, "two cents" if tot_money < 0.05 else "$%.2f" % tot_money))
+          "%d fully-quoted event-instants in 14 days, the whole sum-to-one "
+          "structure offered **$%.2f in total**, across %d moments, in %s. "
+          "The largest single opportunity was %.0f contracts."
+          % (n_comp, tot_money, len(sized_a),
+             ", ".join("%s (%d)" % (k, v) for k, v in fams.most_common()),
+             biggest))
+        A("")
+        A("**Every one is a TWO-LEG market** - one player or the other. Buying "
+          "both sides of a two-way market is the *cover both sides* hedge that "
+          "mailbox 009 already kills by arithmetic: it costs two fees and "
+          "cancels the leg exactly. These clear it only because the pair "
+          "happened to be quoted below par for a cycle, and the amounts are "
+          "what they are.")
         A("")
         A("⚠ **A violation with size is still not money until the size is "
           "real.** `BH024` produced **1,292 fake cross-venue arbitrages** from "

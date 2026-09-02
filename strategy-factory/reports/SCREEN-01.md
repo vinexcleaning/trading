@@ -1,6 +1,6 @@
 # SCREENING RUN 01 — and not one number here is money
 
-**Run 2026-09-01 04:12 UTC by `strategy-factory/src/screen.py`.**
+**Run 2026-09-02 01:54 UTC by `strategy-factory/src/screen.py`.**
 
 > **THE BACKTEST CHOOSES. ONLY THE FORWARD TEST COUNTS.** Nothing below is a result, none of it may be sized on, and none of it should be repeated to anyone as an amount of money. It exists to pick candidates.
 
@@ -16,11 +16,11 @@ The same machinery, on the same tape, with **every outcome redrawn from the mark
 
 | | return on cash |
 |---|---:|
-| **real arm** | **-6.15%** |
-| placebo median (20 runs) | -7.13% |
-| placebo range | -8.38% to -4.20% |
-| **null drawn at the ASK** (matched to what we actually pay) | **-3.79%** |
-| its range | -5.38% to -0.49% |
+| **real arm** | **-5.11%** |
+| placebo median (20 runs) | -6.10% |
+| placebo range | -7.36% to -3.13% |
+| **null drawn at the ASK** (matched to what we actually pay) | **-2.72%** |
+| its range | -4.33% to +0.62% |
 
 **TWO nulls, because one of them is unfair and it is the one that flatters nobody.** The mid null asks *"is the mid the truth?"* while our entries pay the **ask** - so it is advantaged by roughly half a spread before anything else happens, and the real arm should be below it even if the market is perfectly fair. The ask null asks the question that matters: *"given what we actually paid, did the outcomes beat it?"* Both are reported so neither can be quoted alone.
 
@@ -45,18 +45,18 @@ The same machinery, on the same tape, with **every outcome redrawn from the mark
 
 | category | in index | **quotable** | screened | net per contract | vs null | verdict |
 |---|---:|---:|---:|---:|---|---|
-| **Climate and Weather** | 288 | **270 (94 in 100)** | **65** (22 events) | -5.28c | -14.6% vs -10.4% | **too few events to say anything (22)** |
-| **Commodities** | 12478 | **8093 (65 in 100)** | **330** (89 events) | +7.10c | +21.2% vs -6.8% | **too few events to say anything (89)** |
-| **Crypto** | 253493 | **2045 (0.8 in 100)** | **1053** (134 events) | -3.44c | -11.1% vs -9.6% | **at or below its null** |
-| **Elections** | 272 | **169 (62 in 100)** | **24** (14 events) | -2.88c | -10.3% vs -10.3% | **too few events to say anything (14)** |
-| **Entertainment** | 73 | **22 (30 in 100)** | **3** (1 events) | -15.67c | -100.0% vs -100.0% | **too few events to say anything (1)** |
-| **Financials** | 25770 | **10599 (41 in 100)** | **717** (45 events) | -7.55c | -27.5% vs -13.8% | **too few events to say anything (45)** |
-| **Mentions** | 31 | **27 (87 in 100)** | **9** (1 events) | +38.78c | +63.3% vs -27.4% | **too few events to say anything (1)** |
-| **Sports** | 6955 | **6466 (93 in 100)** | **4924** (2040 events) | -2.32c | -5.0% vs -5.5% | above its null - still not a result |
+| **Climate and Weather** | 288 | **270 (94 in 100)** | **65** (22 events) | -4.77c | -13.4% vs -9.1% | **too few events to say anything (22)** |
+| **Commodities** | 12478 | **8093 (65 in 100)** | **330** (89 events) | +7.54c | +22.8% vs -5.6% | **too few events to say anything (89)** |
+| **Crypto** | 253493 | **2045 (0.8 in 100)** | **1053** (134 events) | -2.98c | -9.7% vs -8.2% | **at or below its null** |
+| **Elections** | 272 | **169 (62 in 100)** | **24** (14 events) | -2.36c | -8.6% vs -8.6% | **too few events to say anything (14)** |
+| **Entertainment** | 73 | **22 (30 in 100)** | **3** (1 events) | -15.15c | -100.0% vs -100.0% | **too few events to say anything (1)** |
+| **Financials** | 25770 | **10599 (41 in 100)** | **717** (45 events) | -7.05c | -26.1% vs -12.2% | **too few events to say anything (45)** |
+| **Mentions** | 31 | **27 (87 in 100)** | **9** (1 events) | +39.18c | +64.4% vs -26.9% | **too few events to say anything (1)** |
+| **Sports** | 6955 | **6466 (93 in 100)** | **4924** (2040 events) | -1.87c | -4.1% vs -4.6% | above its null - still not a result |
 
 **A category with a small screened count cannot say anything**, and the count is shown rather than the number being quoted alone.
 
-**2 categories clear the 100-event bar:** **Sports** 2040 events at -2.32c per contract; **Crypto** 134 events at -3.44c per contract.
+**2 categories clear the 100-event bar:** **Sports** 2040 events at -1.87c per contract; **Crypto** 134 events at -2.98c per contract.
 
 Those are the only lines on this page with a sample behind them, and they say the dull version does not work.
 
@@ -106,16 +106,16 @@ His idea, and it is computable: *"if we find a purely bad strategy that isn't ju
 
 | category | net per contract | cost bar | gross (picking only) | inverted | invertible? |
 |---|---:|---:|---:|---:|---|
-| Climate and Weather | -5.28c | +2.98c | -2.29c | -0.69c | no (too few events to act on: 22) |
-| Commodities | +7.10c | +4.30c | +11.40c | -15.69c | no (too few events to act on: 89) |
-| Crypto | -3.44c | +2.88c | -0.56c | -2.30c | no |
-| Elections | -2.88c | +3.06c | +0.19c | -3.29c | no (too few events to act on: 14) |
-| Entertainment | -15.67c | +3.50c | -12.17c | +8.67c | **YES** (too few events to act on: 1) |
-| Financials | -7.55c | +3.58c | -3.97c | +0.40c | **YES** (too few events to act on: 45) |
-| Mentions | +38.78c | +3.22c | +42.00c | -45.22c | no (too few events to act on: 1) |
-| Sports | -2.32c | +2.66c | +0.33c | -2.98c | no |
+| Climate and Weather | -4.77c | +2.48c | -2.29c | -0.11c | no (too few events to act on: 22) |
+| Commodities | +7.54c | +3.87c | +11.40c | -15.06c | no (too few events to act on: 89) |
+| Crypto | -2.98c | +2.42c | -0.56c | -1.75c | no |
+| Elections | -2.36c | +2.54c | +0.19c | -2.56c | no (too few events to act on: 14) |
+| Entertainment | -15.15c | +2.99c | -12.17c | +9.40c | **YES** (too few events to act on: 1) |
+| Financials | -7.05c | +3.08c | -3.97c | +1.09c | **YES** (too few events to act on: 45) |
+| Mentions | +39.18c | +2.82c | +42.00c | -44.85c | no (too few events to act on: 1) |
+| Sports | -1.87c | +2.20c | +0.33c | -2.51c | no |
 
-**Whole run:** net -2.56c, cost bar +2.86c, gross +0.30c, inverted -3.16c - **not invertible: it loses about what it costs to trade, which is the fee-leaking case and there is nothing underneath to flip**.
+**Whole run:** net -2.10c, cost bar +2.41c, gross +0.30c, inverted -2.64c - **not invertible: it loses about what it costs to trade, which is the fee-leaking case and there is nothing underneath to flip**.
 
 ### ⚠ The trap, and it is the same size as the one that governs everything here
 
@@ -129,9 +129,9 @@ So: **8 categories were screened to produce 2 invertible one(s)**, and an invert
 
 | | inverted, per contract |
 |---|---:|
-| **the real arm** | **-3.16c** |
-| a merely fee-losing arm, median of 12 | -4.22c |
-| its range | -4.84c to -3.80c |
+| **the real arm** | **-2.64c** |
+| a merely fee-losing arm, median of 12 | -3.71c |
+| its range | -4.33c to -3.29c |
 
 The real arm inverted beats the fee-losing arm inverted. **That is the minimum bar and not a result** - it says the screen can tell the two cases apart, which is a statement about the screen.
 
@@ -145,14 +145,14 @@ Kalshi's fee is `0.07 x contracts x p x (1-p)` — **maximised at 50 cents and c
 
 | category | events | avg price traded | fee at that price | gross edge | **edge after fee** |
 |---|---:|---:|---:|---:|---:|
-| Climate and Weather | 22 | 35c | 2.00c | -2.29c | -4.29c *(only 22 events - not readable)* |
-| Commodities | 89 | 32c | 2.00c | +11.40c | +9.40c *(only 89 events - not readable)* |
-| Crypto | 134 | 30c | 2.00c | -0.56c | **-2.56c** |
-| Elections | 14 | 27c | 2.00c | +0.19c | -1.81c *(only 14 events - not readable)* |
-| Entertainment | 1 | 14c | 1.00c | -12.17c | -13.17c *(only 1 events - not readable)* |
-| Financials | 45 | 26c | 2.00c | -3.97c | -5.97c *(only 45 events - not readable)* |
-| Mentions | 1 | 59c | 2.00c | +42.00c | +40.00c *(only 1 events - not readable)* |
-| Sports | 2040 | 45c | 2.00c | +0.33c | **-1.67c** |
+| Climate and Weather | 22 | 35c | 1.59c | -2.29c | -3.88c *(only 22 events - not readable)* |
+| Commodities | 89 | 32c | 1.52c | +11.40c | +9.88c *(only 89 events - not readable)* |
+| Crypto | 134 | 30c | 1.46c | -0.56c | **-2.03c** |
+| Elections | 14 | 27c | 1.37c | +0.19c | -1.19c *(only 14 events - not readable)* |
+| Entertainment | 1 | 14c | 0.86c | -12.17c | -13.03c *(only 1 events - not readable)* |
+| Financials | 45 | 26c | 1.36c | -3.97c | -5.33c *(only 45 events - not readable)* |
+| Mentions | 1 | 59c | 1.69c | +42.00c | +40.31c *(only 1 events - not readable)* |
+| Sports | 2040 | 45c | 1.73c | +0.33c | **-1.40c** |
 
 ### Closing-line value — a signal that needs no outcomes
 

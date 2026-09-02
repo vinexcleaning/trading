@@ -46,9 +46,33 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT.parent))
 sys.path.insert(0, str(ROOT / "src"))
-from common.kalshi_fees import fee_order_cents  # noqa: E402
+from common.kalshi_fees import fee_order_cents, fee_rate_cents  # noqa: E402
 
 IDX = ROOT / "data" / "index.db"
+# ⚠ THE PER-ORDER ROUND-UP IS NOT AN ECONOMIC COST, AND CHARGING IT PER
+# CONTRACT INFLATED EVERY FEE THIS ENGINE REPORTED.
+#
+# v1 used `fee_order_cents(price, 1)` everywhere - the cost Kalshi bills for an
+# order of ONE contract, which is rounded UP to a whole cent. Used as a
+# per-contract expectancy cost that is simply wrong, and it is worst exactly
+# where it matters most:
+#
+#     price   true per-contract fee   what v1 charged   inflation
+#       5c           0.333c                1.000c          3.01x
+#      50c           1.750c                2.000c          1.14x
+#      97c           0.204c                1.000c          4.91x
+#
+# So the bug was largest at the extreme prices where the fee-curvature lens says
+# the value is - it was actively hiding the thing that column exists to reveal.
+#
+# `common/kalshi_fees.py` separates the two on purpose:
+#   fee_rate_cents  - unrounded, for expectancy: "is there an edge here"
+#   fee_order_cents - rounded up per order, for "what will THIS order be billed"
+#
+# This is not hypothetical. bot-forensics charged the round-up on single-contract
+# orders and a recorded result read -0.77c per contract when the fee-fair number
+# is about -0.37c.
+
 
 IDX_SCHEMA = """
 -- One row per settled market that we also have a price for. This is the join
@@ -157,14 +181,14 @@ def net_cents(entry_ask_c, won, contracts=1):
     Fee on ENTRY ONLY - Kalshi charges nothing at settlement, which
     `common/kalshi_fees.py` states in `roundtrip_cost_cents`.
     """
-    fee = float(fee_order_cents(entry_ask_c, contracts)) / contracts
+    fee = float(fee_rate_cents(entry_ask_c))
     gross = (100.0 - entry_ask_c) if won else (-entry_ask_c)
     return gross - fee
 
 
 def outlay_cents(entry_ask_c, contracts=1):
     """Cash that actually leaves the account: price PLUS fee."""
-    return entry_ask_c + float(fee_order_cents(entry_ask_c, contracts)) / contracts
+    return entry_ask_c + float(fee_rate_cents(entry_ask_c))
 
 
 def inverted_net_cents(entry_bid_c, won, contracts=1):
@@ -186,7 +210,7 @@ def inverted_net_cents(entry_bid_c, won, contracts=1):
     in it.
     """
     no_ask_c = 100.0 - entry_bid_c
-    fee = float(fee_order_cents(no_ask_c, contracts)) / contracts
+    fee = float(fee_rate_cents(no_ask_c))
     gross = (100.0 - no_ask_c) if (not won) else (-no_ask_c)
     return gross - fee
 
@@ -211,7 +235,7 @@ def cost_bar_cents(entry_bid_c, entry_ask_c, contracts=1):
     separately for that reason.
     """
     half_spread = max(0.0, (entry_ask_c - entry_bid_c) / 2.0)
-    fee = float(fee_order_cents(entry_ask_c, contracts)) / contracts
+    fee = float(fee_rate_cents(entry_ask_c))
     return half_spread + fee
 
 
@@ -219,7 +243,7 @@ def fee_c_at(price_c, contracts=1):
     """The fee at THIS price, per contract. Never at 50c."""
     if not price_c or price_c <= 0 or price_c >= 100:
         return 0.0
-    return float(fee_order_cents(price_c, contracts)) / contracts
+    return float(fee_rate_cents(price_c))
 
 
 def wilson(k, n):
