@@ -474,6 +474,22 @@ factor of six â€” 216 matches claimed, 1,755 actually required for 2Â¢ â
 the spread was carried over from a study of expected-value differences
 (7.35Â¢) into one of realised outcomes (41.9Â¢).
 
+**Confirmed independently on a second sport, 2026-09-02.** The baseball fleet's
+own settled positions: **n = 1,081 per contract, sd 49.6Â¢** against the
+formula's **50.0Â¢** at a 50Â¢ price. And the paired escape was measured, not
+assumed â€” on 32 games where two strategies bet the same side, the spread of
+the **difference** was **25.5Â¢ against 49.6Â¢ unpaired**, cutting the games
+needed for a 3Â¢ comparison from ~1,050 to ~277.
+
+> **âš  But count the arms, not the names, before quoting either number.** The
+> same check found the fleet's 15 bots are **5 strategies Ã— 3 exit rules**, and
+> the exit rules had fired **3 times in 1,504 positions** â€” so ten bots were
+> bit-for-bit duplicates and 1,081 rows were really **327 distinct bets**.
+> Counting duplicated arms as sample inflates resolution from an honest 5.4Â¢ to
+> a false 2.95Â¢. Same error as counting a 10-strike ladder as ten markets (#8,
+> above); it just wears a different costume when the duplication is a
+> *configuration* that never triggers.
+
 ---
 
 ## 9. Guard-rot test
