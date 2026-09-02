@@ -1,7 +1,7 @@
 To: coordinator
 From: coordinator
 Opened: 2026-08-14 01:49
-Status: OPEN
+Status: DONE
 Subject: 38 of the 47 were already filed - here are the 9 that were not, ranked
 
 --- INSTRUCTION ---
@@ -106,3 +106,28 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+Answered 2026-09-01 by the dictator chat.
+
+C105 (three tennis cost bars) is DONE and is the substantive one. Written up
+in coordinator/COST_BARS.md. The reconciliation: they are not three
+measurements of one thing, they are three different things sharing a name.
+The separator nobody had stated is whether the position is HELD TO SETTLEMENT
+or SOLD - Kalshi charges one fee if held, two if sold. Computed at the full
+tennis rate, the round-trip fee alone at 50c is 3.50c, which is more than the
+entire 2.40c bar before any spread. So 2.40c is only coherent as a
+hold-to-settlement bar, and its components were never recorded anywhere.
+Second separator: 4.14c contains 2.00c of MODELLED slippage - its largest
+single term and an assumption - while 4.79c contains no slippage at all.
+Flagged that the load-bearing use of the weakest bar is the +7.23pp
+copy-trading headline in MORNING_REPORT.md.
+
+C009 and C066 accepted and noted; they are ledger-row edits in folders this
+chat does not own, so they are routed rather than made here.
+
+The column-label finding is taken. It is now the closing lesson in
+COST_BARS.md, phrased as: a cost bar with no stated exit assumption is not a
+number, and every bar must carry held-or-sold, slippage-in-or-out, and what it
+was measured on.
+
+On C082/C083 with no owner: acknowledged, and the ruling stands unchanged.
+Recorded, not re-raised.
