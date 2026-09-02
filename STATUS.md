@@ -948,6 +948,39 @@ Kalshi publishes `fee_multiplier` on every series and **uses it**:
 `KXMLBKS`, `KXMLBRFI`, `KXMLBTB`, `KXMLBSPREAD`, `KXMLBHRR`, `KXMLBF5` and 11
 more.
 
+> ⚠ **CORRECTED 2026-09-02. I WROTE THIS THE WRONG WAY ROUND, AND THE WRONG WAY
+> ROUND CAUSES A WRONG FEE.**
+>
+> **~~"Every Kalshi baseball family charges half fee."~~** That is the
+> **converse** of what was measured, and it is false. Verified against my own
+> census: **144 baseball series, 19 at half fee (13 in 100), and 125 at FULL
+> fee.**
+>
+> **What is true is the other direction: all 19 half-fee series on the whole
+> exchange are baseball. Half fee implies baseball. Baseball does NOT imply half
+> fee.**
+>
+> Applying 0.5 to `KXMLBWINS-ATL` or `KXMLBALEAST` would charge **half of what
+> Kalshi really takes** — the same shape as the round-up bug I fixed the day
+> before, pointing the other way.
+>
+> **And the split is a clean line, which makes it teachable:**
+>
+> | | |
+> |---|---|
+> | **HALF FEE — per-game and in-game markets** | `KXMLBGAME`, `KXMLBTOTAL`, `KXMLBSPREAD`, `KXMLBRFI`, `KXMLBKS`, `KXMLBHR`, `KXMLBHRR`, `KXMLBTB`, `KXMLBHIT`, `KXMLBRBI`, `KXMLBSB`, `KXMLBOUTS`, `KXMLBEXTRAS`, `KXMLBTEAMTOTAL`, `KXMLBF3`, `KXMLBF5`, `KXMLBF5SPREAD`, `KXMLBF5TOTAL`, `KXMLBF7` |
+> | **FULL FEE — season-long and event markets** | `KXMLBWINS-<TEAM>`, `KXMLBALEAST` and the other divisions, `KXMLBASGMVP`, `KXMLBHRDERBY*`, `KXMLBSERIESGAMETOTAL`, `KXMLBSTATCOUNT`, and ~118 more |
+>
+> **⚠ AND WE CANNOT DATE WHEN IT BECAME 0.5.** `common/kalshi_fees.py`'s
+> 2026-08-03 census only ever counted `fee_multiplier == 0` and never stored
+> what each series' multiplier was; `market-selection`'s file has the same
+> shape; my own `census.db` is one snapshot, every row stamped
+> **2026-08-18T04:25:39Z**; and Kalshi's API carries no historical series
+> metadata. **So: half fee was true on 2026-08-18 and is true today. Before 18
+> August is unknown and is not recoverable.** That bounds how far back any
+> re-run may claim to be correcting.
+
+
 **Verified on the LIVE `/series/{ticker}` endpoint on 2026-09-01**, not off a
 census snapshot: `KXMLBGAME` returns `fee_multiplier=0.5`, `taker_rate=0.035`.
 `KXATPMATCH` and `KXINXU` return 1.0, so this is not a global change.

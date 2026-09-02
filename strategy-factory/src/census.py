@@ -54,6 +54,26 @@ create table if not exists series (
   fee_type text, fee_multiplier real, n_settlement_sources integer,
   settlement_sources text, seen_utc text);
 
+-- ⚠ EVERY CENSUS RUN APPENDS HERE, so a change to a series' fee schedule is
+-- DATED instead of undateable.
+--
+-- Added 2026-09-02 after `coordinator` mailbox 011 asked the obvious question -
+-- WHEN did baseball's fee_multiplier become 0.5? - and nothing in the repo
+-- could answer it:
+--   * common/kalshi_fees.py's 2026-08-03 census of 12,396 series only ever
+--     counted `fee_multiplier == 0`. It never stored what each series' value
+--     WAS.
+--   * market-selection/reports/fees_and_ticks.json has the same shape.
+--   * this file's own `series` table is INSERT OR REPLACE, so it holds one
+--     snapshot and every row carried the same seen_utc.
+--   * Kalshi's API window is ~69 days and serves no historical series metadata.
+--
+-- So the honest answer was "true on 2026-08-18, unknown before, not
+-- recoverable". One column would have made it a fact. This is that column.
+create table if not exists fee_history (
+  ticker text, seen_utc text, fee_type text, fee_multiplier real,
+  primary key (ticker, fee_multiplier, fee_type));
+
 create table if not exists open_markets (
   ticker text primary key, series text, event_ticker text, title text,
   close_utc text, open_utc text, status text, volume real, open_interest real,
@@ -97,6 +117,13 @@ def pass_a(con: sqlite3.Connection) -> int:
           json.dumps([x.get("name") for x in
                       (s.get("settlement_sources") or [])])[:2000],
           ts) for s in rows if s.get("ticker")])
+    # Append-only fee history. The primary key means a row is written the first
+    # time a series is seen at a given schedule and never again until it
+    # CHANGES - so the table stays small and every row is a dated change.
+    con.executemany(
+        "insert or ignore into fee_history values (?,?,?,?)",
+        [(s.get("ticker"), ts, s.get("fee_type"),
+          V.fnum(s.get("fee_multiplier"))) for s in rows if s.get("ticker")])
     con.commit()
     return len(rows)
 

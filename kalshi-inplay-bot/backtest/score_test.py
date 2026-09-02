@@ -39,7 +39,30 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from autoscan import _name_matches      # noqa: E402
 
 COST_TAKER = 4.1
-COST_MAKER = 2.9
+
+# ⚠ THIS MAKER BAR IS WRONG FOR MOST OF THE DATASET, AND IT IS WRONG IN THE
+# DIRECTION THAT HIDES EDGES.
+#
+# `high_sweep.py:49-63`, in this same folder, established from the API's own
+# `fee_type` that the maker fee is ZERO on Challenger and ITF -- 12,800 of
+# 14,162 markets here, about 90%. Only KXATPMATCH and KXWTAMATCH charge makers.
+#
+# So a genuine maker edge between 0 and 2.9c on ITF is declared untradeable by
+# a bar that does not apply there. The taker bar of 4.1 is roughly right and
+# conservative, so it is left alone.
+#
+# NOT silently re-scored: this constant gates the verdict LABEL at line ~150,
+# and changing it would rewrite the conclusions of a dormant backtest without
+# anyone seeing it happen. The correct per-tier bars are named below so the
+# next run can use them deliberately. Re-scoring is the October job.
+#
+# Flagged by the repo-wide audit, 2026-09-01 (`tennis` mailbox 022).
+COST_MAKER = 2.9                  # <- applies to KXATPMATCH / KXWTAMATCH ONLY
+COST_MAKER_MAIN_TOUR = 2.9        # ATP/WTA: makers are charged
+COST_MAKER_ITF_CHALLENGER = 0.0   # ~90% of this dataset: makers pay NOTHING
+
+# ⚠ Also note line ~107 computes the edge against the MID, not against the
+# price you would really pay. GUARDS #7. Untouched for the same reason.
 
 
 def load_scores(path="data/sofascore_matches.jsonl") -> dict:

@@ -497,9 +497,19 @@ class App(tk.Tk):
                         unreal = pos_val
                         self.events.put(("portfolio", (cash, pos_val, portfolio)))
                         self.events.put(("pnl", (realized, 0.0)))
-                        # Daily-loss circuit breaker removed at the user's
-                        # request on 28 Jul. session_pnl_pct is still tracked
-                        # and still reported, it just no longer halts trading.
+                        # ⚠ THIS COMMENT WAS WRONG AND IS CORRECTED (audit
+                        # 2026-09-01, `tennis` mailbox 022). It said the
+                        # daily-loss circuit breaker "no longer halts trading".
+                        # IT DOES. Config re-enabled max_daily_loss_pct=15.0 on
+                        # 3 Aug; this value is passed to evaluate() at line ~541
+                        # as `daily_pnl_pct`, and tennis_engine.py:350 calls
+                        # bad() on it, which blocks. Behaviour is safe; only the
+                        # comment was misleading.
+                        #
+                        # ⚠ AND IT IS PER-SESSION, NOT PER-DAY. `pnl_baseline`
+                        # is set when the app opens (just above), so restarting
+                        # resets the "daily" limit. Moot while trading is off,
+                        # and a real gap the day it comes back on.
                         if self.cfg.bankroll > 0:
                             self.session_pnl_pct = realized / self.cfg.bankroll * 100.0
 

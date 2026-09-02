@@ -55,10 +55,18 @@ IDX = ROOT / "data" / "index.db"
 # ⚠ THE FEE IS PER SERIES, AND 19 KALSHI FAMILIES CHARGE HALF.
 #
 # Kalshi exposes `fee_multiplier` on every series and the exchange actually uses
-# it: **every baseball family is 0.5** - KXMLBGAME, KXMLBTOTAL, KXMLBKS and 16
-# more - so their real taker rate is 0.035, not 0.07. Fourteen further series
-# are 0.0, genuinely free. Verified against the live `/series/{t}` endpoint on
-# 2026-09-01, not just off the census snapshot.
+# it. 19 series are 0.5 - a real taker rate of 0.035 - and 14 are 0.0, free.
+# Verified against the live `/series/{t}` endpoint on 2026-09-01.
+#
+# ⚠ THE IMPLICATION ONLY RUNS ONE WAY, AND v1 OF THIS COMMENT HAD IT BACKWARDS.
+# ~~"every baseball family is 0.5"~~ is FALSE: there are 144 baseball series and
+# 125 of them pay FULL fee. What is true is that all 19 half-fee series on the
+# exchange are baseball. HALF FEE IMPLIES BASEBALL; BASEBALL DOES NOT IMPLY HALF
+# FEE. The line is per-game and in-game markets (KXMLBGAME, KXMLBTOTAL,
+# KXMLBRFI...) at half, season-long and event markets (KXMLBWINS-<TEAM>,
+# KXMLBALEAST...) at full. Reading it the wrong way charges half of what Kalshi
+# takes on 125 series - which is why `rate_for` looks the multiplier up per
+# series and never infers it from the sport.
 #
 # `common/kalshi_fees.py` has supported this the whole time via
 # `SeriesFees.taker_rate`. This engine was not using it, and neither is
