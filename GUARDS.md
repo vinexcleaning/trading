@@ -429,6 +429,51 @@ Every segment table in set1_overshoot reports its minimum detectable effect
 beside the point estimate â€” so `0 of 25` reads honestly as *"0 of 25, median MDE
 3.7â€“9.0Â¢ against a ~2Â¢ target"* rather than as evidence of absence.
 
+### The floor is set by the PRICE, and you do not get to choose it
+
+**Added 2026-09-02 by `soccer`, verified independently by the coordinator.**
+This is the sharpest form of #8 and it removes the guesswork: for a bet held
+to settlement the payout is 0 or 100, so **the spread is not something you
+measure — it is fixed by the price you paid:**
+
+> **sd = 100 Ã— âˆš(P Ã— (1âˆ’P)) cents**
+
+Predicted **45.8Â¢** at a 70Â¢ price; `soccer` measured **41.9Â¢** on 73 real
+matches. The theory holds. Bets needed before the 95% range stops touching
+zero:
+
+| edge | at 50Â¢ | at 70Â¢ | at 90Â¢ | at 97Â¢ |
+|---|---:|---:|---:|---:|
+| 1Â¢ | 9,604 | 8,067 | 3,457 | 1,118 |
+| 2Â¢ | 2,401 | 2,017 | 864 | 279 |
+| 3Â¢ | 1,067 | 896 | 384 | 124 |
+| 5Â¢ | 384 | 323 | 138 | 45 |
+
+**âš  THE TRAP: the exchange offers liquidity exactly where measurement is most
+expensive.** At 97Â¢ an edge needs 47 bets to see and nobody quotes it. At 50Â¢
+you can always trade and need 400 for the same edge. *"I can trade it"* and
+*"I can measure it"* pull in opposite directions, and a project that follows
+liquidity walks straight into the expensive corner.
+
+**The worked case, which is live:** the 16-bot baseball fleet has **254
+settled bets at a median 50Â¢**. Smallest edge it can see is **6.1Â¢ pooled and
+about 25Â¢ per individual bot** â€” against a repo record whose largest real
+effect is **under 3Â¢**. So *"all 16 came back flat"* was never able to say
+anything else. **That is not evidence of no edge; it is a test that cannot
+resolve one**, and it must be reported as `UNTESTABLE` per #21, never as a
+null.
+
+**The way out, because the wall has a door:** this floor applies to an
+**unpaired** test. **Two arms on the same game cancels the outcome and escapes
+it** â€” and the paired question (*does A beat B on the same match*) is usually
+the one actually being asked. Prefer the paired design before spending months
+buying sample size.
+
+**Cost of not knowing this:** it invalidated a pre-registered threshold by a
+factor of six â€” 216 matches claimed, 1,755 actually required for 2Â¢ â€” because
+the spread was carried over from a study of expected-value differences
+(7.35Â¢) into one of realised outcomes (41.9Â¢).
+
 ---
 
 ## 9. Guard-rot test
