@@ -662,14 +662,43 @@ def test_guard5_the_money_cap_stops_him_before_the_order_cap(led):
 
 
 def test_guard5_says_WHICH_cap_will_actually_stop_him(led):
+    """⚠ CHANGED 2026-09-02. This asserted "after 12 more", which was $50
+    divided by the FROZEN $4.15 stake -- 5% of the $83 the account started at
+    in a different era. Sizing became a percentage of the LIVE balance on
+    16 August and flat 5% on the 25th, so the line was understating his room
+    by nearly half, and he reads it when deciding whether to leave the desk
+    on. Mailbox 023 caught it."""
+    led.account_positions = []
+    led.set_account_balance(41.00)          # a bet is 5% = $2.05
     line = led.daily_line()
     assert "0 of 9999 bets" in line and "$0.00 of $50.00" in line
-    assert "money runs out first, after 12 more" in line
+    assert "money runs out first, after 24 more" in line, line
+
+
+def test_guard5_uses_the_LIVE_stake_not_the_frozen_one(led):
+    """The number must move when his balance moves. Under the old code it was
+    the same at every balance, which is how it stayed wrong unnoticed."""
+    led.account_positions = []
+    led.set_account_balance(41.00)
+    poor = led.daily_line()
+    led.set_account_balance(200.00)         # a bet is now $10
+    rich = led.daily_line()
+    assert poor != rich
+    assert "after 24 more" in poor and "after 5 more" in rich, (poor, rich)
+
+
+def test_guard5_says_it_does_not_know_rather_than_guessing(led):
+    """⚠ THE OLD CODE FELL BACK TO $4.15 HERE. A wrong number reached the
+    screen looking exactly like a right one."""
+    assert led.account_balance_usd is None
+    assert "not known until your balance is read" in led.daily_line()
 
 
 def test_guard5_that_sentence_is_computed_not_hard_coded(led, monkeypatch):
-    """It has to stay true if any of the three numbers change."""
+    """It has to stay true if any of the numbers change."""
     import ledger as L
+    led.account_positions = []
+    led.set_account_balance(41.00)
     monkeypatch.setattr(L, "MAX_STAKE_PER_DAY_USD", 500_000.0)
     assert "order count runs out first, after 9999 more" in led.daily_line()
 

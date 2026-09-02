@@ -606,3 +606,70 @@ when it is cents, once by summing both sides of a churn.
 figure written into the ledger is clean. **But no account-level profit number
 should be quoted from settlements without churn-aware handling**, and I am not
 building that unless asked.
+
+---
+
+## 2026-09-02 — half fee on the baseball markets, verified before it was used
+
+Mailbox 025 reported `fee_multiplier = 0.5` on `KXMLBGAME` and `KXMLBTOTAL`,
+and told me to verify it myself rather than take it on trust — because **this
+is the rare correction here that makes something look better**, and about 51
+before it all shrank an edge.
+
+**Checked against the live API. Confirmed:** `KXMLBGAME` 0.5, `KXMLBTOTAL` 0.5,
+`KXATPMATCH` 1, `KXNFLGAME` 1.
+
+**Read per series, never hardcoded.** Writing `0.5` anywhere would be the
+eighteenth copy of a fee fact that is supposed to have one home, and **only 19
+of 144 baseball series carry it** — the per-game ones. Season-long markets are
+full fee. **Half-fee implies baseball; baseball does not imply half-fee**, so a
+rule keyed on the sport would understate his cost.
+
+**It fails towards the FULL rate.** A lookup that fails overstates the cost,
+which is the only safe direction — a network error must never make a bet look
+cheaper than it is. The screen says when it is guessing.
+
+**Kept `fee_order_cents`, did not switch to `fee_rate_cents`.** These numbers
+are what a real order costs him and Kalshi's per-order round-up is real money
+here. The opposite advice went to `mlb-paper`, where the fee sits inside an
+expectancy calculation and the round-up is an artefact.
+
+**In money it is pennies** — about 3 cents on a $2 stake. The reason to do it
+is `breakeven_out_of_100`, the figure on screen telling him how many wins in a
+hundred he needs. It was overstating the bar by about one win in a hundred, and
+that is the number he reasons with.
+
+## 2026-09-02 — mailbox 023, and the "his numbers" banner that was not
+
+- **The daily line divided by a dead $4.15** — 5% of the $83 start, frozen from
+  before sizing became a live percentage. At his real balance it said "money
+  runs out after 12 more" when the true figure was 24. **It now computes from
+  the stake in force, and says it does not know rather than guessing when his
+  balance has not been read.**
+- **A missing starting balance is now loud.** It silently defaulted to $83
+  against his real $106. A wrong start moves the profit figure, the peak AND
+  the trailing stop together, so all three look consistent while all three are
+  wrong — the shape nobody catches by reading a screen.
+- **`MAX_ORDERS_PER_DAY = 9999` is not his number and he has never been asked.**
+  Traced through git: set by the tool that built production execution on
+  2026-08-14, whose own notes say "effectively unlimited". It sat under a
+  banner reading "the daily caps, his numbers". **Banner corrected; value left
+  alone.** Whether he wants a count cap is his to answer.
+- **The reconcile tolerance now records what it swallows.** One 90-cent drift
+  is fee rounding; twenty in the same direction is a defect, and only the
+  aggregate distinguishes them. The Miami better-fill discovery was $1.04 —
+  four cents from vanishing in silence.
+
+## 2026-09-02 — three of my own mistakes this session, all caught by running it
+
+1. **The tolerance logging went into dead code.** I put it in
+   `_reconcile_balance_old`, which nothing calls. It would have run zero times
+   while looking implemented. Moved to `balance_note()`.
+2. **My hardcoded-fee test matched a DOCSTRING** — `src/fees.py`'s own
+   explanation of the thing it was checking for. `test_paper_only.py` records
+   the identical correction in its own header. **I reproduced the mistake the
+   neighbouring canary already warns about.** Now reads the code with `ast`.
+3. **`fees.py` built a `KalshiClient` in a demo block** and the paper-only
+   canary failed the build. It was right: only `demo_exec.py` may construct a
+   client, and a convenience block is exactly the second door that rule exists
+   to keep shut. CLI moved to `tools/show_fees.py`.

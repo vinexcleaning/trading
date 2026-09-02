@@ -52,6 +52,7 @@ import demo_exec as DEMO                                 # noqa: E402
 import killswitch                                        # noqa: E402
 import picks as PICKS                                    # noqa: E402
 import prices as PRICES                                  # noqa: E402
+import fees                                               # noqa: E402
 import onemachine                                         # noqa: E402
 from alerts import DeskAlerts                             # noqa: E402
 from ledger import (ACCOUNT_FLOOR_USD, Entry, Ledger,    # noqa: E402
@@ -139,6 +140,7 @@ class Desk(tk.Tk):
         # it does now.
         self.alerts = DeskAlerts()
         self._cycles = 0
+        self._fee_warned: set = set()   # so a fee warning is said once, not hourly
 
         self._build_ui()
         self._render()
@@ -420,6 +422,8 @@ class Desk(tk.Tk):
                  # tool cannot tell one from the other, so it reports its own
                  # figure, labelled, and shows the difference as UNEXPLAINED
                  # rather than folding it into a total. Mailbox 022.
+                 + (chr(10) + "  " + self.ledger.start_line()
+                    if self.ledger.start_line() else "")
                  + chr(10) + "  " + self.ledger.bot_only_line()
                  + chr(10) + "  " + self.ledger.unexplained_line()
                  + chr(10) + "  " + self.ledger.two_window_line())
@@ -487,6 +491,19 @@ class Desk(tk.Tk):
             alone=p.alone, consensus=p.consensus,
             bucket=bucket_for(p.alone, p.consensus))
 
+    def _fee_rate(self, ticker):
+        """The taker rate for this market's series. Cached per session by
+        `fees`; falls back to the FULL rate, which overstates the cost -- the
+        only safe direction when a lookup fails."""
+        try:
+            rate, known = fees.rate_for(ticker, DEMO._client())
+            if not known and ticker not in self._fee_warned:
+                self._fee_warned.add(ticker)
+                self.events.put(("log", fees.note_for(ticker)))
+            return rate
+        except Exception:
+            return None
+
     def _stake(self, p=None) -> float:
         """What one bet may cost right now, in the tier this pick is in.
 
@@ -550,7 +567,11 @@ class Desk(tk.Tk):
     def _live_card(self, p) -> None:
         q = self.quotes.get(p.ticker)
         price = q.ask_c if (q and q.ask_c) else p.quoted_price_c
-        bet = size_bet(price, self._stake(p))
+        # ⚠ THE FEE RATE COMES FROM THE SERIES, NOT FROM A CONSTANT. Kalshi
+        # charges HALF fee on KXMLBGAME, which is everything this desk trades.
+        # Without it the break-even shown -- the number he actually reasons
+        # with -- overstates the bar by about one win in a hundred.
+        bet = size_bet(price, self._stake(p), self._fee_rate(p.ticker))
         start = p.starts_local.strftime("%a %d %b, %H:%M")
 
         f = self._card_shell(f"  {p.team}   —   {p.matchup}  ")
@@ -1120,7 +1141,9 @@ class Desk(tk.Tk):
                     # no live quote yet).
                     q = self.quotes.get(p.ticker)
                     price = q.ask_c if (q and q.ask_c) else p.quoted_price_c
-                    bet = size_bet(price, self._stake(p))
+                    # Half fee on KXMLBGAME -- see _fee_rate and src/fees.py.
+                    bet = size_bet(price, self._stake(p),
+                                   self._fee_rate(p.ticker))
                     if not bet.placeable:
                         continue
                     entry = self._entry_from(p, bet)

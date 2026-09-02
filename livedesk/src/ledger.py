@@ -68,8 +68,23 @@ MAX_POSITIONS_PER_GAME = 2
 # second void closes it for good. See signals_played() for why.
 MAX_VOIDS_BEFORE_CLOSED = 2
 
-# --- Guard 5: the daily caps, his numbers --------------------------------
-# Guard 5: the daily caps
+# --- Guard 5: the daily caps ---------------------------------------------
+# ⚠ THE BANNER HERE USED TO READ "his numbers". THAT WAS TRUE OF ONE OF THEM.
+#
+# `MAX_STAKE_PER_DAY_USD` is his: $50 a day.
+#
+# `MAX_ORDERS_PER_DAY = 9999` IS NOT HIS AND HE HAS NEVER BEEN ASKED. It was
+# set by the tool that built production execution on 2026-08-14 (commit
+# 6e93993), whose own notes say "Daily caps set to 999999 (effectively
+# unlimited)". Traced through git on 2026-09-01 for mailbox 023; there is no
+# record of him choosing it anywhere.
+#
+# **So there is effectively NO cap on the number of bets a day** -- only the
+# $50 of stake. That may well be what he wants, since the money cap binds
+# first either way. But it is a tool's default sitting under a banner that
+# claimed he picked it, and a reader trusting that banner is the hazard.
+# Whether he wants a count cap is HIS to answer; the value is unchanged until
+# he does.
 MAX_ORDERS_PER_DAY = 9999
 MAX_STAKE_PER_DAY_USD = 50.00
 
@@ -211,6 +226,14 @@ class Entry:
 
 
 class Ledger:
+    #: True when the starting balance was not in the file and had to be
+    #: assumed. Shown on screen -- see `start_line()`.
+    start_is_assumed = False
+
+    #: Sub-tolerance disagreements with his account, newest last. Kept so a
+    #: one-sided pattern is visible; a single one means nothing.
+    tolerated = []
+
     def __init__(self, path=None):
         # ⚠ RESOLVED AT CALL TIME, NOT AS A DEFAULT ARGUMENT. It used to be
         # `path: Path = LEDGER_PATH`, and a default argument is bound once when
@@ -254,11 +277,24 @@ class Ledger:
                 f"has already been bet, so this window will not start without "
                 f"it. Fix or move the file and restart.")
         self.entries = [Entry(**e) for e in raw.get("entries", [])]
+        # ⚠ A MISSING START IS RECORDED AS MISSING, NOT DEFAULTED SILENTLY.
+        #
+        # This used to fall back to `BANKROLL_START` ($83). His real start is
+        # $106. A fresh or damaged ledger would therefore have claimed he began
+        # with $83, and EVERY profit line, the peak, and the 35% trailing stop
+        # would have been wrong by $23 with nothing anywhere saying so.
+        #
+        # The value still defaults, because the arithmetic has to produce a
+        # number -- but `start_is_assumed` makes it visible on screen, so a
+        # wrong figure cannot pass for a right one. Mailbox 023.
+        raw_start = raw.get("account_start_usd")
+        self.start_is_assumed = raw_start is None
         self.account_start_usd = float(
-            raw.get("account_start_usd", BANKROLL_START))
+            BANKROLL_START if raw_start is None else raw_start)
         b = raw.get("account_balance_usd")
         self.account_balance_usd = None if b is None else float(b)
         self.account_checked_utc = raw.get("account_checked_utc")
+        self.tolerated = list(raw.get("tolerated") or [])
         self.peak_total_usd = float(raw.get("peak_total_usd",
                                             self.account_start_usd))
 
@@ -272,6 +308,7 @@ class Ledger:
                    "account_balance_usd": self.account_balance_usd,
                    "account_checked_utc": self.account_checked_utc,
                    "peak_total_usd": self.peak_total_usd,
+                   "tolerated": list(self.tolerated or []),
                    "account_floor_usd": ACCOUNT_FLOOR_USD,
                    "trailing_drop_frac": TRAILING_DROP_FRAC,
                    "written_utc": _now(),
@@ -623,6 +660,49 @@ class Ledger:
                     - self.at_risk_usd())
         return round(self.account_balance_usd - expected, 2), round(expected, 2)
 
+    def note_tolerated(self, diff: float) -> None:
+        """Keep every sub-tolerance disagreement, with its sign.
+
+        Bounded at 200 so a long-running desk cannot grow the file without
+        limit -- the oldest go first, since a drift pattern is a thing about
+        recent behaviour.
+        """
+        if abs(diff) < 0.005:
+            self.tolerated = []          # dead on: nothing to explain
+            return
+        self.tolerated = (self.tolerated + [round(diff, 2)])[-200:]
+
+    def tolerated_note(self) -> str:
+        """Says something only once a pattern exists, not on a single wobble.
+
+        Three or more in the SAME direction is the shape that matters: fee
+        rounding is symmetric, so a one-sided run is something real.
+        """
+        rows = [d for d in (self.tolerated or []) if abs(d) >= 0.005]
+        if len(rows) < 3:
+            return ""
+        same = all(d > 0 for d in rows) or all(d < 0 for d in rows)
+        if not same:
+            return ""
+        total = round(sum(rows), 2)
+        return (f"  --  and {len(rows)} small differences in a row have all "
+                f"gone the same way, ${abs(total):.2f} in total. Fee rounding "
+                f"goes both ways, so that is worth a look.")
+
+    def start_line(self) -> str:
+        """Loud when the starting balance is a guess, silent when it is known.
+
+        A wrong start moves the profit figure, the peak AND the trailing stop
+        together, so all three look internally consistent while all three are
+        wrong. That is the shape of error nobody catches by reading a screen.
+        """
+        if not self.start_is_assumed:
+            return ""
+        return (f"!! STARTING BALANCE NOT RECORDED. Assuming "
+                f"${self.account_start_usd:.2f}, which is a guess -- every "
+                f"profit figure and the stop level are wrong if it is not "
+                f"right. Type in what you actually started with.")
+
     def bot_only_line(self) -> str:
         """This bot's own money, labelled as this bot's own money."""
         return (f"THIS BOT ONLY: ${self.realised_usd():+.2f} on "
@@ -725,20 +805,48 @@ class Ledger:
                     f"until tomorrow.")
         return None
 
+    def live_stake_usd(self):
+        """What ONE bet costs right now, or None if his balance is unknown.
+
+        ⚠ THE FROZEN CONSTANT IS NOT AN ANSWER. `money.STAKE_USD` is $4.15 --
+        5% of the $83 the account started at in a different era. Sizing became
+        a percentage of the LIVE balance on 2026-08-16 and flat 5% on the 25th,
+        so at $51 a bet is $2.57, not $4.15.
+
+        Dividing the daily allowance by $4.15 said "money runs out after 6
+        more" when the true figure was 11. **He reads that number when deciding
+        whether to leave the desk running**, and it was understating his room
+        by nearly half. Found by the audit in mailbox 023.
+        """
+        if self.account_balance_usd is None:
+            return None
+        try:
+            from money import stake_for_bucket
+            s = stake_for_bucket(self.account_balance_usd, True, "")
+        except Exception:
+            return None
+        return s if s > 0 else None
+
     def daily_line(self) -> str:
         """Both counters and WHICH ONE will actually stop him.
 
-        At $4.15 a bet the money runs out at 6, so the limit of 10 orders can
-        never be reached. That is fine as a belt and braces, but he must not
-        think he raised his ceiling from 6 to 10 when he did not. Computed, so
-        it stays true if any of the three numbers change.
+        Computed from the stake actually in force, so it stays true when the
+        sizing rule changes -- which it has done twice.
         """
         try:
             n, spent = self.daily_used()
         except ValueError as exc:
             return f"today: cannot be counted, so no bets — {exc}"
         left_money = MAX_STAKE_PER_DAY_USD - spent
-        stake = STAKE_USD if STAKE_USD > 0 else 0.01
+        stake = self.live_stake_usd()
+        if stake is None:
+            # ⚠ SAY SO RATHER THAN GUESSING. The old code fell back to the
+            # dead $4.15 here, which is how a wrong number reached the screen
+            # looking exactly like a right one.
+            return (f"today: {n} of {MAX_ORDERS_PER_DAY} bets  ·  "
+                    f"${spent:.2f} of ${MAX_STAKE_PER_DAY_USD:.2f}  ·  how "
+                    f"many more that allows is not known until your balance "
+                    f"is read")
         bets_money_allows = int((left_money + 1e-9) / stake)
         bets_count_allows = MAX_ORDERS_PER_DAY - n
         if bets_money_allows < bets_count_allows:
@@ -1091,8 +1199,21 @@ class Ledger:
         exp = self.expected_account_usd()
         diff = round(self.account_balance_usd - exp, 2)
         if abs(diff) <= RECONCILE_TOLERANCE_USD:
+            # ⚠ RECORD WHAT THE TOLERANCE SWALLOWS rather than discarding it.
+            # A dollar of slack is needed because fees round -- but ONE 90-cent
+            # drift is noise and twenty in the same direction is a defect, and
+            # nothing but the aggregate can tell those apart. The Miami
+            # better-fill discovery was $1.04, barely over this line: four
+            # cents smaller and it would have vanished in silence. Mailbox 023.
+            #
+            # ⚠ AND IT GOES HERE, NOT IN `_reconcile_balance_old`. I put it
+            # there first. That function is dead -- nothing calls it -- so the
+            # logging would have run zero times while looking implemented.
+            # Caught by running it, not by a test.
+            self.note_tolerated(diff)
             return (f"account ${self.account_balance_usd:.2f}, and this tool's "
-                    f"own bets account for all of it")
+                    f"own bets account for all of it"
+                    + self.tolerated_note())
         return (f"account ${self.account_balance_usd:.2f}; {usd(diff)} of that "
                 f"is not from this tool — your own trades, which is expected")
 

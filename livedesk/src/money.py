@@ -186,7 +186,7 @@ class Bet:
         return self.contracts > 0
 
 
-def size_bet(price_c: int, stake_usd: float = STAKE_USD) -> Bet:
+def size_bet(price_c: int, stake_usd: float = STAKE_USD, rate=None) -> Bet:
     """How many contracts `stake_usd` buys at this price, and what happens
     either way.
 
@@ -201,6 +201,29 @@ def size_bet(price_c: int, stake_usd: float = STAKE_USD) -> Bet:
     still cannot spend more than one day's budget on one bet.
 
     A nonsense stake sizes to no bet, rather than to a default one.
+
+    ⚠ `rate` IS THE TAKER RATE FOR THIS SERIES AND IT IS NOT OPTIONAL IN
+    PRACTICE. Kalshi charges HALF fee on `KXMLBGAME` and `KXMLBTOTAL`, which is
+    everything this desk trades. This function called `fee_order_cents` with no
+    rate, so it used the full one and every fee, cost and break-even it
+    produced was too high.
+
+    **In money that is pennies** -- about 3 cents on a $2 stake. The reason it
+    matters is `breakeven_out_of_100`: that is the number on screen telling him
+    how many wins in 100 he needs, and it was overstating the bar by roughly
+    one win in a hundred. That is the figure he reasons with.
+
+    **The rate is passed in, never looked up here.** `money.py` does no
+    network, and hardcoding 0.5 would be the eighteenth copy of a fee fact that
+    is supposed to have one home. `fees.rate_for(ticker)` reads it per series
+    from the API and caches it. Omitting it falls back to the FULL rate, which
+    overstates the cost -- the only safe direction for a default.
+
+    **`fee_order_cents`, deliberately, NOT `fee_rate_cents`.** These numbers are
+    what a real order actually costs him, and Kalshi's per-order round-up is
+    real money here. The opposite advice went to `mlb-paper`, whose fee sits
+    inside an expectancy calculation where the round-up is an artefact. Both
+    are right for their own caller.
     """
     try:
         stake_usd = float(stake_usd)
@@ -215,7 +238,9 @@ def size_bet(price_c: int, stake_usd: float = STAKE_USD) -> Bet:
     if contracts < 1:
         return Bet(price_c, 0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
-    fee_c = float(fee_order_cents(price_c, contracts))
+    fee_c = float(fee_order_cents(price_c, contracts)
+                  if rate is None
+                  else fee_order_cents(price_c, contracts, rate))
     stake_c = contracts * price_c
     cost_c = stake_c + fee_c
     payout_c = contracts * 100.0
