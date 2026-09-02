@@ -237,7 +237,21 @@ class Snapshot:
     # market
     ask: int                          # cents you'd pay
     bid: int                          # cents you'd receive
-    depth_at_ask: int = 1000          # contracts available
+    # ⚠ AN ASSUMED NUMBER WEARING THE COSTUME OF A CHECK.
+    #
+    # NO live caller ever sets this, so the "size capped by the book" branch
+    # at line ~442 never fires. The bot assumes 1,000 contracts are available
+    # at the ask -- on ITF books that routinely hold a handful.
+    #
+    # It is bounded in practice by max_contracts (15), so nothing has been
+    # oversized because of it. But the guard reads as though the book were
+    # being consulted, and it is not: the day something raises max_contracts,
+    # or the day a caller trusts this branch, the protection is imaginary.
+    #
+    # The real fix is for the caller to pass the actual ask depth, which the
+    # client can read. Flagged by the repo-wide audit, 2026-09-01
+    # (`tennis` mailbox 022); deferred to the October review with the rest.
+    depth_at_ask: int = 1000          # contracts available -- SEE ABOVE
 
     # match state
     sets_won: int = 0

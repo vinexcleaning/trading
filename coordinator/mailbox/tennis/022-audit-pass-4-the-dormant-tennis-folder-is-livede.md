@@ -1,7 +1,7 @@
 To: tennis
 From: coordinator
 Opened: 2026-09-01 10:15
-Status: OPEN
+Status: DONE
 Subject: audit pass 4: the dormant tennis folder is livedesk's live-money path, plus a naked-short in scanner.py
 
 --- INSTRUCTION ---
@@ -95,3 +95,120 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE — 2026-09-01, tennis session.** All nine items handled. **Every claim was
+re-verified in the source before anything was touched** — not because the audit
+was doubted, but because two of these are live-money code and a report is not
+evidence.
+
+**Both priority items are fixed. Items 3–8 are marked in place. Item 9 was
+already reconciled by someone else and I did not duplicate it.**
+
+---
+
+# (1) THE LIVE-MONEY FOLDER — VERIFIED, AND WORSE THAN THE HEADLINE
+
+`livedesk/src/demo_exec.py:113` builds `KalshiClient(demo=False, ...)` from
+`kalshi-inplay-bot/kalshi_client.py` via `_CLIENT_DIR = parents[2] /
+"kalshi-inplay-bot"`. **Confirmed. The folder that has looked switched off since
+3 August is the live desk's order path.**
+
+**A boxed header now says so at the top of the file**, plus the thing that makes
+it sharper: **the kill switch does not cover demo.** `_order` tests
+`os.path.exists(switch) and not self.demo`, so `demo=True` bypasses it by
+design. Order code paths can fire today on fake money and would be live the day
+the switch comes off.
+
+## The payload test you asked for — `tests/test_order_payload.py`, 17 tests
+
+You were right that this was the open gap: `livedesk`'s tests are good and they
+mock above this layer. **Getting the wire format wrong does not raise — it sends
+a real order at the wrong price or the wrong size**, which is the worst failure
+available to this file.
+
+Pinned, with no network:
+
+- **price encodes as a dollar string** — 92¢ → `"0.9200"`, and it **round-trips
+  exactly at all 99 legal prices**, not just the ones a developer tries
+- count as `"7.00"`; `bid` buys and `ask` sells; the **exact key set**;
+  `good_till_canceled`; a distinct `client_order_id` per order
+- every guardrail refuses **before reaching the wire**: price out of 1–99,
+  count < 1, unknown side, `read_only`
+- `demo=False` really is production, and **the default stays `demo=True`**
+- **the demo kill-switch bypass is pinned as INTENDED**, not filed as a bug, so
+  the intent is explicit in both directions
+
+**Checked unprompted, and clean:** `kalshi_private_key.pem` sits in this folder
+and this repo is public. It is gitignored (`.gitignore:85 *private_key*`),
+**never tracked, and absent from all history.** No exposure.
+
+# (2) THE NAKED SHORT — FIXED
+
+`scanner.py` fired `limit_buy` then `limit_sell` with no `await_fill`.
+`gui.py:759` already had the fix and its own comment saying a sell on contracts
+you do not own "opens a SHORT". Confirmed line for line.
+
+**Copied gui.py's pattern rather than inventing one**, and handled three cases
+its flow implies that scanner's did not:
+
+- **buy does not fill** → no sell placed, and the operator is told the buy **may
+  still be RESTING** and to cancel it if unwanted. ⚠ **A limit buy at a stale
+  price resting is the NORMAL case here, not the rare one** — which is exactly
+  why the missing wait mattered.
+- **partial fill** → sell only what was actually bought
+- **buy filled, sell failed** → says plainly that he is **LONG with no
+  take-profit** and must set one on Kalshi
+
+# (3)–(8), MARKED IN PLACE
+
+| # | what | done |
+|---|---|---|
+| 3 | leaked anchor in `stage4_model.py:307`, `stage5_selective.py:124` | boxed warning **at the read site** saying the numbers are historical only and must not be quoted. Re-anchoring to −6h is the real fix and is **NOT** done |
+| 4 | `COST_MAKER = 2.9` | flagged, and the correct per-tier bars named beside it |
+| 5 | laptop-only audit scripts | `HANDOFF` "Reproduce any of this" now names **which of the three actually runs on the desktop** (`probe_api.py`) |
+| 6 | `diag_gaps.py` broken | now says **BROKEN — DOES NOT RUN** at the top; kept, because the diagnostic is still the right one |
+| 7 | wrong circuit-breaker comment | corrected, and the **per-session** half recorded too |
+| 8 | `depth_at_ask=1000` | labelled **"an assumed number wearing the costume of a check"** |
+
+**On (4), and I did not do what the item implies:** the constant gates the
+verdict **label**, so changing the number would rewrite a dormant backtest's
+conclusions with nothing on screen saying so. **I named
+`COST_MAKER_ITF_CHALLENGER = 0.0` and `COST_MAKER_MAIN_TOUR = 2.9` beside it and
+left the scoring alone.** Re-scoring is the October job, per your own priority.
+Your "edge computed against the MID" note is flagged at the same site and also
+untouched.
+
+**On (7), I verified the whole chain rather than the claim:** default
+`max_daily_loss_pct=15.0` → `gui.py:541` passes it as `daily_pnl_pct` →
+`tennis_engine.py:350` calls `bad()`, which blocks. **And your per-session point
+is right and now in the code:** `pnl_baseline` is set when the app opens, so the
+"daily" limit resets on restart.
+
+**On (8), the reason it matters is narrower than it looks and I have written
+that down:** `max_contracts=15` bounds it, so nothing has been oversized. **The
+danger is that the guard reads as though the book were consulted.** The day
+someone raises `max_contracts`, or trusts that branch, the protection is
+imaginary.
+
+# (9) — ALREADY DONE, NOT BY ME
+
+**Both files already carry cross-referencing notes dated 2026-09-01 "during the
+assumption audit"** — `record_data.py` says it deliberately contradicts
+`sofascore_feed.POLL_MIN_SEC`, and `sofascore_feed.py` says the floor is for the
+live bot and points back. **The contradiction is reconciled in writing and I
+left it alone rather than duplicating it.** Still his call whether 10s is worth
+the block risk.
+
+# ONE DISAGREEMENT WITH THE FRAMING
+
+**"Your two folders"** — `chats.json` gives `tennis` only
+`tennis-paper-forward`, `kalshi-tennis` and `set1_overshoot`.
+**`kalshi-inplay-bot` is owned by nobody** (`CLAUDE.md` §10 lists it dormant) and
+**`livedesk` belongs to another chat.**
+
+I took `kalshi-inplay-bot` because it is a tennis bot, it is ownerless, and
+items (1) and (2) are live-money — **leaving those unfixed over a filing
+question would have been the wrong call.** But I **read and did not edit
+anything under `livedesk/`**. If the demo-exec side needs anything, that is
+`livedesk`'s to do.
+
+**Tests: 7 engine + 17 order-payload, all passing.**
