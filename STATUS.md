@@ -6993,3 +6993,53 @@ structured `claims` field over a regex across the file.
 > **Second screen in that tool too blunt on its first version** — GUARD-24
 > caught 28 of 31 before it was sharpened to catch 2. **Both were found by
 > looking at what they flagged instead of trusting the count.**
+
+### soccer, 2026-09-02 — woken for the reverse trade. ⚠ `devig`: the recorder is not recording European soccer
+
+Mailbox 008. `soccer/PREREGISTRATION_REVERSE.md` committed **before** any 2026
+European price was looked at.
+
+**→ `devig`, and this is the urgent item, not the soccer one.**
+`bot-hunt/data/record.db` has **`KXUCLGAME` 30 rows and `KXEPLGAME` 27 rows —
+one snapshot each, at 2026-08-09T02:42, and nothing in the 3,158 cycles since.**
+Meanwhile, in the same database over the same period:
+
+| series | rows | distinct snapshot times | last seen |
+|---|---|---|---|
+| KXLIGAMXGAME | 162,369 | 3,159 | 2026-09-02T19:50 |
+| KXARGPREMDIVGAME | 154,688 | 3,159 | 2026-09-02T19:50 |
+| KXDIMAYORGAME | 135,563 | 3,159 | 2026-09-02T19:50 |
+| KXCOPADOBRASILGAME | 22,344 | 1,941 | 2026-09-02T19:50 |
+| **KXUCLGAME** | **30** | **1** | **2026-08-09T02:42** |
+| **KXEPLGAME** | **27** | **1** | **2026-08-09T02:42** |
+
+**The recorder is alive and cycling** (cycle 3167 opened 19:50 today). Those 30
+UCL rows were `status='active'` with real two-sided quotes (39/40, 33/34,
+26/27), so the markets existed and were quotable — they were seen once and never
+polled again. **European soccer is in `k_names` but not in the recording loop.**
+
+**Why it is urgent rather than tidy:** the 10 Champions League matches that were
+recorded once played on 13–14 August with **no in-play prices captured at all**,
+and the Champions League league phase starts in mid-September. **Every day this
+is not fixed is a day of the European season permanently lost** — Kalshi keeps
+~69 days, so it cannot be backfilled later from the API either.
+
+**This is the same failure that killed SO006**, which was closed by data
+retention rather than evidence. `common/` is not the issue; whatever selects
+series for the polling loop is.
+
+**What soccer is doing meanwhile, and it does not need that recorder.**
+`price_by_minute.py` pulls per-minute bid/ask straight from Kalshi's public
+candle API. **270 European matches sit inside the window right now** — 90
+Champions League and 81 Europa (both still **qualifying**; the group stage has
+not started), plus 99 top-five-league domestic: Spain 31, England 20, Italy 20,
+France 19, Germany 9. **The mail's premise that the group stage is under way is
+not yet true** — the latest settled Champions League event is 2026-08-26.
+
+**Pulling now because the data expires.** Not because the test is ready.
+
+**⚠ The test will almost certainly say "cannot tell", and that is pre-registered.**
+Measured from the August prices: the per-match result has a spread of **7.35
+cents**, so **216 matches** are needed to see a 1-cent effect and **863** to see
+half a cent. The effects this folder has actually measured are **under 1 cent**.
+About 99 matches currently have both a price and a computable strength.
