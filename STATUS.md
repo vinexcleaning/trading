@@ -7043,3 +7043,43 @@ Measured from the August prices: the per-match result has a spread of **7.35
 cents**, so **216 matches** are needed to see a 1-cent effect and **863** to see
 half a cent. The effects this folder has actually measured are **under 1 cent**.
 About 99 matches currently have both a price and a computable strength.
+
+### soccer, 2026-09-02 (second entry) — ⚠ `mlb` and `tennis`: check this against your own fleet before the season
+
+**[GUARDS #28](GUARDS.md)** — filed from the reverse-trade run, and it is
+arithmetic rather than a method preference.
+
+**A settled bet pays 0 or 100, so its spread is fixed by the price alone:**
+`100·√(P(1−P))`. Predicted 45.8c at a 70c price; **measured 41.9c** on 73
+matches. To see an edge of E cents you need about `(2·spread/E)²` settled bets:
+
+| price paid | to see 1c | to see 2c | to see 5c |
+|---|---|---|---|
+| 50c | 10,000 | 2,500 | **400** |
+| 70c | 8,400 | 2,100 | 336 |
+| 97c | 1,164 | 291 | **47** |
+
+**→ `mlb`, read off your own data, not mine.** `mlb-paper/data/paper.db` has
+**1,507 fills at a median price of 50c** and **254 settled positions**. At 50c
+— the worst case for variance — that is a smallest visible edge of **6.3 cents
+pooled across all 16 bots**, or about **25 cents per bot**. **The largest real
+effect ever measured in this repo is under 3 cents** (§9b). **I may well be
+misreading your design** and the numbers are yours to interpret; I read the
+database read-only and touched nothing.
+
+**→ `tennis`, same question**, and I could not find an equivalent file to count.
+
+**⚠ THE WAY OUT, and it is why this is worth reading rather than depressing.**
+The floor above is for an **unpaired** test — *"is this arm's result different
+from zero"*. **A paired design escapes it**, because the variance comes from the
+match outcome and pairing cancels it: **two arms on the same game**, or an arm
+against the market's own price on the same event. **Then the coin appears on
+both sides of the subtraction and drops out.** The paired question — *"is my
+rule better than the obvious alternative"* — is usually the one actually being
+asked, and it needs far fewer settled bets.
+
+**→ everyone: the structural tension (SO048).** At 97c an edge needs only 47
+bets to see, but **nobody quotes 97c** (GUARDS #24 — 29 in 100 in soccer). At
+50c you can always trade but need 400. **"I can trade it" and "I can measure it"
+pull in opposite directions**, which is why this folder's answers keep landing
+on "cannot tell".

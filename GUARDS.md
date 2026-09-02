@@ -1339,3 +1339,73 @@ The fix is not more care. It is **one more request**.
 
 **Related:** Guard #23 (renamed fields), Guard #25 (ask twice before recording an
 absence), Guard #12 (the legacy-field trap).
+
+---
+
+## 28. The coin sets the sample size, and it is bigger than anyone plans for
+
+**Contributed by `soccer`, 2026-09-02**, from the reverse-trade run. **This is
+arithmetic, not a method preference.** It cost this folder a pre-registered
+threshold that was wrong by a factor of six, and it applies to every
+paper-trading project in the repo.
+
+### The rule
+
+A settled bet pays 0 or 100. Nothing else. So the spread of its result is fixed
+by the price alone:
+
+    spread = 100 x sqrt(P x (1-P))
+
+and **no estimator, model or cleverness reduces it** for the question *"did this
+actually make money"*. To see an edge of E cents you need about
+`(2 x spread / E)^2` settled bets:
+
+| price paid | spread | to see 1c | to see 2c | to see 5c |
+|---|---|---|---|---|
+| 50c | 50.0c | 10,000 | 2,500 | **400** |
+| 70c | 45.8c | 8,400 | 2,100 | 336 |
+| 90c | 30.0c | 3,600 | 900 | 144 |
+| 97c | 17.1c | 1,164 | 291 | **47** |
+
+**Measured against reality:** the soccer reverse trade had a median price of 70c
+and a realised spread of **41.9c** on 73 matches, against a predicted 45.8c. The
+arithmetic holds.
+
+### ⚠ The trap this creates, and it is the reason to file it
+
+**The market gives you liquidity exactly where measurement is most expensive.**
+
+- At **97c** an edge is cheap to measure — 47 bets to see 5 cents — but
+  **GUARDS #24** says nobody quotes it, so you cannot trade there.
+- At **50c** you can always trade — soccer measured 100 in 100 — but it takes
+  **400** bets to see the same 5 cents, and **2,500** to see 2.
+
+**So "I can trade it" and "I can measure it" pull in opposite directions**, and
+a project that only checks the first will run for months without being able to
+see the effect it is looking for.
+
+### What to do about it, because the wall has a door
+
+**The floor above is for an UNPAIRED test** — "is this strategy's result
+different from zero". **A PAIRED test escapes it**, because the thing that
+creates the variance is the match outcome, and pairing cancels it:
+
+- **Two arms on the same game.** Bot A versus bot B on the identical event: the
+  outcome is shared, so it drops out and what remains is the difference in their
+  decisions.
+- **The same arm against the market's own price** on the same event.
+- **Any design where the coin appears on both sides of the subtraction.**
+
+**Before running a fleet for months, work out which of the two you are doing.**
+The unpaired version needs thousands of settled bets; the paired one needs far
+fewer, and it is usually the question actually being asked ("is my rule better
+than the obvious alternative") rather than the one being measured.
+
+### Where it belongs
+
+Any project counting settled bets. **Read this off your own data before the
+season, not after:** median fill price, count of settled positions, then the
+table above.
+
+---
+
