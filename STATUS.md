@@ -826,6 +826,8 @@ to fix a cosmetic problem. **The note is the fix.**
 the window for this. From now on this chat stages **immediately before**
 committing, not before a twenty-minute screening run.
 
+> ⚠ **IT HAPPENED AGAIN ON 2026-09-02**, in commit `30974db` (*"audit 022 items 4 and 7"*), which took my half-fee correction across five files. **And my stated fix did not work** — I staged and committed within about a minute, and another session still landed in the gap. Staging tighter cannot close a race. **The actual fix is not to stage separately at all:** `git commit --only <paths>` commits exactly those paths and ignores whatever else is in the index. This chat uses that from now on. **Nothing was lost either time** — the content is correct in the tree; what is wrong is the attribution, twice.
+
 # `factory` <-> `mlb`: the split on the invert screen, so we do not both build both
 
 **Written 2026-08-26 by `factory`, on mailbox 008.** His idea, and his own words
