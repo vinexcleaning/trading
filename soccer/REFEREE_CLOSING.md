@@ -171,3 +171,77 @@ sorting of that attack.
 **Nothing else is unresolved.** The closure stands, and the post-mortem's own
 finding — that every one of the four corrections was a number that lost the
 condition it was measured under — is not in dispute.
+
+---
+
+# The Referee on the reverse trade — 2026-09-02
+
+`reflect.py --file soccer/reports/reverse_trade.txt` ran first; its one real hit
+(numbers with no dates) is fixed — the report now carries its own window,
+2026-07-07 to 2026-08-31, in its header.
+
+## 1. STANDS
+
+- **The reverse trade is placeable.** 100 in 100 of the entries that existed had
+  something to buy; zero had nothing. *What makes it survive:* it is a direct
+  count, not a model, and it is the exact mirror of SO041 measured by the same
+  code path. It is also what GUARDS #24 predicts, so it is a passed prediction
+  rather than a surprise.
+
+- **The verdict "cannot tell" at 73 matches.** *What makes it survive:* the
+  threshold was in `PREREGISTRATION_REVERSE.md` before any European price was
+  read, and the check is mechanical in the code rather than a judgement made
+  after seeing the number.
+
+- **An edge bigger than about 5½ cents is ruled out.** *What makes it survive:*
+  it is the upper edge of the measured range, +5.46c, and it needs no threshold
+  argument at all.
+
+## 2. DOWNGRADED
+
+- **was:** "216 matches are needed before this can be judged."
+  **now:** "**281** matches to see a 5-cent edge; 1,755 for 2 cents; **7,022**
+  for 1 cent."
+  **because:** the 216 came from a spread of 7.35 cents, which was the spread of
+  *expected-value differences* in the August work. This test measures **realised
+  outcomes** — win ~30 cents or lose ~70 — whose spread is **41.9 cents**.
+  **The correction makes the bar harder, which is the only direction an
+  amendment may move after seeing data.** The verdict is unchanged under both.
+
+- **was:** (implied by the per-competition table) that leagues differ.
+  **now:** **they do not differ measurably here.** England −22.85c on 7 matches
+  and Italy +19.55c on 7 matches is what 7-match cells produce.
+  **because:** this folder withdrew a claim four weeks ago for reading a rank
+  out of a table, and reading these rows as a league difference would be the
+  same mistake with a smaller sample.
+
+- **was:** the folder's handover said the reverse trade "needs Premier League or
+  Champions League group-stage prices".
+  **now:** **it needs volume, not that competition.** 88 top-five-league matches
+  now exist and did not move the answer; what is missing is roughly four times
+  as many matches, from anywhere.
+  **because:** the binding constraint turned out to be the spread of realised
+  outcomes, which is the same in every competition.
+
+## 3. FOR THE USER — genuinely unresolved
+
+**One, and it is a decision about effort rather than about football.**
+
+- **the question:** Is a 5-cent edge worth five more weeks of waiting to test,
+  given that a 1-cent edge can never be tested here at all?
+- **one side says:** yes, and cheaply. 281 matches is about five weeks of
+  European football, the pull is unattended, and the range already excludes
+  anything above 5½ cents — so the remaining window is narrow and would be
+  closed for good. The trade is placeable, the loss is capped, and this is the
+  only descendant of the original idea still standing.
+- **the other side says:** the effects this folder actually measures are **under
+  1 cent**, and that size needs about 7,000 matches — two seasons — which
+  Kalshi's 69-day retention makes impossible without a recorder that has never
+  recorded European soccer. So a 5-cent test is looking for something much
+  bigger than anything previously found here, and a "cannot tell" in five weeks
+  is the likely outcome of that too.
+- **what would settle it:** nothing available today. **The decision is whether
+  to spend five weeks of unattended pulling on a narrow remaining window.** It
+  costs no attention until the result arrives.
+
+**Nothing else is unresolved.**

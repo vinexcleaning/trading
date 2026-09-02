@@ -119,6 +119,12 @@ def main():
     out.append(f"match, minute {LO}-{HI}, priced at the ASK {AFTER} minutes later,")
     out.append("held to settlement. One number per match.")
     out.append("")
+    if rows:
+        ds = sorted(r["date"] for r in rows)
+        out.append(f"DATES: matches played {ds[0]} to {ds[-1]}, which is what")
+        out.append("Kalshi's ~69-day price window held on the day this was run.")
+        out.append("**Every number below is that window and nothing else.**")
+        out.append("")
     out.append("AVAILABILITY FIRST, per GUARDS #24:")
     out.append(f"    matches with a tradeable entry      {len(rows)}")
     out.append(f"    entry existed but nothing to buy    {no_trade}")

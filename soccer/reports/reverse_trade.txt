@@ -5,6 +5,10 @@ Implements PREREGISTRATION_REVERSE.md exactly. First goal of the
 match, minute 20-45, priced at the ASK 2 minutes later,
 held to settlement. One number per match.
 
+DATES: matches played 2026-07-07 to 2026-08-31, which is what
+Kalshi's ~69-day price window held on the day this was run.
+**Every number below is that window and nothing else.**
+
 AVAILABILITY FIRST, per GUARDS #24:
     matches with a tradeable entry      73
     entry existed but nothing to buy    0
