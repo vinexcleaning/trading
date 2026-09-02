@@ -437,3 +437,45 @@ was `>= 90c` while the code said `80.0`. **I corrected the COMMENT, not the
 code** — the code is what produced the published result, and editing the number
 to match a comment would silently change a number already reported. Recorded
 in the file that the 80-vs-90 sensitivity has NOT been re-tested.
+
+## 2026-09-02 — the half fee: fixed forward, NOT re-priced backward
+
+Mailbox 026, from the strategy factory via `coordinator`. **I verified it myself
+against the live API before changing anything, as they asked** — `fee_multiplier`
+is **0.5** on `KXMLBGAME` and `KXMLBTOTAL`, and **1.0** on `KXATPMATCH`,
+`KXNFLGAME` and `KXINXU`. Not a global change.
+
+**Two errors stacked in the entry gate and both made it stricter:**
+
+1. the **full** taker rate where Kalshi charges half;
+2. `fee_order_cents(price, 1)` — the per-**order** round-up applied to a single
+   contract, when `common/kalshi_fees.py`'s own docstring says `fee_rate_cents`
+   is the one for expectancy.
+
+At a 52c ask the gate subtracted **2.000c** and now subtracts **0.874c**.
+
+**Decision 1 — fixed going forward, in both the live path and the replay.**
+A wrong venue fee is a **factual error**, not a tuned parameter, so this is
+unlike `SLIPPAGE_C` (which I left alone yesterday because it is a modelling
+assumption with real uncertainty). That distinction is the whole reason the two
+were treated differently, and it should be stated whenever either comes up.
+
+**Decision 2 — the historical book is NOT re-priced.** Recorded `entry_fee_c`
+overstates the real fee by **$154.82 across 1,432 positions** ($317.31 recorded
+against $162.49 real). I am leaving it. Re-pricing would change every bankroll
+retroactively, and bankroll drives `stake_for`, so the sizes the bots actually
+chose would no longer follow from the record. **The adjustment is reported as a
+separate column instead** — e.g. `starter__hold` $34.38 recorded, $55.54 with
+fees corrected. Visible, not silently baked in.
+
+This differs from the settlement bug, where I DID rewrite the book: there the
+recorded **outcome** was wrong. Here the outcome is right and only a cost is
+overstated.
+
+**Decision 3 — the 16 bots were NOT re-ranked on the re-run**, per 026's own
+warning. Re-ranking on a re-measured window is best-of-16 wearing a new hat.
+
+**What we cannot say, and I have not:** when the multiplier became 0.5. The only
+per-series multiplier stored in this repo is one snapshot, **2026-08-18**, and
+Kalshi serves no historical series metadata. **True on 18 August, true today,
+unknown before and unrecoverable.**
