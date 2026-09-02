@@ -304,6 +304,22 @@ def join_bookmakers(test_df):
 
 def join_kalshi(test_df):
     """Join held-out predictions to Kalshi events + their pre-match mid."""
+    # ==================================================================
+    # WARNING: THIS IS THE LEAKED ANCHOR. Re-running this script reproduces
+    # a benchmark built on it, and nothing on screen would say so.
+    #
+    # `kalshi_prematch_prices.parquet` is, in this project's own words,
+    # "really the settled price... that is leakage". Its sibling docstring
+    # says exactly that.
+    #
+    # No live conclusion rests on it: T007, T008 and T010 were RETRACTED and
+    # T012 re-did the direction on the clean anchor. The numbers this script
+    # prints are therefore of historical interest ONLY and must not be
+    # quoted as a result.
+    #
+    # The real fix is to re-anchor to -6h. Flagged by the repo-wide audit,
+    # 2026-09-01 (`tennis` mailbox 022); the header is the cheap half.
+    # ==================================================================
     price_path = ROOT / "data" / "kalshi" / "kalshi_prematch_prices.parquet"
     if not price_path.exists():
         return None

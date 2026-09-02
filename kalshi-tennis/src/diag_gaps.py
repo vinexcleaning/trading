@@ -1,3 +1,13 @@
+"""⚠ BROKEN — DOES NOT RUN. Diagnostic only; nothing cites it.
+
+It calls `stage0_audit.build_surface_map` and `stage0_audit.resolve`,
+which no longer live there after the `tennis_data` refactor, so it raises
+AttributeError on the first call. It is kept because the diagnostic it
+performs is still the right one, and deleting it would lose that.
+
+**Do not trust it, and do not assume it ran.** Found by the repo-wide
+audit, 2026-09-01 (`tennis` mailbox 022).
+"""
 """Diagnose the two Stage 0 gaps: unmapped venues and unmatched player names."""
 import pathlib
 import sys
