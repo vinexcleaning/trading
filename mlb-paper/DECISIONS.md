@@ -479,3 +479,41 @@ warning. Re-ranking on a re-measured window is best-of-16 wearing a new hat.
 per-series multiplier stored in this repo is one snapshot, **2026-08-18**, and
 Kalshi serves no historical series metadata. **True on 18 August, true today,
 unknown before and unrecoverable.**
+
+## 2026-09-02 — the exit arms are blind after first pitch. Diagnosed, NOT fixed.
+
+`coordinator` (mailbox 027) found that the exit rules fired **3 times in 1,516
+positions** and that ten of the fifteen bots are therefore bit-identical
+duplicates. Reproduced exactly. **The fleet is 5 strategies wearing 15 names.**
+
+**The cause, which was mine to find:** `read_market()` drops every market whose
+game has started — GUARD #2, correct, and it must stay. But `tick()` hands that
+**same filtered book** to `manage_exits`. The instant a game starts, the ticker
+is gone and every exit check silently skips.
+
+**So the exit rule can only fire pre-match, where I had already measured that
+the price barely moves** — a median of 1 cent over waits of 1 to 11 hours.
+
+Measured: the live ±12c rule walked over the minute tape **including in-game**
+fires on **72 of 156**; it actually fired on **3 of 1,516**. **A 230x gap.**
+
+**Decision: not fixed, and this is a judgment call rather than housekeeping.**
+
+- Fixing it means **the bots start selling during games**. That is in-play, and
+  `CLAUDE.md` §9b holds a firm line on it measured on his own bot.
+- **The question is already answered offline.** The 81-cell sweep on real tape
+  (`PREREGISTRATION_EXITGRID.md`) found every one of the 72 cells containing a
+  stop-loss worse than holding, and a pure stop-loss catastrophic. Turning on
+  in-play selling to run an experiment whose answer we have is the wrong trade.
+- **I did not delete the duplicate bots either.** Killing bots mid-run destroys
+  an experiment; the duplicates cost nothing but a name. What I changed is that
+  I stopped reporting 15.
+
+**The defect is annotated at the line in `run.py`** so the next reader meets it
+where it lives, not in a document.
+
+**One correction I made to 027:** it says the take-profit/stop-loss experiment
+"has not run". Right about the live arms, wrong about the repo — the 81-cell
+sweep ran on 2026-08-20 and was re-run after the settlement fix. **Both are true
+at once**, and the distinction matters because "holding was as good as exiting"
+is supported by 81 cells on the tape and NOT by the three live fills.

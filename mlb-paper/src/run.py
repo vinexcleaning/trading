@@ -528,6 +528,31 @@ def tick(con, dry_run=False):
     for a in alerts:
         log(f"  !! STRUCTURAL: {a}")
 
+    # ⚠ THE EXIT ARMS ARE BLIND AFTER FIRST PITCH, AND THIS LINE IS WHY.
+    #
+    # `by_ticker` comes from `read_market()`, which drops every market whose
+    # game has already started (GUARD #2). That is correct and must stay -- it
+    # is what stops a bot betting on a game in progress or seeing a settled
+    # result. But handing the SAME filtered book to the exit path means the
+    # instant a game starts its ticker vanishes, `manage_exits` looks it up,
+    # gets None, and skips.
+    #
+    # So the exit rule can only ever fire in the pre-match window, where the
+    # price barely moves -- measured at a median of 1 cent over waits of 1 to
+    # 11 hours (the sell-out study, mailbox 017).
+    #
+    # Measured 2026-09-02:
+    #   the live +/-12c rule over the minute tape INCLUDING in-game: 72 of 156
+    #   what actually happened:                                       3 of 1,516
+    # A 230x gap. Ten of the fifteen bots are consequently bit-identical
+    # duplicates and the fleet is 5 strategies wearing 15 names.
+    #
+    # NOT FIXED ON PURPOSE. Fixing it means the bots start selling DURING
+    # games, and the offline 81-cell sweep (PREREGISTRATION_EXITGRID.md) has
+    # already answered that question against selling: every one of the 72
+    # cells containing a stop-loss was worse than holding. Turning on in-play
+    # selling to run an experiment whose answer we already have is the wrong
+    # trade. See DECISIONS.md 2026-09-02.
     closes = 0 if dry_run else E.manage_exits(con, by_ticker)
 
     needed = {}
