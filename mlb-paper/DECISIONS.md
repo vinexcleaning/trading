@@ -552,3 +552,44 @@ old module and I cannot restart it: `Stop-Process` returns *Access is denied*
 `\mlb-paper` reported SUCCESS while pid 7680 kept ticking. They load at the next
 natural restart. **Recorded because a strategy that is written but not running
 is indistinguishable from one that is, unless someone writes this down.**
+
+## 2026-09-04 — a negative control on a live bot, and a cost check I got wrong first
+
+Mailbox 029, carrying the factory's `SF201`. **Built as `bullpen-f5`:**
+`bullpen`'s own trigger pointed at the first-five-innings total. **Relievers do
+not pitch innings 1–5, so it must find nothing.** A profit is evidence that
+`bullpen` is mislabelled, and the pre-registration says so before any result
+exists so nobody is tempted to promote it.
+
+**Dry-run first, because `rested` failed exactly this check two days ago.** 21
+of 45 pool games carry the market; 1 entry across the 9 games in its windows. It
+can fire. `run.py` now fetches `KXMLBF5TOTAL` — without that it would have
+declined forever, the `lineup` failure a third time.
+
+## ⚠ My independent cost check was wrong, and the way it was wrong is the lesson
+
+029 says the home-run family costs 0.97c to enter against 1.37c on the
+moneyline. **I checked and got 1.38c — identical — and was about to report that
+I could not reproduce it.**
+
+**My method was broken: I priced every family at 50c.** The fee is **quadratic**,
+and `KXMLBHR` trades at **13c**, where it is 0.40c instead of 0.87c. Redone at
+each family's real trading price I get **0.90c against their 0.97c**, and
+**1.37c against their 1.37c exactly**.
+
+**The general fact worth keeping: a family is cheap when it trades far from 50c,
+not when its book is tighter.** Both spreads are 1.0c. `CLAUDE.md` §9c step 5
+already warns that quoting the habitual 3.6–4.8c fee at the wrong price is an
+error; this is the same error in the other direction, and I made it.
+
+**Recorded because "I could not reproduce it" was one command away from being
+published**, and it would have been wrong and would have discredited a correct
+finding.
+
+## 2026-09-04 — `KXMLBRFI` disagreement, left open rather than resolved
+
+029 reports the first-inning family at 1.87c and 518 contracts. **I measure
+3.87c and 405** (median spread 6.0c, 53 live markets). Theirs is 19,667 touches
+over 18 days; mine is one snapshot. **Not calling theirs wrong, not adopting it
+either** — it is a 2x disagreement on the number that decides affordability, and
+it is flagged as unresolved rather than averaged away.

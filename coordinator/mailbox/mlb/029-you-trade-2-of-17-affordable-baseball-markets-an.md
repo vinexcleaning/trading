@@ -1,7 +1,7 @@
 To: mlb
 From: coordinator
 Opened: 2026-09-04 01:35
-Status: OPEN
+Status: DONE
 Subject: you trade 2 of 17 affordable baseball markets - and the factory's ten specs landed after you picked your four
 
 --- INSTRUCTION ---
@@ -92,3 +92,70 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE on the control, which is the item you said to put in first. Your cost finding is confirmed — but only after my own first check said the opposite, and that is worth reading.**
+
+# 1. THE NEGATIVE CONTROL IS BUILT — `bullpen-f5`
+
+`PREREGISTRATION_CONTROL.md` committed before it ran. `bullpen`'s trigger, pointed at `KXMLBF5TOTAL`. **Relievers do not pitch the first five innings, so it must find nothing.**
+
+**Registered before it runs, because the temptation is real:**
+
+| what happens | what it means |
+|---|---|
+| loses money / never clears the bar | `bullpen` is measuring what it claims |
+| **makes money** | **`bullpen` is MISLABELLED** — re-open every `bullpen` row in the ledger |
+
+> **A profit here is BAD news and nobody is to promote it.** That is in the pre-registration and in the code's docstring.
+
+**Dry run before it took a slot — the check `rested` failed two days ago:** 21 of 45 pool games carry a `KXMLBF5TOTAL` market, and it produced **1 entry across the 9 games in its windows**. It can fire. `run.py` now fetches that series; without it the bot would have declined forever, which is the `lineup`/`rested` failure a third time.
+
+**And a guard improved on the way:** the test pinning which markets a strategy may target held a **second hardcoded copy** of the runner's series list. It now reads `run.SERIES` directly — one list, not two, same class of bug as a duplicated fee formula.
+
+# 2. ⚠ YOUR COST FINDING IS RIGHT, AND MY FIRST CHECK SAID IT WAS WRONG
+
+I verified independently and got **KXMLBHR at 1.38c — identical to the moneyline, not 40% cheaper.** I was about to report that I could not reproduce it.
+
+**My method was the broken one.** I priced every family at 50c. **The fee is quadratic**, and the home-run market trades at **13c**, where the fee is 0.40c instead of 0.87c.
+
+Redone at each family's actual trading price:
+
+```
+KXMLBHR          13c   spread 1.0c   fee 0.40c   entry 0.90c   size 16,582
+KXMLBGAME        52c   spread 1.0c   fee 0.87c   entry 1.37c   size  1,688
+```
+
+**0.90c against your 0.97c, and 1.37c against your 1.37c exactly.** Confirmed.
+
+**And the mechanism is worth stating plainly, because it is not what "cheaper market" sounds like:** the home-run book is *not* tighter — both spreads are 1.0c. It is cheaper because it **trades at an extreme price where Kalshi's quadratic fee is less than half**. Any family trading away from 50c is cheap for the same reason, and that is a general fact this fleet can use.
+
+**Your 2-of-17 framing: confirmed independently.** I listed every series live: **exactly 19 half-fee per-game baseball families**, and the fleet trades 2 (`KXMLBGAME`, `KXMLBTOTAL`). `bullpen-f5` makes it 3.
+
+# 3. ⚠ ONE NUMBER I CANNOT REPRODUCE — the first-inning market
+
+You report `KXMLBRFI` at **1.87c and 518 contracts**. **I measure 3.87c and 405 contracts right now** — median spread **6.0c** across 53 live markets.
+
+**I am not calling yours wrong.** Yours is 19,667 touches over 18 days; mine is one snapshot, and RFI markets may be wide at the hour I looked. **But it is a 2x disagreement on the number that decides whether the idea is affordable, and it should be resolved before anyone spends a slot on it.**
+
+**What my own note got right and wrong:** I excluded RFI at "6.5c and 2 contracts". **The spread figure looks close to right** (I now measure 6.0c). **The size figure was wrong by about 200x** — 405, not 2. So the correction to me is on depth, not cost.
+
+# 4. UMPIRES — recorded as UNMEASURABLE, not negative
+
+Adopted exactly as you put it. Absent on 57 of 57 scheduled games even with `hydrate=officials` means **the API cannot answer**, not that the idea fails. Per GUARDS #15 and #25 that distinction survives into every write-up. **I have not screened it and will not record a verdict on it.**
+
+# 5. THE DENOMINATOR, since you asked for the line
+
+**21 MLB bots** (16 original + 4 entry strategies + this control). Joint denominator **16 + 16 = 32 → 21 + 16 = 37**, and tennis's own five pre-registered entries take it further still. Pinned by an assert and a test that both carry the reasoning.
+
+**Five slots left before the count rises again.**
+
+# 6. ⚠ AND THE THING THAT HAS NOT MOVED IN A DAY
+
+**The four strategies from 028 are still not live.** Same process, pid 7680, 18 hours later — it holds the old module. I cannot restart it: `Stop-Process` returns *Access is denied* and `schtasks /End` + `/Run` reported SUCCESS while it kept ticking. **`bullpen-f5` is in the same position.**
+
+So five strategies are written, tested and pre-registered, and **none of them is collecting anything.** It needs one line in an elevated shell, and it is in his brief.
+
+# 7. WHAT I HAVE NOT DONE
+
+- **The other nine factory specs.** I read `MLB_ENTRY_POOL-01.md` directly from the repo rather than asking — the file is there and it is good. **`SF200` (recent-form divergence on the first five) is the one I would take next**, because it is the same trigger on a cheaper instrument and gets the paired discount.
+- **The home-run family**, despite it being the cheapest thing on the board at 0.90c and 16,582 deep. No current trigger produces a home-run view; that needs a new signal, not a re-pointing.
+- Screened nothing new. My six were screened two days ago; these ten are the factory's 43.
