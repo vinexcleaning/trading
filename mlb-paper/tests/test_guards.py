@@ -141,7 +141,7 @@ def test_depth_cap_never_consumes_size_the_book_did_not_show():
 
 # ------------------------------------------------------- bots and denominator
 
-def test_twenty_bots_exactly():
+def test_twenty_one_bots_exactly():
     """The fleet size is pinned so it cannot drift without a decision.
 
     Was 16 until 2026-09-03. FOUR entry strategies were added to the slots
@@ -155,15 +155,15 @@ def test_twenty_bots_exactly():
 
     THE DENOMINATOR RISES AND DOES NOT FALL. JOINT_MULTIPLICITY.md counts one
     denominator across this fleet and tennis's, so the repo goes 16 + 16 = 32
-    -> 20 + 16 = 36, and every previously reported number is recomputed
-    against 36. That cost lands on the tennis fleet too.
+    -> 21 + 16 = 37, and every previously reported number is recomputed
+    against 37. That cost lands on the tennis fleet too.
 
     This test failing is the correct behaviour when someone adds a bot without
     updating PREREGISTRATION_FLEET2.md. Do not simply raise the number.
     """
-    assert len(MEN.BOT_IDS) == 20
+    assert len(MEN.BOT_IDS) == 21
     assert MEN.BOT_IDS.count("control__no-trade") == 1
-    assert len(set(MEN.BOT_IDS)) == 20
+    assert len(set(MEN.BOT_IDS)) == 21
 
 
 def test_the_five_new_strategies_are_hold_only():
@@ -179,10 +179,24 @@ def test_the_five_new_strategies_are_hold_only():
 
 
 def test_every_mentality_has_a_declared_target_and_windows():
+    """Every strategy declares a market, and the runner actually fetches it.
+
+    This checked against a hardcoded ("KXMLBGAME", "KXMLBTOTAL") until
+    2026-09-04. That was a SECOND copy of the runner's own SERIES list, and it
+    failed the moment `bullpen-f5` needed KXMLBF5TOTAL -- correctly, but for
+    the wrong reason: the risk it should be guarding is a strategy pointed at a
+    market the runner never reads, which would decline every game forever. That
+    is the `lineup` and `rested` failure, twice already.
+
+    So it now compares against `run.SERIES` itself. One list, not two.
+    """
+    import run as RUN
     for m in MEN.MENTALITIES:
-        assert m in MEN.TARGET
-        assert MEN.TARGET[m] in ("KXMLBGAME", "KXMLBTOTAL")
-        assert MEN.WINDOWS_FOR[m]
+        assert m in MEN.TARGET, f"{m} declares no target market"
+        assert MEN.TARGET[m] in RUN.SERIES, (
+            f"{m} targets {MEN.TARGET[m]}, which run.py never fetches -- "
+            f"it would decline every game forever")
+        assert MEN.WINDOWS_FOR[m], f"{m} declares no windows"
 
 
 def test_windows_do_not_overlap_ambiguously():

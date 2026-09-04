@@ -1006,3 +1006,96 @@ BOT_IDS = ([f"{m}__{e}" for m in MENTALITIES if m not in HOLD_ONLY
 # which did not ask for it; it is flagged in PREREGISTRATION_FLEET2.md rather
 # than absorbed silently.
 assert len(BOT_IDS) == 20, "PREREGISTRATION_FLEET2 declares 20 MLB bots"
+
+# ============================================ M11  bullpen-f5: the NEGATIVE CONTROL
+#
+# The factory's SF201, and it is the best idea anyone has sent this project.
+#
+# `bullpen` claims to read RELIEVER fatigue and trades the full-game run total.
+# This runs THE SAME TRIGGER against the FIRST FIVE INNINGS total.
+#
+# **Relief pitchers do not pitch the first five innings. So this must find
+# nothing.**
+#
+# If it makes money, `bullpen` is not measuring bullpens -- it is picking up
+# something else (the starter, the park, the teams) and every number that bot
+# has ever produced means something other than what it says.
+#
+# That is a negative control on a LIVE bot, which this repo has never run, and
+# it costs one slot. GUARDS #3 and #4 are exactly this shape.
+#
+# ⚠ HOW TO READ IT, registered before it runs:
+#   - it loses money or finds nothing  -> `bullpen` is measuring what it claims
+#   - it makes money                   -> `bullpen` is MISLABELLED, and that is
+#                                         a finding about the fleet, not a
+#                                         strategy to trade
+# **A profit here is bad news, not good news.** Nobody should be tempted to
+# promote it.
+M11_WINDOWS = M3_WINDOWS
+M11_BAR_C = 1.0
+
+
+def _f5_total_rows(brief):
+    return (brief.get("market", {}).get("kalshi", {}) or {}).get(
+        "KXMLBF5TOTAL", [])
+
+
+def m11_bullpen_f5(brief, window):
+    """`bullpen`'s trigger, pointed at a market relievers cannot affect."""
+    if window not in M11_WINDOWS:
+        return Decline("bullpen-f5", "outside this mentality's windows",
+                       {"window": window})
+    rows = _f5_total_rows(brief)
+    if not rows:
+        return Decline("bullpen-f5", "no KXMLBF5TOTAL market for this game")
+
+    inner = m3_bullpen(brief, window)
+    if isinstance(inner, Decline):
+        return Decline("bullpen-f5", "bullpen declined: " + inner.reason,
+                       inner.detail)
+
+    det = dict(inner.reasoning or {})
+    adj_c = det.get("adjustment_c")
+    if adj_c is None:
+        return Decline("bullpen-f5", "bullpen gave no adjustment", det)
+
+    # The same signed view, on the first-five total. The rung is chosen the
+    # same way; only the instrument changes.
+    points, how = _main_total_points(brief, rows)
+    if points is None:
+        return Decline("bullpen-f5", "no tradeable first-five rung",
+                       {"how": how})
+    row = _rung_nearest(rows, points)
+    if row is None:
+        return Decline("bullpen-f5", "Kalshi lists no first-five rung there",
+                       {"points": points})
+    side = "YES" if adj_c > 0 else "NO"
+    d = _decide(row, side, abs(adj_c), M11_BAR_C)
+    detail = {"rule": "NEGATIVE CONTROL: bullpen's trigger on a market "
+                      "relievers cannot affect",
+              "controls": "bullpen",
+              "expected": "nothing -- relievers do not pitch innings 1-5",
+              "a_profit_here_means": "bullpen is mislabelled, NOT that this "
+                                     "is tradeable",
+              "adjustment_c": adj_c,
+              "rung": row.get("yes_sub_title"), "rung_chosen_by": how,
+              "full_game_ticker": inner.ticker, **d}
+    if not d["passes"]:
+        return Decline("bullpen-f5",
+                       "adjustment does not survive the cost bar", detail)
+    return Intent("bullpen-f5", row["ticker"], side, d["price_c"],
+                  d["net_edge_c"], d["fair_c"], d["net_edge_c"], window,
+                  d["size"], detail)
+
+
+MENTALITIES.update({"bullpen-f5": m11_bullpen_f5})
+TARGET.update({"bullpen-f5": "KXMLBF5TOTAL"})
+WINDOWS_FOR.update({"bullpen-f5": M11_WINDOWS})
+HOLD_ONLY.add("bullpen-f5")
+
+BOT_IDS = ([f"{m}__{e}" for m in MENTALITIES if m not in HOLD_ONLY
+            for e in EXIT_MODES]
+           + [f"{m}__hold" for m in sorted(HOLD_ONLY)]
+           + ["control__no-trade"])
+# 20 -> 21. Joint denominator 16+16=32 -> 21+16=37 before tennis's own five.
+assert len(BOT_IDS) == 21, "PREREGISTRATION_CONTROL declares 21 MLB bots"

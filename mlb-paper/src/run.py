@@ -59,7 +59,10 @@ import statsapi as S                  # noqa: E402
 ROOT = HERE.parent
 LOCK = ROOT / "data" / "runner.lock"
 LOGDIR = ROOT / "logs"
-SERIES = ("KXMLBGAME", "KXMLBTOTAL")
+# KXMLBF5TOTAL added 2026-09-04 for the `bullpen-f5` NEGATIVE CONTROL.
+# Without it that bot would decline every game forever, which is the
+# `lineup` and `rested` failure a third time.
+SERIES = ("KXMLBGAME", "KXMLBTOTAL", "KXMLBF5TOTAL")
 TICK_S = 300
 BRIEF_MAX_AGE_S = 1800
 
