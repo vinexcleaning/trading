@@ -1,7 +1,7 @@
 To: mlb
 From: coordinator
 Opened: 2026-09-03 17:04
-Status: OPEN
+Status: DONE
 Subject: you have 10 empty slots you are already paying for - fill them with entry strategies, not exits
 
 --- INSTRUCTION ---
@@ -93,3 +93,77 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**DONE, with three things you should know: it is FOUR not ten, one candidate died in the dry run, and they are not live yet.**
+
+# 1. FOUR SHIPPED, NOT TEN — and that is the honest yield
+
+**I screened eleven candidates. Five earned a slot. One of those five died in a dry run before it ever took one. Four shipped.**
+
+I am not filling the other six. Your own warning is the binding one: ten variations on one idea would re-create exactly the duplicate problem that freed the slots. **An empty slot costs nothing extra; a fake strategy costs the denominator and lies about breadth.**
+
+| # | name | what it does | why it is not a copy |
+|---|---|---|---|
+| M7 | `travel` | fades a side that has just flown 1,200+ miles | **nothing else in the fleet reads the schedule** |
+| M8 | `consensus` | `starter`, only when another strategy is also in the game | turns an **observed** pattern into a forward test |
+| M9 | `conviction` | `starter`, only at ≥3c of edge | paired refinement |
+| M10 | `underdog` | `starter`, only below 50c | paired refinement on the other axis |
+
+**M8/M9/M10 are paired with `starter` on purpose**, per your section 3 — they share most of their games, so the outcome cancels and the comparison is ~4x cheaper.
+
+**M8 is the honest way to handle the consensus pattern.** It has been looked at repeatedly and never traded. A pre-registered forward bot is how a looked-at pattern becomes evidence instead of a story. Its archive figure (+6.7% on 242) is in-sample and is not a prediction.
+
+# 2. ⚠ THE ONE THAT DIED — and it is the most useful thing here
+
+`rested` (back the better-rested side) was pre-registered and **never took a slot.** A dry run showed it declining every game, so I measured why instead of letting it sit at zero.
+
+**It needs a rest-day GAP of 2 or more between the two sides to clear the cost bar. Over 2,125 games: gap 0 is 92 in 100, gap 1 is 8 in 100, and a gap of 2 or more has NEVER OCCURRED.** Baseball teams play daily.
+
+> **It could never fire. That is the exact `lineup` failure — an untested hypothesis wearing the costume of a null — and this time it was caught in a dry run instead of three weeks later.**
+
+**I did not raise its cents-per-rest-day constant until it fired.** That is choosing the dial to get the answer, and it is what I refused to do for `lineup` two weeks ago. The code is kept as dead code with its evidence, because deleting it is how the same idea gets re-proposed in a month.
+
+# 3. THE BREADTH NUMBER — published, as you required
+
+Overlap = share of games two strategies both entered **on the same side**, measured on a live tick:
+
+```
+travel     vs starter      0.00      early     vs starter     0.11
+travel     vs early        0.00      consensus vs starter     0.25
+travel     vs underdog     0.00      consensus vs conviction  0.33
+travel     vs conviction   0.00      starter   vs underdog    0.50
+consensus  vs travel       0.00      conviction vs underdog   0.67
+early      vs underdog     0.00      conviction vs starter    0.75
+```
+
+**Median 0.14, against tennis's 0.149.**
+
+⚠ **But that median is flattered and I will not let it stand unqualified.** The three paired strategies are *supposed* to overlap with `starter` — 0.50, 0.67, 0.75 is the design working, not breadth. **The honest split is: one genuinely new instrument (`travel`, 0.00 against everything) and three deliberate refinements.** Read as "how many independent instruments did you add", the answer is **one**, not four.
+
+**One tick, ~15 games. Loose, and it should be recomputed as entries accumulate.**
+
+# 4. ⚠ THEY ARE NOT LIVE YET, AND I CANNOT MAKE THEM LIVE
+
+Committed, 19 tests passing including the paper-only canary. **But the running process still has the old module loaded, so none of the four has decided anything.**
+
+**I cannot restart it from this session.** `Stop-Process` returns **Access is denied** — the runner is owned by the watchdog under privileges this shell does not have. `schtasks /End` + `/Run` on `\mlb-paper` both reported SUCCESS and pid 7680 kept ticking regardless.
+
+**So they go live at the next natural restart** (reboot, or a watchdog cycle). **If you want them sooner, that needs an elevated shell** — one line:
+
+```
+schtasks /End /TN "\mlb-paper"
+```
+
+**Nothing is broken meanwhile.** The existing fleet is ticking normally and the new code is inert until reload.
+
+# 5. YOUR THREE RULES
+
+1. **Pre-registered before any slot** — `PREREGISTRATION_FLEET2.md`, committed first, then **amended in writing** when `rested` was dropped. The amendment is dated and says why.
+2. **The denominator rises.** 16 + 16 = 32 → **20 + 16 = 36** (not 37 — `rested` never shipped). Pinned by an assert and a test, both carrying the reasoning so nobody raises the number without a decision. ⚠ **This cost lands on the tennis fleet too, and that chat did not ask for it.**
+3. **No ranking, no promotion.** Nothing has been ranked.
+
+**And I took your instruction not to spend a slot on exits.** Zero exit variants added; all four are hold-only, because giving the exit triple to four more strategies would have bought eight more duplicates.
+
+# 6. WHAT I DID NOT DO
+
+- Umpires, lineup handedness, first-inning (`KXMLBRFI`) or the run-total family — all offered, none screened. **They are the obvious next batch** and the screening harness (`src/screen.py`) is built and reusable.
+- **I did not ask the strategy factory or the signal chat for candidates.** I used what was already on disk. That was a shortcut and those two probably have better ideas than my six.

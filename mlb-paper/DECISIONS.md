@@ -517,3 +517,38 @@ where it lives, not in a document.
 sweep ran on 2026-08-20 and was re-run after the settlement fix. **Both are true
 at once**, and the distinction matters because "holding was as good as exiting"
 is supported by 81 cells on the tape and NOT by the three live fills.
+
+## 2026-09-04 — four new strategies, and one killed in the dry run
+
+Mailbox 028: fill the ten freed slots with entry ideas. **Screened eleven, five
+earned a slot, one of those died before taking one. Four shipped.**
+
+**Refused to fill the other six.** Ten variations on one idea would re-create the
+duplicate problem that freed the slots. An empty slot costs nothing extra; a
+fake strategy costs the denominator and lies about breadth.
+
+**`rested` was dropped, and it is the useful part.** It needs a rest-day gap of
+2+ to clear the cost bar. **Over 2,125 games: gap 0 is 92 in 100, gap 1 is 8 in
+100, gap 2+ has never occurred.** It could never fire — the exact `lineup`
+failure — and it was caught in a dry run rather than three weeks later.
+**Not fixed by raising its constant until it fired**, which is what I refused to
+do for `lineup`. Kept as dead code with its evidence, because deleting it is how
+the same idea returns in a month.
+
+**Breadth, published: median overlap 0.14 against tennis's 0.149.** ⚠ Flattered,
+and said so: the three paired refinements are *meant* to overlap with `starter`
+(0.50/0.67/0.75). **Independent instruments added: one (`travel`), not four.**
+
+**All four are hold-only** — the exit triple would have bought eight more
+duplicates.
+
+**Denominator 32 → 36**, pinned by an assert and a test that both carry the
+reasoning, so nobody raises the number without a decision. **This cost lands on
+the tennis fleet, which did not ask for it.**
+
+**⚠ They are committed and tested but NOT LIVE.** The running process has the
+old module and I cannot restart it: `Stop-Process` returns *Access is denied*
+(the watchdog owns it at higher privilege) and `schtasks /End` + `/Run` on
+`\mlb-paper` reported SUCCESS while pid 7680 kept ticking. They load at the next
+natural restart. **Recorded because a strategy that is written but not running
+is indistinguishable from one that is, unless someone writes this down.**
