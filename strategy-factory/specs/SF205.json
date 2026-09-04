@@ -1,0 +1,55 @@
+{
+ "id": "SF205",
+ "created": "2026-09-03",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "m3_bullpen adds both clubs' bullpen fatigue into one number and trades the combined KXMLBTOTAL, so a tired bullpen on one side is diluted by a fresh one on the other. KXMLBTEAMTOTAL is 3,416 markets on tape, 93 percent two-sided, and settles on one club's runs alone.",
+ "families": [
+  "KXMLBTEAMTOTAL"
+ ],
+ "thesis": "Bullpen fatigue happens to one team, not to a game. Adding both clubs' fatigue together and trading the combined total throws away most of the signal by construction, because the two often cancel. Trading only the side whose bullpen is tired keeps all of it.",
+ "unit": "one settled baseball game",
+ "entry": {
+  "when": "Identical bullpen trigger and identical coefficients to the live bullpen bot, but computed for ONE club and traded on that club's opponents' team total - i.e. if the home bullpen is depleted, buy the over on the AWAY team's runs. Require the other club's bullpen adjustment to be under half the size of this one, so the spec only fires where the combined market genuinely cancels. Enter when net edge after the real ask and the half fee is at least 1.0c.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Fewer than 60 entries, since requiring one-sided fatigue will cut the firing rate well below bullpen's.",
+  "Its per-contract result is no better than bullpen's on shared games, which would say the dilution argument is wrong.",
+  "Team totals turn out to be quoted materially later than full totals, emptying the T-6h window."
+ ],
+ "slow": false,
+ "notes": "PAIRED-TESTABLE against bullpen on the subset where both fire, though the one-sided requirement means the shared set is smaller than SF200's and the discount is correspondingly smaller. || Note the higher bar: 1.85c against 1.37c, because team totals quote 2 cents wide rather than 1. The extra half cent has to come out of the edge. || Cost bar and ask depth are MEASURED off this project's own recorded tape, not assumed - src/mlb_cost.py, median over every two-sided touch recorded 2026-08-18 to 2026-09-03 between 5c and 95c, with the fee taken at that series' own rate from the census. Both sides of the real touch, never the mid. || Exit is HOLD TO SETTLEMENT on every spec here, deliberately. Mailbox 012: tennis measured exits properly and holding beat selling early in 5 of 5 mentalities, and mlb's own 81-configuration sweep had every stop-loss doing worse than holding. So the exit question is closed and nothing below varies it. These are ENTRY specs only.",
+ "status": "LIVE",
+ "claims": [],
+ "mlb_rank": 6,
+ "information_axes": [
+  "bullpen usage",
+  "instrument: one side's runs only"
+ ],
+ "market_cost_bar_c": 1.85,
+ "market_ask_depth_contracts": 1250,
+ "fee_rate": 0.035,
+ "paired_with": "bullpen",
+ "windows": [
+  "T-6h",
+  "T-3h",
+  "T-90m"
+ ]
+}

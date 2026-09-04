@@ -243,3 +243,47 @@ before it will install anything.
 "Do I need a venv for my dependencies" is no. "Do I need one for the watchdog
 to be able to restart my recorder" is yes, and that is the question that
 mattered.
+
+---
+
+## D8 — 2026-09-03. Ranked the ten by information difference, not by how good they look, and let five of them be instrument tests
+
+**Mailbox 012 said to rank by how different the information is, not by how
+promising the idea looks.** Followed literally. The consequence is that half the
+recommended ten read **no new information at all** — they take an existing bot's
+exact trigger and point it at a market nothing in the fleet trades.
+
+**Why that is not a dodge.** The fleet trades 2 of the 17 per-game baseball
+families that cost under 2 cents to enter, measured off this project's tape.
+A view worth 1.2 cents loses on the market the fleet uses and wins on the home-run
+market. The instrument is not a detail; it decides whether the same view makes
+money.
+
+**Conservative option taken, and it is his to overturn:** I did not decide
+between "ten new ideas" and "five ideas tested two ways". It went to the
+Referee's third list as a question for him, because it is a judgment about what
+the fleet is for and neither side wins on evidence.
+
+## D9 — 2026-09-03. Reopened two ideas from `mlb-paper`'s "deliberately NOT here" list, and sent neither as a claim
+
+The first-inning family was excluded on a stated 6.5c cost bar and 2 contracts
+at the touch; the tape says 1.87c and 518 contracts across 19,667 touches.
+**But its third stated reason — no reference price — is untouched, so it went in
+at rank 12, outside the ten.** Reopening a question is not the same as claiming
+an edge, and CLAUDE.md section 2 requires all five prior-work fields before
+arguing with recorded work. All five are in `SF211`.
+
+The umpire was excluded partly because pre-game availability "was not
+confirmed". **Now confirmed absent** — 57 of 57 scheduled games, including with
+the API's own officials request. **Recorded as UNMEASURABLE FROM THAT API, not
+as negative**, and explicitly not as "no free source publishes it". Three
+absence claims in this repo were stated confidently and all three were wrong.
+
+## D10 — 2026-09-03. Sent nothing to tennis, and said so rather than staying silent
+
+Mailbox 012 offered tennis the same thing at a smaller size, noting that adding
+a tennis bot raises the joint denominator for both fleets while baseball's spare
+slots do not. Nine of the ten read baseball-specific inputs. Two — the calendar
+and the standings — have tennis analogues, and neither looked worth raising the
+denominator for on its own. **Recorded in the reply as a judgment about price,
+not as a claim that nothing transfers**, and offered back for reconsideration.

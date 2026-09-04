@@ -1,0 +1,57 @@
+{
+ "id": "SF202",
+ "created": "2026-09-03",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "No bot in the fleet reads the OPPONENT at all - all five mentalities describe one side's own pitchers, park or card. KXMLBKS is 3,176 markets on tape, 90 percent two-sided, and it is the one family whose settlement is a product of both sides.",
+ "families": [
+  "KXMLBKS"
+ ],
+ "thesis": "How many batters a pitcher strikes out is decided about equally by how often he gets strikeouts and how often the other team strikes out, and the second half is the part a price built around the pitcher's name carries least. When a high-strikeout pitcher meets a team that strikes out far more or far less than average, the line should move and often does not.",
+ "unit": "one settled baseball game",
+ "entry": {
+  "when": "At T-24h, T-6h or T-3h, take the probable starter's season strikeouts per nine and the opposing team's season strikeout rate per plate appearance, both from statsapi. Require at least 8 prior starts for the pitcher and 300 team plate appearances. Expected strikeouts = (his K/9 divided by 9) times expected batters faced, scaled by the opponent's strikeout rate divided by the league rate. ASSUMPTION, STATED: expected batters faced is 4.2 per inning times his season innings per start, and one expected strikeout is worth about 12 cents on an at-the-money over, because a starter's strikeout count typically lands within about 2.4 of his average. Enter the side the adjustment favours when net edge after the real ask and the half fee is at least 1.0c.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Fewer than 100 entries in the forward test.",
+  "The result is inside plus or minus 1 cent per contract on 300 or more entries, which would say the opponent term is already in the price.",
+  "The strikeout line is only quoted after the lineup is posted, in which case the T-24h and T-6h windows are empty and only T-3h is real.",
+  "Expected batters faced turns out to be dominated by whether he is pulled early, which is a bullpen question and not the claim here."
+ ],
+ "slow": false,
+ "notes": "NEW INFORMATION, NOT PAIRED. It shares no input with any of the five live bots: none of them reads the opposing lineup's own tendencies, and none trades a strikeout market. That is why it ranks this high despite being the more expensive kind of test - unpaired needs roughly four times the games. || The cheapest half-fee family on tape after home runs: a 1.31c bar against 1,359 contracts at the ask. || Cost bar and ask depth are MEASURED off this project's own recorded tape, not assumed - src/mlb_cost.py, median over every two-sided touch recorded 2026-08-18 to 2026-09-03 between 5c and 95c, with the fee taken at that series' own rate from the census. Both sides of the real touch, never the mid. || Exit is HOLD TO SETTLEMENT on every spec here, deliberately. Mailbox 012: tennis measured exits properly and holding beat selling early in 5 of 5 mentalities, and mlb's own 81-configuration sweep had every stop-loss doing worse than holding. So the exit question is closed and nothing below varies it. These are ENTRY specs only.",
+ "status": "LIVE",
+ "claims": [],
+ "mlb_rank": 3,
+ "information_axes": [
+  "starter strikeout rate",
+  "opposing lineup strikeout rate",
+  "instrument: strikeout props"
+ ],
+ "market_cost_bar_c": 1.31,
+ "market_ask_depth_contracts": 1359,
+ "fee_rate": 0.035,
+ "paired_with": null,
+ "windows": [
+  "T-24h",
+  "T-6h",
+  "T-3h"
+ ]
+}

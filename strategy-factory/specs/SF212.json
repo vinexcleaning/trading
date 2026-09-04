@@ -1,0 +1,56 @@
+{
+ "id": "SF212",
+ "created": "2026-09-03",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "The third instrument for the starter signal. KXMLBOUTS settles on how many outs the starter records: 435 markets on tape, 93 percent two-sided, 1.87c bar, 500 at the ask.",
+ "families": [
+  "KXMLBOUTS"
+ ],
+ "thesis": "A pitcher whose recent form is much worse than his season line gets pulled earlier, and a market on how long he lasts is a more direct read on that than a market on who wins. It is the same claim as the starter bot's, aimed at the outcome the claim is actually about.",
+ "unit": "one settled baseball game",
+ "entry": {
+  "when": "Identical trigger and coefficients to the live starter bot. When the divergence is against the pitcher, take the under on his outs; when it favours him, the over. ASSUMPTION, STATED: 1.00 ER/9 of divergence is worth about 0.6 outs, because a run of expected damage is roughly a fifth of an inning of leash. Enter when net edge after the real ask and the half fee is at least 1.0c.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Fewer than 60 entries.",
+  "No better than starter on shared games.",
+  "The outs line moves on the manager's plan rather than on form, i.e. the entries cluster on pitch-limited returns from injury.",
+  "The 0.6-outs-per-ER9 conversion changes the sign of the result when set to 0.3 or 1.0."
+ ],
+ "slow": false,
+ "notes": "PAIRED-TESTABLE against starter, third instrument alongside SF200. || RANKED BELOW SF200 ON PURPOSE: same information, thinner market (500 at the ask against 1,449) and a higher bar (1.87c against 1.37c). If only one starter-instrument slot is available, SF200 is the one to take. || Cost bar and ask depth are MEASURED off this project's own recorded tape, not assumed - src/mlb_cost.py, median over every two-sided touch recorded 2026-08-18 to 2026-09-03 between 5c and 95c, with the fee taken at that series' own rate from the census. Both sides of the real touch, never the mid. || Exit is HOLD TO SETTLEMENT on every spec here, deliberately. Mailbox 012: tennis measured exits properly and holding beat selling early in 5 of 5 mentalities, and mlb's own 81-configuration sweep had every stop-loss doing worse than holding. So the exit question is closed and nothing below varies it. These are ENTRY specs only.",
+ "status": "LIVE",
+ "claims": [],
+ "mlb_rank": 13,
+ "information_axes": [
+  "starting pitcher recent form",
+  "instrument: starter length"
+ ],
+ "market_cost_bar_c": 1.87,
+ "market_ask_depth_contracts": 500,
+ "fee_rate": 0.035,
+ "paired_with": "starter",
+ "windows": [
+  "T-24h",
+  "T-6h",
+  "T-3h"
+ ]
+}

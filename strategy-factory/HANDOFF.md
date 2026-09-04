@@ -1,7 +1,7 @@
 <!-- COORDINATOR-STATE
-doing: invert screen built as a standard column over every strategy (mailbox 008); screening run on 8 days of tape, still a null and nothing promotable; recorders alive 9 days, 5 GB, 342,045 settlements on file
+doing: answered mailbox 012 - 43 baseball entry ideas screened, 17 written as specs SF200-SF216, 10 recommended for mlb-paper's 10 empty slots; measured every baseball family's real cost bar off my own tape and found the fleet trades 2 of the 17 affordable per-game markets
 left: rebuild the tier list - the exchange grew 13,133 -> 13,736 series since 18 Aug and my tiers are blind to 603 of them; then one docs fetch per unverified venue
-needs: no - his six soccer answers arrived and are all turned into specs. Next question comes after the screening engine produces something to ask about.
+needs: no
 -->
 
 # HANDOFF — strategy-factory
@@ -706,3 +706,28 @@ recorder runs, and the recorder does not wait on him.
    of its bots, so a forward result never appears without one beside it.
 5. Check `coordinator/mailbox/factory/` — it did not exist until this session
    created it.
+
+---
+
+## 2026-09-03 - mailbox 012, ten entry strategies for baseball
+
+`reports/MLB_ENTRY_SPECS-01.md` is the report, `reports/MLB_ENTRY_POOL-01.md`
+is the 43-candidate pool with every verdict, `specs/SF200`-`SF216` are the
+specs. Filed to `STATUS.md` for `mlb`.
+
+**Two new tools, both reproducible in one command:**
+
+- `src/mlb_cost.py` - the real cost bar of every baseball family, measured off
+  `wide_top.db`: half the touch spread plus the fee at that series' own rate
+  from the census. Never the mid. This is what produced the finding that the
+  fleet trades 2 of the 17 per-game families costing under 2 cents.
+- `src/mlb_overlap.py` - input overlap between each spec and the five live
+  mentalities. **It is a bound, not the entry overlap `mlb` will measure**, and
+  it is blind to two specs reading different facts off the same document.
+
+**Three things checked live against statsapi on 2026-09-03 rather than assumed:**
+officials are absent on 57 of 57 scheduled games (present once final); all 2,060
+games scheduled in 2026 are 9 innings; and pitcher hand, standings elimination
+flags and schedule series fields are all present pre-game.
+
+**Nothing here has been run.** Every coefficient in all 17 specs is an estimate.

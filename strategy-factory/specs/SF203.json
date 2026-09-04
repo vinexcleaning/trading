@@ -1,0 +1,57 @@
+{
+ "id": "SF203",
+ "created": "2026-09-03",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "statsapi publishes pitchHand for every probable starter and batSide for every player, verified live on 2026-09-03. No live bot reads either. m1_starter reads the pitcher's own form and nothing about who he is facing.",
+ "families": [
+  "KXMLBGAME",
+  "KXMLBTEAMTOTAL"
+ ],
+ "thesis": "A left-handed starter facing a lineup stacked with right-handed batters is a materially different pitcher from the same man facing a left-handed lineup, and the price is built on his overall record rather than on tonight's opponent. The mismatch is public, free and arithmetic.",
+ "unit": "one settled baseball game",
+ "entry": {
+  "when": "Once the batting order is posted (T-3h or T-90m; at T-6h use the opposing team's season-to-date share of plate appearances by handedness instead, and record which was used). Count the share of the nine hitters batting from the side that is disadvantaged against the starter's throwing hand. ASSUMPTION, STATED: a lineup one step more favourable than a normal one against that hand is worth about 0.18 runs of expected margin, so 2 cents on the moneyline, and the same 0.18 runs is worth about 1.6 cents on that side's team total. Decline if handedness is missing for more than one hitter - missing stays missing, never a league average. Enter when net edge after the real ask and the half fee is at least 1.0c.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Fewer than 100 entries.",
+  "Result inside plus or minus 1 cent on 300 or more entries.",
+  "The measured effect is entirely explained by which team is better, i.e. it fires almost always on the same side as a plain favourite rule. That would make it B024 in a new coat and it must be dropped.",
+  "Switch hitters turn out to be more than a third of the typical card, which would make the count too blunt to carry an 0.18-run claim."
+ ],
+ "slow": false,
+ "notes": "NEW INFORMATION. Shares the KXMLBGAME instrument with three live bots but no input with any of them, so overlap should come from the market rather than the view. || The B024 kill condition is there on purpose: CLAUDE.md section 9b records that buying heavy favourites is negative twice, and a platoon rule that quietly becomes a favourite rule is exactly how that gets re-derived under a new name. || Cost bar and ask depth are MEASURED off this project's own recorded tape, not assumed - src/mlb_cost.py, median over every two-sided touch recorded 2026-08-18 to 2026-09-03 between 5c and 95c, with the fee taken at that series' own rate from the census. Both sides of the real touch, never the mid. || Exit is HOLD TO SETTLEMENT on every spec here, deliberately. Mailbox 012: tennis measured exits properly and holding beat selling early in 5 of 5 mentalities, and mlb's own 81-configuration sweep had every stop-loss doing worse than holding. So the exit question is closed and nothing below varies it. These are ENTRY specs only.",
+ "status": "LIVE",
+ "claims": [],
+ "mlb_rank": 4,
+ "information_axes": [
+  "pitcher handedness",
+  "lineup platoon composition"
+ ],
+ "market_cost_bar_c": 1.37,
+ "market_ask_depth_contracts": 2237,
+ "fee_rate": 0.035,
+ "paired_with": null,
+ "windows": [
+  "T-6h",
+  "T-3h",
+  "T-90m"
+ ]
+}

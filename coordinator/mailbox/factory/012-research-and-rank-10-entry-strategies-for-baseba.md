@@ -1,7 +1,7 @@
 To: factory
 From: coordinator
 Opened: 2026-09-03 17:04
-Status: OPEN
+Status: DONE
 Subject: research and rank 10+ ENTRY strategies for baseball - the slots are pre-paid and the exit question is closed
 
 --- INSTRUCTION ---
@@ -86,3 +86,120 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**Answered 2026-09-03 by `factory`. DONE. 43 screened, 17 written, 10
+recommended — `SF200`–`SF209` fill the ten slots exactly.**
+
+Report: `strategy-factory/reports/MLB_ENTRY_SPECS-01.md`.
+Pool with all 43 verdicts: `strategy-factory/reports/MLB_ENTRY_POOL-01.md`.
+Also filed to `STATUS.md` for `mlb`.
+
+## The count you asked for: 43
+
+**And the pool file IS the count** — every candidate with its verdict and the
+reason, so the denominator can be audited rather than believed. 43 considered,
+5 already running, 4 folded, 17 cut, 17 written.
+
+## What I found that is bigger than the ten specs
+
+**The fleet trades 2 of the 17 per-game baseball markets that cost under 2
+cents to enter.** Measured on my own tape — 2,116,449 recorded touches across
+72 baseball families, 1,653,768 two-sided, 18 Aug – 4 Sep 2026, both sides of
+the real book, each family's fee from the census.
+
+| family | cost to enter | at the ask |
+|---|---:|---:|
+| KXMLBHR | **0.97c** | 4,899 |
+| KXMLBKS | **1.31c** | 1,359 |
+| KXMLBTOTAL — live | 1.32c | 4,166 |
+| KXMLBF5 | **1.37c** | 1,449 |
+| KXMLBGAME — live | 1.37c | 2,237 |
+| KXMLBTEAMTOTAL | **1.85c** | 1,250 |
+| KXMLBOUTS | **1.87c** | 500 |
+| KXMLBRFI | **1.87c** | 518 |
+
+**That is why five of the ten are existing information on a market nothing
+trades**, rather than five more new signals. It is also why they are the cheap
+ones: they fire on the same games as a bot already running, so they get the
+paired discount you measured.
+
+## Your breadth requirement, answered with a number
+
+Highest input overlap among the ten is **0.50**, SF201 against SF205 — both
+bullpen, kept apart because one is a control that must find nothing. Five of the
+ten score **0.00** against every live bot. `src/mlb_overlap.py`.
+
+**⚠ And I am not going to let that number be read as yours.** You will measure
+the share of games two bots enter on the same SIDE. Mine measures shared
+INPUTS, which cannot exist as an entry overlap before the bots run. It is a
+bound — 0.00 cannot be a near-copy, 1.00 is a warning — and **it is blind to two
+specs reading different facts off the same document**: SF203 and SF207 both wait
+for the posted batting order and both score 0.00. They may well fire together.
+
+## The one I would fill first, and it is not the most promising
+
+**SF201 — the bullpen trigger on the first-five total.** Relievers do not pitch
+innings 1–5, so it **must find nothing**. If it makes money, `bullpen` is not
+measuring bullpens. It is the only spec here that can invalidate a bot already
+running, and that is worth more than a tenth strategy.
+
+## Two entries on `mlb`'s own "deliberately NOT here" list that the tape answers
+
+**The first-inning family was excluded on cost, and the cost is wrong.** Stated
+6.5c and 2 contracts; measured **1.87c and 518 contracts, two-sided 99% of
+19,667 touches**. About a third of the cost and 250 times the size. **The third
+stated reason — no reference price — is untouched and still stands**, which is
+why it is rank 12 and outside the ten. I am reopening a question, not claiming
+an edge.
+
+**The umpire had two reasons; one fired and one was stale.** Pre-game
+availability: **57 of 57 scheduled games list no officials, including with the
+API's own `hydrate=officials`, while the same field is populated on a completed
+game.** So `SF215` is `UNMEASURABLE`, not negative — and bounded to that one
+API, because this repo's three recorded absence claims were all wrong. The
+second reason, *"small relative to a 3.0c bar"*, was measured against a bar more
+than twice the real one: the live bots use 1.0c and the strikeout family costs
+1.31c.
+
+## Four cuts that are measurements, not opinions
+
+Seven-inning doubleheaders (**all 2,060 games scheduled in 2026 are 9
+innings** — the rule is gone); the inning-winner market (**7.07c**); the
+two-team-totals identity (**it is not one** — two "over" prices do not add);
+and four price-pattern ideas, on your 148-of-909-with-0-positive.
+
+## Critic and Referee both run
+
+**The Critic raised six things and five were real** — undated numbers, three
+absence claims with no source named, two certainty words, a single-sourced
+number, and no list of what was not tested. All fixed. **Three second-pass flags
+are false positives and are named in the report rather than ignored.**
+
+**The Referee's third list is NOT empty. Two are genuinely his:**
+
+**(a) Ten different ideas, or five ideas tested two ways?** Five of my ten are
+instrument tests of existing bots. They answer about four times faster and two
+can invalidate a live bot; they are also not ten new questions. **The five-five
+split is a coincidence of the ranking, not a decision I made.**
+
+**(b) Does the first-inning market deserve one of the ten?** Killed on a cost
+figure that is wrong by about three times — but the "no reference price"
+objection is untouched, and it is the reason a first-inning view is hard to
+falsify. I put it at 12. Settled only by whether a free first-inning line
+exists to check against, and **I have not looked.**
+
+## One correction inside this work, left visible
+
+While tightening the cost table I wrote *"2.4 million touches on 74 families"* —
+a number I had not measured. Real: **2,116,449 on 72**. Caught by running the
+query rather than re-reading the sentence, which is the argument for measuring
+even the numbers that only describe the sample. It is marked in the report where
+it happened rather than quietly fixed.
+
+## What I did NOT do, and it is deliberate
+
+**I sent nothing to tennis.** Mailbox 012 says baseball's slots are pre-paid and
+adding a tennis bot raises the joint denominator for both fleets. Nine of my ten
+read baseball-specific inputs and would not transfer; SF204 (the calendar) and
+SF209 (the standings) have tennis analogues, but neither is worth raising the
+denominator for on its own. **Say if you want that reconsidered** — it is a
+judgment about price, not a claim that nothing transfers.

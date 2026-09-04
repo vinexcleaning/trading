@@ -1,0 +1,57 @@
+{
+ "id": "SF210",
+ "created": "2026-09-03",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "m2_park_air reads wind and temperature only. Rain is a different mechanism: it does not change how far the ball carries, it changes how many innings get played, and a game called after five innings is official with a full total still unsettled.",
+ "families": [
+  "KXMLBTOTAL",
+  "KXMLBF5TOTAL"
+ ],
+ "thesis": "A game with a high chance of rain is a game with a real chance of ending early, and a total that assumes nine innings is worth less than it looks when there is a meaningful chance of five. The weather forecast is free and the effect is arithmetic, not a view on either team.",
+ "unit": "one settled baseball game",
+ "entry": {
+  "when": "At T-6h, T-3h or T-90m, take the hourly precipitation probability over the scheduled game window from the free forecast already used by the park-air bot. When the mean probability across the window is 40 percent or higher AND the park has no roof, take the under on the full total. ASSUMPTION, STATED, and it is the one to attack: at a 40 percent hourly chance, roughly 1 game in 12 is shortened, and a shortened game loses about 3 runs of expected total, so the adjustment is about 0.25 runs, which is about 2.2 cents. Do NOT trade the first-five total on the same trigger - a shortened game usually still reaches five innings, so the first-five market is the control that should show nothing.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Fewer than 60 entries. Rain days are rare and this may simply not recur enough, which is an unmeasurable outcome and not a negative one.",
+  "The rate at which flagged games are actually shortened is far from 1 in 12. That is checkable from settled linescores and should be checked BEFORE any result is reported.",
+  "Kalshi voids or refunds rain-shortened games rather than settling them on the shortened score. If the rules text says that, the whole mechanism disappears and this spec is void rather than weak.",
+  "The first-five control also shows an effect, which would mean the trigger is picking up something other than shortening."
+ ],
+ "slow": false,
+ "notes": "NEW MECHANISM, paired with park-air on games rather than on inputs. || THE VOID QUESTION MUST BE SETTLED FIRST, before a single entry is counted. w_names.rules_primary holds the settlement text for every market on tape and it is a ten-minute read. If shortened games are voided, this spec is dead on arrival and should be marked VOID with the rules quote attached - the same discipline SF009 used on the push question. || Cost bar and ask depth are MEASURED off this project's own recorded tape, not assumed - src/mlb_cost.py, median over every two-sided touch recorded 2026-08-18 to 2026-09-03 between 5c and 95c, with the fee taken at that series' own rate from the census. Both sides of the real touch, never the mid. || Exit is HOLD TO SETTLEMENT on every spec here, deliberately. Mailbox 012: tennis measured exits properly and holding beat selling early in 5 of 5 mentalities, and mlb's own 81-configuration sweep had every stop-loss doing worse than holding. So the exit question is closed and nothing below varies it. These are ENTRY specs only.",
+ "status": "LIVE",
+ "claims": [],
+ "mlb_rank": 11,
+ "information_axes": [
+  "precipitation and delay risk",
+  "shortened-game risk"
+ ],
+ "market_cost_bar_c": 1.32,
+ "market_ask_depth_contracts": 4166,
+ "fee_rate": 0.035,
+ "paired_with": "park-air",
+ "windows": [
+  "T-6h",
+  "T-3h",
+  "T-90m"
+ ]
+}

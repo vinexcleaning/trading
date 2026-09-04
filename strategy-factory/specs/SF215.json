@@ -1,0 +1,54 @@
+{
+ "id": "SF215",
+ "created": "2026-09-03",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "mlb-paper/MENTALITIES.md lists umpire tendency under 'what is deliberately NOT here', with the reason: 'statsapi does publish officials, but pre-game population was not confirmed and the effect size in public work is small relative to a 3.0c bar. Listed as a later addition, not silently dropped.'",
+ "families": [
+  "KXMLBKS",
+  "KXMLBTOTAL"
+ ],
+ "thesis": "Home-plate umpires differ measurably in how large a strike zone they call, which moves strikeouts and runs, and the assignment is known before the game. If it can be read in time, it is information nobody in the fleet uses.",
+ "unit": "one settled baseball game",
+ "entry": {
+  "when": "Would read the home-plate umpire from statsapi at T-6h or T-3h and adjust the strikeout and total markets by his season deviation in called strike rate. NOT REACHABLE - see status_reason.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "The assignment is not available before first pitch from any free source. This is the condition that has fired.",
+  "Would have been dropped on a result inside plus or minus 1 cent on 300 entries."
+ ],
+ "slow": false,
+ "notes": "TWO OF THE THREE REASONS IN MENTALITIES.md ARE NOW SETTLED, AND THEY GO OPPOSITE WAYS. (1) 'Pre-game population was not confirmed' - now confirmed ABSENT on 57 of 57 games, which kills the spec at this source. (2) 'Small relative to a 3.0c bar' - that reason is STALE: the live fleet's bar is 1.0c, and the measured cost bar on the strikeout family is 1.31c, not 3.0c. So the effect-size objection was set against a bar more than twice the real one. || WHAT WOULD REOPEN IT: a free source that publishes crew assignments the day before. I have NOT checked one, and I am not going to claim one does or does not exist - three absence claims in this repo's history were stated confidently and all three were wrong. This is recorded as UNMEASURABLE FROM STATSAPI, which is a narrower sentence than 'no edge there'. || Cost bar and ask depth are MEASURED off this project's own recorded tape, not assumed - src/mlb_cost.py, median over every two-sided touch recorded 2026-08-18 to 2026-09-03 between 5c and 95c, with the fee taken at that series' own rate from the census. Both sides of the real touch, never the mid.",
+ "status": "UNMEASURABLE",
+ "claims": [],
+ "mlb_rank": 16,
+ "information_axes": [
+  "home plate umpire tendency"
+ ],
+ "market_cost_bar_c": 1.31,
+ "market_ask_depth_contracts": 1359,
+ "fee_rate": 0.035,
+ "paired_with": null,
+ "windows": [
+  "T-6h",
+  "T-3h"
+ ],
+ "status_reason": "The home-plate umpire is not published before first pitch. Checked live 2026-09-03 on 57 scheduled games across four dates, including with statsapi's own hydrate=officials: officials was empty on 57 of 57, and the same field was populated for a completed game. So the input does not exist at any decision window this fleet uses. This is an ABSENCE CLAIM about ONE API and is bounded to that - it does not say the assignment is unpublished anywhere, only that this source does not carry it pre-game."
+}

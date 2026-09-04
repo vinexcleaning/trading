@@ -1,0 +1,55 @@
+{
+ "id": "SF216",
+ "created": "2026-09-03",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "The catcher is named on the posted card and framing quality is public on baseballsavant, which passes this project's robots gate. No live bot reads who is catching.",
+ "families": [
+  "KXMLBTOTAL"
+ ],
+ "thesis": "A catcher who turns borderline pitches into strikes is worth a few runs a season to his pitching staff, and which catcher is starting is known only when the card is posted - later than the price was set.",
+ "unit": "one settled baseball game",
+ "entry": {
+  "when": "At T-90m or T-30m, read the starting catcher from the card and his season framing runs from baseballsavant, requiring at least 300 innings caught. ASSUMPTION, STATED: a clearly above-average framing catcher is worth about 0.08 runs per game against the total. Enter when net edge after the real ask and the half fee is at least 1.0c.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Fewer than 100 entries.",
+  "Result inside plus or minus 1 cent on 300 or more entries.",
+  "The 0.08-run coefficient is smaller than the 1.32c cost bar implies is tradeable - 0.08 runs is about 0.7 cents, which is BELOW the bar. On this arithmetic the spec cannot clear its own costs and should be dropped before it is built.",
+  "Backup catchers start too rarely for the variation to be there."
+ ],
+ "slow": false,
+ "notes": "RESERVE, AND IT PROBABLY FAILS ON ARITHMETIC BEFORE IT IS EVER RUN. 0.08 runs is about 0.7 cents against a measured 1.32c bar, so the typical firing is under water by construction and only the tail is tradeable. It is listed rather than dropped because the tail is real and because a written kill on arithmetic is worth more than a silent omission - CLAUDE.md section 9c step 7. || Needs a baseballsavant pull that does not exist yet, so it is the only spec here whose data we do NOT already have. || Cost bar and ask depth are MEASURED off this project's own recorded tape, not assumed - src/mlb_cost.py, median over every two-sided touch recorded 2026-08-18 to 2026-09-03 between 5c and 95c, with the fee taken at that series' own rate from the census. Both sides of the real touch, never the mid.",
+ "status": "LIVE",
+ "claims": [],
+ "mlb_rank": 17,
+ "information_axes": [
+  "catcher framing",
+  "instrument: totals"
+ ],
+ "market_cost_bar_c": 1.32,
+ "market_ask_depth_contracts": 4166,
+ "fee_rate": 0.035,
+ "paired_with": null,
+ "windows": [
+  "T-90m",
+  "T-30m"
+ ]
+}

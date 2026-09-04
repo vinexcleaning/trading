@@ -1,0 +1,57 @@
+{
+ "id": "SF214",
+ "created": "2026-09-03",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "A club's home-run rate is concentrated in two or three hitters far more than its run scoring is, so an absence hits the home-run market harder than the moneyline. Same card, different instrument.",
+ "families": [
+  "KXMLBHR",
+  "KXMLBHRR"
+ ],
+ "thesis": "Home runs come from a handful of players, so one of them being out of the card changes the home-run market much more than it changes who wins. The lineup bot reads the same card and spends the information on the market where it matters least.",
+ "unit": "one settled baseball game",
+ "entry": {
+  "when": "At T-90m or T-30m, once the card is posted, sum the missing occupants' season home runs per plate appearance against their replacements', requiring 100 plate appearances for both. ASSUMPTION, STATED: 0.010 of summed home-run rate across the card is worth about 0.11 expected home runs, which is about 2.2 cents on an at-the-money home-run market. Enter when net edge after the real ask and the half fee is at least 1.0c.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Fewer than 100 entries.",
+  "Result inside plus or minus 1 cent on 300 or more entries.",
+  "Overlap of entered sides with SF207 above 0.5, in which case only one of the two should hold a slot.",
+  "The home-run family turns out to be per-PLAYER rather than per-team, in which case an absent player's market simply does not settle and the spec is void."
+ ],
+ "slow": false,
+ "notes": "PAIRED-TESTABLE against lineup. || RANKED LOW BECAUSE IT MAY BE A NEAR-COPY OF SF207 - same card, same reasoning, different market - and mailbox 012's warning about ten near-copies applies to it more than to anything else in this list. It is listed as a RESERVE, not as one of the ten. || Cost bar and ask depth are MEASURED off this project's own recorded tape, not assumed - src/mlb_cost.py, median over every two-sided touch recorded 2026-08-18 to 2026-09-03 between 5c and 95c, with the fee taken at that series' own rate from the census. Both sides of the real touch, never the mid. || Exit is HOLD TO SETTLEMENT on every spec here, deliberately. Mailbox 012: tennis measured exits properly and holding beat selling early in 5 of 5 mentalities, and mlb's own 81-configuration sweep had every stop-loss doing worse than holding. So the exit question is closed and nothing below varies it. These are ENTRY specs only.",
+ "status": "LIVE",
+ "claims": [],
+ "mlb_rank": 15,
+ "information_axes": [
+  "lineup absences",
+  "slugger identity",
+  "instrument: home runs"
+ ],
+ "market_cost_bar_c": 0.97,
+ "market_ask_depth_contracts": 4899,
+ "fee_rate": 0.035,
+ "paired_with": "lineup",
+ "windows": [
+  "T-90m",
+  "T-30m"
+ ]
+}

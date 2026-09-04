@@ -1,0 +1,57 @@
+{
+ "id": "SF211",
+ "created": "2026-09-03",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "mlb-paper/MENTALITIES.md deliberately excludes the first-inning family for three stated reasons: a 6.5c cost bar, 2 contracts at the touch, and no reference price. TWO OF THE THREE ARE CONTRADICTED BY THIS PROJECT'S OWN TAPE.",
+ "families": [
+  "KXMLBRFI"
+ ],
+ "thesis": "Whether a run scores in the first inning depends almost entirely on three hitters and one pitcher's first-inning habits, which is a much smaller and more knowable question than who wins the game. The family was set aside on cost grounds that the recorded tape does not support.",
+ "unit": "one settled baseball game",
+ "entry": {
+  "when": "At T-3h or later, once the card is posted, combine the away club's top-three hitters' on-base percentages with the starter's first-inning runs allowed per start, requiring at least 8 starts and 100 plate appearances per hitter. ASSUMPTION, STATED: a run scores in the first in about 27 of every 100 games, and a top three well above average in on-base percentage against a starter well below average in the first is worth about 4 of those 100, i.e. about 4 cents. Enter when net edge after the real ask and the half fee is at least 1.0c.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Fewer than 100 entries.",
+  "Result inside plus or minus 1 cent on 300 or more entries.",
+  "The measured cost bar at the moment of entry - not the median over the whole day - is above 3 cents, which would restore the original objection. This must be measured before the spec is promoted.",
+  "First-inning runs allowed per start turns out to be noise at 8 starts, which is the same trap M1's amendment A3 fixed."
+ ],
+ "slow": false,
+ "notes": "REOPENING A DEFERRED IDEA, WITH THE FIVE THINGS CLAUDE.md SECTION 2 REQUIRES. (1) What was tested: nothing - MENTALITIES.md lists the first-inning family under 'what is deliberately NOT here'; it was never run. (2) The data behind the exclusion: a stated 6.5c cost bar and 2 contracts at the touch, with no source or sample given. (3) Dates: written on or before 2026-08-12. (4) What came out: no result, because no test was run. (5) HOW THIS DIFFERS: this project's own recorder holds 19,667 first-inning touches from 2026-08-18 to 2026-09-03, of which 19,521 are two-sided - 99 percent - with a MEDIAN SPREAD OF 2 CENTS, a measured cost bar of 1.87 CENTS, and a median 518 CONTRACTS at the ask. Against the stated 6.5c and 2 contracts that is about a third of the cost and about 250 times the size. || I AM NOT SAYING THE IDEA IS GOOD. I am saying it was set aside on a cost objection that the tape contradicts, and the third reason - no reference price - still stands and is not answered here. || Cost bar and ask depth are MEASURED off this project's own recorded tape, not assumed - src/mlb_cost.py, median over every two-sided touch recorded 2026-08-18 to 2026-09-03 between 5c and 95c, with the fee taken at that series' own rate from the census. Both sides of the real touch, never the mid. || Exit is HOLD TO SETTLEMENT on every spec here, deliberately. Mailbox 012: tennis measured exits properly and holding beat selling early in 5 of 5 mentalities, and mlb's own 81-configuration sweep had every stop-loss doing worse than holding. So the exit question is closed and nothing below varies it. These are ENTRY specs only.",
+ "status": "LIVE",
+ "claims": [],
+ "mlb_rank": 12,
+ "information_axes": [
+  "leadoff and top-of-order quality",
+  "starter first-inning splits",
+  "instrument: first inning"
+ ],
+ "market_cost_bar_c": 1.87,
+ "market_ask_depth_contracts": 518,
+ "fee_rate": 0.035,
+ "paired_with": null,
+ "windows": [
+  "T-3h",
+  "T-90m",
+  "T-30m"
+ ]
+}

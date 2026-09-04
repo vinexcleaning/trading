@@ -1,0 +1,57 @@
+{
+ "id": "SF201",
+ "created": "2026-09-03",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "CLAUDE.md section 9c step 4, his own words: 'usually you wanna put a fake control in there to make sure that everything works'. The existing bullpen bot claims tired relievers add runs; relievers do not pitch the first five innings, so the same trigger on KXMLBF5TOTAL must produce nothing.",
+ "families": [
+  "KXMLBF5",
+  "KXMLBF5TOTAL"
+ ],
+ "thesis": "If the bullpen bot's signal is really about bullpens, it must vanish when the market only pays out on innings the bullpen does not pitch. If it does NOT vanish, the bot is picking up something else entirely - a team quality or schedule effect wearing a bullpen label - and every number it has produced means something different from what it says.",
+ "unit": "one settled baseball game",
+ "entry": {
+  "when": "Identical trigger to the live bullpen bot, every coefficient unchanged (0.045 runs per reliever used yesterday, 0.055 per heavy reliever, 0.060 per 100 pitches over three days, 0.070 per extra-innings game), but applied to KXMLBF5TOTAL. Enter when net edge after the real ask and the half fee is at least 1.0c.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "IT MAKES MONEY. That is the kill condition and it is deliberately backwards. A bullpen signal that pays on innings 1-5 is not a bullpen signal, and a positive result here should be read as a fault in bullpen rather than as a second edge.",
+  "It fires on fewer than 60 games, in which case it cannot separate 'no effect' from 'not enough games' and must be reported as unmeasurable rather than as a clean null.",
+  "First-five totals turn out to be quoted on materially different games from full totals, which would break the pairing."
+ ],
+ "slow": false,
+ "notes": "PAIRED-TESTABLE against bullpen, and it is the most useful thing one of these ten slots can hold, because it is the only spec here that can INVALIDATE an existing bot rather than add to it. || The expected result is NOTHING, and nothing is the good outcome. This is the placebo arm his method asks for, built from real games rather than shuffled ones. || Cost bar and ask depth are MEASURED off this project's own recorded tape, not assumed - src/mlb_cost.py, median over every two-sided touch recorded 2026-08-18 to 2026-09-03 between 5c and 95c, with the fee taken at that series' own rate from the census. Both sides of the real touch, never the mid. || Exit is HOLD TO SETTLEMENT on every spec here, deliberately. Mailbox 012: tennis measured exits properly and holding beat selling early in 5 of 5 mentalities, and mlb's own 81-configuration sweep had every stop-loss doing worse than holding. So the exit question is closed and nothing below varies it. These are ENTRY specs only.",
+ "status": "LIVE",
+ "claims": [],
+ "mlb_rank": 2,
+ "information_axes": [
+  "bullpen usage",
+  "instrument: first five innings",
+  "negative control"
+ ],
+ "market_cost_bar_c": 1.37,
+ "market_ask_depth_contracts": 1449,
+ "fee_rate": 0.035,
+ "paired_with": "bullpen",
+ "windows": [
+  "T-6h",
+  "T-3h",
+  "T-90m"
+ ]
+}

@@ -1,0 +1,56 @@
+{
+ "id": "SF208",
+ "created": "2026-09-03",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "statsapi names the probable starter pre-game; a starter with a career profile of one-inning appearances is an opener, and the club intends to use five or six pitchers. KXMLBOUTS settles on how many outs the starter records and is on tape at a 1.87c bar with 500 at the ask.",
+ "families": [
+  "KXMLBF5",
+  "KXMLBOUTS"
+ ],
+ "thesis": "When a club announces an opener, the man named as the starter is expected to pitch one inning, not six. Markets that settle on the starter's length, and markets that settle on the first five innings, are both priced off the name at the top of the card, and the name is misleading by design.",
+ "unit": "one settled baseball game",
+ "entry": {
+  "when": "At T-24h, T-6h or T-3h, flag the probable starter as an opener if his season shows 3 or more appearances averaging under 2.5 innings, or he has more relief appearances than starts this season, and require at least 5 appearances so a small sample cannot trigger it. When flagged, take the under on his recorded outs and treat the first-five market as carrying an extra 0.25 runs against his club. ASSUMPTION, STATED: an opener costs his side about 0.25 runs over five innings relative to a conventional starter, because innings 2-5 come from the middle of the bullpen. Enter when net edge after the real ask and the half fee is at least 1.0c.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Fewer than 40 entries, which is likely - openers are used by a minority of clubs. Below 40 this must be reported as unmeasurable, not as a null.",
+  "The outs market turns out to already price openers correctly, i.e. the line for a flagged opener is already under 6 outs.",
+  "The opener flag fires on conventional starters returning from injury on a pitch limit, which is a different situation with a different size."
+ ],
+ "slow": false,
+ "notes": "NEW INFORMATION. Nothing in the fleet reads how a club intends to use its pitching staff, only how good the named pitcher is. || LOW FIRING RATE IS THE EXPECTED PROBLEM and it is stated as an unmeasurable outcome rather than a negative one, per LEDGER K012: 'killed on recurrence' and 'no edge there' are opposite sentences. || Cost bar and ask depth are MEASURED off this project's own recorded tape, not assumed - src/mlb_cost.py, median over every two-sided touch recorded 2026-08-18 to 2026-09-03 between 5c and 95c, with the fee taken at that series' own rate from the census. Both sides of the real touch, never the mid. || Exit is HOLD TO SETTLEMENT on every spec here, deliberately. Mailbox 012: tennis measured exits properly and holding beat selling early in 5 of 5 mentalities, and mlb's own 81-configuration sweep had every stop-loss doing worse than holding. So the exit question is closed and nothing below varies it. These are ENTRY specs only.",
+ "status": "LIVE",
+ "claims": [],
+ "mlb_rank": 9,
+ "information_axes": [
+  "announced opener or bullpen game",
+  "expected starter length"
+ ],
+ "market_cost_bar_c": 1.37,
+ "market_ask_depth_contracts": 1449,
+ "fee_rate": 0.035,
+ "paired_with": null,
+ "windows": [
+  "T-24h",
+  "T-6h",
+  "T-3h"
+ ]
+}

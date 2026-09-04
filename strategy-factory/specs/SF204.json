@@ -1,0 +1,58 @@
+{
+ "id": "SF204",
+ "created": "2026-09-03",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "statsapi's schedule carries seriesGameNumber, gamesInSeries, dayNight and doubleHeader on every scheduled game, verified live on 2026-09-03 before first pitch. Not one of the five live bots reads the calendar.",
+ "families": [
+  "KXMLBGAME"
+ ],
+ "thesis": "Teams play almost every day and travel between cities overnight, and the price is built on team quality rather than on whether a club is playing its nineteenth game in nineteen days after a flight across three time zones for a lunchtime start. The calendar is completely public and completely ignored.",
+ "unit": "one settled baseball game",
+ "entry": {
+  "when": "At T-48h, T-24h or T-6h, compute for each club: consecutive games without a day off, time zones crossed since its last game, whether this is a day game following a night game, and whether it is the last game of a series before travel. ASSUMPTION, STATED, and it is the weakest link in this spec: a day game after a night game with travel is worth about 0.10 runs against the travelling side, ten or more consecutive games about 0.08 runs, and two or more time zones crossed about 0.06 runs, capped at 0.20 runs in total so the terms cannot stack into a large claim. At 11 cents per run of margin that caps the adjustment at about 2.2 cents. Enter when net edge after the real ask and the half fee is at least 1.0c.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Fewer than 100 entries.",
+  "Result inside plus or minus 1 cent on 300 or more entries.",
+  "The cap binds on more than half the entries, which would mean the coefficients are doing no work and the bot is really just 'bet against whoever travelled'.",
+  "It fires overwhelmingly on one club or one division, which would make it a claim about a schedule quirk rather than about travel."
+ ],
+ "slow": false,
+ "notes": "NEW INFORMATION and the cleanest axis in the list - nothing in the fleet touches the calendar. || THE HONEST WEAKNESS, STATED UP FRONT: the three coefficients are my estimates, not measurements, and public work on travel effects in baseball is small and contested. That is why the total is capped at 0.20 runs: a wrong coefficient can then cost at most about 2 cents of claimed edge rather than 10. || Cost bar and ask depth are MEASURED off this project's own recorded tape, not assumed - src/mlb_cost.py, median over every two-sided touch recorded 2026-08-18 to 2026-09-03 between 5c and 95c, with the fee taken at that series' own rate from the census. Both sides of the real touch, never the mid. || Exit is HOLD TO SETTLEMENT on every spec here, deliberately. Mailbox 012: tennis measured exits properly and holding beat selling early in 5 of 5 mentalities, and mlb's own 81-configuration sweep had every stop-loss doing worse than holding. So the exit question is closed and nothing below varies it. These are ENTRY specs only.",
+ "status": "LIVE",
+ "claims": [],
+ "mlb_rank": 5,
+ "information_axes": [
+  "schedule and travel",
+  "rest days",
+  "time zones",
+  "series position"
+ ],
+ "market_cost_bar_c": 1.37,
+ "market_ask_depth_contracts": 2237,
+ "fee_rate": 0.035,
+ "paired_with": null,
+ "windows": [
+  "T-48h",
+  "T-24h",
+  "T-6h"
+ ]
+}

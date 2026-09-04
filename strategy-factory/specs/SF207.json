@@ -1,0 +1,57 @@
+{
+ "id": "SF207",
+ "created": "2026-09-03",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "m5_lineup counts how many of a club's top five by OPS are missing and requires two or more. That throws away who replaced them and treats the sixth-best hitter as worth nothing.",
+ "families": [
+  "KXMLBGAME",
+  "KXMLBTEAMTOTAL"
+ ],
+ "thesis": "What a missing player costs is the gap between him and the man who takes his place, not the fact that he is absent. Counting absences with a hard threshold of two treats one superstar out as nothing and two fringe regulars out as a signal, which is backwards.",
+ "unit": "one settled baseball game",
+ "entry": {
+  "when": "At T-90m or T-30m, once the card is posted, compute the sum over all nine slots of (that club's usual occupant's OPS minus tonight's occupant's OPS), using season OPS from statsapi and requiring at least 100 plate appearances for both or the slot is skipped. Decline if more than two slots must be skipped. ASSUMPTION, STATED: 0.100 of summed OPS across the card is worth about 0.22 runs of expected margin, so about 2.4 cents on the moneyline. No minimum count of absences - the size of the gap is the trigger. Enter when net edge after the real ask and the half fee is at least 1.0c.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Fewer than 100 entries.",
+  "Result inside plus or minus 1 cent on 300 or more entries.",
+  "Its result is no better than lineup's on shared games.",
+  "It fires mostly on games where lineup also fires, which would make it a near-copy and not worth a slot - if the overlap of entered sides is above 0.5 it should be withdrawn rather than reported."
+ ],
+ "slow": false,
+ "notes": "PAIRED-TESTABLE against lineup, and the pairing is tight because it reads the same card at the same moment. || THE OVERLAP RISK IS REAL AND IS WRITTEN INTO THE KILL CONDITIONS. Mailbox 012 warns that ten near-copies would recreate the problem just found in the fleet; this is the spec in this list most at risk of being one, which is why it carries an explicit overlap threshold. || Cost bar and ask depth are MEASURED off this project's own recorded tape, not assumed - src/mlb_cost.py, median over every two-sided touch recorded 2026-08-18 to 2026-09-03 between 5c and 95c, with the fee taken at that series' own rate from the census. Both sides of the real touch, never the mid. || Exit is HOLD TO SETTLEMENT on every spec here, deliberately. Mailbox 012: tennis measured exits properly and holding beat selling early in 5 of 5 mentalities, and mlb's own 81-configuration sweep had every stop-loss doing worse than holding. So the exit question is closed and nothing below varies it. These are ENTRY specs only.",
+ "status": "LIVE",
+ "claims": [],
+ "mlb_rank": 8,
+ "information_axes": [
+  "lineup absences",
+  "replacement quality",
+  "whole card rather than top five"
+ ],
+ "market_cost_bar_c": 1.37,
+ "market_ask_depth_contracts": 2237,
+ "fee_rate": 0.035,
+ "paired_with": "lineup",
+ "windows": [
+  "T-90m",
+  "T-30m"
+ ]
+}

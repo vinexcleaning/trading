@@ -1,0 +1,56 @@
+{
+ "id": "SF200",
+ "created": "2026-09-03",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "mlb-paper/src/mentalities.py m1_starter trades KXMLBGAME, where the bullpen decides roughly a third of the game and dilutes the very signal being tested. KXMLBF5 settles on innings 1-5 only and is on tape with 27,545 two-sided instants.",
+ "families": [
+  "KXMLBF5",
+  "KXMLBF5SPREAD"
+ ],
+ "thesis": "The existing starter bot's information is about the starting pitcher, but it is spent on a market that also pays out on relievers who have nothing to do with the claim. Buying the first-five-innings market instead keeps the same view and removes about a third of the noise, so if the starter signal is real it should show up here first and larger.",
+ "unit": "one settled baseball game",
+ "entry": {
+  "when": "Identical trigger to the live starter bot, with no parameter changed: a probable starter with at least 3 prior starts and 12 innings of recent work whose last-three-start ER/9 differs from his season ER/9 by at least 1.50, or a debut, or short rest. Convert to cents with the SAME coefficients (2.75c per ER/9 of divergence, 0.35 runs for a debut, 0.20 for short rest) but apply them to the first-five market for the side the adjustment favours, and enter when net edge after the real ask and the half fee is at least 1.0c.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "It fires on fewer than 60 games in the forward test, which is the point at which the paired comparison against starter cannot resolve a 3-cent difference.",
+  "Its per-contract result is not better than starter's on the games they share. That is the whole claim; if the cleaner instrument is not cleaner, the starter signal is not what is producing either number.",
+  "The first-five market for a game is quoted on fewer than half the games where a KXMLBGAME quote exists, which would mean the instrument is not actually available when the decision is made."
+ ],
+ "slow": false,
+ "notes": "PAIRED-TESTABLE, and it is the cheapest test in this whole list. It fires on the same games as starter with the same inputs, so the comparison is paired: mailbox 012 measured a paired difference-spread of 25.5c against 49.6c unpaired, which cuts a 3-cent comparison from about 1,050 games to about 277. || THIS IS NOT A NEW SIGNAL AND IS NOT CLAIMED AS ONE. It is the same signal on a better instrument, which is why it ranks first: it is the highest-information-per-slot test available and it also acts as a check on M1 itself. || Cost bar and ask depth are MEASURED off this project's own recorded tape, not assumed - src/mlb_cost.py, median over every two-sided touch recorded 2026-08-18 to 2026-09-03 between 5c and 95c, with the fee taken at that series' own rate from the census. Both sides of the real touch, never the mid. || Exit is HOLD TO SETTLEMENT on every spec here, deliberately. Mailbox 012: tennis measured exits properly and holding beat selling early in 5 of 5 mentalities, and mlb's own 81-configuration sweep had every stop-loss doing worse than holding. So the exit question is closed and nothing below varies it. These are ENTRY specs only.",
+ "status": "LIVE",
+ "claims": [],
+ "mlb_rank": 1,
+ "information_axes": [
+  "starting pitcher recent form",
+  "instrument: first five innings"
+ ],
+ "market_cost_bar_c": 1.37,
+ "market_ask_depth_contracts": 1449,
+ "fee_rate": 0.035,
+ "paired_with": "starter",
+ "windows": [
+  "T-24h",
+  "T-6h",
+  "T-3h"
+ ]
+}

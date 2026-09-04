@@ -1,0 +1,53 @@
+{
+ "id": "SF213",
+ "created": "2026-09-03",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "strategy-factory/reports/STRUCTURAL-01.md tested sum-to-one and spread-implies-moneyline. It did NOT test the containment between a first-five total and a full-game total, which is a separate identity and is checkable on tape already recorded.",
+ "families": [
+  "KXMLBF5TOTAL",
+  "KXMLBTOTAL"
+ ],
+ "thesis": "Runs scored in the first five innings are a subset of runs scored in the whole game, so 'over 4.5 runs in the first five' cannot be more likely than 'over 4.5 runs in the game'. If the first-five market is ever dearer to buy than the full-game market is to sell at the same line, one of the two prices is wrong and no opinion about the game is needed.",
+ "unit": "one recorded instant on one game",
+ "entry": {
+  "when": "For one game at one recorded instant, pair the first-five total with the full-game total at the SAME strike. Fire when ask(first five over X) + fee is below bid(full game over X) - fee, buying the first five and selling the full game. Both legs must be fillable at the recorded touch size and both must settle on the same game.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "It fires fewer than 10 times across the whole recorded tape.",
+  "The locked profit after both fees is under 0.5 cents.",
+  "There is no size: a violation with nothing offered is an artefact, not money. K007 found 52 real ladder violations and 0 with tradeable size, and that is the expected outcome here.",
+  "The strikes do not actually line up, i.e. the two families use different strike conventions and my join is the bug rather than the market."
+ ],
+ "slow": false,
+ "notes": "STRUCTURAL, NOT A MENTALITY, and it is included as a BONUS rather than as one of the ten fleet slots - it needs no forward bot and can be run over tape already on disk. || EXPECTED RESULT: NOTHING. The general spread-implies-moneyline test found 0 violations in 172,684 instants. This is a different pair and has never been run, which is the only reason it is here. || Cost bar and ask depth are MEASURED off this project's own recorded tape, not assumed - src/mlb_cost.py, median over every two-sided touch recorded 2026-08-18 to 2026-09-03 between 5c and 95c, with the fee taken at that series' own rate from the census. Both sides of the real touch, never the mid. || Exit is HOLD TO SETTLEMENT on every spec here, deliberately. Mailbox 012: tennis measured exits properly and holding beat selling early in 5 of 5 mentalities, and mlb's own 81-configuration sweep had every stop-loss doing worse than holding. So the exit question is closed and nothing below varies it. These are ENTRY specs only.",
+ "status": "LIVE",
+ "claims": [],
+ "mlb_rank": 14,
+ "information_axes": [
+  "arithmetic identity",
+  "no view on either team"
+ ],
+ "market_cost_bar_c": 1.37,
+ "market_ask_depth_contracts": 1139,
+ "fee_rate": 0.035,
+ "paired_with": null,
+ "windows": []
+}

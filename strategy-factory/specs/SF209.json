@@ -1,0 +1,57 @@
+{
+ "id": "SF209",
+ "created": "2026-09-03",
+ "author": "claude:factory",
+ "source": "reasoning",
+ "source_detail": "statsapi standings carries eliminationNumber, wildCardEliminationNumber and clinched on every club, verified live 2026-09-03. No live bot reads the standings at all.",
+ "families": [
+  "KXMLBGAME"
+ ],
+ "thesis": "In September a club that cannot reach the playoffs is playing for next year and a club that has already clinched is resting its regulars, while a club fighting for a wild card is playing its best available team every night. The price is built on season-long records that were earned when all three were trying equally.",
+ "unit": "one settled baseball game",
+ "entry": {
+  "when": "From 1 September onward, at T-48h, T-24h or T-6h, classify each club as eliminated, clinched, or contending using the standings. ASSUMPTION, STATED: an eliminated club is worth about 0.15 runs against itself when facing a contender, and a clinched club about 0.20 runs against itself, because resting regulars is the stronger effect. Fire only when the two clubs are in different classes. Enter when net edge after the real ask and the half fee is at least 1.0c.",
+  "side": "either",
+  "min_price_c": 5,
+  "max_price_c": 95,
+  "max_spread_c": 4
+ },
+ "exit": {
+  "mode": "hold_to_settlement",
+  "sell_at_c": null,
+  "buy_more_at_c": null,
+  "time_exit_utc_rule": null,
+  "second_mentality": null,
+  "on_disagreement": null
+ },
+ "size": {
+  "rule": "depth_capped",
+  "usd_per_bet": 25,
+  "max_share_of_depth": 0.25
+ },
+ "wrong_if": [
+  "Fewer than 60 entries, which is a real risk since it only runs for about five weeks of the season. Below 60 this is unmeasurable, not negative.",
+  "Result inside plus or minus 1 cent on 200 or more entries.",
+  "It fires almost entirely on eliminated clubs, i.e. it is really 'bet against bad teams', which is B024 again and must be dropped.",
+  "The effect is already in the price because the eliminated club has been losing for a month and its record says so."
+ ],
+ "slow": false,
+ "notes": "NEW INFORMATION, and it is SEASONAL - it runs now and stops in October, which is both why it is worth starting immediately and why it cannot deliver a large sample this year. || THE B024 TRAP IS THE MAIN RISK and it is a kill condition: a rule that fires on eliminated clubs is a rule that backs favourites, and backing favourites is measured negative twice in this repo. Requiring the two clubs to be in different classes is not enough on its own; the entered sides must be checked against a plain favourite rule. || Cost bar and ask depth are MEASURED off this project's own recorded tape, not assumed - src/mlb_cost.py, median over every two-sided touch recorded 2026-08-18 to 2026-09-03 between 5c and 95c, with the fee taken at that series' own rate from the census. Both sides of the real touch, never the mid. || Exit is HOLD TO SETTLEMENT on every spec here, deliberately. Mailbox 012: tennis measured exits properly and holding beat selling early in 5 of 5 mentalities, and mlb's own 81-configuration sweep had every stop-loss doing worse than holding. So the exit question is closed and nothing below varies it. These are ENTRY specs only.",
+ "status": "LIVE",
+ "claims": [],
+ "mlb_rank": 10,
+ "information_axes": [
+  "standings position",
+  "elimination and clinching",
+  "late season"
+ ],
+ "market_cost_bar_c": 1.37,
+ "market_ask_depth_contracts": 2237,
+ "fee_rate": 0.035,
+ "paired_with": null,
+ "windows": [
+  "T-48h",
+  "T-24h",
+  "T-6h"
+ ]
+}
