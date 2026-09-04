@@ -207,9 +207,29 @@ DISK
     # The logs are the asset. Rotation stops them filling the disk, but
     # rotation also DELETES the oldest generation - so the ceiling has to be
     # visible before it is reached, not discovered afterwards.
-    total = sum(p.stat().st_size for p in LOGS.glob("*.jsonl*") if p.is_file())
-    print(f"  {'ALL LOGS':22s} {total/1e9:8.2f} GB of a 2.00 GB ceiling")
-    if total > 1_500_000_000:
+    # ⚠ SPLIT PER LOG, because the pooled line was actively misleading. It read
+    # "ALL LOGS 3.84 GB of a 2.00 GB ceiling" -- but the 2 GB cap applies ONLY
+    # to reasoning.jsonl*, while the total also counted the tape and health,
+    # which have their own budgets. So it showed 92% over budget when the true
+    # state was "reasoning is at its cap, as designed". It sent a reader
+    # chasing a fault that was not there (`tennis` mailbox 024).
+    reasoning = sum(p.stat().st_size for p in LOGS.glob("reasoning.jsonl*")
+                    if p.is_file())
+    other = sum(p.stat().st_size for p in LOGS.glob("*")
+                if p.is_file() and not p.name.startswith("reasoning.jsonl"))
+    total = reasoning + other
+    print(f"  {'reasoning logs':22s} {reasoning/1e9:8.2f} GB of a 2.00 GB cap"
+          f"   <- the ONLY thing the cap governs")
+    print(f"  {'everything else':22s} {other/1e9:8.2f} GB"
+          f"   (tape, health, runner -- no cap)")
+    print(f"  {'all logs on disk':22s} {total/1e9:8.2f} GB")
+    # ⚠ measured 2026-09-04 at 319 MB/day, not the 170 the old comment in
+    # forward.py claimed -- so 2 GB is about SIX AND A HALF DAYS of reasoning,
+    # and T4 can only ever see that window.
+    if reasoning > 0:
+        print(f"  {'reasoning window':22s} {reasoning/1e9/0.319:8.1f} days "
+              f"at the measured 319 MB/day")
+    if reasoning > 1_500_000_000:
         print("  *** The logs are near the 2 GB ceiling. Past it, the OLDEST")
         print("      reasoning records start being deleted. Copy logs/ somewhere")
         print("      else, or raise MAX_LOG_GENERATIONS in src/forward.py. ***")

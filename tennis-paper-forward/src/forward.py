@@ -127,11 +127,28 @@ def _append_fsync(path: Path, line: str) -> None:
 
 
 MAX_LOG_BYTES = 250_000_000      # roll at 250 MB
-# Eight generations = a 2 GB ceiling. Measured after the D15 fix, the reasoning
-# log runs about 170 MB/day, so a week is ~1.2 GB and a fortnight ~2.4 GB. Four
-# generations would have quietly discarded the first 18% of a one-week run;
-# eight covers a week with headroom, and `src/status.py` warns at 1.5 GB so the
-# ceiling is seen coming rather than hit silently.
+# Eight generations = a 2 GB ceiling.
+#
+# ⚠ THE RATE IN THIS COMMENT WAS WRONG BY 2x AND THAT IS HOW IT STAYED INVISIBLE.
+# It used to say "about 170 MB/day, so a week is ~1.2 GB and a fortnight ~2.4 GB"
+# and concluded that eight generations "covers a week with headroom".
+#
+# MEASURED 2026-09-04 off the surviving generations: 2,176 MB across 6.83 days
+# = **319 MB/day**, near enough double. So eight generations hold about SIX AND
+# A HALF DAYS, not the ~12 this comment implied. The constant is fine; the
+# assumption under it went stale, and nothing re-checked it.
+#
+# WHAT THAT COSTS, because it is narrower than it sounds: positions and
+# settlements live in `state.json`, which is NOT rotated, so P&L history is
+# safe. What rotation destroys is the DECISION REASONING -- and `analyse.py`'s
+# T4 (are the sixteen bots really sixteen) is computed from it, so T4's window
+# is the surviving log, not the run. Say the window beside the number.
+#
+# A day was permanently lost on 2026-09-03 before this was noticed. The logs are
+# now also copied to `data/logs_archive/` (gitignored), off the rotation path.
+#
+# `src/status.py` warns at 1.5 GB so the ceiling is seen coming rather than hit
+# silently.
 MAX_LOG_GENERATIONS = 8
 
 
