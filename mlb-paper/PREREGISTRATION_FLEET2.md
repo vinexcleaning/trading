@@ -1,11 +1,11 @@
-# Pre-registration — five new entry strategies for the freed slots
+# Pre-registration — four new entry strategies for the freed slots
 
 **Written 2026-09-03, BEFORE any of these takes a slot or places a bet.**
 Mailbox 028. Registered under `CLAUDE.md` §10.
 
-## ⚠ FIVE, NOT TEN, AND THAT IS THE HONEST YIELD
+## ⚠ FOUR, NOT TEN, AND THAT IS THE HONEST YIELD
 
-028 offers ten slots. **I screened eleven candidates and five survive.** I am
+028 offers ten slots. **I screened eleven candidates, five earned a slot, and one of those five died in the dry run. Four shipped.** I am
 not filling the other five, because 028's own warning is the binding one: ten
 variations on one idea would re-create exactly the duplicate problem that freed
 the slots. **An empty slot costs nothing extra; a fake strategy costs the
@@ -99,3 +99,28 @@ weather beyond `park-air` · the first-inning (`KXMLBRFI`) and run-total familie
 (tennis: holding beat selling in 5 of 5 mentalities; here: every one of 72
 stop-loss cells worse than holding) and spending a slot on it again would be
 waste.
+
+## ⚠ AMENDED 2026-09-04, BEFORE ANY OF THEM RAN — `rested` is dropped
+
+`rested` (M6) was pre-registered above and **never took a slot.** A dry run
+against real briefs showed it declining every game, so I measured why rather
+than letting it sit at zero.
+
+**It needs a rest-day GAP of 2 or more between the two sides to clear the cost
+bar. Over 2,125 games: gap 0 is 92 in 100, gap 1 is 8 in 100, and a gap of 2 or
+more has NEVER OCCURRED.** Baseball teams play daily.
+
+**So it could never fire — the exact `lineup` failure**, an untested hypothesis
+wearing the costume of a null. **Caught in a dry run before it took a slot,
+which is the only reason this amendment is honest rather than an excuse.**
+
+**NOT fixed by raising `M6_C_PER_REST_DAY` until it fires.** That is choosing
+the dial to get the answer, and it is precisely what I refused to do for
+`lineup` two weeks ago. The code is kept as dead code with its evidence, because
+deleting it is how the same idea gets re-proposed in a month.
+
+**Consequence for the denominator: 20 bots, not 21.** The repo goes 16 + 16 = 32
+to **20 + 16 = 36**, not 37.
+
+**And the shipped four are: `travel`, `consensus`, `conviction`, `underdog`** —
+one new instrument and three paired refinements of `starter`.

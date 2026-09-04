@@ -338,6 +338,12 @@ def build_for_day(day=None, as_of=None, series=("KXMLBGAME", "KXMLBTOTAL"),
                 "away": _starter_block("away", g, as_of),
                 "home": _starter_block("home", g, as_of),
             },
+            # Rest days and travel miles for both sides, computed from games
+            # STRICTLY BEFORE this one. Added 2026-09-03 for `rested` and
+            # `travel`. Without it those two would decline every game forever
+            # -- which is exactly how `lineup` sat at zero bets for three
+            # weeks while being described as a running experiment.
+            "schedule": _schedule_block(g),
         }
         if want_bullpen and (needs is None or "bullpen" in needs):
             b["bullpen"] = {
@@ -408,3 +414,31 @@ if __name__ == "__main__":
     if a.out:
         Path(a.out).write_text(json.dumps(bs, indent=2, default=str))
         print(f"\nwrote {a.out}")
+
+# ------------------------------------------------------- schedule context
+_SCHED_CACHE = None
+
+
+def _schedule_block(g):
+    """Rest days and travel miles for both sides, from PRIOR games only.
+
+    Reads the schedule cache `replay.py` already maintains, so this adds no new
+    API call and no new source. Returns {} when the game is not in that cache
+    -- missing stays missing, and `rested`/`travel` then decline rather than
+    guessing.
+
+    The cache is built once per process. It only covers games already pulled,
+    so a game added to the schedule after the last `replay.py --build` returns
+    {} and those two strategies sit out. That is the safe direction.
+    """
+    global _SCHED_CACHE
+    try:
+        if _SCHED_CACHE is None:
+            import features as FT
+            import replay as R
+            con = R.cache()
+            _SCHED_CACHE = FT.build(con)
+            con.close()
+        return _SCHED_CACHE.get(g.get("gamePk")) or {}
+    except Exception:                                   # noqa: BLE001
+        return {}

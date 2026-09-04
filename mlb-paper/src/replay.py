@@ -53,7 +53,13 @@ CACHE = HERE.parent / "data" / "replay_cache.db"
 # the same club as the live bot on just 24 of 54 shared games -- a coin flip.
 # `early`'s whole input is the season win rate, so a truncated season is not a
 # smaller sample, it is a different bot.
-FROM, TO = date(2026, 3, 15), date(2026, 9, 2)
+# TO rolls forward. A FIXED end date is how `rested` and `travel` would have
+# starved: the schedule cache feeds their brief block, and on 2026-09-04 only
+# 1 of 18 games had rest data because the cache stopped on 09-02. That is the
+# same failure as `lineup` sitting at zero bets for three weeks, and it was
+# caught in a dry run rather than three weeks later.
+FROM = date(2026, 3, 15)
+TO = date.today() + timedelta(days=2)
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS game (

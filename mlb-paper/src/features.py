@@ -67,6 +67,21 @@ def build(con):
             "series_len": d.get("gamesInSeries"),
         })
 
+    # A stale cache does not error -- it just returns {} per game and every
+    # schedule-reading strategy declines forever. Say so out loud instead.
+    if games:
+        newest = max(g["date"] for g in games)
+        from datetime import date as _date
+        try:
+            gap = (_date.today() - _date.fromisoformat(newest)).days
+            if gap > 2:
+                print(f"  ! schedule cache is {gap} days stale (newest "
+                      f"{newest}). `rested` and `travel` will decline every "
+                      f"game until `python src/replay.py --build` is re-run.",
+                      file=__import__("sys").stderr)
+        except (TypeError, ValueError):
+            pass
+
     last = {}                       # team -> the previous game it played
     out = {}
     for g in games:

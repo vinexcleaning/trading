@@ -717,9 +717,10 @@ WINDOWS_FOR = {"starter": M1_WINDOWS, "park-air": M2_WINDOWS,
                "bullpen": M3_WINDOWS, "early": M4_WINDOWS,
                "lineup": M5_WINDOWS}
 EXIT_MODES = ("hold", "exit-once", "free")
+# NOTE: HOLD_ONLY is defined further down, with the five strategies added
+# 2026-09-03. BOT_IDS is rebuilt there once it exists.
 BOT_IDS = [f"{m}__{e}" for m in MENTALITIES for e in EXIT_MODES] + \
           ["control__no-trade"]
-assert len(BOT_IDS) == 16, "PREREGISTRATION declares 16 MLB bots"
 
 ALL_WINDOWS = ("T-48h", "T-24h", "T-6h", "T-3h", "T-90m", "T-30m")
 WINDOW_HOURS = {"T-48h": 48.0, "T-24h": 24.0, "T-6h": 6.0, "T-3h": 3.0,
@@ -788,3 +789,220 @@ def invert_intent(brief, intent):
                         "promoting the best of N. See PREREGISTRATION_INVERSE.md"}
     return Intent(INVERSE_NAME, row["ticker"], "YES", price, edge, None,
                   edge, intent.window, size, detail)
+
+# ===================================================================
+# The five added 2026-09-03 for the freed slots. PREREGISTRATION_FLEET2.md
+# was committed before any of them ran.
+#
+# FIVE, NOT TEN. Eleven candidates were screened offline against the archive
+# and five survived. Filling the rest with near-copies would re-create the
+# duplicate problem that freed the slots -- an empty slot costs nothing extra,
+# a fake strategy costs the denominator and lies about breadth.
+#
+# M6/M7 are new INSTRUMENTS: nothing else in this fleet reads the schedule.
+# M8/M9/M10 are deliberate PAIRED refinements of `starter`. They share most of
+# their games with it, so the game outcome cancels and the comparison is about
+# 4x cheaper -- difference-spread 24.7c against 49.6c unpaired, measured here.
+# They are NOT independent tests of the pitcher idea and must never be reported
+# as if they were.
+# ===================================================================
+M6_WINDOWS = {"T-24h", "T-6h"}
+M6_BAR_C = 1.0
+M6_MIN_REST_GAP = 1          # days
+M6_C_PER_REST_DAY = 2.0      # ASSUMED, not measured. See m6_rested.
+
+M7_WINDOWS = {"T-24h", "T-6h"}
+M7_BAR_C = 1.0
+M7_MIN_MILES = 1200.0
+M7_MIN_MILE_GAP = 600.0
+M7_C_PER_1000_MILES = 1.5    # ASSUMED, not measured.
+
+M9_MIN_EDGE_C = 3.0
+M10_MAX_PRICE_C = 50
+
+
+def _sched(brief, side):
+    """Schedule context for a side, or {} -- missing stays missing."""
+    return ((brief.get("schedule") or {}).get(side) or {})
+
+
+def m6_rested(brief, window):
+    """Back the better-rested side. Nothing else in this fleet reads rest.
+
+    M6_C_PER_REST_DAY = 2.0 is ASSUMED, not measured -- the same shape of guess
+    that left `lineup` unable to fire for three weeks. It is named here so the
+    next reader cannot mistake it for a finding.
+
+    The registered benchmark is "always back the home team", which returned
+    -5.5% on 664 archive games, because rest correlates with home advantage and
+    this could be home-field wearing a new name.
+    """
+    if window not in M6_WINDOWS:
+        return Decline("rested", "outside this mentality's windows",
+                       {"window": window})
+    rows = _ml_rows(brief)
+    if not rows:
+        return Decline("rested", "no KXMLBGAME market for this game")
+    a = _sched(brief, "away").get("rest_days")
+    h = _sched(brief, "home").get("rest_days")
+    if a is None or h is None:
+        return Decline("rested", "no rest information (missing stays missing)")
+    gap = h - a
+    if abs(gap) < M6_MIN_REST_GAP:
+        return Decline("rested", "both sides equally rested",
+                       {"rest_days": {"away": a, "home": h}})
+    side = "home" if gap > 0 else "away"
+    adj_c = abs(gap) * M6_C_PER_REST_DAY
+    row = _club_row(brief, rows, side)
+    if row is None:
+        return Decline("rested", "could not locate the club's market row")
+    d = _decide(row, "YES", adj_c, M6_BAR_C)
+    detail = {"rule": "back the better-rested side",
+              "backed": brief[side + "_team"],
+              "rest_days": {"away": a, "home": h},
+              "adjustment_c": round(adj_c, 3),
+              "cents_per_rest_day_ASSUMED": M6_C_PER_REST_DAY, **d,
+              "sharp_yardstick": _sharp_yardstick(brief, "moneyline", side,
+                                                  d["price_c"])}
+    if not d["passes"]:
+        return Decline("rested", "rest gap does not survive the cost bar",
+                       detail)
+    return Intent("rested", row["ticker"], "YES", d["price_c"], d["net_edge_c"],
+                  d["fair_c"], d["net_edge_c"], window, d["size"], detail)
+
+
+def m7_travel(brief, window):
+    """Fade the side that has just flown furthest. Assumption flagged as such."""
+    if window not in M7_WINDOWS:
+        return Decline("travel", "outside this mentality's windows",
+                       {"window": window})
+    rows = _ml_rows(brief)
+    if not rows:
+        return Decline("travel", "no KXMLBGAME market for this game")
+    a = _sched(brief, "away").get("travel_miles")
+    h = _sched(brief, "home").get("travel_miles")
+    if a is None or h is None:
+        return Decline("travel", "no travel information (missing stays missing)")
+    if max(a, h) < M7_MIN_MILES or abs(a - h) < M7_MIN_MILE_GAP:
+        return Decline("travel", "no material travel difference",
+                       {"travel_miles": {"away": a, "home": h}})
+    side = "home" if a > h else "away"
+    adj_c = (abs(a - h) / 1000.0) * M7_C_PER_1000_MILES
+    row = _club_row(brief, rows, side)
+    if row is None:
+        return Decline("travel", "could not locate the club's market row")
+    d = _decide(row, "YES", adj_c, M7_BAR_C)
+    detail = {"rule": "fade the side that has just flown furthest",
+              "backed": brief[side + "_team"],
+              "travel_miles": {"away": a, "home": h},
+              "adjustment_c": round(adj_c, 3),
+              "cents_per_1000_miles_ASSUMED": M7_C_PER_1000_MILES, **d,
+              "sharp_yardstick": _sharp_yardstick(brief, "moneyline", side,
+                                                  d["price_c"])}
+    if not d["passes"]:
+        return Decline("travel", "travel gap does not survive the cost bar",
+                       detail)
+    return Intent("travel", row["ticker"], "YES", d["price_c"], d["net_edge_c"],
+                  d["fair_c"], d["net_edge_c"], window, d["size"], detail)
+
+
+def _starter_refinement(brief, window, name, accept, why):
+    """`starter`'s own signal, taken only when `accept(intent)` is true."""
+    res = m1_starter(brief, window)
+    if isinstance(res, Decline):
+        return Decline(name, "starter declined: " + res.reason, res.detail)
+    if not accept(res):
+        return Decline(name, why, {"starter_price_c": res.entry_price_c,
+                                   "starter_edge_c": res.edge_c})
+    d = dict(res.reasoning or {})
+    d["rule"] = "starter's signal, restricted: " + why
+    d["paired_with"] = "starter"
+    return Intent(name, res.ticker, res.side, res.entry_price_c,
+                  res.conviction, res.stated_prob_c, res.edge_c, window,
+                  res.top_of_book_size, d)
+
+
+def m8_consensus(brief, window):
+    """`starter`, only where another strategy is also in this game.
+
+    This pattern has been LOOKED AT repeatedly and never traded. Making it a
+    pre-registered forward bot is how a looked-at pattern becomes evidence
+    rather than a story. Its archive figure (+6.7% on 242 games) is IN-SAMPLE
+    and is not a prediction.
+    """
+    others = 0
+    for nm in ("early", "bullpen", "park-air", "lineup", "travel"):
+        fn = MENTALITIES.get(nm)
+        if not fn or window not in WINDOWS_FOR.get(nm, set()):
+            continue
+        try:
+            if isinstance(fn(brief, window), Intent):
+                others += 1
+        except Exception:                               # noqa: BLE001
+            continue
+    return _starter_refinement(brief, window, "consensus",
+                               lambda i: others > 0,
+                               "no other strategy is in this game")
+
+
+def m9_conviction(brief, window):
+    return _starter_refinement(
+        brief, window, "conviction",
+        lambda i: (i.edge_c or 0) >= M9_MIN_EDGE_C,
+        "does not clear " + str(M9_MIN_EDGE_C) + "c of edge")
+
+
+def m10_underdog(brief, window):
+    return _starter_refinement(
+        brief, window, "underdog",
+        lambda i: i.entry_price_c < M10_MAX_PRICE_C,
+        "is not priced below " + str(M10_MAX_PRICE_C) + "c")
+
+
+# ⚠ `rested` (m6) IS DELIBERATELY NOT REGISTERED. It is kept below as dead
+# code with its evidence, because deleting it is how the same idea gets
+# re-proposed in a month.
+#
+# It requires a rest-day GAP of 2 or more between the two sides to clear the
+# cost bar. Measured over 2,125 games: gap 0 is 92 in 100, gap 1 is 8 in 100,
+# and **gap 2 or more has never once occurred.** Baseball teams play daily.
+#
+# So it could never fire -- the exact `lineup` failure, an untested hypothesis
+# wearing the costume of a null. Caught in a dry run before it took a slot
+# rather than three weeks later.
+#
+# NOT FIXED BY TUNING `M6_C_PER_REST_DAY` UPWARD. That is choosing the dial to
+# get the answer, and it is the same thing I refused to do for `lineup`.
+MENTALITIES.update({"travel": m7_travel,
+                    "consensus": m8_consensus, "conviction": m9_conviction,
+                    "underdog": m10_underdog})
+TARGET.update({"travel": "KXMLBGAME",
+                   "consensus": "KXMLBGAME", "conviction": "KXMLBGAME",
+                   "underdog": "KXMLBGAME"})
+WINDOWS_FOR.update({"travel": M7_WINDOWS,
+                    "consensus": M1_WINDOWS, "conviction": M1_WINDOWS,
+                    "underdog": M1_WINDOWS})
+
+#: Only these three take the hold/exit-once/free triple. The five added in
+#: 2026-09 are HOLD-ONLY: the exit dimension fired 3 times in 1,516 positions
+#: and adding it to five more strategies would buy ten more duplicates.
+HOLD_ONLY = {"travel", "consensus", "conviction", "underdog"}
+
+# ------------------------------------------------------------------ the fleet
+# Rebuilt now that HOLD_ONLY exists.
+#
+# The five strategies added 2026-09-03 are HOLD-ONLY. The exit dimension fired
+# 3 times in 1,516 positions and produced ten bit-identical duplicates; giving
+# it to five more strategies would simply buy ten more.
+BOT_IDS = ([f"{m}__{e}" for m in MENTALITIES if m not in HOLD_ONLY
+            for e in EXIT_MODES]
+           + [f"{m}__hold" for m in sorted(HOLD_ONLY)]
+           + ["control__no-trade"])
+
+# THE DENOMINATOR RISES AND DOES NOT FALL. This assert was 16 and is now 20.
+# JOINT_MULTIPLICITY.md counts ONE denominator across this fleet and tennis's,
+# so the repo goes 16 + 16 = 32 -> 20 + 16 = 36, and every previously reported
+# number is recomputed against 37. That cost lands on the tennis chat too,
+# which did not ask for it; it is flagged in PREREGISTRATION_FLEET2.md rather
+# than absorbed silently.
+assert len(BOT_IDS) == 20, "PREREGISTRATION_FLEET2 declares 20 MLB bots"

@@ -141,10 +141,41 @@ def test_depth_cap_never_consumes_size_the_book_did_not_show():
 
 # ------------------------------------------------------- bots and denominator
 
-def test_sixteen_bots_exactly():
-    assert len(MEN.BOT_IDS) == 16
+def test_twenty_bots_exactly():
+    """The fleet size is pinned so it cannot drift without a decision.
+
+    Was 16 until 2026-09-03. FOUR entry strategies were added to the slots
+    freed when ten of the original sixteen turned out to be bit-identical
+    duplicates -- the exit dimension fired 3 times in 1,516 positions.
+
+    Eleven candidates were screened, five earned a slot, and a fifth
+    (`rested`) was dropped in the dry run when it turned out it could never
+    fire: it needs a rest-day gap of 2+, which has never occurred in 2,125
+    games. See the note above MENTALITIES.update in mentalities.py.
+
+    THE DENOMINATOR RISES AND DOES NOT FALL. JOINT_MULTIPLICITY.md counts one
+    denominator across this fleet and tennis's, so the repo goes 16 + 16 = 32
+    -> 20 + 16 = 36, and every previously reported number is recomputed
+    against 36. That cost lands on the tennis fleet too.
+
+    This test failing is the correct behaviour when someone adds a bot without
+    updating PREREGISTRATION_FLEET2.md. Do not simply raise the number.
+    """
+    assert len(MEN.BOT_IDS) == 20
     assert MEN.BOT_IDS.count("control__no-trade") == 1
-    assert len(set(MEN.BOT_IDS)) == 16
+    assert len(set(MEN.BOT_IDS)) == 20
+
+
+def test_the_five_new_strategies_are_hold_only():
+    """Adding the exit triple to the new five would buy ten more duplicates.
+
+    The exit dimension produced zero information across 1,516 positions
+    (3 fires). Every strategy added in 2026-09 is hold-only, and this pins it.
+    """
+    for m in MEN.HOLD_ONLY:
+        assert f"{m}__hold" in MEN.BOT_IDS
+        assert f"{m}__exit-once" not in MEN.BOT_IDS
+        assert f"{m}__free" not in MEN.BOT_IDS
 
 
 def test_every_mentality_has_a_declared_target_and_windows():
