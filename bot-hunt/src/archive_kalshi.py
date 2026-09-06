@@ -485,16 +485,30 @@ def sweep_trades(con: sqlite3.Connection, top: int, min_volume: int) -> tuple[in
 
     Measured on a 2.3-hour sample and scaled across the 68-day window:
 
-      the 19 recorded families      ~70,000 markets   ~10 hours at 2 req/s
-      every sports family, vol>=1k  ~1,300,000        ~180 hours
+      the 18 recorded families      ~70,000 markets
+      every sports family, vol>=1k  ~1,300,000
 
     The second is not a slower version of the first, it is a different project.
-    The 19 are the set this programme already decided matters, they are where
+    The 18 are the set this programme already decided matters, they are where
     the live money was, and their depth is being recorded - so the tape lines up
     with a book rather than sitting on its own.
 
-    Busiest first because the run is racing a deletion clock. `trade_done`
-    makes it resumable and stops a second run re-walking what is already held.
+    ## Oldest first, and the cost is per page rather than per market
+
+    ⚠ An earlier version of this docstring said ~10 hours for those 70,000
+    markets. That was wrong, and wrong in the way sizing usually is: it counted
+    markets and the cost is pages. Measured, the six busiest settled markets
+    carried 72,295 trades between them and took 194 seconds - about 32 seconds
+    each, not the fraction of a second a per-market estimate implies.
+
+    So this cannot finish the window in one night, and the ordering matters more
+    than the throughput. It pulls OLDEST first, because the run is racing a
+    deletion clock and the oldest markets are the ones about to fall off the
+    end. Busiest-first was the intuitive order and is exactly backwards: the
+    newest markets are the ones that will still be there tomorrow.
+
+    `trade_done` makes it resumable and stops a second run re-walking what is
+    already held.
     """
     families = recorded_families()
     slots = ",".join("?" * len(families))
@@ -504,7 +518,7 @@ def sweep_trades(con: sqlite3.Connection, top: int, min_volume: int) -> tuple[in
            where m.status in ('settled','finalized') and d.ticker is null
              and m.series_ticker in ({slots})
              and coalesce(m.volume,0) >= ?
-           order by coalesce(m.volume,0) desc
+           order by m.close_time asc
            limit ?""", (*families, min_volume, top)).fetchall()
     print(f"  {len(targets):,} settled markets to pull", flush=True)
 
