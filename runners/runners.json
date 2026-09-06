@@ -179,6 +179,25 @@
       "log": "logs\\wrapper_paired.log",
       "paper_only": true,
       "_note": "Reads Kalshi and Polymarket CONCURRENTLY for the same market and records the measured gap on every row (median 84 ms, against record.py's 6.5 MINUTES). Recording only -- no credentials, no order code, no execution path. Writes its OWN database (data/paired.db) with its own single-instance lock; it must never share record.db, where two writers died with 'database is locked' inside 19 minutes."
+    },
+    {
+      "name": "kalshi-archive",
+      "enabled": true,
+      "windowless": true,
+      "dir": "bot-hunt",
+      "exe": ".venv\\Scripts\\python.exe",
+      "args": [
+        "src/archive_kalshi.py",
+        "--series",
+        "--markets",
+        "settled",
+        "--every",
+        "12"
+      ],
+      "match": "archive_kalshi.py",
+      "log": "logs\\wrapper_archive.log",
+      "paper_only": true,
+      "_note": "NOT a paper test and NOT the recorder. Read-only public endpoints, no credentials, writes its own SQLite file (data/kalshi_archive.db) and never record.db. It exists because retention_rebisect.py on 2026-09-06 showed Kalshi's window ROLLS: the earliest listed settled market moved from 2026-05-25 to 2026-06-30 in 33 calendar days, and the tape goes empty between 68 and 69 days. HANDOFF.md section 2c claimed a fixed boundary and was wrong. Every day this is not running, one more day of the whole exchange's settled history is deleted and cannot be bought back at any price. Twice a day, because the walk takes minutes and the thing it is racing moves once a day."
     }
   ]
 }

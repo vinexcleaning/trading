@@ -90,21 +90,43 @@ LEDGER K014: **481** settled events for a 5 pp edge, **2,084** for a 2.4¢ bar.
   (T012, r 0.9878, MAD 1.95¢ vs a 2.44¢ bar. Null).
 - **soccer** has 14 years of free Pinnacle closes and **152 matches**.
 
-### 2c. Kalshi's retention is a fixed calendar boundary, not a rolling window
+### 2c. RETRACTED 2026-09-06 — Kalshi's retention DOES roll, and BH009 was wrong
 
-Four independent queries — `status=settled`, `min_close_ts` at −365 days, no
-status filter, and a window placed entirely before the boundary — all return the
-same earliest `close_time`, and **13 of 18 unrelated families share the identical
-date 2026-05-25**.
+⚠ **This section previously claimed the retention boundary is a fixed calendar
+date. It is not. It rolls, and history is being deleted daily.**
 
-⚠ **`market-selection/WHAT_IS_LEFT.md` calls this "THE DECAYING ITEM", 69 days
-rolling one day per day, gone by 2026-08-19.** It bisected to 2026-05-25 on
-08-02; I bisect to 2026-05-25 on 08-04 — the window **grew** to 71 days. Two
-points is not enough to overturn it. It is enough to stop treating the deadline
-as established. **Re-bisect before acting on it.**
+`src/retention_rebisect.py` re-run on 2026-09-06 — the test this handoff itself
+said to run before anyone acted on the widening:
 
-Also new: the **market listing** and the **trade tape** have the same boundary,
-and the listing is the binding one because it supplies the result label.
+| | 2026-08-04 (BH009) | 2026-09-06 (re-bisect) |
+|---|---|---|
+| earliest listed settled market | 2026-05-25 | **2026-06-30** |
+| age of that boundary | 71 d | **68 d** |
+
+The boundary moved **36 days forward in 33 calendar days**. A fixed boundary
+cannot move. The tape is present at ages 60, 66 and 68 days and empty at 69, 70,
+71, 72, 73, 74, 76 and 80 — it goes empty between 68 and 69 days, every day.
+
+**M009 (market-selection) was right and BH009 was wrong.** The two projects
+disagreed because they were measured 48 hours apart and a two-day sample cannot
+tell a slow roll from a fixed date. The 08-02 → 08-04 growth from 69 to 71 days
+looked like a fixed boundary and was the window rolling more slowly than the
+calendar over a short window.
+
+**Consequence.** Everything before 2026-06-30 is gone and cannot be bought back
+at any price. One more day goes every day. `market-selection/WHAT_IS_LEFT.md`
+calls this "THE DECAYING ITEM" and it was correct to.
+
+**What was done about it, 2026-09-06.** `src/archive_kalshi.py` — a settled-
+history archive for the *whole exchange* rather than the 19 recorded series. It
+writes its own SQLite file (`data/kalshi_archive.db`), never `record.db`, and
+walks by cursor with a checkpoint per page so a network drop costs one page.
+
+It saves what is expiring and is small: the series list (13,839 rows, including
+`fee_multiplier`), every settled market with its result and volume, and the
+trade tape for busy markets. It does **not** attempt depth — depth was never
+retained and widening the live recorder to chase this would slow the one thing
+that genuinely cannot be backfilled.
 
 ### 2d. The engine is validated, and one of its guards caught my own bug
 
