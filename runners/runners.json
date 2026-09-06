@@ -191,13 +191,15 @@
         "--series",
         "--markets",
         "settled",
+        "--trades",
+        "4000",
         "--every",
         "12"
       ],
       "match": "archive_kalshi.py",
       "log": "logs\\wrapper_archive.log",
       "paper_only": true,
-      "_note": "NOT a paper test and NOT the recorder. Read-only public endpoints, no credentials, writes its own SQLite file (data/kalshi_archive.db) and never record.db. It exists because retention_rebisect.py on 2026-09-06 showed Kalshi's window ROLLS: the earliest listed settled market moved from 2026-05-25 to 2026-06-30 in 33 calendar days, and the tape goes empty between 68 and 69 days. HANDOFF.md section 2c claimed a fixed boundary and was wrong. Every day this is not running, one more day of the whole exchange's settled history is deleted and cannot be bought back at any price. Twice a day, because the walk takes minutes and the thing it is racing moves once a day."
+      "_note": "NOT a paper test and NOT the recorder. Read-only public endpoints, no credentials, writes its own SQLite file (data/kalshi_archive.db) and never record.db. It exists because retention_rebisect.py on 2026-09-06 showed Kalshi's window ROLLS: the earliest listed settled market moved from 2026-05-25 to 2026-06-30 in 33 calendar days, and the tape goes empty between 68 and 69 days. HANDOFF.md section 2c claimed a fixed boundary and was wrong. Every day this is not running, one more day of the whole exchange's settled history is deleted and cannot be bought back at any price. Twice a day, because the walk takes minutes and the thing it is racing moves once a day. --trades 4000 a pass pulls the tape for the busiest settled markets in the 18 families record.py is recording depth for, read from that file so the two cannot drift. Measured: those families are about 70,000 markets across the 68-day window, against 1.3 million for every sports family - the wider pull is not a slower version of this one, it is a different project. Tape without a book is half a backtest, which is why it follows the recorder's list."
     }
   ]
 }

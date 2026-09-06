@@ -464,20 +464,48 @@ def _epoch(iso: str | None) -> int:
 # trades
 # ---------------------------------------------------------------------------
 
-def sweep_trades(con: sqlite3.Connection, top: int, min_volume: int) -> tuple[int, int]:
-    """Pull the tape for settled markets, busiest first.
+def recorded_families() -> list[str]:
+    """The families `record.py` is recording depth for, read from that file.
 
-    Busiest first because the run is racing a deletion clock and a market with
-    no volume has no tape worth saving. `trade_done` makes it resumable and
-    stops a second run re-walking what is already held.
+    Imported rather than copied. A second hand-maintained list would drift, and
+    the whole reason to pull the tape for exactly these families is that their
+    order books are being recorded too - tape and depth on the same markets is
+    what makes a backtest possible, and a copy that fell out of step would
+    quietly break that alignment.
     """
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import record  # noqa: PLC0415 - deliberately late, and it has no import side effects
+    return list(record.KALSHI_SERIES)
+
+
+def sweep_trades(con: sqlite3.Connection, top: int, min_volume: int) -> tuple[int, int]:
+    """Pull the tape for settled markets in the recorded families, busiest first.
+
+    ## Why these families and not everything
+
+    Measured on a 2.3-hour sample and scaled across the 68-day window:
+
+      the 19 recorded families      ~70,000 markets   ~10 hours at 2 req/s
+      every sports family, vol>=1k  ~1,300,000        ~180 hours
+
+    The second is not a slower version of the first, it is a different project.
+    The 19 are the set this programme already decided matters, they are where
+    the live money was, and their depth is being recorded - so the tape lines up
+    with a book rather than sitting on its own.
+
+    Busiest first because the run is racing a deletion clock. `trade_done`
+    makes it resumable and stops a second run re-walking what is already held.
+    """
+    families = recorded_families()
+    slots = ",".join("?" * len(families))
     targets = con.execute(
-        """select m.ticker, m.volume from markets m
+        f"""select m.ticker, m.volume from markets m
            left join trade_done d on d.ticker = m.ticker
-           where m.status='settled' and d.ticker is null
+           where m.status in ('settled','finalized') and d.ticker is null
+             and m.series_ticker in ({slots})
              and coalesce(m.volume,0) >= ?
            order by coalesce(m.volume,0) desc
-           limit ?""", (min_volume, top)).fetchall()
+           limit ?""", (*families, min_volume, top)).fetchall()
     print(f"  {len(targets):,} settled markets to pull", flush=True)
 
     done = total = 0
