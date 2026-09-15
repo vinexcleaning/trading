@@ -1,6 +1,6 @@
 <!-- COORDINATOR-STATE
-doing: paired sampler running under the watchdog (venue gap ~80 ms); mailbox 025/026/027/028 answered and fixed
-left: totals model against 854 settled games (PREREGISTRATION_TOTALSMODEL.md written, not built); copy-trading headline could be restated on ex_net if wanted
+doing: combo/parlay tape captured (277,861 combos, 2.17M legs) and sweeping every 6h; the 9-hour hang is fixed (leg deadline + the recorder abandoning its own stalled cycle) and both recorders restarted
+left: the totals model against 854 settled games - PREREGISTRATION_TOTALSMODEL.md is written, the model is not built
 needs: no
 -->
 
