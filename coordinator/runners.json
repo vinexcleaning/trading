@@ -232,6 +232,42 @@
       "lock": "bot-hunt/data/paired.db.lock",
       "stale_after_minutes": 45,
       "restart": "the watchdog restarts it within ten minutes and at startup; nothing for a human to do"
+    },
+    {
+      "id": "devig-combo-recorder",
+      "workstream": "devig",
+      "title": "Kalshi parlay (combo) tape",
+      "plain_english": "Saves Kalshi's multi-leg bets - what they call combos - every six hours: the legs, the price somebody actually paid, and how it finished. It only reads. This one is a race: Kalshi deletes finished markets after about 69 days, so anything not saved now is gone for good.",
+      "monitor": "heartbeat",
+      "kind": "continuous",
+      "machine": "desktop",
+      "watchdog_name": "devig-combo-recorder",
+      "heartbeat": [
+        "bot-hunt/data/combos.db",
+        "bot-hunt/data/combos.db-wal"
+      ],
+      "lock": "bot-hunt/data/combos.db.lock",
+      "stale_after_minutes": 400,
+      "restart": "the watchdog restarts it within ten minutes and at startup; nothing for a human to do"
+    },
+    {
+      "id": "factory-combos",
+      "workstream": "factory",
+      "title": "Kalshi parlay (combo) recorder",
+      "plain_english": "Writes down every multi-leg bet on Kalshi - which games were stacked together, what somebody actually paid for the stack, and whether it came in. These have no public price list at all: the price is a private quote, so the amount paid is the only record that the trade ever happened. Kalshi deletes closed markets after about ten weeks, so anything not written down now is gone for good. It only reads and saves.",
+      "monitor": "heartbeat",
+      "kind": "continuous",
+      "machine": "desktop",
+      "watchdog_name": "factory-combos",
+      "heartbeat": [
+        "strategy-factory/data/combos.db-wal",
+        "strategy-factory/data/combos.db",
+        "strategy-factory/logs/wrapper_combos.log"
+      ],
+      "lock": "strategy-factory/data/combos.lock",
+      "writes_every_minutes": 60,
+      "stale_after_minutes": 150,
+      "restart": "the watchdog restarts it within ten minutes and at startup; nothing for a human to do"
     }
   ]
 }

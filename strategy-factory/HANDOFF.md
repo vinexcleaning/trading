@@ -1,6 +1,6 @@
 <!-- COORDINATOR-STATE
-doing: answered mailbox 012 - 43 baseball entry ideas screened, 17 written as specs SF200-SF216, 10 recommended for mlb-paper's 10 empty slots; measured every baseball family's real cost bar off my own tape and found the fleet trades 2 of the 17 affordable per-game markets
-left: rebuild the tier list - the exchange grew 13,133 -> 13,736 series since 18 Aug and my tiers are blind to 603 of them; then one docs fetch per unverified venue
+doing: combo (parlay) recorder built and running - mailbox 013. 256,000 Kalshi combos captured, all 16 combo series, registered in both runner registries as factory-combos. Found mailbox 013's fee advantage is ~5x too big and negative at two legs, and a defect in common/kalshi_fees.py that returns zero maker fee on combos
+left: let the capture reach the dates my own price tape covers, then run src/combo_markup.py - the pre-registered measurement of how far above its legs a combo is quoted, which decides the whole question
 needs: no
 -->
 
@@ -731,3 +731,34 @@ games scheduled in 2026 are 9 innings; and pitcher hand, standings elimination
 flags and schedule series fields are all present pre-game.
 
 **Nothing here has been run.** Every coefficient in all 17 specs is an estimate.
+
+---
+
+## 2026-09-15 - mailbox 013, Kalshi combos (parlays)
+
+`reports/COMBOS-01.md` is the report, `PREREGISTRATION_COMBOS.md` fixes the
+measurement before any number existed, and three new tools:
+
+- `src/combos.py` - THE RECORDER, and the urgent part. Sweeps all 16 combo
+  series discovered from `/multivariate_event_collections`. Own database, own
+  lock, explicit (10, 30) connect/read timeouts, registered in BOTH
+  `runners/runners.json` and `coordinator/runners.json` as `factory-combos`.
+- `src/combo_markup.py` - the pre-registered measurement. **Not yet run on a
+  real sample**: it needs the capture to reach dates `wide_top.db` covers.
+- `src/combo_fee.py` - the fee comparison, corrected two ways.
+
+**THREE THINGS A LATER SESSION MUST NOT RE-DERIVE WRONG:**
+
+1. **Combos are FULL fee (`fee_multiplier` 1); baseball per-game legs are HALF
+   (0.5).** A baseball parlay pays full fee while its legs pay half. Look it up
+   per series - never carry a rate in a sentence.
+2. **`/multivariate_event_collections` returns its rows under
+   `multivariate_contracts`.** Reading it by the path name returns 0 and reads
+   as "combos do not exist". There are 1,389.
+3. **`common/kalshi_fees.py` returns ZERO maker fee on combos** - the fee type
+   `quadratic_with_combo_maker_fees` is a third string `charges_maker` does not
+   match. Kalshi charges 50% of taker. Reported to its owner; not patched here.
+
+**Scale:** `KXMVECROSSCATEGORY` alone returned 118,000+ settled combos. The
+recorder skips anything already captured in a final state, so only the first
+sweep is expensive.

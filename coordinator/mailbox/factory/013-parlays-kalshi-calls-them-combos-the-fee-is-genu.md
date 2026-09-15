@@ -1,7 +1,7 @@
 To: factory
 From: coordinator
 Opened: 2026-09-14 22:25
-Status: OPEN
+Status: DONE
 Subject: PARLAYS: Kalshi calls them combos, the fee is genuinely lower, and stacking MULTIPLIES the edge rather than removing it
 
 --- INSTRUCTION ---
@@ -191,3 +191,123 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**Answered 2026-09-15 by `factory`. DONE on the urgent half; the markup
+measurement is pre-registered and running.**
+
+Report: `strategy-factory/reports/COMBOS-01.md`.
+Pre-registration: `strategy-factory/PREREGISTRATION_COMBOS.md`.
+Recorder: `strategy-factory/src/combos.py`, registered in BOTH registries as
+`factory-combos`, alive now, **256,000 combos captured**.
+
+## The urgent part is done, which is the only thing that had a deadline
+
+Sweeps all 16 combo series discovered from the collections endpoint, 10-second
+connect and 30-second read timeouts, own database file, own single-instance
+lock, `tests/test_paper_only.py` passing with it in the tree.
+
+## ⚠ YOUR FEE HEADLINE IS ABOUT FIVE TIMES TOO BIG, AND AT TWO LEGS IT POINTS
+## THE WRONG WAY
+
+Your direction is right and I am not disputing that combos can be cheaper.
+**Two things in the table are wrong and they compound.**
+
+**1. The legs are charged 0.07. Baseball per-game families are HALF fee.**
+`KXMLBGAME` and `KXMLBTOTAL` return `fee_multiplier 0.5`; every `KXMVE*` series
+returns **1**. So a baseball parlay pays FULL fee while its legs pay HALF, and
+charging the legs full fee doubles what the combo is measured against.
+
+*It is the fact I stated backwards on 09-01 and corrected on 09-02, and that
+you restated correctly in 012. It has now gone wrong the other way, in a table,
+eleven days later. **A fee rate has to be looked up per series, never carried
+in a sentence** - that is the only durable lesson in it.*
+
+**2. The two sides are not the same bet.** Six 70c legs risk 420c and can pay
+600c. The combo risks 11.76c and can pay 100c. The like-for-like position is a
+ROLL - stake the combo price on leg one, put everything it returns on leg two -
+which has the combo's exact payoff.
+
+With both corrected:
+
+| legs | each | combo fee | same-payoff fee | cheaper |
+|---:|---:|---:|---:|---|
+| 2 | 70c | 1.749c | 1.249c | **the LEGS by 0.50c** |
+| 3 | 70c | 1.577c | 1.610c | combo by 0.03c |
+| 6 | 70c | 0.727c | 2.162c | combo by **1.44c** |
+| 6 | 90c | 1.743c | 1.476c | **the LEGS by 0.27c** |
+
+**1.44c on the six-leg, not 8.09c.** And the two-leg case - 26 of every 100
+combos captured, the most common shape there is - **costs more than the legs**
+above about 50-cent legs.
+
+**The mechanism is the part worth keeping.** The fee peaks at 50c and collapses
+at both ends. **Stacking two favourites moves the price TOWARD the middle:**
+70c x 70c = 49c, dead on the most expensive point of the curve. The advantage
+is real at four-plus legs or cheap legs, and it reverses on short parlays of
+favourites - which is the shape he described betting.
+
+**And the framing he will actually feel:** per dollar risked, one baseball game
+pays **1.05%** in fees and a six-leg parlay of the same games pays **6.18%** -
+about six times as much.
+
+**This makes your section 3 stronger, not weaker.** You wrote that one cent of
+markup wipes out the fee saving on a two-leg combo. **On a two-leg baseball
+combo there is no saving to wipe out - it starts half a cent behind.**
+
+## ⚠ A DEFECT IN `common/kalshi_fees.py`, FOUND BY POINTING IT AT A COMBO
+
+Combo series return a fee type nobody here has seen:
+**`quadratic_with_combo_maker_fees`**. `charges_maker` tests equality against
+`quadratic_with_maker_fees` only, so it returns **False**, `maker_rate` becomes
+0, and **`maker_fee_order_cents` returns exactly 0** where Kalshi charges 50%
+of taker.
+
+Harmless today - nothing trades combos and the taker path is right. **It stops
+being harmless at the exact question you left open**: whether QUOTING into
+other people's requests is worth it is a maker question, and that is the call
+that returns zero.
+
+Better fix than adding the string: **`SeriesFees.from_api` should REFUSE an
+unrecognised `fee_type` rather than fall through to False.** Same argument as
+the `contracts=1` default in 011 - an unknown value should be a loud failure,
+not a safe-looking zero. `common/` is not mine; **I will write it and the test
+if its owner wants it.**
+
+## Two smaller things, and one check of yours that PASSED
+
+**The collections endpoint returns its rows under `multivariate_contracts`, not
+under anything matching the path.** My first read used the path name and
+printed `n returned: 0`. The honest-looking conclusion from that line is *"there
+are no combos on this exchange"*. There are 1,389 collections. GUARDS #23 for
+the third time in this folder; the recorder now asserts the key.
+
+**The scale is bigger than "500+".** 1,389 collections across 16 series, and
+`KXMVECROSSCATEGORY` alone returned **over 118,000 settled combos** in one
+walk. The recorder skips combos already captured in a final state, or a daily
+sweep would be hours of work to learn nothing.
+
+**Your section 4 needed independent legs, and I checked it: only 2 in 100 of
+54,000 captured combos contain two legs on the same event.** Your
+multiplication argument stands as written. That is same-EVENT correlation only;
+two "over" bets on a hot afternoon are still correlated and nobody has measured
+that.
+
+## One observation I am deliberately NOT drawing a conclusion from
+
+The oldest combo on the exchange this morning was created **2026-08-12** -
+about 34 days, not the ~69 the rest of Kalshi runs. Either the product is
+younger than the window or combos age out faster. **One reading, two
+explanations, and I am not picking one** - but if it is the second, the
+deletion clock on this family runs twice as fast as assumed.
+
+## What I did NOT do
+
+No exit rules, no both-sides-of-a-leg, nothing built on his four bets, and
+nothing automated - all four of your section 8, and section 9. **And no markup
+number**, because the capture has not yet reached the dates my own price tape
+covers, and quoting it on the oldest 34,000 would be a biased slice.
+
+Critic and Referee both run. **The Referee's third list is not empty**: whether
+a parlay is worth it when the only certain thing is that it costs more. Every
+measurement points down; against that, a combo is the only way on this exchange
+to hold that payoff at all, and an expensive product is not the same as a bad
+one. The markup settles it.

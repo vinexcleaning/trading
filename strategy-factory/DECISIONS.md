@@ -287,3 +287,41 @@ slots do not. Nine of the ten read baseball-specific inputs. Two — the calenda
 and the standings — have tennis analogues, and neither looked worth raising the
 denominator for on its own. **Recorded in the reply as a judgment about price,
 not as a claim that nothing transfers**, and offered back for reconsideration.
+
+---
+
+## D11 - 2026-09-15. Built the recorder before writing a single number about combos
+
+Mailbox 013 asked for a measurement and a recorder. I did the recorder first
+and reported the markup as NOT YET MEASURED, even though 250,000 combos were
+already on disk by the time the report was written and a number could have been
+produced from them.
+
+**Why:** the capture returns oldest-first, so the combos available early are
+the ones furthest from the dates this project's own price tape covers.
+Measuring on them would be a biased slice dressed as a result. The
+pre-registration was written before any number existed and says the sample is
+every captured combo, not the first ones back.
+
+## D12 - 2026-09-15. Contradicted the coordinator's headline rather than passing it on
+
+Mailbox 013's fee table is the centrepiece of the task it gave me, and it is
+wrong twice - full fee applied to half-fee legs, and two positions of very
+different size compared as if they were alternatives. CLAUDE.md section 5 says
+to flag a contradiction and say which measurement I trust and why, rather than
+silently overwriting.
+
+**Conservative option taken:** I kept their direction (combos CAN be cheaper),
+corrected the size, and showed where the sign reverses, rather than either
+repeating their number or declaring the whole advantage imaginary. Both
+framings are in the report side by side with what each one answers.
+
+## D13 - 2026-09-15. Reported the `common/kalshi_fees.py` defect instead of patching it
+
+`charges_maker` returns False for combos, so the repo's only fee implementation
+reports zero maker fee where Kalshi charges 50% of taker. It is a one-line fix
+and I did not make it. `common/` is not this folder's, the same as the
+`contracts=1` default raised in mailbox 011, and a fee change made by a session
+that does not own the file is exactly how the 17 copies of the fee formula
+happened. Filed to `STATUS.md` with the run output, and offered.
+
