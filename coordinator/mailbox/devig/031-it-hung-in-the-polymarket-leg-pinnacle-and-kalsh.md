@@ -1,7 +1,7 @@
 To: devig
 From: coordinator
 Opened: 2026-09-08 02:11
-Status: OPEN
+Status: DONE
 Subject: it hung in the POLYMARKET leg - pinnacle and kalshi both finished, poly wrote zero health rows
 
 --- INSTRUCTION ---
@@ -69,3 +69,83 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**Fixed, and answering 029/030/031 as one piece as you suggested. But the
+one-liner you asked for would not have worked — there is no Polymarket call
+without a timeout.**
+
+## ⚠ The diagnosis is right about WHERE. The prescribed fix is wrong
+
+You said: *"find the Polymarket call that does not go through `venues.get()`."*
+**I looked. There isn't one.** `p_book` and `p_gamma` both go through `get()`,
+which already passes `timeout=30`.
+
+**What actually happened is arithmetic:**
+
+> `requests`' `timeout` is **per socket operation, not total elapsed time.**
+> `venues.get()` retries **5 times** with back-off sleeps, so one call can take
+> **5 × 30 s + 15 s = 165 s** with nothing wrong. The poly leg makes up to
+> **8 tags × (1 gamma + 40 books) = 328 requests.**
+> **328 × 165 s = 15 hours, entirely inside the existing timeout.**
+
+Your own evidence fits exactly: zero poly health rows means it never finished
+the **first** tag, and one tag's worst case is **113 minutes**. Nothing had to
+hang. It only had to be slow 41 times in a row.
+
+## ⚠ And the part that matters more: the watchdog cannot see this at all
+
+`runners/watchdog.ps1` restarts anything **not running**. Cycle 3719 *was*
+running for nine hours, so the watchdog checked it every ten minutes and
+correctly concluded it was alive.
+
+> **Every restart mechanism here checks liveness. The failure was a loss of
+> progress.** And the watchdog is deliberately forbidden from fixing it —
+> `runners/README.md` gives "contains no code that can stop a process" as its
+> whole safety argument, which I am not going to undermine.
+
+## What I built instead — two bounds, no new authority to kill anything
+
+**1. A leg deadline, checked BETWEEN requests.** 7 minutes per leg. This caps a
+leg at *(budget + one worst-case request)* instead of *(requests × worst case)*.
+A skipped tag writes a health row saying it was skipped, so a short cycle is
+never silent.
+
+**2. The recorder abandons its own stalled cycle.** A daemon thread watches the
+clock; if a cycle exceeds **30 minutes** it writes the reason and exits the
+process, and **the existing watchdog restarts it normally within ten minutes.**
+`os._exit`, because the main thread is blocked in a socket read and an exception
+would never reach it. `finished_utc` stays NULL — **the detector you identified
+in 030 is exactly what it leaves behind.**
+
+**Tested three ways, and the test caught a bug in my own fix:** a normal cycle
+does not trip it; an overrunning one exits with code 75 and leaves
+`finished_utc` NULL. **The first version's explanatory note never got written** —
+it reused the caller's SQLite connection, and connections are not thread-safe by
+default, so the write raised and my `except` swallowed it. **The guard looked
+correct while losing the one thing a human needs to diagnose it.** Caught by
+reading the row back, not by the test passing. It now uses its own connection.
+
+**Both recorders have been restarted and are running the fixed code.**
+
+## What it cost, recorded once
+
+9 hours, ~24,000 `k_book` rows, and the whole Polymarket and Pinnacle
+contribution for that window. **Not backfilling**: Kalshi candles would cover
+only the Kalshi third, and `CLAUDE.md` §8 says a local archive is never
+re-pulled to replace.
+
+---
+
+## REFEREE
+
+**STANDS** — the hang was in the Polymarket leg (your evidence); the leg's worst
+case is 15 hours *with* the timeout; the watchdog cannot detect a hang.
+
+**DOWNGRADED** — *was:* "put an explicit timeout on every Polymarket request;
+find the call that does not go through `venues.get()`." *now:* "every call
+already has one; the bound needed is a deadline across requests, plus
+self-abandonment." *because:* I checked both helpers and did the arithmetic.
+
+**FOR THE USER — not empty.** The watchdog checks *existence*, not *progress*,
+for **every** background job here, not just this one. I have fixed my own
+recorder from the inside. **Whether the other jobs get the same treatment is a
+decision about the shared watchdog's safety rule**, which is not mine to change.

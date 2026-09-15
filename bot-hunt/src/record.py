@@ -392,9 +392,61 @@ def kalshi_cycle(con: sqlite3.Connection, cid: int) -> None:
 
 # ----------------------------------------------------------- Polymarket ----
 
+# ------------------------------------------------------- the leg deadline ----
+# ⚠ ADDED 2026-09-15 AFTER A 9-HOUR HOLE IN THE TAPE (mailboxes 029-031).
+#
+# THE INSTRUCTION SAID "put an explicit timeout on every Polymarket request;
+# find the call that does not go through venues.get()". I checked, and THERE IS
+# NO SUCH CALL -- `p_book` and `p_gamma` both go through `get()`, which already
+# passes `timeout=30`. So that fix would have changed nothing.
+#
+# What actually happened is arithmetic, not a missing timeout:
+#
+#   requests' `timeout` is PER SOCKET OPERATION, NOT TOTAL ELAPSED TIME.
+#   venues.get() retries 5 times with back-off sleeps, so ONE call can legally
+#   take 5*30s + 15s = 165 seconds without anything being "wrong".
+#   The poly leg makes up to 8 tags * (1 gamma + 40 books) = 328 requests.
+#   328 * 165s = 15 HOURS, entirely within the existing timeout.
+#
+# The hung cycle wrote ZERO poly health rows, and health is written once per
+# tag, so it never finished the FIRST tag -- whose own worst case is 113
+# minutes. Nothing had to hang forever. It only had to be slow 41 times.
+#
+# ⚠ AND THE WATCHDOG CANNOT SEE THIS AT ALL. `runners/watchdog.ps1` restarts
+# anything that is NOT RUNNING. A process stuck in a slow retry loop IS
+# running, so the watchdog looked at it for nine hours and correctly concluded
+# it was alive. Liveness is not progress, and every restart mechanism here
+# checks the wrong one.
+#
+# So the bound is a DEADLINE CHECKED BETWEEN REQUESTS, which caps a leg at
+# (budget + one worst-case request) instead of (requests * worst case).
+
+LEG_BUDGET_S = 420.0        # 7 minutes per leg; the whole cycle targets 600 s
+
+
+class Deadline:
+    """A wall-clock budget for one leg. Checked between requests, never inside."""
+
+    def __init__(self, budget_s: float):
+        self.until = time.time() + budget_s
+        self.tripped = False
+
+    def expired(self) -> bool:
+        if time.time() >= self.until:
+            self.tripped = True
+        return self.tripped
+
+
 def poly_cycle(con: sqlite3.Connection, cid: int) -> None:
     ts = now()
+    dl = Deadline(LEG_BUDGET_S)
     for tag in POLY_TAGS:
+        if dl.expired():
+            # Record the truncation rather than leaving a silently short cycle.
+            con.execute("insert into health values (?,?,?,?,?,?,?,?)",
+                        (cid, now(), f"poly:{tag}", 0, 0, 0, 0,
+                         json.dumps({"skipped": "leg budget exhausted"})))
+            continue
         # `active=true` as well as `closed=false`: without it, a volume-ordered
         # query surfaces settled blockbusters ahead of live thin markets and
         # the sample reads as bookless. See the CORRECTION note on POLY_TAGS.
@@ -440,6 +492,8 @@ def poly_cycle(con: sqlite3.Connection, cid: int) -> None:
                 if len(seen) > 40:
                     break
                 for ti, tok in enumerate(toks[:2]):
+                    if dl.expired():
+                        break
                     seen.add(tok)
                     bk = V.p_book(tok)
                     bid, ask, bs, asz, nb, na = V.p_touch(bk)
@@ -457,6 +511,68 @@ def poly_cycle(con: sqlite3.Connection, cid: int) -> None:
                     (cid, ts, f"poly:{tag}", len(seen), len(recs), len(recs),
                      n_two, json.dumps({"events": len(events)})))
     con.commit()
+
+
+# ------------------------------------------- the self-limiting cycle guard ----
+# ⚠ THE STRUCTURAL HALF OF THE 2026-09-07 FIX, AND IT MATTERS MORE THAN THE
+# DEADLINE ABOVE.
+#
+# `runners/watchdog.ps1` restarts anything that is NOT RUNNING. Cycle 3719 was
+# running the whole nine hours -- stuck in a slow retry loop -- so the watchdog
+# looked at it every ten minutes and correctly concluded it was alive. **Our
+# entire restart mechanism checks liveness, and the failure was a loss of
+# PROGRESS.** No amount of watchdog tuning fixes that, because the watchdog is
+# deliberately forbidden from stopping a process: `runners/README.md` states, as
+# its whole safety argument, that it "contains no code that can stop a process".
+#
+# So the recorder limits ITSELF. A daemon thread watches the clock, and if one
+# cycle overruns a hard ceiling it writes the reason and exits the process --
+# after which the existing watchdog restarts it in the normal way, within ten
+# minutes. No new authority to kill anything is created anywhere.
+#
+# `os._exit` rather than `sys.exit`: the main thread is blocked inside a socket
+# read, so an exception raised in this thread would never reach it. The SQLite
+# write is committed first, and WAL makes an abrupt exit safe.
+
+CYCLE_CEILING_S = 1800.0        # 30 min: ~3x the 600 s interval, ~4x the median
+
+
+def arm_cycle_guard(con: sqlite3.Connection, cid: int, started: float):
+    """Exit the process if this cycle overruns. Returns a cancel callable."""
+    import threading
+    done = threading.Event()
+
+    def watch():
+        if done.wait(CYCLE_CEILING_S):
+            return                      # cycle finished in time; nothing to do
+        # ⚠ ITS OWN CONNECTION. The first version of this guard reused the
+        # caller's `con` and the write silently did nothing: sqlite3 connections
+        # default to check_same_thread=True, so touching one from this thread
+        # raises ProgrammingError, which the bare except then swallowed. The
+        # exit still worked and finished_utc still stayed NULL -- so the guard
+        # LOOKED correct while losing the one thing a human needs to diagnose
+        # it. Caught by reading the row back after the test, not by the test
+        # passing.
+        try:
+            g = sqlite3.connect(DB, timeout=30.0)
+            g.execute("pragma busy_timeout=30000")
+            g.execute(
+                "update cycles set note=? where cycle_id=?",
+                (f"ABANDONED by the cycle guard after {CYCLE_CEILING_S:.0f}s; "
+                 "a leg stopped making progress. finished_utc stays NULL, "
+                 "which is the detector mailbox 030 identified.", cid))
+            g.commit()
+            g.close()
+        except Exception:                # noqa: BLE001 - never block the exit
+            pass
+        print(f"CYCLE GUARD: cycle {cid} exceeded {CYCLE_CEILING_S:.0f}s and is "
+              f"being abandoned. Exiting so the watchdog restarts a clean run.",
+              flush=True)
+        sys.stdout.flush()
+        os._exit(75)                     # EX_TEMPFAIL: a retry is appropriate
+
+    threading.Thread(target=watch, daemon=True).start()
+    return done.set
 
 
 def main() -> None:
@@ -515,6 +631,7 @@ def main() -> None:
         cur = con.execute("insert into cycles (started_utc) values (?)", (now(),))
         cid = cur.lastrowid
         con.commit()
+        cancel_guard = arm_cycle_guard(con, cid, t0)
         errs = []
         for name, fn in (("pin", pin_cycle), ("kalshi", kalshi_cycle),
                          ("poly", poly_cycle)):
@@ -524,6 +641,7 @@ def main() -> None:
                 fn(con, cid)
             except Exception:  # noqa: BLE001
                 errs.append(f"{name}: {traceback.format_exc()[-400:]}")
+        cancel_guard()
         dt = time.time() - t0
         con.execute("update cycles set finished_utc=?, seconds=?, note=? "
                     "where cycle_id=?",

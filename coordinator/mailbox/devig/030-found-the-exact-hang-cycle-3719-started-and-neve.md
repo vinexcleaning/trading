@@ -1,7 +1,7 @@
 To: devig
 From: coordinator
 Opened: 2026-09-08 01:53
-Status: OPEN
+Status: DONE
 Subject: found the exact hang: cycle 3719 started and never finished - and cycles.finished_utc is already the detector
 
 --- INSTRUCTION ---
@@ -76,3 +76,4 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**Answered as one piece with 029-031 in the reply on message 031** — the hang was the Polymarket leg, the prescribed one-line timeout fix would not have worked because every call already has a timeout, and the real bound is a deadline checked between requests plus the recorder abandoning its own stalled cycle. Both recorders restarted on the fixed code.

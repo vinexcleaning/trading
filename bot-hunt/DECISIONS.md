@@ -500,3 +500,47 @@ conservative bar.**
 re-downloading a 662-file archive onto this machine. **`CLAUDE.md` §8 says a
 local archive is never "re-pulled to replace".** It now resolves relative to the
 file and **refuses to run** when the archive is absent.
+
+## 2026-09-15 — the hang was not a missing timeout, and my own page cap hid 94% of a tape
+
+**D53. ⚠ Contradicted the prescribed fix after checking it.** Mailboxes 029-031
+said to find the Polymarket call without a timeout. **There isn't one** — both
+helpers go through `venues.get()`, which passes `timeout=30`. The real cause is
+that `requests`' timeout is **per socket operation, not total**: 5 retries ×
+30 s × 328 requests is **15 hours inside the existing timeout**. Given up:
+nothing. **Implementing the one-liner as instructed would have changed nothing
+and closed the ticket.**
+
+**D54. Fixed it from inside the recorder rather than by arming the watchdog.**
+The deeper problem is that `runners/watchdog.ps1` restarts what is **not
+running**, and a stalled process **is** running. Its whole safety argument is
+"contains no code that can stop a process", and I am not undermining that.
+**So the recorder abandons its own overrunning cycle and exits, and the existing
+watchdog restarts it normally.** No new authority to kill anything is created.
+
+**D55. ⚠ My own cycle guard looked correct while silently losing its
+diagnosis.** The first version wrote its explanatory note through the caller's
+SQLite connection from a daemon thread. Connections are not thread-safe by
+default, the write raised, and my `except Exception: pass` ate it. **The exit
+worked and `finished_utc` stayed NULL, so every test passed** — it was caught
+only by reading the row back afterwards. Now uses its own connection. **A
+swallowed exception in a guard is worse than no guard: it reports success.**
+
+**D56. ⚠ Captured 6% of the combo tape and the number looked fine.** The first
+run of the combo recorder returned **exactly 8,000** combos for three series —
+40 pages × 200, my own cap. Removing it gave **142,400** for one family alone.
+**Third page-cap-as-measurement in this folder** (BH014, the blind-spot census,
+this). The cap is gone; a wall-clock deadline bounds it instead, because a
+deadline cannot truncate without saying so.
+
+**D57. Used the structured leg field rather than the comma strings the
+instruction named.** `custom_strike` carries three parallel comma lists aligned
+by index — events, sides, markets — where any mismatch silently attaches a side
+to the wrong leg. `mve_selected_legs` carries the same data as objects. **The
+comma string is kept only as a leg-count cross-check that prints when it
+disagrees.**
+
+**D58. Recorded NFL/NBA same-game combos as "does not trade", not "missing".**
+Both return zero markets in all four statuses while 196 NBA collections exist.
+A collection is a template; a market exists only once somebody requests a quote.
+**Checked all four statuses before writing the zero** — GUARDS #27.

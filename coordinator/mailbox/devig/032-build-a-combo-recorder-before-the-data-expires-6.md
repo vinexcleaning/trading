@@ -1,7 +1,7 @@
 To: devig
 From: coordinator
 Opened: 2026-09-14 22:25
-Status: OPEN
+Status: DONE
 Subject: build a combo recorder before the data expires - 69-day window, public, no auth
 
 --- INSTRUCTION ---
@@ -84,3 +84,103 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**Built, running, registered in both registries, and the first full capture is
+on disk: 277,861 combos and 2,166,255 legs.** Write-up in
+`bot-hunt/RESULTS_COMBO_TAPE.md`.
+
+| | |
+|---|---|
+| distinct combos | **277,861** |
+| legs (as rows, joinable) | **2,166,255** |
+| settled with a result | **256,077** |
+| still active | 21,361 |
+| close times span | **2026-08-09 → 2026-10-18** |
+| capture time | 874 s |
+
+| series | finalized | active |
+|---|---|---|
+| `KXMVESPORTSMULTIGAMEEXTENDED` | **142,400** | 37 |
+| `KXMVECROSSCATEGORY-SHARD1` | **103,200** | 21,361 |
+| `KXMVECROSSCATEGORY` | 10,800 | 24 |
+| `KXMVENFLSINGLEGAME` / `KXMVENBASINGLEGAME` | **0** | 0 |
+
+**You were right that it was time-sensitive.** The oldest close still
+retrievable is **2026-08-09**. Anything earlier is already gone.
+
+## ⚠ Your point 3 was the most valuable line in the instruction
+
+> *"`bid 0.00 / ask 1.00` is the NORMAL state for a combo."*
+
+**Measured: 257,953 of 277,861 snapshots — 93 out of every 100.** Filtering to
+two-sided quotes, as every other recorder here sensibly does, would have stored
+**7% of the tape and called it complete.** I would have written that filter
+without your line.
+
+## ⚠ Three corrections, all the renamed-field trap
+
+1. **`volume` and `open_interest` are `null` on every combo market.** The live
+   fields are `volume_fp`, `volume_24h_fp`, `open_interest_fp`. Storing the
+   names as given gives a column of nulls nobody notices until the analysis.
+2. **The collections listing returns rows under `multivariate_contracts`**, not
+   `multivariate_event_collections`. The obvious key returns **zero** — which
+   looks exactly like "there are none". Hit it on the first probe.
+3. **The legs have a structured field: `mve_selected_legs`**, with
+   `event_ticker`, `market_ticker` and `side` per leg. `custom_strike` carries
+   **three parallel comma lists aligned by index**, where a mismatch silently
+   attributes a side to the wrong leg. Structured field used; the comma string
+   kept only as a leg-count cross-check that prints when it disagrees.
+
+## ⚠ And the two worst bugs were mine, both round numbers
+
+**First run: three series returned exactly 8,000 — my own 40×200 page cap, not
+the data.** Removing it turned 8,000 into **142,400** for the cross-game family.
+**I had captured 6% of it and the number looked entirely plausible.** Third time
+this folder has hit a page cap masquerading as a measurement (BH014, the
+blind-spot census, now this). **A count equal to your own limit is never a
+measurement.**
+
+**Second: a single timed-out page silently ended that series' sweep**, so each
+run would truncate at a different random point while reporting a clean total.
+Now the same cursor is retried and only repeated failure ends it, loudly, with
+the truncation flagged on the sweep row.
+
+## On NFL and NBA same-game combos — zero, and it is not a gap
+
+Both return **zero markets in every status** (open, settled, unopened, closed)
+while `/series/` answers 200 and **196 NBA collections exist**. A collection is a
+template; a market exists only once somebody requests a quote. **Nobody ever
+has.** Recorded as "does not trade", not as "data missing".
+
+## A coherence check, explicitly NOT a finding
+
+The factory owns the analysis, but a capture should be shown to be internally
+sensible: payout falls **27.2 in 100 at two legs → 5.1 at eight**, smoothly.
+That is what multiplying probabilities must do. **It says nothing about whether
+combos are priced well.**
+
+## Timeouts, since you asked for them specifically
+
+Explicit `(connect, read) = (5, 25)` tuple on every request, three bounded
+retries, and a **900-second sweep deadline checked between calls** — because as
+I found in 029-031, `requests`' timeout is per socket operation and not a total,
+which is the actual reason that recorder lost nine hours.
+
+---
+
+## REFEREE
+
+**STANDS** — 277,861 combos and 2,166,255 legs on disk, spanning 2026-08-09
+onward; 93 in 100 rows have no resting quote; NFL/NBA same-game combos have
+never traded.
+
+**DOWNGRADED** — *was:* "store volume and open interest" / "legs are
+`custom_strike`" / my own "8,000 combos per series". *now:* the `_fp` fields;
+`mve_selected_legs`; **142,400** for the largest family. *because:* the first two
+read null or misaligned, and the third equalled my own page cap.
+
+**FOR THE USER — not empty.** This captures the combo's own quote, but **the leg
+prices at the moment it was quoted are mostly not recorded** — most legs sit
+outside the 18 families the main recorder watches. **Comparing a combo's price
+against its legs is the obvious next question and the data for it does not
+exist yet.** Widening the recorder to cover the legs is a real cost and is a
+decision, not a fix.
