@@ -1,6 +1,6 @@
 <!-- COORDINATOR-STATE
-doing: combo (parlay) recorder built and running - mailbox 013. 256,000 Kalshi combos captured, all 16 combo series, registered in both runner registries as factory-combos. Found mailbox 013's fee advantage is ~5x too big and negative at two legs, and a defect in common/kalshi_fees.py that returns zero maker fee on combos
-left: let the capture reach the dates my own price tape covers, then run src/combo_markup.py - the pre-registered measurement of how far above its legs a combo is quoted, which decides the whole question
+doing: broad pass done - 5,025 families across 16 categories screened on cost, 5,230 parlays measured. Parlays DEAD for taking (+6.6% markup against a 3% kill line fixed in advance). Found 361 families costing under 2c of which only 17 have ever been used here. Kill pile and five buckets built.
+left: screen the 344 affordable families nobody has examined - that is the next pass and needs no new data. Then deepen the 43 existing specs into variations, then the seven unresearched venues.
 needs: no
 -->
 
@@ -762,3 +762,39 @@ measurement before any number existed, and three new tools:
 **Scale:** `KXMVECROSSCATEGORY` alone returned 118,000+ settled combos. The
 recorder skips anything already captured in a final state, so only the first
 sweep is expensive.
+
+---
+
+## 2026-09-18 - the broad pass (mailboxes 014 and 015)
+
+`reports/BROAD-01.md` is the report. `BUCKETS.md` and `KILLED.md` are the two
+files he asked for by name. Three new tools:
+
+- `src/broad.py` - every category and every family on the exchange, with the
+  real cost to enter. **This is the denominator. Start any breadth question
+  here.** `--by family --max-bar 2.0` lists the 361 affordable families and
+  marks the 17 any spec has ever named.
+- `src/forecastable.py` - how confidently the market prices each sport.
+- `src/combo_markup.py` - the pre-registered parlay measurement. Reads
+  `devig`'s combo tape read-only, because it is indexed for the join and mine
+  is not.
+
+**FOUR THINGS A LATER SESSION MUST NOT RE-DERIVE WRONG:**
+
+1. **`close_time` is NOT when trading stops.** On a Kalshi sports market it is
+   a settlement deadline ~70 hours later, on 358 of 358 baseball markets
+   checked. Use the event start from the ticker (`26SEP042005`) or the last
+   quote on tape. **This invalidates `reports/COMPLETENESS-01.md`'s
+   "7,645 of 299,360" figure, which needs re-running.**
+2. **A pid in a lock file does not work on Windows.** `os.kill(pid, 0)` raises
+   `OSError` for a dead pid, never `ProcessLookupError`, so "assume alive on
+   OSError" means assume alive for ever. Cost three days of capture. Use an OS
+   file lock - `combos.py:claim_lock` is the working pattern.
+3. **A hand-typed list of series will be mostly wrong.** `forecastable.py` v1
+   listed 18 sports families and three existed. Discover from `w_names`.
+4. **An even split is not always 50c.** Soccer lists a TIE, so a three-way
+   event is even at 33c. Measuring distance from 50 makes an evenly-matched
+   soccer game look MORE confidently priced.
+
+**Scale note:** the combo tape is **20,534,685 rows, 29 GB, back to
+2026-04-17**. Settled combos are insert-or-ignored so later sweeps are cheap.

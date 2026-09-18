@@ -254,7 +254,7 @@
       "id": "factory-combos",
       "workstream": "factory",
       "title": "Kalshi parlay (combo) recorder",
-      "plain_english": "Writes down every multi-leg bet on Kalshi - which games were stacked together, what somebody actually paid for the stack, and whether it came in. These have no public price list at all: the price is a private quote, so the amount paid is the only record that the trade ever happened. Kalshi deletes closed markets after about ten weeks, so anything not written down now is gone for good. It only reads and saves.",
+      "plain_english": "Writes down every multi-leg bet on Kalshi - which games were stacked together, what somebody actually paid, and whether it came in. These have no public price list at all: the price is a private quote, so the amount paid is the only record the trade ever happened. 20.5 million of them are on file going back to April, most of which Kalshi has already deleted from its own site. It only reads and saves.",
       "monitor": "heartbeat",
       "kind": "continuous",
       "machine": "desktop",
@@ -266,8 +266,8 @@
       ],
       "lock": "strategy-factory/data/combos.lock",
       "writes_every_minutes": 60,
-      "stale_after_minutes": 150,
-      "restart": "the watchdog restarts it within ten minutes and at startup; nothing for a human to do"
+      "stale_after_minutes": 180,
+      "restart": "the watchdog restarts it within ten minutes and at startup; nothing for a human to do. It could NOT do that between 2026-09-15 and 09-18 because of a lock bug in the recorder itself, now fixed."
     }
   ]
 }

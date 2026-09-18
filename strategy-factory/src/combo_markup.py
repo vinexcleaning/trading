@@ -25,6 +25,14 @@ measurement to be re-run at creation minus and plus one hour; if the middle
 markup moves by more than 1 point across that span, the assumption is doing the
 work and the answer must be quoted as a range.
 
+⚠ THE TAPE THIS READS IS `devig`'s, NOT MINE, AND THAT IS DELIBERATE.
+`bot-hunt/data/combos.db` holds 597,461 distinct combos and 4.5 million legs
+covering 2026-08-06 to 09-15. My own recorder was given the same job, died 25
+minutes in, and could not restart because of a lock bug of my own making. Two
+captures of one public endpoint was already flagged as waste; measuring on the
+one that WORKS beats re-capturing what already exists. **Read-only, and this
+folder writes nothing into `bot-hunt/`** - DECISIONS.md D2.
+
 ⚠ QUERY SHAPE MATTERS MORE THAN THE FILTER. `wide_top` is 30 million rows
 indexed on (series, ticker, ts_utc). Looking a leg up by ticker alone scans the
 lot and does not finish. Every lookup here passes the series first. This is the
@@ -38,6 +46,7 @@ from __future__ import annotations
 import argparse
 import json
 import random
+import re
 import sqlite3
 import statistics
 import sys
@@ -50,11 +59,62 @@ sys.path.insert(0, str(ROOT.parent))
 from common.kalshi_fees import fee_rate_cents  # noqa: E402
 
 COMBO_RATE = 0.07          # every KXMVE* series: fee_multiplier 1, live API
-MAX_STALE_H = 2.0          # a leg quote older than this is not a price
+# ⚠ THIS WAS 2 HOURS AND IT WAS WRONG, AND THE WAY IT WAS WRONG THREW AWAY 78
+# PERCENT OF THE SAMPLE. `wide_top` is a CHANGE-ONLY tape: a row is written only
+# when a quote moves, so a leg that has not traded for three hours has no recent
+# row **because its price has not changed**, not because nothing is known. The
+# last row before the moment IS the price at that moment. Treating "old row" as
+# "no price" excluded 2,347 of 3,000 combos on the first run and would have made
+# the whole measurement a statement about which legs happen to be busy.
+# 24 hours is a guard against the recorder having been DOWN, which is a
+# different question and is reported separately below.
+MAX_STALE_H = 24.0
 
 
 def series_of(ticker: str) -> str:
     return ticker.split("-")[0] if ticker else ""
+
+
+MONTHS = {m: i + 1 for i, m in enumerate(
+    ["JAN", "FEB", "MAR", "APR", "MAY", "JUN",
+     "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"])}
+TICK_TIME = re.compile(r"^[A-Z0-9]+-(\d{2})([A-Z]{3})(\d{2})(\d{4})")
+
+
+def event_start(ticker):
+    """When the underlying event starts, read out of the ticker itself.
+
+    ⚠ THIS EXISTS BECAUSE NEITHER OBVIOUS TIMESTAMP WORKS, and both failures
+    are worth recording rather than quietly routing around.
+
+      * Pricing the legs at the moment the COMBO opened fails: the median leg
+        quote was then 57 hours old, because a combo's opening timestamp is not
+        the moment somebody asked for the quote.
+      * Pricing the legs at their LAST recorded quote fails much worse and in
+        the direction that manufactures an edge: a leg's final quote is taken
+        minutes after its game finishes, so a losing leg is worth almost
+        nothing, the product of the legs collapses towards zero, and the markup
+        ratio explodes to six and seven figures. The first run of that version
+        reported a middle markup of +211% and a maximum of ten trillion per
+        cent, which is not a fee, it is a division by nearly nothing.
+
+    Kalshi's sports tickers carry the event's own start time - `26SEP042005`
+    is 4 September 2026, 20:05 - so the reference price is the leg's last ask
+    **at least 30 minutes before its own event starts**. That is a real,
+    tradeable, pre-game price and it does not depend on any timestamp the
+    exchange declines to publish.
+    """
+    m = TICK_TIME.match(ticker or "")
+    if not m:
+        return None
+    yy, mon, dd, hhmm = m.groups()
+    if mon not in MONTHS:
+        return None
+    try:
+        return datetime(2000 + int(yy), MONTHS[mon], int(dd),
+                        int(hhmm[:2]), int(hhmm[2:]), tzinfo=timezone.utc)
+    except ValueError:
+        return None
 
 
 def parse_ts(s):
@@ -67,21 +127,48 @@ def parse_ts(s):
         return None
 
 
-def load_combos(con):
-    """Settled combos with a price that somebody actually paid."""
+def load_combos(con, limit=0):
+    """Settled combos with a price somebody actually paid, one row per combo.
+
+    `devig`'s recorder writes one row per combo PER READ DAY, on the assumption
+    that a combo's quote keeps moving. A combo cannot be sold, so I expect it
+    cannot - and rather than argue, the query takes the EARLIEST read of each
+    ticker and `--price-drift` measures whether the later reads ever disagree.
+    """
+    sql = ("select c.ticker, c.series_ticker, c.last_price_c, c.volume, "
+           "c.open_interest, c.result, c.open_utc, c.close_utc, c.n_legs "
+           "from combos c "
+           "join (select ticker, min(read_date) rd from combos group by ticker) "
+           "     f on f.ticker = c.ticker and f.rd = c.read_date "
+           "where c.result is not null and c.result != '' "
+           "  and c.last_price_c is not null and c.last_price_c > 0 "
+           "  and c.open_utc >= '2026-08-18'")
+    if limit:
+        sql += " limit %d" % int(limit)
     rows = []
-    for (tk, ser, legs_json, price, vol, oi, result, settle, created,
-         close) in con.execute(
-            "select ticker, series, legs_json, last_price_d, volume, "
-            "open_interest, result, settlement_value_d, created_utc, close_utc "
-            "from combos where result is not null and result != ''"):
-        legs = json.loads(legs_json or "[]")
-        if not legs or price is None or price <= 0:
-            continue
-        rows.append(dict(ticker=tk, series=ser, legs=legs, price=price,
-                         volume=vol, oi=oi, result=result, settle=settle,
-                         created=parse_ts(created), close=parse_ts(close)))
+    for (tk, ser, price_c, vol, oi, result, opened, close, n) in con.execute(sql):
+        rows.append(dict(ticker=tk, series=ser, price=price_c / 100.0,
+                         volume=vol, oi=oi, result=result,
+                         created=parse_ts(opened), close=parse_ts(close),
+                         n_legs=n, legs=None))
     return rows
+
+
+def attach_legs(con, rows):
+    """Legs come from their own table, one row each, joined by ticker."""
+    want = {r["ticker"] for r in rows}
+    legs = defaultdict(list)
+    for tk, mt, side in con.execute(
+            "select ticker, leg_market_ticker, leg_side from combo_legs "
+            "order by ticker, leg_index"):
+        if tk in want:
+            legs[tk].append((mt, side))
+    out = []
+    for r in rows:
+        r["legs"] = legs.get(r["ticker"]) or []
+        if r["legs"]:
+            out.append(r)
+    return out
 
 
 class LegPrices:
@@ -98,6 +185,44 @@ class LegPrices:
         self.c = sqlite3.connect("file:%s?mode=ro" % path, uri=True)
         self.cache = {}
         self.misses = defaultdict(int)
+
+    def last_ask(self, ticker):
+        """The leg's LAST recorded ask before it stopped being quoted.
+
+        ⚠ THIS REPLACES A LOOKUP AT THE COMBO'S OPENING TIME, AND THE REASON IS
+        A FACT ABOUT KALSHI THAT ALSO INVALIDATES AN EARLIER REPORT OF MINE.
+
+        `close_time` on a Kalshi sports market is NOT when trading stops. Checked
+        2026-09-18: `KXMLBGAME-26SEP042005TBTEX` is a game played on 4 September
+        at 20:05; its last quote on this tape is 5 September at 02:02, minutes
+        after the game ended; and its `close_time` is **8 September** - nearly
+        four days later. Every one of 358 baseball markets closing 1-14
+        September shows the same ~70-hour offset, so it is the product, not a
+        gap.
+
+        That means `reports/COMPLETENESS-01.md`'s finding - "only 7,645 of
+        299,360 settled markets had a two-sided quote 60 minutes before close" -
+        **was measuring 60 minutes before a settlement deadline that falls days
+        after trading ends.** It understates coverage and needs re-running. For
+        once a correction in this repo makes the data better rather than worse.
+
+        So the reference price here is the leg's last real quote, which is a
+        stable, well-defined moment - "what the leg cost just before its game" -
+        rather than a wall-clock lookup against a timestamp the exchange does
+        not publish for the trade.
+        """
+        if ticker in self.cache:
+            return self.cache[ticker]
+        row = self.c.execute(
+            "select ts_utc, yes_ask_c from w_top "
+            "where series=? and ticker=? and yes_ask_c is not null "
+            "order by ts_utc desc limit 1",
+            (series_of(ticker), ticker)).fetchone()
+        out = (row[1], 0.0) if row else (None, None)
+        if row is None:
+            self.misses[series_of(ticker)] += 1
+        self.cache[ticker] = out
+        return out
 
     def ask(self, ticker, when):
         """Best recorded ask at or before `when`, plus how stale it is."""
@@ -129,7 +254,10 @@ def price_one(combo, lp, offset_min=0):
     prod = 1.0
     worst_stale = 0.0
     for mt, side in combo["legs"]:
-        ask_c, stale = lp.ask(mt, when)
+        start = event_start(mt)
+        if start is None:
+            return None, "leg ticker carries no event time"
+        ask_c, stale = lp.ask(mt, start - timedelta(minutes=30 - offset_min))
         if ask_c is None:
             return None, "leg not on tape"
         if stale > MAX_STALE_H:
@@ -143,6 +271,18 @@ def price_one(combo, lp, offset_min=0):
         prod *= ask_c / 100.0
         worst_stale = max(worst_stale, stale)
     return (prod, worst_stale), None
+
+
+def summarise_c(name, vals):
+    """Same shape, in cents per contract rather than as a ratio."""
+    if not vals:
+        print("  %-22s (none)" % name)
+        return
+    v = sorted(vals)
+    print("  %-22s n=%-5d  low %+7.2fc  quarter %+7.2fc  MIDDLE %+7.2fc  "
+          "three-quarter %+7.2fc  high %+8.2fc"
+          % (name, len(v), v[0], v[len(v) // 4], statistics.median(v),
+             v[3 * len(v) // 4], v[-1]))
 
 
 def summarise(name, vals):
@@ -162,11 +302,14 @@ def main():
     ap.add_argument("--offset-min", type=int, default=0,
                     help="shift the assumed fill time, in minutes")
     ap.add_argument("--placebo-seed", type=int, default=0)
+    ap.add_argument("--limit", type=int, default=0,
+                    help="cap the number of combos read, for a quick pass")
     args = ap.parse_args()
 
-    con = sqlite3.connect("file:%s?mode=ro" % (ROOT / "data" / "combos.db"),
-                          uri=True)
-    combos = load_combos(con)
+    con = sqlite3.connect(
+        "file:%s?mode=ro" % (ROOT.parent / "bot-hunt" / "data" / "combos.db"),
+        uri=True)
+    combos = attach_legs(con, load_combos(con, args.limit))
     print("settled combos with a paid price: %d" % len(combos))
     if not combos:
         print("nothing to measure yet - let the recorder finish a sweep")
@@ -183,7 +326,8 @@ def main():
         if prod <= 0:
             why["product is zero"] += 1
             continue
-        rows.append(dict(c, prod=prod, markup=c["price"] / prod, stale=stale))
+        rows.append(dict(c, prod=prod, markup=c["price"] / prod,
+                         markup_c=(c["price"] - prod) * 100.0, stale=stale))
 
     print("priced against the tape: %d  (excluded: %s)"
           % (len(rows), dict(why)))

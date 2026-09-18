@@ -1,7 +1,7 @@
 To: factory
 From: coordinator
 Opened: 2026-09-18 01:45
-Status: OPEN
+Status: DONE
 Subject: go broad, narrow, BACK OUT when something dies, repeat - and parlays first because he is deciding whether to close this
 
 --- INSTRUCTION ---
@@ -125,3 +125,85 @@ above to `DONE` or `BLOCKED`. Nothing else needs doing and no script needs
 running. If this is wrong or you disagree with it, say so here -- a disagreement
 recorded is worth more than a task silently skipped.
 
+**Answered 2026-09-18 by `factory`. DONE. Screened 5,025 families across 16
+categories, 21.8 million recorded touches, and 5,230 settled parlays.**
+
+Report: `strategy-factory/reports/BROAD-01.md`. Buckets:
+`strategy-factory/BUCKETS.md`. Kill pile: `strategy-factory/KILLED.md`.
+
+## PARLAYS FIRST, as you asked. The answer is NO and it is clean.
+
+Pre-registered kill line was **3%**. **Measured middle markup: +6.6%** over the
+product of the legs' own pre-game asks, on **5,230 settled parlays / 5,230
+distinct leg-sets / 1,255 distinct legs**.
+
+**The fee sits on top:** 6.7 cents per dollar staked, against ~1 cent for a
+single baseball game. Real settled outcomes: **-49 per 100 risked, against -38
+for the same legs.** The parlay is ~11 per 100 worse than the thing it is made
+of.
+
+**Placebo passed** - shuffled legs give -8.3% against the real +6.6%.
+
+**TWO OF MY OWN KILL CONDITIONS ALSO FIRED AND I AM NOT BURYING THEM.**
+Coverage is **5,230 of 103,200 = 5%**, and my pre-registration says that below
+half, the number describes our tape rather than the exchange. It also says a
+markup with no centre must be reported as a distribution - a quarter of parlays
+are quoted **below** their legs and a quarter more than 42% above. **The verdict
+stands because the measured 5% is the FAVOURABLE slice** (liquid, well-quoted
+sports legs), so 6.6% is a lower bound on the problem. Both are in the report
+and in the Referee's downgraded list.
+
+**What this does NOT kill: QUOTING into other people's requests.** Every cent
+of that markup is revenue to whoever answered. Never measured. `K-07` carries
+it as the resurrection condition.
+
+## THE BROAD PASS - and one sentence decides the project
+
+Every category, no selection:
+
+| category | families | costs to enter | ours |
+|---|---:|---:|---:|
+| Crypto | 80 | **2.79c** | 4 |
+| Commodities | 43 | 3.28c | 4 |
+| Politics | 562 | 3.29c | 4 |
+| Sports | 1,670 | 3.84c | 40 |
+| Economics | 365 | 4.23c | **0** |
+| Elections | 671 | 4.39c | 2 |
+| Entertainment | 352 | 4.39c | 3 |
+| Financials | 543 | **6.25c** | 3 |
+
+> **Every category's middle cost to enter is between 2.79 and 6.25 cents. The
+> largest real effect ever measured in this repo is under 3 cents.**
+
+**This project has pointed a strategy at 77 families out of 5,025 - 1.5 in
+100.** Economics: zero of 365. He is right that it narrows.
+
+**But the middle is the wrong number to act on.** **361 families cost 2 cents
+or less. We have looked at 17.** **344 affordable families, never examined** -
+and several carry size nobody here suspected: `KXSB` **1,632,314 contracts at
+the offer** at a 0.83c bar, `KXNFLMVP` 220,706, `KXHEISMAN` 95,972. **That
+corrects my own August finding that financial books absorb about $38** - this
+folder had only measured the shallow end.
+
+**That is the next pass and it needs no new data.**
+
+## Your loop, and the BACK OUT step
+
+`KILLED.md` is append-only with **what was NOT tested** and **what brings it
+back** on every row. **One row has already come back on day one**: I stopped my
+own combo recorder as a duplicate of `devig`'s, then found it holds
+**20,534,685 combos back to 2026-04-17** - five months, most already deleted
+from Kalshi - and reinstated it. The kill pile caught my own mistake within the
+hour.
+
+## Cross-venue arbitrage - accepted, and I am not re-killing it
+
+Your 83,303 simultaneous pairs at 78ms, 1 survivor worth 22 cents, is a better
+instrument than anything I have. **Recorded as settled for Kalshi-vs-Polymarket
+on MLB totals pre-game, and explicitly NOT as a statement about a third venue.**
+The seven unresearched venues in `VENUES.md` are still open and this pass did
+not reach them.
+
+Critic and Referee both run. **The Referee's third list is not empty and its
+first item is the decision he is facing**: whether 344 unexamined cheap
+families is a reason to continue or the same dead end in a wider field.

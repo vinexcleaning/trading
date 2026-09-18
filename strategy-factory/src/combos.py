@@ -119,32 +119,80 @@ def connect() -> sqlite3.Connection:
     return con
 
 
-def claim_lock() -> None:
-    """One recorder per database.
+_LOCK_HANDLE = None
 
-    ⚠ THE WINDOWS TRAP, WRITTEN OUT BECAUSE THIS FOLDER HAS ALREADY HIT IT.
-    `os.kill(pid, 0)` on Windows raises PermissionError for a process that
-    EXISTS but belongs to another user or is otherwise not signalable - which
-    reads as "gone" if you only catch OSError. So a live process is treated as
-    live unless the call says plainly that no such process exists.
+
+def claim_lock() -> None:
+    """One recorder per database, using an OS lock the OS releases for us.
+
+    ⚠ THIS REPLACES A pid CHECK THAT COST THREE DAYS OF CAPTURE, and the way it
+    failed is worth writing down because it is the exact opposite of the trap it
+    was written to avoid.
+
+    The old version asked `os.kill(pid, 0)` and treated `OSError` as "the
+    process exists but is not signalable, so assume alive". That is true on
+    Unix. **On Windows a pid that does NOT exist also raises OSError** - WinError
+    87, "the parameter is incorrect" - and never `ProcessLookupError`. Measured
+    on this machine 2026-09-18:
+
+        os.kill(43960, 0)   -> OSError 87   (process long dead)
+        os.kill(999999, 0)  -> OSError 87   (never existed)
+
+    So "assume alive" meant **assume alive for ever**. The recorder died 25
+    minutes after starting on 2026-09-15, the watchdog tried to restart it every
+    ten minutes for three days, and this function refused every single attempt
+    with "combo recorder already running as pid 43960". The log says so 400-odd
+    times.
+
+    **A pid in a file is not a lock.** It is a note about the past that nothing
+    updates when the process dies. So the pid is now written for humans only and
+    the actual exclusion is an OS-level lock on the file handle, which the
+    kernel drops the instant the process ends however it ends - crash, kill,
+    power cut. There is nothing left to go stale.
     """
-    if LOCK.exists():
-        try:
-            pid = int(LOCK.read_text().split()[0])
-        except (ValueError, IndexError):
-            pid = None
-        if pid:
-            alive = True
-            try:
-                os.kill(pid, 0)
-            except ProcessLookupError:
-                alive = False
-            except OSError:
-                alive = True          # exists but not signalable - still alive
-            if alive:
-                raise SystemExit("combo recorder already running as pid %d "
-                                 "(delete %s if that is wrong)" % (pid, LOCK))
-    LOCK.write_text("%d %s\n" % (os.getpid(), now()))
+    global _LOCK_HANDLE
+    LOCK.parent.mkdir(parents=True, exist_ok=True)
+    fh = open(LOCK, "a+")
+    try:
+        if os.name == "nt":
+            import msvcrt
+            fh.seek(0)
+            msvcrt.locking(fh.fileno(), msvcrt.LK_NBLCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(fh.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        fh.seek(0)
+        who = fh.read().strip() or "(unnamed)"
+        fh.close()
+        raise SystemExit("combo recorder already running: %s. The lock is held "
+                         "by a LIVE process - the operating system releases it "
+                         "automatically, so this is never stale." % who)
+    _LOCK_HANDLE = fh
+    fh.seek(0)
+    fh.truncate()
+    fh.write("%d %s" % (os.getpid(), now()))
+    fh.flush()
+
+
+def release_lock() -> None:
+    """Best-effort tidy-up. Correctness does not depend on this running - the
+    kernel drops the lock when the process ends, which is the whole point."""
+    global _LOCK_HANDLE
+    if _LOCK_HANDLE is None:
+        return
+    try:
+        if os.name == "nt":
+            import msvcrt
+            _LOCK_HANDLE.seek(0)
+            msvcrt.locking(_LOCK_HANDLE.fileno(), msvcrt.LK_UNLCK, 1)
+    except OSError:
+        pass
+    try:
+        _LOCK_HANDLE.close()
+    except OSError:
+        pass
+    _LOCK_HANDLE = None
 
 
 def pull_collections(con) -> tuple[int, list]:
@@ -203,22 +251,22 @@ def _leg_list(m) -> list:
 
 
 def known_final(con) -> set:
-    """Tickers already captured in a FINAL state.
+    """Deliberately NOT used any more. Kept as a signpost.
 
-    ⚠ THIS IS THE WHOLE REASON THE RECORDER IS AFFORDABLE. One combo series
-    alone - KXMVECROSSCATEGORY - returned more than 118,000 settled markets on
-    the first measured walk. Re-reading and re-writing all of them every day
-    would be hours of work to learn nothing: **a settled combo is finished. Its
-    price, its legs and its result cannot change.**
+    ⚠ THE FIRST VERSION LOADED EVERY FINAL TICKER INTO A PYTHON SET. That was
+    fine at the 118,000 I had measured and is not fine at the **20,534,685**
+    this tape actually holds - it is about two gigabytes of strings to answer a
+    question SQLite can answer with an index.
 
-    So a settled row is written once and skipped for ever after. The first
-    sweep is the expensive one; every later sweep only pays for what is new.
+    The skip now happens in SQL: a settled combo is written with
+    `insert or ignore`, so the second and later sweeps cost one indexed probe
+    per row and no memory at all. An OPEN combo still uses `insert or replace`,
+    because that one really can change.
     """
-    return {r[0] for r in con.execute(
-        "select ticker from combos where result is not null and result != ''")}
+    raise NotImplementedError("superseded - the skip is now done in SQL")
 
 
-def sweep_series(con, series: str, done: set) -> tuple[int, int, int]:
+def sweep_series(con, series: str) -> tuple[int, int, int]:
     """Every combo market in one series, whatever its status.
 
     Statuses are swept explicitly rather than left to the default, because the
@@ -230,10 +278,19 @@ def sweep_series(con, series: str, done: set) -> tuple[int, int, int]:
     buf, seenbuf = [], []
 
     def flush():
-        if buf:
+        # A SETTLED combo can never change - it cannot even be sold - so
+        # `insert or ignore` makes every sweep after the first one nearly free.
+        # An OPEN one still gets replaced, because its volume really does move.
+        fin = [r for r in buf if (r[12] or "") not in ("", None)]
+        live = [r for r in buf if (r[12] or "") in ("", None)]
+        if fin:
+            con.executemany(
+                "insert or ignore into combos values "
+                "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", fin)
+        if live:
             con.executemany(
                 "insert or replace into combos values "
-                "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", buf)
+                "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", live)
         if seenbuf:
             con.executemany(
                 "insert or ignore into combo_seen values (?,?,?,?,?,?,?)",
@@ -247,7 +304,7 @@ def sweep_series(con, series: str, done: set) -> tuple[int, int, int]:
                               {"series_ticker": series, "status": status,
                                "limit": 1000}, "markets"):
             tk = m.get("ticker")
-            if not tk or tk in done:
+            if not tk:
                 continue
             n += 1
             legs = _leg_list(m)
@@ -266,8 +323,6 @@ def sweep_series(con, series: str, done: set) -> tuple[int, int, int]:
             buf.append(row)
             seenbuf.append((tk, ts, row[6], row[9], row[10], row[11], row[12]))
             new += 1
-            if (m.get("result") or "") not in ("", None):
-                done.add(tk)
             # ⚠ COMMIT OFTEN, NOT AT THE END OF THE SERIES. The first run of
             # this file was stopped partway through a six-figure series and
             # lost EVERY row, because the only commit was after the whole
@@ -290,12 +345,12 @@ def one_sweep(con) -> None:
     n_col, series = pull_collections(con)
     print("collections: %d across %d series" % (n_col, len(series)), flush=True)
 
-    done = known_final(con)
-    print("already captured and final: %d (they are skipped)" % len(done),
-          flush=True)
+    have = con.execute("select count(*) from combos").fetchone()[0]
+    print("already captured: %d (settled ones are insert-or-ignored, so a "
+          "re-read of them is nearly free)" % have, flush=True)
     tot = new = chg = 0
     for s in series:
-        a, b, c = sweep_series(con, s, done)
+        a, b, c = sweep_series(con, s)
         tot += a
         new += b
         chg += c
@@ -326,7 +381,7 @@ def main() -> None:
             time.sleep(args.loop)
     finally:
         con.close()
-        LOCK.unlink(missing_ok=True)
+        release_lock()
 
 
 if __name__ == "__main__":

@@ -325,3 +325,40 @@ and I did not make it. `common/` is not this folder's, the same as the
 that does not own the file is exactly how the 17 copies of the fee formula
 happened. Filed to `STATUS.md` with the run output, and offered.
 
+---
+
+## D14 - 2026-09-18. Reported the parlay verdict even though two of my own kill conditions fired against reporting it
+
+`PREREGISTRATION_COMBOS.md` set three kill conditions. The markup one fired
+(+6.6% against a 3% line) and so did two that argue the measurement itself is
+not trustworthy: **coverage is 5%**, and the markup **has no centre** - a
+quarter of parlays are quoted below their legs.
+
+**Conservative option taken:** report the verdict AND both failures, with the
+verdict resting on the fact that the measured 5% is the *favourable* slice -
+liquid, well-quoted sports legs. If the markup is 6.6% there it will not be
+better in the thin stuff, so 6.6% is a lower bound on the problem rather than a
+population estimate. Both failures are in the Referee's downgraded list rather
+than in a footnote.
+
+## D15 - 2026-09-18. Killed my own recorder, then brought it back an hour later
+
+I disabled `factory-combos` as a duplicate of `devig`'s, having flagged the
+duplication myself three days earlier. Then I counted the two tapes: mine holds
+**20,534,685 combos back to 2026-04-17**; `devig`'s holds 597,461 back to
+08-06. **Stopping mine would have stopped the only copy of five months of
+history Kalshi has already deleted.** Re-enabled.
+
+**Recorded because the reversal is the point.** `KILLED.md` exists precisely so
+a wrong kill can be found and undone, and its first day caught one of mine. The
+duplication is still real and still the coordinator's to settle - I am not
+stopping the longer tape to tidy it up.
+
+## D16 - 2026-09-18. Used `devig`'s combo tape for the measurement rather than my own
+
+Mine is larger and longer, but stores legs as JSON on a single 29 GB table;
+theirs has a `combo_legs` table with a primary key, which is what the markup
+join needs. **Read-only, and nothing was written into `bot-hunt/`** - the same
+rule as D2. My extra five months of history could not have been used anyway:
+the markup needs leg prices, and our own price tape only starts 18 August.
+
