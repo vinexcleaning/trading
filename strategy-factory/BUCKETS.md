@@ -7,7 +7,7 @@ point; the names are secondary.
 |---|---|---:|
 | **AMAZING** | survives screening, pre-registered, and has a holdout it was not chosen on | **0** |
 | **GOOD** | survives screening and the arithmetic, no holdout yet | **0** |
-| **POSSIBLY GOOD** | plausible, blocked on data or sample rather than on evidence | **9** |
+| **POSSIBLY GOOD** | plausible, blocked on data or sample rather than on evidence | **10** |
 | **LOOKED GOOD, WASN'T** | we believed it and were wrong — the most useful bucket | **6** |
 | **KILLED** | in [`KILLED.md`](KILLED.md) with a resurrection condition each | **8** |
 | *(catalogued, not yet screened)* | written as specs, awaiting a cost screen | 43 |
@@ -32,7 +32,7 @@ manufactures false entries fastest: screen 500 things, promote the best, and
 you have found nothing that looks like something. Best-of-2,000 zero-skill
 strategies typically shows about **+29.5%**.
 
-## POSSIBLY GOOD — 9
+## POSSIBLY GOOD — 10
 
 Blocked on **sample or data, never on evidence**. `GUARDS.md` #21: an
 untestable test is a verdict about the test, not about the idea.
@@ -48,6 +48,7 @@ untestable test is a verdict about the test, not about the idea.
 | `SF204` | the calendar — rest, travel, time zones, day after night | same |
 | `SF209` | the standings — eliminated, clinched, still fighting | same, and **seasonal**: it runs now and stops in October |
 | **Quoting into combo requests** | the opposite side of the parlay trade | **never tested.** `K-07` kills TAKING parlays and explicitly does not kill this |
+| **Tennis favourites may be overpriced** | paid 78.5c, won 68 in 100, on **4,407 settled matches** | **A recorded claim says the opposite** (`C106b`: calibrated to ±2.1c, bias the other way) and my own reference price may be most of a day early. One re-measurement settles it |
 
 ## LOOKED GOOD, WASN'T — 6
 

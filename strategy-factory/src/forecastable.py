@@ -188,6 +188,7 @@ def main():
             continue
 
         dists, wins, n_quoted, n_events = [], [], 0, 0
+        paid = []
         for ev, tickers in per_event.items():
             start = reference_moment(tickers[0])
             if start is None:
@@ -208,6 +209,8 @@ def main():
             if best is None:
                 continue
             n_quoted += 1
+            if best[0] in results:
+                paid.append(best[1])
             # ⚠ AN EVEN SPLIT IS NOT ALWAYS 50 CENTS. Soccer lists a TIE, so a
             # three-way event is even at 33c, not 50c. Measuring soccer's
             # distance from 50 would make the sport look MORE confidently
@@ -224,21 +227,51 @@ def main():
         a["ev"] += n_events
         a["q"] += n_quoted
         a["series"].add(series)
+        a.setdefault("paid", []).extend(paid)
 
     for name, a in agg.items():
         if a["q"] < 40:
             continue
         wr = (100.0 * sum(a["wins"]) / len(a["wins"])) if len(a["wins"]) >= 30             else None
+        # ⚠ THE CALIBRATION COMPARISON HAS TO USE THE SAME GAMES.
+        # The confidence column is a MEDIAN over every quoted game; the win
+        # rate is a MEAN over the subset that has settled. Comparing those two
+        # is apples to oranges and would manufacture a gap out of nothing.
+        # `paid` is the average price of exactly the favourites whose outcome
+        # is known, so `paid` against `wr` is the honest pairing.
+        avg = statistics.mean(a["paid"]) if a.get("paid") else None
         out.append((statistics.median(a["dists"]), name, a["ev"], a["q"], wr,
-                    len(a["wins"]), len(a["series"])))
+                    len(a["wins"]), len(a["series"]), avg))
 
-    for conf, name, n_events, n_quoted, wr, nw, nser in sorted(out,
-                                                              reverse=True):
+    for conf, name, n_events, n_quoted, wr, nw, nser, avg in sorted(
+            out, reverse=True):
         print("%-28s %7d %9.1fc %12s %11.0f%%"
               % (name, n_quoted, conf,
                  ("%.0f in 100 (%d)" % (wr, nw)) if wr is not None
                  else "no outcomes yet",
                  100.0 * n_quoted / max(n_events, 1)))
+
+    print()
+    print("IS THE PRICE RIGHT? - the ONLY honest version, same games both sides")
+    print("%-28s %8s %12s %10s %8s"
+          % ("sport", "games", "paid (avg)", "won", "gap"))
+    for conf, name, n_events, n_quoted, wr, nw, nser, avg in sorted(
+            out, key=lambda r: -(r[4] or 0)):
+        if wr is None or avg is None:
+            continue
+        print("%-28s %8d %11.1fc %9.0f%% %+7.1f"
+              % (name, nw, avg, wr, wr - avg))
+    print()
+    print("  'paid' is the average ASK of the very favourites whose result we "
+          "know, so the two")
+    print("  columns cover the same games. A negative gap means the favourite "
+          "won LESS often")
+    print("  than its price implied. **Part of any negative gap is simply the "
+          "spread** - the")
+    print("  ask sits above the middle price by construction, so a favourite "
+          "bought at the ask")
+    print("  should underperform its own implied chance even in a perfectly "
+          "fair market.")
 
     print()
     print("'confident' = how far from an even-money 50 cents the favourite is "

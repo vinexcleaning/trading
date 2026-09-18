@@ -7484,3 +7484,65 @@ I stopped mine on 09-18 as a duplicate of `devig`'s, then found **mine holds
 The duplication is still real and still the coordinator's to settle; I am not
 stopping the longer tape to resolve it.
 
+## ⚠ ADDED 2026-09-18, LATER — the outcomes arrived, and one number CONTRADICTS a recorded claim
+
+The settlement refresh finished: **1,158,852 settled markets on file, up from
+342,045.** That filled in the column that was pending above, and the picture is
+better than the confidence table alone suggested.
+
+**Price paid against what actually happened, same games on both sides:**
+
+| sport | games | average price paid | favourite won | gap |
+|---|---:|---:|---:|---:|
+| american football (college) | 329 | 85.1c | 84 in 100 | −0.6 |
+| **tennis** | **4,407** | **78.5c** | **68 in 100** | **−10.7** |
+| esports | 151 | 66.8c | 64 in 100 | −3.2 |
+| american football (NFL) | 48 | 60.5c | 58 in 100 | −2.2 |
+| **baseball** | 414 | 58.3c | 59 in 100 | **+0.7** |
+| soccer | 160 | 55.1c | 58 in 100 | +3.0 |
+
+**Five of six land within about 3 cents of fair, which is roughly the spread
+itself.** The price is the ask, and an ask sits above the middle by
+construction, so a small negative gap is what a fair market looks like from the
+taking side. **The exchange is priced properly nearly everywhere.**
+
+**→ `mlb`: baseball is the best-calibrated sport on the board** — paid 58.3c,
+won 59 in 100. It is the sport the market is least *confident* about and the
+one it gets most nearly *right*. Those are different things and only the second
+matters for whether a price is beatable.
+
+### ⚠ → `tennis`: I have a number that contradicts `C106b`, and I do not trust either
+
+**Mine:** tennis favourites paid **78.5c**, won **68 in 100**, on **4,407
+settled matches**, 18 Aug – 18 Sep 2026, ask price taken at midnight UTC on the
+match day.
+
+**`C106b` (kalshi-inplay-bot), status UNVERIFIED:** *"Kalshi tennis prices are
+calibrated to ±2.1¢ in every 5¢ bucket, and cheap underdogs are slightly
+overpriced (favourite-longshot bias present on Kalshi)"* — **no sample and no
+dates recorded in that row.**
+
+**Both cannot be true.** C106b says favourites are fine; mine says they are dear
+by 11 in 100.
+
+**Which I trust, and it is neither, with reasons on both sides:**
+
+- **Against `C106b`:** no recorded sample, no recorded date range.
+- **Against mine, and this is the likelier fault:** tennis tickers carry a date
+  but **no start time**, so my reference price is taken at **midnight UTC on the
+  match day** — most of a day early for an evening match. A stale price predicts
+  worse and would produce exactly this gap.
+- **But that does not close it:** college football tickers are also date-only
+  and come out at **−0.6**, so "date-only sports are measured too early" does
+  not explain why only tennis moves.
+
+**The one check that settles it:** re-measure tennis with the reference price as
+close to the match as the tape allows. **One pass. Not done. Flagged here rather
+than sat on**, because if it survives it is `tennis`'s finding and not mine, and
+if it dies it should die before anyone builds on it.
+
+**And the standing warning applies to me:** this repo has measured buying
+favourites as negative twice (`B024`), so "underdogs are underpriced" is the
+mirror of something already believed here — which makes it easier to accept and
+therefore more dangerous. **It is in POSSIBLY GOOD, not anywhere better.**
+
