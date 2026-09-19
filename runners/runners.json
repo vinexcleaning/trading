@@ -15,7 +15,7 @@
   "runners": [
     {
       "name": "tennis",
-      "enabled": true,
+      "enabled": false,
       "windowless": true,
       "dir": "tennis-paper-forward",
       "exe": ".venv\\Scripts\\python.exe",
@@ -35,11 +35,12 @@
         "-q"
       ],
       "log": "logs\\wrapper.log",
-      "paper_only": true
+      "paper_only": true,
+      "disabled_reason": "turned off 2026-09-19 at his request - 'turn them all off, don't leave a single one on'. Flip enabled back to true to restart."
     },
     {
       "name": "mlb",
-      "enabled": true,
+      "enabled": false,
       "windowless": true,
       "_enabled_by": "The user, 2026-08-08, explicitly: 'enable both tennis and mlb'. Previously off because it belongs to the mlb-paper session and was not mine to switch on. Its own deploy/ scripts still work and were not touched. Flagged to that session in STATUS.md.",
       "dir": "mlb-paper",
@@ -55,11 +56,12 @@
         "-q"
       ],
       "log": "logs\\wrapper.log",
-      "paper_only": true
+      "paper_only": true,
+      "disabled_reason": "turned off 2026-09-19 at his request - 'turn them all off, don't leave a single one on'. Flip enabled back to true to restart."
     },
     {
       "name": "devig-recorder",
-      "enabled": true,
+      "enabled": false,
       "windowless": true,
       "dir": "bot-hunt",
       "exe": ".venv\\Scripts\\python.exe",
@@ -73,11 +75,12 @@
       "match": "--interval 600",
       "log": "logs\\wrapper_recorder.log",
       "paper_only": true,
-      "_note": "NOT a paper test - a RECORDER. It only reads public endpoints and writes SQLite; it has no order code and no credentials. It is here because it is the one asset that accrues in wall-clock time: a Kalshi market that closes is gone for good, so an hour not recorded cannot be bought back at any price. It has died four times (2.5h, 13.6h, 19h and a reboot) and nothing restarted it."
+      "_note": "NOT a paper test - a RECORDER. It only reads public endpoints and writes SQLite; it has no order code and no credentials. It is here because it is the one asset that accrues in wall-clock time: a Kalshi market that closes is gone for good, so an hour not recorded cannot be bought back at any price. It has died four times (2.5h, 13.6h, 19h and a reboot) and nothing restarted it.",
+      "disabled_reason": "turned off 2026-09-19 at his request - 'turn them all off, don't leave a single one on'. Flip enabled back to true to restart."
     },
     {
       "name": "devig-recorder-eu",
-      "enabled": true,
+      "enabled": false,
       "windowless": true,
       "dir": "bot-hunt",
       "exe": ".venv\\Scripts\\python.exe",
@@ -97,11 +100,12 @@
       "match": "record_soccer_eu",
       "log": "logs\\wrapper_recorder_eu.log",
       "paper_only": true,
-      "_note": "Second recorder, Champions League and Premier League only, own database file. It MUST have its own db: two writers on one SQLite died with 'database is locked' inside 19 minutes on 2026-08-09."
+      "_note": "Second recorder, Champions League and Premier League only, own database file. It MUST have its own db: two writers on one SQLite died with 'database is locked' inside 19 minutes on 2026-08-09.",
+      "disabled_reason": "turned off 2026-09-19 at his request - 'turn them all off, don't leave a single one on'. Flip enabled back to true to restart."
     },
     {
       "name": "factory-wide-depth",
-      "enabled": true,
+      "enabled": false,
       "windowless": true,
       "dir": "strategy-factory",
       "exe": ".venv\\Scripts\\python.exe",
@@ -121,11 +125,12 @@
       ],
       "log": "logs\\wrapper_wide_depth.log",
       "paper_only": true,
-      "_note": "NOT a paper test - a RECORDER, and the expensive tier. Walks the FULL order-book ladder on 36 market families that bot-hunt does not record at depth: crypto, economics, financials, commodities, elections. One request per market, 900 per cycle, measured at 160 s. It is here because a Kalshi market that closes 404s forever - roughly a 69-day rolling window - so an hour not recorded cannot be bought back at any price. Read-only public endpoints, no credentials, no order code; strategy-factory/tests/test_paper_only.py fails the build if any appears, and it also scans bot-hunt/src/venues.py because that module runs inside this process."
+      "_note": "NOT a paper test - a RECORDER, and the expensive tier. Walks the FULL order-book ladder on 36 market families that bot-hunt does not record at depth: crypto, economics, financials, commodities, elections. One request per market, 900 per cycle, measured at 160 s. It is here because a Kalshi market that closes 404s forever - roughly a 69-day rolling window - so an hour not recorded cannot be bought back at any price. Read-only public endpoints, no credentials, no order code; strategy-factory/tests/test_paper_only.py fails the build if any appears, and it also scans bot-hunt/src/venues.py because that module runs inside this process.",
+      "disabled_reason": "turned off 2026-09-19 at his request - 'turn them all off, don't leave a single one on'. Flip enabled back to true to restart."
     },
     {
       "name": "factory-wide-top",
-      "enabled": true,
+      "enabled": false,
       "windowless": true,
       "dir": "strategy-factory",
       "exe": ".venv\\Scripts\\python.exe",
@@ -145,11 +150,12 @@
       ],
       "log": "logs\\wrapper_wide_top.log",
       "paper_only": true,
-      "_note": "The BREADTH tier, and its own database file - two writers on one SQLite died with 'database is locked' inside 19 minutes here on 2026-08-09, so this is a hard constraint and not a preference. One exchange-wide sweep of every open market, 785 requests, ~10 minutes, top of book only. Writes a row ONLY when a quote changed, measured at 2.5% of writing them all, with a forced full snapshot every 12th cycle so that 'nothing moved' and 'the recorder was down' stay distinguishable (GUARDS #12). Covers 3,357 market families against bot-hunt's 19."
+      "_note": "The BREADTH tier, and its own database file - two writers on one SQLite died with 'database is locked' inside 19 minutes here on 2026-08-09, so this is a hard constraint and not a preference. One exchange-wide sweep of every open market, 785 requests, ~10 minutes, top of book only. Writes a row ONLY when a quote changed, measured at 2.5% of writing them all, with a forced full snapshot every 12th cycle so that 'nothing moved' and 'the recorder was down' stay distinguishable (GUARDS #12). Covers 3,357 market families against bot-hunt's 19.",
+      "disabled_reason": "turned off 2026-09-19 at his request - 'turn them all off, don't leave a single one on'. Flip enabled back to true to restart."
     },
     {
       "name": "devig-props-capture",
-      "enabled": true,
+      "enabled": false,
       "windowless": true,
       "dir": "bot-hunt",
       "exe": ".venv\\Scripts\\python.exe",
@@ -162,11 +168,12 @@
       "match": "props_n3.py",
       "log": "logs\\wrapper_props.log",
       "paper_only": true,
-      "_note": "ARMED CAPTURE, not a recorder. Waits up to 72h for Pinnacle's player-prop board to open, runs the comparison once, writes reports/props_n3.json and exits. It is in the WATCHDOG registry -- unlike the earlier prop watcher, which a reboot killed at 15h of 48 -- because --once-only makes it idempotent: if the capture already exists it exits immediately, so restarting it forever is harmless."
+      "_note": "ARMED CAPTURE, not a recorder. Waits up to 72h for Pinnacle's player-prop board to open, runs the comparison once, writes reports/props_n3.json and exits. It is in the WATCHDOG registry -- unlike the earlier prop watcher, which a reboot killed at 15h of 48 -- because --once-only makes it idempotent: if the capture already exists it exits immediately, so restarting it forever is harmless.",
+      "disabled_reason": "turned off 2026-09-19 at his request - 'turn them all off, don't leave a single one on'. Flip enabled back to true to restart."
     },
     {
       "name": "devig-paired-sampler",
-      "enabled": true,
+      "enabled": false,
       "windowless": true,
       "dir": "bot-hunt",
       "exe": ".venv\\Scripts\\python.exe",
@@ -178,11 +185,12 @@
       "match": "paired_sampler.py",
       "log": "logs\\wrapper_paired.log",
       "paper_only": true,
-      "_note": "Reads Kalshi and Polymarket CONCURRENTLY for the same market and records the measured gap on every row (median 84 ms, against record.py's 6.5 MINUTES). Recording only -- no credentials, no order code, no execution path. Writes its OWN database (data/paired.db) with its own single-instance lock; it must never share record.db, where two writers died with 'database is locked' inside 19 minutes."
+      "_note": "Reads Kalshi and Polymarket CONCURRENTLY for the same market and records the measured gap on every row (median 84 ms, against record.py's 6.5 MINUTES). Recording only -- no credentials, no order code, no execution path. Writes its OWN database (data/paired.db) with its own single-instance lock; it must never share record.db, where two writers died with 'database is locked' inside 19 minutes.",
+      "disabled_reason": "turned off 2026-09-19 at his request - 'turn them all off, don't leave a single one on'. Flip enabled back to true to restart."
     },
     {
       "name": "kalshi-archive",
-      "enabled": true,
+      "enabled": false,
       "windowless": true,
       "dir": "bot-hunt",
       "exe": ".venv\\Scripts\\python.exe",
@@ -199,11 +207,12 @@
       "match": "archive_kalshi.py",
       "log": "logs\\wrapper_archive.log",
       "paper_only": true,
-      "_note": "NOT a paper test and NOT the recorder. Read-only public endpoints, no credentials, writes its own SQLite file (data/kalshi_archive.db) and never record.db. It exists because retention_rebisect.py on 2026-09-06 showed Kalshi's window ROLLS: the earliest listed settled market moved from 2026-05-25 to 2026-06-30 in 33 calendar days, and the tape goes empty between 68 and 69 days. HANDOFF.md section 2c claimed a fixed boundary and was wrong. Every day this is not running, one more day of the whole exchange's settled history is deleted and cannot be bought back at any price. Twice a day, because the walk takes minutes and the thing it is racing moves once a day. --trades 4000 a pass pulls the tape for the busiest settled markets in the 18 families record.py is recording depth for, read from that file so the two cannot drift. Measured: those families are about 70,000 markets across the 68-day window, against 1.3 million for every sports family - the wider pull is not a slower version of this one, it is a different project. Tape without a book is half a backtest, which is why it follows the recorder's list."
+      "_note": "NOT a paper test and NOT the recorder. Read-only public endpoints, no credentials, writes its own SQLite file (data/kalshi_archive.db) and never record.db. It exists because retention_rebisect.py on 2026-09-06 showed Kalshi's window ROLLS: the earliest listed settled market moved from 2026-05-25 to 2026-06-30 in 33 calendar days, and the tape goes empty between 68 and 69 days. HANDOFF.md section 2c claimed a fixed boundary and was wrong. Every day this is not running, one more day of the whole exchange's settled history is deleted and cannot be bought back at any price. Twice a day, because the walk takes minutes and the thing it is racing moves once a day. --trades 4000 a pass pulls the tape for the busiest settled markets in the 18 families record.py is recording depth for, read from that file so the two cannot drift. Measured: those families are about 70,000 markets across the 68-day window, against 1.3 million for every sports family - the wider pull is not a slower version of this one, it is a different project. Tape without a book is half a backtest, which is why it follows the recorder's list.",
+      "disabled_reason": "turned off 2026-09-19 at his request - 'turn them all off, don't leave a single one on'. Flip enabled back to true to restart."
     },
     {
       "name": "devig-combo-recorder",
-      "enabled": true,
+      "enabled": false,
       "windowless": true,
       "dir": "bot-hunt",
       "exe": ".venv\\Scripts\\python.exe",
@@ -215,11 +224,12 @@
       "match": "combo_recorder.py",
       "log": "logs\\wrapper_combo.log",
       "paper_only": true,
-      "_note": "Read-only capture of Kalshi COMBOS (parlays / multivariate event collections). Time-sensitive: settled combos age out of the ~69-day window and cannot be captured later. No orders, no Request For Quote creation, no account, no credential. Own database (data/combos.db) and own single-instance lock -- never record.db. Every request carries an explicit (connect, read) timeout and the sweep is bounded by a wall-clock deadline checked BETWEEN calls, because requests' timeout is per socket operation and not a total, which is how the cross-venue recorder lost nine hours on 2026-09-07."
+      "_note": "Read-only capture of Kalshi COMBOS (parlays / multivariate event collections). Time-sensitive: settled combos age out of the ~69-day window and cannot be captured later. No orders, no Request For Quote creation, no account, no credential. Own database (data/combos.db) and own single-instance lock -- never record.db. Every request carries an explicit (connect, read) timeout and the sweep is bounded by a wall-clock deadline checked BETWEEN calls, because requests' timeout is per socket operation and not a total, which is how the cross-venue recorder lost nine hours on 2026-09-07.",
+      "disabled_reason": "turned off 2026-09-19 at his request - 'turn them all off, don't leave a single one on'. Flip enabled back to true to restart."
     },
     {
       "name": "factory-combos",
-      "enabled": true,
+      "enabled": false,
       "windowless": true,
       "dir": "strategy-factory",
       "exe": ".venv\\Scripts\\python.exe",
@@ -237,7 +247,8 @@
       ],
       "log": "logs\\wrapper_combos.log",
       "paper_only": true,
-      "_note": "NOT a paper test - a RECORDER. Captures every Kalshi COMBO (parlay): its legs, the price somebody actually paid, and how it settled. Combos are priced by request-for-quote and have NO order book - every settled row reads bid 0.00 / ask 1.00 - so last_price is the only price that ever existed for that contract, and Kalshi's rolling window deletes it. Read-only public endpoints, no credentials; strategy-factory/tests/test_paper_only.py fails the build if any appears. Own database file. SCALE, MEASURED NOT GUESSED: 20,534,685 combos on tape spanning 2026-04-17 to 09-15. Settled combos are insert-or-ignored so every sweep after the first is nearly free. \u26a0 2026-09-15 to 09-18 IT WAS DEAD AND THE WATCHDOG COULD NOT RESTART IT: its own lock used os.kill(pid, 0), which on Windows raises OSError for a pid that does NOT exist, so 'assume alive on OSError' meant 'assume alive for ever' and this entry was refused every ten minutes for three days. Now an OS file lock the kernel drops on process death - there is nothing left to go stale. `devig` runs a second combo recorder (bot-hunt/src/combo_recorder.py) for the same job; that duplication is flagged in STATUS.md and is the coordinator's to settle, but this tape is the longer one (04-17 onward against 08-06) so stopping it would lose history that is already outside Kalshi's window."
+      "_note": "NOT a paper test - a RECORDER. Captures every Kalshi COMBO (parlay): its legs, the price somebody actually paid, and how it settled. Combos are priced by request-for-quote and have NO order book - every settled row reads bid 0.00 / ask 1.00 - so last_price is the only price that ever existed for that contract, and Kalshi's rolling window deletes it. Read-only public endpoints, no credentials; strategy-factory/tests/test_paper_only.py fails the build if any appears. Own database file. SCALE, MEASURED NOT GUESSED: 20,534,685 combos on tape spanning 2026-04-17 to 09-15. Settled combos are insert-or-ignored so every sweep after the first is nearly free. ⚠ 2026-09-15 to 09-18 IT WAS DEAD AND THE WATCHDOG COULD NOT RESTART IT: its own lock used os.kill(pid, 0), which on Windows raises OSError for a pid that does NOT exist, so 'assume alive on OSError' meant 'assume alive for ever' and this entry was refused every ten minutes for three days. Now an OS file lock the kernel drops on process death - there is nothing left to go stale. `devig` runs a second combo recorder (bot-hunt/src/combo_recorder.py) for the same job; that duplication is flagged in STATUS.md and is the coordinator's to settle, but this tape is the longer one (04-17 onward against 08-06) so stopping it would lose history that is already outside Kalshi's window.",
+      "disabled_reason": "turned off 2026-09-19 at his request - 'turn them all off, don't leave a single one on'. Flip enabled back to true to restart."
     }
   ]
 }
